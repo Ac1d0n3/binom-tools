@@ -286,6 +286,11 @@ body {
     max-width: 42rem;
 }
 
+.tools-page-lead--below-workflow {
+    margin-top: 0.75rem;
+    min-height: 2.75rem;
+}
+
 .tools-impressum-body {
     margin: 0;
     line-height: 1.65;
@@ -1309,7 +1314,7 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-workflow-flowchart {
-    margin: 0 0 1.25rem;
+    margin: 0.75rem 0 0;
     padding: 0.85rem 1rem;
     border: 1px solid var(--base-border-color);
     border-radius: 10px;

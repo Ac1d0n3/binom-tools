@@ -7,9 +7,10 @@
 @section('content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-i18n="govMacro.pageTitle">Governance Macro Generator</h1>
-        <p class="tools-page-lead" data-i18n="govMacro.pageLead"></p>
 
         <x-tools.workflow-nav tool-id="dbt-governance-macro-generator" />
+
+        <p class="tools-page-lead tools-page-lead--below-workflow" data-i18n="govMacro.pageLead"></p>
 
         <div class="pii-policy-generator" id="dbt-governance-macro-generator-app">
             <x-tools.collapsible-info summary-key="govMacro.howto.summary" :open="true">

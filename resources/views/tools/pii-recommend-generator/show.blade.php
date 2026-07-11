@@ -7,9 +7,10 @@
 @section('content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-i18n="piiRec.pageTitle">PII Recommend Generator</h1>
-        <p class="tools-page-lead" data-i18n="piiRec.pageLead"></p>
 
         <x-tools.workflow-nav tool-id="pii-recommend-generator" />
+
+        <p class="tools-page-lead tools-page-lead--below-workflow" data-i18n="piiRec.pageLead"></p>
 
         <div class="pii-policy-generator" id="pii-recommend-generator-app">
             <x-tools.collapsible-info summary-key="piiRec.howto.summary" :open="true">

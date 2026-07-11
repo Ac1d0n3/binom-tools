@@ -7,9 +7,10 @@
 @section('content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-i18n="gate.pageTitle">Unreviewed Table Gate Generator</h1>
-        <p class="tools-page-lead" data-i18n="gate.pageLead"></p>
 
         <x-tools.workflow-nav tool-id="pii-unreviewed-gate-generator" />
+
+        <p class="tools-page-lead tools-page-lead--below-workflow" data-i18n="gate.pageLead"></p>
 
         <div class="pii-policy-generator" id="pii-unreviewed-gate-generator-app">
             <x-tools.collapsible-info summary-key="gate.howto.summary" :open="true">

@@ -13,7 +13,7 @@ export function buildPiiGovernanceMacro(state) {
 {# Requires: schema meta.pii_details (Step 2) — pii_recommend is NOT applied at runtime #}
 
 {% macro pii_mask(column_name, category) %}
-  ${wh.maskExpr(column_name)}
+  ${wh.maskExpr('column_name')}
 {% endmacro %}
 
 {% macro pii_effective_meta(column_meta) %}
