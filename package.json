@@ -6,6 +6,7 @@
         "build": "node scripts/sync-htaccess.mjs && vite build",
         "build:local": "cp public/.htaccess.local public/.htaccess && vite build",
         "build:production": "cp public/.htaccess.production public/.htaccess && APP_URL=https://governance.binom.net vite build",
+        "deploy:ftp-pack": "node scripts/pack-ftp-deploy.mjs",
         "htaccess:local": "cp public/.htaccess.local public/.htaccess",
         "htaccess:production": "cp public/.htaccess.production public/.htaccess",
         "dev": "vite",

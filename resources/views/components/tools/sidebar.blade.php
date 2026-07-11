@@ -1,5 +1,5 @@
 @php
-    $navItems = config('tools.nav', []);
+    $navItems = \App\Support\ToolsNav::withRegisteredRoutes(config('tools.nav', []));
     $currentRoute = request()->route()?->getName();
     $currentSlug = request()->route('slug');
     $sidebarPlaybooks = app(\App\Playbooks\PlaybookRepository::class)->allForIndex();

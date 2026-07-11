@@ -3,6 +3,7 @@
 namespace App\Catalog;
 
 use App\Playbooks\PlaybookRepository;
+use App\Support\ToolsNav;
 
 final class LandingCatalog
 {
@@ -17,7 +18,7 @@ final class LandingCatalog
      */
     public function latestTools(): array
     {
-        return collect(config('tools.nav', []))
+        return collect(ToolsNav::withRegisteredRoutes(config('tools.nav', [])))
             ->reverse()
             ->take(self::PREVIEW_LIMIT)
             ->values()
@@ -26,7 +27,7 @@ final class LandingCatalog
 
     public function toolCount(): int
     {
-        return count(config('tools.nav', []));
+        return count(ToolsNav::withRegisteredRoutes(config('tools.nav', [])));
     }
 
     /**

@@ -84,7 +84,7 @@ final class ToolWorkflow
 
             foreach ($steps as $index => $stepId) {
                 $navItem = $navById[$stepId] ?? null;
-                if ($navItem === null) {
+                if ($navItem === null || ! isset($navItem['route']) || ! \Illuminate\Support\Facades\Route::has($navItem['route'])) {
                     continue;
                 }
 
