@@ -28,7 +28,7 @@
             <span class="tools-site-bar__sep" aria-hidden="true">·</span>
             <a
                 class="tools-site-bar__link"
-                href="{{ $links['binom_ngx_docs'] ?? 'https://ngx-docs.binom.net' }}"
+                href="{{ config('tools.links.binom_ngx_docs') }}"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-i18n="footer.binomNgx"

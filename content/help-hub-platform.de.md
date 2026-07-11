@@ -119,9 +119,10 @@ php artisan serve
 Optional in `.env`:
 
 ```env
-BINOM_NGX_DOCS_URL=https://ngx-docs.binom.net
 BINOM_TOOLS_REPO_URL=https://github.com/dein-org/dein-help-hub
 ```
+
+binom-ngx Docs: fest in `config/tools.php` → `https://ngx-docs.binom.net`
 
 ## Deployment
 

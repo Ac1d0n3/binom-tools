@@ -1,6 +1,5 @@
 @props([
     'heroPills' => [],
-    'binomNgxDocsUrl' => '#',
     'toolsOverviewUrl' => '#',
 ])
 
@@ -29,7 +28,7 @@
                     Interaktive Tools
                 </a>
                 <a
-                    href="{{ $binomNgxDocsUrl }}"
+                    href="{{ config('tools.links.binom_ngx_docs') }}"
                     class="tools-btn tools-btn--accent"
                     target="_blank"
                     rel="noopener noreferrer"
