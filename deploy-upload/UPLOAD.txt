@@ -1,6 +1,10 @@
 Deploy upload for governance.binom.net
 =====================================
 
+0. FIRST FIX if /tools returns Apache 500:
+   Upload deploy-upload/public/.htaccess → server public/.htaccess
+   (must be RewriteBase / — NOT the local /binom-tools/ variant)
+
 1. Merge deploy-upload/ into your server webroot (keep folder structure).
 
 2. Required folders in this pack:
@@ -24,4 +28,4 @@ Deploy upload for governance.binom.net
 
 4. Local dev: npm run build  (syncs .htaccess from APP_URL automatically)
 
-Build: 2026-07-11T21:18:05.059Z
+Build: 2026-07-11T22:09:25.232Z

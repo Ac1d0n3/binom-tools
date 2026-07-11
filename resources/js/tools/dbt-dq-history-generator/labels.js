@@ -1,7 +1,9 @@
 import { getLocale } from '../../locale';
+import { dqHistoryHowtoLabels } from './howto-labels.js';
 
 const labels = {
     de: {
+        ...dqHistoryHowtoLabels.de,
         'dqHistory.pageTitle': 'DQ History Generator',
         'dqHistory.output.history': 'models/marts/dq_run_history.sql',
         'dqHistory.output.score': 'models/marts/dq_score_daily.sql',
@@ -15,6 +17,7 @@ const labels = {
         'dq.validation.modelName': 'Model-Name fehlt.',
     },
     en: {
+        ...dqHistoryHowtoLabels.en,
         'dqHistory.pageTitle': 'DQ History Generator',
         'dqHistory.output.history': 'models/marts/dq_run_history.sql',
         'dqHistory.output.score': 'models/marts/dq_score_daily.sql',

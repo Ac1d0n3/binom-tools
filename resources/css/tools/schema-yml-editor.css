@@ -23,9 +23,7 @@
 }
 
 .schema-yml-editor {
-    display: grid;
-    gap: 1.5rem;
-    min-width: 0;
+    gap: var(--tools-stack-gap, 1.5rem);
 }
 
 .schema-editor-panel {

@@ -10,7 +10,26 @@
         tool-id="dbt-dq-rules-generator"
         app-id="dbt-dq-rules-generator-app"
     >
+        <x-tools.collapsible-info summary-key="dqRules.howto.summary" :open="true">
+            <p data-i18n="dqRules.howto.overview.intro"></p>
+            <ol>
+                <li data-i18n="dqRules.howto.overview.step1"></li>
+                <li data-i18n="dqRules.howto.overview.step2"></li>
+                <li data-i18n="dqRules.howto.overview.step3"></li>
+                <li data-i18n="dqRules.howto.overview.step4"></li>
+            </ol>
+            <p data-i18n="dqRules.howto.overview.tip"></p>
+        </x-tools.collapsible-info>
+
         <x-tools.panel heading-id="dq-rules-model-title" title-key="dqRules.model.title">
+            <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
+                <p data-i18n="dqRules.howto.model.intro"></p>
+                <ol>
+                    <li data-i18n="dqRules.howto.model.step1"></li>
+                    <li data-i18n="dqRules.howto.model.step2"></li>
+                </ol>
+                <p data-i18n="dqRules.howto.model.tip"></p>
+            </x-tools.collapsible-info>
             <x-tools.field label-key="dqRules.model.name">
                 <input id="dq-rules-model-name" class="pii-policy-input" type="text" value="orders" />
             </x-tools.field>
@@ -24,6 +43,15 @@
         </x-tools.panel>
 
         <x-tools.panel heading-id="dq-rules-columns-title" title-key="dqRules.columns.title">
+            <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
+                <p data-i18n="dqRules.howto.columns.intro"></p>
+                <ol>
+                    <li data-i18n="dqRules.howto.columns.step1"></li>
+                    <li data-i18n="dqRules.howto.columns.step2"></li>
+                    <li data-i18n="dqRules.howto.columns.step3"></li>
+                </ol>
+                <p data-i18n="dqRules.howto.columns.tip"></p>
+            </x-tools.collapsible-info>
             <x-tools.column-accordion id="dq-rules-columns-root" lead-key="dqRules.columns.lead" />
             <button type="button" class="tools-btn tools-btn--ghost" id="dq-rules-add-column-btn" data-i18n="dqRules.columns.add">Add column</button>
         </x-tools.panel>
@@ -52,7 +80,16 @@
             pre-id="dq-rules-yaml-pre"
             copy-btn-id="dq-rules-copy-yaml-btn"
             copy-key="dqRules.copy"
-        />
+        >
+            <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
+                <p data-i18n="dqRules.howto.yaml.intro"></p>
+                <ol>
+                    <li data-i18n="dqRules.howto.yaml.step1"></li>
+                    <li data-i18n="dqRules.howto.yaml.step2"></li>
+                </ol>
+                <p data-i18n="dqRules.howto.yaml.tip"></p>
+            </x-tools.collapsible-info>
+        </x-tools.panel-code>
 
         <x-tools.panel-code
             heading-id="dq-rules-sources-title"
@@ -60,7 +97,15 @@
             pre-id="dq-rules-sources-pre"
             copy-btn-id="dq-rules-copy-sources-btn"
             copy-key="dqRules.copy"
-        />
+        >
+            <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
+                <p data-i18n="dqRules.howto.sources.intro"></p>
+                <ol>
+                    <li data-i18n="dqRules.howto.sources.step1"></li>
+                </ol>
+                <p data-i18n="dqRules.howto.sources.tip"></p>
+            </x-tools.collapsible-info>
+        </x-tools.panel-code>
 
         <x-tools.panel-code
             heading-id="dq-rules-model-sql-title"
@@ -68,7 +113,15 @@
             pre-id="dq-rules-model-sql-pre"
             copy-btn-id="dq-rules-copy-model-sql-btn"
             copy-key="dqRules.copy"
-        />
+        >
+            <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
+                <p data-i18n="dqRules.howto.modelSql.intro"></p>
+                <ol>
+                    <li data-i18n="dqRules.howto.modelSql.step1"></li>
+                </ol>
+                <p data-i18n="dqRules.howto.modelSql.tip"></p>
+            </x-tools.collapsible-info>
+        </x-tools.panel-code>
 
         <x-tools.panel-code
             heading-id="dq-rules-governance-title"
@@ -94,7 +147,15 @@
             pre-id="dq-rules-tests-pre"
             copy-btn-id="dq-rules-copy-tests-btn"
             copy-key="dqRules.copy"
-        />
+        >
+            <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
+                <p data-i18n="dqRules.howto.tests.intro"></p>
+                <ol>
+                    <li data-i18n="dqRules.howto.tests.step1"></li>
+                </ol>
+                <p data-i18n="dqRules.howto.tests.tip"></p>
+            </x-tools.collapsible-info>
+        </x-tools.panel-code>
 
         <x-tools.sync-status id="dq-rules-sync-status" />
     </x-tools.generator-page>

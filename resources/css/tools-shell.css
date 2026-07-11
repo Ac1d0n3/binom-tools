@@ -194,14 +194,22 @@ body {
     padding: 1rem var(--tools-shell-padding-inline);
 }
 
+.tools-sidenav__group {
+    margin-top: 1.25rem;
+}
+
+.tools-sidenav__list--home + .tools-sidenav__group {
+    margin-top: 0;
+}
+
 .tools-sidenav__section {
-    margin: 0 0 0.5rem;
-    padding: 0 0.5rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    margin: 0 0 0.4rem;
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--bn-color-text-secondary);
+    color: color-mix(in srgb, var(--content-font-color) 72%, var(--bn-color-text-secondary));
 }
 
 .tools-sidenav__list {
@@ -212,12 +220,23 @@ body {
 
 .tools-sidenav__link {
     display: block;
-    padding: 0.5rem 0.75rem;
+    padding: 0.45rem 0.75rem;
     border-radius: 8px;
     color: var(--content-font-color);
     text-decoration: none;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
     transition: background-color 0.15s ease;
+}
+
+.tools-sidenav__link--overview {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--bn-color-text-secondary);
+}
+
+.tools-sidenav__link--overview.tools-sidenav__link--active {
+    color: var(--theme-color-primary);
 }
 
 .tools-sidenav__link:hover {
@@ -233,8 +252,8 @@ body {
 .tools-sidenav__link--tool {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
-    font-size: 0.8125rem;
+    gap: 0.5rem;
+    font-size: 0.875rem;
     min-width: 0;
 }
 
@@ -253,10 +272,10 @@ body {
 
 .tools-sidenav__link-icon {
     flex-shrink: 0;
-    width: 0.875rem;
+    width: 1rem;
     text-align: center;
-    font-size: 0.75rem;
-    opacity: 0.85;
+    font-size: 0.8125rem;
+    opacity: 0.9;
 }
 
 .tools-site-bar {
@@ -298,6 +317,38 @@ body {
     max-width: 1120px;
 }
 
+/* Unified vertical rhythm — panels, cards, workflow nav, help blocks */
+:root {
+    --tools-stack-gap: 1.5rem;
+}
+
+.tools-page-stack,
+.tools-stack,
+.pii-policy-generator,
+.schema-yml-editor,
+.gov-tool-playground {
+    display: grid;
+    gap: var(--tools-stack-gap);
+    min-width: 0;
+}
+
+.tools-page-stack > *,
+.tools-stack > *,
+.pii-policy-generator > *,
+.schema-yml-editor > *,
+.gov-tool-playground > * {
+    margin-block: 0;
+}
+
+.tools-content--wide > .tools-page-stack,
+.tools-content > .tools-page-stack {
+    margin-top: 1.25rem;
+}
+
+.tools-page-lead + .tools-page-stack {
+    margin-top: 0;
+}
+
 .tools-content--wide {
     max-width: none;
 }
@@ -336,7 +387,7 @@ body {
 }
 
 .tools-section {
-    margin-bottom: 2rem;
+    margin-bottom: var(--tools-stack-gap, 1.5rem);
 }
 
 .tools-section__title {
@@ -392,7 +443,7 @@ body {
 .tools-card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-    gap: 1rem;
+    gap: var(--tools-stack-gap, 1.5rem);
 }
 
 .tools-home {
@@ -410,7 +461,7 @@ body {
 
 .tools-home .tools-card-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
+    gap: var(--tools-stack-gap, 1.5rem);
 }
 
 .tools-card {
@@ -879,15 +930,11 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-collapsible-info {
-    margin: 0 0 1rem;
+    margin: 0;
     border: 1px solid color-mix(in srgb, var(--theme-color-info) 25%, var(--base-border-color));
     border-radius: 10px;
     background: color-mix(in srgb, var(--theme-color-info) 6%, var(--content-background-color));
     overflow: hidden;
-}
-
-.tools-collapsible-info--compact {
-    margin-bottom: 0.75rem;
 }
 
 .tools-column-accordion {
@@ -983,6 +1030,14 @@ html[data-color-scheme='dark'] .tools-hero {
     margin-top: 0.25rem;
 }
 
+.pii-policy-panel .tools-collapsible-info--compact,
+.schema-editor-panel .tools-collapsible-info--compact,
+.bn-prompt-sanitizer-panel .tools-collapsible-info--compact,
+.bn-governance-ai-response-panel .tools-collapsible-info--compact,
+.bn-governance-findings-table .tools-collapsible-info--compact {
+    margin-bottom: 0.85rem;
+}
+
 @media (max-width: 768px) {
     .tools-column-accordion__grid {
         grid-template-columns: 1fr;
@@ -1076,7 +1131,7 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-sidenav__list--home {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--base-border-color);
 }
@@ -1383,7 +1438,7 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-workflow-nav {
-    margin: 0 0 1.25rem;
+    margin: 0;
     padding: 0.85rem 1rem;
     border: 1px solid var(--base-border-color);
     border-radius: 10px;
@@ -1391,7 +1446,7 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-workflow-flowchart {
-    margin: 0.75rem 0 0;
+    margin: 0;
     padding: 0.85rem 1rem;
     border: 1px solid var(--base-border-color);
     border-radius: 10px;
@@ -1576,8 +1631,12 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-workflow-section {
-    margin-top: 2rem;
-    margin-bottom: 1.75rem;
+    margin-top: var(--tools-stack-gap, 1.5rem);
+    margin-bottom: 0;
+}
+
+.tools-card-grid + .tools-workflow-section {
+    margin-top: var(--tools-stack-gap, 1.5rem);
 }
 
 .tools-workflow-steps {
@@ -1625,7 +1684,7 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-validation-banner {
-    margin: 0 0 1rem;
+    margin: 0;
     padding: 0.65rem 0.85rem;
     border-radius: 8px;
     border: 1px solid var(--base-border-color);

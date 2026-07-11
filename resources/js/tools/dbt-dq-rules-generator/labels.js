@@ -1,8 +1,10 @@
 import { getLocale } from '../../locale';
 import { RULE_TYPE_DEFS, RULE_TYPE_IDS, SEVERITY_OPTIONS } from '../dq-shared/rule-types.js';
+import { dqRulesHowtoLabels } from './howto-labels.js';
 
 const labels = {
     de: {
+        ...dqRulesHowtoLabels.de,
         'dqRules.pageTitle': 'DQ Rules Generator',
         'dqRules.model.title': 'Model',
         'dqRules.model.name': 'Model-Name',
@@ -44,6 +46,7 @@ const labels = {
         'dq.validation.expression': 'Expression ohne SQL für {id}.',
     },
     en: {
+        ...dqRulesHowtoLabels.en,
         'dqRules.pageTitle': 'DQ Rules Generator',
         'dqRules.model.title': 'Model',
         'dqRules.model.name': 'Model name',

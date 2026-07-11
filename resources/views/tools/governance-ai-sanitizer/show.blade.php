@@ -11,7 +11,8 @@
             Walk through prompt sanitization, copy the outbound message to your LLM, then restore mapped PII from the AI reply.
         </p>
 
-        <div class="gov-tool-playground" id="governance-ai-sanitizer-app">
+        <div class="tools-page-stack">
+            <div class="gov-tool-playground" id="governance-ai-sanitizer-app">
             <x-tools.collapsible-info summary-key="gov.howto.summary" :open="true">
                 <p data-i18n="gov.howto.overview.intro"></p>
                 <ol>
@@ -130,6 +131,7 @@
                     <tbody id="gov-findings-body"></tbody>
                 </table>
             </section>
+            </div>
         </div>
     </div>
 @endsection

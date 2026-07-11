@@ -14,5 +14,5 @@
     @endif
     {{ $slot }}
     <pre class="pii-policy-code" id="{{ $preId }}"></pre>
-    <button type="button" class="tools-btn" id="{{ $copyBtnId }}" data-i18n="{{ $copyKey }}">Copy</button>
+    <button type="button" class="tools-btn" id="{{ $copyBtnId }}" data-dq-copy="{{ $preId }}" data-i18n="{{ $copyKey }}">Copy</button>
 </x-tools.panel>

@@ -1,7 +1,9 @@
 import { getLocale } from '../../locale';
+import { dqMacroHowtoLabels } from './howto-labels.js';
 
 const labels = {
     de: {
+        ...dqMacroHowtoLabels.de,
         'dqMacro.pageTitle': 'DQ Macro Generator',
         'dqMacro.warehouse.title': 'Warehouse',
         'dqMacro.warehouse.description': 'SQL-Dialekt für generierte DQ-Checks.',
@@ -23,6 +25,7 @@ const labels = {
         'dq.validation.expression': 'Expression ohne SQL für {id}.',
     },
     en: {
+        ...dqMacroHowtoLabels.en,
         'dqMacro.pageTitle': 'DQ Macro Generator',
         'dqMacro.warehouse.title': 'Warehouse',
         'dqMacro.warehouse.description': 'SQL dialect for generated DQ checks.',

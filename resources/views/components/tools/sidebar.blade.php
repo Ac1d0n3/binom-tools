@@ -48,63 +48,67 @@
         </li>
     </ul>
 
-    <p class="tools-sidenav__section" data-i18n="nav.playbooks">Playbooks</p>
-    <ul class="tools-sidenav__list">
-        <li>
-            <a
-                href="{{ route('playbooks.index') }}"
-                class="tools-sidenav__link {{ $currentRoute === 'playbooks.index' ? 'tools-sidenav__link--active' : '' }}"
-                data-i18n="nav.playbooksOverview"
-            >
-                Overview
-            </a>
-        </li>
-        @foreach ($sidebarPlaybooks as $item)
-            @php
-                $de = $item['locales']['de'] ?? null;
-                $en = $item['locales']['en'] ?? null;
-            @endphp
+    <div class="tools-sidenav__group">
+        <p class="tools-sidenav__section" data-i18n="nav.playbooks">Playbooks</p>
+        <ul class="tools-sidenav__list">
             <li>
                 <a
-                    href="{{ route('playbooks.show', $item['slug']) }}"
-                    class="tools-sidenav__link {{ $currentRoute === 'playbooks.show' && $currentSlug === $item['slug'] ? 'tools-sidenav__link--active' : '' }}"
-                    data-playbook-nav-title
-                    data-text-de="{{ $de['title'] ?? '' }}"
-                    data-text-en="{{ $en['title'] ?? ($de['title'] ?? '') }}"
+                    href="{{ route('playbooks.index') }}"
+                    class="tools-sidenav__link tools-sidenav__link--overview {{ $currentRoute === 'playbooks.index' ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.playbooksOverview"
                 >
-                    {{ $de['title'] ?? $en['title'] ?? $item['slug'] }}
+                    Overview
                 </a>
             </li>
-        @endforeach
-    </ul>
+            @foreach ($sidebarPlaybooks as $item)
+                @php
+                    $de = $item['locales']['de'] ?? null;
+                    $en = $item['locales']['en'] ?? null;
+                @endphp
+                <li>
+                    <a
+                        href="{{ route('playbooks.show', $item['slug']) }}"
+                        class="tools-sidenav__link {{ $currentRoute === 'playbooks.show' && $currentSlug === $item['slug'] ? 'tools-sidenav__link--active' : '' }}"
+                        data-playbook-nav-title
+                        data-text-de="{{ $de['title'] ?? '' }}"
+                        data-text-en="{{ $en['title'] ?? ($de['title'] ?? '') }}"
+                    >
+                        {{ $de['title'] ?? $en['title'] ?? $item['slug'] }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 
-    <p class="tools-sidenav__section" data-i18n="nav.tools">Tools</p>
-    <ul class="tools-sidenav__list">
-        <li>
-            <a
-                href="{{ route('tools.overview') }}"
-                class="tools-sidenav__link {{ $currentRoute === 'tools.overview' ? 'tools-sidenav__link--active' : '' }}"
-                data-i18n="nav.overview"
-            >
-                Overview
-            </a>
-        </li>
-
-        @foreach ($orderedToolLinks as $item)
-            @php
-                $icon = $item['icon'] ?? null;
-            @endphp
+    <div class="tools-sidenav__group">
+        <p class="tools-sidenav__section" data-i18n="nav.tools">Tools</p>
+        <ul class="tools-sidenav__list">
             <li>
                 <a
-                    href="{{ route($item['route']) }}"
-                    class="tools-sidenav__link tools-sidenav__link--tool {{ $currentRoute === $item['route'] ? 'tools-sidenav__link--active' : '' }}"
+                    href="{{ route('tools.overview') }}"
+                    class="tools-sidenav__link tools-sidenav__link--overview {{ $currentRoute === 'tools.overview' ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.overview"
                 >
-                    @if ($icon)
-                        <i class="fa-solid {{ $icon }} tools-sidenav__link-icon" aria-hidden="true"></i>
-                    @endif
-                    <span class="tools-sidenav__link-label" data-i18n-nav="{{ $item['id'] }}">{{ $item['label']['en'] }}</span>
+                    Overview
                 </a>
             </li>
-        @endforeach
-    </ul>
+
+            @foreach ($orderedToolLinks as $item)
+                @php
+                    $icon = $item['icon'] ?? null;
+                @endphp
+                <li>
+                    <a
+                        href="{{ route($item['route']) }}"
+                        class="tools-sidenav__link tools-sidenav__link--tool {{ $currentRoute === $item['route'] ? 'tools-sidenav__link--active' : '' }}"
+                    >
+                        @if ($icon)
+                            <i class="fa-solid {{ $icon }} tools-sidenav__link-icon" aria-hidden="true"></i>
+                        @endif
+                        <span class="tools-sidenav__link-label" data-i18n-nav="{{ $item['id'] }}">{{ $item['label']['en'] }}</span>
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 </nav>

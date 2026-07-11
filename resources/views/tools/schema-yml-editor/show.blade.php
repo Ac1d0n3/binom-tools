@@ -9,9 +9,10 @@
         <h1 class="tools-page-title" data-i18n="schema.pageTitle">Schema YML Editor</h1>
         <p class="tools-page-lead" data-i18n="schema.pageLead"></p>
 
-        <p class="tools-standalone-notice" data-i18n="schema.standaloneNotice"></p>
+        <div class="tools-page-stack">
+            <p class="tools-standalone-notice" data-i18n="schema.standaloneNotice"></p>
 
-        <div class="schema-yml-editor" id="schema-yml-editor-app">
+            <div class="schema-yml-editor" id="schema-yml-editor-app">
             <x-tools.collapsible-info summary-key="schema.howto.summary" :open="true">
                 <p data-i18n="schema.howto.overview.intro"></p>
                 <ol>
@@ -157,6 +158,7 @@
                 <p class="schema-editor-yaml-error" id="schema-yaml-parse-error" hidden data-i18n="schema.yaml.parseError"></p>
                 <button type="button" class="tools-btn" id="schema-copy-yaml-btn" data-i18n="schema.copy">Copy</button>
             </section>
+            </div>
         </div>
     </div>
 @endsection
