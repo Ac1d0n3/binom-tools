@@ -28,4 +28,4 @@ Deploy upload for governance.binom.net
 
 4. Local dev: npm run build  (syncs .htaccess from APP_URL automatically)
 
-Build: 2026-07-11T22:09:25.232Z
+Build: 2026-07-11T22:22:46.855Z

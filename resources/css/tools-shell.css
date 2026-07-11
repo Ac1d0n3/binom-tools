@@ -94,6 +94,12 @@ body {
     --tools-shell-padding-inline: 1rem;
     position: relative;
     z-index: 1;
+    box-shadow: 0 6px 28px color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+}
+
+html[data-shell-full-width='true'] .tools-shell,
+.tools-shell--full-width {
+    max-width: none;
 }
 
 .tools-shell__header {
@@ -211,7 +217,46 @@ body {
     gap: 0.15rem;
 }
 
-.tools-header__theme-toggle {
+.tools-header__settings {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.tools-header__settings-menu {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    z-index: 40;
+    min-width: 11.5rem;
+    padding: 0.35rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 10px;
+    background: var(--content-background-color);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+}
+
+.tools-header__settings-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--content-font-color);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+}
+
+.tools-header__settings-option:hover {
+    background: var(--state-layer-hover);
+}
+
+.tools-header__settings-option input {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    accent-color: var(--theme-color-primary);
     flex-shrink: 0;
 }
 
@@ -242,6 +287,19 @@ body {
 .tools-icon-button:hover:not(:disabled) {
     background: var(--state-layer-hover);
     border-color: var(--theme-color-primary);
+}
+
+.tools-header__theme-toggle.tools-icon-button,
+.tools-header__settings-toggle.tools-icon-button {
+    flex-shrink: 0;
+    border: 0;
+    background: transparent;
+}
+
+.tools-header__theme-toggle.tools-icon-button:hover:not(:disabled),
+.tools-header__settings-toggle.tools-icon-button:hover:not(:disabled) {
+    background: var(--state-layer-hover);
+    border: 0;
 }
 
 .tools-header__theme-icon {
@@ -543,10 +601,10 @@ body {
     flex-direction: column;
     gap: 0.75rem;
     padding: 1.1rem 1.15rem;
-    border: 1px solid transparent;
+    border: 1px solid var(--tools-card-border);
     border-radius: 12px;
-    background: var(--content-background-color);
-    box-shadow: 0 1px 3px color-mix(in srgb, #000 5%, transparent);
+    background: var(--tools-card-background);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--theme-color-primary) 6%, transparent);
     color: inherit;
     text-decoration: none;
     transition:
@@ -571,8 +629,8 @@ body {
     padding: 1.35rem 1.4rem;
     background: linear-gradient(
         135deg,
-        var(--content-background-color) 0%,
-        color-mix(in srgb, var(--theme-color-primary) 10%, var(--content-background-color)) 100%
+        var(--tools-card-background) 0%,
+        color-mix(in srgb, var(--theme-color-primary) 12%, var(--tools-card-background)) 100%
     );
     box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
 }
@@ -580,12 +638,12 @@ body {
 .tools-card--overview {
     border-style: dashed;
     border-color: color-mix(in srgb, var(--theme-color-accent) 35%, var(--border-color));
-    background: color-mix(in srgb, var(--theme-color-accent) 4%, var(--content-background-color));
+    background: color-mix(in srgb, var(--theme-color-accent) 6%, var(--tools-card-background));
 }
 
 .tools-card--overview:hover {
     border-color: color-mix(in srgb, var(--theme-color-accent) 55%, var(--border-color));
-    background: color-mix(in srgb, var(--theme-color-accent) 8%, var(--content-background-color));
+    background: color-mix(in srgb, var(--theme-color-accent) 10%, var(--tools-card-background));
 }
 
 .tools-card--overview .tools-card__count {
@@ -1206,8 +1264,8 @@ html[data-color-scheme='dark'] .tools-hero {
 
 .tools-sidenav__list--home {
     margin-bottom: 0;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--base-border-color);
+    padding-bottom: 0;
+    border-bottom: 0;
 }
 
 .tools-overview-toolbar {
@@ -1514,17 +1572,17 @@ html[data-color-scheme='dark'] .tools-hero {
 .tools-workflow-nav {
     margin: 0;
     padding: 0.85rem 1rem;
-    border: 1px solid var(--base-border-color);
+    border: 1px solid var(--tools-card-border);
     border-radius: 10px;
-    background: var(--surface-background-color);
+    background: var(--tools-card-background);
 }
 
 .tools-workflow-flowchart {
     margin: 0;
     padding: 0.85rem 1rem;
-    border: 1px solid var(--base-border-color);
+    border: 1px solid var(--tools-card-border);
     border-radius: 10px;
-    background: var(--surface-background-color);
+    background: var(--tools-card-background);
 }
 
 .tools-workflow-flowchart__label,

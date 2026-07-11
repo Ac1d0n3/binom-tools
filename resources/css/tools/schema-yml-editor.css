@@ -1,8 +1,8 @@
 .schema-editor-panel--scenario {
     background: linear-gradient(
         135deg,
-        var(--content-background-color) 0%,
-        color-mix(in srgb, var(--theme-color-info) 10%, var(--surface-background-color)) 100%
+        var(--tools-card-background) 0%,
+        color-mix(in srgb, var(--theme-color-info) 12%, var(--tools-card-background)) 100%
     );
 }
 
@@ -29,8 +29,8 @@
 .schema-editor-panel {
     padding: 1.25rem;
     border-radius: 12px;
-    border: 1px solid var(--base-border-color);
-    background: var(--content-background-color);
+    border: 1px solid var(--tools-card-border);
+    background: var(--tools-card-background);
 }
 
 .schema-editor-panel__header h3 {

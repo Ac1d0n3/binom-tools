@@ -36,6 +36,8 @@ html.bn-theme-blue-water-light {
     --tools-app-art-stroke-accent: color-mix(in srgb, var(--theme-color-accent) 32%, transparent);
     --tools-app-art-stroke-muted: color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
     --tools-app-art-mesh: color-mix(in srgb, var(--theme-color-primary) 8%, transparent);
+    --tools-card-background: color-mix(in srgb, var(--theme-color-accent) 7%, var(--surface-background-color));
+    --tools-card-border: color-mix(in srgb, var(--theme-color-primary) 10%, var(--base-border-color));
 }
 
 .bn-theme-blue-water-dark,
@@ -76,4 +78,6 @@ html.bn-theme-blue-water-dark {
     --tools-app-art-stroke-accent: color-mix(in srgb, var(--theme-color-accent) 26%, transparent);
     --tools-app-art-stroke-muted: color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
     --tools-app-art-mesh: color-mix(in srgb, var(--theme-color-primary) 7%, transparent);
+    --tools-card-background: color-mix(in srgb, var(--theme-color-primary) 14%, var(--content-background-color));
+    --tools-card-border: color-mix(in srgb, var(--theme-color-primary) 18%, var(--base-border-color));
 }

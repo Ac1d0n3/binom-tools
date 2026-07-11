@@ -15,6 +15,32 @@
     </div>
 
     <div class="tools-header__actions">
+        <div class="tools-header__settings" data-header-settings>
+            <button
+                type="button"
+                class="tools-icon-button tools-header__settings-toggle"
+                data-header-settings-toggle
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls="tools-header-settings-menu"
+                data-i18n-aria="settings.openMenu"
+                title="Settings"
+            >
+                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+            </button>
+            <div
+                id="tools-header-settings-menu"
+                class="tools-header__settings-menu"
+                data-header-settings-menu
+                role="menu"
+                hidden
+            >
+                <label class="tools-header__settings-option" role="menuitemcheckbox">
+                    <input type="checkbox" data-shell-full-width-toggle />
+                    <span data-i18n="settings.fullWidth">Full width</span>
+                </label>
+            </div>
+        </div>
         <button
             type="button"
             class="tools-icon-button tools-header__theme-toggle"

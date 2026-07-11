@@ -22,12 +22,18 @@
                     document.body.classList.add(themeClass);
                 }
             });
+
+            var fullWidthKey = 'binom-tools-shell-full-width';
+            document.documentElement.dataset.shellFullWidth =
+                localStorage.getItem(fullWidthKey) === 'true' ? 'true' : 'false';
         })();
     </script>
     @vite(array_merge(['resources/css/app.css', 'resources/js/app.js'], $viteEntries ?? []))
     @stack('head')
 </head>
 <body>
+    <x-tools.app-art />
+
     <div class="tools-shell" id="tools-shell">
         <header class="tools-shell__header">
             <x-tools.header />

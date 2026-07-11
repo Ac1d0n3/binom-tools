@@ -152,4 +152,15 @@ class ToolsPagesTest extends TestCase
         $this->assertStringNotContainsString('1/3', $toolsNav);
         $this->assertStringNotContainsString('>DQ ', $toolsNav);
     }
+
+    public function test_header_includes_layout_settings_menu(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('data-header-settings', false);
+        $response->assertSee('data-shell-full-width-toggle', false);
+        $response->assertSee('data-i18n="settings.fullWidth"', false);
+        $response->assertSee('dataset.shellFullWidth', false);
+    }
 }
