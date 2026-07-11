@@ -15,8 +15,11 @@
                 $navById = collect($navItems)->keyBy('id');
             @endphp
             <section class="tools-workflow-section" aria-labelledby="workflow-{{ $workflowId }}-title">
-                <h2 id="workflow-{{ $workflowId }}-title" class="tools-section__title">
-                    {{ $workflow['label']['en'] ?? $workflowId }}
+                <h2 id="workflow-{{ $workflowId }}-title" class="tools-section__title tools-section__title--with-icon">
+                    @if (! empty($workflow['icon']))
+                        <i class="fa-solid {{ $workflow['icon'] }} tools-section__title-icon" aria-hidden="true"></i>
+                    @endif
+                    <span>{{ $workflow['label']['en'] ?? $workflowId }}</span>
                 </h2>
                 @if (! empty($workflow['description']['en']))
                     <p class="tools-section__lead">{{ $workflow['description']['en'] }}</p>
@@ -57,7 +60,9 @@
         </p>
 
         @php
-            $workflowStepTotal = count(collect($workflows)->first()['steps'] ?? []);
+            $workflowStepTotals = collect($workflows)->mapWithKeys(
+                fn (array $workflow, string $id) => [$id => count($workflow['steps'] ?? [])],
+            );
         @endphp
 
         <div class="tools-card-grid">
@@ -70,6 +75,8 @@
                         $item['description']['en'] ?? '',
                         $item['id'] ?? '',
                     ]));
+                    $workflowId = $item['workflow'] ?? null;
+                    $stepTotal = $workflowId ? ($workflowStepTotals[$workflowId] ?? null) : null;
                 @endphp
                 <x-tools.card
                     :href="route($item['route'])"
@@ -81,7 +88,7 @@
                     :example="$item['example'] ?? false"
                     :overview-item="true"
                     :search-text="$searchText"
-                    :meta="isset($item['workflowStep']) ? 'Step ' . $item['workflowStep'] . '/' . $workflowStepTotal : null"
+                    :meta="isset($item['workflowStep'], $stepTotal) ? 'Step ' . $item['workflowStep'] . '/' . $stepTotal : null"
                 />
             @endforeach
         </div>

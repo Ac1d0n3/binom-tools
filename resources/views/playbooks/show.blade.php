@@ -25,11 +25,11 @@
             >
                 <div class="playbook-detail__layout">
                     <div class="playbook-detail__scroll" data-playbook-scroll-root>
-                        @if ($playbook->heroUrl)
+                        @if ($variant->heroUrl)
                             <div class="playbook-detail__hero">
                                 <img
-                                    src="{{ $playbook->heroUrl }}"
-                                    alt=""
+                                    src="{{ $variant->heroUrl }}"
+                                    alt="{{ $variant->title }}"
                                     class="playbook-detail__hero-image"
                                     loading="eager"
                                 />

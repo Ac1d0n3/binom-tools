@@ -68,7 +68,7 @@ final class PlaybookRepository
     {
         $variants = [];
         $heroUrl = null;
-        $order = 0;
+        $order = null;
         $modifiedAt = null;
 
         foreach (self::LOCALES as $locale) {
@@ -81,10 +81,8 @@ final class PlaybookRepository
             $variant = $this->buildLocaleVariant($path, $slug, $locale);
             $variants[$locale] = $variant;
 
-            if ($heroUrl === null && $slug) {
+            if ($order === null) {
                 $parsed = $this->frontmatterParser->parse(file_get_contents($path) ?: '', $slug);
-                $hero = $parsed['meta']['hero'] ?? null;
-                $heroUrl = is_string($hero) && $hero !== '' ? asset($hero) : null;
                 $order = (int) ($parsed['meta']['order'] ?? 0);
             }
 
@@ -92,10 +90,12 @@ final class PlaybookRepository
             $modifiedAt = $modifiedAt === null || $fileTime->gt($modifiedAt) ? $fileTime : $modifiedAt;
         }
 
+        $heroUrl = $variants['de']->heroUrl ?? $variants['en']->heroUrl ?? null;
+
         return new Playbook(
             slug: $slug,
             heroUrl: $heroUrl,
-            order: $order,
+            order: $order ?? 0,
             modifiedAt: $modifiedAt ?? now(),
             variants: $variants,
         );
@@ -111,6 +111,9 @@ final class PlaybookRepository
         /** @var list<string> $tags */
         $tags = is_array($meta['tags'] ?? null) ? $meta['tags'] : [];
 
+        $hero = $meta['hero'] ?? null;
+        $heroUrl = is_string($hero) && $hero !== '' ? asset($hero) : null;
+
         return new PlaybookLocaleVariant(
             locale: $locale,
             title: (string) ($meta['title'] ?? $slug),
@@ -120,6 +123,7 @@ final class PlaybookRepository
             bodyHtml: $rendered['html'],
             toc: $rendered['toc'],
             readingTimeMinutes: $this->markdownRenderer->readingTimeMinutes($parsed['body']),
+            heroUrl: $heroUrl,
         );
     }
 

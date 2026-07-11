@@ -8,7 +8,7 @@ export function buildPiiGovernanceMacro(state) {
     const wh = getWarehouseTemplate(state.selectedWarehouse);
     const nullCast = wh.nullCast();
 
-    return `{# macros/pii_governance.sql — Step 1: Governance Macro Generator #}
+    return `{# macros/pii_governance.sql — Step 1: PII Macro Generator #}
 {# Warehouse: ${wh.label} | Copy into macros/ in your dbt project #}
 {# Requires: schema meta.pii_details (Step 2) — pii_recommend is NOT applied at runtime #}
 
@@ -77,7 +77,7 @@ export function buildPiiGovernanceMacro(state) {
  * @returns {string}
  */
 export function buildPiiReviewedTest() {
-    return `{# tests/generic/pii_reviewed.sql — Step 1: Governance Macro Generator #}
+    return `{# tests/generic/pii_reviewed.sql — Step 1: PII Macro Generator #}
 
 {% test pii_reviewed(model) %}
   {% if model.meta.get('pii-reviewed') is not true %}
@@ -104,12 +104,12 @@ Generated for **${wh.label}**. Settings are configured in binom-tools and shared
 
 | File | From step | Target path |
 |------|-----------|-------------|
-| \`pii_governance.sql\` | 1 — Governance Macro Generator | \`macros/pii_governance.sql\` |
-| \`pii_reviewed.sql\` | 1 — Governance Macro Generator | \`tests/generic/pii_reviewed.sql\` |
-| \`example_table.yml\` (pii_details) | 2 — DBT Policy Generator | \`models/schema/example_table.yml\` |
-| \`example_table_secure.sql\` | 2 — DBT Policy Generator | \`models/marts/example_table_secure.sql\` |
-| \`pii_table_gate.sql\` | 3 — Unreviewed Table Gate Generator | \`macros/pii_table_gate.sql\` |
-| \`example_table_gate.yml\` | 3 — Unreviewed Table Gate Generator | \`models/schema/example_table_gate.yml\` |
+| \`pii_governance.sql\` | 1 — PII Macro Generator | \`macros/pii_governance.sql\` |
+| \`pii_reviewed.sql\` | 1 — PII Macro Generator | \`tests/generic/pii_reviewed.sql\` |
+| \`example_table.yml\` (pii_details) | 2 — PII Policy Generator | \`models/schema/example_table.yml\` |
+| \`example_table_secure.sql\` | 2 — PII Policy Generator | \`models/marts/example_table_secure.sql\` |
+| \`pii_table_gate.sql\` | 3 — PII Table Gate Generator | \`macros/pii_table_gate.sql\` |
+| \`example_table_gate.yml\` | 3 — PII Table Gate Generator | \`models/schema/example_table_gate.yml\` |
 | \`pii_audit_by_name.sql\` | 4 — PII Recommend Generator | \`macros/pii_audit_by_name.sql\` |
 | \`pii_content_scan.sql\` | 4 — PII Recommend Generator | \`macros/pii_content_scan.sql\` |
 | \`example_table.yml\` (pii_recommend) | 4 — PII Recommend Generator | compare / use for new tables |

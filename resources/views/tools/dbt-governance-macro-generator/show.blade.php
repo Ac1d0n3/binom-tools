@@ -2,15 +2,13 @@
     'viteEntries' => ['resources/js/tools/dbt-governance-macro-generator/index.js'],
 ])
 
-@section('title', 'Governance Macro Generator — ' . config('app.name'))
+@section('title', 'PII Macro Generator — ' . config('app.name'))
 
 @section('content')
     <div class="tools-content tools-content--wide">
-        <h1 class="tools-page-title" data-i18n="govMacro.pageTitle">Governance Macro Generator</h1>
+        <h1 class="tools-page-title" data-i18n="govMacro.pageTitle">PII Macro Generator</h1>
 
         <x-tools.workflow-nav tool-id="dbt-governance-macro-generator" />
-
-        <p class="tools-page-lead tools-page-lead--below-workflow" data-i18n="govMacro.pageLead"></p>
 
         <div class="pii-policy-generator" id="dbt-governance-macro-generator-app">
             <x-tools.collapsible-info summary-key="govMacro.howto.summary" :open="true">

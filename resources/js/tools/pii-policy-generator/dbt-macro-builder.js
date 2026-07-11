@@ -4,8 +4,8 @@
  * @returns {string}
  */
 export function buildDbtMacro(state) {
-    return `{# Step 2 — DBT Policy Generator #}
-{# Requires: macros/pii_governance.sql from Step 1 (Governance Macro Generator) #}
+    return `{# Step 2 — PII Policy Generator #}
+{# Requires: macros/pii_governance.sql from Step 1 (PII Macro Generator) #}
 {# Copy pii_governance.sql into your project — pii_column_for_role() reads meta.pii_details from schema.yml #}
 
 {# Example usage in models/marts/${state.modelName}_secure.sql:

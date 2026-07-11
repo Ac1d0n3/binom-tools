@@ -36,8 +36,8 @@ export function buildDbtModelExample(state) {
     const databaseComment = database ? `\n-- Source database: ${database}` : '';
 
     return `-- models/marts/${state.modelName}_secure.sql
--- Step 2 — DBT Policy Generator
--- Requires: macros/pii_governance.sql (Step 1 — Governance Macro Generator)
+-- Step 2 — PII Policy Generator
+-- Requires: macros/pii_governance.sql (Step 1 — PII Macro Generator)
 -- Requires: models/schema/${state.modelName}.yml with meta.pii_details (this tool)
 -- Runnable example: set var pii_user_role in dbt_project.yml or via --vars${databaseComment}
 

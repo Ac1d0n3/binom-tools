@@ -7,13 +7,13 @@ export const schemaHowtoLabels = {
         'schema.howto.overview.intro':
             'Der Schema YML Editor bearbeitet schema.yml ausschließlich über Formularfelder — keine YAML-Tippfehler.',
         'schema.howto.overview.step1':
-            'Im DBT Policy Generator Spalten klassifizieren — Daten landen automatisch in localStorage.',
+            'Im PII Policy Generator Spalten klassifizieren — Daten landen automatisch in localStorage.',
         'schema.howto.overview.step2':
             'Hier Model- und Spalten-Beschreibungen ergänzen sowie PII-Felder prüfen.',
         'schema.howto.overview.step3':
             'YAML-Vorschau kopieren und ins dbt-Projekt einfügen.',
         'schema.howto.overview.step4':
-            'Änderungen synchronisieren sich mit dem DBT Policy Generator (und umgekehrt).',
+            'Änderungen synchronisieren sich mit dem PII Policy Generator (und umgekehrt).',
         'schema.howto.overview.tip':
             'Tipp: YAML kannst du direkt einfügen und bearbeiten — das Formular aktualisiert sich live mit.',
         'schema.howto.sync.intro': 'Es wird nur PII-Meta gespeichert (Kategorien, Rollen) — keine Model-Beschreibungen.',
@@ -28,7 +28,7 @@ export const schemaHowtoLabels = {
         'schema.howto.scenario.rules2': 'access_rules.unmasked: Diese Rollen sehen Rohdaten.',
         'schema.howto.scenario.rules3': 'Rollen in keiner Liste erhalten null — kein Zugriff auf die Spalte.',
         'schema.howto.access.intro':
-            'Wie im DBT Policy Generator: access_roles (Whitelist) oder access_rules (masked/unmasked).',
+            'Wie im PII Policy Generator: access_roles (Whitelist) oder access_rules (masked/unmasked).',
         'schema.howto.access.step1':
             'Use Access Roles aktiv: Pro Spalte access_roles in der YAML.',
         'schema.howto.access.step2':
@@ -47,13 +47,13 @@ export const schemaHowtoLabels = {
         'schema.howto.overview.intro':
             'The Schema YML Editor edits schema.yml only through form fields — no YAML typos.',
         'schema.howto.overview.step1':
-            'Classify columns in the DBT Policy Generator — data is saved to localStorage automatically.',
+            'Classify columns in the PII Policy Generator — data is saved to localStorage automatically.',
         'schema.howto.overview.step2':
             'Add model and column descriptions here and review PII fields.',
         'schema.howto.overview.step3':
             'Copy the YAML preview into your dbt project.',
         'schema.howto.overview.step4':
-            'Changes sync with the DBT Policy Generator (and vice versa).',
+            'Changes sync with the PII Policy Generator (and vice versa).',
         'schema.howto.overview.tip':
             'Tip: you can paste and edit YAML directly — the form updates live with it.',
         'schema.howto.sync.intro': 'Only PII meta is stored (categories, roles) — not model descriptions.',
@@ -68,7 +68,7 @@ export const schemaHowtoLabels = {
         'schema.howto.scenario.rules2': 'access_rules.unmasked: these roles see raw data.',
         'schema.howto.scenario.rules3': 'Roles in neither list get null — no access to the column.',
         'schema.howto.access.intro':
-            'Same as the DBT Policy Generator: access_roles (whitelist) or access_rules (masked/unmasked).',
+            'Same as the PII Policy Generator: access_roles (whitelist) or access_rules (masked/unmasked).',
         'schema.howto.access.step1':
             'Use Access Roles on: per-column access_roles in YAML.',
         'schema.howto.access.step2':

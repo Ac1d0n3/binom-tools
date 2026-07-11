@@ -39,7 +39,7 @@
                 <div class="schema-editor-panel__actions">
                     <button type="button" class="tools-btn" id="schema-load-storage-btn" data-i18n="schema.sync.load">Load from storage</button>
                     <button type="button" class="tools-btn" id="schema-clear-storage-btn" data-i18n="schema.sync.clear">Clear storage</button>
-                    <a href="{{ route('tools.pii-policy-generator') }}" class="tools-btn" data-i18n="schema.sync.openGenerator">Open DBT Policy Generator</a>
+                    <a href="{{ route('tools.pii-policy-generator') }}" class="tools-btn" data-i18n="schema.sync.openGenerator">Open PII Policy Generator</a>
                 </div>
             </section>
 

@@ -230,6 +230,35 @@ body {
     font-weight: 500;
 }
 
+.tools-sidenav__link--tool {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    min-width: 0;
+}
+
+.tools-sidenav__link-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tools-sidenav__link--standalone {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tools-sidenav__link-icon {
+    flex-shrink: 0;
+    width: 0.875rem;
+    text-align: center;
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
+
 .tools-site-bar {
     padding: 0.75rem 1rem;
 }
@@ -291,6 +320,15 @@ body {
     min-height: 2.75rem;
 }
 
+.tools-workflow-step-lead {
+    margin: 0.75rem 0 0;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    max-width: 42rem;
+    min-height: 2.75rem;
+}
+
 .tools-impressum-body {
     margin: 0;
     line-height: 1.65;
@@ -305,6 +343,18 @@ body {
     margin: 0 0 0.5rem;
     font-size: 1.125rem;
     font-weight: 600;
+}
+
+.tools-section__title--with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tools-section__title-icon {
+    font-size: 1rem;
+    opacity: 0.85;
+    color: var(--theme-color-primary);
 }
 
 .tools-section__lead {

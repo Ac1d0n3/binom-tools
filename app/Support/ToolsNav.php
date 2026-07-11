@@ -12,10 +12,10 @@ final class ToolsNav
      */
     public static function withRegisteredRoutes(array $items): array
     {
-        return array_values(array_filter(
+        return \App\Support\ToolWorkflow::enrichNavItems(array_values(array_filter(
             $items,
             static fn (array $item): bool => isset($item['route']) && Route::has($item['route']),
-        ));
+        )));
     }
 
     /**

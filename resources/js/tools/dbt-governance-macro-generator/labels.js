@@ -4,7 +4,7 @@ import { govMacroHowtoLabels } from './howto-labels';
 const labels = {
     de: {
         ...govMacroHowtoLabels.de,
-        'govMacro.pageTitle': 'Governance Macro Generator',
+        'govMacro.pageTitle': 'PII Macro Generator',
         'govMacro.pageLead':
             'Schritt 1/4: Laufzeit-Makros und Tests für dein dbt-Projekt kopieren — Einstellungen werden mit den anderen Setup-Tools geteilt.',
         'govMacro.warehouse.title': 'Warehouse',
@@ -24,7 +24,7 @@ const labels = {
     },
     en: {
         ...govMacroHowtoLabels.en,
-        'govMacro.pageTitle': 'Governance Macro Generator',
+        'govMacro.pageTitle': 'PII Macro Generator',
         'govMacro.pageLead':
             'Step 1/4: Copy runtime macros and tests into your dbt project — settings are shared with other setup tools.',
         'govMacro.warehouse.title': 'Warehouse',

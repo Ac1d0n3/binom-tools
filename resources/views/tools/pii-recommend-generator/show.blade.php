@@ -10,8 +10,6 @@
 
         <x-tools.workflow-nav tool-id="pii-recommend-generator" />
 
-        <p class="tools-page-lead tools-page-lead--below-workflow" data-i18n="piiRec.pageLead"></p>
-
         <div class="pii-policy-generator" id="pii-recommend-generator-app">
             <x-tools.collapsible-info summary-key="piiRec.howto.summary" :open="true">
                 <p data-i18n="piiRec.howto.overview.intro"></p>

@@ -88,7 +88,7 @@ export const piiHowtoLabels = {
             'Vergleiche mit Step 3: dort pii_recommend + pii-reviewed: false (Empfehlungs-Zustand).',
 
         'pii.howto.macro.intro':
-            'Laufzeit-Makros kommen aus Step 1 (Governance Macro Generator) — hier nur Verweis und Beispiel.',
+            'Laufzeit-Makros kommen aus Step 1 (PII Macro Generator) — hier nur Verweis und Beispiel.',
         'pii.howto.macro.step1':
             'Kopiere pii_governance.sql aus Step 1 nach macros/ — falls noch nicht geschehen.',
         'pii.howto.macro.step2':
@@ -207,7 +207,7 @@ export const piiHowtoLabels = {
             'Compare with step 3: there pii_recommend + pii-reviewed: false (recommendation state).',
 
         'pii.howto.macro.intro':
-            'Runtime macros come from step 1 (Governance Macro Generator) — reference and example only here.',
+            'Runtime macros come from step 1 (PII Macro Generator) — reference and example only here.',
         'pii.howto.macro.step1':
             'Copy pii_governance.sql from step 1 to macros/ — if not done yet.',
         'pii.howto.macro.step2':

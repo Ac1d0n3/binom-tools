@@ -160,11 +160,14 @@ export function mergePiiMeta(workspace, piiMeta) {
 /** @param {import('./schema-storage.js').SchemaMeta['source']} source @returns {string} */
 export function formatSyncSourceLabel(source) {
     const labels = {
-        'dbt-governance-macro-generator': 'Governance Macro Generator',
-        'pii-policy-generator': 'DBT Policy Generator',
-        'pii-unreviewed-gate-generator': 'Unreviewed Table Gate Generator',
+        'dbt-governance-macro-generator': 'PII Macro Generator',
+        'pii-policy-generator': 'PII Policy Generator',
+        'pii-unreviewed-gate-generator': 'PII Table Gate Generator',
         'pii-recommend-generator': 'PII Recommend Generator',
         'schema-yml-editor': 'Schema YML Editor',
+        'dbt-dq-macro-generator': 'DQ Macro Generator',
+        'dbt-dq-rules-generator': 'DQ Rules Generator',
+        'dbt-dq-history-generator': 'DQ History Generator',
         manual: 'manual',
     };
     return labels[source] ?? source;

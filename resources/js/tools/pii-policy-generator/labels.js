@@ -6,7 +6,7 @@ import { piiHowtoLabels } from './howto-labels';
 export const piiPolicyLabels = {
     de: {
         ...piiHowtoLabels.de,
-        'pii.pageTitle': 'DBT Policy Generator',
+        'pii.pageTitle': 'PII Policy Generator',
         'pii.pageLead':
             'Schritt 2/4: pii_details schema.yml-Beispiel und Secure Model — Zielzustand nach Review. Einstellungen werden mit Steps 1, 3 und 4 geteilt.',
         'pii.scenario.title': 'Zugriffsszenario',
@@ -70,7 +70,7 @@ export const piiPolicyLabels = {
     },
     en: {
         ...piiHowtoLabels.en,
-        'pii.pageTitle': 'DBT Policy Generator',
+        'pii.pageTitle': 'PII Policy Generator',
         'pii.pageLead':
             'Step 2/4: pii_details schema.yml example and secure model — target state after review. Settings shared with steps 1, 3, and 4.',
         'pii.scenario.title': 'Access scenario',

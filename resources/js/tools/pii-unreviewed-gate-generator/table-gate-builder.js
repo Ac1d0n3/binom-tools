@@ -11,7 +11,7 @@ export function buildPiiTableGateMacro(state) {
     const reviewRoles = state.defaultReviewRoles ?? ['dpo', 'security'];
     const accessGroups = state.defaultModelAccessGroups ?? ['analyst', 'dpo'];
 
-    return `{# macros/pii_table_gate.sql — Step 3: Unreviewed Table Gate Generator #}
+    return `{# macros/pii_table_gate.sql — Step 3: PII Table Gate Generator #}
 {# Copy into macros/ — requires pii_model_accessible() from Step 1 (pii_governance.sql) #}
 {# dbt run-operation pii_audit_unreviewed_models #}
 
@@ -58,7 +58,7 @@ export function buildPiiTableGateMacro(state) {
 export function buildTableGateYamlExample(state) {
     const accessGroups = state.defaultModelAccessGroups ?? ['analyst', 'dpo'];
 
-    return `# models/schema/example_table_gate.yml — Step 3: Unreviewed Table Gate Generator
+    return `# models/schema/example_table_gate.yml — Step 3: PII Table Gate Generator
 # Default meta for new tables — hide from normal roles until reviewed (Step 2)
 
 version: 2

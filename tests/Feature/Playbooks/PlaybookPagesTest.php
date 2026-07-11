@@ -11,11 +11,48 @@ class PlaybookPagesTest extends TestCase
         $response = $this->get('/playbooks');
 
         $response->assertOk();
+        $response->assertSee('Bridge Solutions');
         $response->assertSee('Governance Help Hub');
         $response->assertDontSee('Snowflake Governance Playbook');
         $response->assertSee('data-playbook-card-title', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-tag="help-hub"', false);
+        $response->assertSee('data-overview-tag="bridge-solution"', false);
+    }
+
+    public function test_playbook_index_lists_bridge_solution_before_help_hub(): void
+    {
+        $html = $this->get('/playbooks')->getContent();
+
+        $bridgePos = strpos($html, 'Bridge Solutions');
+        $helpHubPos = strpos($html, 'Governance Help Hub');
+
+        $this->assertNotFalse($bridgePos);
+        $this->assertNotFalse($helpHubPos);
+        $this->assertLessThan($helpHubPos, $bridgePos);
+    }
+
+    public function test_bridge_solution_story_renders_localized_hero_and_concept_framing(): void
+    {
+        $response = $this->get('/playbooks/bridge-solution');
+
+        $response->assertOk();
+        $response->assertSee('Bridge Solutions');
+        $response->assertSee('Die vergessene Mitte');
+        $response->assertSee('The forgotten middle ground');
+        $response->assertSee('Konzept', false);
+        $response->assertSee('concept', false);
+        $response->assertSee('Data-Engineering-Team', false);
+        $response->assertSee('data engineering team', false);
+        $response->assertSee('bridge-solution-de.png', false);
+        $response->assertSee('bridge-solution-en.png', false);
+        $response->assertSee('Andere Wege zum Ziel');
+        $response->assertSee('Other paths to the goal');
+        $response->assertSee('binom-tools');
+        $response->assertSee('/tools/dbt-dq-macro-generator', false);
+        $response->assertSee('/playbooks/help-hub-platform', false);
+        $response->assertSee('data-playbook-locale-panel="de"', false);
+        $response->assertSee('data-playbook-locale-panel="en"', false);
     }
 
     public function test_help_hub_platform_story_includes_repository_link(): void

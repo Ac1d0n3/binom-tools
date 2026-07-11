@@ -4,7 +4,7 @@ import { gateHowtoLabels } from './howto-labels';
 const labels = {
     de: {
         ...gateHowtoLabels.de,
-        'gate.pageTitle': 'Unreviewed Table Gate Generator',
+        'gate.pageTitle': 'PII Table Gate Generator',
         'gate.pageLead':
             'Schritt 3/4: Ungeprüfte Models identifizieren und verstecken — Makros, Gate-YAML und Gated-View-Beispiel.',
         'gate.reviewRoles.title': 'Review-Rollen',
@@ -21,7 +21,7 @@ const labels = {
     },
     en: {
         ...gateHowtoLabels.en,
-        'gate.pageTitle': 'Unreviewed Table Gate Generator',
+        'gate.pageTitle': 'PII Table Gate Generator',
         'gate.pageLead':
             'Step 3/4: Identify and hide unreviewed models — macros, gate YAML, and gated view example.',
         'gate.reviewRoles.title': 'Review roles',

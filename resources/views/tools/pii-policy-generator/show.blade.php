@@ -2,15 +2,13 @@
     'viteEntries' => ['resources/js/tools/pii-policy-generator/index.js'],
 ])
 
-@section('title', 'DBT Policy Generator — ' . config('app.name'))
+@section('title', 'PII Policy Generator — ' . config('app.name'))
 
 @section('content')
     <div class="tools-content tools-content--wide">
-        <h1 class="tools-page-title" data-i18n="pii.pageTitle">DBT Policy Generator</h1>
+        <h1 class="tools-page-title" data-i18n="pii.pageTitle">PII Policy Generator</h1>
 
         <x-tools.workflow-nav tool-id="pii-policy-generator" />
-
-        <p class="tools-page-lead tools-page-lead--below-workflow" data-i18n="pii.pageLead"></p>
 
         <div class="pii-policy-generator" id="pii-policy-generator-app">
             <x-tools.collapsible-info summary-key="pii.howto.summary" :open="true">

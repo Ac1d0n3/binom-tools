@@ -5,7 +5,7 @@ namespace App\Support;
 final class ToolWorkflow
 {
     /**
-     * @return array<string, array{label: array{de: string, en: string}, description?: array{de: string, en: string}, steps: list<string>}>
+     * @return array<string, array{label: array{de: string, en: string}, description?: array{de: string, en: string}, icon?: string, accent?: string, steps: list<string>}>
      */
     public static function workflows(): array
     {
@@ -38,7 +38,7 @@ final class ToolWorkflow
      */
     public static function contextForToolId(string $toolId): ?array
     {
-        foreach (self::workflows() as $workflow) {
+        foreach (self::workflows() as $workflowId => $workflow) {
             $steps = $workflow['steps'] ?? [];
             $index = array_search($toolId, $steps, true);
             if ($index === false) {
@@ -55,6 +55,7 @@ final class ToolWorkflow
             $nextId = $steps[$index + 1] ?? null;
 
             return [
+                'workflowId' => $workflowId,
                 'workflow' => $workflow,
                 'step' => $index + 1,
                 'total' => count($steps),
@@ -102,5 +103,41 @@ final class ToolWorkflow
         }
 
         return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @return array<string, mixed>
+     */
+    public static function enrichNavItem(array $item): array
+    {
+        $workflowId = $item['workflow'] ?? null;
+        if (! is_string($workflowId) || $workflowId === '') {
+            return $item;
+        }
+
+        $workflow = self::workflows()[$workflowId] ?? null;
+        if ($workflow === null) {
+            return $item;
+        }
+
+        if (isset($workflow['icon'])) {
+            $item['icon'] = $workflow['icon'];
+        }
+
+        if (isset($workflow['accent'])) {
+            $item['accent'] = $workflow['accent'];
+        }
+
+        return $item;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $items
+     * @return list<array<string, mixed>>
+     */
+    public static function enrichNavItems(array $items): array
+    {
+        return array_map(fn (array $item): array => self::enrichNavItem($item), $items);
     }
 }

@@ -1,8 +1,38 @@
 @php
     $navItems = \App\Support\ToolsNav::withRegisteredRoutes(config('tools.nav', []));
+    $workflows = \App\Support\ToolsNav::workflowsWithRegisteredRoutes(config('tools.workflows', []));
+    $navById = collect($navItems)->keyBy('id');
     $currentRoute = request()->route()?->getName();
     $currentSlug = request()->route('slug');
     $sidebarPlaybooks = app(\App\Playbooks\PlaybookRepository::class)->allForIndex();
+
+    $workflowStepIds = [];
+    foreach ($workflows as $workflow) {
+        foreach ($workflow['steps'] ?? [] as $stepId) {
+            $workflowStepIds[] = $stepId;
+        }
+    }
+
+    $standaloneItems = array_values(array_filter(
+        $navItems,
+        static fn (array $item): bool => ! in_array($item['id'], $workflowStepIds, true),
+    ));
+
+    /** @var list<array<string, mixed>> */
+    $orderedToolLinks = [];
+
+    foreach ($workflows as $workflow) {
+        foreach ($workflow['steps'] as $stepId) {
+            $step = $navById->get($stepId);
+            if ($step) {
+                $orderedToolLinks[] = $step;
+            }
+        }
+    }
+
+    foreach ($standaloneItems as $item) {
+        $orderedToolLinks[] = $item;
+    }
 @endphp
 
 <nav class="tools-sidenav">
@@ -59,14 +89,20 @@
                 Overview
             </a>
         </li>
-        @foreach ($navItems as $item)
+
+        @foreach ($orderedToolLinks as $item)
+            @php
+                $icon = $item['icon'] ?? null;
+            @endphp
             <li>
                 <a
                     href="{{ route($item['route']) }}"
-                    class="tools-sidenav__link {{ $currentRoute === $item['route'] ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n-nav="{{ $item['id'] }}"
+                    class="tools-sidenav__link tools-sidenav__link--tool {{ $currentRoute === $item['route'] ? 'tools-sidenav__link--active' : '' }}"
                 >
-                    {{ $item['label']['en'] }}
+                    @if ($icon)
+                        <i class="fa-solid {{ $icon }} tools-sidenav__link-icon" aria-hidden="true"></i>
+                    @endif
+                    <span class="tools-sidenav__link-label" data-i18n-nav="{{ $item['id'] }}">{{ $item['label']['en'] }}</span>
                 </a>
             </li>
         @endforeach

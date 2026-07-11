@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Playbooks\PlaybookController;
+use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
+use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
+use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
 use App\Http\Controllers\Tools\PiiPolicyGeneratorController;
@@ -31,3 +34,9 @@ Route::get('/tools/pii-unreviewed-gate-generator', [PiiUnreviewedGateGeneratorCo
     ->name('tools.pii-unreviewed-gate-generator');
 Route::get('/tools/schema-yml-editor', [SchemaYmlEditorController::class, 'show'])
     ->name('tools.schema-yml-editor');
+Route::get('/tools/dbt-dq-macro-generator', [DbtDqMacroGeneratorController::class, 'show'])
+    ->name('tools.dbt-dq-macro-generator');
+Route::get('/tools/dbt-dq-rules-generator', [DbtDqRulesGeneratorController::class, 'show'])
+    ->name('tools.dbt-dq-rules-generator');
+Route::get('/tools/dbt-dq-history-generator', [DbtDqHistoryGeneratorController::class, 'show'])
+    ->name('tools.dbt-dq-history-generator');
