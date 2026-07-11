@@ -65,14 +65,16 @@ export function renderColumnPanel(column, columnIndex, tr) {
         <span class="tools-column-accordion__summary-label">${escapeAttr(column.name || '(unnamed)')} · ${column.dqRules.length} rules</span>
       </summary>
       <div class="tools-column-accordion__body">
+        <div class="tools-column-accordion__grid">
         <label class="pii-policy-field">
-          <span>${tr('dqRules.model.name')}</span>
+          <span>${tr('dqRules.columns.name')}</span>
           <input class="pii-policy-input" type="text" data-field="name" value="${escapeAttr(column.name)}" />
         </label>
         <label class="pii-policy-field">
-          <span>${tr('dqRules.model.description')}</span>
+          <span>${tr('dqRules.columns.description')}</span>
           <input class="pii-policy-input" type="text" data-field="description" value="${escapeAttr(column.description ?? '')}" />
         </label>
+        </div>
         <table class="pii-policy-table dq-rules-table">
           <thead>
             <tr>

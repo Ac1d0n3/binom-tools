@@ -22,6 +22,19 @@
     font-size: 0.9375rem;
 }
 
+.tools-panel-lead,
+.tools-panel-meta {
+    margin: 0 0 0.85rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--bn-color-text-secondary);
+}
+
+.tools-panel-meta {
+    margin-top: -0.35rem;
+    font-size: 0.8125rem;
+}
+
 .pii-policy-panel__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

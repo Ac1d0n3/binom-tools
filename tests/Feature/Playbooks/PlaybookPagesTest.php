@@ -44,8 +44,13 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('concept', false);
         $response->assertSee('Data-Engineering-Team', false);
         $response->assertSee('data engineering team', false);
-        $response->assertSee('bridge-solution-de.png', false);
-        $response->assertSee('bridge-solution-en.png', false);
+        $response->assertSee('bridge-hero.png', false);
+        $response->assertSee(asset('images/playbooks/bridge-solution-de.png'), false);
+        $response->assertSee(asset('images/playbooks/bridge-solution-en.png'), false);
+        $response->assertDontSee('src="/images/playbooks/bridge-solution-de.png"', false);
+        $response->assertDontSee('src="/images/playbooks/bridge-solution-en.png"', false);
+        $response->assertSee('playbook-prose__figure', false);
+        $response->assertSee('playbook-prose__image--diagram', false);
         $response->assertSee('Andere Wege zum Ziel');
         $response->assertSee('Other paths to the goal');
         $response->assertSee('binom-tools');

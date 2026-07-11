@@ -1,0 +1,27 @@
+Deploy upload for governance.binom.net
+=====================================
+
+1. Merge deploy-upload/ into your server webroot (keep folder structure).
+
+2. Required folders in this pack:
+   - public/build/          compiled JS/CSS
+   - public/images/         logos, playbook art, dbt badge
+   - public/.htaccess       production rewrite rules (domain root)
+   - resources/views/       Blade templates + components
+   - content/               playbook markdown
+   - app/Support/           ToolsNav, ToolWorkflow (required with view changes!)
+   - app/Playbooks/         playbook renderer
+   - app/Catalog/           landing catalog
+   - app/Http/Controllers/Tools/
+   - config/tools.php       tool nav + dbt flags
+   - routes/web.php
+
+   IMPORTANT: Upload the whole deploy-upload/ tree — not only public/.
+   Views often depend on matching PHP under app/ and config/.
+
+3. Optional cache clear on server (if views look stale):
+   - storage/framework/views/*.php
+
+4. Local dev: npm run build  (syncs .htaccess from APP_URL automatically)
+
+Build: 2026-07-11T21:18:05.059Z

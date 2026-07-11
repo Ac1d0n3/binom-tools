@@ -14,7 +14,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-hero', false);
         $response->assertSee('data-i18n="home.toolsTitle"', false);
         $response->assertSee('data-i18n="home.storiesTitle"', false);
-        $response->assertSee('Governance AI Sanitizer');
+        $response->assertSee('AI Sanitizer');
         $response->assertSee('tools-card--overview', false);
         $response->assertSee(route('tools.overview'), false);
         $response->assertSee(route('playbooks.index'), false);
@@ -32,7 +32,7 @@ class ToolsPagesTest extends TestCase
         $response = $this->get('/tools');
 
         $response->assertOk();
-        $response->assertSee('Governance AI Sanitizer');
+        $response->assertSee('AI Sanitizer');
         $response->assertSee('Macro Generator');
         $response->assertSee('Table Gate');
         $response->assertSee('Recommend Generator');
@@ -88,8 +88,24 @@ class ToolsPagesTest extends TestCase
         $response = $this->get('/tools/dbt-dq-rules-generator');
 
         $response->assertOk();
+        $response->assertSee('tools-content tools-content--wide', false);
         $response->assertSee('dbt-dq-rules-generator-app', false);
         $response->assertSee('dq-rules-columns-root', false);
+        $response->assertSee('dq-rules-source-table', false);
+        $response->assertSee('tools-column-accordion', false);
+        $response->assertSee('dq-rules-governance-pre', false);
+        $response->assertSee('dq-rules-dq-rule-pre', false);
+        $response->assertSee('dqRules.model.sourceTable', false);
+    }
+
+    public function test_workflow_tools_use_generator_page_shell(): void
+    {
+        $response = $this->get('/tools/dbt-governance-macro-generator');
+
+        $response->assertOk();
+        $response->assertSee('tools-content tools-content--wide', false);
+        $response->assertSee('dbt-governance-macro-generator-app', false);
+        $response->assertSee('data-i18n="govMacro.pageTitle"', false);
     }
 
     public function test_dq_history_generator_page_renders(): void

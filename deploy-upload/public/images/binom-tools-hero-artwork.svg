@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="binom-hero-artwork-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" class="binom-hero-artwork__bg-start"/>
+      <stop offset="100%" class="binom-hero-artwork__bg-end"/>
+    </linearGradient>
+    <style>
+      .binom-hero-artwork__bg-start { stop-color: #566578; }
+      .binom-hero-artwork__bg-end { stop-color: var(--hero-artwork-bg-end, #5a8aa8); }
+      .binom-hero-artwork__curve { stroke: var(--hero-artwork-primary, #3fa9c9); fill: none; }
+    </style>
+  </defs>
+  <rect width="1200" height="340" fill="url(#binom-hero-artwork-bg)"/>
+  <path class="binom-hero-artwork__curve binom-hero-artwork__curve--top" d="M780 8 C930 78 980 128 1200 110" stroke-width="1.5"/>
+  <path class="binom-hero-artwork__curve binom-hero-artwork__curve--bottom" d="M-40 298 C220 268 520 318 860 282 S 1240 272 1240 305" stroke-width="1"/>
+</svg>

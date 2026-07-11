@@ -414,10 +414,9 @@ body {
 }
 
 .tools-card {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1rem;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     padding: 1.1rem 1.15rem;
     border: 1px solid transparent;
     border-radius: 12px;
@@ -428,6 +427,13 @@ body {
     transition:
         box-shadow 0.2s ease,
         transform 0.2s ease;
+}
+
+.tools-card__main {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: start;
 }
 
 .tools-card:hover {
@@ -496,6 +502,27 @@ body {
 .tools-card__icon-wrap--accent {
     background: color-mix(in srgb, var(--theme-color-accent) 16%, transparent);
     color: var(--theme-color-accent);
+}
+
+.tools-card--dbt {
+    position: relative;
+}
+
+.tools-card__brand {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.65rem;
+    display: flex;
+    align-items: center;
+    line-height: 0;
+    pointer-events: none;
+}
+
+.tools-card__dbt-badge {
+    display: block;
+    width: 1.75rem;
+    height: auto;
+    opacity: 0.72;
 }
 
 .tools-card__body {
@@ -1549,6 +1576,7 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-workflow-section {
+    margin-top: 2rem;
     margin-bottom: 1.75rem;
 }
 

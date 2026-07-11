@@ -1,0 +1,42 @@
+<?php
+
+use App\Http\Controllers\Legal\ImpressumController;
+use App\Http\Controllers\Playbooks\PlaybookController;
+use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
+use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
+use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
+use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
+use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
+use App\Http\Controllers\Tools\PiiPolicyGeneratorController;
+use App\Http\Controllers\Tools\PiiRecommendGeneratorController;
+use App\Http\Controllers\Tools\PiiUnreviewedGateGeneratorController;
+use App\Http\Controllers\Tools\SchemaYmlEditorController;
+use App\Http\Controllers\Tools\ToolsLandingController;
+use App\Http\Controllers\Tools\ToolsOverviewController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', [ToolsLandingController::class, 'index'])->name('tools.landing');
+Route::get('/tools', [ToolsOverviewController::class, 'index'])->name('tools.overview');
+Route::get('/playbooks', [PlaybookController::class, 'index'])->name('playbooks.index');
+Route::get('/playbooks/{slug}', [PlaybookController::class, 'show'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('playbooks.show');
+Route::get('/impressum', [ImpressumController::class, 'show'])->name('legal.impressum');
+Route::get('/tools/dbt-governance-macro-generator', [DbtGovernanceMacroGeneratorController::class, 'show'])
+    ->name('tools.dbt-governance-macro-generator');
+Route::get('/tools/pii-recommend-generator', [PiiRecommendGeneratorController::class, 'show'])
+    ->name('tools.pii-recommend-generator');
+Route::get('/tools/governance-ai-sanitizer', [GovernanceAiSanitizerController::class, 'show'])
+    ->name('tools.governance-ai-sanitizer');
+Route::get('/tools/pii-policy-generator', [PiiPolicyGeneratorController::class, 'show'])
+    ->name('tools.pii-policy-generator');
+Route::get('/tools/pii-unreviewed-gate-generator', [PiiUnreviewedGateGeneratorController::class, 'show'])
+    ->name('tools.pii-unreviewed-gate-generator');
+Route::get('/tools/schema-yml-editor', [SchemaYmlEditorController::class, 'show'])
+    ->name('tools.schema-yml-editor');
+Route::get('/tools/dbt-dq-macro-generator', [DbtDqMacroGeneratorController::class, 'show'])
+    ->name('tools.dbt-dq-macro-generator');
+Route::get('/tools/dbt-dq-rules-generator', [DbtDqRulesGeneratorController::class, 'show'])
+    ->name('tools.dbt-dq-rules-generator');
+Route::get('/tools/dbt-dq-history-generator', [DbtDqHistoryGeneratorController::class, 'show'])
+    ->name('tools.dbt-dq-history-generator');

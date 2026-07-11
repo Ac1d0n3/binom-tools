@@ -226,6 +226,35 @@
     border: 1px solid var(--base-border-color);
 }
 
+.playbook-prose__figure {
+    margin: 1.25rem 0 1.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--content-background-color) 94%, var(--theme-color-primary));
+}
+
+.playbook-prose__figure .playbook-prose__image {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.playbook-prose__image--diagram {
+    object-fit: contain;
+}
+
+.playbook-prose__figure-caption {
+    margin: 0.625rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--bn-color-text-secondary);
+    text-align: center;
+}
+
 .playbook-toc__mobile {
     display: block;
     margin-bottom: 0.75rem;

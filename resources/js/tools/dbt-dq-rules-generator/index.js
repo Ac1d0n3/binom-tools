@@ -9,7 +9,14 @@ import {
     loadDqMetaState,
     subscribeDqState,
 } from '../dq-shared/dq-storage.js';
-import { buildDqRulesYaml, buildDqGenericTestsSnippet } from './dq-rules-builder.js';
+import {
+    buildDqRulesYaml,
+    buildDqGenericTestsSnippet,
+    buildDqSourcesYaml,
+    buildDqModelSql,
+} from './dq-rules-builder.js';
+import { buildDqGovernanceMacro, buildDqRuleTest } from '../dbt-dq-macro-generator/dq-macro-builder.js';
+import { getWarehouseTemplate } from '../pii-shared/warehouse-templates.js';
 import {
     createDefaultRule,
     readRuleFromRow,
@@ -31,6 +38,8 @@ let storageWarning = null;
 
 const els = {
     modelName: /** @type {HTMLInputElement} */ (document.getElementById('dq-rules-model-name')),
+    sourceTable: /** @type {HTMLInputElement} */ (document.getElementById('dq-rules-source-table')),
+    warehouseHint: document.getElementById('dq-rules-warehouse-hint'),
     modelDescription: /** @type {HTMLTextAreaElement} */ (document.getElementById('dq-rules-model-description')),
     columnsRoot: document.getElementById('dq-rules-columns-root'),
     addColumnBtn: document.getElementById('dq-rules-add-column-btn'),
@@ -38,8 +47,16 @@ const els = {
     addModelRuleBtn: document.getElementById('dq-rules-add-model-rule-btn'),
     validationBanner: document.getElementById('dq-rules-validation-banner'),
     yamlPre: document.getElementById('dq-rules-yaml-pre'),
+    sourcesPre: document.getElementById('dq-rules-sources-pre'),
+    modelSqlPre: document.getElementById('dq-rules-model-sql-pre'),
+    governancePre: document.getElementById('dq-rules-governance-pre'),
+    dqRulePre: document.getElementById('dq-rules-dq-rule-pre'),
     testsPre: document.getElementById('dq-rules-tests-pre'),
     copyYamlBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-yaml-btn')),
+    copySourcesBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-sources-btn')),
+    copyModelSqlBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-model-sql-btn')),
+    copyGovernanceBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-governance-btn')),
+    copyDqRuleBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-dq-rule-btn')),
     copyTestsBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-tests-btn')),
     syncStatus: document.getElementById('dq-rules-sync-status'),
 };
@@ -52,8 +69,15 @@ function tr(key, params = {}) {
     return t(locale(), key, params);
 }
 
+function updateWarehouseHint() {
+    if (!els.warehouseHint) return;
+    const wh = getWarehouseTemplate(state.selectedWarehouse);
+    els.warehouseHint.textContent = tr('dqRules.model.warehouseHint', { warehouse: wh.label });
+}
+
 function readForm() {
     state.modelName = els.modelName.value.trim() || 'orders';
+    state.sourceTable = els.sourceTable.value.trim() || 'raw.orders';
     state.modelDescription = els.modelDescription.value;
 
     els.columnsRoot?.querySelectorAll('.dq-column-panel').forEach((panel) => {
@@ -160,10 +184,21 @@ function renderOutputs() {
 
     renderValidatedOutputs({
         bannerEl: els.validationBanner,
-        outputPres: [els.yamlPre, els.testsPre],
+        outputPres: [
+            els.yamlPre,
+            els.sourcesPre,
+            els.modelSqlPre,
+            els.governancePre,
+            els.dqRulePre,
+            els.testsPre,
+        ],
         issues: [...(storageWarning ? [storageWarning] : []), ...dqIssues],
         builds: [
             { el: els.yamlPre, fn: () => buildDqRulesYaml(state) },
+            { el: els.sourcesPre, fn: () => buildDqSourcesYaml(state) },
+            { el: els.modelSqlPre, fn: () => buildDqModelSql(state) },
+            { el: els.governancePre, fn: () => buildDqGovernanceMacro(state) },
+            { el: els.dqRulePre, fn: () => buildDqRuleTest() },
             { el: els.testsPre, fn: () => buildDqGenericTestsSnippet(state) },
         ],
         t: tr,
@@ -176,7 +211,9 @@ function persistState() {
 
 function writeForm() {
     els.modelName.value = state.modelName;
+    els.sourceTable.value = state.sourceTable;
     els.modelDescription.value = state.modelDescription;
+    updateWarehouseHint();
     renderColumns();
     renderModelRules();
 }
@@ -202,16 +239,14 @@ hydrateFromStorage();
 writeForm();
 renderOutputs();
 
-els.modelName.addEventListener('input', () => {
-    readForm();
-    renderOutputs();
-    persistState();
-});
-els.modelDescription.addEventListener('input', () => {
-    readForm();
-    renderOutputs();
-    persistState();
-});
+for (const input of [els.modelName, els.sourceTable, els.modelDescription]) {
+    input?.addEventListener('input', () => {
+        readForm();
+        updateWarehouseHint();
+        renderOutputs();
+        persistState();
+    });
+}
 
 els.addColumnBtn?.addEventListener('click', () => {
     readForm();
@@ -236,15 +271,20 @@ subscribeDqState(({ state: next, meta }) => {
     updateSyncStatusEl(els.syncStatus, meta, tr);
 });
 
-els.copyYamlBtn?.addEventListener('click', () =>
-    copyFromButton(els.copyYamlBtn, buildDqRulesYaml(state), tr),
+els.copyYamlBtn?.addEventListener('click', () => copyFromButton(els.copyYamlBtn, buildDqRulesYaml(state), tr));
+els.copySourcesBtn?.addEventListener('click', () => copyFromButton(els.copySourcesBtn, buildDqSourcesYaml(state), tr));
+els.copyModelSqlBtn?.addEventListener('click', () => copyFromButton(els.copyModelSqlBtn, buildDqModelSql(state), tr));
+els.copyGovernanceBtn?.addEventListener('click', () =>
+    copyFromButton(els.copyGovernanceBtn, buildDqGovernanceMacro(state), tr),
 );
+els.copyDqRuleBtn?.addEventListener('click', () => copyFromButton(els.copyDqRuleBtn, buildDqRuleTest(), tr));
 els.copyTestsBtn?.addEventListener('click', () =>
     copyFromButton(els.copyTestsBtn, buildDqGenericTestsSnippet(state), tr),
 );
 
 window.addEventListener('binom-tools:locale', () => {
     applyDqRulesLabels();
+    updateWarehouseHint();
     renderColumns();
     renderModelRules();
     renderOutputs();

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { createDefaultDqModelState } from './dq-demo-model.js';
 import { buildDqSchemaYaml } from './dq-yaml-builder.js';
+import { buildDqSourcesYaml, buildDqModelSql } from './dq-sources-builder.js';
 import { collectDqIssues } from './dq-validation.js';
+import { buildDqGenericTestsSnippet } from '../dbt-dq-rules-generator/dq-rules-builder.js';
 
 describe('buildDqSchemaYaml', () => {
     it('writes meta.dq_rules on columns and model', () => {
@@ -18,6 +20,16 @@ describe('buildDqSchemaYaml', () => {
         expect(yaml).toContain('type: row_count_between');
     });
 
+    it('includes provenance header comments', () => {
+        const state = createDefaultDqModelState();
+        const yaml = buildDqSchemaYaml(state);
+
+        expect(yaml).toContain('# Step 2 — DQ Rules Generator');
+        expect(yaml).toContain(`Source: ${state.sourceTable}`);
+        expect(yaml).toContain('dq_governance.sql');
+        expect(yaml).toContain('dq_rule.sql');
+    });
+
     it('serializes accepted_values and severity', () => {
         const state = createDefaultDqModelState();
         const yaml = buildDqSchemaYaml(state);
@@ -25,6 +37,40 @@ describe('buildDqSchemaYaml', () => {
         expect(yaml).toContain('severity: error');
         expect(yaml).toContain('values:');
         expect(yaml).toContain('"pending"');
+    });
+});
+
+describe('buildDqSourcesYaml', () => {
+    it('writes sources.yml for raw.orders', () => {
+        const state = createDefaultDqModelState();
+        const yaml = buildDqSourcesYaml(state);
+
+        expect(yaml).toContain('sources:');
+        expect(yaml).toContain('- name: raw');
+        expect(yaml).toContain('- name: orders');
+        expect(yaml).toContain('Source for model');
+    });
+});
+
+describe('buildDqModelSql', () => {
+    it('references source() from source table', () => {
+        const state = createDefaultDqModelState();
+        const sql = buildDqModelSql(state);
+
+        expect(sql).toContain("source('raw', 'orders')");
+        expect(sql).toContain(state.modelName);
+    });
+});
+
+describe('buildDqGenericTestsSnippet', () => {
+    it('includes rule params in dq_rule tests', () => {
+        const state = createDefaultDqModelState();
+        const snippet = buildDqGenericTestsSnippet(state);
+
+        expect(snippet).toContain('dq_rule:');
+        expect(snippet).toContain('pattern:');
+        expect(snippet).toContain('values:');
+        expect(snippet).toContain('max_hours:');
     });
 });
 

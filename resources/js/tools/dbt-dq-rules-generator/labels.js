@@ -6,8 +6,14 @@ const labels = {
         'dqRules.pageTitle': 'DQ Rules Generator',
         'dqRules.model.title': 'Model',
         'dqRules.model.name': 'Model-Name',
+        'dqRules.model.sourceTable': 'Quell-Tabelle',
+        'dqRules.model.warehouseHint': 'Warehouse: {warehouse} (aus Schritt 1 / localStorage)',
         'dqRules.model.description': 'Beschreibung',
         'dqRules.columns.title': 'Spalten & Regeln',
+        'dqRules.columns.lead':
+            'Demo-Spalten spiegeln die Struktur der Quell-Tabelle — aus dem Seed oder manuell angepasst. Spalten hinzufügen oder Regeln pro Spalte definieren.',
+        'dqRules.columns.name': 'Spaltenname',
+        'dqRules.columns.description': 'Spaltenbeschreibung',
         'dqRules.columns.add': 'Spalte hinzufügen',
         'dqRules.rules.add': 'Regel hinzufügen',
         'dqRules.rules.type': 'Typ',
@@ -16,6 +22,12 @@ const labels = {
         'dqRules.rules.remove': 'Entfernen',
         'dqRules.modelRules.title': 'Model-Regeln',
         'dqRules.output.yaml': 'models/schema/example_dq_schema.yml',
+        'dqRules.output.sources': 'models/sources.yml',
+        'dqRules.output.modelSql': 'models/marts/orders.sql',
+        'dqRules.output.governanceMacro': 'macros/dq_governance.sql (Referenz Schritt 1)',
+        'dqRules.output.dqRuleTest': 'tests/generic/dq_rule.sql (Referenz Schritt 1)',
+        'dqRules.output.macroIntro':
+            'Aus Schritt 1 (DQ Macro Generator) — Referenz zum Kopieren. Bei Änderungen dort neu generieren.',
         'dqRules.output.tests': 'Generic Tests (Snippet)',
         'dqRules.copy': 'Kopieren',
         'shared.syncStatus': 'Einstellungen zuletzt von {source} ({time})',
@@ -35,8 +47,14 @@ const labels = {
         'dqRules.pageTitle': 'DQ Rules Generator',
         'dqRules.model.title': 'Model',
         'dqRules.model.name': 'Model name',
+        'dqRules.model.sourceTable': 'Source table',
+        'dqRules.model.warehouseHint': 'Warehouse: {warehouse} (from step 1 / localStorage)',
         'dqRules.model.description': 'Description',
         'dqRules.columns.title': 'Columns & rules',
+        'dqRules.columns.lead':
+            'Demo columns mirror the source table structure — from the seed or edited manually. Add columns or define rules per column.',
+        'dqRules.columns.name': 'Column name',
+        'dqRules.columns.description': 'Column description',
         'dqRules.columns.add': 'Add column',
         'dqRules.rules.add': 'Add rule',
         'dqRules.rules.type': 'Type',
@@ -45,6 +63,12 @@ const labels = {
         'dqRules.rules.remove': 'Remove',
         'dqRules.modelRules.title': 'Model-level rules',
         'dqRules.output.yaml': 'models/schema/example_dq_schema.yml',
+        'dqRules.output.sources': 'models/sources.yml',
+        'dqRules.output.modelSql': 'models/marts/orders.sql',
+        'dqRules.output.governanceMacro': 'macros/dq_governance.sql (step 1 reference)',
+        'dqRules.output.dqRuleTest': 'tests/generic/dq_rule.sql (step 1 reference)',
+        'dqRules.output.macroIntro':
+            'From step 1 (DQ Macro Generator) — reference for copy-paste. Regenerate there after changes.',
         'dqRules.output.tests': 'Generic tests (snippet)',
         'dqRules.copy': 'Copy',
         'shared.syncStatus': 'Settings last saved by {source} ({time})',
@@ -81,4 +105,4 @@ export function applyDqRulesLabels() {
     });
 }
 
-export { RULE_TYPE_DEFS, RULE_TYPE_IDS, SEVERITY_OPTIONS };
+export { labels };

@@ -3,7 +3,7 @@
 namespace Tests\Unit\Playbooks;
 
 use App\Playbooks\PlaybookMarkdownRenderer;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class PlaybookMarkdownRendererTest extends TestCase
 {
@@ -43,5 +43,33 @@ MD);
         $this->assertStringContainsString('data-title="Example.php"', $result['html']);
         $this->assertStringContainsString('data-highlight="2"', $result['html']);
         $this->assertStringContainsString('language-php', $result['html']);
+    }
+
+    public function test_rewrites_local_image_src_through_asset_helper(): void
+    {
+        $this->app['url']->forceRootUrl('http://localhost/binom-tools');
+
+        $renderer = new PlaybookMarkdownRenderer;
+
+        $result = $renderer->render(<<<'MD'
+<figure>
+    <img src="/images/playbooks/example.png" alt="Example" />
+    <img src="images/playbooks/other.png" alt="Other" />
+    <img src="https://cdn.example.com/remote.png" alt="Remote" />
+</figure>
+MD);
+
+        $this->assertStringContainsString(
+            'src="http://localhost/binom-tools/images/playbooks/example.png"',
+            $result['html'],
+        );
+        $this->assertStringContainsString(
+            'src="http://localhost/binom-tools/images/playbooks/other.png"',
+            $result['html'],
+        );
+        $this->assertStringContainsString(
+            'src="https://cdn.example.com/remote.png"',
+            $result['html'],
+        );
     }
 }

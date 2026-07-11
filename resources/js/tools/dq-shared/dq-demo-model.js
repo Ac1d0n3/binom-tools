@@ -13,6 +13,7 @@ import { createDefaultRule, normalizeRule } from './rule-types.js';
  * @property {number} version
  * @property {string} modelName
  * @property {string} modelDescription
+ * @property {string} sourceTable
  * @property {import('../pii-shared/warehouse-templates.js').WarehouseId} selectedWarehouse
  * @property {import('./rule-types.js').DqRule[]} modelRules
  * @property {DqColumn[]} columns
@@ -62,6 +63,7 @@ export function createDefaultDqModelState() {
         version: 1,
         modelName: 'orders',
         modelDescription: 'Example orders model for data quality rules.',
+        sourceTable: 'raw.orders',
         selectedWarehouse: 'snowflake',
         modelRules: [
             normalizeRule({ id: 'orders_row_count', type: 'row_count_between', min: 1, max: 5000000, severity: 'warn' }),
@@ -79,6 +81,7 @@ export function normalizeDqModelState(raw) {
         version: raw.version ?? defaults.version,
         modelName: raw.modelName ?? defaults.modelName,
         modelDescription: raw.modelDescription ?? defaults.modelDescription,
+        sourceTable: raw.sourceTable ?? defaults.sourceTable,
         selectedWarehouse: normalizeWarehouseId(raw.selectedWarehouse ?? defaults.selectedWarehouse),
         modelRules: Array.isArray(raw.modelRules) ? raw.modelRules.map(normalizeRule) : defaults.modelRules,
         columns: Array.isArray(raw.columns)
