@@ -28,7 +28,7 @@
                     Interaktive Tools
                 </a>
                 <a
-                    href="{{ config('tools.links.binom_ngx_docs') }}"
+                    href="{{ \App\Support\ToolLinks::BINOM_NGX_DOCS }}"
                     class="tools-btn tools-btn--accent"
                     target="_blank"
                     rel="noopener noreferrer"

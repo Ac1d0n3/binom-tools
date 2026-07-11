@@ -61,8 +61,13 @@
                     <h2 class="tools-section__title" data-i18n="home.ecosystemTitle">Ecosystem</h2>
                     <div class="tools-card-grid">
                         @foreach ($ecosystemItems as $item)
+                            @php
+                                $ecosystemHref = $item['id'] === 'binom-ngx'
+                                    ? \App\Support\ToolLinks::BINOM_NGX_DOCS
+                                    : ($item['href'] ?? $links[$item['href_key'] ?? ''] ?? '#');
+                            @endphp
                             <x-tools.card
-                                :href="$links[$item['href_key']] ?? '#'"
+                                :href="$ecosystemHref"
                                 :title="$item['title']"
                                 :description="$item['description']['en']"
                                 :meta="$item['meta']['en']"

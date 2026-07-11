@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\ToolLinks;
+
 return [
     'hero_pills' => [
         'dbt-ready',
@@ -74,13 +76,13 @@ return [
             'accent' => 'accent',
             'featured' => true,
             'external' => true,
-            'href_key' => 'binom_ngx_docs',
+            'href' => ToolLinks::BINOM_NGX_DOCS,
         ],
     ],
 
     'links' => [
         'website' => env('BINOM_WEBSITE_URL', 'https://binom.net'),
-        'binom_ngx_docs' => 'https://ngx-docs.binom.net',
+        'binom_ngx_docs' => ToolLinks::BINOM_NGX_DOCS,
         'repository' => env('BINOM_TOOLS_REPO_URL', 'https://github.com/Ac1d0n3/binom-tools'),
     ],
 ];
