@@ -33,8 +33,11 @@ class ToolsPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('AI Sanitizer');
-        $response->assertSee('Macro Generator');
-        $response->assertSee('Table Gate');
+        $response->assertSee('PII Macro Generator');
+        $response->assertSee('DQ Macro Generator');
+        $response->assertSee('PII Policy Generator');
+        $response->assertSee('DQ Rules Generator');
+        $response->assertSee('PII Table Gate');
         $response->assertSee('Recommend Generator');
         $response->assertSee('Security &amp; governance setup', false);
         $response->assertSee('Data quality setup');
@@ -150,7 +153,10 @@ class ToolsPagesTest extends TestCase
         $this->assertStringNotContainsString('tools-sidenav__step-num', $toolsNav);
         $this->assertStringNotContainsString('1/4', $toolsNav);
         $this->assertStringNotContainsString('1/3', $toolsNav);
-        $this->assertStringNotContainsString('>DQ ', $toolsNav);
+        $this->assertStringContainsString('PII Macro Generator', $toolsNav);
+        $this->assertStringContainsString('DG Macro Generator', $toolsNav);
+        $this->assertStringContainsString('PII Policy Generator', $toolsNav);
+        $this->assertStringContainsString('DQ Rules Generator', $toolsNav);
     }
 
     public function test_header_includes_layout_settings_menu(): void

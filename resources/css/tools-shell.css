@@ -617,6 +617,17 @@ html[data-shell-full-width='true'] .tools-shell,
     grid-template-columns: auto 1fr auto;
     gap: 1rem;
     align-items: start;
+    width: 100%;
+}
+
+.tools-card__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--theme-color-primary);
+    align-self: center;
+    margin-top: 0.15rem;
 }
 
 .tools-card:hover {
@@ -732,15 +743,6 @@ html[data-shell-full-width='true'] .tools-shell,
     font-size: 0.875rem;
     color: var(--bn-color-text-secondary);
     line-height: 1.45;
-}
-
-.tools-card__arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    color: var(--theme-color-primary);
-    align-self: center;
 }
 
 .tools-btn {

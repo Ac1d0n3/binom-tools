@@ -105,7 +105,7 @@
                         @if ($icon)
                             <i class="fa-solid {{ $icon }} tools-sidenav__link-icon" aria-hidden="true"></i>
                         @endif
-                        <span class="tools-sidenav__link-label" data-i18n-nav="{{ $item['id'] }}">{{ $item['label']['en'] }}</span>
+                        <span class="tools-sidenav__link-label" data-i18n-nav="{{ $item['id'] }}">{{ $item['navLabel']['en'] ?? $item['label']['en'] }}</span>
                     </a>
                 </li>
             @endforeach
