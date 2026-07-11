@@ -177,6 +177,8 @@
                 </label>
             </section>
 
+            <div id="rec-validation-banner" class="tools-validation-banner" hidden role="alert"></div>
+
             <section class="pii-policy-panel pii-policy-panel--code" aria-labelledby="rec-audit-name-title">
                 <header class="pii-policy-panel__header">
                     <h3 id="rec-audit-name-title" data-i18n="piiRec.output.auditName">macros/pii_audit_by_name.sql</h3>

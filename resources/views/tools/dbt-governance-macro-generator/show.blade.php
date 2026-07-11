@@ -85,6 +85,8 @@
                 </label>
             </section>
 
+            <div id="gov-validation-banner" class="tools-validation-banner" hidden role="alert"></div>
+
             <section class="pii-policy-panel pii-policy-panel--code" aria-labelledby="gov-governance-title">
                 <header class="pii-policy-panel__header">
                     <h3 id="gov-governance-title" data-i18n="govMacro.output.governance">macros/pii_governance.sql</h3>

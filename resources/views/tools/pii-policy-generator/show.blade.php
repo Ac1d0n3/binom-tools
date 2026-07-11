@@ -190,6 +190,8 @@
                 <p class="pii-policy-sync-status" id="pii-sync-status" aria-live="polite"></p>
             </section>
 
+            <div id="pii-validation-banner" class="tools-validation-banner" hidden role="alert"></div>
+
             <section class="pii-policy-panel pii-policy-panel--code" aria-labelledby="pii-macro-title">
                 <header class="pii-policy-panel__header">
                     <h3 id="pii-macro-title" data-i18n="pii.macro.title">DBT macro</h3>

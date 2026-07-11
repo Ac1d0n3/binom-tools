@@ -8,13 +8,13 @@ use Tests\TestCase;
 
 class LandingCatalogTest extends TestCase
 {
-    public function test_latest_tools_returns_at_most_nine_in_reverse_config_order(): void
+    public function test_latest_tools_returns_at_most_five_in_reverse_config_order(): void
     {
         $catalog = app(LandingCatalog::class);
         $latest = $catalog->latestTools();
 
-        $this->assertLessThanOrEqual(LandingCatalog::PREVIEW_LIMIT, count($latest));
-        $this->assertSame('schema-yml-editor', $latest[0]['id'] ?? null);
+        $this->assertLessThanOrEqual(LandingCatalog::TOOLS_PREVIEW_LIMIT, count($latest));
+        $this->assertSame('governance-ai-sanitizer', $latest[0]['id'] ?? null);
     }
 
     public function test_latest_stories_sorts_by_modified_at_descending(): void

@@ -40,12 +40,16 @@ export async function copyTextToClipboard(text) {
  */
 export async function copyFromButton(btn, text, t) {
     if (!btn) return;
-    await copyTextToClipboard(text);
-    const original = btn.textContent;
-    btn.textContent = t('shared.copied');
-    window.setTimeout(() => {
-        btn.textContent = original;
-    }, 1500);
+    try {
+        await copyTextToClipboard(text);
+        const original = btn.textContent;
+        btn.textContent = t('shared.copied');
+        window.setTimeout(() => {
+            btn.textContent = original;
+        }, 1500);
+    } catch {
+        window.prompt('Copy:', text);
+    }
 }
 
 /** @param {HTMLSelectElement | null} selectEl @returns {import('./warehouse-templates.js').WarehouseId | undefined} */

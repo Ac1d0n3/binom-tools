@@ -1545,3 +1545,45 @@ html[data-color-scheme='dark'] .tools-hero {
     color: var(--bn-color-text-secondary);
     font-size: 0.875rem;
 }
+
+.tools-validation-banner {
+    margin: 0 0 1rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--base-border-color);
+    background: var(--surface-background-color);
+    font-size: 0.875rem;
+}
+
+.tools-validation-banner--has-errors {
+    border-color: var(--theme-color-error, #c0392b);
+    background: color-mix(in srgb, var(--theme-color-error, #c0392b) 8%, var(--surface-background-color));
+}
+
+.tools-validation-banner--has-warnings {
+    border-color: var(--theme-color-warning, #d68910);
+    background: color-mix(in srgb, var(--theme-color-warning, #d68910) 8%, var(--surface-background-color));
+}
+
+.tools-validation-banner__list {
+    margin: 0;
+    padding: 0 0 0 1.1rem;
+}
+
+.tools-validation-banner__item {
+    line-height: 1.45;
+}
+
+.tools-validation-banner__item--error {
+    color: var(--theme-color-error, #c0392b);
+}
+
+.tools-validation-banner__item--warning {
+    color: var(--theme-color-warning, #d68910);
+}
+
+.tools-input--invalid,
+.pii-policy-input.tools-input--invalid {
+    border-color: var(--theme-color-error, #c0392b) !important;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-color-error, #c0392b) 35%, transparent);
+}

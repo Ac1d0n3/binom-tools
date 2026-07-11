@@ -125,6 +125,8 @@
                 </div>
             </section>
 
+            <div id="schema-validation-banner" class="tools-validation-banner" hidden role="alert"></div>
+
             <section class="schema-editor-panel" aria-labelledby="schema-columns-title">
                 <header class="schema-editor-panel__header">
                     <h3 id="schema-columns-title" data-i18n="schema.columns.title">Columns</h3>

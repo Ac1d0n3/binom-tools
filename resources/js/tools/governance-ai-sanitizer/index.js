@@ -4,6 +4,9 @@ import { applyGovernanceLabels, t } from './labels';
 import { getDemoDefaults } from './demo-defaults';
 import { GovernanceState } from './governance-state';
 
+import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
+import { renderValidationMessage } from '../pii-shared/validation-ui.js';
+
 const app = document.getElementById('governance-ai-sanitizer-app');
 if (!app) {
     throw new Error('Governance AI sanitizer root element not found');
@@ -23,8 +26,20 @@ const restoredPre = document.getElementById('gov-restored-pre');
 const findingsEmpty = document.getElementById('gov-findings-empty');
 const findingsTable = /** @type {HTMLTableElement} */ (document.getElementById('gov-findings-table'));
 const findingsBody = document.getElementById('gov-findings-body');
+const validationBanner = document.getElementById('gov-validation-banner');
 
 const state = new GovernanceState({ reusePlaceholders: true });
+
+function validationT(key, params = {}) {
+    return mergeValidationTranslator(currentLocale(), t)(key, params);
+}
+
+function clearValidationBanner() {
+    if (!validationBanner) return;
+    validationBanner.hidden = true;
+    validationBanner.innerHTML = '';
+    validationBanner.classList.remove('tools-validation-banner--has-errors', 'tools-validation-banner--has-warnings');
+}
 
 function currentLocale() {
     return getLocale();
@@ -111,6 +126,7 @@ function escapeHtml(value) {
 function bindEvents() {
     promptInput.addEventListener('input', () => {
         state.setInput(promptInput.value);
+        clearValidationBanner();
         if (!promptInput.value.trim()) {
             state.findings = [];
             state.outbound = '';
@@ -121,8 +137,18 @@ function bindEvents() {
 
     sanitizeBtn?.addEventListener('click', () => {
         state.setInput(promptInput.value);
-        state.runSanitize();
-        render();
+        if (!promptInput.value.trim()) {
+            renderValidationMessage(validationBanner, validationT('validation.promptEmpty'));
+            return;
+        }
+        try {
+            state.runSanitize();
+            clearValidationBanner();
+            render();
+        } catch (error) {
+            const detail = error instanceof Error ? error.message : String(error);
+            renderValidationMessage(validationBanner, validationT('validation.sanitizeFailed', { detail }));
+        }
     });
 
     copyOutboundBtn?.addEventListener('click', async () => {

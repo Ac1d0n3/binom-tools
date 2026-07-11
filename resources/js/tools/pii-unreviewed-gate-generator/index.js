@@ -5,6 +5,7 @@ import { createDefaultModelState } from '../pii-shared/demo-model.js';
 import { mergePiiMeta } from '../pii-shared/pii-meta.js';
 import {
     debouncedSaveSchemaState,
+    isStorageLoadCorrupt,
     loadPiiMetaState,
     subscribeSchemaState,
 } from '../pii-shared/schema-storage';
@@ -14,6 +15,9 @@ import {
     buildTableGateYamlExample,
 } from './table-gate-builder.js';
 import { copyFromButton, splitCsv, updateSyncStatusEl } from '../pii-shared/tool-utils.js';
+import { collectGeneratorIssues } from '../pii-shared/validation.js';
+import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
+import { renderValidatedOutputs } from '../pii-shared/validation-ui.js';
 
 const app = document.getElementById('pii-unreviewed-gate-generator-app');
 if (!app) throw new Error('Unreviewed table gate generator root element not found');
@@ -21,9 +25,13 @@ if (!app) throw new Error('Unreviewed table gate generator root element not foun
 /** @type {import('../pii-shared/demo-model.js').DbtModelState} */
 let state = createDefaultModelState();
 
+/** @type {import('../pii-shared/validation.js').ValidationIssue | null} */
+let storageWarning = null;
+
 const els = {
     reviewRoles: /** @type {HTMLInputElement} */ (document.getElementById('gate-review-roles')),
     accessGroups: /** @type {HTMLInputElement} */ (document.getElementById('gate-access-groups')),
+    validationBanner: document.getElementById('gate-validation-banner'),
     macroPre: document.getElementById('gate-macro-pre'),
     yamlPre: document.getElementById('gate-yaml-pre'),
     viewPre: document.getElementById('gate-view-pre'),
@@ -37,6 +45,10 @@ function locale() {
     return getLocale();
 }
 
+function validationT(key, params = {}) {
+    return mergeValidationTranslator(locale(), t)(key, params);
+}
+
 function readForm() {
     state.defaultReviewRoles = splitCsv(els.reviewRoles.value);
     state.defaultModelAccessGroups = splitCsv(els.accessGroups.value);
@@ -48,9 +60,21 @@ function writeForm() {
 }
 
 function renderOutputs() {
-    if (els.macroPre) els.macroPre.textContent = buildPiiTableGateMacro(state);
-    if (els.yamlPre) els.yamlPre.textContent = buildTableGateYamlExample(state);
-    if (els.viewPre) els.viewPre.textContent = buildGatedViewExample(state);
+    const issues = [
+        ...(storageWarning ? [storageWarning] : []),
+        ...collectGeneratorIssues(state, 'gate'),
+    ];
+    renderValidatedOutputs({
+        bannerEl: els.validationBanner,
+        outputPres: [els.macroPre, els.yamlPre, els.viewPre],
+        issues,
+        builds: [
+            { el: els.macroPre, fn: () => buildPiiTableGateMacro(state) },
+            { el: els.yamlPre, fn: () => buildTableGateYamlExample(state) },
+            { el: els.viewPre, fn: () => buildGatedViewExample(state) },
+        ],
+        t: validationT,
+    });
 }
 
 function persistState() {
@@ -81,7 +105,15 @@ function bindEvents() {
 
 function hydrateFromStorage() {
     const loaded = loadPiiMetaState();
-    if (loaded?.state) {
+    if (isStorageLoadCorrupt(loaded)) {
+        storageWarning = {
+            code: 'storage_corrupt',
+            messageKey: 'validation.storageCorrupt',
+            severity: 'warning',
+        };
+        return;
+    }
+    if (loaded && 'state' in loaded) {
         state = mergePiiMeta(state, loaded.state);
         updateSyncStatusEl(els.syncStatus, loaded.meta, (key) => t(locale(), key));
     }
@@ -104,7 +136,13 @@ function boot() {
 
     window.addEventListener('binom-tools:locale', () => {
         applyGateLabels();
-        updateSyncStatusEl(els.syncStatus, loadPiiMetaState()?.meta, (key) => t(locale(), key));
+        const loaded = loadPiiMetaState();
+        updateSyncStatusEl(
+            els.syncStatus,
+            loaded && 'meta' in loaded ? loaded.meta : null,
+            (key) => t(locale(), key),
+        );
+        renderOutputs();
     });
 }
 

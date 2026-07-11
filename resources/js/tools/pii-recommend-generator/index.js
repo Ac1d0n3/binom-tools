@@ -10,6 +10,7 @@ import { mergePiiMeta } from '../pii-shared/pii-meta.js';
 import { normalizeMinMatchRate } from '../pii-shared/content-heuristic-rules.js';
 import {
     debouncedSaveSchemaState,
+    isStorageLoadCorrupt,
     loadPiiMetaState,
     subscribeSchemaState,
 } from '../pii-shared/schema-storage';
@@ -23,12 +24,22 @@ import {
     writeWarehouseToForm,
 } from '../pii-shared/tool-utils.js';
 import { warehouseIds } from '../pii-shared/warehouse-templates.js';
+import {
+    validateAccessConfig,
+    validateContentHeuristicRules,
+    validateNameHeuristicRules,
+} from '../pii-shared/validation.js';
+import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
+import { markInvalidRuleRows, renderValidatedOutputs } from '../pii-shared/validation-ui.js';
 
 const app = document.getElementById('pii-recommend-generator-app');
 if (!app) throw new Error('PII recommend generator root element not found');
 
 /** @type {import('../pii-shared/demo-model.js').DbtModelState} */
 let state = createDefaultModelState();
+
+/** @type {import('../pii-shared/validation.js').ValidationIssue | null} */
+let storageWarning = null;
 
 const els = {
     warehouse: /** @type {HTMLSelectElement | null} */ (document.getElementById('rec-warehouse')),
@@ -53,10 +64,71 @@ const els = {
     copyAuditContentBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('rec-copy-audit-content-btn')),
     copyYamlBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('rec-copy-yaml-btn')),
     syncStatus: document.getElementById('rec-sync-status'),
+    validationBanner: document.getElementById('rec-validation-banner'),
 };
 
 function locale() {
     return getLocale();
+}
+
+function validationT(key, params = {}) {
+    return mergeValidationTranslator(locale(), t)(key, params);
+}
+
+function readAllNameRulesFromDom() {
+    if (!els.nameRulesBody) return [];
+    /** @type {import('../pii-shared/heuristic-rules.js').HeuristicRule[]} */
+    const rules = [];
+    els.nameRulesBody.querySelectorAll('[data-name-rule-index]').forEach((row) => {
+        rules.push({
+            pattern: /** @type {HTMLInputElement} */ (row.querySelector('[data-field="pattern"]')).value,
+            piiType: /** @type {HTMLSelectElement} */ (row.querySelector('[data-field="piiType"]')).value,
+        });
+    });
+    return rules;
+}
+
+function readAllContentRulesFromDom() {
+    if (!els.contentRulesBody) return { rules: [], rawMinRates: [] };
+    /** @type {import('../pii-shared/content-heuristic-rules.js').ContentHeuristicRule[]} */
+    const rules = [];
+    /** @type {(number | string)[]} */
+    const rawMinRates = [];
+    els.contentRulesBody.querySelectorAll('[data-content-rule-index]').forEach((row) => {
+        const regex = /** @type {HTMLInputElement} */ (row.querySelector('[data-field="regex"]')).value;
+        const piiType = /** @type {HTMLSelectElement} */ (row.querySelector('[data-field="piiType"]')).value;
+        const minInput = /** @type {HTMLInputElement} */ (row.querySelector('[data-field="minMatchRate"]'));
+        rawMinRates.push(minInput.value);
+        rules.push({
+            regex,
+            piiType,
+            minMatchRate: normalizeMinMatchRate(Number(minInput.value)),
+        });
+    });
+    return { rules, rawMinRates };
+}
+
+function collectRecommendIssues() {
+    const nameRules = readAllNameRulesFromDom();
+    const { rules: contentRules, rawMinRates } = readAllContentRulesFromDom();
+    return [
+        ...(storageWarning ? [storageWarning] : []),
+        ...validateAccessConfig(state),
+        ...validateNameHeuristicRules(nameRules),
+        ...validateContentHeuristicRules(contentRules, { rawMinRates }),
+    ];
+}
+
+function applyRuleFieldMarkers(issues) {
+    markInvalidRuleRows(els.nameRulesBody, '[data-name-rule-index]', '[data-field="pattern"]', issues, 'pattern');
+    markInvalidRuleRows(els.contentRulesBody, '[data-content-rule-index]', '[data-field="regex"]', issues, 'regex');
+    markInvalidRuleRows(
+        els.contentRulesBody,
+        '[data-content-rule-index]',
+        '[data-field="minMatchRate"]',
+        issues,
+        'minMatchRate',
+    );
 }
 
 function escapeAttr(value) {
@@ -200,9 +272,19 @@ function buildRecommendYaml() {
 }
 
 function renderOutputs() {
-    if (els.auditNamePre) els.auditNamePre.textContent = buildPiiAuditByNameMacro(state);
-    if (els.auditContentPre) els.auditContentPre.textContent = buildPiiContentScanMacro(state);
-    if (els.yamlPre) els.yamlPre.textContent = buildRecommendYaml();
+    const issues = collectRecommendIssues();
+    applyRuleFieldMarkers(issues);
+    renderValidatedOutputs({
+        bannerEl: els.validationBanner,
+        outputPres: [els.auditNamePre, els.auditContentPre, els.yamlPre],
+        issues,
+        builds: [
+            { el: els.auditNamePre, fn: () => buildPiiAuditByNameMacro(state) },
+            { el: els.auditContentPre, fn: () => buildPiiContentScanMacro(state) },
+            { el: els.yamlPre, fn: () => buildRecommendYaml() },
+        ],
+        t: validationT,
+    });
 }
 
 function persistState() {
@@ -268,7 +350,15 @@ function initScopeSelect() {
 
 function hydrateFromStorage() {
     const loaded = loadPiiMetaState();
-    if (loaded?.state) {
+    if (isStorageLoadCorrupt(loaded)) {
+        storageWarning = {
+            code: 'storage_corrupt',
+            messageKey: 'validation.storageCorrupt',
+            severity: 'warning',
+        };
+        return;
+    }
+    if (loaded && 'state' in loaded) {
         state = mergePiiMeta(state, loaded.state);
         updateSyncStatusEl(els.syncStatus, loaded.meta, (key) => t(locale(), key));
     }
@@ -295,7 +385,13 @@ function boot() {
         applyPiiRecommendLabels();
         renderNameRules();
         renderContentRules();
-        updateSyncStatusEl(els.syncStatus, loadPiiMetaState()?.meta, (key) => t(locale(), key));
+        const loaded = loadPiiMetaState();
+        updateSyncStatusEl(
+            els.syncStatus,
+            loaded && 'meta' in loaded ? loaded.meta : null,
+            (key) => t(locale(), key),
+        );
+        renderOutputs();
     });
 }
 

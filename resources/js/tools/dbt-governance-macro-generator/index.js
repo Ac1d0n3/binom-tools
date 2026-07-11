@@ -5,6 +5,7 @@ import { createDefaultModelState, prepareColumnsForAccessMode } from '../pii-sha
 import { mergePiiMeta } from '../pii-shared/pii-meta.js';
 import {
     debouncedSaveSchemaState,
+    isStorageLoadCorrupt,
     loadPiiMetaState,
     subscribeSchemaState,
 } from '../pii-shared/schema-storage';
@@ -21,12 +22,18 @@ import {
     writeWarehouseToForm,
 } from '../pii-shared/tool-utils.js';
 import { warehouseIds } from '../pii-shared/warehouse-templates.js';
+import { collectGeneratorIssues } from '../pii-shared/validation.js';
+import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
+import { renderValidatedOutputs } from '../pii-shared/validation-ui.js';
 
 const app = document.getElementById('dbt-governance-macro-generator-app');
 if (!app) throw new Error('Governance macro generator root element not found');
 
 /** @type {import('../pii-shared/demo-model.js').DbtModelState} */
 let state = createDefaultModelState();
+
+/** @type {import('../pii-shared/validation.js').ValidationIssue | null} */
+let storageWarning = null;
 
 const els = {
     warehouse: /** @type {HTMLSelectElement | null} */ (document.getElementById('gov-warehouse')),
@@ -37,6 +44,7 @@ const els = {
     maskedRoles: /** @type {HTMLInputElement} */ (document.getElementById('gov-masked-roles')),
     unmaskedRoles: /** @type {HTMLInputElement} */ (document.getElementById('gov-unmasked-roles')),
     accessGroups: /** @type {HTMLInputElement} */ (document.getElementById('gov-access-groups')),
+    validationBanner: document.getElementById('gov-validation-banner'),
     governancePre: document.getElementById('gov-governance-pre'),
     testPre: document.getElementById('gov-test-pre'),
     setupPre: document.getElementById('gov-setup-pre'),
@@ -48,6 +56,10 @@ const els = {
 
 function locale() {
     return getLocale();
+}
+
+function validationT(key, params = {}) {
+    return mergeValidationTranslator(locale(), t)(key, params);
 }
 
 function readForm() {
@@ -80,9 +92,21 @@ function updateAccessPanels() {
 }
 
 function renderOutputs() {
-    if (els.governancePre) els.governancePre.textContent = buildPiiGovernanceMacro(state);
-    if (els.testPre) els.testPre.textContent = buildPiiReviewedTest();
-    if (els.setupPre) els.setupPre.textContent = buildSetupMarkdown(state);
+    const issues = [
+        ...(storageWarning ? [storageWarning] : []),
+        ...collectGeneratorIssues(state, 'govMacro'),
+    ];
+    renderValidatedOutputs({
+        bannerEl: els.validationBanner,
+        outputPres: [els.governancePre, els.testPre, els.setupPre],
+        issues,
+        builds: [
+            { el: els.governancePre, fn: () => buildPiiGovernanceMacro(state) },
+            { el: els.testPre, fn: () => buildPiiReviewedTest() },
+            { el: els.setupPre, fn: () => buildSetupMarkdown(state) },
+        ],
+        t: validationT,
+    });
 }
 
 function persistState() {
@@ -125,7 +149,15 @@ function bindEvents() {
 
 function hydrateFromStorage() {
     const loaded = loadPiiMetaState();
-    if (loaded?.state) {
+    if (isStorageLoadCorrupt(loaded)) {
+        storageWarning = {
+            code: 'storage_corrupt',
+            messageKey: 'validation.storageCorrupt',
+            severity: 'warning',
+        };
+        return;
+    }
+    if (loaded && 'state' in loaded) {
         state = mergePiiMeta(state, loaded.state);
         updateSyncStatusEl(els.syncStatus, loaded.meta, (key) => t(locale(), key));
     }
@@ -156,7 +188,13 @@ function boot() {
 
     window.addEventListener('binom-tools:locale', () => {
         applyGovernanceMacroLabels();
-        updateSyncStatusEl(els.syncStatus, loadPiiMetaState()?.meta, (key) => t(locale(), key));
+        const loaded = loadPiiMetaState();
+        updateSyncStatusEl(
+            els.syncStatus,
+            loaded && 'meta' in loaded ? loaded.meta : null,
+            (key) => t(locale(), key),
+        );
+        renderOutputs();
     });
 }
 

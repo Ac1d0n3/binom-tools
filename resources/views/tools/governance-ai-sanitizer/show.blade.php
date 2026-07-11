@@ -50,6 +50,7 @@
                         Sanitize
                     </button>
                 </div>
+                <div id="gov-validation-banner" class="tools-validation-banner" hidden role="alert"></div>
                 <p class="bn-prompt-sanitizer-panel__summary" id="gov-findings-summary" hidden aria-live="polite"></p>
             </section>
 

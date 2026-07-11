@@ -12,10 +12,11 @@ import {
     syncAccessModeLineInDescription,
 } from './demo-model';
 import { buildDbtSchemaYaml } from './yaml-builder';
-import { parseDbtSchemaYaml } from './yaml-parser';
+import { parseDbtSchemaYamlResult, formatYamlParseErrorMessage } from '../pii-shared/yaml-parser.js';
 import { mergePiiMeta } from '../pii-shared/pii-meta';
 import {
     debouncedSaveSchemaState,
+    isStorageLoadCorrupt,
     loadPiiMetaState,
     subscribeSchemaState,
 } from '../pii-shared/schema-storage';
@@ -23,6 +24,9 @@ import { buildColumnsAccordionHtml, syncColumnFromPanel } from '../pii-shared/co
 import { buildDbtMacro } from './dbt-macro-builder';
 import { buildDbtPolicy } from './dbt-policy-builder';
 import { buildDbtModelExample } from './dbt-model-builder';
+import { collectGeneratorIssues, hasValidationErrors } from '../pii-shared/validation.js';
+import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
+import { renderValidatedOutputs, renderValidationBanner } from '../pii-shared/validation-ui.js';
 import { updateSyncStatusEl } from '../pii-shared/tool-utils.js';
 
 const app = document.getElementById('pii-policy-generator-app');
@@ -58,6 +62,7 @@ const els = {
     loadYamlBtn: document.getElementById('pii-load-yaml-btn'),
     executeBtn: document.getElementById('pii-execute-btn'),
     parseError: document.getElementById('pii-parse-error'),
+    validationBanner: document.getElementById('pii-validation-banner'),
     macroPre: document.getElementById('pii-macro-pre'),
     policyPre: document.getElementById('pii-policy-pre'),
     modelExamplePre: document.getElementById('pii-model-example-pre'),
@@ -73,6 +78,8 @@ let yamlUpdateTimer = 0;
 let yamlToFormTimer = 0;
 let syncingFromYaml = false;
 let yamlEditorActive = false;
+/** @type {import('../pii-shared/validation.js').ValidationIssue | null} */
+let storageWarning = null;
 
 function locale() {
     return getLocale();
@@ -263,10 +270,26 @@ function debouncedUpdateYaml() {
     yamlUpdateTimer = window.setTimeout(() => updateYamlPreview(), 250);
 }
 
+function validationT(key, params = {}) {
+    return mergeValidationTranslator(locale(), t)(key, params);
+}
+
 function renderOutputs() {
-    if (els.macroPre) els.macroPre.textContent = buildDbtMacro(state);
-    if (els.policyPre) els.policyPre.textContent = buildDbtPolicy(state);
-    if (els.modelExamplePre) els.modelExamplePre.textContent = buildDbtModelExample(state);
+    const issues = [
+        ...(storageWarning ? [storageWarning] : []),
+        ...collectGeneratorIssues(state, 'policy'),
+    ];
+    renderValidatedOutputs({
+        bannerEl: els.validationBanner,
+        outputPres: [els.macroPre, els.policyPre, els.modelExamplePre],
+        issues,
+        builds: [
+            { el: els.macroPre, fn: () => buildDbtMacro(state) },
+            { el: els.policyPre, fn: () => buildDbtPolicy(state) },
+            { el: els.modelExamplePre, fn: () => buildDbtModelExample(state) },
+        ],
+        t: validationT,
+    });
 }
 
 function updateSyncStatus(meta) {
@@ -291,6 +314,13 @@ function applyExternalPiiMeta(piiMeta) {
 function execute(options = {}) {
     readModelFromForm();
     readColumnsFromDom();
+    const issues = collectGeneratorIssues(state, 'policy');
+    if (hasValidationErrors(issues)) {
+        renderValidationBanner(els.validationBanner, issues, validationT);
+        renderOutputs();
+        return;
+    }
+
     const previewState = {
         ...state,
         columns: state.columns.filter((col) => col.name.trim()),
@@ -308,18 +338,21 @@ function refreshFromYaml() {
 }
 
 function loadFromYaml() {
-    const parsed = parseDbtSchemaYaml(els.yamlTextarea.value);
-    if (!parsed) {
+    const result = parseDbtSchemaYamlResult(els.yamlTextarea.value);
+    if (!result.ok) {
         if (els.parseError) {
             els.parseError.hidden = false;
-            els.parseError.textContent = t(locale(), 'pii.yaml.parseError');
+            els.parseError.textContent = formatYamlParseErrorMessage(locale(), result.error);
         }
         return;
     }
 
     syncingFromYaml = true;
     const storedPii = loadPiiMetaState();
-    state = mergePiiMeta(parsed, storedPii?.state);
+    state = mergePiiMeta(
+        result.state,
+        storedPii && 'state' in storedPii ? storedPii.state : undefined,
+    );
     prepareColumnsForAccessMode(state);
     writeModelToForm();
     renderColumns();
@@ -449,7 +482,7 @@ function bindEvents() {
         applyPiiPolicyLabels(locale());
         updateAccessPanels();
         renderColumns();
-        updateSyncStatus(loadPiiMetaState()?.meta);
+        updateSyncStatus(isStorageLoadCorrupt(loadPiiMetaState()) ? null : loadPiiMetaState()?.meta);
         [els.copyMacroBtn, els.copyPolicyBtn, els.copyModelBtn].forEach((btn) => {
             if (btn) btn.textContent = t(locale(), 'pii.copy');
         });
@@ -459,7 +492,13 @@ function bindEvents() {
 function init() {
     applyPiiPolicyLabels(locale());
     const stored = loadPiiMetaState();
-    if (stored) {
+    if (isStorageLoadCorrupt(stored)) {
+        storageWarning = {
+            code: 'storage_corrupt',
+            messageKey: 'validation.storageCorrupt',
+            severity: 'warning',
+        };
+    } else if (stored && 'state' in stored) {
         state = mergePiiMeta(state, stored.state);
         prepareColumnsForAccessMode(state);
         updateSyncStatus(stored.meta);

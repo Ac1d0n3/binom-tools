@@ -11,12 +11,16 @@ import {
     syncAccessModeLineInDescription,
 } from '../pii-shared/demo-model';
 import { buildDbtSchemaYaml } from '../pii-shared/yaml-builder';
-import { parseDbtSchemaYaml } from '../pii-shared/yaml-parser';
+import { parseDbtSchemaYamlResult, formatYamlParseErrorMessage } from '../pii-shared/yaml-parser';
 import { extractPiiMeta, mergePiiMeta } from '../pii-shared/pii-meta';
+import { validateModelState } from '../pii-shared/validation.js';
+import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
+import { renderValidationBanner } from '../pii-shared/validation-ui.js';
 import {
     clearSchemaState,
     clearYamlDraft,
     debouncedSaveSchemaState,
+    isStorageLoadCorrupt,
     loadPiiMetaState,
     loadYamlDraft,
     saveYamlDraft,
@@ -36,6 +40,8 @@ let yamlEditorActive = false;
 let formToYamlTimer = null;
 /** @type {ReturnType<typeof window.setTimeout> | null} */
 let yamlToFormTimer = null;
+/** @type {import('../pii-shared/validation.js').ValidationIssue | null} */
+let storageWarning = null;
 
 const els = {
     syncBadge: document.getElementById('schema-sync-badge'),
@@ -58,8 +64,21 @@ const els = {
     addRowBtn: document.getElementById('schema-add-row-btn'),
     yamlTextarea: /** @type {HTMLTextAreaElement} */ (document.getElementById('schema-yaml-textarea')),
     yamlParseError: document.getElementById('schema-yaml-parse-error'),
+    validationBanner: document.getElementById('schema-validation-banner'),
     copyYamlBtn: document.getElementById('schema-copy-yaml-btn'),
 };
+
+function validationT(key, params = {}) {
+    return mergeValidationTranslator(locale(), t)(key, params);
+}
+
+function renderFormValidation() {
+    const issues = [
+        ...(storageWarning ? [storageWarning] : []),
+        ...validateModelState(state),
+    ];
+    renderValidationBanner(els.validationBanner, issues, validationT);
+}
 
 function locale() {
     return getLocale();
@@ -136,23 +155,25 @@ function debouncedPushFormToYaml() {
 function pushYamlToForm() {
     if (!els.yamlTextarea) return;
 
-    const parsed = parseDbtSchemaYaml(els.yamlTextarea.value);
-    if (!parsed) {
+    const result = parseDbtSchemaYamlResult(els.yamlTextarea.value);
+    if (!result.ok) {
         if (els.yamlParseError) {
             els.yamlParseError.hidden = false;
-            els.yamlParseError.textContent = t(locale(), 'schema.yaml.parseError');
+            els.yamlParseError.textContent = formatYamlParseErrorMessage(locale(), result.error);
         }
         return;
     }
 
     syncingFromYaml = true;
     const storedPii = loadPiiMetaState();
-    state = mergePiiMeta(parsed, storedPii?.state ?? extractPiiMeta(state));
+    const storedState = storedPii && 'state' in storedPii ? storedPii.state : extractPiiMeta(state);
+    state = mergePiiMeta(result.state, storedState);
     prepareColumnsForAccessMode(state);
     writeModelToForm();
     renderColumns();
     saveYamlDraft(els.yamlTextarea.value);
     if (els.yamlParseError) els.yamlParseError.hidden = true;
+    renderFormValidation();
     persistPiiMeta();
     syncingFromYaml = false;
 }
@@ -192,6 +213,7 @@ function updateSyncBadge(source) {
 
 function persistPiiMeta() {
     syncStateFromForm();
+    renderFormValidation();
     debouncedSaveSchemaState(state, 'schema-yml-editor');
     updateSyncBadge('schema-yml-editor');
 }
@@ -406,15 +428,23 @@ function bindEvents() {
 function init() {
     applySchemaEditorLabels(locale());
     const storedPii = loadPiiMetaState();
-    if (storedPii) updateSyncBadge(storedPii.meta.source);
-
     state = createDefaultModelState();
-    if (storedPii) state = mergePiiMeta(state, storedPii.state);
+    if (isStorageLoadCorrupt(storedPii)) {
+        storageWarning = {
+            code: 'storage_corrupt',
+            messageKey: 'validation.storageCorrupt',
+            severity: 'warning',
+        };
+    } else if (storedPii && 'state' in storedPii) {
+        updateSyncBadge(storedPii.meta.source);
+        state = mergePiiMeta(state, storedPii.state);
+    }
     prepareColumnsForAccessMode(state);
 
     ensureYamlDraft();
     syncFormFromYamlSilently();
     updateAccessPanels();
+    renderFormValidation();
 
     bindEvents();
     subscribeSchemaState(({ state: piiMeta, meta }) => {

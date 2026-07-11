@@ -54,6 +54,8 @@
                 </label>
             </section>
 
+            <div id="gate-validation-banner" class="tools-validation-banner" hidden role="alert"></div>
+
             <section class="pii-policy-panel pii-policy-panel--code" aria-labelledby="gate-macro-title">
                 <header class="pii-policy-panel__header">
                     <h3 id="gate-macro-title" data-i18n="gate.output.macro">macros/pii_table_gate.sql</h3>

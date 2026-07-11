@@ -1,4 +1,8 @@
 import { createDefaultModelState } from './demo-model.js';
+import { tValidation } from './validation-labels.js';
+import { yamlErrorToMessageKey } from './validation.js';
+
+/** @typedef {{ code: 'empty' | 'missing_model' | 'missing_columns' | 'invalid_structure' | 'unsupported', line?: number, detail?: string }} YamlParseError */
 
 /** @param {string} raw */
 function parseList(raw) {
@@ -34,9 +38,17 @@ function extractDescriptionMetadata(state, line) {
 
 /**
  * @param {string} yaml
- * @returns {import('./demo-model.js').DbtModelState | null}
+ * @returns {{ ok: true, state: import('./demo-model.js').DbtModelState } | { ok: false, error: YamlParseError }}
  */
-export function parseDbtSchemaYaml(yaml) {
+export function parseDbtSchemaYamlResult(yaml) {
+    if (!yaml.trim()) {
+        return { ok: false, error: { code: 'empty' } };
+    }
+
+    if (/^\s*sources\s*:/m.test(yaml) && !/^\s*models\s*:/m.test(yaml)) {
+        return { ok: false, error: { code: 'unsupported' } };
+    }
+
     try {
         /** @type {import('./demo-model.js').DbtModelState} */
         const state = createDefaultModelState();
@@ -53,7 +65,8 @@ export function parseDbtSchemaYaml(yaml) {
         let inAccessRules = false;
         let inColumnMeta = false;
 
-        for (const rawLine of lines) {
+        for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+            const rawLine = lines[lineIndex];
             const trimmed = rawLine.trim();
 
             if (inDescription) {
@@ -169,12 +182,45 @@ export function parseDbtSchemaYaml(yaml) {
         }
         state.modelDescription = modelDescriptionLines.join('\n');
 
-        if (!state.modelName || state.columns.length === 0) return null;
+        if (!modelNameSet) {
+            return { ok: false, error: { code: 'missing_model' } };
+        }
+
+        if (state.columns.length === 0) {
+            return { ok: false, error: { code: 'missing_columns' } };
+        }
+
         if (!state.sourceTable) state.sourceTable = 'raw.example_table';
         if (!state.piiVersion) state.piiVersion = 'cf38c9353be46d305f35c22a8d926c62';
 
-        return state;
-    } catch {
-        return null;
+        return { ok: true, state };
+    } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        return { ok: false, error: { code: 'invalid_structure', detail } };
     }
+}
+
+/**
+ * @param {string} yaml
+ * @returns {import('./demo-model.js').DbtModelState | null}
+ */
+export function parseDbtSchemaYaml(yaml) {
+    const result = parseDbtSchemaYamlResult(yaml);
+    return result.ok ? result.state : null;
+}
+
+/**
+ * @param {import('./validation-labels.js').ToolsLocale} locale
+ * @param {YamlParseError} error
+ * @returns {string}
+ */
+export function formatYamlParseErrorMessage(locale, error) {
+    const key = yamlErrorToMessageKey(error.code);
+    let message = tValidation(locale, key);
+
+    if (error.line) {
+        message += tValidation(locale, 'validation.yaml.lineSuffix', { line: error.line });
+    }
+
+    return message;
 }

@@ -9,7 +9,7 @@ const EVENT_NAME = 'binom-tools:pii-schema-updated';
 /** @typedef {{ savedAt: string, source: 'dbt-governance-macro-generator' | 'pii-policy-generator' | 'pii-unreviewed-gate-generator' | 'pii-recommend-generator' | 'schema-yml-editor' | 'manual' }} SchemaMeta */
 
 /**
- * @returns {{ state: import('./pii-meta.js').PiiMetaState, meta: SchemaMeta } | null}
+ * @returns {{ state: import('./pii-meta.js').PiiMetaState, meta: SchemaMeta } | { corrupt: true } | null}
  */
 export function loadPiiMetaState() {
     try {
@@ -20,13 +20,18 @@ export function loadPiiMetaState() {
         const meta = metaRaw ? /** @type {SchemaMeta} */ (JSON.parse(metaRaw)) : { savedAt: '', source: 'manual' };
         return { state: normalizePiiMeta(parsed), meta };
     } catch {
-        return null;
+        return { corrupt: true };
     }
 }
 
 /** @deprecated Use loadPiiMetaState */
 export function loadSchemaState() {
     return loadPiiMetaState();
+}
+
+/** @returns {boolean} */
+export function isStorageLoadCorrupt(loaded) {
+    return loaded !== null && 'corrupt' in loaded && loaded.corrupt === true;
 }
 
 /**
@@ -98,7 +103,7 @@ export function subscribeSchemaState(callback) {
     const onStorage = (/** @type {StorageEvent} */ event) => {
         if (event.key !== STORAGE_KEY) return;
         const loaded = loadPiiMetaState();
-        if (loaded) callback({ state: loaded.state, meta: loaded.meta });
+        if (loaded && 'state' in loaded) callback({ state: loaded.state, meta: loaded.meta });
     };
 
     window.addEventListener(EVENT_NAME, onCustom);
