@@ -340,8 +340,8 @@ a.playbook-toc__title:hover {
 }
 
 .playbook-toc__group--active > .playbook-toc__group-header .playbook-toc__link:not(.playbook-toc__link--active) {
-    color: var(--content-font-color);
-    font-weight: 500;
+    color: var(--bn-color-text-secondary);
+    font-weight: 400;
 }
 
 .playbook-toc__sublist {
@@ -392,14 +392,14 @@ a.playbook-toc__title:hover {
 }
 
 .playbook-toc__link--active {
-    color: var(--content-font-color);
-    border-left-color: var(--theme-color-accent);
-    background: color-mix(in srgb, var(--theme-color-accent) 14%, transparent);
+    color: var(--theme-color-primary);
+    border-left-color: var(--theme-color-primary);
+    background: color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
     font-weight: 600;
 }
 
 .playbook-toc__group--active > .playbook-toc__group-header .playbook-toc__link--active {
-    border-left-color: var(--theme-color-accent);
+    border-left-color: var(--theme-color-primary);
 }
 
 .playbook-pager {

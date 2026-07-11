@@ -122,13 +122,26 @@ function applyExpandedState(tocRoot, expandedGroupIds) {
 
 function applyActiveState(tocRoot, activeId) {
     tocRoot.querySelectorAll('[data-playbook-toc-link]').forEach((link) => {
-        link.classList.toggle('playbook-toc__link--active', link.dataset.targetId === activeId);
+        const isActive = Boolean(activeId && link.dataset.targetId === activeId);
+
+        link.classList.toggle('playbook-toc__link--active', isActive);
+
+        if (isActive) {
+            link.setAttribute('aria-current', 'location');
+        } else {
+            link.removeAttribute('aria-current');
+        }
     });
 
     tocRoot.querySelectorAll('[data-playbook-toc-group]').forEach((groupEl) => {
         const groupId = groupEl.dataset.groupId;
-        const containsActive = groupId === activeId
-            || Boolean(groupEl.querySelector(`[data-playbook-toc-link][data-target-id="${CSS.escape(activeId ?? '')}"]`));
+        const containsActive = Boolean(
+            activeId
+            && (
+                groupId === activeId
+                || groupEl.querySelector(`[data-playbook-toc-link][data-target-id="${CSS.escape(activeId)}"]`)
+            ),
+        );
 
         groupEl.classList.toggle('playbook-toc__group--active', containsActive);
     });
@@ -194,9 +207,7 @@ export function initPlaybookToc(panel) {
     function renderState(preferredActiveId, options = {}) {
         const offset = getHeaderOffset() + SCROLL_PADDING;
         const resolvedActiveId = preferredActiveId
-            ?? findActiveHeadingId(headings, scrollRoot, offset)
-            ?? headingIds[0]
-            ?? null;
+            ?? findActiveHeadingId(headings, scrollRoot, offset);
 
         const syncResult = syncExpandedGroups(
             groups,

@@ -23,11 +23,45 @@ describe('buildTocGroups', () => {
 
 describe('findActiveHeadingId', () => {
     it('returns last heading above marker', () => {
-        const scrollRoot = { getBoundingClientRect: () => ({ top: 0 }) };
+        const scrollRoot = {
+            getBoundingClientRect: () => ({ top: 0 }),
+            scrollTop: 400,
+            scrollHeight: 2000,
+            clientHeight: 800,
+        };
         const headings = [
             { id: 'one', getBoundingClientRect: () => ({ top: -10 }) },
             { id: 'two', getBoundingClientRect: () => ({ top: 20 }) },
             { id: 'three', getBoundingClientRect: () => ({ top: 80 }) },
+        ];
+
+        expect(findActiveHeadingId(headings, scrollRoot, 24)).toBe('two');
+    });
+
+    it('returns null at scroll top before any section', () => {
+        const scrollRoot = {
+            getBoundingClientRect: () => ({ top: 0 }),
+            scrollTop: 0,
+            scrollHeight: 2000,
+            clientHeight: 800,
+        };
+        const headings = [
+            { id: 'one', getBoundingClientRect: () => ({ top: 120 }) },
+        ];
+
+        expect(findActiveHeadingId(headings, scrollRoot, 24)).toBeNull();
+    });
+
+    it('returns last heading when scrolled near bottom', () => {
+        const scrollRoot = {
+            getBoundingClientRect: () => ({ top: 0 }),
+            scrollTop: 1950,
+            scrollHeight: 2000,
+            clientHeight: 800,
+        };
+        const headings = [
+            { id: 'one', getBoundingClientRect: () => ({ top: -500 }) },
+            { id: 'two', getBoundingClientRect: () => ({ top: 200 }) },
         ];
 
         expect(findActiveHeadingId(headings, scrollRoot, 24)).toBe('two');

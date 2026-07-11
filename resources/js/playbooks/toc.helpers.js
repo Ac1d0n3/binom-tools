@@ -25,6 +25,34 @@ export function buildTocGroups(entries) {
 }
 
 /**
+ * @param {Window | Element} scrollRoot
+ * @returns {number}
+ */
+export function getScrollTop(scrollRoot) {
+    return scrollRoot === window ? window.scrollY : scrollRoot.scrollTop;
+}
+
+/**
+ * @param {Window | Element} scrollRoot
+ * @returns {{ scrollTop: number, scrollHeight: number, clientHeight: number }}
+ */
+export function getScrollMetrics(scrollRoot) {
+    if (scrollRoot === window) {
+        return {
+            scrollTop: window.scrollY,
+            scrollHeight: document.documentElement.scrollHeight,
+            clientHeight: window.innerHeight,
+        };
+    }
+
+    return {
+        scrollTop: scrollRoot.scrollTop,
+        scrollHeight: scrollRoot.scrollHeight,
+        clientHeight: scrollRoot.clientHeight,
+    };
+}
+
+/**
  * @param {HTMLElement[]} headings
  * @param {Window | Element} scrollRoot
  * @param {number} offset
@@ -39,6 +67,16 @@ export function findActiveHeadingId(headings, scrollRoot, offset) {
         ? 0
         : scrollRoot.getBoundingClientRect().top;
     const marker = containerTop + offset;
+    const { scrollTop, scrollHeight, clientHeight } = getScrollMetrics(scrollRoot);
+    const nearBottom = scrollTop + clientHeight >= scrollHeight - 48;
+
+    if (nearBottom) {
+        return headings[headings.length - 1].id;
+    }
+
+    if (scrollTop <= 4) {
+        return null;
+    }
 
     let activeId = headings[0].id;
 
