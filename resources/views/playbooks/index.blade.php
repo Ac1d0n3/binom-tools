@@ -6,7 +6,7 @@
     <div class="tools-content" data-overview-filter-root>
         <h1 class="tools-page-title" data-i18n="playbooks.indexTitle">Governance Playbooks</h1>
         <p class="tools-page-lead" data-i18n="playbooks.indexLead">
-            Schritt-für-Schritt-Governance-Story für Snowflake.
+            Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.
         </p>
 
         <div class="tools-overview-toolbar">

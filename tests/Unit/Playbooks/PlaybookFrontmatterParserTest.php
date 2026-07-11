@@ -41,9 +41,9 @@ MD;
     {
         $parser = new PlaybookFrontmatterParser;
 
-        $parsed = $parser->parse("# Heading\n", 'snowflake-governance');
+        $parsed = $parser->parse("# Heading\n", 'my-governance-topic');
 
-        $this->assertSame('Snowflake Governance', $parsed['meta']['title']);
+        $this->assertSame('My Governance Topic', $parsed['meta']['title']);
         $this->assertSame('', $parsed['meta']['description']);
         $this->assertSame([], $parsed['meta']['tags']);
     }

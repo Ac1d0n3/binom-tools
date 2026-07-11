@@ -182,6 +182,6 @@ final class PlaybookRepository
 
     private function contentDirectory(): string
     {
-        return base_path('content');
+        return config('playbooks.content_path', base_path('content'));
     }
 }

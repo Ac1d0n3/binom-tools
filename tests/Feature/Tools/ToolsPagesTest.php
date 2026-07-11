@@ -19,6 +19,9 @@ class ToolsPagesTest extends TestCase
         $response->assertSee(route('tools.overview'), false);
         $response->assertSee(route('playbooks.index'), false);
         $response->assertSee('binom-ngx', false);
+        $response->assertSee('Git-Repo klonen', false);
+        $response->assertSee('https://github.com/Ac1d0n3/binom-tools', false);
+        $response->assertSee('fa-brands fa-github', false);
         $response->assertDontSee('data-overview-filter-root', false);
     }
 

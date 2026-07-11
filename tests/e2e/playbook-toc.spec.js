@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { expectTocRailVisible, getVisibleTop, scrollContentTo } from './helpers/viewport.js';
 
-const PLAYBOOK_URL = '/playbooks/snowflake-governance';
+const PLAYBOOK_URL = '/playbooks/help-hub-platform';
 const VISIBLE_PANEL = '[data-playbook-locale-panel="de"]:not([hidden])';
 
 test.describe('Playbook TOC', () => {
@@ -43,7 +43,7 @@ test.describe('Playbook TOC', () => {
 
     test('branch expands and shows h3 links', async ({ page }) => {
         const branch = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-branch]`).filter({
-            has: page.locator('[data-playbook-toc-link]', { hasText: 'Implementierungsbeispiel' }),
+            has: page.locator('[data-playbook-toc-link]', { hasText: 'Story hinzufügen' }),
         }).first();
 
         const toggle = branch.locator('[data-playbook-toc-group-toggle]');
@@ -54,7 +54,7 @@ test.describe('Playbook TOC', () => {
         await toggle.click();
 
         await expect(sublist).toHaveClass(/playbook-toc__sublist--open/);
-        await expect(sublist.locator('[data-target-id="de-repository-pattern"]')).toBeVisible();
+        await expect(sublist.locator('[data-target-id="de-frontmatter-felder"]')).toBeVisible();
     });
 
     test('leaf has no toggle button', async ({ page }) => {
@@ -66,21 +66,21 @@ test.describe('Playbook TOC', () => {
     });
 
     test('scroll spy marks active section', async ({ page }) => {
-        await scrollContentTo(page, 'de-zugriffsmodell');
+        await scrollContentTo(page, 'de-architektur');
         await page.waitForTimeout(250);
 
-        const activeLink = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-link][data-target-id="de-zugriffsmodell"]`);
+        const activeLink = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-link][data-target-id="de-architektur"]`);
 
         await expect(activeLink).toHaveClass(/playbook-toc__link--active/);
     });
 
     test('anchor click scrolls content and keeps toc visible', async ({ page }) => {
-        const link = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-link][data-target-id="de-audit-checkliste"]`).first();
+        const link = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-link][data-target-id="de-deployment"]`).first();
 
         await link.click();
         await page.waitForTimeout(500);
 
-        await expect(page.locator(`${VISIBLE_PANEL} #de-audit-checkliste`)).toBeVisible();
+        await expect(page.locator(`${VISIBLE_PANEL} #de-deployment`)).toBeVisible();
         await expectTocRailVisible(page, `${VISIBLE_PANEL} [data-playbook-toc]`);
     });
 });

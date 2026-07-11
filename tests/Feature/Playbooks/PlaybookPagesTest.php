@@ -6,18 +6,16 @@ use Tests\TestCase;
 
 class PlaybookPagesTest extends TestCase
 {
-    public function test_playbook_index_lists_snowflake_story(): void
+    public function test_playbook_index_lists_help_hub_story(): void
     {
         $response = $this->get('/playbooks');
 
         $response->assertOk();
         $response->assertSee('Governance Help Hub');
-        $response->assertSee('Snowflake Governance Playbook');
-        $response->assertDontSee('Microsoft Fabric Governance Playbook');
-        $response->assertDontSee('Databricks Governance Playbook');
+        $response->assertDontSee('Snowflake Governance Playbook');
         $response->assertSee('data-playbook-card-title', false);
         $response->assertSee('data-overview-search', false);
-        $response->assertSee('data-overview-tag="snowflake"', false);
+        $response->assertSee('data-overview-tag="help-hub"', false);
     }
 
     public function test_help_hub_platform_story_includes_repository_link(): void
@@ -40,12 +38,12 @@ class PlaybookPagesTest extends TestCase
 
     public function test_playbook_detail_renders_localized_story_content(): void
     {
-        $response = $this->get('/playbooks/snowflake-governance');
+        $response = $this->get('/playbooks/help-hub-platform');
 
         $response->assertOk();
-        $response->assertSee('Snowflake Governance Playbook');
-        $response->assertSee('Datenplattform');
-        $response->assertSee('Data Platform');
+        $response->assertSee('Governance Help Hub');
+        $response->assertSee('Projektstruktur');
+        $response->assertSee('Project structure');
         $response->assertSee('data-playbook-locale-panel="de"', false);
         $response->assertSee('data-playbook-locale-panel="en"', false);
         $response->assertSee('id="de-uberblick"', false);
@@ -63,25 +61,30 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-playbook-toc-start', false);
         $response->assertSee('data-target-id="de-playbook-start"', false);
         $response->assertSee('data-i18n="playbooks.tocTitle"', false);
-        $response->assertSee('id="toc-sub-de-implementierungsbeispiel"', false);
+        $response->assertSee('id="toc-sub-de-story-hinzufugen"', false);
         $response->assertDontSee('data-playbook-restart', false);
     }
 
-    public function test_playbook_toc_has_one_leaf_without_toggle(): void
+    public function test_playbook_toc_has_branches_and_leaves(): void
     {
-        $html = $this->get('/playbooks/snowflake-governance')->getContent();
+        $html = $this->get('/playbooks/help-hub-platform')->getContent();
 
         preg_match_all('/data-playbook-toc-leaf/', $html, $leafMatches);
         preg_match_all('/data-playbook-toc-branch/', $html, $branchMatches);
         preg_match_all('/data-playbook-toc-group-toggle/', $html, $toggleMatches);
 
-        $this->assertSame(2, count($leafMatches[0]), 'Expected one leaf per locale panel');
-        $this->assertGreaterThanOrEqual(6, count($branchMatches[0]), 'Expected branches for sections with h3 children');
+        $this->assertSame(16, count($leafMatches[0]), 'Expected eight leaf groups per locale panel');
+        $this->assertSame(4, count($branchMatches[0]), 'Expected two branches per locale panel');
         $this->assertSame(count($toggleMatches[0]), count($branchMatches[0]));
     }
 
     public function test_unknown_playbook_returns_not_found(): void
     {
         $this->get('/playbooks/does-not-exist')->assertNotFound();
+    }
+
+    public function test_removed_snowflake_story_returns_not_found(): void
+    {
+        $this->get('/playbooks/snowflake-governance')->assertNotFound();
     }
 }

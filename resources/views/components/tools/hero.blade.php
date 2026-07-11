@@ -33,6 +33,7 @@
                 >
                     binom-ngx SDKs
                 </a>
+                <x-tools.repo-clone-link />
             </div>
 
             @if (count($heroPills) > 0)

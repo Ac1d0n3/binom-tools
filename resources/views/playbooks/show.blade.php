@@ -48,15 +48,9 @@
 
                                 @if ($playbook->slug === 'help-hub-platform' && config('tools.links.repository'))
                                     <div class="playbook-detail__actions">
-                                        <a
-                                            href="{{ config('tools.links.repository') }}"
-                                            class="tools-btn tools-btn--primary"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            <i class="fa-brands fa-github" aria-hidden="true"></i>
-                                            <span>{{ $locale === 'de' ? 'Git-Repo klonen' : 'Clone Git repo' }}</span>
-                                        </a>
+                                        <x-tools.repo-clone-link variant="primary">
+                                            {{ $locale === 'de' ? 'Git-Repo klonen' : 'Clone Git repo' }}
+                                        </x-tools.repo-clone-link>
                                     </div>
                                 @endif
                             </header>
