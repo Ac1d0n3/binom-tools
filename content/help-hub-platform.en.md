@@ -119,7 +119,7 @@ php artisan serve
 Optional in `.env`:
 
 ```env
-BINOM_NGX_DOCS_URL=https://docs.example.com
+BINOM_NGX_DOCS_URL=https://ngx-docs.binom.net
 BINOM_TOOLS_REPO_URL=https://github.com/your-org/your-help-hub
 ```
 

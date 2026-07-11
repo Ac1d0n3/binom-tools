@@ -574,6 +574,19 @@ a.playbook-toc__title:hover {
 }
 
 @media (max-width: 767px) {
+    .playbook-detail__scroll {
+        padding: 1rem;
+    }
+
+    .playbook-detail__hero-image {
+        max-height: 200px;
+    }
+
+    .playbook-detail__actions .tools-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
     .playbook-pager {
         grid-template-columns: 1fr;
     }

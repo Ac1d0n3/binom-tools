@@ -7,7 +7,7 @@
         <x-tools.hero
             :hero-pills="$heroPills"
             :tools-overview-url="route('tools.overview')"
-            :binom-ngx-docs-url="$links['binom_ngx_docs'] ?? '#'"
+            :binom-ngx-docs-url="$links['binom_ngx_docs'] ?? 'https://ngx-docs.binom.net'"
         />
 
         <div class="tools-content">

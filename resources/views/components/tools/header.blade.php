@@ -2,13 +2,14 @@
     <div class="tools-header__brand">
         <button
             type="button"
-            class="tools-btn tools-btn--ghost tools-header__menu-btn"
+            class="tools-icon-button tools-header__menu-btn"
             data-tools-sidebar-toggle
             aria-controls="tools-main-content"
             aria-expanded="false"
-            aria-label="Toggle navigation"
+            data-i18n-aria="nav.openMenu"
+            title="Open navigation"
         >
-            ☰
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
         </button>
         <x-tools.brand />
     </div>

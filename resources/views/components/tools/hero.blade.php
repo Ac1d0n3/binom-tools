@@ -14,15 +14,19 @@
     <div class="tools-hero__inner">
         <div class="tools-hero__content">
             <h1 class="tools-hero__headline">
-                <span data-i18n="home.hero.headline">BI &amp; governance workflows</span>
-                <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">as ready-to-use examples.</span>
+                <span data-i18n="home.hero.headline">Governance Help Hub</span>
+                <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">für Data-, BI- und Analytics-Teams.</span>
             </h1>
-            <p class="tools-hero__tagline" data-i18n="home.hero.tagline"></p>
-            <p class="tools-hero__notice" data-i18n="home.hero.notice"></p>
+            <p class="tools-hero__tagline" data-i18n="home.hero.tagline">
+                Markdown-Playbooks, interaktive Referenz-Tools und ein schlanker Stack ohne CMS — Governance-Wissen versionierbar wie Code.
+            </p>
+            <p class="tools-hero__notice" data-i18n="home.hero.notice">
+                Klonbar als Starter-Template: eigene Stories, Tools und Branding für euren internen Help Hub.
+            </p>
 
             <div class="tools-hero__actions">
                 <a href="{{ $toolsOverviewUrl }}" class="tools-btn tools-btn--primary" data-i18n="home.hero.ctaWorkflows">
-                    Explore workflow examples
+                    Interaktive Tools
                 </a>
                 <a
                     href="{{ $binomNgxDocsUrl }}"
