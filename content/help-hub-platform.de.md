@@ -1,9 +1,8 @@
 ---
-title: Governance Help Hub — Plattform & Download
-description: So ist binom-tools aufgebaut — Markdown-Stories, interaktive Tools und i18n als wiederverwendbarer Governance Help Hub.
-category: Plattform
+title: Governance Help Hub
+description: So ist der Governance Help Hub aufgebaut — Markdown-Stories, interaktive Tools und i18n als wiederverwendbares Starter-Template.
+category: Help Hub
 tags:
-  - platform
   - help-hub
   - markdown
   - governance
@@ -14,7 +13,7 @@ order: 0
 
 Diese Seite beschreibt, wie **binom-tools** als **Governance Help Hub** funktioniert: Stories als Markdown-Playbooks, interaktive Referenz-Tools, zweisprachige Oberfläche und ein schlanker Laravel-Stack ohne CMS.
 
-Du kannst das Projekt klonen, eigene Stories unter `content/` ablegen und optional interaktive Tools ergänzen — ideal für Data-Governance-, BI- oder Platform-Teams, die Wissen versionierbar und nah am Code halten wollen.
+Du kannst das Projekt klonen, eigene Stories unter `content/` ablegen und optional interaktive Tools ergänzen — ideal für Data-Governance- und BI-Teams, die Wissen versionierbar und nah am Code halten wollen.
 
 > Kein Gateway, kein CMS: Inhalte leben in Git, Reviews laufen wie bei Application Code.
 
@@ -160,4 +159,4 @@ Typische Erweiterungen ohne Architektur-Bruch:
 - Volltextsuche serverseitig (statt Client-Filter auf Übersichtsseiten)
 - Authentifizierung für interne Playbooks (Laravel Middleware)
 
-Fragen oder Anpassungen: über das Repository-Issue-Tracking oder euren internen Platform-Owner.
+Fragen oder Anpassungen: über das Repository-Issue-Tracking oder euren internen Governance-Owner.

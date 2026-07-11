@@ -26,6 +26,9 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Governance Help Hub');
+        $response->assertSee('Help Hub', false);
+        $response->assertDontSee('Plattform &amp; Download', false);
+        $response->assertDontSee('Platform &amp; Download', false);
         $response->assertSee('playbook-detail__actions', false);
         $response->assertSee('tools-btn--primary', false);
         $response->assertSee('Git-Repo klonen', false);
