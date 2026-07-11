@@ -20,15 +20,19 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-overview-tag="snowflake"', false);
     }
 
-    public function test_help_hub_platform_story_includes_download_cta(): void
+    public function test_help_hub_platform_story_includes_repository_link(): void
     {
         $response = $this->get('/playbooks/help-hub-platform');
 
         $response->assertOk();
         $response->assertSee('Governance Help Hub');
-        $response->assertSee('playbook-detail__download', false);
-        $response->assertSee('/archive/refs/heads/main.zip', false);
+        $response->assertSee('playbook-detail__actions', false);
+        $response->assertSee('tools-btn--primary', false);
+        $response->assertSee('Git-Repo klonen', false);
+        $response->assertSee('https://github.com/Ac1d0n3/binom-tools', false);
         $response->assertSee('Projektstruktur', false);
+        $response->assertDontSee('Storybook Start', false);
+        $response->assertDontSee('Starter-Template herunterladen', false);
     }
 
     public function test_playbook_detail_renders_localized_story_content(): void
@@ -53,6 +57,9 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-playbook-toc-group-toggle', false);
         $response->assertSee('playbook-toc__group--branch', false);
         $response->assertSee('playbook-toc__group--leaf', false);
+        $response->assertSee('data-playbook-toc-start', false);
+        $response->assertSee('data-target-id="de-playbook-start"', false);
+        $response->assertSee('data-i18n="playbooks.tocTitle"', false);
         $response->assertSee('id="toc-sub-de-implementierungsbeispiel"', false);
         $response->assertDontSee('data-playbook-restart', false);
     }

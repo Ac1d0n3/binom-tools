@@ -16,14 +16,13 @@
     <div class="tools-header__actions">
         <button
             type="button"
-            class="tools-btn tools-btn--ghost tools-header__theme-toggle"
+            class="tools-icon-button tools-header__theme-toggle"
             data-theme-toggle
             aria-pressed="false"
             data-i18n-aria="theme.toggleToDark"
             title="Toggle color scheme"
         >
-            <i class="fa-solid fa-sun tools-header__theme-icon tools-header__theme-icon--light" aria-hidden="true"></i>
-            <i class="fa-solid fa-moon tools-header__theme-icon tools-header__theme-icon--dark" aria-hidden="true"></i>
+            <i class="fa-solid fa-sun tools-header__theme-icon" data-theme-icon aria-hidden="true"></i>
         </button>
         <div class="tools-header__locale" role="group" aria-label="Language">
             <button type="button" class="tools-btn tools-btn--ghost" data-locale="de" aria-pressed="false">DE</button>

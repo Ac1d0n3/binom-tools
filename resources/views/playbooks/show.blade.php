@@ -37,7 +37,7 @@
                         @endif
 
                         <div class="playbook-detail__main">
-                            <header class="playbook-detail__header">
+                            <header class="playbook-detail__header" id="{{ $locale }}-playbook-start">
                                 <h1 class="tools-page-title">{{ $variant->title }}</h1>
 
                                 @if ($variant->description)
@@ -47,16 +47,17 @@
                                 <x-playbooks.meta :variant="$variant" :modified-at="$playbook->modifiedAt" />
 
                                 @if ($playbook->slug === 'help-hub-platform' && config('tools.links.repository'))
-                                    <p class="playbook-detail__download">
+                                    <div class="playbook-detail__actions">
                                         <a
-                                            href="{{ rtrim(config('tools.links.repository'), '/') }}/archive/refs/heads/main.zip"
+                                            href="{{ config('tools.links.repository') }}"
                                             class="tools-btn tools-btn--primary"
-                                            download
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                         >
-                                            <i class="fa-solid fa-download" aria-hidden="true"></i>
-                                            <span data-i18n="playbooks.downloadStarter">Starter-Template herunterladen (ZIP)</span>
+                                            <i class="fa-brands fa-github" aria-hidden="true"></i>
+                                            <span>{{ $locale === 'de' ? 'Git-Repo klonen' : 'Clone Git repo' }}</span>
                                         </a>
-                                    </p>
+                                    </div>
                                 @endif
                             </header>
 
@@ -70,7 +71,10 @@
 
                     @if (count($variant->toc) > 0)
                         <aside class="playbook-detail__toc-rail">
-                            <x-playbooks.toc :entries="$variant->toc" />
+                            <x-playbooks.toc
+                                :entries="$variant->toc"
+                                :start-id="$locale . '-playbook-start'"
+                            />
                         </aside>
                     @endif
                 </div>

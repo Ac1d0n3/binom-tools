@@ -178,6 +178,7 @@ export function initPlaybookToc(panel) {
     const tocPanel = tocRoot.querySelector('[data-playbook-toc-panel]');
     const tocNav = tocRoot.querySelector('.playbook-toc__nav');
     const mobileToggle = tocRoot.querySelector('[data-playbook-toc-toggle]');
+    const startLink = tocRoot.querySelector('[data-playbook-toc-start]');
     const links = [...tocRoot.querySelectorAll('[data-playbook-toc-link]')];
     const headings = getProseHeadings(panel);
     const scrollRoot = getScrollRoot(panel);
@@ -279,6 +280,29 @@ export function initPlaybookToc(panel) {
                 mobileToggle.setAttribute('aria-expanded', 'false');
             }
         });
+    });
+
+    startLink?.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const id = startLink.dataset.targetId;
+
+        if (!id) {
+            return;
+        }
+
+        scrollToAnchor(id, panel);
+        suppressHashUpdate = true;
+        history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        window.setTimeout(() => {
+            suppressHashUpdate = false;
+        }, 500);
+        renderState(null, { fromScroll: true });
+
+        if (!isDesktopToc() && tocPanel && mobileToggle) {
+            tocPanel.classList.remove('playbook-toc__panel--open');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+        }
     });
 
     if (headings.length === 0) {

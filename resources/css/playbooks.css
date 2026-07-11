@@ -58,11 +58,28 @@
 }
 
 .playbook-detail__actions {
-    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0 0;
 }
 
-.playbook-detail__download {
-    margin: 1rem 0 0;
+.playbook-detail__actions .tools-btn--primary,
+.playbook-detail__actions .tools-btn--primary:visited {
+    background: var(--theme-color-primary);
+    border-color: var(--theme-color-primary);
+    color: var(--theme-color-primary-contrast);
+}
+
+.playbook-detail__actions .tools-btn--primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--theme-color-primary) 88%, #000);
+    border-color: color-mix(in srgb, var(--theme-color-primary) 88%, #000);
+    color: var(--theme-color-primary-contrast);
+}
+
+.playbook-detail__actions .tools-btn--primary i,
+.playbook-detail__actions .tools-btn--primary span {
+    color: inherit;
 }
 
 .playbook-meta {
@@ -255,6 +272,16 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--theme-color-accent);
+}
+
+a.playbook-toc__title {
+    display: inline-block;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+}
+
+a.playbook-toc__title:hover {
+    opacity: 0.85;
 }
 
 .playbook-toc__list {
@@ -512,7 +539,7 @@
         flex-direction: column;
         min-height: 0;
         overflow: hidden;
-        padding: 1.5rem 1.5rem 1.5rem 0;
+        padding: 1.5rem var(--tools-shell-padding-inline, 1rem) 1.5rem 1.25rem;
         border-left: 1px solid var(--base-border-color);
     }
 

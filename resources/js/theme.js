@@ -51,7 +51,13 @@ export function updateThemeToggleButton(scheme = getColorScheme()) {
     if (!toggle) return;
 
     const isDark = scheme === 'dark';
-    toggle.classList.toggle('tools-header__theme-toggle--dark', isDark);
+    const icon = toggle.querySelector('[data-theme-icon]');
+
+    if (icon) {
+        icon.classList.remove('fa-sun', 'fa-moon');
+        icon.classList.add(isDark ? 'fa-moon' : 'fa-sun');
+    }
+
     toggle.setAttribute('aria-pressed', String(isDark));
     toggle.setAttribute('data-i18n-aria', isDark ? 'theme.toggleToLight' : 'theme.toggleToDark');
     applyThemeToggleAria(getLocale(), isDark);

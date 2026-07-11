@@ -1,4 +1,4 @@
-@props(['entries'])
+@props(['entries', 'startId' => null])
 
 @php
     $groups = [];
@@ -27,7 +27,19 @@
     </div>
 
     <div class="playbook-toc__panel" id="playbook-toc-panel" data-playbook-toc-panel>
-        <p class="playbook-toc__title" data-i18n="playbooks.tocTitle">On this page</p>
+        @if ($startId)
+            <a
+                href="#{{ $startId }}"
+                class="playbook-toc__title"
+                data-playbook-toc-start
+                data-target-id="{{ $startId }}"
+                data-i18n="playbooks.tocTitle"
+            >
+                On this page
+            </a>
+        @else
+            <p class="playbook-toc__title" data-i18n="playbooks.tocTitle">On this page</p>
+        @endif
         <nav class="playbook-toc__nav">
             <ul class="playbook-toc__list">
                 @foreach ($groups as $group)
