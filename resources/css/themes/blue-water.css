@@ -29,6 +29,13 @@ html.bn-theme-blue-water-light {
     --bn-color-text-secondary: color-mix(in srgb, var(--content-font-color) 65%, transparent);
     --tools-header-height: 44px;
     --tools-sidebar-width: 260px;
+    --tools-app-art-glow-start: color-mix(in srgb, var(--theme-color-primary) 10%, var(--app-background-color));
+    --tools-app-art-glow-end: var(--app-background-color);
+    --tools-app-art-glow-accent: color-mix(in srgb, var(--theme-color-accent) 14%, var(--app-background-color));
+    --tools-app-art-stroke-primary: color-mix(in srgb, var(--theme-color-primary) 28%, transparent);
+    --tools-app-art-stroke-accent: color-mix(in srgb, var(--theme-color-accent) 32%, transparent);
+    --tools-app-art-stroke-muted: color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+    --tools-app-art-mesh: color-mix(in srgb, var(--theme-color-primary) 8%, transparent);
 }
 
 .bn-theme-blue-water-dark,
@@ -62,4 +69,11 @@ html.bn-theme-blue-water-dark {
     --bn-color-text-secondary: color-mix(in srgb, var(--content-font-color) 65%, transparent);
     --tools-header-height: 44px;
     --tools-sidebar-width: 260px;
+    --tools-app-art-glow-start: color-mix(in srgb, var(--theme-color-primary) 18%, var(--app-background-color));
+    --tools-app-art-glow-end: var(--app-background-color);
+    --tools-app-art-glow-accent: color-mix(in srgb, var(--theme-color-accent) 12%, var(--app-background-color));
+    --tools-app-art-stroke-primary: color-mix(in srgb, var(--theme-color-primary) 22%, transparent);
+    --tools-app-art-stroke-accent: color-mix(in srgb, var(--theme-color-accent) 26%, transparent);
+    --tools-app-art-stroke-muted: color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
+    --tools-app-art-mesh: color-mix(in srgb, var(--theme-color-primary) 7%, transparent);
 }

@@ -12,6 +12,76 @@ body {
     color: var(--content-font-color);
     font-family: var(--font-sans);
     line-height: 1.5;
+    position: relative;
+}
+
+.tools-app-art {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.tools-app-art svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.tools-app-art__glow-start {
+    stop-color: var(--tools-app-art-glow-start);
+}
+
+.tools-app-art__glow-end {
+    stop-color: var(--tools-app-art-glow-end);
+}
+
+.tools-app-art__glow-accent {
+    stop-color: var(--tools-app-art-glow-accent);
+}
+
+.tools-app-art__curve {
+    fill: none;
+    stroke-linecap: round;
+}
+
+.tools-app-art__curve--primary {
+    stroke: var(--tools-app-art-stroke-primary);
+    stroke-width: 1.35;
+}
+
+.tools-app-art__curve--accent {
+    stroke: var(--tools-app-art-stroke-accent);
+    stroke-width: 1.15;
+}
+
+.tools-app-art__curve--muted {
+    stroke: var(--tools-app-art-stroke-muted);
+    stroke-width: 1;
+}
+
+.tools-app-art__mesh-line {
+    fill: none;
+    stroke: var(--tools-app-art-mesh);
+    stroke-width: 0.75;
+    stroke-dasharray: 6 14;
+}
+
+.tools-app-art__node {
+    stroke: none;
+}
+
+.tools-app-art__node--primary {
+    fill: var(--tools-app-art-stroke-primary);
+}
+
+.tools-app-art__node--accent {
+    fill: var(--tools-app-art-stroke-accent);
+}
+
+.tools-app-art__node--muted {
+    fill: var(--tools-app-art-stroke-muted);
 }
 
 .tools-shell {
@@ -22,6 +92,8 @@ body {
     margin-inline: auto;
     width: 100%;
     --tools-shell-padding-inline: 1rem;
+    position: relative;
+    z-index: 1;
 }
 
 .tools-shell__header {
@@ -43,7 +115,9 @@ body {
 .tools-shell__sidebar {
     flex-shrink: 0;
     width: var(--tools-sidebar-width);
-    background: var(--surface-background-color);
+    background: color-mix(in srgb, var(--surface-background-color) 84%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-right: 1px solid var(--base-border-color);
     overflow-y: auto;
 }
@@ -52,7 +126,7 @@ body {
     flex: 1 1 auto;
     min-width: 0;
     overflow-y: auto;
-    background: var(--app-background-color);
+    background: var(--content-background-color);
 }
 
 .tools-shell:has(.tools-shell__main--playbook) {
