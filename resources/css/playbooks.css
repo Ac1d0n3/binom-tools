@@ -1,0 +1,565 @@
+@import './prism/prism-playbook.css';
+
+.playbook-detail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.playbook-detail__locale {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.playbook-detail__locale[hidden] {
+    display: none !important;
+}
+
+.playbook-detail__layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    min-height: 0;
+    max-width: none;
+    overflow: hidden;
+}
+
+.playbook-detail__scroll {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1.5rem;
+}
+
+.playbook-detail__hero {
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--base-border-color);
+    background: var(--content-background-color);
+}
+
+.playbook-detail__hero-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    object-fit: cover;
+}
+
+.playbook-detail__header {
+    margin-bottom: 1.5rem;
+}
+
+.playbook-detail__actions {
+    margin-top: 0.75rem;
+}
+
+.playbook-detail__download {
+    margin: 1rem 0 0;
+}
+
+.playbook-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin: 0;
+}
+
+.playbook-meta__item {
+    display: grid;
+    gap: 0.15rem;
+}
+
+.playbook-meta__item--tags {
+    flex: 1 1 100%;
+}
+
+.playbook-meta__label {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--bn-color-text-secondary);
+}
+
+.playbook-meta__value {
+    margin: 0;
+    font-size: 0.9375rem;
+}
+
+.playbook-meta__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+}
+
+.playbook-meta__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--surface-background-color));
+    color: var(--theme-color-primary);
+    font-size: 0.8125rem;
+}
+
+.playbook-prose {
+    color: var(--content-font-color);
+    line-height: 1.65;
+    font-size: 1rem;
+}
+
+.playbook-prose > *:first-child {
+    margin-top: 0;
+}
+
+.playbook-prose h2,
+.playbook-prose h3 {
+    scroll-margin-top: 1.5rem;
+    color: var(--content-font-color);
+}
+
+.playbook-prose h2 {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.playbook-prose h3 {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.playbook-prose p,
+.playbook-prose ul,
+.playbook-prose ol,
+.playbook-prose blockquote,
+.playbook-prose pre {
+    margin: 0 0 1rem;
+}
+
+.playbook-prose ul,
+.playbook-prose ol {
+    padding-left: 1.35rem;
+}
+
+.playbook-prose li + li {
+    margin-top: 0.35rem;
+}
+
+.playbook-prose a {
+    color: var(--theme-color-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.playbook-prose blockquote {
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--theme-color-accent);
+    background: color-mix(in srgb, var(--theme-color-accent) 8%, var(--surface-background-color));
+    border-radius: 0 8px 8px 0;
+}
+
+.playbook-prose__table-wrap {
+    overflow-x: auto;
+    margin: 0 0 1rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 8px;
+}
+
+.playbook-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+
+.playbook-prose th,
+.playbook-prose td {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--base-border-color);
+    text-align: left;
+    vertical-align: top;
+}
+
+.playbook-prose th {
+    background: var(--surface-background-color);
+    font-weight: 600;
+}
+
+.playbook-prose tr:last-child td {
+    border-bottom: 0;
+}
+
+.playbook-prose__image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 0 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--base-border-color);
+}
+
+.playbook-toc__mobile {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.playbook-toc__panel {
+    padding: 1rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 12px;
+    background: var(--content-background-color);
+}
+
+@media (max-width: 1099px) {
+    .playbook-detail__layout {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .playbook-detail__scroll {
+        order: 1;
+    }
+
+    .playbook-detail__toc-rail {
+        order: 0;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 15;
+        padding: 0.35rem 1.5rem 0.5rem;
+        background: var(--app-background-color);
+        border-bottom: 1px solid var(--base-border-color);
+    }
+
+    .playbook-toc__panel:not(.playbook-toc__panel--open) {
+        display: none;
+    }
+}
+
+.playbook-toc__title {
+    margin: 0 0 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--theme-color-accent);
+}
+
+.playbook-toc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.15rem;
+}
+
+.playbook-toc__group {
+    display: grid;
+    gap: 0.1rem;
+}
+
+.playbook-toc__group-header {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    min-width: 0;
+}
+
+.playbook-toc__group-toggle {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--bn-color-text-secondary);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.playbook-toc__group-toggle:hover {
+    color: var(--content-font-color);
+    background: color-mix(in srgb, var(--theme-color-accent) 8%, transparent);
+}
+
+.playbook-toc__group-toggle i {
+    font-size: 0.625rem;
+    transition: transform 0.15s ease;
+}
+
+.playbook-toc__group--expanded .playbook-toc__group-toggle i {
+    transform: rotate(90deg);
+}
+
+.playbook-toc__group-header .playbook-toc__link {
+    flex: 1;
+    min-width: 0;
+}
+
+.playbook-toc__group--active > .playbook-toc__group-header .playbook-toc__link:not(.playbook-toc__link--active) {
+    color: var(--content-font-color);
+    font-weight: 500;
+}
+
+.playbook-toc__sublist {
+    list-style: none;
+    margin: 0 0 0.25rem;
+    padding: 0 0 0 1.5rem;
+    display: none;
+    gap: 0.1rem;
+}
+
+.playbook-toc__sublist--open {
+    display: grid;
+}
+
+.playbook-toc__group--leaf .playbook-toc__link--leaf {
+    padding-left: 0.65rem;
+}
+
+.playbook-toc__group--leaf .playbook-toc__group-toggle,
+[data-playbook-toc-leaf] .playbook-toc__group-toggle {
+    display: none !important;
+}
+
+.playbook-toc__item--level-3 {
+    padding-left: 0;
+}
+
+.playbook-toc__link {
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 0.35rem 0.5rem 0.35rem 0.65rem;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    color: var(--bn-color-text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition:
+        color 0.15s ease,
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.playbook-toc__link:hover {
+    color: var(--content-font-color);
+    background: color-mix(in srgb, var(--theme-color-accent) 8%, transparent);
+}
+
+.playbook-toc__link--active {
+    color: var(--content-font-color);
+    border-left-color: var(--theme-color-accent);
+    background: color-mix(in srgb, var(--theme-color-accent) 14%, transparent);
+    font-weight: 600;
+}
+
+.playbook-toc__group--active > .playbook-toc__group-header .playbook-toc__link--active {
+    border-left-color: var(--theme-color-accent);
+}
+
+.playbook-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--base-border-color);
+}
+
+.playbook-pager__link {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 10px;
+    background: var(--content-background-color);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.playbook-pager__link:hover {
+    border-color: color-mix(in srgb, var(--theme-color-accent) 40%, var(--base-border-color));
+    box-shadow: 0 1px 4px color-mix(in srgb, #000 6%, transparent);
+}
+
+.playbook-pager__link--next {
+    text-align: right;
+}
+
+.playbook-pager__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--bn-color-text-secondary);
+}
+
+.playbook-pager__title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.playbook-pager__placeholder {
+    display: block;
+}
+
+.playbook-code {
+    margin: 0 0 1rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--content-background-color);
+}
+
+.playbook-code__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--base-border-color);
+    background: var(--surface-background-color);
+}
+
+.playbook-code__title {
+    min-width: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--content-font-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playbook-code__toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.playbook-code__language {
+    padding: 0.12rem 0.45rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--theme-color-accent) 14%, var(--surface-background-color));
+    color: var(--theme-color-accent);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.playbook-code__copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--bn-color-text-secondary);
+    cursor: pointer;
+}
+
+.playbook-code__copy:hover {
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+    color: var(--content-font-color);
+}
+
+.playbook-code pre {
+    margin: 0;
+    overflow-x: auto;
+}
+
+.playbook-code pre[class*='language-'] {
+    margin: 0;
+}
+
+.playbook-code code[class*='language-'] {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    tab-size: 4;
+}
+
+@media (min-width: 1100px) {
+    .playbook-detail__layout {
+        grid-template-columns: minmax(0, 1fr) 260px;
+        align-items: stretch;
+    }
+
+    .playbook-detail__toc-rail {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+        padding: 1.5rem 1.5rem 1.5rem 0;
+        border-left: 1px solid var(--base-border-color);
+    }
+
+    .playbook-toc {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+        width: 100%;
+    }
+
+    .playbook-toc__panel {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+        max-height: 100%;
+    }
+
+    .playbook-toc__nav {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        margin-right: -0.25rem;
+        padding-right: 0.25rem;
+    }
+
+    .playbook-toc__mobile {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .playbook-pager {
+        grid-template-columns: 1fr;
+    }
+
+    .playbook-pager__link--next {
+        text-align: left;
+    }
+}
+
+:root[data-color-scheme='dark'] .playbook-code .line-numbers-rows {
+    border-right-color: #555;
+}
+
+:root[data-color-scheme='dark'] .playbook-code .line-numbers-rows > span:before {
+    color: #777;
+}

@@ -1,4 +1,4 @@
-import { applyShellLabels, getLocale } from './locale';
+import { applyThemeToggleAria, getLocale } from './locale';
 
 const THEME_STORAGE_KEY = 'binom-tools-color-scheme';
 const THEME_LIGHT = 'bn-theme-blue-water-light';
@@ -54,7 +54,7 @@ export function updateThemeToggleButton(scheme = getColorScheme()) {
     toggle.classList.toggle('tools-header__theme-toggle--dark', isDark);
     toggle.setAttribute('aria-pressed', String(isDark));
     toggle.setAttribute('data-i18n-aria', isDark ? 'theme.toggleToLight' : 'theme.toggleToDark');
-    applyShellLabels(getLocale());
+    applyThemeToggleAria(getLocale(), isDark);
 }
 
 export function initThemeControls() {

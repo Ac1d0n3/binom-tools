@@ -4,17 +4,24 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:e2e": "playwright test"
     },
     "dependencies": {
         "@binom/sdk-governance": "file:../../GIT/binom-ngx/dist/binom/public/sdks/sdk-governance"
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^7.3.0",
+        "@playwright/test": "^1.52.0",
         "@tailwindcss/vite": "^4.0.0",
         "concurrently": "^9.0.1",
+        "jsdom": "^29.1.1",
         "laravel-vite-plugin": "^3.1",
+        "prismjs": "^1.30.0",
         "tailwindcss": "^4.0.0",
-        "vite": "^8.0.0"
+        "vite": "^8.0.0",
+        "vitest": "^3.2.4"
     }
 }

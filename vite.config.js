@@ -15,6 +15,8 @@ export default defineConfig(({ mode, command }) => {
                 input: [
                     'resources/css/app.css',
                     'resources/js/app.js',
+                    'resources/css/playbooks.css',
+                    'resources/js/playbooks/show.js',
                     'resources/js/tools/governance-ai-sanitizer/index.js',
                     'resources/js/tools/pii-policy-generator/index.js',
                     'resources/js/tools/schema-yml-editor/index.js',

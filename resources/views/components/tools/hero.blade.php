@@ -1,6 +1,7 @@
 @props([
     'heroPills' => [],
     'binomNgxDocsUrl' => '#',
+    'toolsOverviewUrl' => '#',
 ])
 
 <section class="tools-hero">
@@ -20,7 +21,7 @@
             <p class="tools-hero__notice" data-i18n="home.hero.notice"></p>
 
             <div class="tools-hero__actions">
-                <a href="#workflow-examples" class="tools-btn tools-btn--primary" data-i18n="home.hero.ctaWorkflows">
+                <a href="{{ $toolsOverviewUrl }}" class="tools-btn tools-btn--primary" data-i18n="home.hero.ctaWorkflows">
                     Explore workflow examples
                 </a>
                 <a

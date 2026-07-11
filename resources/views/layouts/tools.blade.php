@@ -14,7 +14,11 @@
             document.documentElement.dataset.colorScheme = scheme;
             var themeClass = scheme === 'dark' ? 'bn-theme-blue-water-dark' : 'bn-theme-blue-water-light';
             document.documentElement.classList.add(themeClass);
-            document.body.classList.add(themeClass);
+            document.addEventListener('DOMContentLoaded', function () {
+                if (document.body) {
+                    document.body.classList.add(themeClass);
+                }
+            });
         })();
     </script>
     @vite(array_merge(['resources/css/app.css', 'resources/js/app.js'], $viteEntries ?? []))
@@ -33,7 +37,11 @@
                 <x-tools.sidebar />
             </aside>
 
-            <main class="tools-shell__main" id="tools-main-content" tabindex="-1">
+            <main
+                class="tools-shell__main {{ $mainClass ?? '' }}"
+                id="tools-main-content"
+                tabindex="-1"
+            >
                 @yield('content')
             </main>
         </div>

@@ -9,12 +9,18 @@
     'external' => false,
     'cardId' => null,
     'example' => false,
+    'overviewItem' => false,
+    'searchText' => null,
+    'tags' => [],
 ])
 
 <a
     href="{{ $href }}"
     class="tools-card {{ $featured ? 'tools-card--featured' : '' }}"
     @if ($cardId) data-card-id="{{ $cardId }}" @endif
+    @if ($overviewItem) data-overview-item @endif
+    @if ($searchText) data-search-text="{{ $searchText }}" @endif
+    @if (count($tags) > 0) data-tags="{{ implode(',', $tags) }}" @endif
     @if ($external) target="_blank" rel="noopener noreferrer" @endif
 >
     <div class="tools-card__icon-wrap tools-card__icon-wrap--{{ $accent }}" aria-hidden="true">

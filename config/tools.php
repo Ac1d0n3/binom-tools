@@ -81,5 +81,6 @@ return [
     'links' => [
         'website' => env('BINOM_WEBSITE_URL', 'https://binom.net'),
         'binom_ngx_docs' => env('BINOM_NGX_DOCS_URL', 'http://localhost:4200'),
+        'repository' => env('BINOM_TOOLS_REPO_URL', 'https://github.com/binom/binom-tools'),
     ],
 ];
