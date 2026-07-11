@@ -9,6 +9,34 @@
             Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
         </p>
 
+        @foreach ($workflows as $workflowId => $workflow)
+            @php
+                $steps = $workflow['steps'] ?? [];
+                $navById = collect($navItems)->keyBy('id');
+            @endphp
+            <section class="tools-workflow-section" aria-labelledby="workflow-{{ $workflowId }}-title">
+                <h2 id="workflow-{{ $workflowId }}-title" class="tools-section__title">
+                    {{ $workflow['label']['en'] ?? $workflowId }}
+                </h2>
+                @if (! empty($workflow['description']['en']))
+                    <p class="tools-section__lead">{{ $workflow['description']['en'] }}</p>
+                @endif
+                <ol class="tools-workflow-steps">
+                    @foreach ($steps as $index => $stepId)
+                        @php $step = $navById->get($stepId); @endphp
+                        @if ($step)
+                            <li class="tools-workflow-steps__item">
+                                <span class="tools-workflow-steps__num">{{ $index + 1 }}</span>
+                                <a href="{{ route($step['route']) }}" class="tools-workflow-steps__link">
+                                    {{ $step['label']['en'] }}
+                                </a>
+                            </li>
+                        @endif
+                    @endforeach
+                </ol>
+            </section>
+        @endforeach
+
         <div class="tools-overview-toolbar">
             <label class="tools-overview-search">
                 <span class="sr-only" data-i18n="overview.searchLabel">Search</span>
@@ -27,6 +55,10 @@
         <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
             No matches for your search.
         </p>
+
+        @php
+            $workflowStepTotal = count(collect($workflows)->first()['steps'] ?? []);
+        @endphp
 
         <div class="tools-card-grid">
             @foreach ($navItems as $item)
@@ -49,6 +81,7 @@
                     :example="$item['example'] ?? false"
                     :overview-item="true"
                     :search-text="$searchText"
+                    :meta="isset($item['workflowStep']) ? 'Step ' . $item['workflowStep'] . '/' . $workflowStepTotal : null"
                 />
             @endforeach
         </div>

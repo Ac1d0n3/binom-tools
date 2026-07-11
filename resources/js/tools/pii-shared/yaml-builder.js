@@ -1,8 +1,16 @@
 /**
+ * @typedef {'details' | 'recommend'} YamlMetaMode
+ */
+
+/**
  * @param {import('./demo-model.js').DbtModelState} state
+ * @param {{ metaMode?: YamlMetaMode, piiReviewed?: boolean }} [options]
  * @returns {string}
  */
-export function buildDbtSchemaYaml(state) {
+export function buildDbtSchemaYaml(state, options = {}) {
+    const metaMode = options.metaMode ?? 'details';
+    const piiReviewed = options.piiReviewed ?? metaMode === 'details';
+
     /** @type {string[]} */
     let descriptionLines = state.modelDescription.split('\n');
 
@@ -14,11 +22,18 @@ export function buildDbtSchemaYaml(state) {
         descriptionLines.pop();
     }
 
+    const accessGroups = state.defaultModelAccessGroups?.length
+        ? state.defaultModelAccessGroups
+        : ['analyst', 'dpo'];
+
     const lines = [
         `version: ${state.version}`,
         '',
         'models:',
         `  - name: ${state.modelName}`,
+        '    meta:',
+        `      pii-reviewed: ${piiReviewed}`,
+        `      access_groups: [${accessGroups.join(', ')}]`,
         '    description: |',
         ...descriptionLines.map((line) => `      ${line}`),
         '',
@@ -31,8 +46,9 @@ export function buildDbtSchemaYaml(state) {
             lines.push(`        description: ${column.description.trim()}`);
         }
         if (column.category && column.category !== 'none') {
+            const metaKey = metaMode === 'recommend' ? 'pii_recommend' : 'pii_details';
             lines.push('        meta:');
-            lines.push('          pii_details:');
+            lines.push(`          ${metaKey}:`);
             lines.push(`            category: ${column.category}`);
 
             if (state.useAccessRoles) {

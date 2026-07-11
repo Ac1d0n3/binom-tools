@@ -8,7 +8,9 @@ export const schemaEditorLabels = {
         ...schemaHowtoLabels.de,
         'schema.pageTitle': 'Schema YML Editor',
         'schema.pageLead':
-            'schema.yml typo-sicher per Formular bearbeiten — Model- und Spalten-Beschreibungen, PII-Felder, synchron mit dem DBT Policy Generator.',
+            'Hilfs-Tool: einzelne schema.yml typo-sicher bearbeiten — nicht Teil der dbt-Einrichtungs-Kette (Steps 1–3).',
+        'schema.standaloneNotice':
+            'Dieses Tool ist nicht Teil der dbt PII Governance Einrichtung. Nutze es später zum Bearbeiten einzelner YAML-Dateien.',
         'schema.sync.title': 'Sync',
         'schema.sync.status': 'Bereit',
         'schema.sync.saved': 'PII-Meta in localStorage gespeichert',
@@ -57,7 +59,9 @@ export const schemaEditorLabels = {
         ...schemaHowtoLabels.en,
         'schema.pageTitle': 'Schema YML Editor',
         'schema.pageLead':
-            'Edit schema.yml via form without typos — model and column descriptions, PII fields, synced with the DBT Policy Generator.',
+            'Helper tool: edit individual schema.yml safely — not part of the dbt setup chain (steps 1–3).',
+        'schema.standaloneNotice':
+            'This tool is not part of the dbt PII Governance setup. Use it later to edit individual YAML files.',
         'schema.sync.title': 'Sync',
         'schema.sync.status': 'Ready',
         'schema.sync.saved': 'PII meta saved to localStorage',

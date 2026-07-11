@@ -23,6 +23,7 @@ import { buildColumnsAccordionHtml, syncColumnFromPanel } from '../pii-shared/co
 import { buildDbtMacro } from './dbt-macro-builder';
 import { buildDbtPolicy } from './dbt-policy-builder';
 import { buildDbtModelExample } from './dbt-model-builder';
+import { updateSyncStatusEl } from '../pii-shared/tool-utils.js';
 
 const app = document.getElementById('pii-policy-generator-app');
 if (!app) throw new Error('PII policy generator root element not found');
@@ -191,7 +192,7 @@ function bindColumnEvents() {
                 readModelFromForm();
                 const nameInput = /** @type {HTMLInputElement} */ (panel.querySelector('[data-field="name"]'));
                 if (field.matches('[data-field="name"]') && nameInput.value.trim()) {
-                    const suggested = suggestCategoryFromColumnName(nameInput.value, state.defaultScope);
+                    const suggested = suggestCategoryFromColumnName(nameInput.value, state.defaultScope, state.nameHeuristicRules);
                     const { piiType, scope } = splitCategoryValue(suggested);
                     /** @type {HTMLSelectElement} */ (panel.querySelector('[data-field="piiType"]')).value = piiType;
                     /** @type {HTMLSelectElement} */ (panel.querySelector('[data-field="scope"]')).value = scope;
@@ -218,7 +219,7 @@ function createColumn(name = '', category = 'none') {
     return {
         name,
         description: '',
-        category: category || suggestCategoryFromColumnName(name, state.defaultScope),
+        category: category || suggestCategoryFromColumnName(name, state.defaultScope, state.nameHeuristicRules),
         accessRoles: category !== 'none' ? [...state.defaultAccessRoles] : undefined,
     };
 }
@@ -242,7 +243,7 @@ function updateYamlPreview() {
         ...state,
         columns: state.columns.filter((col) => col.name.trim()),
     };
-    els.yamlTextarea.value = buildDbtSchemaYaml(previewState);
+    els.yamlTextarea.value = buildDbtSchemaYaml(previewState, { metaMode: 'details', piiReviewed: true });
 }
 
 function debouncedPushYamlToForm() {
@@ -268,15 +269,13 @@ function renderOutputs() {
     if (els.modelExamplePre) els.modelExamplePre.textContent = buildDbtModelExample(state);
 }
 
-function updateSyncStatus(source) {
-    if (!els.syncStatus) return;
-    const key = source === 'schema-yml-editor' ? 'pii.sync.loadedFromEditor' : 'pii.sync.saved';
-    els.syncStatus.textContent = t(locale(), key);
+function updateSyncStatus(meta) {
+    updateSyncStatusEl(els.syncStatus, meta, (key) => t(locale(), key));
 }
 
 function persistState() {
     debouncedSaveSchemaState(state, 'pii-policy-generator');
-    updateSyncStatus('pii-policy-generator');
+    updateSyncStatus({ savedAt: new Date().toISOString(), source: 'pii-policy-generator' });
 }
 
 function applyExternalPiiMeta(piiMeta) {
@@ -297,7 +296,7 @@ function execute(options = {}) {
         columns: state.columns.filter((col) => col.name.trim()),
     };
 
-    els.yamlTextarea.value = buildDbtSchemaYaml(previewState);
+    els.yamlTextarea.value = buildDbtSchemaYaml(previewState, { metaMode: 'details', piiReviewed: true });
     renderOutputs();
     if (els.parseError) els.parseError.hidden = true;
     if (!options.skipPersist) persistState();
@@ -362,7 +361,7 @@ function suggestAllCategories() {
     readColumnsFromDom();
     state.columns = state.columns.map((column) => ({
         ...column,
-        category: suggestCategoryFromColumnName(column.name, state.defaultScope),
+        category: suggestCategoryFromColumnName(column.name, state.defaultScope, state.nameHeuristicRules),
     }));
     renderColumns();
 }
@@ -450,6 +449,7 @@ function bindEvents() {
         applyPiiPolicyLabels(locale());
         updateAccessPanels();
         renderColumns();
+        updateSyncStatus(loadPiiMetaState()?.meta);
         [els.copyMacroBtn, els.copyPolicyBtn, els.copyModelBtn].forEach((btn) => {
             if (btn) btn.textContent = t(locale(), 'pii.copy');
         });
@@ -462,7 +462,7 @@ function init() {
     if (stored) {
         state = mergePiiMeta(state, stored.state);
         prepareColumnsForAccessMode(state);
-        updateSyncStatus(stored.meta.source);
+        updateSyncStatus(stored.meta);
     }
     writeModelToForm();
     renderColumns();
@@ -471,7 +471,7 @@ function init() {
     subscribeSchemaState(({ state: piiMeta, meta }) => {
         if (!piiMeta || meta?.source === 'pii-policy-generator') return;
         applyExternalPiiMeta(piiMeta);
-        if (meta) updateSyncStatus(meta.source);
+        if (meta) updateSyncStatus(meta);
     });
 }
 

@@ -6,7 +6,7 @@ const META_KEY = 'binom-tools-pii-schema-meta';
 const YAML_SESSION_KEY = 'binom-tools-schema-yaml-draft';
 const EVENT_NAME = 'binom-tools:pii-schema-updated';
 
-/** @typedef {{ savedAt: string, source: 'pii-policy-generator' | 'schema-yml-editor' | 'manual' }} SchemaMeta */
+/** @typedef {{ savedAt: string, source: 'dbt-governance-macro-generator' | 'pii-policy-generator' | 'pii-unreviewed-gate-generator' | 'pii-recommend-generator' | 'schema-yml-editor' | 'manual' }} SchemaMeta */
 
 /**
  * @returns {{ state: import('./pii-meta.js').PiiMetaState, meta: SchemaMeta } | null}

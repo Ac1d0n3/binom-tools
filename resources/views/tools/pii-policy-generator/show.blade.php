@@ -9,6 +9,8 @@
         <h1 class="tools-page-title" data-i18n="pii.pageTitle">DBT Policy Generator</h1>
         <p class="tools-page-lead" data-i18n="pii.pageLead"></p>
 
+        <x-tools.workflow-nav tool-id="pii-policy-generator" />
+
         <div class="pii-policy-generator" id="pii-policy-generator-app">
             <x-tools.collapsible-info summary-key="pii.howto.summary" :open="true">
                 <p data-i18n="pii.howto.overview.intro"></p>
@@ -21,6 +23,7 @@
                     <li data-i18n="pii.howto.overview.step6"></li>
                     <li data-i18n="pii.howto.overview.step7"></li>
                     <li data-i18n="pii.howto.overview.step8"></li>
+                    <li data-i18n="pii.howto.overview.step9"></li>
                 </ol>
                 <p data-i18n="pii.howto.overview.tip"></p>
             </x-tools.collapsible-info>

@@ -25,7 +25,7 @@ export function buildDbtModelExample(state) {
     const selectLines = [
         ...plainColumns.map((col) => `    ${col.name},`),
         ...piiColumns.map(
-            (col) => `    {{ pii_column_for_role('${col.name}', var('pii_user_role')) }} as ${col.name},`,
+            (col) => `    {{ pii_column_for_role('${col.name}', var('pii_user_role'), '${state.modelName}') }} as ${col.name},`,
         ),
     ];
 
@@ -36,6 +36,9 @@ export function buildDbtModelExample(state) {
     const databaseComment = database ? `\n-- Source database: ${database}` : '';
 
     return `-- models/marts/${state.modelName}_secure.sql
+-- Step 2 — DBT Policy Generator
+-- Requires: macros/pii_governance.sql (Step 1 — Governance Macro Generator)
+-- Requires: models/schema/${state.modelName}.yml with meta.pii_details (this tool)
 -- Runnable example: set var pii_user_role in dbt_project.yml or via --vars${databaseComment}
 
 {{ config(

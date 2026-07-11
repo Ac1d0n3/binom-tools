@@ -33,9 +33,42 @@ class ToolsPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Governance AI Sanitizer');
+        $response->assertSee('Governance Macro Generator');
+        $response->assertSee('Unreviewed Table Gate Generator');
+        $response->assertSee('PII Recommend Generator');
+        $response->assertSee('tools-workflow-section', false);
         $response->assertSee('data-overview-filter-root', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-item', false);
+    }
+
+    public function test_governance_macro_generator_page_renders(): void
+    {
+        $response = $this->get('/tools/dbt-governance-macro-generator');
+
+        $response->assertOk();
+        $response->assertSee('dbt-governance-macro-generator-app', false);
+        $response->assertSee('tools-workflow-flowchart', false);
+    }
+
+    public function test_unreviewed_gate_generator_page_renders(): void
+    {
+        $response = $this->get('/tools/pii-unreviewed-gate-generator');
+
+        $response->assertOk();
+        $response->assertSee('pii-unreviewed-gate-generator-app', false);
+        $response->assertSee('tools-workflow-flowchart', false);
+    }
+
+    public function test_pii_recommend_generator_page_renders(): void
+    {
+        $response = $this->get('/tools/pii-recommend-generator');
+
+        $response->assertOk();
+        $response->assertSee('pii-recommend-generator-app', false);
+        $response->assertSee('tools-workflow-flowchart', false);
+        $response->assertSee('rec-name-rules-body', false);
+        $response->assertSee('rec-content-rules-body', false);
     }
 
     public function test_sidebar_includes_home_link(): void

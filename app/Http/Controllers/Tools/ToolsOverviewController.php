@@ -11,6 +11,7 @@ class ToolsOverviewController extends Controller
     {
         return view('tools.overview', [
             'navItems' => config('tools.nav', []),
+            'workflows' => config('tools.workflows', []),
         ]);
     }
 }

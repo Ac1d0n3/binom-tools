@@ -1,19 +1,32 @@
-import { createDefaultModelState } from './demo-model.js';
+import {
+    DEFAULT_CONTENT_SCAN_MIN_MATCH_RATE,
+    normalizeContentHeuristicRules,
+} from './content-heuristic-rules.js';
+import { createDefaultModelState, DEFAULT_REVIEW_ROLES } from './demo-model.js';
+import { normalizeHeuristicRules } from './heuristic-rules.js';
+import { normalizeWarehouseId } from './warehouse-templates.js';
 
 /**
  * PII classification data shared between tools — no model names, descriptions, or doc text.
  * @typedef {Object} PiiMetaState
+ * @property {import('./warehouse-templates.js').WarehouseId} selectedWarehouse
  * @property {string} piiVersion
  * @property {import('./demo-model.js').PiiScope} defaultScope
  * @property {boolean} useAccessRoles
  * @property {string[]} defaultAccessRoles
  * @property {import('./demo-model.js').AccessRules} accessRules
+ * @property {string[]} defaultModelAccessGroups
+ * @property {import('./heuristic-rules.js').HeuristicRule[]} nameHeuristicRules
+ * @property {import('./content-heuristic-rules.js').ContentHeuristicRule[]} contentHeuristicRules
+ * @property {string[]} defaultReviewRoles
+ * @property {number} contentScanDefaultMinMatchRate
  * @property {Array<{ name: string, category: string, accessRoles?: string[] }>} columns
  */
 
 /** @param {import('./demo-model.js').DbtModelState} state @returns {PiiMetaState} */
 export function extractPiiMeta(state) {
     return {
+        selectedWarehouse: normalizeWarehouseId(state.selectedWarehouse),
         piiVersion: state.piiVersion,
         defaultScope: state.defaultScope,
         useAccessRoles: state.useAccessRoles,
@@ -22,6 +35,12 @@ export function extractPiiMeta(state) {
             masked: [...state.accessRules.masked],
             unmasked: [...state.accessRules.unmasked],
         },
+        defaultModelAccessGroups: [...(state.defaultModelAccessGroups ?? [])],
+        nameHeuristicRules: normalizeHeuristicRules(state.nameHeuristicRules),
+        contentHeuristicRules: normalizeContentHeuristicRules(state.contentHeuristicRules),
+        defaultReviewRoles: [...(state.defaultReviewRoles ?? DEFAULT_REVIEW_ROLES)],
+        contentScanDefaultMinMatchRate:
+            state.contentScanDefaultMinMatchRate ?? DEFAULT_CONTENT_SCAN_MIN_MATCH_RATE,
         columns: state.columns
             .filter((col) => col.name.trim())
             .map((col) => ({
@@ -49,6 +68,9 @@ export function normalizePiiMeta(raw) {
     }
 
     return {
+        selectedWarehouse: normalizeWarehouseId(
+            typeof raw.selectedWarehouse === 'string' ? raw.selectedWarehouse : defaults.selectedWarehouse,
+        ),
         piiVersion: typeof raw.piiVersion === 'string' ? raw.piiVersion : defaults.piiVersion,
         defaultScope: raw.defaultScope ?? defaults.defaultScope,
         useAccessRoles: raw.useAccessRoles ?? defaults.useAccessRoles,
@@ -59,6 +81,20 @@ export function normalizePiiMeta(raw) {
             masked: raw.accessRules?.masked ?? defaults.accessRules.masked,
             unmasked: raw.accessRules?.unmasked ?? defaults.accessRules.unmasked,
         },
+        defaultModelAccessGroups: Array.isArray(raw.defaultModelAccessGroups)
+            ? raw.defaultModelAccessGroups
+            : defaults.defaultModelAccessGroups,
+        nameHeuristicRules: normalizeHeuristicRules(raw.nameHeuristicRules ?? defaults.nameHeuristicRules),
+        contentHeuristicRules: normalizeContentHeuristicRules(
+            raw.contentHeuristicRules ?? defaults.contentHeuristicRules,
+        ),
+        defaultReviewRoles: Array.isArray(raw.defaultReviewRoles)
+            ? raw.defaultReviewRoles
+            : defaults.defaultReviewRoles,
+        contentScanDefaultMinMatchRate:
+            typeof raw.contentScanDefaultMinMatchRate === 'number'
+                ? raw.contentScanDefaultMinMatchRate
+                : defaults.contentScanDefaultMinMatchRate,
         columns: Array.isArray(raw.columns)
             ? raw.columns.map((col) => ({
                   name: col.name ?? '',
@@ -105,11 +141,31 @@ export function mergePiiMeta(workspace, piiMeta) {
 
     return {
         ...workspace,
+        selectedWarehouse: piiMeta.selectedWarehouse ?? workspace.selectedWarehouse,
         piiVersion: piiMeta.piiVersion || workspace.piiVersion,
         defaultScope: piiMeta.defaultScope ?? workspace.defaultScope,
         useAccessRoles: piiMeta.useAccessRoles ?? workspace.useAccessRoles,
         defaultAccessRoles: piiMeta.defaultAccessRoles ?? workspace.defaultAccessRoles,
         accessRules: piiMeta.accessRules ?? workspace.accessRules,
+        defaultModelAccessGroups: piiMeta.defaultModelAccessGroups ?? workspace.defaultModelAccessGroups,
+        nameHeuristicRules: piiMeta.nameHeuristicRules ?? workspace.nameHeuristicRules,
+        contentHeuristicRules: piiMeta.contentHeuristicRules ?? workspace.contentHeuristicRules,
+        defaultReviewRoles: piiMeta.defaultReviewRoles ?? workspace.defaultReviewRoles,
+        contentScanDefaultMinMatchRate:
+            piiMeta.contentScanDefaultMinMatchRate ?? workspace.contentScanDefaultMinMatchRate,
         columns: mergedColumns,
     };
+}
+
+/** @param {import('./schema-storage.js').SchemaMeta['source']} source @returns {string} */
+export function formatSyncSourceLabel(source) {
+    const labels = {
+        'dbt-governance-macro-generator': 'Governance Macro Generator',
+        'pii-policy-generator': 'DBT Policy Generator',
+        'pii-unreviewed-gate-generator': 'Unreviewed Table Gate Generator',
+        'pii-recommend-generator': 'PII Recommend Generator',
+        'schema-yml-editor': 'Schema YML Editor',
+        manual: 'manual',
+    };
+    return labels[source] ?? source;
 }

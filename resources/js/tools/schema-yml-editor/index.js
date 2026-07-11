@@ -121,7 +121,7 @@ function cancelYamlToForm() {
 function pushFormToYaml() {
     if (syncingFromYaml || !els.yamlTextarea) return;
     syncStateFromForm();
-    const yaml = buildDbtSchemaYaml(yamlPreviewState());
+    const yaml = buildDbtSchemaYaml(yamlPreviewState(), { metaMode: 'details', piiReviewed: true });
     els.yamlTextarea.value = yaml;
     saveYamlDraft(yaml);
     if (els.yamlParseError) els.yamlParseError.hidden = true;
@@ -321,7 +321,7 @@ function ensureYamlDraft() {
         return;
     }
 
-    const yaml = buildDbtSchemaYaml(yamlPreviewState());
+    const yaml = buildDbtSchemaYaml(yamlPreviewState(), { metaMode: 'details', piiReviewed: true });
     els.yamlTextarea.value = yaml;
     saveYamlDraft(yaml);
 }

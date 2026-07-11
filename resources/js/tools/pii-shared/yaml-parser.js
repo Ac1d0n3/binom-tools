@@ -1,3 +1,5 @@
+import { createDefaultModelState } from './demo-model.js';
+
 /** @param {string} raw */
 function parseList(raw) {
     const trimmed = raw.trim();
@@ -37,19 +39,10 @@ function extractDescriptionMetadata(state, line) {
 export function parseDbtSchemaYaml(yaml) {
     try {
         /** @type {import('./demo-model.js').DbtModelState} */
-        const state = {
-            version: 2,
-            modelName: 'example_table',
-            sourceTable: '',
-            piiVersion: '',
-            modelDescription: '',
-            descriptionExtra: '',
-            defaultScope: 'internal',
-            useAccessRoles: true,
-            defaultAccessRoles: ['analyst', 'support'],
-            accessRules: { masked: ['analyst', 'support'], unmasked: ['admin', 'dpo'] },
-            columns: [],
-        };
+        const state = createDefaultModelState();
+        state.modelDescription = '';
+        state.descriptionExtra = '';
+        state.columns = [];
 
         const lines = yaml.split('\n');
         let inDescription = false;
@@ -58,6 +51,7 @@ export function parseDbtSchemaYaml(yaml) {
         let currentColumn = null;
         let modelNameSet = false;
         let inAccessRules = false;
+        let inColumnMeta = false;
 
         for (const rawLine of lines) {
             const trimmed = rawLine.trim();
@@ -83,6 +77,15 @@ export function parseDbtSchemaYaml(yaml) {
                 continue;
             }
 
+            if (trimmed.startsWith('pii-reviewed:')) {
+                continue;
+            }
+
+            if (trimmed.startsWith('access_groups:')) {
+                state.defaultModelAccessGroups = parseList(trimmed.slice(14));
+                continue;
+            }
+
             if (trimmed.startsWith('- name:')) {
                 const name = trimmed.slice(7).trim();
                 const indent = rawLine.match(/^\s*/)?.[0].length ?? 0;
@@ -92,12 +95,14 @@ export function parseDbtSchemaYaml(yaml) {
                     modelNameSet = true;
                     currentColumn = null;
                     inAccessRules = false;
+                    inColumnMeta = false;
                     continue;
                 }
 
                 if (currentColumn) state.columns.push(currentColumn);
                 currentColumn = { name, category: 'none', description: '' };
                 inAccessRules = false;
+                inColumnMeta = false;
                 continue;
             }
 
@@ -121,20 +126,29 @@ export function parseDbtSchemaYaml(yaml) {
                 continue;
             }
 
-            if (trimmed.startsWith('category:')) {
-                if (currentColumn) currentColumn.category = trimmed.slice(9).trim();
+            if (trimmed === 'pii_details:' || trimmed === 'pii_recommend:') {
+                inColumnMeta = true;
+                continue;
+            }
+
+            if (trimmed.startsWith('category:') && currentColumn && inColumnMeta) {
+                currentColumn.category = trimmed.slice(9).trim();
                 continue;
             }
 
             if (trimmed.startsWith('access_roles:')) {
                 state.useAccessRoles = true;
-                if (currentColumn) currentColumn.accessRoles = parseList(trimmed.slice(13));
+                if (currentColumn && inColumnMeta) {
+                    currentColumn.accessRoles = parseList(trimmed.slice(13));
+                }
                 continue;
             }
 
             if (trimmed === 'access_rules:') {
-                state.useAccessRoles = false;
-                inAccessRules = true;
+                if (currentColumn && inColumnMeta) {
+                    state.useAccessRoles = false;
+                    inAccessRules = true;
+                }
                 continue;
             }
 

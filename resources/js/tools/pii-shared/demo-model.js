@@ -1,3 +1,18 @@
+import {
+    REFERENCE_MODEL_ACCESS_GROUPS,
+    REFERENCE_MODEL_NAME,
+    REFERENCE_PII_VERSION,
+    REFERENCE_SOURCE_TABLE,
+} from './reference-scenario.js';
+import {
+    DEFAULT_CONTENT_SCAN_MIN_MATCH_RATE,
+    normalizeContentHeuristicRules,
+} from './content-heuristic-rules.js';
+import { DEFAULT_HEURISTIC_RULES, normalizeHeuristicRules } from './heuristic-rules.js';
+import { normalizeWarehouseId } from './warehouse-templates.js';
+
+export const DEFAULT_REVIEW_ROLES = ['dpo', 'security'];
+
 /** @typedef {'internal' | 'external' | 'none'} PiiScope */
 
 /**
@@ -26,6 +41,12 @@
  * @property {boolean} useAccessRoles
  * @property {string[]} defaultAccessRoles
  * @property {AccessRules} accessRules
+ * @property {string[]} defaultModelAccessGroups
+ * @property {import('./warehouse-templates.js').WarehouseId} selectedWarehouse
+ * @property {import('./heuristic-rules.js').HeuristicRule[]} nameHeuristicRules
+ * @property {import('./content-heuristic-rules.js').ContentHeuristicRule[]} contentHeuristicRules
+ * @property {string[]} defaultReviewRoles
+ * @property {number} contentScanDefaultMinMatchRate
  * @property {ModelColumn[]} columns
  */
 
@@ -117,11 +138,11 @@ export function createDefaultColumns() {
 
 /** @returns {DbtModelState} */
 export function createDefaultModelState() {
-    const sourceTable = 'raw.example_table';
-    const piiVersion = 'cf38c9353be46d305f35c22a8d926c62';
+    const sourceTable = REFERENCE_SOURCE_TABLE;
+    const piiVersion = REFERENCE_PII_VERSION;
     return {
         version: 2,
-        modelName: 'example_table',
+        modelName: REFERENCE_MODEL_NAME,
         sourceTable,
         piiVersion,
         modelDescription: buildDefaultModelDescription(sourceTable, piiVersion),
@@ -133,6 +154,12 @@ export function createDefaultModelState() {
             masked: ['analyst', 'support'],
             unmasked: ['admin', 'dpo'],
         },
+        defaultModelAccessGroups: [...REFERENCE_MODEL_ACCESS_GROUPS],
+        selectedWarehouse: 'snowflake',
+        nameHeuristicRules: normalizeHeuristicRules(DEFAULT_HEURISTIC_RULES),
+        contentHeuristicRules: normalizeContentHeuristicRules(null),
+        defaultReviewRoles: [...DEFAULT_REVIEW_ROLES],
+        contentScanDefaultMinMatchRate: DEFAULT_CONTENT_SCAN_MIN_MATCH_RATE,
         columns: createDefaultColumns(),
     };
 }
@@ -156,6 +183,19 @@ export function normalizeModelState(raw) {
             masked: raw.accessRules?.masked ?? defaults.accessRules.masked,
             unmasked: raw.accessRules?.unmasked ?? defaults.accessRules.unmasked,
         },
+        defaultModelAccessGroups: Array.isArray(raw.defaultModelAccessGroups)
+            ? raw.defaultModelAccessGroups
+            : defaults.defaultModelAccessGroups,
+        selectedWarehouse: normalizeWarehouseId(raw.selectedWarehouse ?? defaults.selectedWarehouse),
+        nameHeuristicRules: normalizeHeuristicRules(raw.nameHeuristicRules ?? defaults.nameHeuristicRules),
+        contentHeuristicRules: normalizeContentHeuristicRules(
+            raw.contentHeuristicRules ?? defaults.contentHeuristicRules,
+        ),
+        defaultReviewRoles: Array.isArray(raw.defaultReviewRoles)
+            ? raw.defaultReviewRoles
+            : defaults.defaultReviewRoles,
+        contentScanDefaultMinMatchRate:
+            raw.contentScanDefaultMinMatchRate ?? defaults.contentScanDefaultMinMatchRate,
         columns: Array.isArray(raw.columns)
             ? raw.columns.map((col) => ({
                   name: col.name ?? '',
@@ -193,53 +233,22 @@ export function splitCategoryValue(category) {
 
 /**
  * @param {string} columnName
- * @param {PiiScope} defaultScope
+ * @param {PiiScope} [defaultScope]
+ * @param {import('./heuristic-rules.js').HeuristicRule[]} [rules]
  */
-export function suggestCategoryFromColumnName(columnName, defaultScope = 'internal') {
+export function suggestCategoryFromColumnName(columnName, defaultScope = 'internal', rules = DEFAULT_HEURISTIC_RULES) {
     const lower = columnName.trim().toLowerCase();
     if (!lower) return 'none';
+    if (lower === 'id') return 'none';
 
-    if (lower.includes('info_mail') || lower.includes('info-mail') || lower === 'info_email') {
-        return 'none';
-    }
-    if (lower === 'id' || lower.endsWith('_id') || lower.includes('created_at') || lower.includes('updated_at')) {
-        return 'none';
-    }
-    if (lower.includes('email') || (lower.includes('mail') && !lower.includes('info'))) {
-        return buildCategoryValue('email', defaultScope);
-    }
-    if (lower.includes('agent_name') || lower.includes('full_name') || lower.includes('person_name') || (lower.includes('name') && !lower.includes('filename'))) {
-        return buildCategoryValue('name', defaultScope);
-    }
-    if (lower.includes('ipv4') || lower.includes('ipv6') || lower.includes('ip') || lower.includes('client_ip')) {
-        return buildCategoryValue('ip', defaultScope);
-    }
-    if (lower.includes('address') || lower.includes('street') || lower.includes('postal') || lower.includes('zip')) {
-        return buildCategoryValue('address', defaultScope);
-    }
-    if (lower.includes('phone') || lower.includes('mobile') || lower.includes('tel')) {
-        return buildCategoryValue('phone', defaultScope);
-    }
-    if (lower.includes('geo') || lower.includes('latitude') || lower.includes('longitude') || lower.includes('lat') || lower.includes('lon')) {
-        return buildCategoryValue('geo', defaultScope);
-    }
-    if (lower.includes('card') || lower.includes('pan')) {
-        return buildCategoryValue('card', defaultScope);
-    }
-    if (lower.includes('iban')) {
-        return buildCategoryValue('iban', defaultScope);
-    }
-    if (lower.includes('passport')) {
-        return buildCategoryValue('passport', defaultScope);
-    }
-    if (lower.includes('plate') || lower.includes('license')) {
-        return buildCategoryValue('license_plate', defaultScope);
-    }
-    if (lower.includes('dob') || lower.includes('birth') || lower.includes('date_of_birth')) {
-        return buildCategoryValue('date_of_birth', defaultScope);
-    }
-    if (lower.includes('url') || lower.includes('link') || lower.includes('website')) {
-        return buildCategoryValue('url', defaultScope);
+    const normalizedRules = normalizeHeuristicRules(rules);
+    for (const rule of normalizedRules) {
+        const pattern = rule.pattern.toLowerCase();
+        if (!pattern || !lower.includes(pattern)) continue;
+        if (rule.piiType === 'none') return 'none';
+        if (pattern === 'mail' && lower.includes('info')) continue;
+        if (pattern === 'name' && lower.includes('filename')) continue;
+        return buildCategoryValue(rule.piiType, defaultScope);
     }
 
     return 'none';

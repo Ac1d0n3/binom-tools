@@ -8,7 +8,7 @@ export const piiPolicyLabels = {
         ...piiHowtoLabels.de,
         'pii.pageTitle': 'DBT Policy Generator',
         'pii.pageLead':
-            'dbt schema.yml mit meta.pii_details generieren — inkl. access_roles oder access_rules, lauffähige Macro- und Model-Beispiele.',
+            'Schritt 2/4: pii_details schema.yml-Beispiel und Secure Model — Zielzustand nach Review. Einstellungen werden mit Steps 1, 3 und 4 geteilt.',
         'pii.scenario.title': 'Zugriffsszenario',
         'pii.scenario.roles':
             'Mit access_roles: Nur Rollen in der Liste sehen unmaskierte Werte. Alle anderen erhalten maskierte Ausgabe via pii_column_for_role().',
@@ -53,6 +53,7 @@ export const piiPolicyLabels = {
         'pii.yaml.openEditor': 'Im Schema Editor öffnen',
         'pii.sync.saved': 'Gespeichert in localStorage',
         'pii.sync.loadedFromEditor': 'Aus Schema Editor geladen',
+        'shared.syncStatus': 'Einstellungen zuletzt von {source} ({time})',
         'pii.yaml.parseError': 'YAML konnte nicht gelesen werden. Bitte dbt-Format prüfen.',
         'pii.macro.title': 'DBT Macros (pii_governance.sql)',
         'pii.macro.description': 'Kopiere nach macros/pii_governance.sql — enthält pii_mask und pii_column_for_role.',
@@ -71,7 +72,7 @@ export const piiPolicyLabels = {
         ...piiHowtoLabels.en,
         'pii.pageTitle': 'DBT Policy Generator',
         'pii.pageLead':
-            'Generate dbt schema.yml with meta.pii_details — including access_roles or access_rules and runnable macro/model examples.',
+            'Step 2/4: pii_details schema.yml example and secure model — target state after review. Settings shared with steps 1, 3, and 4.',
         'pii.scenario.title': 'Access scenario',
         'pii.scenario.roles':
             'With access_roles: only listed roles see unmasked values. Everyone else gets masked output via pii_column_for_role().',
@@ -116,6 +117,7 @@ export const piiPolicyLabels = {
         'pii.yaml.openEditor': 'Open in Schema Editor',
         'pii.sync.saved': 'Saved to localStorage',
         'pii.sync.loadedFromEditor': 'Loaded from Schema Editor',
+        'shared.syncStatus': 'Settings last saved by {source} ({time})',
         'pii.yaml.parseError': 'Could not parse YAML. Please check dbt format.',
         'pii.macro.title': 'DBT macros (pii_governance.sql)',
         'pii.macro.description': 'Copy to macros/pii_governance.sql — includes pii_mask and pii_column_for_role.',

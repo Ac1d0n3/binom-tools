@@ -6,25 +6,27 @@ export const piiHowtoLabels = {
         'pii.howto.summary': 'So funktioniert\'s',
 
         'pii.howto.overview.intro':
-            'Dieses Tool führt dich durch die erste lauffähige PII Governance in einem dbt-Projekt — von der Spalten-Klassifizierung bis zum getesteten Secure-View.',
+            'Schritt 2/4 — Zielzustand nach Review: pii_details schema.yml-Beispiel und Secure Model. Voraussetzung: macros/pii_governance.sql aus Step 1.',
         'pii.howto.overview.step1':
             'Spalten einfügen und PII-Typ + Scope zuweisen (oder Vorschläge nutzen). Felder ohne PII auf none setzen.',
         'pii.howto.overview.step2':
             'Zugriffsmodell wählen: access_roles (Whitelist) oder access_rules (masked/unmasked).',
         'pii.howto.overview.step3':
-            'Execute klicken — schema.yml mit meta.pii_details wird generiert.',
+            'Execute klicken — schema.yml mit meta.pii_details und pii-reviewed: true wird generiert.',
         'pii.howto.overview.step4':
-            'DBT Macro nach macros/pii_governance.sql kopieren.',
+            'Secure-View-SQL nach models/marts/example_table_secure.sql kopieren — nutzt pii_column_for_role() aus Step 1.',
         'pii.howto.overview.step5':
-            'sources.yml anlegen (siehe Model-Beispiel) und Secure-View-SQL nach models/marts/example_table_secure.sql kopieren.',
+            'sources.yml anlegen (siehe Model-Beispiel) und schema.yml ins dbt-Projekt kopieren.',
         'pii.howto.overview.step6':
             'In dbt_project.yml die Variable pii_user_role setzen — z. B. analyst für Analysten, admin für Vollzugriff.',
         'pii.howto.overview.step7':
-            'Testen: dbt run --select example_table_secure --vars \'{"pii_user_role": "analyst"}\'',
+            'Testen: dbt test --select test_type:generic und dbt run --select example_table_secure --vars \'{"pii_user_role": "analyst"}\'',
         'pii.howto.overview.step8':
-            'Ergebnis prüfen: analyst sieht maskierte PII, admin sieht Rohdaten (je nach gewähltem Modus).',
+            'Step 3 (Table Gate): unreviewed Models verstecken bis pii-reviewed: true. Step 4 (PII Recommend): Spalten-Audits.',
+        'pii.howto.overview.step9':
+            'Nach Review hierher zurück — pii_details + pii-reviewed: true ist der Zielzustand.',
         'pii.howto.overview.tip':
-            'Tipp: Beginne mit access_roles — einfacher für den Einstieg. access_rules eignet sich, wenn du explizit masked und unmasked Rollen trennen willst.',
+            'Tipp: Step 1 Makros müssen im Projekt liegen, bevor das Secure Model lauffähig ist.',
 
         'pii.howto.scenario.intro':
             'Das Zugriffsszenario bestimmt, wie pii_column_for_role() PII-Spalten pro Benutzerrolle ausgibt.',
@@ -75,28 +77,28 @@ export const piiHowtoLabels = {
             'Nach Änderungen immer Execute klicken, damit YAML und Macro aktuell bleiben.',
 
         'pii.howto.yaml.intro':
-            'Die schema.yml ist die zentrale Policy-Definition für dbt docs und Governance.',
+            'Die schema.yml ist die produktive Policy-Definition — meta.pii_details + pii-reviewed: true.',
         'pii.howto.yaml.step1':
             'Execute aktualisiert das YAML aus dem Formular.',
         'pii.howto.yaml.step2':
             'Load from YAML: Bestehende schema.yml importieren und im Tool bearbeiten.',
         'pii.howto.yaml.step3':
-            'Kopiere das YAML nach models/schema.yml (oder models/marts/schema.yml) in dein dbt-Projekt.',
+            'Kopiere das YAML nach models/schema/ in dein dbt-Projekt — Zielzustand nach Review.',
         'pii.howto.yaml.tip':
-            'Das YAML-Format entspricht dbt version: 2 mit models → columns → meta.pii_details.',
+            'Vergleiche mit Step 3: dort pii_recommend + pii-reviewed: false (Empfehlungs-Zustand).',
 
         'pii.howto.macro.intro':
-            'Das Macro implementiert die Laufzeit-Logik für rollenbasierte Maskierung in SQL.',
+            'Laufzeit-Makros kommen aus Step 1 (Governance Macro Generator) — hier nur Verweis und Beispiel.',
         'pii.howto.macro.step1':
-            'Kopiere den gesamten Block nach macros/pii_governance.sql.',
+            'Kopiere pii_governance.sql aus Step 1 nach macros/ — falls noch nicht geschehen.',
         'pii.howto.macro.step2':
-            'pii_mask: Erzeugt maskierte Ausgabe für sensitive Spalten.',
+            'pii_mask und pii_column_for_role werden dort generiert — warehouse-spezifische SQL-Syntax.',
         'pii.howto.macro.step3':
-            'pii_column_for_role: Entscheidet pro Spalte und Rolle zwischen Rohdaten, Maske oder null.',
+            'pii_column_for_role liest meta.pii_details aus dem dbt-Graph zur Laufzeit.',
         'pii.howto.macro.step4':
-            'pii_meta_for_column: Liest die Policy aus dem eingebetteten Mapping (aus deiner schema.yml abgeleitet).',
+            'Dieses Tool erzeugt kein separates Macro mehr — vermeidet Duplikate.',
         'pii.howto.macro.tip':
-            'Nach Policy-Änderungen Macro neu generieren und ersetzen — das Mapping ist modell-spezifisch.',
+            'Nach Warehouse- oder Rollen-Änderung in Step 1: Makro neu kopieren.',
 
         'pii.howto.policy.intro':
             'Die Policy-YAML ist eine Governance-Referenz für Audits und Dokumentation — nicht runtime-kritisch.',
@@ -108,7 +110,7 @@ export const piiHowtoLabels = {
             'Nutze sie für Reviews: Welche Rolle sieht welche Spalte in welcher Form?',
 
         'pii.howto.modelExample.intro':
-            'Das SQL-Modell zeigt, wie du PII-Spalten im SELECT mit pii_column_for_role() absicherst.',
+            'Das SQL-Modell zeigt den Secure View mit pii_column_for_role(column, role, model_name) aus Step 1.',
         'pii.howto.modelExample.step1':
             'Lege models/sources.yml an (siehe Snippet unten).',
         'pii.howto.modelExample.step2':
@@ -116,32 +118,34 @@ export const piiHowtoLabels = {
         'pii.howto.modelExample.step3':
             'Setze var pii_user_role in dbt_project.yml oder per --vars beim dbt run.',
         'pii.howto.modelExample.step4':
-            'Teste mit analyst (maskiert) und admin (unmaskiert) und vergleiche die Ausgabe.',
+            'Teste mit analyst (maskiert) und admin (unmaskiert) — Ergebnis hängt vom Zugriffsmodell ab.',
         'pii.howto.modelExample.sourcesTitle': 'sources.yml Beispiel:',
     },
     en: {
         'pii.howto.summary': 'How it works',
 
         'pii.howto.overview.intro':
-            'This tool walks you through your first runnable PII governance in a dbt project — from column classification to a tested secure view.',
+            'Step 2/4 — target state after review: pii_details schema.yml example and secure model. Prerequisite: macros/pii_governance.sql from step 1.',
         'pii.howto.overview.step1':
             'Insert columns and assign PII type + scope (or use suggestions). Set non-sensitive fields to none.',
         'pii.howto.overview.step2':
             'Choose access model: access_roles (whitelist) or access_rules (masked/unmasked).',
         'pii.howto.overview.step3':
-            'Click Execute — schema.yml with meta.pii_details is generated.',
+            'Click Execute — schema.yml with meta.pii_details and pii-reviewed: true is generated.',
         'pii.howto.overview.step4':
-            'Copy the DBT macro to macros/pii_governance.sql.',
+            'Copy secure view SQL to models/marts/example_table_secure.sql — uses pii_column_for_role() from step 1.',
         'pii.howto.overview.step5':
-            'Create sources.yml (see model example) and copy the secure view SQL to models/marts/example_table_secure.sql.',
+            'Create sources.yml (see model example) and copy schema.yml into your dbt project.',
         'pii.howto.overview.step6':
             'Set var pii_user_role in dbt_project.yml — e.g. analyst for analysts, admin for full access.',
         'pii.howto.overview.step7':
-            'Test: dbt run --select example_table_secure --vars \'{"pii_user_role": "analyst"}\'',
+            'Test: dbt test --select test_type:generic and dbt run --select example_table_secure --vars \'{"pii_user_role": "analyst"}\'',
         'pii.howto.overview.step8':
-            'Verify: analyst sees masked PII, admin sees raw data (depending on the selected mode).',
+            'Step 3 (Table Gate): hide unreviewed models until pii-reviewed: true. Step 4 (PII Recommend): column audits.',
+        'pii.howto.overview.step9':
+            'After review return here — pii_details + pii-reviewed: true is the target state.',
         'pii.howto.overview.tip':
-            'Tip: Start with access_roles — simpler for onboarding. access_rules fits when you need explicit masked vs. unmasked role lists.',
+            'Tip: Step 1 macros must be in the project before the secure model runs.',
 
         'pii.howto.scenario.intro':
             'The access scenario defines how pii_column_for_role() outputs PII columns per user role.',
@@ -192,28 +196,28 @@ export const piiHowtoLabels = {
             'Always click Execute after changes so YAML and macro stay in sync.',
 
         'pii.howto.yaml.intro':
-            'schema.yml is the central policy definition for dbt docs and governance.',
+            'schema.yml is the production policy definition — meta.pii_details + pii-reviewed: true.',
         'pii.howto.yaml.step1':
             'Execute updates YAML from the form.',
         'pii.howto.yaml.step2':
             'Load from YAML: Import an existing schema.yml and edit in the tool.',
         'pii.howto.yaml.step3':
-            'Copy the YAML to models/schema.yml (or models/marts/schema.yml) in your dbt project.',
+            'Copy the YAML to models/schema/ in your dbt project — target state after review.',
         'pii.howto.yaml.tip':
-            'YAML format follows dbt version: 2 with models → columns → meta.pii_details.',
+            'Compare with step 3: there pii_recommend + pii-reviewed: false (recommendation state).',
 
         'pii.howto.macro.intro':
-            'The macro implements runtime logic for role-based masking in SQL.',
+            'Runtime macros come from step 1 (Governance Macro Generator) — reference and example only here.',
         'pii.howto.macro.step1':
-            'Copy the entire block to macros/pii_governance.sql.',
+            'Copy pii_governance.sql from step 1 to macros/ — if not done yet.',
         'pii.howto.macro.step2':
-            'pii_mask: Produces masked output for sensitive columns.',
+            'pii_mask and pii_column_for_role are generated there — warehouse-specific SQL syntax.',
         'pii.howto.macro.step3':
-            'pii_column_for_role: Decides per column and role between raw, masked, or null.',
+            'pii_column_for_role reads meta.pii_details from the dbt graph at runtime.',
         'pii.howto.macro.step4':
-            'pii_meta_for_column: Reads policy from the embedded mapping (derived from your schema.yml).',
+            'This tool no longer generates a separate macro — avoids duplication.',
         'pii.howto.macro.tip':
-            'After policy changes, regenerate and replace the macro — the mapping is model-specific.',
+            'After warehouse or role changes in step 1: re-copy the macro.',
 
         'pii.howto.policy.intro':
             'Policy YAML is a governance reference for audits and documentation — not runtime-critical.',
@@ -225,7 +229,7 @@ export const piiHowtoLabels = {
             'Use for reviews: which role sees which column in what form?',
 
         'pii.howto.modelExample.intro':
-            'The SQL model shows how to secure PII columns in SELECT with pii_column_for_role().',
+            'The SQL model shows the secure view with pii_column_for_role(column, role, model_name) from step 1.',
         'pii.howto.modelExample.step1':
             'Create models/sources.yml (see snippet below).',
         'pii.howto.modelExample.step2':
@@ -233,7 +237,7 @@ export const piiHowtoLabels = {
         'pii.howto.modelExample.step3':
             'Set var pii_user_role in dbt_project.yml or via --vars on dbt run.',
         'pii.howto.modelExample.step4':
-            'Test with analyst (masked) and admin (unmasked) and compare output.',
+            'Test with analyst (masked) and admin (unmasked) — outcome depends on the access model.',
         'pii.howto.modelExample.sourcesTitle': 'sources.yml example:',
     },
 };
