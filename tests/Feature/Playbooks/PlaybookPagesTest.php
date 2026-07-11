@@ -13,6 +13,8 @@ class PlaybookPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('Bridge Solutions');
         $response->assertSee('Governance Help Hub');
+        $response->assertSee('data-i18n="playbooks.indexTitle"', false);
+        $response->assertSee('data-i18n="nav.stories"', false);
         $response->assertDontSee('Snowflake Governance Playbook');
         $response->assertSee('data-playbook-card-title', false);
         $response->assertSee('data-overview-search', false);

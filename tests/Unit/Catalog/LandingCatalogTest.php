@@ -22,7 +22,7 @@ class LandingCatalogTest extends TestCase
         $catalog = app(LandingCatalog::class);
         $latest = $catalog->latestStories();
 
-        $this->assertLessThanOrEqual(LandingCatalog::PREVIEW_LIMIT, count($latest));
+        $this->assertLessThanOrEqual(LandingCatalog::STORIES_PREVIEW_LIMIT, count($latest));
 
         if (count($latest) > 1) {
             $first = $latest[0]['modifiedAt']->getTimestamp();

@@ -25,6 +25,13 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('https://github.com/Ac1d0n3/binom-tools', false);
         $response->assertSee('fa-brands fa-github', false);
         $response->assertDontSee('data-overview-filter-root', false);
+
+        $html = $response->getContent();
+        $storiesPos = strpos($html, 'data-i18n="home.storiesTitle"');
+        $toolsPos = strpos($html, 'data-i18n="home.toolsTitle"');
+        $this->assertNotFalse($storiesPos);
+        $this->assertNotFalse($toolsPos);
+        $this->assertLessThan($toolsPos, $storiesPos);
     }
 
     public function test_tools_overview_lists_workflow_examples_with_search(): void
