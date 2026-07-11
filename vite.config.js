@@ -3,13 +3,35 @@ import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
+function resolveBuildBase(appUrl, explicitBase) {
+    const trimmed = explicitBase?.trim();
+
+    if (trimmed) {
+        return trimmed.endsWith('/') ? trimmed : `${trimmed}/`;
+    }
+
+    if (appUrl) {
+        try {
+            const pathname = new URL(appUrl).pathname.replace(/\/$/, '');
+
+            if (pathname && pathname !== '/') {
+                return `${pathname}/build/`;
+            }
+        } catch {
+            // Ignore invalid APP_URL values and fall back to root build path.
+        }
+    }
+
+    return '/build/';
+}
+
 export default defineConfig(({ mode, command }) => {
     const env = loadEnv(mode, process.cwd(), '');
     const appUrl = env.APP_URL ?? '';
-    const subdirectoryBase = appUrl.includes('/binom-tools') ? '/binom-tools/build/' : '/build/';
+    const buildBase = resolveBuildBase(appUrl, env.VITE_BUILD_BASE);
 
     return {
-        base: command === 'build' ? subdirectoryBase : undefined,
+        base: command === 'build' ? buildBase : undefined,
         plugins: [
             laravel({
                 input: [
