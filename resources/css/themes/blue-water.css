@@ -1,0 +1,65 @@
+.bn-theme-blue-water-light,
+html.bn-theme-blue-water-light {
+    --app-background-color: #dfeaf2;
+    --content-background-color: #ffffff;
+    --surface-background-color: #f4f9fc;
+    --content-font-color: #102734;
+    --surface-font-color: #102734;
+    --form-field-background-color: #ffffff;
+    --base-border-color: #b8cddd;
+    --base-input-border-color: #b8cddd;
+    --select-value-placeholder-color: rgba(16, 39, 52, 0.45);
+    --bn-ripple-color: rgba(0, 0, 0, 0.12);
+    --state-layer-hover: rgba(0, 0, 0, 0.05);
+    --state-layer-focus: rgba(0, 0, 0, 0.05);
+    --theme-color-base: #5f7f91;
+    --theme-color-base-contrast: #ffffff;
+    --theme-color-primary: #2e6f91;
+    --theme-color-primary-contrast: #ffffff;
+    --theme-color-accent: #3fa9c9;
+    --theme-color-accent-contrast: #ffffff;
+    --theme-color-accent-hover: rgba(63, 169, 201, 0.18);
+    --theme-color-accent-ripple: rgba(63, 169, 201, 0.35);
+    --theme-color-success: #3f9f7a;
+    --theme-color-warn: #d19a3f;
+    --theme-color-error: #c14f4f;
+    --theme-color-info: #3f8ec7;
+    --bn-border-color: var(--base-border-color);
+    --bn-surface-muted: var(--surface-background-color);
+    --bn-color-text-secondary: color-mix(in srgb, var(--content-font-color) 65%, transparent);
+    --tools-header-height: 44px;
+    --tools-sidebar-width: 260px;
+}
+
+.bn-theme-blue-water-dark,
+html.bn-theme-blue-water-dark {
+    --app-background-color: #0e1620;
+    --content-background-color: #1a2633;
+    --surface-background-color: #16212c;
+    --content-font-color: #d6e1ea;
+    --surface-font-color: #d6e1ea;
+    --form-field-background-color: #1f2d3a;
+    --base-border-color: #2f4152;
+    --base-input-border-color: #2f4152;
+    --select-value-placeholder-color: rgba(214, 225, 234, 0.5);
+    --bn-ripple-color: rgba(214, 225, 234, 0.18);
+    --state-layer-hover: rgba(255, 255, 255, 0.06);
+    --state-layer-focus: rgba(255, 255, 255, 0.06);
+    --theme-color-base: #8fa4b5;
+    --theme-color-base-contrast: #0e1620;
+    --theme-color-primary: #4f7fa1;
+    --theme-color-primary-contrast: #0e1620;
+    --theme-color-accent: #3fa9c9;
+    --theme-color-accent-contrast: #0e1620;
+    --theme-color-accent-hover: rgba(63, 169, 201, 0.18);
+    --theme-color-accent-ripple: rgba(63, 169, 201, 0.35);
+    --theme-color-success: #4fa58a;
+    --theme-color-warn: #d6a14a;
+    --theme-color-error: #c25c5c;
+    --theme-color-info: #5fa2d6;
+    --bn-border-color: var(--base-border-color);
+    --bn-surface-muted: var(--surface-background-color);
+    --bn-color-text-secondary: color-mix(in srgb, var(--content-font-color) 65%, transparent);
+    --tools-header-height: 44px;
+    --tools-sidebar-width: 260px;
+}

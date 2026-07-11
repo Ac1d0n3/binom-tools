@@ -1,0 +1,182 @@
+.pii-policy-generator {
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+}
+
+.pii-policy-panel {
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid var(--base-border-color);
+    background: var(--content-background-color);
+}
+
+.pii-policy-panel__header h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.0625rem;
+}
+
+.pii-policy-panel__header p {
+    margin: 0 0 1rem;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.9375rem;
+}
+
+.pii-policy-panel__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1rem;
+}
+
+.pii-policy-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+}
+
+.pii-policy-field--full {
+    grid-column: 1 / -1;
+}
+
+.pii-policy-input {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid var(--base-input-border-color);
+    background: var(--form-field-background-color);
+    color: var(--content-font-color);
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.pii-policy-input--textarea {
+    resize: vertical;
+    min-height: 3rem;
+}
+
+.pii-policy-input--yaml {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    min-height: 16rem;
+    resize: vertical;
+}
+
+.pii-policy-panel--scenario {
+    background: linear-gradient(
+        135deg,
+        var(--content-background-color) 0%,
+        color-mix(in srgb, var(--theme-color-info) 10%, var(--surface-background-color)) 100%
+    );
+}
+
+.pii-policy-scenario {
+    margin: 0;
+    color: var(--bn-color-text-secondary);
+    line-height: 1.5;
+    font-size: 0.9375rem;
+}
+
+.pii-policy-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.pii-policy-checkbox input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--theme-color-primary);
+}
+
+.pii-policy-bulk {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--base-border-color);
+}
+
+.pii-policy-category-preview {
+    display: inline-block;
+    padding: 0.2rem 0.45rem;
+    border-radius: 6px;
+    background: var(--surface-background-color);
+    font-size: 0.8125rem;
+}
+
+.pii-policy-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 0.75rem;
+}
+
+.pii-policy-table {
+    width: 100%;
+    min-width: 1080px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.pii-policy-table th,
+.pii-policy-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--base-border-color);
+    text-align: left;
+    vertical-align: top;
+}
+
+.pii-policy-table th {
+    font-weight: 600;
+    color: var(--bn-color-text-secondary);
+    white-space: nowrap;
+}
+
+.pii-policy-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.pii-policy-error {
+    margin: 0.5rem 0 0;
+    color: var(--theme-color-error);
+    font-size: 0.875rem;
+}
+
+.pii-policy-field-hint,
+.schema-editor-field-hint {
+    margin: 0;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.pii-policy-sync-status {
+    margin: 0.5rem 0 0;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.8125rem;
+}
+
+.pii-policy-code {
+    margin: 0 0 0.75rem;
+    padding: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--base-border-color);
+    background: var(--surface-background-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    max-height: 28rem;
+    overflow: auto;
+}
+
+@media (max-width: 768px) {
+    .pii-policy-panel__grid {
+        grid-template-columns: 1fr;
+    }
+}

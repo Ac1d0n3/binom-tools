@@ -1,0 +1,183 @@
+.schema-editor-panel--scenario {
+    background: linear-gradient(
+        135deg,
+        var(--content-background-color) 0%,
+        color-mix(in srgb, var(--theme-color-info) 10%, var(--surface-background-color)) 100%
+    );
+}
+
+.schema-editor-scenario {
+    margin: 0;
+    color: var(--bn-color-text-secondary);
+    line-height: 1.5;
+    font-size: 0.9375rem;
+}
+
+.schema-editor-howto-list {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.schema-editor-panel--scenario .schema-editor-howto-list {
+    margin-top: 0.75rem;
+}
+
+.schema-yml-editor {
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+}
+
+.schema-editor-panel {
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid var(--base-border-color);
+    background: var(--content-background-color);
+}
+
+.schema-editor-panel__header h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.0625rem;
+}
+
+.schema-editor-panel__header p {
+    margin: 0 0 1rem;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.9375rem;
+}
+
+.schema-editor-panel__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1rem;
+}
+
+.schema-editor-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+}
+
+.schema-editor-field--full {
+    grid-column: 1 / -1;
+}
+
+.schema-editor-input {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid var(--base-input-border-color);
+    background: var(--form-field-background-color);
+    color: var(--content-font-color);
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.schema-editor-input--textarea {
+    resize: vertical;
+    min-height: 3rem;
+}
+
+.schema-editor-input--yaml {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    min-height: 16rem;
+    resize: vertical;
+    margin-bottom: 0.75rem;
+}
+
+.schema-editor-yaml-error {
+    margin: 0 0 0.75rem;
+    color: var(--theme-color-danger, #c0392b);
+    font-size: 0.875rem;
+}
+
+.schema-editor-field-hint {
+    margin: 0;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.schema-editor-sync-badge {
+    display: inline-block;
+    padding: 0.25rem 0.55rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--theme-color-info) 12%, var(--surface-background-color));
+    color: var(--theme-color-info);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.schema-editor-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.schema-editor-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 0.75rem;
+}
+
+.schema-editor-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.schema-editor-table th,
+.schema-editor-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--base-border-color);
+    text-align: left;
+    vertical-align: top;
+}
+
+.schema-editor-table th {
+    font-weight: 600;
+    color: var(--bn-color-text-secondary);
+    white-space: nowrap;
+}
+
+.schema-editor-category-preview {
+    display: inline-block;
+    padding: 0.2rem 0.45rem;
+    border-radius: 6px;
+    background: var(--surface-background-color);
+    font-size: 0.8125rem;
+}
+
+.schema-editor-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.schema-editor-code {
+    margin: 0 0 0.75rem;
+    padding: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--base-border-color);
+    background: var(--surface-background-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    max-height: 28rem;
+    overflow: auto;
+}
+
+@media (max-width: 768px) {
+    .schema-editor-panel__grid {
+        grid-template-columns: 1fr;
+    }
+}
