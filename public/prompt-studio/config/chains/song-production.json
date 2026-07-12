@@ -1,0 +1,57 @@
+{
+  "id": "song-production",
+  "label": { "de": "Song-Produktion", "en": "Song production" },
+  "description": {
+    "de": "Vordefinierte Kette: Idee → Story → Lyrics → Style → Cover → Video",
+    "en": "Predefined chain: Idea → Story → Lyrics → Style → Cover → Video"
+  },
+  "steps": [
+    {
+      "id": "step-idea",
+      "label": { "de": "Idee", "en": "Idea" },
+      "roleId": "songwriter",
+      "taskId": "song-develop",
+      "notes": { "de": "Song-Konzept und Struktur entwickeln", "en": "Develop song concept and structure" }
+    },
+    {
+      "id": "step-story",
+      "label": { "de": "Story", "en": "Story" },
+      "roleId": "songwriter",
+      "taskId": "lyrics",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Story in Lyrics umsetzen", "en": "Turn story into lyrics" }
+    },
+    {
+      "id": "step-lyrics",
+      "label": { "de": "Lyrics", "en": "Lyrics" },
+      "roleId": "songwriter",
+      "taskId": "hook",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Hook und Chorus verfeinern", "en": "Refine hook and chorus" }
+    },
+    {
+      "id": "step-style",
+      "label": { "de": "Style", "en": "Style" },
+      "roleId": "music-producer",
+      "taskId": "suno-style",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Suno Style Prompt generieren", "en": "Generate Suno style prompt" }
+    },
+    {
+      "id": "step-cover",
+      "label": { "de": "Cover", "en": "Cover" },
+      "roleId": "art-director",
+      "taskId": "cover",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Album-/Single-Cover entwerfen", "en": "Design album/single cover" }
+    },
+    {
+      "id": "step-video",
+      "label": { "de": "Video", "en": "Video" },
+      "roleId": "film-director",
+      "taskId": "trailer",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Trailer-/Video-Konzept erstellen", "en": "Create trailer/video concept" }
+    }
+  ]
+}

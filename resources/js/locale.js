@@ -211,6 +211,7 @@ const shellLabels = {
             'Name- und Content-Audit, Heuristik-Regeln und pii_recommend schema.yml.',
         'workflow.setupLabel.dbt-pii-governance': 'Security & Governance',
         'workflow.setupLabel.dbt-dq-governance': 'Datenqualität',
+        'workflow.setupLabel.ai-prompt-workflow': 'AI Prompt Workflow',
         'workflow.stepPrefix': 'Schritt',
         'workflow.prev': '← Zurück',
         'workflow.next': 'Weiter →',
@@ -221,6 +222,8 @@ const shellLabels = {
         'workflow.step-dbt-dq-macro-generator': 'DG Macro Generator',
         'workflow.step-dbt-dq-rules-generator': 'DQ Rules Generator',
         'workflow.step-dbt-dq-history-generator': 'DQ History Generator',
+        'workflow.step-prompt-studio': 'Prompt Studio',
+        'workflow.step-governance-ai-sanitizer': 'AI Sanitizer',
         'nav.dbt-dq-macro-generator': 'DG Macro Generator',
         'card.dbt-dq-macro-generator.title': 'DQ Macro Generator',
         'card.dbt-dq-macro-generator.description':
@@ -238,9 +241,13 @@ const shellLabels = {
         'card.pii-unreviewed-gate-generator.description':
             'Ungeprüfte Models identifizieren und für Rollen verstecken.',
         'nav.governance-ai-sanitizer': 'AI Sanitizer',
+        'nav.prompt-studio': 'Prompt Studio',
+        'card.prompt-studio.title': 'Prompt Studio',
+        'card.prompt-studio.description':
+            'Professionelle KI-Prompts für ChatGPT, Claude, Gemini, Suno, Midjourney und mehr.',
         'card.governance-ai-sanitizer.title': 'Governance AI Sanitizer',
         'card.governance-ai-sanitizer.description':
-            'Referenz-Beispiel: Prompt sanitisieren, Outbound kopieren, KI-Antwort wiederherstellen.',
+            'Prompt sanitisieren, Outbound kopieren, KI-Antwort wiederherstellen.',
         'nav.pii-policy-generator': 'PII Policy Generator',
         'card.pii-policy-generator.title': 'PII Policy Generator',
         'card.pii-policy-generator.description':
@@ -369,6 +376,7 @@ const shellLabels = {
             'Name and content audit, heuristic rules, and pii_recommend schema.yml.',
         'workflow.setupLabel.dbt-pii-governance': 'Security & governance',
         'workflow.setupLabel.dbt-dq-governance': 'Data quality',
+        'workflow.setupLabel.ai-prompt-workflow': 'AI prompt workflow',
         'workflow.stepPrefix': 'Step',
         'workflow.prev': '← Previous',
         'workflow.next': 'Next →',
@@ -379,6 +387,8 @@ const shellLabels = {
         'workflow.step-dbt-dq-macro-generator': 'DG Macro Generator',
         'workflow.step-dbt-dq-rules-generator': 'DQ Rules Generator',
         'workflow.step-dbt-dq-history-generator': 'DQ History Generator',
+        'workflow.step-prompt-studio': 'Prompt Studio',
+        'workflow.step-governance-ai-sanitizer': 'AI Sanitizer',
         'nav.dbt-dq-macro-generator': 'DG Macro Generator',
         'card.dbt-dq-macro-generator.title': 'DQ Macro Generator',
         'card.dbt-dq-macro-generator.description':
@@ -396,9 +406,13 @@ const shellLabels = {
         'card.pii-unreviewed-gate-generator.description':
             'Identify and hide unreviewed models from roles.',
         'nav.governance-ai-sanitizer': 'AI Sanitizer',
+        'nav.prompt-studio': 'Prompt Studio',
+        'card.prompt-studio.title': 'Prompt Studio',
+        'card.prompt-studio.description':
+            'Professional AI prompts for ChatGPT, Claude, Gemini, Suno, Midjourney, and more.',
         'card.governance-ai-sanitizer.title': 'Governance AI Sanitizer',
         'card.governance-ai-sanitizer.description':
-            'Reference example: sanitize prompt, copy outbound, restore AI response.',
+            'Sanitize prompt, copy outbound, restore AI response.',
         'nav.pii-policy-generator': 'PII Policy Generator',
         'card.pii-policy-generator.title': 'PII Policy Generator',
         'card.pii-policy-generator.description':

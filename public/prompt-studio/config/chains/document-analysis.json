@@ -1,0 +1,50 @@
+{
+  "id": "document-analysis",
+  "label": { "de": "Dokument analysieren", "en": "Document analysis" },
+  "description": {
+    "de": "Zusammenfassung → Folgeaktion — gutes Prompt-Timing lernen",
+    "en": "Summary → follow-up action — learn good prompt timing"
+  },
+  "steps": [
+    {
+      "id": "step-summarize",
+      "label": { "de": "Zusammenfassung", "en": "Summary" },
+      "roleId": "business-analyst",
+      "taskId": "document-summarize",
+      "notes": {
+        "de": "Erst verstehen, dann handeln — fasse das Dokument strukturiert zusammen.",
+        "en": "Understand first, then act — summarize the document in a structured way."
+      },
+      "learningTip": {
+        "de": "Ein fokussierter Summary-Prompt liefert besseren Kontext als ein überladener Alles-in-einem-Prompt.",
+        "en": "A focused summary prompt gives better context than one overloaded do-everything prompt."
+      }
+    },
+    {
+      "id": "step-follow-up",
+      "label": { "de": "Folgeaktion", "en": "Follow-up action" },
+      "roleId": "business-analyst",
+      "taskId": "document-follow-up",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "Was soll mit der Zusammenfassung passieren?",
+        "en": "What should happen with the summary?"
+      },
+      "learningTip": {
+        "de": "Schritt 2 nutzt die KI-Antwort aus Schritt 1 — füge sie unter „Vorherige Ausgabe“ ein.",
+        "en": "Step 2 uses the AI response from step 1 — paste it under \"Previous output\"."
+      }
+    },
+    {
+      "id": "step-export",
+      "label": { "de": "Export", "en": "Export" },
+      "roleId": "technical-writer",
+      "taskId": "document-create",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "Ergebnis als Dokument exportieren (PDF, Word …).",
+        "en": "Export the result as a document (PDF, Word …)."
+      }
+    }
+  ]
+}

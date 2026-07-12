@@ -1,0 +1,254 @@
+{
+  "tasks": [
+    {
+      "id": "analysis",
+      "label": { "de": "Analyse", "en": "Analysis" },
+      "description": { "de": "Strukturierte Geschäftsanalyse erstellen", "en": "Create a structured business analysis" },
+      "roleIds": ["business-analyst", "business-process-analyst", "ai-consultant", "data-analyst", "support-analyst", "technical-writer"],
+      "parameterIds": ["goal", "process", "outputFormat", "stakeholders", "documents", "kpis", "conversationHistory"],
+      "templateId": "analysis",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "root-cause-analysis",
+      "label": { "de": "Ursachenanalyse", "en": "Root cause analysis" },
+      "description": { "de": "Ursachenanalyse mit strukturiertem Vorgehen", "en": "Root cause analysis with a structured approach" },
+      "roleIds": ["business-analyst", "business-process-analyst", "data-analyst", "support-analyst"],
+      "parameterIds": ["goal", "process", "outputFormat", "stakeholders", "documents", "kpis", "conversationHistory"],
+      "templateId": "root-cause-analysis",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "workshop",
+      "label": { "de": "Workshop", "en": "Workshop" },
+      "roleIds": ["business-analyst", "business-process-analyst", "ai-consultant"],
+      "parameterIds": ["goal", "process", "stakeholders", "kpis", "conversationHistory"],
+      "templateId": "workshop",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "brainstorming",
+      "label": { "de": "Brainstorming", "en": "Brainstorming" },
+      "roleIds": ["business-analyst", "ai-consultant"],
+      "parameterIds": ["goal", "stakeholders", "kpis", "conversationHistory"],
+      "templateId": "brainstorming",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "process-improve",
+      "label": { "de": "Prozess verbessern", "en": "Process improvement" },
+      "roleIds": ["business-process-analyst"],
+      "parameterIds": ["goal", "process", "stakeholders", "documents", "kpis", "conversationHistory"],
+      "templateId": "process-improve",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "document-create",
+      "label": { "de": "Dokument erstellen", "en": "Create document" },
+      "description": { "de": "Professionelles Dokument aus deinem Ziel erstellen", "en": "Create a professional document from your goal" },
+      "roleIds": ["business-analyst", "business-process-analyst", "ai-consultant", "data-analyst", "support-analyst", "technical-writer"],
+      "parameterIds": ["goal", "outputFormat", "language", "documents", "stakeholders", "conversationHistory"],
+      "templateId": "document-create",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "class-create",
+      "label": { "de": "Klasse erstellen", "en": "Create class" },
+      "roleIds": ["software-engineer", "solution-architect"],
+      "parameterIds": ["goal", "language", "framework", "version", "architecture", "standards", "security", "tests", "conversationHistory"],
+      "templateId": "class-create",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "method-develop",
+      "label": { "de": "Methode entwickeln", "en": "Develop method" },
+      "roleIds": ["software-engineer"],
+      "parameterIds": ["goal", "language", "framework", "version", "architecture", "standards", "security", "tests", "conversationHistory"],
+      "templateId": "method-develop",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "api-design",
+      "label": { "de": "API entwerfen", "en": "API design" },
+      "roleIds": ["software-engineer", "solution-architect"],
+      "parameterIds": ["goal", "language", "framework", "version", "architecture", "standards", "security", "conversationHistory"],
+      "templateId": "api-design",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "refactoring",
+      "label": { "de": "Refaktorierung", "en": "Refactoring" },
+      "roleIds": ["software-engineer", "solution-architect"],
+      "parameterIds": ["goal", "language", "framework", "architecture", "standards", "security", "tests", "conversationHistory"],
+      "templateId": "refactoring",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "review",
+      "label": { "de": "Code-Review", "en": "Code review" },
+      "roleIds": ["software-engineer", "solution-architect"],
+      "parameterIds": ["goal", "language", "framework", "architecture", "standards", "security", "conversationHistory"],
+      "templateId": "review",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "tests-write",
+      "label": { "de": "Tests schreiben", "en": "Write tests" },
+      "roleIds": ["software-engineer"],
+      "parameterIds": ["goal", "language", "framework", "version", "architecture", "standards", "tests", "conversationHistory"],
+      "templateId": "tests-write",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "song-develop",
+      "label": { "de": "Song entwickeln", "en": "Develop song" },
+      "description": { "de": "Song-Konzept, Struktur und Stimmung entwickeln", "en": "Develop song concept, structure, and mood" },
+      "roleIds": ["songwriter", "music-producer"],
+      "parameterIds": ["genre", "bpm", "story", "mood", "instruments", "voice", "forbiddenLyricsWords", "previousOutput", "conversationHistory"],
+      "templateId": "song-develop",
+      "modelHints": ["chatgpt", "claude", "suno"]
+    },
+    {
+      "id": "lyrics",
+      "label": { "de": "Songtext", "en": "Lyrics" },
+      "description": { "de": "Singbare Lyrics mit klarer Struktur", "en": "Singable lyrics with clear structure" },
+      "roleIds": ["songwriter"],
+      "parameterIds": ["genre", "story", "mood", "voice", "forbiddenLyricsWords", "previousOutput", "conversationHistory"],
+      "templateId": "lyrics",
+      "modelHints": ["chatgpt", "claude", "suno"]
+    },
+    {
+      "id": "hook",
+      "label": { "de": "Hook", "en": "Hook" },
+      "description": { "de": "Einprägsamen Hook und Chorus entwickeln", "en": "Develop a memorable hook and chorus" },
+      "roleIds": ["songwriter", "music-producer"],
+      "parameterIds": ["genre", "mood", "story", "voice", "forbiddenLyricsWords", "previousOutput", "conversationHistory"],
+      "templateId": "hook",
+      "modelHints": ["chatgpt", "claude", "suno"]
+    },
+    {
+      "id": "suno-style",
+      "label": { "de": "Suno Style", "en": "Suno style" },
+      "roleIds": ["music-producer"],
+      "parameterIds": ["genre", "bpm", "mood", "instruments", "voice", "previousOutput"],
+      "templateId": "suno-style",
+      "modelHints": ["suno"]
+    },
+    {
+      "id": "album",
+      "label": { "de": "Album", "en": "Album" },
+      "roleIds": ["songwriter", "music-producer"],
+      "parameterIds": ["genre", "bpm", "story", "mood", "instruments", "previousOutput", "conversationHistory"],
+      "templateId": "album",
+      "modelHints": ["chatgpt", "claude", "suno"]
+    },
+    {
+      "id": "hero",
+      "label": { "de": "Hero-Bild", "en": "Hero image" },
+      "description": { "de": "Hero-Bild-Prompt für Web oder Marketing", "en": "Hero image prompt for web or marketing" },
+      "roleIds": ["art-director", "image-designer"],
+      "parameterIds": ["motiv", "style", "colors", "aspectRatio", "size", "lighting", "camera", "reference", "negativePrompt", "previousOutput"],
+      "templateId": "hero",
+      "modelHints": ["midjourney", "flux", "gpt-image"]
+    },
+    {
+      "id": "cover",
+      "label": { "de": "Cover", "en": "Cover" },
+      "description": { "de": "Album- oder Single-Cover mit optionalem Künstlernamen", "en": "Album or single cover with optional artist name" },
+      "roleIds": ["art-director", "image-designer"],
+      "parameterIds": ["motiv", "style", "colors", "aspectRatio", "artistName", "size", "lighting", "negativePrompt", "previousOutput"],
+      "templateId": "cover",
+      "modelHints": ["midjourney", "flux", "gpt-image"]
+    },
+    {
+      "id": "diagram",
+      "label": { "de": "Diagramm", "en": "Diagram" },
+      "roleIds": ["image-designer"],
+      "parameterIds": ["motiv", "style", "colors", "aspectRatio", "size", "previousOutput"],
+      "templateId": "diagram",
+      "modelHints": ["midjourney", "flux", "gpt-image"]
+    },
+    {
+      "id": "infographic",
+      "label": { "de": "Infografik", "en": "Infographic" },
+      "roleIds": ["art-director", "image-designer"],
+      "parameterIds": ["motiv", "style", "colors", "aspectRatio", "size", "lighting", "previousOutput"],
+      "templateId": "infographic",
+      "modelHints": ["midjourney", "flux", "gpt-image"]
+    },
+    {
+      "id": "logo",
+      "label": { "de": "Logo", "en": "Logo" },
+      "roleIds": ["image-designer"],
+      "parameterIds": ["motiv", "style", "colors", "aspectRatio", "size", "negativePrompt", "previousOutput"],
+      "templateId": "logo",
+      "modelHints": ["midjourney", "flux", "gpt-image"]
+    },
+    {
+      "id": "character",
+      "label": { "de": "Charakter", "en": "Character" },
+      "roleIds": ["art-director", "image-designer"],
+      "parameterIds": ["motiv", "style", "colors", "aspectRatio", "lighting", "reference", "negativePrompt", "previousOutput"],
+      "templateId": "character",
+      "modelHints": ["midjourney", "flux", "gpt-image"]
+    },
+    {
+      "id": "storyboard",
+      "label": { "de": "Storyboard", "en": "Storyboard" },
+      "roleIds": ["film-director"],
+      "parameterIds": ["scenes", "duration", "camera", "style", "aspectRatio", "previousOutput", "conversationHistory"],
+      "templateId": "storyboard",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "scenes",
+      "label": { "de": "Szenen", "en": "Scenes" },
+      "roleIds": ["film-director"],
+      "parameterIds": ["scenes", "duration", "camera", "lighting", "previousOutput", "conversationHistory"],
+      "templateId": "scenes",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "camera",
+      "label": { "de": "Kamera", "en": "Camera" },
+      "roleIds": ["film-director"],
+      "parameterIds": ["camera", "lighting", "scenes", "duration", "previousOutput"],
+      "templateId": "camera",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "trailer",
+      "label": { "de": "Trailer", "en": "Trailer" },
+      "roleIds": ["film-director"],
+      "parameterIds": ["scenes", "duration", "mood", "style", "aspectRatio", "previousOutput", "conversationHistory"],
+      "templateId": "trailer",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "document-summarize",
+      "label": { "de": "Dokument zusammenfassen", "en": "Summarize document" },
+      "description": { "de": "Dokument oder Text strukturiert zusammenfassen", "en": "Summarize a document or text in a structured way" },
+      "roleIds": ["business-analyst", "technical-writer", "data-analyst"],
+      "parameterIds": ["goal", "documents", "outputFormat", "conversationHistory"],
+      "templateId": "document-summarize",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "document-follow-up",
+      "label": { "de": "Folgeaktion", "en": "Follow-up action" },
+      "description": { "de": "Was soll mit der Zusammenfassung passieren?", "en": "What should happen with the summary?" },
+      "roleIds": ["business-analyst", "technical-writer", "data-analyst"],
+      "parameterIds": ["goal", "previousOutput", "outputFormat", "conversationHistory"],
+      "templateId": "document-follow-up",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    },
+    {
+      "id": "custom-block",
+      "label": { "de": "Eigener Prompt-Block", "en": "Custom prompt block" },
+      "roleIds": [],
+      "parameterIds": ["goal"],
+      "templateId": "custom-block",
+      "modelHints": ["chatgpt", "claude", "gemini"]
+    }
+  ]
+}

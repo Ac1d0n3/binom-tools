@@ -1,0 +1,83 @@
+{
+  "roles": [
+    {
+      "id": "business-analyst",
+      "label": { "de": "Geschäftsanalyst", "en": "Business Analyst" },
+      "icon": "fa-chart-line",
+      "taskIds": ["analysis", "root-cause-analysis", "workshop", "brainstorming", "document-create", "document-summarize", "document-follow-up"],
+      "crossRoleTaskIds": ["hero", "infographic"]
+    },
+    {
+      "id": "business-process-analyst",
+      "label": { "de": "Prozessanalyst", "en": "Business Process Analyst" },
+      "icon": "fa-diagram-project",
+      "taskIds": ["analysis", "root-cause-analysis", "workshop", "process-improve", "document-create"]
+    },
+    {
+      "id": "ai-consultant",
+      "label": { "de": "KI-Berater", "en": "AI Consultant" },
+      "icon": "fa-robot",
+      "taskIds": ["analysis", "brainstorming", "workshop", "document-create"]
+    },
+    {
+      "id": "data-analyst",
+      "label": { "de": "Datenanalyst", "en": "Data Analyst" },
+      "icon": "fa-database",
+      "taskIds": ["analysis", "root-cause-analysis", "document-create"]
+    },
+    {
+      "id": "support-analyst",
+      "label": { "de": "Support-Analyst", "en": "Support Analyst" },
+      "icon": "fa-headset",
+      "taskIds": ["analysis", "root-cause-analysis", "document-create"]
+    },
+    {
+      "id": "software-engineer",
+      "label": { "de": "Softwareentwickler", "en": "Software Engineer" },
+      "icon": "fa-code",
+      "taskIds": ["class-create", "method-develop", "api-design", "refactoring", "review", "tests-write"]
+    },
+    {
+      "id": "solution-architect",
+      "label": { "de": "Lösungsarchitekt", "en": "Solution Architect" },
+      "icon": "fa-sitemap",
+      "taskIds": ["api-design", "class-create", "refactoring", "review"]
+    },
+    {
+      "id": "songwriter",
+      "label": { "de": "Songwriter", "en": "Songwriter" },
+      "icon": "fa-pen-fancy",
+      "taskIds": ["song-develop", "lyrics", "hook", "album"]
+    },
+    {
+      "id": "music-producer",
+      "label": { "de": "Musikproduzent", "en": "Music Producer" },
+      "icon": "fa-music",
+      "taskIds": ["song-develop", "suno-style", "album", "hook"]
+    },
+    {
+      "id": "art-director",
+      "label": { "de": "Kreativdirektor", "en": "Art Director" },
+      "icon": "fa-palette",
+      "taskIds": ["hero", "cover", "character", "infographic"]
+    },
+    {
+      "id": "image-designer",
+      "label": { "de": "Bilddesigner", "en": "Image Designer" },
+      "icon": "fa-image",
+      "taskIds": ["hero", "cover", "diagram", "infographic", "logo", "character"]
+    },
+    {
+      "id": "film-director",
+      "label": { "de": "Filmregisseur", "en": "Film Director" },
+      "icon": "fa-film",
+      "taskIds": ["storyboard", "scenes", "camera", "trailer"]
+    },
+    {
+      "id": "technical-writer",
+      "label": { "de": "Technischer Redakteur", "en": "Technical Writer" },
+      "icon": "fa-book",
+      "taskIds": ["document-create", "analysis"]
+    }
+  ]
+}

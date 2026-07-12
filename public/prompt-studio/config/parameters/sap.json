@@ -1,0 +1,12 @@
+{
+  "parameters": [
+    {
+      "id": "sapModule",
+      "type": "select",
+      "group": "sap",
+      "label": { "de": "SAP-Modul", "en": "SAP module" },
+      "options": ["FI", "CO", "MM", "SD", "PP"],
+      "default": "FI"
+    }
+  ]
+}

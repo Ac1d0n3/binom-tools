@@ -46,7 +46,7 @@ return [
                 ],
                 [
                     'title' => 'Lokale Speicherung (localStorage)',
-                    'body' => "Wir speichern Einstellungen und Präferenzen ausschließlich lokal in Ihrem Browser, z. B.:\n\n- Theme (hell/dunkel)\n- Sprache und Layout\n- Cookie-Einwilligung für externe Medien\n- Sortierung in der Story-Übersicht\n\nEs werden keine Analytics- oder Tracking-Cookies gesetzt.",
+                    'body' => "Wir speichern Einstellungen und Präferenzen ausschließlich lokal in Ihrem Browser, z. B.:\n\n- Theme (hell/dunkel)\n- Sprache und Layout\n- Cookie-Einwilligung für externe Medien\n- Sortierung in der Story-Übersicht\n- Prompt Studio: Entwürfe, Vorlagen, Favoriten und Workflow-Daten\n- Prompt Studio ↔ AI Sanitizer: temporäre Prompt-Übergabe zwischen Tools\n\nEs werden keine Analytics- oder Tracking-Cookies gesetzt.",
                 ],
                 [
                     'title' => 'Externe Medien (Videos)',
@@ -76,7 +76,7 @@ return [
                 ],
                 [
                     'title' => 'Local storage (localStorage)',
-                    'body' => "We store settings and preferences locally in your browser only, for example:\n\n- Theme (light/dark)\n- Language and layout\n- Cookie consent for external media\n- Sort order on the story overview\n\nNo analytics or tracking cookies are set.",
+                    'body' => "We store settings and preferences locally in your browser only, for example:\n\n- Theme (light/dark)\n- Language and layout\n- Cookie consent for external media\n- Sort order on the story overview\n- Prompt Studio: drafts, templates, favorites, and workflow data\n- Prompt Studio ↔ AI Sanitizer: temporary prompt handoff between tools\n\nNo analytics or tracking cookies are set.",
                 ],
                 [
                     'title' => 'External media (videos)',

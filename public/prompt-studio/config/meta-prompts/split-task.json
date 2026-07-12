@@ -1,0 +1,15 @@
+{
+  "id": "split-task",
+  "label": { "de": "Aufgabe zerlegen", "en": "Split task" },
+  "description": {
+    "de": "Meta-Prompt zur Zerlegung großer Aufgaben in umsetzbare Teilprompts.",
+    "en": "Meta-prompt to break large tasks into actionable sub-prompts."
+  },
+  "sections": {
+    "system": "You are an expert project planner and prompt engineer. Break complex tasks into sequenced, actionable sub-prompts suitable for AI assistants.",
+    "context": "Role: {{roleLabel}}\nTask type: {{taskLabel}}\nTarget model: {{modelLabel}}",
+    "task": "Split the following large task into a structured series of smaller prompts:\n\n{{splitTask}}",
+    "parameters": "Requirements:\n- Group into logical phases or sprints\n- Each sub-prompt must be self-contained\n- Include dependencies between steps\n- Estimate complexity (S/M/L) per step\n- Output as structured JSON array",
+    "output": "Deliver JSON in this format:\n```json\n{\n  \"title\": \"…\",\n  \"phases\": [\n    {\n      \"id\": \"phase-1\",\n      \"label\": \"…\",\n      \"steps\": [\n        {\n          \"id\": \"step-1\",\n          \"label\": \"…\",\n          \"prompt\": \"…\",\n          \"complexity\": \"M\",\n          \"dependsOn\": []\n        }\n      ]\n    }\n  ]\n}\n```"
+  }
+}

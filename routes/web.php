@@ -10,6 +10,7 @@ use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
+use App\Http\Controllers\Tools\PromptStudioController;
 use App\Http\Controllers\Tools\PiiPolicyGeneratorController;
 use App\Http\Controllers\Tools\PiiRecommendGeneratorController;
 use App\Http\Controllers\Tools\PiiUnreviewedGateGeneratorController;
@@ -33,6 +34,8 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.dbt-governance-macro-generator'));
     Route::get('/tools/pii-recommend-generator', [PiiRecommendGeneratorController::class, 'show'])
         ->name($name('tools.pii-recommend-generator'));
+    Route::get('/tools/prompt-studio', [PromptStudioController::class, 'show'])
+        ->name($name('tools.prompt-studio'));
     Route::get('/tools/governance-ai-sanitizer', [GovernanceAiSanitizerController::class, 'show'])
         ->name($name('tools.governance-ai-sanitizer'));
     Route::get('/tools/pii-policy-generator', [PiiPolicyGeneratorController::class, 'show'])

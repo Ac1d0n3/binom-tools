@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "plugins": [],
+  "localeFallback": "en",
+  "files": {
+    "roles": "roles.json",
+    "tasks": "tasks.json",
+    "parameters": "parameters.json",
+    "models": "models.json",
+    "templates": "templates.json",
+    "metaPrompts": ["meta-prompts/optimizer.json", "meta-prompts/split-task.json"],
+    "chains": [
+      "chains/song-production.json",
+      "chains/document-analysis.json",
+      "chains/business-visual.json"
+    ]
+  }
+}

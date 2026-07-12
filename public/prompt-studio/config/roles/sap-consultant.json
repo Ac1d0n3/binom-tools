@@ -1,0 +1,10 @@
+{
+  "roles": [
+    {
+      "id": "sap-consultant",
+      "label": { "de": "SAP Consultant", "en": "SAP Consultant" },
+      "icon": "fa-building",
+      "taskIds": ["sap-overview"]
+    }
+  ]
+}

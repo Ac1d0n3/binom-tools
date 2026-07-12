@@ -1,0 +1,15 @@
+{
+  "id": "optimizer",
+  "label": { "de": "Prompt verbessern", "en": "Improve prompt" },
+  "description": {
+    "de": "Meta-Prompt zur Analyse und Verbesserung eines bestehenden Prompts.",
+    "en": "Meta-prompt to analyze and improve an existing prompt."
+  },
+  "sections": {
+    "system": "You are an expert prompt engineer. Analyze and improve the given prompt for clarity, structure, constraints, and output quality.",
+    "context": "Target model: {{modelLabel}}\nRole: {{roleLabel}}\nTask: {{taskLabel}}\n{{#if conversationHistory}}Conversation context:\n{{conversationHistory}}{{/if}}",
+    "task": "Improve the following prompt. Preserve the user's intent while making it more effective for {{modelLabel}}.\n\n--- ORIGINAL PROMPT ---\n{{compiledPrompt}}\n--- END ---",
+    "parameters": "Checklist:\n- Clarity and specificity\n- Role and task alignment\n- Missing constraints or context\n- Output format definition\n- Ambiguity and redundancy\n- Model-specific optimizations",
+    "output": "Deliver:\n1. Brief analysis (strengths and weaknesses)\n2. Improved prompt (complete, ready to use)\n3. Changelog (what changed and why)"
+  }
+}

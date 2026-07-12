@@ -1,0 +1,12 @@
+{
+  "tasks": [
+    {
+      "id": "sap-overview",
+      "label": { "de": "SAP Übersicht", "en": "SAP overview" },
+      "roleIds": ["sap-consultant"],
+      "parameterIds": ["goal", "process", "stakeholders"],
+      "templateId": "sap-overview",
+      "modelHints": ["chatgpt", "claude"]
+    }
+  ]
+}

@@ -17,6 +17,7 @@ export default defineConfig(({ command }) => ({
                 'resources/js/tools/dbt-governance-macro-generator/index.js',
                 'resources/js/tools/pii-recommend-generator/index.js',
                 'resources/js/tools/pii-unreviewed-gate-generator/index.js',
+                'resources/js/tools/prompt-studio/index.js',
                 'resources/js/tools/governance-ai-sanitizer/index.js',
                 'resources/js/tools/pii-policy-generator/index.js',
                 'resources/js/tools/schema-yml-editor/index.js',

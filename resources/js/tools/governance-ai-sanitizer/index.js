@@ -3,6 +3,7 @@ import { getLocale } from '../../locale';
 import { applyGovernanceLabels, t } from './labels';
 import { getDemoDefaults } from './demo-defaults';
 import { GovernanceState } from './governance-state';
+import { initPromptBridgeFromStudio, sendBackToPromptStudio, promptStudioUrl } from './prompt-bridge.js';
 
 import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
 import { renderValidationMessage } from '../pii-shared/validation-ui.js';
@@ -27,8 +28,12 @@ const findingsEmpty = document.getElementById('gov-findings-empty');
 const findingsTable = /** @type {HTMLTableElement} */ (document.getElementById('gov-findings-table'));
 const findingsBody = document.getElementById('gov-findings-body');
 const validationBanner = document.getElementById('gov-validation-banner');
+const bridgeBanner = document.getElementById('gov-bridge-banner');
+const backStudioBtn = document.getElementById('gov-back-studio-btn');
 
 const state = new GovernanceState({ reusePlaceholders: true });
+/** @type {import('../prompt-shared/prompt-bridge-storage.js').PromptBridgePayload['studioContext']} */
+let bridgeStudioContext = {};
 
 function validationT(key, params = {}) {
     return mergeValidationTranslator(currentLocale(), t)(key, params);
@@ -181,6 +186,16 @@ function bindEvents() {
         render();
     });
 
+    backStudioBtn?.addEventListener('click', () => {
+        sendBackToPromptStudio({
+            outbound: state.outbound,
+            restored: state.restored,
+            findingCount: state.findingCount(),
+            studioContext: bridgeStudioContext,
+        });
+        window.location.href = promptStudioUrl();
+    });
+
     window.addEventListener('binom-tools:locale', () => {
         applyGovernanceLabels(currentLocale());
         state.setLlmRules(getDemoDefaults(currentLocale()).llmRules);
@@ -193,7 +208,20 @@ function bindEvents() {
 
 function init() {
     applyGovernanceLabels(currentLocale());
-    applyDemoDefaults();
+
+    const bridge = initPromptBridgeFromStudio((key) => t(currentLocale(), key));
+    if (bridge.loaded && bridge.prompt) {
+        bridgeStudioContext = bridge.studioContext ?? {};
+        state.setInput(bridge.prompt);
+        promptInput.value = bridge.prompt;
+        if (bridgeBanner) {
+            bridgeBanner.hidden = false;
+            bridgeBanner.innerHTML = bridge.bannerHtml;
+        }
+    } else {
+        applyDemoDefaults();
+    }
+
     bindEvents();
 }
 

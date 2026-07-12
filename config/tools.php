@@ -32,6 +32,22 @@ return [
                 'pii-recommend-generator',
             ],
         ],
+        'ai-prompt-workflow' => [
+            'label' => [
+                'de' => 'AI Prompt Workflow',
+                'en' => 'AI prompt workflow',
+            ],
+            'description' => [
+                'de' => 'Prompt erstellen, PII anonymisieren, sicher ans LLM senden.',
+                'en' => 'Build prompt, anonymize PII, send safely to LLM.',
+            ],
+            'icon' => 'fa-microchip',
+            'accent' => 'primary',
+            'steps' => [
+                'prompt-studio',
+                'governance-ai-sanitizer',
+            ],
+        ],
         'dbt-dq-governance' => [
             'label' => [
                 'de' => 'Datenqualität Einrichtung',
@@ -185,6 +201,23 @@ return [
             'accent' => 'primary',
         ],
         [
+            'id' => 'prompt-studio',
+            'route' => 'tools.prompt-studio',
+            'label' => [
+                'de' => 'Prompt Studio',
+                'en' => 'Prompt Studio',
+            ],
+            'description' => [
+                'de' => 'Professionelle Prompts für ChatGPT, Claude, Gemini, Suno, Midjourney und mehr — config-getrieben.',
+                'en' => 'Professional prompts for ChatGPT, Claude, Gemini, Suno, Midjourney and more — config-driven.',
+            ],
+            'example' => true,
+            'icon' => 'fa-wand-magic-sparkles',
+            'accent' => 'primary',
+            'workflow' => 'ai-prompt-workflow',
+            'workflowStep' => 1,
+        ],
+        [
             'id' => 'governance-ai-sanitizer',
             'route' => 'tools.governance-ai-sanitizer',
             'label' => [
@@ -192,12 +225,14 @@ return [
                 'en' => 'AI Sanitizer',
             ],
             'description' => [
-                'de' => 'Referenz-Beispiel: Prompt sanitisieren, Outbound kopieren, KI-Antwort wiederherstellen.',
-                'en' => 'Reference example: sanitize prompt, copy outbound, restore AI response.',
+                'de' => 'Prompt sanitisieren, Outbound kopieren, KI-Antwort wiederherstellen.',
+                'en' => 'Sanitize prompt, copy outbound, restore AI response.',
             ],
             'example' => true,
             'icon' => 'fa-microchip',
             'accent' => 'primary',
+            'workflow' => 'ai-prompt-workflow',
+            'workflowStep' => 2,
         ],
     ],
 

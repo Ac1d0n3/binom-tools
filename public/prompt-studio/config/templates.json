@@ -1,0 +1,332 @@
+{
+  "templates": [
+    {
+      "id": "analysis",
+      "label": { "de": "Analyse", "en": "Analysis" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Provide structured, actionable business analysis.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
+        "task": "Perform a comprehensive analysis for the following goal:\n\n{{goal}}",
+        "parameters": "{{#if process}}Current process:\n{{process}}\n{{/if}}{{#if kpis}}Key KPIs: {{kpis}}{{/if}}",
+        "output": "Deliver the result as {{outputFormat}} with:\n1. Executive summary\n2. Current-state assessment\n3. Key findings and risks\n4. Recommendations with priorities\n5. Suggested next steps"
+      }
+    },
+    {
+      "id": "root-cause-analysis",
+      "label": { "de": "Root Cause Analysis", "en": "Root cause analysis" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} specializing in root cause analysis (RCA). Use structured methods such as 5 Whys and fishbone diagrams.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
+        "task": "Conduct a root cause analysis for:\n\n{{goal}}",
+        "parameters": "{{#if process}}Affected process:\n{{process}}\n{{/if}}{{#if kpis}}Impacted KPIs: {{kpis}}{{/if}}",
+        "output": "Deliver the result as {{outputFormat}} with:\n1. Problem statement\n2. Timeline of events\n3. Root causes (with evidence)\n4. Contributing factors\n5. Corrective and preventive actions\n6. Monitoring plan"
+      }
+    },
+    {
+      "id": "workshop",
+      "label": { "de": "Workshop", "en": "Workshop" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} and workshop facilitator. Design engaging, outcome-focused sessions.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Participants: {{stakeholders}}{{/if}}",
+        "task": "Design a workshop plan for:\n\n{{goal}}",
+        "parameters": "{{#if process}}Context / process:\n{{process}}\n{{/if}}{{#if kpis}}Success metrics: {{kpis}}{{/if}}",
+        "output": "Deliver:\n1. Workshop objectives\n2. Agenda with timings\n3. Activities and facilitation notes\n4. Required materials\n5. Expected outcomes and follow-up actions"
+      }
+    },
+    {
+      "id": "brainstorming",
+      "label": { "de": "Brainstorming", "en": "Brainstorming" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} facilitating creative brainstorming. Encourage diverse ideas without premature judgment.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Participants: {{stakeholders}}{{/if}}",
+        "task": "Facilitate a brainstorming session on:\n\n{{goal}}",
+        "parameters": "{{#if kpis}}Constraints / success criteria: {{kpis}}{{/if}}",
+        "output": "Deliver:\n1. Brainstorming prompts and rules\n2. At least 15 diverse ideas (grouped by theme)\n3. Top 5 ideas with brief rationale\n4. Next steps for evaluation"
+      }
+    },
+    {
+      "id": "process-improve",
+      "label": { "de": "Prozess verbessern", "en": "Process improvement" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} focused on process optimization and continuous improvement.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
+        "task": "Improve the following process to achieve:\n\n{{goal}}",
+        "parameters": "Current process:\n{{process}}\n\n{{#if kpis}}Target KPIs: {{kpis}}{{/if}}",
+        "output": "Deliver:\n1. As-is process summary\n2. Pain points and bottlenecks\n3. To-be process design\n4. Implementation roadmap\n5. KPI impact estimate"
+      }
+    },
+    {
+      "id": "document-create",
+      "label": { "de": "Dokument erstellen", "en": "Create document" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} and professional writer. Create clear, well-structured documents.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Audience / stakeholders: {{stakeholders}}{{/if}}",
+        "task": "Create a document with the following purpose:\n\n{{goal}}",
+        "parameters": "{{#if documents}}Source material:\n{{documents}}\n{{/if}}{{#if language}}Output language preference: {{language}}{{/if}}",
+        "output": "Deliver a complete document as {{outputFormat}} with:\n1. Title and executive summary\n2. Structured sections with headings\n3. Clear conclusions and recommendations\n4. Appendix or references if needed"
+      }
+    },
+    {
+      "id": "class-create",
+      "label": { "de": "Klasse erstellen", "en": "Create class" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write production-ready, maintainable code.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture context:\n{{architecture}}{{/if}}",
+        "task": "Create a class for the following requirement:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if version}}Version: {{version}}\n{{/if}}{{#if standards}}Standards: {{standards}}\n{{/if}}{{#if security}}Security requirements:\n{{security}}\n{{/if}}{{#if tests}}Test requirements: {{tests}}{{/if}}",
+        "output": "Deliver:\n1. Complete class implementation\n2. Brief design rationale\n3. Usage example\n4. Unit tests (if requested)"
+      }
+    },
+    {
+      "id": "method-develop",
+      "label": { "de": "Methode entwickeln", "en": "Develop method" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write clean, testable methods with clear contracts.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture context:\n{{architecture}}{{/if}}",
+        "task": "Develop a method/function for:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if version}}Version: {{version}}\n{{/if}}{{#if standards}}Standards: {{standards}}\n{{/if}}{{#if security}}Security: {{security}}\n{{/if}}{{#if tests}}Tests: {{tests}}{{/if}}",
+        "output": "Deliver:\n1. Method signature and implementation\n2. Input/output documentation\n3. Edge case handling\n4. Unit tests (if requested)"
+      }
+    },
+    {
+      "id": "api-design",
+      "label": { "de": "API entwerfen", "en": "API design" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} specializing in API design. Follow REST best practices and clear contracts.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}System architecture:\n{{architecture}}{{/if}}",
+        "task": "Design an API for:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if version}}Version: {{version}}\n{{/if}}{{#if standards}}Standards: {{standards}}\n{{/if}}{{#if security}}Security / auth:\n{{security}}{{/if}}",
+        "output": "Deliver:\n1. Endpoint overview\n2. Request/response schemas\n3. Error handling\n4. Authentication approach\n5. OpenAPI-style specification"
+      }
+    },
+    {
+      "id": "refactoring",
+      "label": { "de": "Refactoring", "en": "Refactoring" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Refactor code safely while preserving behavior.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture:\n{{architecture}}{{/if}}",
+        "task": "Refactor the following code or module:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if standards}}Standards: {{standards}}\n{{/if}}{{#if security}}Security considerations:\n{{security}}\n{{/if}}{{#if tests}}Test coverage: {{tests}}{{/if}}",
+        "output": "Deliver:\n1. Refactoring plan\n2. Refactored code\n3. Before/after comparison notes\n4. Regression test recommendations"
+      }
+    },
+    {
+      "id": "review",
+      "label": { "de": "Review", "en": "Code review" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} performing thorough code reviews. Be constructive and specific.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture context:\n{{architecture}}{{/if}}",
+        "task": "Review the following code:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if standards}}Standards: {{standards}}\n{{/if}}{{#if security}}Security focus:\n{{security}}{{/if}}",
+        "output": "Deliver:\n1. Summary assessment\n2. Critical issues (must fix)\n3. Suggestions (should fix)\n4. Positive observations\n5. Security and performance notes"
+      }
+    },
+    {
+      "id": "tests-write",
+      "label": { "de": "Tests schreiben", "en": "Write tests" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} writing comprehensive, maintainable tests.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture:\n{{architecture}}{{/if}}",
+        "task": "Write tests for:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if version}}Version: {{version}}\n{{/if}}{{#if standards}}Standards: {{standards}}\n{{/if}}Test types: {{tests}}",
+        "output": "Deliver:\n1. Test strategy overview\n2. Complete test code\n3. Coverage of edge cases\n4. Mock/fixture setup if needed"
+      }
+    },
+    {
+      "id": "song-develop",
+      "label": { "de": "Song entwickeln", "en": "Develop song" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create compelling songs with strong structure and emotional impact.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Develop a complete song concept for {{taskLabel}}.",
+        "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}",
+        "output": "Deliver:\n1. Song title and concept\n2. Verse/chorus/bridge structure\n3. Lyrical themes and hook ideas\n4. Production notes"
+      }
+    },
+    {
+      "id": "lyrics",
+      "label": { "de": "Lyrics", "en": "Lyrics" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write evocative, singable lyrics with clear structure.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Write lyrics for {{taskLabel}}.",
+        "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}",
+        "output": "Deliver complete lyrics with:\n1. Verse 1\n2. Pre-chorus (if applicable)\n3. Chorus\n4. Verse 2\n5. Bridge\n6. Final chorus / outro"
+      }
+    },
+    {
+      "id": "hook",
+      "label": { "de": "Hook", "en": "Hook" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create memorable, catchy hooks.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a hook for {{taskLabel}}.",
+        "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}",
+        "output": "Deliver:\n1. Three hook variations (melodic + lyrical)\n2. Recommended primary hook with rationale\n3. Suggested placement in song structure"
+      }
+    },
+    {
+      "id": "suno-style",
+      "label": { "de": "Suno Style", "en": "Suno style" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create Suno-optimized style prompts.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a Suno style prompt for {{taskLabel}}.",
+        "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}",
+        "output": "Deliver a compact Suno style tag string (max 120 chars) plus optional extended style description."
+      }
+    },
+    {
+      "id": "album",
+      "label": { "de": "Album", "en": "Album" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Design cohesive album concepts with narrative arc.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Develop an album concept for {{taskLabel}}.",
+        "parameters": "Genre: {{genre}}\nBPM range: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\n{{#if story}}Album narrative:\n{{story}}{{/if}}",
+        "output": "Deliver:\n1. Album title and concept\n2. Track listing (8–12 tracks) with brief descriptions\n3. Sonic palette and production direction\n4. Visual / branding direction"
+      }
+    },
+    {
+      "id": "hero",
+      "label": { "de": "Hero", "en": "Hero image" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create compelling hero image prompts.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
+        "task": "Create a hero image prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\nLighting: {{lighting}}\nCamera: {{camera}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a single optimized image generation prompt ready for the target model."
+      }
+    },
+    {
+      "id": "cover",
+      "label": { "de": "Cover", "en": "Cover" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Design striking cover art prompts.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a cover art prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\nLighting: {{lighting}}\n{{#if artistName}}Artist name on cover: {{artistName}}\n{{/if}}{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a single optimized cover art prompt with composition notes."
+      }
+    },
+    {
+      "id": "diagram",
+      "label": { "de": "Diagramm", "en": "Diagram" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create clear, informative diagram prompts.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a diagram prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}",
+        "output": "Deliver a diagram prompt with layout, labels, and visual hierarchy specified."
+      }
+    },
+    {
+      "id": "infographic",
+      "label": { "de": "Infografik", "en": "Infographic" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Design informative, visually engaging infographics.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create an infographic prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\nLighting: {{lighting}}",
+        "output": "Deliver an infographic prompt with sections, data visualization types, and layout flow."
+      }
+    },
+    {
+      "id": "logo",
+      "label": { "de": "Logo", "en": "Logo" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create distinctive, scalable logo prompts.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a logo prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a logo prompt optimized for clarity at small sizes and brand recognition."
+      }
+    },
+    {
+      "id": "character",
+      "label": { "de": "Charakter", "en": "Character" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Design memorable, consistent characters.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
+        "task": "Create a character design prompt for {{taskLabel}}.",
+        "parameters": "Character: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nLighting: {{lighting}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a character prompt with appearance, pose, expression, and outfit details."
+      }
+    },
+    {
+      "id": "storyboard",
+      "label": { "de": "Storyboard", "en": "Storyboard" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create detailed, production-ready storyboards.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a storyboard for {{taskLabel}}.",
+        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}",
+        "output": "Deliver a panel-by-panel storyboard with shot descriptions, camera angles, and transitions."
+      }
+    },
+    {
+      "id": "scenes",
+      "label": { "de": "Szenen", "en": "Scenes" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write vivid, actionable scene descriptions.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Develop detailed scenes for {{taskLabel}}.",
+        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nLighting: {{lighting}}",
+        "output": "Deliver numbered scenes with action, dialogue cues, location, and timing."
+      }
+    },
+    {
+      "id": "camera",
+      "label": { "de": "Kamera", "en": "Camera" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} and cinematographer. Specify precise camera work.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Define camera direction for {{taskLabel}}.",
+        "parameters": "Camera setup: {{camera}}\nLighting: {{lighting}}\nScenes:\n{{scenes}}\nDuration: {{duration}}",
+        "output": "Deliver shot list with lens choices, movements, framing, and lighting setup per scene."
+      }
+    },
+    {
+      "id": "trailer",
+      "label": { "de": "Trailer", "en": "Trailer" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create compelling trailer concepts.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create a trailer concept for {{taskLabel}}.",
+        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nMood: {{mood}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}",
+        "output": "Deliver:\n1. Trailer structure (hook → build → climax → title)\n2. Scene sequence with timings\n3. Music/sound design notes\n4. Text overlays and call-to-action"
+      }
+    },
+    {
+      "id": "document-summarize",
+      "label": { "de": "Dokument zusammenfassen", "en": "Summarize document" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Summarize documents clearly and accurately.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}",
+        "task": "Summarize the following:\n\n{{goal}}",
+        "parameters": "{{#if documents}}Document / text:\n{{documents}}{{/if}}",
+        "output": "Deliver a structured summary as {{outputFormat}} with:\n1. Key points\n2. Main themes\n3. Important details\n4. Open questions or gaps"
+      }
+    },
+    {
+      "id": "document-follow-up",
+      "label": { "de": "Folgeaktion", "en": "Follow-up action" },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Act on a prior summary with a clear follow-up task.",
+        "context": "{{#if previousOutput}}Summary from previous step:\n{{previousOutput}}\n{{/if}}{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}{{/if}}",
+        "task": "Based on the summary, perform the following follow-up:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver the follow-up result as {{outputFormat}} with actionable, structured output."
+      }
+    },
+    {
+      "id": "custom-block",
+      "label": { "de": "Eigener Prompt-Block", "en": "Custom prompt block" },
+      "sections": {
+        "system": "You are a helpful AI assistant.",
+        "task": "{{goal}}",
+        "output": "Deliver a clear, complete response."
+      }
+    }
+  ]
+}

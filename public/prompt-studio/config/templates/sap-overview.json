@@ -1,0 +1,13 @@
+{
+  "templates": [
+    {
+      "id": "sap-overview",
+      "label": { "de": "SAP Übersicht", "en": "SAP overview" },
+      "sections": {
+        "system": "You are an experienced SAP consultant.",
+        "task": "Create an overview for module {{sapModule}}:\n\n{{goal}}",
+        "output": "Deliver architecture summary, integration points, and recommendations."
+      }
+    }
+  ]
+}

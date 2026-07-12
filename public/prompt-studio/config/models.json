@@ -1,0 +1,98 @@
+{
+  "models": [
+    {
+      "id": "chatgpt",
+      "label": { "de": "ChatGPT", "en": "ChatGPT" },
+      "sectionOrder": ["system", "context", "task", "parameters", "output"],
+      "formatRules": {
+        "joinSections": "\n\n",
+        "includeSectionHeaders": true,
+        "headerFormat": "## {section}",
+        "systemRole": "system",
+        "userRole": "user"
+      }
+    },
+    {
+      "id": "claude",
+      "label": { "de": "Claude", "en": "Claude" },
+      "sectionOrder": ["system", "context", "task", "parameters", "output"],
+      "formatRules": {
+        "joinSections": "\n\n",
+        "includeSectionHeaders": true,
+        "headerFormat": "### {section}",
+        "systemRole": "system",
+        "userRole": "user",
+        "preferXmlTags": false
+      }
+    },
+    {
+      "id": "gemini",
+      "label": { "de": "Gemini", "en": "Gemini" },
+      "sectionOrder": ["context", "task", "parameters", "output"],
+      "formatRules": {
+        "joinSections": "\n\n",
+        "includeSectionHeaders": true,
+        "headerFormat": "**{section}**",
+        "omitSystemSection": true
+      }
+    },
+    {
+      "id": "suno",
+      "label": { "de": "Suno", "en": "Suno" },
+      "sectionOrder": ["task", "parameters", "output"],
+      "formatRules": {
+        "joinSections": ", ",
+        "includeSectionHeaders": false,
+        "compactTags": true,
+        "maxLength": 1000,
+        "stylePrefix": "[Style:"
+      }
+    },
+    {
+      "id": "midjourney",
+      "label": { "de": "Midjourney", "en": "Midjourney" },
+      "sectionOrder": ["task", "parameters"],
+      "formatRules": {
+        "joinSections": ", ",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitOutputSection": true,
+        "suffixParams": ["--ar", "--v"],
+        "negativePromptPrefix": "--no"
+      }
+    },
+    {
+      "id": "flux",
+      "label": { "de": "Flux", "en": "Flux" },
+      "sectionOrder": ["task", "parameters"],
+      "formatRules": {
+        "joinSections": ", ",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitOutputSection": true,
+        "negativePromptPrefix": "Negative:"
+      }
+    },
+    {
+      "id": "gpt-image",
+      "label": { "de": "GPT Image", "en": "GPT Image" },
+      "sectionOrder": ["task", "parameters", "output"],
+      "formatRules": {
+        "joinSections": "\n",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "naturalLanguage": true
+      }
+    },
+    {
+      "id": "generic",
+      "label": { "de": "Generisch", "en": "Generic" },
+      "sectionOrder": ["system", "context", "task", "parameters", "output"],
+      "formatRules": {
+        "joinSections": "\n\n",
+        "includeSectionHeaders": true,
+        "headerFormat": "{section}:"
+      }
+    }
+  ]
+}

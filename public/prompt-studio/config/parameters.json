@@ -1,0 +1,401 @@
+{
+  "parameters": [
+    {
+      "id": "goal",
+      "type": "textarea",
+      "group": "business",
+      "label": { "de": "Ziel", "en": "Goal" },
+      "placeholder": { "de": "Was soll erreicht werden?", "en": "What should be achieved?" },
+      "required": true
+    },
+    {
+      "id": "process",
+      "type": "textarea",
+      "group": "business",
+      "label": { "de": "Prozess", "en": "Process" },
+      "placeholder": { "de": "Beschreibung des aktuellen oder geplanten Prozesses", "en": "Description of the current or planned process" }
+    },
+    {
+      "id": "stakeholders",
+      "type": "chips",
+      "group": "business",
+      "label": { "de": "Stakeholder", "en": "Stakeholders" },
+      "placeholder": { "de": "Stakeholder hinzufügen…", "en": "Add stakeholders…" },
+      "techOnly": true,
+      "suggestions": [
+        { "value": "management", "label": { "de": "Management", "en": "Management" } },
+        { "value": "operations", "label": { "de": "Operations", "en": "Operations" } },
+        { "value": "it", "label": { "de": "IT", "en": "IT" } },
+        { "value": "customers", "label": { "de": "Kunden", "en": "Customers" } },
+        { "value": "compliance", "label": { "de": "Compliance", "en": "Compliance" } }
+      ]
+    },
+    {
+      "id": "documents",
+      "type": "textarea",
+      "group": "business",
+      "label": { "de": "Quellen / Dokument", "en": "Sources / document" },
+      "placeholder": { "de": "Dokument oder Text zum Analysieren einfügen", "en": "Paste document or text to analyze" },
+      "help": {
+        "de": "Füge den zu analysierenden Text oder Auszüge aus Dokumenten ein.",
+        "en": "Paste the text to analyze or excerpts from documents."
+      }
+    },
+    {
+      "id": "kpis",
+      "type": "chips",
+      "group": "business",
+      "label": { "de": "KPIs", "en": "KPIs" },
+      "placeholder": { "de": "KPI hinzufügen…", "en": "Add KPI…" },
+      "techOnly": true,
+      "suggestions": [
+        { "value": "revenue", "label": { "de": "Umsatz", "en": "Revenue" } },
+        { "value": "cost", "label": { "de": "Kosten", "en": "Cost" } },
+        { "value": "time-to-market", "label": { "de": "Time-to-Market", "en": "Time-to-market" } },
+        { "value": "quality", "label": { "de": "Qualität", "en": "Quality" } },
+        { "value": "customer-satisfaction", "label": { "de": "Kundenzufriedenheit", "en": "Customer satisfaction" } }
+      ]
+    },
+    {
+      "id": "language",
+      "type": "select",
+      "group": "code",
+      "label": { "de": "Programmiersprache", "en": "Programming language" },
+      "options": [
+        { "value": "typescript", "label": { "de": "TypeScript", "en": "TypeScript" } },
+        { "value": "javascript", "label": { "de": "JavaScript", "en": "JavaScript" } },
+        { "value": "python", "label": { "de": "Python", "en": "Python" } },
+        { "value": "java", "label": { "de": "Java", "en": "Java" } },
+        { "value": "csharp", "label": { "de": "C#", "en": "C#" } },
+        { "value": "go", "label": { "de": "Go", "en": "Go" } },
+        { "value": "rust", "label": { "de": "Rust", "en": "Rust" } },
+        { "value": "php", "label": { "de": "PHP", "en": "PHP" } }
+      ],
+      "default": "typescript"
+    },
+    {
+      "id": "framework",
+      "type": "select",
+      "group": "code",
+      "label": { "de": "Framework", "en": "Framework" },
+      "options": [
+        { "value": "angular", "label": { "de": "Angular", "en": "Angular" } },
+        { "value": "react", "label": { "de": "React", "en": "React" } },
+        { "value": "vue", "label": { "de": "Vue", "en": "Vue" } },
+        { "value": "laravel", "label": { "de": "Laravel", "en": "Laravel" } },
+        { "value": "spring", "label": { "de": "Spring", "en": "Spring" } },
+        { "value": "dotnet", "label": { "de": ".NET", "en": ".NET" } },
+        { "value": "fastapi", "label": { "de": "FastAPI", "en": "FastAPI" } },
+        { "value": "none", "label": { "de": "Keines", "en": "None" } }
+      ],
+      "default": "none"
+    },
+    {
+      "id": "version",
+      "type": "text",
+      "group": "code",
+      "label": { "de": "Version", "en": "Version" },
+      "placeholder": { "de": "z. B. 18, 3.12, v2", "en": "e.g. 18, 3.12, v2" }
+    },
+    {
+      "id": "architecture",
+      "type": "textarea",
+      "group": "code",
+      "label": { "de": "Architektur", "en": "Architecture" },
+      "placeholder": { "de": "Architektur, Patterns, Layer, Module", "en": "Architecture, patterns, layers, modules" }
+    },
+    {
+      "id": "standards",
+      "type": "multiselect",
+      "group": "code",
+      "label": { "de": "Standards", "en": "Standards" },
+      "options": [
+        { "value": "clean-code", "label": { "de": "Clean Code", "en": "Clean Code" } },
+        { "value": "solid", "label": { "de": "SOLID", "en": "SOLID" } },
+        { "value": "rest", "label": { "de": "REST", "en": "REST" } },
+        { "value": "openapi", "label": { "de": "OpenAPI", "en": "OpenAPI" } },
+        { "value": "eslint", "label": { "de": "ESLint / Linting", "en": "ESLint / Linting" } },
+        { "value": "conventional-commits", "label": { "de": "Conventional Commits", "en": "Conventional Commits" } }
+      ]
+    },
+    {
+      "id": "security",
+      "type": "textarea",
+      "group": "code",
+      "label": { "de": "Security", "en": "Security" },
+      "placeholder": { "de": "Auth, OWASP, Verschlüsselung, Compliance", "en": "Auth, OWASP, encryption, compliance" }
+    },
+    {
+      "id": "tests",
+      "type": "multiselect",
+      "group": "code",
+      "label": { "de": "Tests", "en": "Tests" },
+      "options": [
+        { "value": "unit", "label": { "de": "Unit Tests", "en": "Unit tests" } },
+        { "value": "integration", "label": { "de": "Integration Tests", "en": "Integration tests" } },
+        { "value": "e2e", "label": { "de": "E2E Tests", "en": "E2E tests" } },
+        { "value": "coverage", "label": { "de": "Code Coverage", "en": "Code coverage" } },
+        { "value": "tdd", "label": { "de": "TDD", "en": "TDD" } }
+      ]
+    },
+    {
+      "id": "genre",
+      "type": "select",
+      "group": "music",
+      "label": { "de": "Genre", "en": "Genre" },
+      "options": [
+        { "value": "pop", "label": { "de": "Pop", "en": "Pop" } },
+        { "value": "rock", "label": { "de": "Rock", "en": "Rock" } },
+        { "value": "electronic", "label": { "de": "Electronic", "en": "Electronic" } },
+        { "value": "hip-hop", "label": { "de": "Hip-Hop", "en": "Hip-Hop" } },
+        { "value": "jazz", "label": { "de": "Jazz", "en": "Jazz" } },
+        { "value": "classical", "label": { "de": "Klassik", "en": "Classical" } },
+        { "value": "ambient", "label": { "de": "Ambient", "en": "Ambient" } },
+        { "value": "cinematic", "label": { "de": "Cinematic", "en": "Cinematic" } }
+      ],
+      "default": "pop"
+    },
+    {
+      "id": "bpm",
+      "type": "number",
+      "group": "music",
+      "label": { "de": "BPM", "en": "BPM" },
+      "min": 40,
+      "max": 220,
+      "default": 120
+    },
+    {
+      "id": "story",
+      "type": "textarea",
+      "group": "music",
+      "label": { "de": "Story", "en": "Story" },
+      "placeholder": { "de": "Thema, Erzählung, Botschaft des Songs", "en": "Theme, narrative, message of the song" }
+    },
+    {
+      "id": "mood",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Stimmung", "en": "Mood" },
+      "placeholder": { "de": "Stimmung hinzufügen…", "en": "Add mood…" },
+      "suggestions": [
+        { "value": "energetic", "label": { "de": "Energisch", "en": "Energetic" } },
+        { "value": "melancholic", "label": { "de": "Melancholisch", "en": "Melancholic" } },
+        { "value": "uplifting", "label": { "de": "Erhebend", "en": "Uplifting" } },
+        { "value": "dark", "label": { "de": "Düster", "en": "Dark" } },
+        { "value": "romantic", "label": { "de": "Romantisch", "en": "Romantic" } }
+      ]
+    },
+    {
+      "id": "instruments",
+      "type": "multiselect",
+      "group": "music",
+      "label": { "de": "Instrumente", "en": "Instruments" },
+      "options": [
+        { "value": "vocals", "label": { "de": "Gesang", "en": "Vocals" } },
+        { "value": "guitar", "label": { "de": "Gitarre", "en": "Guitar" } },
+        { "value": "piano", "label": { "de": "Klavier", "en": "Piano" } },
+        { "value": "synth", "label": { "de": "Synthesizer", "en": "Synthesizer" } },
+        { "value": "drums", "label": { "de": "Schlagzeug", "en": "Drums" } },
+        { "value": "bass", "label": { "de": "Bass", "en": "Bass" } },
+        { "value": "strings", "label": { "de": "Streicher", "en": "Strings" } }
+      ]
+    },
+    {
+      "id": "voice",
+      "type": "select",
+      "group": "music",
+      "label": { "de": "Stimme", "en": "Voice" },
+      "options": [
+        { "value": "male", "label": { "de": "Männlich", "en": "Male" } },
+        { "value": "female", "label": { "de": "Weiblich", "en": "Female" } },
+        { "value": "duet", "label": { "de": "Duett", "en": "Duet" } },
+        { "value": "choir", "label": { "de": "Chor", "en": "Choir" } },
+        { "value": "instrumental", "label": { "de": "Instrumental", "en": "Instrumental" } }
+      ],
+      "default": "male"
+    },
+    {
+      "id": "motiv",
+      "type": "textarea",
+      "group": "image",
+      "label": { "de": "Motiv", "en": "Subject" },
+      "placeholder": { "de": "Was soll abgebildet werden?", "en": "What should be depicted?" },
+      "required": true
+    },
+    {
+      "id": "style",
+      "type": "chips",
+      "group": "image",
+      "label": { "de": "Stil", "en": "Style" },
+      "placeholder": { "de": "Stil hinzufügen…", "en": "Add style…" },
+      "suggestions": [
+        { "value": "photorealistic", "label": { "de": "Fotorealistisch", "en": "Photorealistic" } },
+        { "value": "minimalist", "label": { "de": "Minimalistisch", "en": "Minimalist" } },
+        { "value": "illustration", "label": { "de": "Illustration", "en": "Illustration" } },
+        { "value": "3d-render", "label": { "de": "3D-Render", "en": "3D render" } },
+        { "value": "flat-design", "label": { "de": "Flat Design", "en": "Flat design" } }
+      ]
+    },
+    {
+      "id": "colors",
+      "type": "chips",
+      "group": "image",
+      "label": { "de": "Farben", "en": "Colors" },
+      "placeholder": { "de": "Farbe hinzufügen…", "en": "Add color…" },
+      "suggestions": [
+        { "value": "brand-colors", "label": { "de": "Markenfarben", "en": "Brand colors" } },
+        { "value": "monochrome", "label": { "de": "Monochrom", "en": "Monochrome" } },
+        { "value": "warm", "label": { "de": "Warm", "en": "Warm" } },
+        { "value": "cool", "label": { "de": "Kühl", "en": "Cool" } },
+        { "value": "high-contrast", "label": { "de": "Hoher Kontrast", "en": "High contrast" } }
+      ]
+    },
+    {
+      "id": "aspectRatio",
+      "type": "select",
+      "group": "image",
+      "label": { "de": "Seitenverhältnis", "en": "Aspect ratio" },
+      "options": [
+        { "value": "1:1", "label": { "de": "1:1 (Quadrat)", "en": "1:1 (Square)" } },
+        { "value": "16:9", "label": { "de": "16:9 (Landscape)", "en": "16:9 (Landscape)" } },
+        { "value": "9:16", "label": { "de": "9:16 (Portrait)", "en": "9:16 (Portrait)" } },
+        { "value": "4:3", "label": { "de": "4:3", "en": "4:3" } },
+        { "value": "3:2", "label": { "de": "3:2", "en": "3:2" } }
+      ],
+      "default": "16:9"
+    },
+    {
+      "id": "size",
+      "type": "select",
+      "group": "image",
+      "label": { "de": "Größe", "en": "Size" },
+      "options": [
+        { "value": "1024x1024", "label": { "de": "1024×1024", "en": "1024×1024" } },
+        { "value": "1792x1024", "label": { "de": "1792×1024", "en": "1792×1024" } },
+        { "value": "1024x1792", "label": { "de": "1024×1792", "en": "1024×1792" } },
+        { "value": "2048x2048", "label": { "de": "2048×2048", "en": "2048×2048" } }
+      ],
+      "default": "1024x1024"
+    },
+    {
+      "id": "lighting",
+      "type": "select",
+      "group": "image",
+      "label": { "de": "Licht", "en": "Lighting" },
+      "options": [
+        { "value": "natural", "label": { "de": "Natürlich", "en": "Natural" } },
+        { "value": "studio", "label": { "de": "Studio", "en": "Studio" } },
+        { "value": "dramatic", "label": { "de": "Dramatisch", "en": "Dramatic" } },
+        { "value": "soft", "label": { "de": "Weich", "en": "Soft" } },
+        { "value": "neon", "label": { "de": "Neon", "en": "Neon" } },
+        { "value": "golden-hour", "label": { "de": "Golden Hour", "en": "Golden hour" } }
+      ],
+      "default": "natural"
+    },
+    {
+      "id": "camera",
+      "type": "select",
+      "group": "image",
+      "label": { "de": "Kamera", "en": "Camera" },
+      "options": [
+        { "value": "wide-angle", "label": { "de": "Weitwinkel", "en": "Wide angle" } },
+        { "value": "telephoto", "label": { "de": "Tele", "en": "Telephoto" } },
+        { "value": "macro", "label": { "de": "Makro", "en": "Macro" } },
+        { "value": "aerial", "label": { "de": "Luftaufnahme", "en": "Aerial" } },
+        { "value": "close-up", "label": { "de": "Nahaufnahme", "en": "Close-up" } },
+        { "value": "dolly", "label": { "de": "Dolly", "en": "Dolly" } },
+        { "value": "handheld", "label": { "de": "Handheld", "en": "Handheld" } }
+      ],
+      "default": "wide-angle"
+    },
+    {
+      "id": "reference",
+      "type": "textarea",
+      "group": "image",
+      "label": { "de": "Referenz", "en": "Reference" },
+      "placeholder": { "de": "Referenzbilder, URLs oder Stilreferenzen", "en": "Reference images, URLs, or style references" }
+    },
+    {
+      "id": "negativePrompt",
+      "type": "textarea",
+      "group": "image",
+      "label": { "de": "Negative Prompts", "en": "Negative prompts" },
+      "placeholder": { "de": "Was ausgeschlossen werden soll", "en": "What should be excluded" }
+    },
+    {
+      "id": "scenes",
+      "type": "textarea",
+      "group": "video",
+      "label": { "de": "Szenen", "en": "Scenes" },
+      "placeholder": { "de": "Szenenbeschreibungen, Reihenfolge, Handlung", "en": "Scene descriptions, order, plot" },
+      "required": true
+    },
+    {
+      "id": "duration",
+      "type": "text",
+      "group": "video",
+      "label": { "de": "Dauer", "en": "Duration" },
+      "placeholder": { "de": "z. B. 30s, 2 min", "en": "e.g. 30s, 2 min" }
+    },
+    {
+      "id": "splitTask",
+      "type": "textarea",
+      "group": "meta",
+      "label": { "de": "Großaufgabe", "en": "Large task" },
+      "placeholder": { "de": "z. B. Entwickle komplettes CRM", "en": "e.g. Build a complete CRM" }
+    },
+    {
+      "id": "conversationHistory",
+      "type": "textarea",
+      "group": "meta",
+      "label": { "de": "Konversationsverlauf", "en": "Conversation history" },
+      "placeholder": { "de": "Bisheriger Dialog (automatisch oder manuell)", "en": "Previous dialogue (automatic or manual)" },
+      "techOnly": true
+    },
+    {
+      "id": "outputFormat",
+      "type": "select",
+      "group": "business",
+      "label": { "de": "Ausgabeformat", "en": "Output format" },
+      "options": [
+        { "value": "markdown", "label": { "de": "Text / Markdown", "en": "Text / Markdown" } },
+        { "value": "pdf", "label": { "de": "PDF", "en": "PDF" } },
+        { "value": "word", "label": { "de": "Word", "en": "Word" } },
+        { "value": "excel", "label": { "de": "Excel", "en": "Excel" } },
+        { "value": "ppt", "label": { "de": "PowerPoint", "en": "PowerPoint" } },
+        { "value": "image", "label": { "de": "Bild", "en": "Image" } },
+        { "value": "code", "label": { "de": "Code", "en": "Code" } }
+      ],
+      "default": "markdown",
+      "help": {
+        "de": "In welchem Format soll die KI das Ergebnis liefern?",
+        "en": "In which format should the AI deliver the result?"
+      }
+    },
+    {
+      "id": "forbiddenLyricsWords",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Verbotene Wörter in Lyrics", "en": "Forbidden words in lyrics" },
+      "placeholder": { "de": "Wörter kommagetrennt, z. B. Liebe, Herz", "en": "Comma-separated words, e.g. love, heart" },
+      "help": {
+        "de": "Diese Wörter dürfen in den Lyrics nicht vorkommen. Deine Liste wird gespeichert.",
+        "en": "These words must not appear in the lyrics. Your list is saved automatically."
+      }
+    },
+    {
+      "id": "artistName",
+      "type": "text",
+      "group": "image",
+      "label": { "de": "Künstlername", "en": "Artist name" },
+      "placeholder": { "de": "Optional auf dem Cover anzeigen", "en": "Optional text on the cover" }
+    },
+    {
+      "id": "previousOutput",
+      "type": "textarea",
+      "group": "meta",
+      "label": { "de": "Vorherige Ausgabe", "en": "Previous output" },
+      "placeholder": { "de": "Output des vorherigen Chain-Schritts", "en": "Output from the previous chain step" }
+    }
+  ]
+}

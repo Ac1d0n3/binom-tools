@@ -12,7 +12,13 @@
         </p>
 
         <div class="tools-page-stack">
+            <x-tools.workflow-nav tool-id="governance-ai-sanitizer" />
+
             <div class="gov-tool-playground" id="governance-ai-sanitizer-app">
+            <div id="gov-bridge-banner" class="prompt-studio__bridge-banner" hidden role="status"></div>
+            <div class="gov-tool-playground__top-actions">
+                <button type="button" class="tools-btn" id="gov-back-studio-btn" data-i18n="gov.bridge.backToStudio">← Back to Prompt Studio</button>
+            </div>
             <x-tools.collapsible-info summary-key="gov.howto.summary" :open="true">
                 <p data-i18n="gov.howto.overview.intro"></p>
                 <ol>

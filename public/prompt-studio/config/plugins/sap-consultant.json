@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "plugins": [],
+  "localeFallback": "en",
+  "files": {
+    "roles": "roles/sap-consultant.json",
+    "tasks": "tasks/sap-overview.json",
+    "parameters": "parameters/sap.json",
+    "templates": "templates/sap-overview.json"
+  }
+}
