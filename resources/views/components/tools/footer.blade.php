@@ -10,7 +10,7 @@
         <nav class="tools-site-bar__links" aria-label="Meta navigation">
             <a
                 class="tools-site-bar__link"
-                href="{{ route('legal.impressum') }}"
+                href="{{ locale_route('legal.impressum') }}"
                 data-i18n="footer.impressum"
             >
                 Legal Notice

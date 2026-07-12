@@ -59,8 +59,19 @@ final class PlaybookRepository
             order: $playbook->order,
             modifiedAt: $playbook->modifiedAt,
             variants: $playbook->variants,
-            prev: $prev ? new PlaybookNavRef($prev, $this->buildPlaybook($prev)->title()) : null,
-            next: $next ? new PlaybookNavRef($next, $this->buildPlaybook($next)->title()) : null,
+            prev: $prev ? $this->navRefForSlug($prev) : null,
+            next: $next ? $this->navRefForSlug($next) : null,
+        );
+    }
+
+    private function navRefForSlug(string $slug): PlaybookNavRef
+    {
+        $linked = $this->buildPlaybook($slug);
+
+        return new PlaybookNavRef(
+            slug: $slug,
+            titleDe: $linked->title('de'),
+            titleEn: $linked->title('en'),
         );
     }
 

@@ -11,7 +11,7 @@ final class LandingCatalog
     public const TOOLS_PREVIEW_LIMIT = 5;
 
     /** Max story cards on the home page (next card is “View all stories”). */
-    public const PREVIEW_LIMIT = 9;
+    public const STORIES_PREVIEW_LIMIT = 5;
 
     public function __construct(
         private readonly PlaybookRepository $playbooks,
@@ -41,7 +41,7 @@ final class LandingCatalog
     {
         return collect($this->playbooks->allForIndex())
             ->sortByDesc(fn (array $item): int => $item['modifiedAt']->getTimestamp())
-            ->take(self::PREVIEW_LIMIT)
+            ->take(self::STORIES_PREVIEW_LIMIT)
             ->values()
             ->all();
     }

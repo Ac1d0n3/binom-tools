@@ -24,11 +24,11 @@ final readonly class Playbook
         return $this->variants[$locale] ?? null;
     }
 
-    public function title(string $locale = 'de'): string
+    public function title(string $locale = 'en'): string
     {
         return $this->variant($locale)?->title
-            ?? $this->variant('de')?->title
             ?? $this->variant('en')?->title
+            ?? $this->variant('de')?->title
             ?? $this->slug;
     }
 

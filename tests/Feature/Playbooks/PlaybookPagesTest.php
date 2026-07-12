@@ -62,6 +62,19 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-playbook-locale-panel="en"', false);
     }
 
+    public function test_eight_pillar_story_renders_localized_diagram_images(): void
+    {
+        $response = $this->get('/playbooks/eight-pillars');
+
+        $response->assertOk();
+        $response->assertSee('Die 8 Säulen der Data Governance');
+        $response->assertSee('The 8 Pillars of Data Governance');
+        $response->assertSee(asset('images/playbooks/eight-pillar-hero.png'), false);
+        $response->assertSee(asset('images/playbooks/eight-pillar-de.png'), false);
+        $response->assertSee(asset('images/playbooks/eight-pillar-en.png'), false);
+        $response->assertDontSee('eight-pillor', false);
+    }
+
     public function test_help_hub_platform_story_includes_repository_link(): void
     {
         $response = $this->get('/playbooks/help-hub-platform');
@@ -120,6 +133,67 @@ class PlaybookPagesTest extends TestCase
         $this->assertSame(16, count($leafMatches[0]), 'Expected eight leaf groups per locale panel');
         $this->assertSame(4, count($branchMatches[0]), 'Expected two branches per locale panel');
         $this->assertSame(count($toggleMatches[0]), count($branchMatches[0]));
+    }
+
+    public function test_legacy_playbook_url_shows_english_panel_by_default(): void
+    {
+        $response = $this->get('/playbooks/eight-pillars');
+
+        $response->assertOk();
+        $html = $response->getContent();
+        $this->assertStringContainsString('data-playbook-locale-panel="en"', $html);
+        $this->assertStringContainsString('data-playbook-locale-panel="de"', $html);
+        $this->assertMatchesRegularExpression(
+            '/data-playbook-locale-panel="en"[^>]*>\s*<div class="playbook-detail__layout"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
+            '/data-playbook-locale-panel="de"[^>]*hidden[^>]*>/',
+            $html,
+        );
+    }
+
+    public function test_german_prefixed_playbook_url_shows_german_panel(): void
+    {
+        $response = $this->get('/de/playbooks/eight-pillars');
+
+        $response->assertOk();
+        $html = $response->getContent();
+        $this->assertMatchesRegularExpression(
+            '/data-playbook-locale-panel="de"[^>]*>\s*<div class="playbook-detail__layout"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
+            '/data-playbook-locale-panel="en"[^>]*hidden[^>]*>/',
+            $html,
+        );
+        $response->assertSee('/de/playbooks/', false);
+    }
+
+    public function test_english_prefixed_playbook_url_shows_english_panel(): void
+    {
+        $response = $this->get('/en/playbooks/eight-pillars');
+
+        $response->assertOk();
+        $html = $response->getContent();
+        $this->assertMatchesRegularExpression(
+            '/data-playbook-locale-panel="en"[^>]*>\s*<div class="playbook-detail__layout"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
+            '/data-playbook-locale-panel="de"[^>]*hidden[^>]*>/',
+            $html,
+        );
+    }
+
+    public function test_german_playbook_index_links_use_de_prefix(): void
+    {
+        $response = $this->get('/de/playbooks');
+
+        $response->assertOk();
+        $response->assertSee('/de/playbooks/eight-pillars', false);
+        $response->assertSee('/de/playbooks/bridge-solution', false);
+        $response->assertDontSee('href="http://localhost/playbooks/eight-pillars"', false);
     }
 
     public function test_unknown_playbook_returns_not_found(): void

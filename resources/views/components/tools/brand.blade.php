@@ -1,4 +1,4 @@
-<a href="{{ route('tools.landing') }}" class="tools-header__brand-link">
+<a href="{{ locale_route('tools.landing') }}" class="tools-header__brand-link">
     <img
         src="{{ asset('images/tools-logo.svg') }}"
         alt=""

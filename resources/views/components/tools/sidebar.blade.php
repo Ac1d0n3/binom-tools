@@ -1,8 +1,9 @@
 @php
+    use App\Support\Locale;
+
     $navItems = \App\Support\ToolsNav::withRegisteredRoutes(config('tools.nav', []));
     $workflows = \App\Support\ToolsNav::workflowsWithRegisteredRoutes(config('tools.workflows', []));
     $navById = collect($navItems)->keyBy('id');
-    $currentRoute = request()->route()?->getName();
     $currentSlug = request()->route('slug');
     $sidebarPlaybooks = app(\App\Playbooks\PlaybookRepository::class)->allForIndex();
 
@@ -39,8 +40,8 @@
     <ul class="tools-sidenav__list tools-sidenav__list--home">
         <li>
             <a
-                href="{{ route('tools.landing') }}"
-                class="tools-sidenav__link {{ $currentRoute === 'tools.landing' ? 'tools-sidenav__link--active' : '' }}"
+                href="{{ locale_route('tools.landing') }}"
+                class="tools-sidenav__link {{ Locale::routeIs('tools.landing') ? 'tools-sidenav__link--active' : '' }}"
                 data-i18n="nav.home"
             >
                 Startseite
@@ -53,8 +54,8 @@
         <ul class="tools-sidenav__list">
             <li>
                 <a
-                    href="{{ route('playbooks.index') }}"
-                    class="tools-sidenav__link tools-sidenav__link--overview {{ $currentRoute === 'playbooks.index' ? 'tools-sidenav__link--active' : '' }}"
+                    href="{{ locale_route('playbooks.index') }}"
+                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('playbooks.index') ? 'tools-sidenav__link--active' : '' }}"
                     data-i18n="nav.storiesOverview"
                 >
                     Overview
@@ -64,16 +65,17 @@
                 @php
                     $de = $item['locales']['de'] ?? null;
                     $en = $item['locales']['en'] ?? null;
+                    $titleEn = $en['title'] ?? ($de['title'] ?? $item['slug']);
                 @endphp
                 <li>
                     <a
-                        href="{{ route('playbooks.show', $item['slug']) }}"
-                        class="tools-sidenav__link {{ $currentRoute === 'playbooks.show' && $currentSlug === $item['slug'] ? 'tools-sidenav__link--active' : '' }}"
+                        href="{{ locale_route('playbooks.show', ['slug' => $item['slug']]) }}"
+                        class="tools-sidenav__link {{ Locale::routeIs('playbooks.show') && $currentSlug === $item['slug'] ? 'tools-sidenav__link--active' : '' }}"
                         data-playbook-nav-title
                         data-text-de="{{ $de['title'] ?? '' }}"
-                        data-text-en="{{ $en['title'] ?? ($de['title'] ?? '') }}"
+                        data-text-en="{{ $titleEn }}"
                     >
-                        {{ $de['title'] ?? $en['title'] ?? $item['slug'] }}
+                        {{ $titleEn }}
                     </a>
                 </li>
             @endforeach
@@ -85,8 +87,8 @@
         <ul class="tools-sidenav__list">
             <li>
                 <a
-                    href="{{ route('tools.overview') }}"
-                    class="tools-sidenav__link tools-sidenav__link--overview {{ $currentRoute === 'tools.overview' ? 'tools-sidenav__link--active' : '' }}"
+                    href="{{ locale_route('tools.overview') }}"
+                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('tools.overview') ? 'tools-sidenav__link--active' : '' }}"
                     data-i18n="nav.overview"
                 >
                     Overview
@@ -99,8 +101,8 @@
                 @endphp
                 <li>
                     <a
-                        href="{{ route($item['route']) }}"
-                        class="tools-sidenav__link tools-sidenav__link--tool {{ $currentRoute === $item['route'] ? 'tools-sidenav__link--active' : '' }}"
+                        href="{{ locale_route($item['route']) }}"
+                        class="tools-sidenav__link tools-sidenav__link--tool {{ Locale::routeIs($item['route']) ? 'tools-sidenav__link--active' : '' }}"
                     >
                         @if ($icon)
                             <i class="fa-solid {{ $icon }} tools-sidenav__link-icon" aria-hidden="true"></i>

@@ -166,6 +166,22 @@ class ToolsPagesTest extends TestCase
         $this->assertStringContainsString('DQ Rules Generator', $toolsNav);
     }
 
+    public function test_legacy_tool_urls_remain_available(): void
+    {
+        $this->get('/tools/dbt-dq-macro-generator')->assertOk();
+        $this->get('/de/tools/dbt-dq-macro-generator')->assertOk();
+        $this->get('/en/tools/dbt-dq-macro-generator')->assertOk();
+    }
+
+    public function test_german_landing_uses_de_prefix_in_story_links(): void
+    {
+        $response = $this->get('/de/');
+
+        $response->assertOk();
+        $response->assertSee('/de/playbooks', false);
+        $response->assertSee('/de/tools', false);
+    }
+
     public function test_header_includes_layout_settings_menu(): void
     {
         $response = $this->get('/');

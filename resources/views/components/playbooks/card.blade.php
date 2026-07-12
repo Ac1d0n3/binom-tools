@@ -23,7 +23,7 @@
 @endphp
 
 <a
-    href="{{ route('playbooks.show', $item['slug']) }}"
+    href="{{ locale_route('playbooks.show', ['slug' => $item['slug']]) }}"
     class="tools-card"
     data-playbook-index-card
     data-overview-item
@@ -42,7 +42,7 @@
                     data-playbook-card-title
                     data-text-de="{{ $titleDe }}"
                     data-text-en="{{ $titleEn }}"
-                >{{ $titleDe }}</h3>
+                >{{ $titleEn }}</h3>
             </div>
             @if ($metaDe !== '' || $metaEn !== '')
                 <p
@@ -50,14 +50,14 @@
                     data-playbook-card-meta
                     data-text-de="{{ $metaDe }}"
                     data-text-en="{{ $metaEn }}"
-                >{{ $metaDe }}</p>
+                >{{ $metaEn }}</p>
             @endif
             <p
                 class="tools-card__desc"
                 data-playbook-card-description
                 data-text-de="{{ $descDe }}"
                 data-text-en="{{ $descEn }}"
-            >{{ $descDe }}</p>
+            >{{ $descEn }}</p>
             @if (count($tags) > 0)
                 <ul class="tools-card__tags" aria-label="Tags">
                     @foreach ($tags as $tag)

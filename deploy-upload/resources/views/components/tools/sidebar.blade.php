@@ -49,13 +49,13 @@
     </ul>
 
     <div class="tools-sidenav__group">
-        <p class="tools-sidenav__section" data-i18n="nav.playbooks">Playbooks</p>
+        <p class="tools-sidenav__section" data-i18n="nav.stories">Stories</p>
         <ul class="tools-sidenav__list">
             <li>
                 <a
                     href="{{ route('playbooks.index') }}"
                     class="tools-sidenav__link tools-sidenav__link--overview {{ $currentRoute === 'playbooks.index' ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.playbooksOverview"
+                    data-i18n="nav.storiesOverview"
                 >
                     Overview
                 </a>

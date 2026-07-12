@@ -1,18 +1,113 @@
 const STORAGE_KEY = 'binom-tools-locale';
-const DEFAULT_LOCALE = 'de';
+const DEFAULT_LOCALE = 'en';
 
 /** @typedef {'de' | 'en'} ToolsLocale */
 
+/** @returns {string} */
+export function getAppBasePath() {
+    const fromDom = document.documentElement.dataset.appBase;
+
+    if (typeof fromDom === 'string' && fromDom !== '') {
+        return fromDom.replace(/\/$/, '');
+    }
+
+    return '';
+}
+
+/** @param {string} pathname */
+export function stripAppBasePath(pathname) {
+    const base = getAppBasePath();
+
+    if (base && (pathname === base || pathname.startsWith(`${base}/`))) {
+        return pathname.slice(base.length) || '/';
+    }
+
+    return pathname;
+}
+
+/** @param {string} pathname */
+export function withAppBasePath(pathname) {
+    const base = getAppBasePath();
+    const path = pathname.startsWith('/') ? pathname : `/${pathname}`;
+
+    if (base === '') {
+        return path;
+    }
+
+    return path === '/' ? base : `${base}${path}`;
+}
+
+/** @returns {ToolsLocale | null} */
+export function getLocaleFromPath(pathname = window.location.pathname) {
+    const path = stripAppBasePath(pathname);
+
+    if (path === '/de' || path.startsWith('/de/')) {
+        return 'de';
+    }
+
+    if (path === '/en' || path.startsWith('/en/')) {
+        return 'en';
+    }
+
+    return null;
+}
+
+/** @param {string} pathname */
+export function stripLocalePrefix(pathname) {
+    const path = stripAppBasePath(pathname);
+
+    if (path === '/de' || path === '/en') {
+        return '/';
+    }
+
+    if (path.startsWith('/de/')) {
+        return path.slice(3) || '/';
+    }
+
+    if (path.startsWith('/en/')) {
+        return path.slice(3) || '/';
+    }
+
+    return path;
+}
+
+/** @param {string} pathname @param {ToolsLocale} locale */
+export function localeUrlForPath(pathname, locale) {
+    const path = stripLocalePrefix(pathname);
+
+    if (locale === 'de') {
+        return withAppBasePath(path === '/' ? '/de' : `/de${path}`);
+    }
+
+    return withAppBasePath(path);
+}
+
 /** @returns {ToolsLocale} */
 export function getLocale() {
+    const fromPath = getLocaleFromPath();
+
+    if (fromPath) {
+        return fromPath;
+    }
+
     const stored = localStorage.getItem(STORAGE_KEY);
+
     return stored === 'en' || stored === 'de' ? stored : DEFAULT_LOCALE;
 }
 
 /** @param {ToolsLocale} locale */
 export function setLocale(locale) {
     localStorage.setItem(STORAGE_KEY, locale);
-    document.documentElement.lang = locale === 'de' ? 'de' : 'en';
+
+    const target = localeUrlForPath(window.location.pathname, locale);
+
+    if (target !== window.location.pathname) {
+        window.location.assign(target);
+
+        return;
+    }
+
+    applyLocaleToDocument(locale);
     window.dispatchEvent(new CustomEvent('binom-tools:locale', { detail: { locale } }));
 }
 
@@ -329,6 +424,12 @@ export function applyShellLabels(locale) {
 
 export function initLocaleControls() {
     const locale = getLocale();
+    const fromPath = getLocaleFromPath();
+
+    if (fromPath) {
+        localStorage.setItem(STORAGE_KEY, fromPath);
+    }
+
     applyLocaleToDocument(locale);
     applyShellLabels(locale);
 
@@ -341,14 +442,11 @@ export function initLocaleControls() {
         btn.setAttribute('aria-pressed', String(isActive));
 
         btn.addEventListener('click', () => {
+            if (value === locale) {
+                return;
+            }
+
             setLocale(/** @type {ToolsLocale} */ (value));
-            applyShellLabels(value);
-            document.querySelectorAll('[data-locale]').forEach((other) => {
-                const otherLocale = other.getAttribute('data-locale');
-                const active = otherLocale === value;
-                other.classList.toggle('tools-btn--active', active);
-                other.setAttribute('aria-pressed', String(active));
-            });
         });
     });
 

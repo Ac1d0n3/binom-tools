@@ -1,10 +1,10 @@
 @extends('layouts.tools')
 
-@section('title', 'Playbooks — ' . config('app.name'))
+@section('title', 'Stories — ' . config('app.name'))
 
 @section('content')
     <div class="tools-content" data-overview-filter-root>
-        <h1 class="tools-page-title" data-i18n="playbooks.indexTitle">Governance Playbooks</h1>
+        <h1 class="tools-page-title" data-i18n="playbooks.indexTitle">Stories</h1>
         <p class="tools-page-lead" data-i18n="playbooks.indexLead">
             Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.
         </p>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ current_locale() }}" data-app-base="{{ app_base_path() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +9,12 @@
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <script>
         (function () {
+            var base = document.documentElement.dataset.appBase || '';
+            var path = window.location.pathname;
+            var relative = base && path.indexOf(base) === 0 ? path.slice(base.length) || '/' : path;
+            var locale = relative === '/de' || relative.indexOf('/de/') === 0 ? 'de' : 'en';
+            document.documentElement.lang = locale;
+
             var key = 'binom-tools-color-scheme';
             var stored = localStorage.getItem(key);
             var scheme = stored === 'light' || stored === 'dark'

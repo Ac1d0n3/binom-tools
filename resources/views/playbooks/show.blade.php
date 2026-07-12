@@ -21,7 +21,7 @@
             <div
                 class="playbook-detail__locale"
                 data-playbook-locale-panel="{{ $locale }}"
-                @if ($locale !== 'de') hidden @endif
+                @if ($locale !== current_locale()) hidden @endif
             >
                 <div class="playbook-detail__layout">
                     <div class="playbook-detail__scroll" data-playbook-scroll-root>

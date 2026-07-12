@@ -15,7 +15,7 @@ export function applyPlaybookLocale(locale) {
         }
     });
 
-    document.querySelectorAll('[data-playbook-card-title], [data-playbook-card-description], [data-playbook-card-meta]').forEach((element) => {
+    document.querySelectorAll('[data-playbook-card-title], [data-playbook-card-description], [data-playbook-card-meta], [data-playbook-pager-title]').forEach((element) => {
         const text = element.getAttribute(`data-text-${locale}`);
         if (text !== null) {
             element.textContent = text;

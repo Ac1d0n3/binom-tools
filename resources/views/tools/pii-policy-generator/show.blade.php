@@ -182,7 +182,7 @@
                 <div class="pii-policy-panel__actions">
                     <button type="button" class="tools-btn" id="pii-load-yaml-btn" data-i18n="pii.yaml.load">Load from YAML</button>
                     <button type="button" class="tools-btn tools-btn--primary" id="pii-execute-btn" data-i18n="pii.yaml.execute">Execute</button>
-                    <a href="{{ route('tools.schema-yml-editor') }}" class="tools-btn" data-i18n="pii.yaml.openEditor">Open in Schema Editor</a>
+                    <a href="{{ locale_route('tools.schema-yml-editor') }}" class="tools-btn" data-i18n="pii.yaml.openEditor">Open in Schema Editor</a>
                 </div>
                 <p class="pii-policy-sync-status" id="pii-sync-status" aria-live="polite"></p>
             </section>

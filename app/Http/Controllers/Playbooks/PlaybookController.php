@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Playbooks;
 
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PlaybookController extends Controller
@@ -29,8 +30,10 @@ class PlaybookController extends Controller
         ]);
     }
 
-    public function show(string $slug): View
+    public function show(Request $request): View
     {
+        $slug = (string) $request->route('slug');
+
         $playbook = $this->playbooks->find($slug);
 
         abort_if($playbook === null, 404);

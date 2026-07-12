@@ -649,12 +649,12 @@ html[data-shell-full-width='true'] .tools-shell,
 .tools-card--overview {
     border-style: dashed;
     border-color: color-mix(in srgb, var(--theme-color-accent) 35%, var(--border-color));
-    background: color-mix(in srgb, var(--theme-color-accent) 6%, var(--tools-card-background));
+    background: var(--content-background-color);
 }
 
 .tools-card--overview:hover {
     border-color: color-mix(in srgb, var(--theme-color-accent) 55%, var(--border-color));
-    background: color-mix(in srgb, var(--theme-color-accent) 10%, var(--tools-card-background));
+    background: var(--content-background-color);
 }
 
 .tools-card--overview .tools-card__count {

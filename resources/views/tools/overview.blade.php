@@ -50,7 +50,7 @@
                     $stepTotal = $workflowId ? ($workflowStepTotals[$workflowId] ?? null) : null;
                 @endphp
                 <x-tools.card
-                    :href="route($item['route'])"
+                    :href="locale_route($item['route'])"
                     :title="$item['label']['en']"
                     :description="$item['description']['en']"
                     :icon="$item['icon']"
@@ -83,7 +83,7 @@
                         @if ($step)
                             <li class="tools-workflow-steps__item">
                                 <span class="tools-workflow-steps__num">{{ $index + 1 }}</span>
-                                <a href="{{ route($step['route']) }}" class="tools-workflow-steps__link">
+                                <a href="{{ locale_route($step['route']) }}" class="tools-workflow-steps__link">
                                     {{ $step['label']['en'] }}
                                 </a>
                             </li>
