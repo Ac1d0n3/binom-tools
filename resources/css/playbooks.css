@@ -296,11 +296,13 @@
     }
 
     .playbook-detail__main-column {
-        order: 0;
+        order: 1;
+        flex: 1 1 auto;
+        min-height: 0;
     }
 
     .playbook-detail__toc-rail {
-        order: 1;
+        order: 0;
         flex-shrink: 0;
         position: sticky;
         top: 0;
@@ -308,6 +310,15 @@
         padding: 0.35rem 1.5rem 0.5rem;
         background: var(--app-background-color);
         border-bottom: 1px solid var(--base-border-color);
+    }
+
+    .playbook-toc__mobile {
+        margin-bottom: 0;
+    }
+
+    .playbook-toc__toggle {
+        width: 100%;
+        justify-content: center;
     }
 
     .playbook-toc__panel:not(.playbook-toc__panel--open) {

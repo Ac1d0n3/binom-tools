@@ -84,3 +84,34 @@ test.describe('Playbook TOC', () => {
         await expectTocRailVisible(page, `${VISIBLE_PANEL} [data-playbook-toc]`);
     });
 });
+
+test.describe('Playbook TOC mobile', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.goto(PLAYBOOK_URL);
+        await page.waitForSelector(`${VISIBLE_PANEL} [data-playbook-toc]`);
+    });
+
+    test('toggle is visible at top and opens the section list', async ({ page }) => {
+        const toggle = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-toggle]`);
+        const panel = page.locator(`${VISIBLE_PANEL} [data-playbook-toc-panel]`);
+
+        await expect(toggle).toBeVisible();
+        await expect(panel).not.toHaveClass(/playbook-toc__panel--open/);
+
+        const toggleBox = await toggle.boundingBox();
+        const viewport = page.viewportSize();
+
+        expect(toggleBox).not.toBeNull();
+        expect(toggleBox.y).toBeLessThan(180);
+
+        if (viewport) {
+            expect(toggleBox.y).toBeLessThan(viewport.height * 0.35);
+        }
+
+        await toggle.click();
+
+        await expect(panel).toHaveClass(/playbook-toc__panel--open/);
+        await expect(panel.locator('[data-playbook-toc-link]').first()).toBeVisible();
+    });
+});

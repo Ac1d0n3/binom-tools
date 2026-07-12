@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Support\Locale;
+use App\Support\LocaleSwitch;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ final class SetLocaleFromRoute
     {
         $locale = Locale::setCurrent($request->route('locale'));
         view()->share('currentLocale', $locale);
+        view()->share('localeSwitchUrls', LocaleSwitch::urls());
 
         return $next($request);
     }

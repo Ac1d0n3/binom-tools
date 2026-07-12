@@ -95,13 +95,13 @@ export function getLocale() {
     return stored === 'en' || stored === 'de' ? stored : DEFAULT_LOCALE;
 }
 
-/** @param {ToolsLocale} locale */
-export function setLocale(locale) {
+/** @param {ToolsLocale} locale @param {string | null | undefined} targetUrl */
+export function setLocale(locale, targetUrl = null) {
     localStorage.setItem(STORAGE_KEY, locale);
 
-    const target = localeUrlForPath(window.location.pathname, locale);
+    const target = targetUrl ?? localeUrlForPath(window.location.pathname, locale);
 
-    if (target !== window.location.pathname) {
+    if (target !== window.location.pathname && target !== window.location.href) {
         window.location.assign(target);
 
         return;
@@ -466,7 +466,8 @@ export function initLocaleControls() {
                 return;
             }
 
-            setLocale(/** @type {ToolsLocale} */ (value));
+            const targetUrl = btn.getAttribute('data-locale-url');
+            setLocale(/** @type {ToolsLocale} */ (value), targetUrl || undefined);
         });
     });
 

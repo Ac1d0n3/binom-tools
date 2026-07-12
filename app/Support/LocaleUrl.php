@@ -42,6 +42,8 @@ final class LocaleUrl
             if ($path === '') {
                 $path = '/';
             }
+        } elseif ($path === '/de' || $path === '/en') {
+            $path = '/';
         }
 
         if ($locale === Locale::DEFAULT) {

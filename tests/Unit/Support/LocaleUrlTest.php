@@ -3,6 +3,7 @@
 namespace Tests\Unit\Support;
 
 use App\Support\LocaleUrl;
+use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class LocaleUrlTest extends TestCase
@@ -10,6 +11,7 @@ class LocaleUrlTest extends TestCase
     public function test_locale_route_uses_subdirectory_before_locale_prefix(): void
     {
         $this->app['url']->forceRootUrl('http://localhost/binom-tools');
+        $this->app->instance('request', Request::create('/binom-tools/playbooks/eight-pillars', 'GET'));
 
         $this->assertSame(
             'http://localhost/binom-tools/de/playbooks/eight-pillars',
@@ -26,6 +28,7 @@ class LocaleUrlTest extends TestCase
     {
         config(['app.url' => 'http://localhost/binom-tools']);
         $this->app['url']->forceRootUrl('http://localhost/binom-tools');
+        $this->app->instance('request', Request::create('/binom-tools/playbooks/eight-pillars', 'GET'));
 
         $this->assertSame(
             '/binom-tools/de/playbooks/eight-pillars',

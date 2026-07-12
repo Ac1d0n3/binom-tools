@@ -52,8 +52,20 @@
             <i class="fa-solid fa-sun tools-header__theme-icon" data-theme-icon aria-hidden="true"></i>
         </button>
         <div class="tools-header__locale" role="group" aria-label="Language">
-            <button type="button" class="tools-btn tools-btn--ghost" data-locale="de" aria-pressed="false">DE</button>
-            <button type="button" class="tools-btn tools-btn--ghost" data-locale="en" aria-pressed="false">EN</button>
+            <button
+                type="button"
+                class="tools-btn tools-btn--ghost"
+                data-locale="de"
+                data-locale-url="{{ $localeSwitchUrls['de'] ?? '' }}"
+                aria-pressed="false"
+            >DE</button>
+            <button
+                type="button"
+                class="tools-btn tools-btn--ghost"
+                data-locale="en"
+                data-locale-url="{{ $localeSwitchUrls['en'] ?? '' }}"
+                aria-pressed="false"
+            >EN</button>
         </div>
     </div>
 </div>
