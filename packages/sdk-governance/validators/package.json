@@ -1,0 +1,4 @@
+{
+  "module": "../fesm2022/binom-sdk-governance-validators.mjs",
+  "typings": "../types/binom-sdk-governance-validators.d.ts"
+}

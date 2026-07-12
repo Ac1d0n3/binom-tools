@@ -1,0 +1,74 @@
+{
+  "name": "@binom/sdk-governance",
+  "version": "1.0.0",
+  "description": "Framework-independent governance SDK for Binom — PII detection, sanitization, masking, and restore.",
+  "license": "MIT",
+  "keywords": [
+    "binom",
+    "sdk",
+    "governance",
+    "pii",
+    "sanitization",
+    "masking"
+  ],
+  "bugs": {
+    "email": "support@binom.net"
+  },
+  "sideEffects": false,
+  "binom": {
+    "docs": {
+      "stability": "experimental",
+      "features": [
+        "pii-detection",
+        "sanitization",
+        "masking",
+        "restore"
+      ],
+      "relatedPackages": [
+        "ui-governance"
+      ]
+    }
+  },
+  "module": "fesm2022/binom-sdk-governance.mjs",
+  "typings": "types/binom-sdk-governance.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./types/binom-sdk-governance.d.ts",
+      "default": "./fesm2022/binom-sdk-governance.mjs"
+    },
+    "./core": {
+      "types": "./types/binom-sdk-governance-core.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-core.mjs"
+    },
+    "./detectors": {
+      "types": "./types/binom-sdk-governance-detectors.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-detectors.mjs"
+    },
+    "./mapping-store": {
+      "types": "./types/binom-sdk-governance-mapping-store.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-mapping-store.mjs"
+    },
+    "./registry": {
+      "types": "./types/binom-sdk-governance-registry.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-registry.mjs"
+    },
+    "./sanitizer": {
+      "types": "./types/binom-sdk-governance-sanitizer.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-sanitizer.mjs"
+    },
+    "./types": {
+      "types": "./types/binom-sdk-governance-types.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-types.mjs"
+    },
+    "./validators": {
+      "types": "./types/binom-sdk-governance-validators.d.ts",
+      "default": "./fesm2022/binom-sdk-governance-validators.mjs"
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

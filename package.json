@@ -12,10 +12,11 @@
         "dev": "vite",
         "test": "vitest run",
         "test:watch": "vitest",
-        "test:e2e": "playwright test"
+        "test:e2e": "playwright test",
+        "validate:bundles": "node scripts/validate-tool-bundles.mjs"
     },
     "dependencies": {
-        "@binom/sdk-governance": "file:../../GIT/binom-ngx/dist/binom/public/sdks/sdk-governance"
+        "@binom/sdk-governance": "file:packages/sdk-governance"
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^7.3.0",

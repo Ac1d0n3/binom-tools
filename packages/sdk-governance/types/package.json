@@ -1,0 +1,4 @@
+{
+  "module": "../fesm2022/binom-sdk-governance-types.mjs",
+  "typings": "binom-sdk-governance-types.d.ts"
+}

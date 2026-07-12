@@ -19,7 +19,7 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertNotNull($governance);
         $this->assertSame('The 8 Pillars of Data Governance', $governance->titleEn);
         $this->assertSame('Die 8 Säulen der Data Governance', $governance->titleDe);
-        $this->assertSame(7, $governance->partCount());
+        $this->assertSame(8, $governance->partCount());
         $this->assertNotNull($governance->heroUrl);
         $this->assertStringContainsString('eight-pillar-hero', $governance->heroUrl);
         $this->assertGreaterThan(0, $governance->totalReadingTimeEn);
@@ -29,6 +29,8 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertSame(1, $governance->parts[0]->part);
         $this->assertSame('kpi-metric-governance', $governance->parts[6]->slug);
         $this->assertSame(7, $governance->parts[6]->part);
+        $this->assertSame('access-security-governance', $governance->parts[7]->slug);
+        $this->assertSame(8, $governance->parts[7]->part);
     }
 
     public function test_find_attaches_series_navigation_for_member(): void
@@ -41,7 +43,7 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertSame(3, $playbook->seriesPart);
         $this->assertNotNull($playbook->series);
         $this->assertSame(3, $playbook->series->currentPart);
-        $this->assertSame(7, $playbook->series->totalParts());
+        $this->assertSame(8, $playbook->series->totalParts());
 
         $currentParts = array_filter(
             $playbook->series->parts,

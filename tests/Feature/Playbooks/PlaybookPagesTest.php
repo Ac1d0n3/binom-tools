@@ -116,7 +116,7 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('playbook-series', false);
-        $response->assertSee('Part 1 of 3', false);
+        $response->assertSee('Part 1 of 8', false);
         $response->assertSee('playbook-series__option--active', false);
         $response->assertSee('/playbooks/data-ownership-stewardship', false);
         $response->assertSee('/playbooks/metadata-catalog-lineage', false);
@@ -128,7 +128,7 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('playbook-series', false);
-        $response->assertSee('Part 3 of 3', false);
+        $response->assertSee('Part 3 of 8', false);
         $response->assertSee('/playbooks/eight-pillars', false);
         $response->assertSee('/playbooks/data-ownership-stewardship', false);
     }
@@ -169,7 +169,7 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee(asset('images/playbooks/data-ownership-stewardship-en.png'), false);
         $response->assertDontSee('data-steward-', false);
         $response->assertSee('playbook-series', false);
-        $response->assertSee('Part 2 of 3', false);
+        $response->assertSee('Part 2 of 8', false);
         $response->assertSee('/playbooks/eight-pillars', false);
     }
 

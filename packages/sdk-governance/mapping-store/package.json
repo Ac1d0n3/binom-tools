@@ -1,0 +1,4 @@
+{
+  "module": "../fesm2022/binom-sdk-governance-mapping-store.mjs",
+  "typings": "../types/binom-sdk-governance-mapping-store.d.ts"
+}

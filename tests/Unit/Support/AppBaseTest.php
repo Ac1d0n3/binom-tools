@@ -36,8 +36,8 @@ class AppBaseTest extends TestCase
         $response = $this->get('/playbooks/metadata-catalog-lineage');
 
         $response->assertOk();
-        $response->assertSee('data-locale-url="https://governance.binom.net/de/playbooks/metadata-catalog-lineage"', false);
-        $response->assertSee('data-locale-url="https://governance.binom.net/playbooks/metadata-catalog-lineage"', false);
+        $response->assertSee('data-locale-url="http://governance.binom.net/de/playbooks/metadata-catalog-lineage"', false);
+        $response->assertSee('data-locale-url="http://governance.binom.net/playbooks/metadata-catalog-lineage"', false);
     }
 
     public function test_locale_path_strips_bare_de_prefix_for_english(): void
