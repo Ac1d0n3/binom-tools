@@ -72,4 +72,32 @@ MD);
             $result['html'],
         );
     }
+
+    public function test_rewrites_internal_markdown_links_with_app_base_and_locale(): void
+    {
+        config(['app.url' => 'http://localhost/binom-tools']);
+        $this->app['url']->forceRootUrl('http://localhost/binom-tools');
+
+        $renderer = new PlaybookMarkdownRenderer;
+
+        $english = $renderer->render(
+            'Related: [Eight Pillars](/playbooks/eight-pillars).',
+            'en',
+        );
+
+        $this->assertStringContainsString(
+            'href="/binom-tools/playbooks/eight-pillars"',
+            $english['html'],
+        );
+
+        $german = $renderer->render(
+            'Verwandt: [Acht Säulen](/playbooks/eight-pillars).',
+            'de',
+        );
+
+        $this->assertStringContainsString(
+            'href="/binom-tools/de/playbooks/eight-pillars"',
+            $german['html'],
+        );
+    }
 }

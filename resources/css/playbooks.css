@@ -30,27 +30,46 @@
     overflow: hidden;
 }
 
+.playbook-detail__main-column {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
 .playbook-detail__scroll {
+    flex: 1;
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 1.5rem;
 }
 
+.playbook-detail__scroll:has(.playbook-detail__hero) {
+    padding-top: 0;
+}
+
 .playbook-detail__hero {
-    margin-bottom: 1rem;
-    border-radius: 12px;
     overflow: hidden;
-    border: 1px solid var(--base-border-color);
-    background: var(--content-background-color);
+    margin-inline: -1.5rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
 .playbook-detail__hero-image {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 320px;
+    max-height: min(42vh, 420px);
     object-fit: cover;
+    object-position: center;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .playbook-detail__header {
@@ -274,12 +293,12 @@
         gap: 0;
     }
 
-    .playbook-detail__scroll {
-        order: 1;
+    .playbook-detail__main-column {
+        order: 0;
     }
 
     .playbook-detail__toc-rail {
-        order: 0;
+        order: 1;
         flex-shrink: 0;
         position: sticky;
         top: 0;
@@ -615,8 +634,16 @@ a.playbook-toc__title:hover {
         padding: 1rem;
     }
 
+    .playbook-detail__scroll:has(.playbook-detail__hero) {
+        padding-top: 0;
+    }
+
+    .playbook-detail__hero {
+        margin-inline: -1rem;
+    }
+
     .playbook-detail__hero-image {
-        max-height: 200px;
+        max-height: min(36vh, 240px);
     }
 
     .playbook-detail__actions .tools-btn {

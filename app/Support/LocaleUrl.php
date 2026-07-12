@@ -29,4 +29,29 @@ final class LocaleUrl
 
         return route($localizedName, ['locale' => $locale, ...$params]);
     }
+
+    public static function path(string $path, ?string $locale = null): string
+    {
+        $path = '/'.ltrim($path, '/');
+        $base = AppBase::path();
+        $locale = Locale::normalize($locale ?? Locale::current());
+
+        if (preg_match('#^/(de|en)(?=/)#', $path, $matches) === 1) {
+            $path = substr($path, strlen($matches[0]));
+
+            if ($path === '') {
+                $path = '/';
+            }
+        }
+
+        if ($locale === Locale::DEFAULT) {
+            return $base.$path;
+        }
+
+        if ($path === '/') {
+            return $base.'/'.$locale;
+        }
+
+        return $base.'/'.$locale.$path;
+    }
 }

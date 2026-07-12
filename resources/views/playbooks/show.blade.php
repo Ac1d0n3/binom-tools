@@ -24,20 +24,21 @@
                 @if ($locale !== current_locale()) hidden @endif
             >
                 <div class="playbook-detail__layout">
-                    <div class="playbook-detail__scroll" data-playbook-scroll-root>
-                        @if ($variant->heroUrl)
-                            <div class="playbook-detail__hero">
-                                <img
-                                    src="{{ $variant->heroUrl }}"
-                                    alt="{{ $variant->title }}"
-                                    class="playbook-detail__hero-image"
-                                    loading="eager"
-                                />
-                            </div>
-                        @endif
+                    <div class="playbook-detail__main-column">
+                        <div class="playbook-detail__scroll" data-playbook-scroll-root>
+                            @if ($variant->heroUrl)
+                                <div class="playbook-detail__hero">
+                                    <img
+                                        src="{{ $variant->heroUrl }}"
+                                        alt="{{ $variant->title }}"
+                                        class="playbook-detail__hero-image"
+                                        loading="eager"
+                                    />
+                                </div>
+                            @endif
 
-                        <div class="playbook-detail__main">
-                            <header class="playbook-detail__header" id="{{ $locale }}-playbook-start">
+                            <div class="playbook-detail__main">
+                                <header class="playbook-detail__header" id="{{ $locale }}-playbook-start">
                                 <h1 class="tools-page-title">{{ $variant->title }}</h1>
 
                                 @if ($variant->description)
@@ -60,6 +61,7 @@
                             </div>
 
                             <x-playbooks.pager :playbook="$playbook" />
+                            </div>
                         </div>
                     </div>
 

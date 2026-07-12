@@ -2,6 +2,7 @@
 
 namespace App\Playbooks;
 
+use App\Support\LocaleUrl;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -79,6 +80,7 @@ final class PlaybookMarkdownRenderer
 
         $this->wrapTables($document, $root);
         $this->enhanceImages($root);
+        $this->enhanceLinks($root, $idPrefix);
 
         $innerHtml = '';
 
@@ -201,6 +203,42 @@ final class PlaybookMarkdownRenderer
         }
 
         return asset(ltrim($src, '/'));
+    }
+
+    private function enhanceLinks(DOMElement $root, string $locale): void
+    {
+        foreach ($root->getElementsByTagName('a') as $anchor) {
+            if (! $anchor instanceof DOMElement) {
+                continue;
+            }
+
+            $href = trim($anchor->getAttribute('href'));
+
+            if ($href === '') {
+                continue;
+            }
+
+            $anchor->setAttribute('href', $this->resolveLinkUrl($href, $locale));
+        }
+    }
+
+    private function resolveLinkUrl(string $href, string $locale): string
+    {
+        if (
+            str_starts_with($href, 'http://')
+            || str_starts_with($href, 'https://')
+            || str_starts_with($href, '//')
+            || str_starts_with($href, '#')
+            || str_starts_with($href, 'mailto:')
+        ) {
+            return $href;
+        }
+
+        if (str_starts_with($href, '/')) {
+            return LocaleUrl::path($href, $locale !== '' ? $locale : null);
+        }
+
+        return $href;
     }
 
     public function readingTimeMinutes(string $markdown): int

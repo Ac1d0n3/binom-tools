@@ -75,6 +75,20 @@ class PlaybookPagesTest extends TestCase
         $response->assertDontSee('eight-pillor', false);
     }
 
+    public function test_data_ownership_stewardship_story_renders_localized_diagram_images(): void
+    {
+        $response = $this->get('/playbooks/data-ownership-stewardship');
+
+        $response->assertOk();
+        $response->assertSee('Data Ownership & Stewardship');
+        $response->assertSee(asset('images/playbooks/data-ownership-stewardship-hero.png'), false);
+        $response->assertSee(asset('images/playbooks/data-ownership-stewardship-de.png'), false);
+        $response->assertSee(asset('images/playbooks/data-ownership-stewardship-en.png'), false);
+        $response->assertDontSee('data-steward-', false);
+        $response->assertSee('href="/playbooks/eight-pillars"', false);
+        $response->assertSee('href="/de/playbooks/eight-pillars"', false);
+    }
+
     public function test_help_hub_platform_story_includes_repository_link(): void
     {
         $response = $this->get('/playbooks/help-hub-platform');
@@ -148,6 +162,10 @@ class PlaybookPagesTest extends TestCase
             $html,
         );
         $this->assertMatchesRegularExpression(
+            '/playbook-detail__scroll[\s\S]*?<div class="playbook-detail__hero"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
             '/data-playbook-locale-panel="de"[^>]*hidden[^>]*>/',
             $html,
         );
@@ -161,6 +179,10 @@ class PlaybookPagesTest extends TestCase
         $html = $response->getContent();
         $this->assertMatchesRegularExpression(
             '/data-playbook-locale-panel="de"[^>]*>\s*<div class="playbook-detail__layout"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
+            '/playbook-detail__scroll[\s\S]*?<div class="playbook-detail__hero"/',
             $html,
         );
         $this->assertMatchesRegularExpression(
@@ -178,6 +200,10 @@ class PlaybookPagesTest extends TestCase
         $html = $response->getContent();
         $this->assertMatchesRegularExpression(
             '/data-playbook-locale-panel="en"[^>]*>\s*<div class="playbook-detail__layout"/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
+            '/playbook-detail__scroll[\s\S]*?<div class="playbook-detail__hero"/',
             $html,
         );
         $this->assertMatchesRegularExpression(
