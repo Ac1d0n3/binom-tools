@@ -4,8 +4,10 @@ import { getLocale } from './locale';
 const TAG_SIDEBAR_STORAGE_KEY = 'binom-tools-tag-sidebar';
 const OVERVIEW_VIEW_STORAGE_KEY = 'binom-tools-overview-view';
 const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
+const OVERVIEW_LAYOUT_STORAGE_KEY = 'binom-tools-overview-layout';
 
 /** @typedef {'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'} OverviewSortKey */
+/** @typedef {'grid' | 'list'} OverviewLayoutMode */
 
 export function initOverviewFilters() {
     const root = document.querySelector('[data-overview-filter-root]');
@@ -14,6 +16,7 @@ export function initOverviewFilters() {
     initTagSidebar(root);
     initTagSidebarSearch(root);
     initOverviewViewToggle(root);
+    initOverviewLayoutToggle(root);
     initOverviewSort(root);
 
     const searchInput = /** @type {HTMLInputElement | null} */ (
@@ -152,7 +155,7 @@ export function initOverviewFilters() {
     };
 
     const sortStories = () => {
-        const grid = root.querySelector('#playbook-overview-stories .tools-card-grid');
+        const grid = root.querySelector('[data-overview-stories-grid]');
 
         if (grid instanceof HTMLElement) {
             reorderGrid(grid, '[data-overview-item]', compareStoryItems);
@@ -287,6 +290,51 @@ function readOverviewSort(root) {
     }
 
     return fallback;
+}
+
+/**
+ * @param {ParentNode} root
+ */
+function initOverviewLayoutToggle(root) {
+    const toggles = root.querySelectorAll('[data-overview-layout-toggle]');
+    const storiesGrid = root.querySelector('[data-overview-stories-grid]');
+
+    if (toggles.length === 0 || !(storiesGrid instanceof HTMLElement)) {
+        return;
+    }
+
+    const stored = localStorage.getItem(OVERVIEW_LAYOUT_STORAGE_KEY);
+    const initialLayout = stored === 'list' ? 'list' : 'grid';
+
+    /** @param {OverviewLayoutMode} layout */
+    const setLayout = (layout) => {
+        const isList = layout === 'list';
+
+        storiesGrid.classList.toggle('tools-card-grid--list', isList);
+
+        toggles.forEach((button) => {
+            const active = button.getAttribute('data-overview-layout-toggle') === layout;
+            button.classList.toggle('tools-overview-layout-toggle__button--active', active);
+
+            if (button instanceof HTMLElement) {
+                button.setAttribute('aria-pressed', active ? 'true' : 'false');
+            }
+        });
+
+        localStorage.setItem(OVERVIEW_LAYOUT_STORAGE_KEY, layout);
+    };
+
+    toggles.forEach((button) => {
+        button.addEventListener('click', () => {
+            const layout = button.getAttribute('data-overview-layout-toggle');
+
+            if (layout === 'grid' || layout === 'list') {
+                setLayout(layout);
+            }
+        });
+    });
+
+    setLayout(initialLayout);
 }
 
 /**

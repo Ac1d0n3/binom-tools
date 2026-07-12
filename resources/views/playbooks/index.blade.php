@@ -61,6 +61,38 @@
                         </div>
                     @endif
 
+                    @if (count($playbooks) > 0)
+                        <div
+                            class="tools-overview-layout-toggle"
+                            role="group"
+                        >
+                            <button
+                                type="button"
+                                class="tools-overview-layout-toggle__button tools-overview-layout-toggle__button--active"
+                                data-overview-layout-toggle="grid"
+                                aria-pressed="true"
+                                data-i18n-aria="overview.layoutGrid"
+                                aria-label="Grid view"
+                                title="Grid view"
+                            >
+                                <i class="fa-solid fa-grip" aria-hidden="true"></i>
+                                <span class="sr-only" data-i18n="overview.layoutGrid">Grid view</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="tools-overview-layout-toggle__button"
+                                data-overview-layout-toggle="list"
+                                aria-pressed="false"
+                                data-i18n-aria="overview.layoutList"
+                                aria-label="List view"
+                                title="List view"
+                            >
+                                <i class="fa-solid fa-list" aria-hidden="true"></i>
+                                <span class="sr-only" data-i18n="overview.layoutList">List view</span>
+                            </button>
+                        </div>
+                    @endif
+
                     <div class="tools-overview-sort">
                         <label class="tools-overview-sort__label" for="playbook-overview-sort" data-i18n="overview.sortLabel">Sort</label>
                         <div class="tools-overview-sort__field">
@@ -119,7 +151,7 @@
                         <p class="tools-section__lead" data-i18n="playbooks.empty">No playbooks published yet.</p>
                     @else
                         <div id="playbook-overview-stories" data-overview-view-panel="stories">
-                            <div class="tools-card-grid">
+                            <div class="tools-card-grid" data-overview-stories-grid>
                                 @foreach ($playbooks as $item)
                                     <x-playbooks.card :item="$item" />
                                 @endforeach

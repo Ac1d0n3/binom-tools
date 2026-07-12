@@ -1557,6 +1557,104 @@ html[data-color-scheme='dark'] .tools-hero {
     color: var(--theme-color-primary, #2563eb);
 }
 
+.tools-overview-layout-toggle {
+    display: inline-flex;
+    padding: 0.2rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 8px;
+    background: var(--content-background-color);
+}
+
+.tools-overview-layout-toggle__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tools-overview-layout-toggle__button--active {
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 12%, transparent);
+    color: var(--theme-color-primary, #2563eb);
+}
+
+.tools-overview-layout--view-series .tools-overview-layout-toggle {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.tools-card-grid--list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    grid-template-columns: none;
+}
+
+.tools-card-grid--list .tools-card--story {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr) auto;
+    grid-template-areas: 'media body footer';
+    align-items: stretch;
+    gap: 0;
+}
+
+.tools-card-grid--list .tools-card__media {
+    grid-area: media;
+    align-self: stretch;
+}
+
+.tools-card-grid--list .tools-card__hero {
+    height: 100%;
+    min-height: 4.75rem;
+    aspect-ratio: auto;
+}
+
+.tools-card-grid--list .tools-card__hero--placeholder {
+    min-height: 4.75rem;
+}
+
+.tools-card-grid--list .tools-card__hero--placeholder .tools-card__icon-wrap {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.15rem;
+}
+
+.tools-card-grid--list .tools-card__series-badge {
+    top: 0.4rem;
+    left: 0.4rem;
+    max-width: calc(100% - 0.8rem);
+    font-size: 0.58rem;
+    padding: 0.18rem 0.4rem;
+}
+
+.tools-card-grid--list .tools-card__story-body {
+    grid-area: body;
+    justify-content: center;
+    padding: 0.75rem 0.85rem;
+}
+
+.tools-card-grid--list .tools-card__desc--story {
+    -webkit-line-clamp: 2;
+}
+
+.tools-card-grid--list .tools-card__story-footer {
+    grid-area: footer;
+    align-self: center;
+    padding: 0 0.85rem 0 0;
+}
+
+.tools-card-grid--list .tools-card--story:hover .tools-card__hero-image {
+    transform: none;
+}
+
 .tools-overview-layout--view-series .tools-tag-sidebar__toggle {
     opacity: 0.45;
     pointer-events: none;

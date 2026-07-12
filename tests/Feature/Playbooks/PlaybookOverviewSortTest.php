@@ -12,6 +12,9 @@ class PlaybookOverviewSortTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('data-overview-sort', false);
+        $response->assertSee('data-overview-stories-grid', false);
+        $response->assertSee('data-overview-layout-toggle="grid"', false);
+        $response->assertSee('data-overview-layout-toggle="list"', false);
         $response->assertSee('data-sort-date=', false);
         $response->assertSee('data-sort-title-de=', false);
         $response->assertSee('data-sort-title-en=', false);
