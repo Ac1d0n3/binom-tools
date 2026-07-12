@@ -17,16 +17,20 @@ class PlaybookController extends Controller
     {
         $playbooks = $this->playbooks->allForIndex();
 
-        $tags = collect($playbooks)
+        $tagCounts = collect($playbooks)
             ->flatMap(fn (array $item): array => $item['tags'] ?? [])
-            ->unique()
-            ->sort()
+            ->countBy()
+            ->map(fn (int $count, string $name): array => ['name' => $name, 'count' => $count])
+            ->sortBy([
+                ['count', 'desc'],
+                ['name', 'asc'],
+            ])
             ->values()
             ->all();
 
         return view('playbooks.index', [
             'playbooks' => $playbooks,
-            'tags' => $tags,
+            'tagCounts' => $tagCounts,
         ]);
     }
 

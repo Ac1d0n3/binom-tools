@@ -18,8 +18,36 @@ class PlaybookPagesTest extends TestCase
         $response->assertDontSee('Snowflake Governance Playbook');
         $response->assertSee('data-playbook-card-title', false);
         $response->assertSee('data-overview-search', false);
+        $response->assertSee('data-tag-sidebar', false);
+        $response->assertSee('tools-overview-layout--with-tags', false);
         $response->assertSee('data-overview-tag="help-hub"', false);
         $response->assertSee('data-overview-tag="bridge-solution"', false);
+        $response->assertSee('tools-tag-sidebar__count', false);
+        $response->assertSee('data-tag-sidebar-toggle', false);
+        $response->assertDontSee('tools-overview-tags', false);
+
+        $html = $response->getContent();
+        $this->assertMatchesRegularExpression(
+            '/tools-overview-main[\s\S]*?data-tag-sidebar-toggle[\s\S]*?data-tag-sidebar/',
+            $html,
+        );
+    }
+
+    public function test_playbook_index_tag_sidebar_lists_tags_by_usage_count(): void
+    {
+        $html = $this->get('/playbooks')->getContent();
+
+        $governancePos = strpos($html, 'data-overview-tag="data-governance"');
+        $bridgePos = strpos($html, 'data-overview-tag="bridge-solution"');
+
+        $this->assertNotFalse($governancePos);
+        $this->assertNotFalse($bridgePos);
+        $this->assertLessThan($bridgePos, $governancePos, 'data-governance should rank above single-use tags.');
+
+        $this->assertMatchesRegularExpression(
+            '/data-overview-tag="data-governance"[\s\S]*?tools-tag-sidebar__count">\d+<\/span>/',
+            $html,
+        );
     }
 
     public function test_playbook_index_lists_bridge_solution_before_help_hub(): void
