@@ -31,6 +31,7 @@ class PlaybookController extends Controller
         return view('playbooks.index', [
             'playbooks' => $playbooks,
             'tagCounts' => $tagCounts,
+            'seriesList' => $this->playbooks->allSeries(),
         ]);
     }
 

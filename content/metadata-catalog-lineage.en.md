@@ -11,6 +11,9 @@ tags:
   - impact-analysis
   - data-discovery
 order: -1
+series: governance-pillars
+seriesPart: 3
+seriesTitle: The 8 Pillars of Data Governance
 hero: images/playbooks/metadata-lineage-hero.png
 ---
 
@@ -437,7 +440,3 @@ Effective Metadata, Catalog & Lineage creates:
 Metadata provides the context. The catalog makes it accessible. Lineage connects the data chain and reveals impact.
 
 Together, they create the transparency governance needs to become not only documented, but operationally effective.
-
-Related overview: [The 8 Pillars of Data Governance](/en/playbooks/eight-pillars).
-
-Previous pillar: [Data Ownership & Stewardship](/en/playbooks/data-ownership-stewardship).

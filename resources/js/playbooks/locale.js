@@ -15,10 +15,21 @@ export function applyPlaybookLocale(locale) {
         }
     });
 
-    document.querySelectorAll('[data-playbook-card-title], [data-playbook-card-description], [data-playbook-card-meta], [data-playbook-pager-title]').forEach((element) => {
+    document.querySelectorAll('[data-playbook-card-title], [data-playbook-card-description], [data-playbook-card-meta], [data-playbook-pager-title], [data-playbook-series-title], [data-playbook-series-part-of], [data-playbook-series-part-title], [data-playbook-series-card-title], [data-playbook-series-card-part-title]').forEach((element) => {
         const text = element.getAttribute(`data-text-${locale}`);
         if (text !== null) {
             element.textContent = text;
+        }
+    });
+
+    document.querySelectorAll('[data-playbook-series-card-meta]').forEach((element) => {
+        const partCount = element.getAttribute('data-part-count') ?? '0';
+        const readingTime = element.getAttribute(`data-reading-time-${locale}`) ?? '0';
+
+        if (locale === 'de') {
+            element.textContent = `${partCount} Teile · ${readingTime} min gesamt`;
+        } else {
+            element.textContent = `${partCount} parts · ${readingTime} min total`;
         }
     });
 

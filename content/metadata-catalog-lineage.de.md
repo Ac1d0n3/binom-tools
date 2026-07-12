@@ -11,6 +11,9 @@ tags:
   - impact-analysis
   - data-discovery
 order: -1
+series: governance-pillars
+seriesPart: 3
+seriesTitle: Die 8 Säulen der Data Governance
 hero: images/playbooks/metadata-lineage-hero.png
 ---
 
@@ -437,7 +440,3 @@ Wirksames Metadata, Catalog & Lineage schafft:
 Metadaten liefern den Kontext. Der Katalog macht ihn zugänglich. Lineage verbindet die Datenkette und zeigt Auswirkungen.
 
 Gemeinsam schaffen sie die Transparenz, die Governance benötigt, um nicht nur dokumentiert, sondern praktisch wirksam zu werden.
-
-Verwandte Übersicht: [Die 8 Säulen der Data Governance](/playbooks/eight-pillars).
-
-Vorherige Säule: [Data Ownership & Stewardship](/playbooks/data-ownership-stewardship).

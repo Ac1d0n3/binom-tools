@@ -60,6 +60,7 @@
                                 {!! $variant->bodyHtml !!}
                             </div>
 
+                            <x-playbooks.series-nav :playbook="$playbook" />
                             <x-playbooks.pager :playbook="$playbook" />
                             </div>
                         </div>

@@ -88,6 +88,13 @@ The route `/playbooks/my-topic` is available on the next request — no entry in
 | `tags` | no | Filter chips on story overview |
 | `order` | no | Sort order in sidebar and index (ascending) |
 | `hero` | no | Path under `public/` for hero image |
+| `series` | no | Series ID — groups stories on the overview **Series** tab and detail series nav |
+| `seriesPart` | no | Part number within the series (1, 2, 3 …) |
+| `seriesTitle` | no | Display name of the series (per locale file) |
+
+Stories with the same `series` value appear as one series card on `/playbooks` (Series view) with combined reading time and the part-1 hero image. On the detail page, a series navigation block shows **Part X of Y** and links to all parts.
+
+Pager behaviour for series members: `PLAYBOOKS_SERIES_PAGER=both|series|global` in `.env` (default `both`).
 
 ## Add a tool
 

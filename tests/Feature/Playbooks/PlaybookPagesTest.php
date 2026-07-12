@@ -24,6 +24,9 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-overview-tag="bridge-solution"', false);
         $response->assertSee('tools-tag-sidebar__count', false);
         $response->assertSee('data-tag-sidebar-toggle', false);
+        $response->assertSee('data-overview-view-toggle="stories"', false);
+        $response->assertSee('data-overview-view-toggle="series"', false);
+        $response->assertSee('data-overview-series-item', false);
         $response->assertDontSee('tools-overview-tags', false);
 
         $html = $response->getContent();
@@ -90,6 +93,41 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-playbook-locale-panel="en"', false);
     }
 
+    public function test_eight_pillar_story_renders_series_navigation(): void
+    {
+        $response = $this->get('/playbooks/eight-pillars');
+
+        $response->assertOk();
+        $response->assertSee('playbook-series', false);
+        $response->assertSee('Part 1 of 3', false);
+        $response->assertSee('playbook-series__option--active', false);
+        $response->assertSee('/playbooks/data-ownership-stewardship', false);
+        $response->assertSee('/playbooks/metadata-catalog-lineage', false);
+    }
+
+    public function test_metadata_story_renders_series_navigation(): void
+    {
+        $response = $this->get('/playbooks/metadata-catalog-lineage');
+
+        $response->assertOk();
+        $response->assertSee('playbook-series', false);
+        $response->assertSee('Part 3 of 3', false);
+        $response->assertSee('/playbooks/eight-pillars', false);
+        $response->assertSee('/playbooks/data-ownership-stewardship', false);
+    }
+
+    public function test_playbook_index_series_view_renders_series_card(): void
+    {
+        $response = $this->get('/playbooks');
+
+        $response->assertOk();
+        $response->assertSee('tools-series-card', false);
+        $response->assertSee('The 8 Pillars of Data Governance', false);
+        $response->assertSee('eight-pillar-hero.png', false);
+        $response->assertSee('/playbooks/eight-pillars', false);
+        $response->assertSee('data-overview-view-panel="series"', false);
+    }
+
     public function test_eight_pillar_story_renders_localized_diagram_images(): void
     {
         $response = $this->get('/playbooks/eight-pillars');
@@ -113,8 +151,9 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee(asset('images/playbooks/data-ownership-stewardship-de.png'), false);
         $response->assertSee(asset('images/playbooks/data-ownership-stewardship-en.png'), false);
         $response->assertDontSee('data-steward-', false);
-        $response->assertSee('href="/playbooks/eight-pillars"', false);
-        $response->assertSee('href="/de/playbooks/eight-pillars"', false);
+        $response->assertSee('playbook-series', false);
+        $response->assertSee('Part 2 of 3', false);
+        $response->assertSee('/playbooks/eight-pillars', false);
     }
 
     public function test_help_hub_platform_story_includes_repository_link(): void

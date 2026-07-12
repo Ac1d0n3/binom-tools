@@ -18,5 +18,8 @@ final readonly class PlaybookLocaleVariant
         public array $toc,
         public int $readingTimeMinutes,
         public ?string $heroUrl = null,
+        public ?string $series = null,
+        public ?int $seriesPart = null,
+        public ?string $seriesTitle = null,
     ) {}
 }

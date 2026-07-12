@@ -21,6 +21,9 @@ tags:
   - alpha
   - beta
 order: 5
+series: governance-pillars
+seriesPart: 2
+seriesTitle: Example Series
 ---
 
 Body content
@@ -34,6 +37,9 @@ MD;
         $this->assertSame('Platform', $parsed['meta']['category']);
         $this->assertSame(['alpha', 'beta'], $parsed['meta']['tags']);
         $this->assertSame(5, $parsed['meta']['order']);
+        $this->assertSame('governance-pillars', $parsed['meta']['series']);
+        $this->assertSame(2, $parsed['meta']['seriespart']);
+        $this->assertSame('Example Series', $parsed['meta']['seriestitle']);
         $this->assertStringContainsString('Body content', $parsed['body']);
     }
 

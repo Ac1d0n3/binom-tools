@@ -51,6 +51,9 @@ final class PlaybookFrontmatterParser
             'category' => null,
             'tags' => [],
             'order' => 0,
+            'series' => null,
+            'seriesPart' => null,
+            'seriesTitle' => null,
         ];
     }
 
@@ -134,7 +137,7 @@ final class PlaybookFrontmatterParser
 
     private function castValue(string $key, string $value): mixed
     {
-        if ($key === 'order') {
+        if ($key === 'order' || $key === 'seriespart') {
             return (int) $value;
         }
 

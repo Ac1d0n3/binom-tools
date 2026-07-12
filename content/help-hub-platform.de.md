@@ -88,6 +88,13 @@ Die Route `/playbooks/mein-thema` steht nach dem nächsten Request automatisch z
 | `tags` | nein | Filter-Chips in der Story-Übersicht |
 | `order` | nein | Sortierung in Sidebar und Index (aufsteigend) |
 | `hero` | nein | Pfad unter `public/` für Hero-Bild |
+| `series` | nein | Serien-ID — gruppiert Stories in der **Serien**-Ansicht und Serien-Navigation |
+| `seriesPart` | nein | Teilnummer innerhalb der Serie (1, 2, 3 …) |
+| `seriesTitle` | nein | Anzeigename der Serie (pro Locale-Datei) |
+
+Stories mit gleicher `series`-ID erscheinen auf `/playbooks` (Ansicht **Serien**) als eine Serien-Karte mit Gesamt-Lesezeit und Hero von Teil 1. Auf der Detailseite zeigt der Serien-Block **Teil X von Y** und Links zu allen Teilen.
+
+Pager-Verhalten für Serien-Mitglieder: `PLAYBOOKS_SERIES_PAGER=both|series|global` in `.env` (Default `both`).
 
 ## Tool hinzufügen
 

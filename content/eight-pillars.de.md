@@ -12,6 +12,9 @@ tags:
   - kpi-governance
   - data-lifecycle
 order: -1
+series: governance-pillars
+seriesPart: 1
+seriesTitle: Die 8 Säulen der Data Governance
 hero: images/playbooks/eight-pillar-hero.png
 ---
 

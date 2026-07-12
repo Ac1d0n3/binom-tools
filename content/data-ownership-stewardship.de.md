@@ -11,6 +11,9 @@ tags:
   - data-domains
   - data-products
 order: -1
+series: governance-pillars
+seriesPart: 2
+seriesTitle: Die 8 Säulen der Data Governance
 hero: images/playbooks/data-ownership-stewardship-hero.png
 ---
 
@@ -441,5 +444,3 @@ Wirksames Data Ownership & Stewardship schafft:
 Ownership liefert das Mandat. Stewardship schafft die operative Disziplin. Technische Teams stellen Umsetzung und Nachweise bereit. Data Consumer sorgen für verantwortungsvolle Nutzung und Feedback.
 
 Gemeinsam machen diese Rollen aus Governance kein theoretisches Framework, sondern ein funktionierendes Operating Model.
-
-Verwandte Übersicht: [Die 8 Säulen der Data Governance](/playbooks/eight-pillars).

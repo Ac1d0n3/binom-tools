@@ -11,6 +11,9 @@ tags:
   - data-domains
   - data-products
 order: -1
+series: governance-pillars
+seriesPart: 2
+seriesTitle: The 8 Pillars of Data Governance
 hero: images/playbooks/data-ownership-stewardship-hero.png
 ---
 
@@ -441,5 +444,3 @@ Effective Data Ownership & Stewardship creates:
 Ownership provides the mandate. Stewardship provides the operational discipline. Technical teams provide implementation and evidence. Data consumers provide responsible use and feedback.
 
 Together, these roles turn governance from a theoretical framework into a working operating model.
-
-Related overview: [The 8 Pillars of Data Governance](/playbooks/eight-pillars).
