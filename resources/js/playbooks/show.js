@@ -1,6 +1,7 @@
 import { initPlaybookPrism } from './prism-init';
 import { initPlaybookReadingPosition } from './reading-position';
 import { initPlaybookToc } from './toc';
+import { initPlaybookVideoEmbeds } from './video-embed';
 
 /** @type {{ disconnect: () => void } | null} */
 let tocController = null;
@@ -36,6 +37,8 @@ export function initPlaybookDetail(root) {
         console.warn('Playbook syntax highlighting failed.', error);
     }
 
+    initPlaybookVideoEmbeds(root);
+
     window.addEventListener('binom-tools:playbook-locale', () => {
         initActiveLocalePanel(root);
 
@@ -44,6 +47,8 @@ export function initPlaybookDetail(root) {
         } catch (error) {
             console.warn('Playbook syntax highlighting failed.', error);
         }
+
+        initPlaybookVideoEmbeds(panel);
     });
 }
 

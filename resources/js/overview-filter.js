@@ -1,6 +1,11 @@
 /** Client-side search and tag filtering for overview index pages. */
+import { getLocale } from './locale';
+
 const TAG_SIDEBAR_STORAGE_KEY = 'binom-tools-tag-sidebar';
 const OVERVIEW_VIEW_STORAGE_KEY = 'binom-tools-overview-view';
+const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
+
+/** @typedef {'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'} OverviewSortKey */
 
 export function initOverviewFilters() {
     const root = document.querySelector('[data-overview-filter-root]');
@@ -9,6 +14,7 @@ export function initOverviewFilters() {
     initTagSidebar(root);
     initTagSidebarSearch(root);
     initOverviewViewToggle(root);
+    initOverviewSort(root);
 
     const searchInput = /** @type {HTMLInputElement | null} */ (
         root.querySelector('[data-overview-search]')
@@ -22,8 +28,144 @@ export function initOverviewFilters() {
     /** @type {string} */
     let activeTag = 'all';
 
+    /** @type {OverviewSortKey} */
+    let activeSort = readOverviewSort(root);
+
     /** @param {string} value */
     const normalize = (value) => value.toLowerCase().trim();
+
+    /** @returns {ToolsLocale} */
+    const locale = () => getLocale();
+
+    /**
+     * @param {Element} grid
+     * @param {string} itemSelector
+     * @param {(a: Element, b: Element) => number} compare
+     */
+    const reorderGrid = (grid, itemSelector, compare) => {
+        const items = Array.from(grid.querySelectorAll(itemSelector));
+        const visible = items.filter((item) => !(item instanceof HTMLElement && item.hidden));
+        const hidden = items.filter((item) => item instanceof HTMLElement && item.hidden);
+
+        visible.sort(compare);
+        [...visible, ...hidden].forEach((item) => grid.appendChild(item));
+    };
+
+    /** @param {number} timestampSeconds */
+    const daySortKey = (timestampSeconds) => {
+        const date = new Date(timestampSeconds * 1000);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}${month}${day}`;
+    };
+
+    /** @param {Element} a @param {Element} b */
+    const compareStoryItems = (a, b) => {
+        const titleKey = locale() === 'de' ? 'data-sort-title-de' : 'data-sort-title-en';
+        const dateA = Number(a.getAttribute('data-sort-date') ?? 0);
+        const dateB = Number(b.getAttribute('data-sort-date') ?? 0);
+        const dayA = daySortKey(dateA);
+        const dayB = daySortKey(dateB);
+        const seriesA = a.getAttribute('data-sort-series-id') ?? '';
+        const seriesB = b.getAttribute('data-sort-series-id') ?? '';
+        const partA = Number(a.getAttribute('data-sort-series-part') ?? 0);
+        const partB = Number(b.getAttribute('data-sort-series-part') ?? 0);
+        const titleA = normalize(a.getAttribute(titleKey) ?? '');
+        const titleB = normalize(b.getAttribute(titleKey) ?? '');
+
+        if (activeSort.startsWith('date-')) {
+            const cmp = dayA.localeCompare(dayB);
+
+            if (cmp !== 0) {
+                return activeSort === 'date-desc' ? -cmp : cmp;
+            }
+
+            if (seriesA !== seriesB) {
+                if (seriesA === '') {
+                    return 1;
+                }
+
+                if (seriesB === '') {
+                    return -1;
+                }
+
+                return seriesA.localeCompare(seriesB);
+            }
+
+            if (partA !== partB) {
+                return activeSort === 'date-desc' ? partB - partA : partA - partB;
+            }
+
+            return titleA.localeCompare(titleB, locale());
+        }
+
+        const nameCmp = titleA.localeCompare(titleB, locale());
+
+        if (nameCmp !== 0) {
+            return activeSort === 'name-desc' ? -nameCmp : nameCmp;
+        }
+
+        if (partA !== partB) {
+            return partA - partB;
+        }
+
+        return dayB.localeCompare(dayA);
+    };
+
+    /** @param {Element} a @param {Element} b */
+    const compareSeriesItems = (a, b) => {
+        const titleKey = locale() === 'de' ? 'data-sort-title-de' : 'data-sort-title-en';
+        const dateA = Number(a.getAttribute('data-sort-date') ?? 0);
+        const dateB = Number(b.getAttribute('data-sort-date') ?? 0);
+        const countA = Number(a.getAttribute('data-sort-part-count') ?? 0);
+        const countB = Number(b.getAttribute('data-sort-part-count') ?? 0);
+        const titleA = normalize(a.getAttribute(titleKey) ?? '');
+        const titleB = normalize(b.getAttribute(titleKey) ?? '');
+
+        if (activeSort.startsWith('date-')) {
+            const cmp = dateA - dateB;
+
+            if (cmp !== 0) {
+                return activeSort === 'date-desc' ? -cmp : cmp;
+            }
+
+            if (countA !== countB) {
+                return countB - countA;
+            }
+
+            return titleA.localeCompare(titleB, locale());
+        }
+
+        const nameCmp = titleA.localeCompare(titleB, locale());
+
+        if (nameCmp !== 0) {
+            return activeSort === 'name-desc' ? -nameCmp : nameCmp;
+        }
+
+        if (countA !== countB) {
+            return countB - countA;
+        }
+
+        return dateB - dateA;
+    };
+
+    const sortStories = () => {
+        const grid = root.querySelector('#playbook-overview-stories .tools-card-grid');
+
+        if (grid instanceof HTMLElement) {
+            reorderGrid(grid, '[data-overview-item]', compareStoryItems);
+        }
+    };
+
+    const sortSeries = () => {
+        const grid = root.querySelector('#playbook-overview-series .tools-card-grid');
+
+        if (grid instanceof HTMLElement) {
+            reorderGrid(grid, '[data-overview-series-item]', compareSeriesItems);
+        }
+    };
 
     /** @returns {'stories' | 'series'} */
     const activeView = () => {
@@ -53,6 +195,8 @@ export function initOverviewFilters() {
         if (emptyEl instanceof HTMLElement) {
             emptyEl.hidden = visible > 0;
         }
+
+        sortStories();
     };
 
     const applySeries = () => {
@@ -70,9 +214,26 @@ export function initOverviewFilters() {
         if (seriesEmptyEl instanceof HTMLElement) {
             seriesEmptyEl.hidden = visible > 0;
         }
+
+        sortSeries();
     };
 
     const apply = () => {
+        const sortSelect = root.querySelector('[data-overview-sort]');
+
+        if (sortSelect instanceof HTMLSelectElement) {
+            const value = sortSelect.value;
+
+            if (
+                value === 'date-desc'
+                || value === 'date-asc'
+                || value === 'name-asc'
+                || value === 'name-desc'
+            ) {
+                activeSort = value;
+            }
+        }
+
         if (activeView() === 'series') {
             if (emptyEl instanceof HTMLElement) {
                 emptyEl.hidden = true;
@@ -104,6 +265,60 @@ export function initOverviewFilters() {
     });
 
     apply();
+}
+
+/**
+ * @param {ParentNode} root
+ * @returns {OverviewSortKey}
+ */
+function readOverviewSort(root) {
+    const select = root.querySelector('[data-overview-sort]');
+    const stored = localStorage.getItem(OVERVIEW_SORT_STORAGE_KEY);
+
+    /** @type {OverviewSortKey} */
+    const fallback = stored === 'date-asc'
+        || stored === 'name-asc'
+        || stored === 'name-desc'
+        ? stored
+        : 'date-desc';
+
+    if (select instanceof HTMLSelectElement) {
+        select.value = fallback;
+    }
+
+    return fallback;
+}
+
+/**
+ * @param {ParentNode} root
+ */
+function initOverviewSort(root) {
+    const select = /** @type {HTMLSelectElement | null} */ (
+        root.querySelector('[data-overview-sort]')
+    );
+
+    if (!select) {
+        return;
+    }
+
+    select.addEventListener('change', () => {
+        const value = select.value;
+
+        if (
+            value === 'date-desc'
+            || value === 'date-asc'
+            || value === 'name-asc'
+            || value === 'name-desc'
+        ) {
+            localStorage.setItem(OVERVIEW_SORT_STORAGE_KEY, value);
+        }
+
+        const searchInput = root.querySelector('[data-overview-search]');
+
+        if (searchInput instanceof HTMLInputElement) {
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    });
 }
 
 /**

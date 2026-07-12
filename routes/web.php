@@ -3,6 +3,7 @@
 require_once __DIR__.'/../app/Support/helpers.php';
 
 use App\Http\Controllers\Legal\ImpressumController;
+use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
 use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
@@ -27,6 +28,7 @@ $registerRoutes = static function (bool $localized): void {
         ->where('slug', '[a-z0-9-]+')
         ->name($name('playbooks.show'));
     Route::get('/impressum', [ImpressumController::class, 'show'])->name($name('legal.impressum'));
+    Route::get('/datenschutz', [PrivacyController::class, 'show'])->name($name('legal.privacy'));
     Route::get('/tools/dbt-governance-macro-generator', [DbtGovernanceMacroGeneratorController::class, 'show'])
         ->name($name('tools.dbt-governance-macro-generator'));
     Route::get('/tools/pii-recommend-generator', [PiiRecommendGeneratorController::class, 'show'])

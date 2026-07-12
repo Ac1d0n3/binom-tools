@@ -63,6 +63,40 @@ Key UI components:
 2. Fill YAML frontmatter (title, description, category, tags, optional `order` and `hero`)
 3. Write the body in Markdown — `##` and `###` automatically create anchors and TOC entries
 
+**Blockquote (attribution on the last line):**
+
+```markdown
+> Governance is not a tool problem — it is an accountability problem.
+> — Thomas Lindackers
+```
+
+**Embedded video (loads after cookie consent for external media):**
+
+````markdown
+```video Demo title
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+```
+````
+
+**Simple flow chart (chevron or linear boxes):**
+
+````markdown
+```flowchart
+Governance policy
+dbt project
+Warehouse [active]
+BI report
+```
+
+```flow linear
+Collect metadata
+Profile data
+Publish catalog
+```
+````
+
+Optional markers: `[active]` or `[done]` on a step line highlight progress.
+
 ```yaml
 ---
 title: My governance story

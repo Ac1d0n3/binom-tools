@@ -12,6 +12,7 @@ final readonly class PlaybookSeriesOverview
         public string $titleDe,
         public string $titleEn,
         public ?string $heroUrl,
+        public int $modifiedAt,
         public int $totalReadingTimeDe,
         public int $totalReadingTimeEn,
         public array $parts,

@@ -66,6 +66,8 @@
         </footer>
     </div>
 
+    <x-tools.cookie-banner />
+
     @stack('scripts')
 </body>
 </html>

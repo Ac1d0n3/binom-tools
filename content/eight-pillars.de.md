@@ -29,7 +29,7 @@ Die acht Säulen in diesem Playbook bilden deshalb kein starres Framework und ke
 <figure class="playbook-prose__figure">
     <img
         src="images/playbooks/eight-pillar-de.png"
-        alt="Die acht Säulen der Data Governance: Verantwortung, Metadaten, PII, DSDR, Datenqualität, KPI Governance, Zugriff und Datenlebenszyklus"
+        alt="Die acht Säulen der Data Governance: Verantwortung, Metadaten, PII, DSDR, Datenqualität, KPI, Zugriff und Datenlebenszyklus"
         class="playbook-prose__image playbook-prose__image--diagram"
     />
     <figcaption class="playbook-prose__figure-caption">

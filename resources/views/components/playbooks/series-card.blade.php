@@ -14,6 +14,10 @@
     class="tools-series-card"
     data-overview-series-item
     data-search-text="{{ $searchText }}"
+    data-sort-date="{{ $series->modifiedAt }}"
+    data-sort-title-de="{{ $series->titleDe }}"
+    data-sort-title-en="{{ $series->titleEn }}"
+    data-sort-part-count="{{ $series->partCount() }}"
 >
     @if ($series->heroUrl)
         <div class="tools-series-card__hero">

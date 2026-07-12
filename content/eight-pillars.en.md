@@ -29,7 +29,7 @@ The eight pillars in this playbook are therefore not a rigid framework or a prod
 <figure class="playbook-prose__figure">
     <img
         src="images/playbooks/eight-pillar-en.png"
-        alt="The eight pillars of Data Governance: ownership, metadata, PII, DSDR, data quality, KPI governance, access and data lifecycle"
+        alt="The eight pillars of Data Governance: ownership, metadata, PII, DSDR, data quality, KPI, access, and data lifecycle"
         class="playbook-prose__image playbook-prose__image--diagram"
     />
     <figcaption class="playbook-prose__figure-caption">

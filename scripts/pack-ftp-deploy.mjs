@@ -28,6 +28,7 @@ const deployPaths = [
     'app/Http/Middleware/SetLocaleFromRoute.php',
     'bootstrap/app.php',
     'config/tools.php',
+    'config/legal.php',
     'routes/web.php',
 ];
 

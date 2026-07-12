@@ -17,6 +17,8 @@ final class PlaybookMarkdownRenderer
     {
         $html = Str::markdown($markdown, [], [
             new PlaybookFencedCodeExtension,
+            new PlaybookVideoFenceExtension,
+            new PlaybookFlowchartFenceExtension,
         ]);
 
         return $this->postProcess($html, $idPrefix);
@@ -80,6 +82,7 @@ final class PlaybookMarkdownRenderer
 
         $this->wrapTables($document, $root);
         $this->enhanceImages($root);
+        $this->enhanceBlockquotes($document, $root);
         $this->enhanceLinks($root, $idPrefix);
 
         $innerHtml = '';
@@ -172,6 +175,61 @@ final class PlaybookMarkdownRenderer
             $wrapper->setAttribute('class', 'playbook-prose__table-wrap');
             $table->parentNode?->replaceChild($wrapper, $table);
             $wrapper->appendChild($table);
+        }
+    }
+
+    private function enhanceBlockquotes(DOMDocument $document, DOMElement $root): void
+    {
+        /** @var list<DOMElement> $blockquotes */
+        $blockquotes = [];
+
+        foreach ($root->getElementsByTagName('blockquote') as $blockquote) {
+            if ($blockquote instanceof DOMElement) {
+                $blockquotes[] = $blockquote;
+            }
+        }
+
+        foreach ($blockquotes as $blockquote) {
+            $existing = trim($blockquote->getAttribute('class'));
+            $blockquote->setAttribute('class', trim($existing.' playbook-prose__quote'));
+
+            $lastParagraph = null;
+
+            foreach ($blockquote->childNodes as $child) {
+                if ($child instanceof DOMElement && $child->tagName === 'p') {
+                    $lastParagraph = $child;
+                }
+            }
+
+            if ($lastParagraph === null) {
+                continue;
+            }
+
+            $text = trim($lastParagraph->textContent ?? '');
+
+            if (! preg_match('/(?:^|\R)\s*(?:—|--|-\s)\s*(.+)\s*$/u', $text, $matches)) {
+                continue;
+            }
+
+            $cite = trim($matches[1]);
+            $quoteText = trim(preg_replace('/(?:\R)\s*(?:—|--|-\s)\s*.+\s*$/u', '', $text) ?? $text);
+
+            if ($cite === '') {
+                continue;
+            }
+
+            if ($quoteText !== '') {
+                $lastParagraph->textContent = $quoteText;
+            }
+
+            $footer = $document->createElement('footer');
+            $footer->setAttribute('class', 'playbook-prose__quote-cite');
+            $footer->textContent = $cite;
+            $blockquote->appendChild($footer);
+
+            if ($quoteText === '') {
+                $blockquote->removeChild($lastParagraph);
+            }
         }
     }
 

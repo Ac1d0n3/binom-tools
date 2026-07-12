@@ -4,6 +4,7 @@ import { initOverviewFilters } from './overview-filter';
 import { initShellLayoutControls } from './shell-layout';
 import { initThemeControls } from './theme';
 import { initExternalLinks } from './external-links';
+import { initCookieConsent } from './cookie-consent';
 
 initThemeControls();
 initShellLayoutControls();
@@ -12,3 +13,4 @@ initSidebarToggle();
 initPlaybookLocale();
 initOverviewFilters();
 initExternalLinks();
+initCookieConsent();

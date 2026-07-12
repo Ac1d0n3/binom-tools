@@ -58,6 +58,11 @@
     data-overview-item
     data-card-id="playbook-{{ $item['slug'] }}"
     data-search-text="{{ $searchText }}"
+    data-sort-date="{{ $item['modifiedAt']->getTimestamp() }}"
+    data-sort-title-de="{{ $titleDe }}"
+    data-sort-title-en="{{ $titleEn }}"
+    data-sort-series-id="{{ $seriesId ?? '' }}"
+    data-sort-series-part="{{ $seriesPart ?? 0 }}"
     @if (count($tags) > 0) data-tags="{{ implode(',', $tags) }}" @endif
 >
     <div class="tools-card__media">

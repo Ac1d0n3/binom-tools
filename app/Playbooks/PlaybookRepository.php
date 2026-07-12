@@ -305,11 +305,17 @@ final class PlaybookRepository
             $playbooks,
         ));
 
+        $modifiedAt = max(array_map(
+            fn (Playbook $playbook): int => $playbook->modifiedAt->getTimestamp(),
+            $playbooks,
+        ));
+
         return new PlaybookSeriesOverview(
             id: $seriesId,
             titleDe: $titleDe,
             titleEn: $titleEn,
             heroUrl: $heroPlaybook?->heroUrl,
+            modifiedAt: $modifiedAt,
             totalReadingTimeDe: $totalReadingTimeDe,
             totalReadingTimeEn: $totalReadingTimeEn,
             parts: $parts,
