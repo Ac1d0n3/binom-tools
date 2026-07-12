@@ -23,6 +23,17 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('tools-overview-layout--with-tags', false);
         $response->assertSee('data-overview-tag="help-hub"', false);
         $response->assertSee('data-overview-tag="bridge-solution"', false);
+        $response->assertSee('data-overview-category="all"', false);
+        $response->assertSee('data-overview-category="data-governance"', false);
+        $response->assertSee('data-overview-tag-mode-toggle="or"', false);
+        $response->assertSee('data-overview-tag-mode-toggle="and"', false);
+        $response->assertSee('data-tag-match-mode="or"', false);
+        $response->assertSee('tools-filter-sidebar__tag-mode-btn', false);
+        $response->assertSee('data-overview-filter-reset', false);
+        $response->assertSee('data-i18n="overview.filterTitle"', false);
+        $response->assertSee('data-i18n="overview.tagsSectionTitle"', false);
+        $response->assertSee('fa-filter', false);
+        $response->assertSee('data-category-key="data-governance"', false);
         $response->assertSee('tools-tag-sidebar__count', false);
         $response->assertSee('data-tag-sidebar-toggle', false);
         $response->assertSee('data-overview-view-toggle="stories"', false);

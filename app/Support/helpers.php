@@ -18,6 +18,24 @@ if (! function_exists('current_locale')) {
     }
 }
 
+if (! function_exists('playbook_category_key')) {
+    /**
+     * Stable filter key for a playbook category (English label preferred).
+     */
+    function playbook_category_key(?string $categoryEn, ?string $categoryDe): ?string
+    {
+        $label = filled($categoryEn) ? $categoryEn : $categoryDe;
+
+        if (! is_string($label) || trim($label) === '') {
+            return null;
+        }
+
+        $key = \Illuminate\Support\Str::slug($label);
+
+        return $key !== '' ? $key : null;
+    }
+}
+
 if (! function_exists('locale_route')) {
     /**
      * @param  array<string, mixed>|string|int|null  $parameters

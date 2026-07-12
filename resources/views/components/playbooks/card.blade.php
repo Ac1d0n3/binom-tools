@@ -30,6 +30,11 @@
     $metaDe = collect([$categoryDe, $readingDe])->filter()->implode(' · ');
     $metaEn = collect([$categoryEn, $readingEn])->filter()->implode(' · ');
 
+    $categoryKey = playbook_category_key(
+        is_string($categoryEn) ? $categoryEn : null,
+        is_string($categoryDe) ? $categoryDe : null,
+    );
+
     $tags = $item['tags'] ?? [];
     $heroUrl = $item['heroUrl'] ?? null;
     $searchText = strtolower(implode(' ', array_filter([
@@ -64,6 +69,7 @@
     data-sort-title-en="{{ $titleEn }}"
     data-sort-series-id="{{ $seriesId ?? '' }}"
     data-sort-series-part="{{ $seriesPart ?? 0 }}"
+    @if ($categoryKey) data-category-key="{{ $categoryKey }}" @endif
     @if (count($tags) > 0) data-tags="{{ implode(',', $tags) }}" @endif
 >
     <div class="tools-card__media">

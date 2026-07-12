@@ -12,13 +12,19 @@ const OVERVIEW_VIEW_STORAGE_KEY = 'binom-tools-overview-view';
 const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
 const OVERVIEW_LAYOUT_STORAGE_KEY = 'binom-tools-overview-layout';
 const OVERVIEW_HIDE_READ_STORAGE_KEY = 'binom-tools-overview-hide-read';
+const FILTER_TAG_MODE_STORAGE_KEY = 'binom-tools-filter-tag-mode';
 
 /** @typedef {'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'} OverviewSortKey */
 /** @typedef {'grid' | 'list'} OverviewLayoutMode */
+/** @typedef {'or' | 'and'} TagMatchMode */
 
 export function initOverviewFilters() {
     const root = document.querySelector('[data-overview-filter-root]');
-    if (!root) return;
+    if (!root || root.dataset.overviewFiltersBound === 'true') {
+        return;
+    }
+
+    root.dataset.overviewFiltersBound = 'true';
 
     initTagSidebar(root);
     initTagSidebarSearch(root);
@@ -28,7 +34,10 @@ export function initOverviewFilters() {
     const searchInput = /** @type {HTMLInputElement | null} */ (
         root.querySelector('[data-overview-search]')
     );
+    const categoryButtons = root.querySelectorAll('[data-overview-category]');
     const tagButtons = root.querySelectorAll('[data-overview-tag]');
+    const tagModeRoot = root.querySelector('[data-tag-match-mode]');
+    const filterResetButton = root.querySelector('[data-overview-filter-reset]');
     const storyItems = root.querySelectorAll('[data-overview-item]');
     const seriesItems = root.querySelectorAll('[data-overview-series-item]');
     const emptyEl = root.querySelector('[data-overview-empty]');
@@ -38,7 +47,13 @@ export function initOverviewFilters() {
     const readResetButton = root.querySelector('[data-overview-read-reset]');
 
     /** @type {string} */
-    let activeTag = 'all';
+    let activeCategoryKey = 'all';
+
+    /** @type {Set<string>} */
+    const activeTags = new Set();
+
+    /** @type {TagMatchMode} */
+    let tagMatchMode = readTagMatchMode();
 
     /** @type {OverviewSortKey} */
     let activeSort = readOverviewSort(root);
@@ -128,6 +143,39 @@ export function initOverviewFilters() {
         return layout?.classList.contains('tools-overview-layout--view-series') ? 'series' : 'stories';
     };
 
+    /** @param {string[]} tags */
+    const matchesTagFilter = (tags) => {
+        if (activeTags.size === 0) {
+            return true;
+        }
+
+        if (tagMatchMode === 'or') {
+            return [...activeTags].some((tag) => tags.includes(tag));
+        }
+
+        return [...activeTags].every((tag) => tags.includes(tag));
+    };
+
+    const syncTagAllChip = () => {
+        tagButtons.forEach((button) => {
+            const tag = button.getAttribute('data-overview-tag') ?? '';
+
+            if (tag === 'all') {
+                button.classList.toggle('tools-filter-chip--active', activeTags.size === 0);
+            }
+        });
+    };
+
+    const syncFilterReset = () => {
+        if (!(filterResetButton instanceof HTMLButtonElement)) {
+            return;
+        }
+
+        const hasFilters = activeCategoryKey !== 'all' || activeTags.size > 0;
+        filterResetButton.disabled = !hasFilters;
+        filterResetButton.setAttribute('aria-disabled', hasFilters ? 'false' : 'true');
+    };
+
     const applyStories = () => {
         const query = normalize(searchInput?.value ?? '');
         let visible = 0;
@@ -140,15 +188,17 @@ export function initOverviewFilters() {
                 .map((tag) => tag.trim())
                 .filter(Boolean);
             const slug = item.getAttribute('data-playbook-slug') ?? '';
+            const categoryKey = item.getAttribute('data-category-key') ?? '';
             const matchesSearch = query === '' || text.includes(query);
-            const matchesTag = activeTag === 'all' || tags.includes(activeTag);
+            const matchesCategory = activeCategoryKey === 'all' || categoryKey === activeCategoryKey;
+            const matchesTag = matchesTagFilter(tags);
             const read = isPlaybookRead(slug);
 
-            if (matchesSearch && matchesTag && hideRead && read) {
+            if (matchesSearch && matchesCategory && matchesTag && hideRead && read) {
                 wouldShowButRead += 1;
             }
 
-            const show = matchesSearch && matchesTag && (!hideRead || !read);
+            const show = matchesSearch && matchesCategory && matchesTag && (!hideRead || !read);
 
             item.hidden = !show;
             if (show) visible += 1;
@@ -165,6 +215,7 @@ export function initOverviewFilters() {
         }
 
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
+        syncFilterReset();
         sortStories();
     };
 
@@ -217,7 +268,38 @@ export function initOverviewFilters() {
         applyStories();
     };
 
+    const resetFilters = () => {
+        activeCategoryKey = 'all';
+        activeTags.clear();
+
+        categoryButtons.forEach((button) => {
+            const key = button.getAttribute('data-overview-category') ?? '';
+            button.classList.toggle('tools-filter-chip--active', key === 'all');
+        });
+
+        tagButtons.forEach((button) => {
+            const tag = button.getAttribute('data-overview-tag') ?? '';
+            button.classList.toggle('tools-filter-chip--active', tag === 'all');
+        });
+
+        apply();
+    };
+
     searchInput?.addEventListener('input', apply);
+
+    categoryButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            if (activeView() === 'series') {
+                return;
+            }
+
+            activeCategoryKey = button.getAttribute('data-overview-category') ?? 'all';
+            categoryButtons.forEach((other) => {
+                other.classList.toggle('tools-filter-chip--active', other === button);
+            });
+            apply();
+        });
+    });
 
     tagButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -225,13 +307,58 @@ export function initOverviewFilters() {
                 return;
             }
 
-            activeTag = button.getAttribute('data-overview-tag') ?? 'all';
-            tagButtons.forEach((other) => {
-                other.classList.toggle('tools-filter-chip--active', other === button);
-            });
+            const tag = button.getAttribute('data-overview-tag') ?? '';
+
+            if (tag === 'all') {
+                activeTags.clear();
+                tagButtons.forEach((other) => {
+                    const otherTag = other.getAttribute('data-overview-tag') ?? '';
+                    other.classList.toggle('tools-filter-chip--active', otherTag === 'all');
+                });
+                apply();
+                return;
+            }
+
+            if (activeTags.has(tag)) {
+                activeTags.delete(tag);
+                button.classList.remove('tools-filter-chip--active');
+            } else {
+                activeTags.add(tag);
+                button.classList.add('tools-filter-chip--active');
+            }
+
+            syncTagAllChip();
             apply();
         });
     });
+
+    tagModeRoot?.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (!(target instanceof Element)) {
+            return;
+        }
+
+        const button = target.closest('[data-overview-tag-mode-toggle]');
+
+        if (!(button instanceof HTMLButtonElement) || !(tagModeRoot instanceof HTMLElement)) {
+            return;
+        }
+
+        const mode = button.getAttribute('data-overview-tag-mode-toggle');
+
+        if (mode !== 'or' && mode !== 'and') {
+            return;
+        }
+
+        event.preventDefault();
+        setTagMatchMode(tagModeRoot, mode);
+        tagMatchMode = mode;
+        localStorage.setItem(FILTER_TAG_MODE_STORAGE_KEY, mode);
+        apply();
+    });
+
+    filterResetButton?.addEventListener('click', resetFilters);
 
     if (hideReadToggle instanceof HTMLButtonElement) {
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
@@ -265,6 +392,11 @@ export function initOverviewFilters() {
     window.addEventListener('pageshow', apply);
 
     initOverviewSort(root);
+
+    if (tagModeRoot instanceof HTMLElement) {
+        setTagMatchMode(tagModeRoot, tagMatchMode);
+    }
+
     apply();
 }
 
@@ -296,6 +428,33 @@ function syncOverviewReadControls(hideReadToggle, readResetButton, hideRead) {
         readResetButton.disabled = !canReset;
         readResetButton.setAttribute('aria-disabled', canReset ? 'false' : 'true');
     }
+}
+
+/**
+ * @returns {TagMatchMode}
+ */
+function readTagMatchMode() {
+    const stored = localStorage.getItem(FILTER_TAG_MODE_STORAGE_KEY);
+
+    return stored === 'and' ? 'and' : 'or';
+}
+
+/**
+ * @param {HTMLElement} root
+ * @param {TagMatchMode} mode
+ */
+function setTagMatchMode(root, mode) {
+    root.dataset.tagMatchMode = mode;
+
+    root.querySelectorAll('[data-overview-tag-mode-toggle]').forEach((button) => {
+        const buttonMode = button.getAttribute('data-overview-tag-mode-toggle');
+        const active = buttonMode === mode;
+        button.classList.toggle('tools-filter-sidebar__tag-mode-btn--active', active);
+
+        if (button instanceof HTMLElement) {
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        }
+    });
 }
 
 /**

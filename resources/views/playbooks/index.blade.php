@@ -8,7 +8,7 @@
     <div class="tools-content tools-content--overview" data-overview-filter-root>
         <div @class([
             'tools-overview-layout',
-            'tools-overview-layout--with-tags' => count($tagCounts) > 0,
+            'tools-overview-layout--with-tags' => count($tagCounts) > 0 || count($categoryCounts) > 0,
         ])>
             <div class="tools-overview-main">
                 @if (config('playbooks.overview.show_title'))
@@ -151,7 +151,7 @@
                         />
                     </label>
 
-                    @if (count($tagCounts) > 0)
+                    @if (count($tagCounts) > 0 || count($categoryCounts) > 0)
                         <button
                             type="button"
                             class="tools-tag-sidebar__toggle"
@@ -159,8 +159,8 @@
                             aria-expanded="true"
                             aria-controls="playbook-tag-sidebar-panel"
                         >
-                            <i class="fa-solid fa-tags" aria-hidden="true"></i>
-                            <span class="tools-tag-sidebar__toggle-label" data-i18n="overview.tagsTitle">Tags</span>
+                            <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                            <span class="tools-tag-sidebar__toggle-label" data-i18n="overview.filterTitle">Filter</span>
                             <i class="fa-solid fa-chevron-right tools-tag-sidebar__toggle-icon" aria-hidden="true"></i>
                         </button>
                     @endif
@@ -203,7 +203,11 @@
                 </div>
             </div>
 
-            <x-playbooks.tag-sidebar :tag-counts="$tagCounts" :story-count="count($playbooks)" />
+            <x-playbooks.tag-sidebar
+                :tag-counts="$tagCounts"
+                :category-counts="$categoryCounts"
+                :story-count="count($playbooks)"
+            />
         </div>
     </div>
 @endsection
