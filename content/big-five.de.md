@@ -1,6 +1,7 @@
 ---
 title: BIG 5 Stacks im Überblick
 description: Snowflake, Databricks, BigQuery, Amazon Redshift und Microsoft Fabric im kompakten Vergleich — Plattformmodell, typische Stärken und wichtige Abwägungen.
+author: Thomas Lindackers
 category: Data Platforms
 tags:
   - data-warehouse

@@ -15,6 +15,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default playbook author
+    |--------------------------------------------------------------------------
+    |
+    | Used when a story frontmatter block omits "author:".
+    |
+    */
+    'default_author' => env('PLAYBOOKS_DEFAULT_AUTHOR', 'Thomas Lindackers'),
+
+    'author_url' => env('PLAYBOOKS_AUTHOR_URL', 'https://binom.net'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Series pager behaviour on playbook detail pages
     |--------------------------------------------------------------------------
     |

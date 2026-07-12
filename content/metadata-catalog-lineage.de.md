@@ -1,6 +1,7 @@
 ---
 title: Metadata, Catalog & Lineage
 description: Ein praxisnahes Operating Model für verständliche Metadaten, auffindbare Datenassets und nachvollziehbare Datenflüsse von der Quelle bis zum Business Use Case.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

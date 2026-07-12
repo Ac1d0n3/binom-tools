@@ -133,6 +133,16 @@
     font-size: 0.9375rem;
 }
 
+.playbook-meta__value a {
+    color: var(--theme-color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.playbook-meta__value a:hover {
+    text-decoration: underline;
+}
+
 .playbook-meta__tags {
     display: flex;
     flex-wrap: wrap;

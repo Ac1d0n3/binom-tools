@@ -1,6 +1,7 @@
 ---
 title: Data Ownership & Stewardship
 description: A practical operating model for clear accountability, effective stewardship and trusted data across domains, platforms and data products.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

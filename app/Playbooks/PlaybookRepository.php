@@ -367,6 +367,10 @@ final class PlaybookRepository
         $series = $meta['series'] ?? null;
         $seriesPart = $meta['seriespart'] ?? $meta['seriesPart'] ?? null;
         $seriesTitle = $meta['seriestitle'] ?? $meta['seriesTitle'] ?? null;
+        $author = $meta['author'] ?? null;
+        $resolvedAuthor = is_string($author) && trim($author) !== ''
+            ? trim($author)
+            : (string) config('playbooks.default_author', '');
 
         return new PlaybookLocaleVariant(
             locale: $locale,
@@ -381,6 +385,7 @@ final class PlaybookRepository
             series: is_string($series) && $series !== '' ? $series : null,
             seriesPart: is_numeric($seriesPart) ? (int) $seriesPart : null,
             seriesTitle: is_string($seriesTitle) && $seriesTitle !== '' ? $seriesTitle : null,
+            author: $resolvedAuthor !== '' ? $resolvedAuthor : null,
         );
     }
 

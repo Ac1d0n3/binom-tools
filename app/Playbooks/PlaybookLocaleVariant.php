@@ -21,5 +21,6 @@ final readonly class PlaybookLocaleVariant
         public ?string $series = null,
         public ?int $seriesPart = null,
         public ?string $seriesTitle = null,
+        public ?string $author = null,
     ) {}
 }

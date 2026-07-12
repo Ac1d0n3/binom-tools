@@ -1,6 +1,7 @@
 ---
 title: Data Quality Governance
 description: A practical operating model for reliable, complete, consistent, timely and fit-for-purpose data — with clear accountability, measurable rules and continuous improvement.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

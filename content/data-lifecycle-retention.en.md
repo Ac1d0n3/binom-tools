@@ -1,6 +1,7 @@
 ---
 title: Data Lifecycle & Retention
 description: A practical operating model for governing data from creation to secure deletion — with clear retention rules, ownership, cost control and verifiable controls.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

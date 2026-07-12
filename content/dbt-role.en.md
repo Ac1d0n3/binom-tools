@@ -1,6 +1,7 @@
 ---
 title: The Role of dbt — and What Alternatives Exist
 description: dbt in the modern data stack: responsibilities, boundaries, strengths, alternatives and a practical learning path for getting started.
+author: Thomas Lindackers
 category: Data Engineering
 tags:
   - dbt

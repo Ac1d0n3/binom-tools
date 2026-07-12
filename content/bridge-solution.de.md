@@ -1,6 +1,7 @@
 ---
 title: Bridge Solutions — Die vergessene Mitte
 description: Konzept-Idee, kein Dogma — warum KI Build-vs-Buy verändert und wann eine schlanke Brücken-Lösung Sinn macht. binom-tools als ein Beispiel unter vielen Wegen.
+author: Thomas Lindackers
 category: Architektur
 tags:
   - bridge-solution

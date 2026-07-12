@@ -1,6 +1,7 @@
 ---
 title: Access & Security Governance
 description: Ein praxisnahes Betriebsmodell für nachvollziehbaren, rollen- und policy-basierten Datenzugriff — mit klaren Verantwortlichkeiten, Least Privilege, kontinuierlichen Reviews und auditierbaren Kontrollen.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

@@ -1,6 +1,7 @@
 ---
 title: KPI & Metric Governance
 description: A practical operating model for clearly defined, consistently calculated and trusted KPIs and metrics across data models, semantic layers, BI tools and Excel.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

@@ -1,6 +1,7 @@
 ---
 title: PII & Privacy Governance
 description: Ein praxisnahes Betriebsmodell zur Identifikation, Klassifikation und zum wirksamen Schutz personenbezogener Daten über Systeme, Pipelines und Analytics hinweg.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

@@ -1,6 +1,7 @@
 ---
 title: Access & Security Governance
 description: A practical operating model for traceable, role- and policy-based data access — with clear accountability, least privilege, continuous reviews and auditable controls.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

@@ -1,6 +1,7 @@
 ---
 title: Bridge Solutions — The Forgotten Middle Ground
 description: A concept, not a prescription — why AI is changing build vs. buy and when a lean bridge solution makes sense. binom-tools as one example among many paths.
+author: Thomas Lindackers
 category: Architecture
 tags:
   - bridge-solution

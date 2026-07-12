@@ -1,6 +1,7 @@
 ---
 title: Governance Help Hub
 description: So ist der Governance Help Hub aufgebaut — Markdown-Stories, interaktive Tools und i18n als wiederverwendbares Starter-Template.
+author: Thomas Lindackers
 category: Help Hub
 tags:
   - help-hub

@@ -1,6 +1,7 @@
 ---
 title: DSDR Governance
 description: Ein praxisnahes Betriebsmodell, um Data Subject Deletion Requests über Systeme, Pipelines und Datenprodukte hinweg nachvollziehbar, fristgerecht und kontrolliert umzusetzen.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

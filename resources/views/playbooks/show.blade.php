@@ -11,6 +11,8 @@
 @section('content')
     <article
         class="playbook-detail"
+        itemscope
+        itemtype="https://schema.org/Article"
         data-playbook-slug="{{ $playbook->slug }}"
         data-playbook-root
         data-title-de="{{ $playbook->title('de') }}"
@@ -39,7 +41,7 @@
 
                             <div class="playbook-detail__main">
                                 <header class="playbook-detail__header" id="{{ $locale }}-playbook-start">
-                                <h1 class="tools-page-title">{{ $variant->title }}</h1>
+                                <h1 class="tools-page-title" itemprop="headline">{{ $variant->title }}</h1>
 
                                 @if ($variant->description)
                                     <p class="tools-page-lead">{{ $variant->description }}</p>

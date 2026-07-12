@@ -1,6 +1,7 @@
 ---
 title: Welche Rolle dbt spielt — und welche Alternativen es gibt
 description: dbt im modernen Data Stack: Aufgaben, Grenzen, Stärken, Alternativen und ein praxisnaher Lernpfad für den Einstieg.
+author: Thomas Lindackers
 category: Data Engineering
 tags:
   - dbt

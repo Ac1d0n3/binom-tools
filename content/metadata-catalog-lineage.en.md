@@ -1,6 +1,7 @@
 ---
 title: Metadata, Catalog & Lineage
 description: A practical operating model for understandable metadata, discoverable data assets and traceable data flows from source systems to business use.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

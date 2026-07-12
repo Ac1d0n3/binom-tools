@@ -107,6 +107,9 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Bridge Solutions');
+        $response->assertSee('Thomas Lindackers');
+        $response->assertSee('itemprop="author"', false);
+        $response->assertSee('data-i18n="playbooks.author"', false);
         $response->assertSee('Die vergessene Mitte');
         $response->assertSee('The forgotten middle ground');
         $response->assertSee('Konzept', false);

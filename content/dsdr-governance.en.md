@@ -1,6 +1,7 @@
 ---
 title: DSDR Governance
 description: A practical operating model for handling Data Subject Deletion Requests across systems, pipelines and data products in a traceable, timely and controlled way.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

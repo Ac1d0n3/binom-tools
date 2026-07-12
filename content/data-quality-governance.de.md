@@ -1,6 +1,7 @@
 ---
 title: Data Quality Governance
 description: Ein praxisnahes Betriebsmodell für verlässliche, vollständige, konsistente, aktuelle und zweckgeeignete Daten — mit klaren Verantwortlichkeiten, messbaren Regeln und kontinuierlicher Verbesserung.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

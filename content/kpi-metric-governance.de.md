@@ -1,6 +1,7 @@
 ---
 title: KPI & Metric Governance
 description: Ein praxisnahes Betriebsmodell für klar definierte, konsistent berechnete und vertrauenswürdige KPIs und Metriken über Datenmodelle, Semantic Layer, BI-Tools und Excel hinweg.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

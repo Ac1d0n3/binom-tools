@@ -1,6 +1,7 @@
 ---
 title: Data Lifecycle & Retention
 description: Ein praxisnahes Betriebsmodell für den kontrollierten Umgang mit Daten von der Erzeugung bis zur sicheren Löschung — mit klaren Aufbewahrungsregeln, Ownership, Kostensteuerung und nachweisbaren Kontrollen.
+author: Thomas Lindackers
 category: Data Governance
 tags:
   - data-governance

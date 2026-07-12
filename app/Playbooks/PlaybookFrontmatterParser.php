@@ -55,6 +55,7 @@ final class PlaybookFrontmatterParser
             'series' => null,
             'seriesPart' => null,
             'seriesTitle' => null,
+            'author' => null,
         ];
     }
 
