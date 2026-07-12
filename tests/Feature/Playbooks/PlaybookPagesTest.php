@@ -28,6 +28,8 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-overview-view-toggle="stories"', false);
         $response->assertSee('data-overview-view-toggle="series"', false);
         $response->assertSee('data-overview-series-item', false);
+        $response->assertSee('tools-shell__main--overview', false);
+        $response->assertSee('tools-overview-scroll', false);
         $response->assertDontSee('tools-overview-tags', false);
 
         $html = $response->getContent();

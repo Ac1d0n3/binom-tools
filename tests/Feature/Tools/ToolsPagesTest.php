@@ -52,6 +52,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-overview-filter-root', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-item', false);
+        $response->assertSee('tools-shell__main--overview', false);
+        $response->assertSee('tools-overview-scroll', false);
         $response->assertDontSee('data-i18n="tools.overviewTitle"', false);
         $response->assertDontSee('data-i18n="tools.overviewLead"', false);
     }

@@ -1,4 +1,6 @@
-@extends('layouts.tools')
+@extends('layouts.tools', [
+    'mainClass' => 'tools-shell__main--overview',
+])
 
 @section('title', 'Stories — ' . config('app.name'))
 
@@ -87,35 +89,37 @@
                     @endif
                 </div>
 
-                <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
-                    No matches for your search.
-                </p>
+                <div class="tools-overview-scroll">
+                    <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
+                        No matches for your search.
+                    </p>
 
-                <p class="tools-overview-empty" data-overview-series-empty hidden data-i18n="overview.seriesNoResults">
-                    No matching series.
-                </p>
+                    <p class="tools-overview-empty" data-overview-series-empty hidden data-i18n="overview.seriesNoResults">
+                        No matching series.
+                    </p>
 
-                @if (count($playbooks) === 0)
-                    <p class="tools-section__lead" data-i18n="playbooks.empty">No playbooks published yet.</p>
-                @else
-                    <div id="playbook-overview-stories" data-overview-view-panel="stories">
-                        <div class="tools-card-grid">
-                            @foreach ($playbooks as $item)
-                                <x-playbooks.card :item="$item" />
-                            @endforeach
+                    @if (count($playbooks) === 0)
+                        <p class="tools-section__lead" data-i18n="playbooks.empty">No playbooks published yet.</p>
+                    @else
+                        <div id="playbook-overview-stories" data-overview-view-panel="stories">
+                            <div class="tools-card-grid">
+                                @foreach ($playbooks as $item)
+                                    <x-playbooks.card :item="$item" />
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @if (count($seriesList) > 0)
-                    <div id="playbook-overview-series" data-overview-view-panel="series" hidden>
-                        <div class="tools-card-grid tools-card-grid--series">
-                            @foreach ($seriesList as $series)
-                                <x-playbooks.series-card :series="$series" />
-                            @endforeach
+                    @if (count($seriesList) > 0)
+                        <div id="playbook-overview-series" data-overview-view-panel="series" hidden>
+                            <div class="tools-card-grid tools-card-grid--series">
+                                @foreach ($seriesList as $series)
+                                    <x-playbooks.series-card :series="$series" />
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
 
             <x-playbooks.tag-sidebar :tag-counts="$tagCounts" :story-count="count($playbooks)" />

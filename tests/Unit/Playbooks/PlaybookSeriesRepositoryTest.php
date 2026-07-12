@@ -49,4 +49,20 @@ class PlaybookSeriesRepositoryTest extends TestCase
 
         $this->assertCount(1, $currentParts);
     }
+
+    public function test_story_index_orders_series_parts_when_order_matches(): void
+    {
+        $repository = app(PlaybookRepository::class);
+        $slugs = array_column($repository->allForIndex(), 'slug');
+
+        $eightPos = array_search('eight-pillars', $slugs, true);
+        $ownershipPos = array_search('data-ownership-stewardship', $slugs, true);
+        $metadataPos = array_search('metadata-catalog-lineage', $slugs, true);
+
+        $this->assertNotFalse($eightPos);
+        $this->assertNotFalse($ownershipPos);
+        $this->assertNotFalse($metadataPos);
+        $this->assertLessThan($ownershipPos, $eightPos);
+        $this->assertLessThan($metadataPos, $ownershipPos);
+    }
 }

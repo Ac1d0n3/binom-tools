@@ -378,24 +378,38 @@ final class PlaybookRepository
                 ->map(fn (string $path): ?string => $this->parseSlugFromPath($path))
                 ->filter()
                 ->unique()
-                ->sortBy(function (string $slug): array {
-                    $path = $this->contentPath($slug, 'de');
-
-                    if (! is_file($path)) {
-                        $path = $this->contentPath($slug, 'en');
-                    }
-
-                    $parsed = $this->frontmatterParser->parse(file_get_contents($path) ?: '', $slug);
-
-                    return [
-                        (int) ($parsed['meta']['order'] ?? 0),
-                        (string) ($parsed['meta']['title'] ?? $slug),
-                    ];
-                })
+                ->sortBy(fn (string $slug): array => $this->sortIndexKeyForSlug($slug))
                 ->values();
 
             return $slugs;
         });
+    }
+
+    /**
+     * Sort key for story index: order, then series group + part, then title.
+     *
+     * @return array{0: int, 1: string, 2: int, 3: string}
+     */
+    private function sortIndexKeyForSlug(string $slug): array
+    {
+        $path = $this->contentPath($slug, 'de');
+
+        if (! is_file($path)) {
+            $path = $this->contentPath($slug, 'en');
+        }
+
+        $parsed = $this->frontmatterParser->parse(file_get_contents($path) ?: '', $slug);
+        $meta = $parsed['meta'];
+
+        $order = (int) ($meta['order'] ?? 0);
+        $title = (string) ($meta['title'] ?? $slug);
+        $series = $meta['series'] ?? null;
+        $seriesPart = $meta['seriespart'] ?? $meta['seriesPart'] ?? null;
+
+        $seriesKey = is_string($series) && $series !== '' ? $series : $slug;
+        $partKey = is_numeric($seriesPart) ? (int) $seriesPart : 0;
+
+        return [$order, $seriesKey, $partKey, $title];
     }
 
     private function seriesPagerMode(): string

@@ -140,12 +140,14 @@ html[data-shell-full-width='true'] .tools-content--overview {
     background: var(--content-background-color);
 }
 
-.tools-shell:has(.tools-shell__main--playbook) {
+.tools-shell:has(.tools-shell__main--playbook),
+.tools-shell:has(.tools-shell__main--overview) {
     height: 100dvh;
     overflow: hidden;
 }
 
-.tools-shell__main--playbook {
+.tools-shell__main--playbook,
+.tools-shell__main--overview {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
@@ -1411,7 +1413,8 @@ html[data-color-scheme='dark'] .tools-hero {
     flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1.25rem;
+    flex-shrink: 0;
+    margin-bottom: 0.75rem;
 }
 
 .tools-overview-view-toggle {
@@ -1622,14 +1625,31 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-content--overview {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
     max-width: 1280px;
+    overflow: hidden;
+    padding-block: 0.75rem 0;
+    padding-inline: 1.5rem;
 }
 
 .tools-overview-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    flex: 1;
+    min-height: 0;
     gap: 1.25rem;
-    align-items: start;
+    align-items: stretch;
+}
+
+.tools-overview-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: 1rem;
 }
 
 @media (min-width: 769px) {
@@ -1655,8 +1675,30 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-overview-main {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    min-height: 0;
     order: 1;
+}
+
+.tools-shell__main--overview .tools-tag-sidebar {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+}
+
+.tools-shell__main--overview .tools-tag-sidebar__panel {
+    flex: 1;
+    min-height: 0;
+}
+
+.tools-shell__main--overview .tools-tag-sidebar__list {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
 }
 
 .tools-tag-sidebar {
@@ -1933,6 +1975,47 @@ html[data-color-scheme='dark'] .tools-hero {
 
     .tools-overview-toolbar {
         margin-bottom: 1rem;
+    }
+
+    .tools-shell:has(.tools-shell__main--overview) {
+        height: auto;
+        overflow: visible;
+    }
+
+    .tools-shell__main--overview {
+        overflow: visible;
+    }
+
+    .tools-content--overview {
+        overflow: visible;
+        flex: none;
+        padding-block: 1rem 0;
+        padding-inline: var(--tools-shell-padding-inline);
+    }
+
+    .tools-overview-layout {
+        flex: none;
+        min-height: auto;
+    }
+
+    .tools-overview-scroll {
+        flex: none;
+        min-height: auto;
+        overflow: visible;
+        padding-bottom: 0;
+    }
+
+    .tools-shell__main--overview .tools-tag-sidebar {
+        height: auto;
+    }
+
+    .tools-shell__main--overview .tools-tag-sidebar__panel {
+        flex: none;
+    }
+
+    .tools-shell__main--overview .tools-tag-sidebar__list {
+        flex: none;
+        max-height: min(16rem, 40dvh);
     }
 
     .tools-tag-sidebar {

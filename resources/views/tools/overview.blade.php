@@ -1,9 +1,11 @@
-@extends('layouts.tools')
+@extends('layouts.tools', [
+    'mainClass' => 'tools-shell__main--overview',
+])
 
 @section('title', 'Tools — ' . config('app.name'))
 
 @section('content')
-    <div class="tools-content" data-overview-filter-root>
+    <div class="tools-content tools-content--overview" data-overview-filter-root>
         @if (config('tools.overview.show_title'))
             <h1
                 class="tools-page-title"
@@ -45,71 +47,73 @@
             </label>
         </div>
 
-        <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
-            No matches for your search.
-        </p>
+        <div class="tools-overview-scroll">
+            <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
+                No matches for your search.
+            </p>
 
-        @php
-            $workflowStepTotals = collect($workflows)->mapWithKeys(
-                fn (array $workflow, string $id) => [$id => count($workflow['steps'] ?? [])],
-            );
-        @endphp
+            @php
+                $workflowStepTotals = collect($workflows)->mapWithKeys(
+                    fn (array $workflow, string $id) => [$id => count($workflow['steps'] ?? [])],
+                );
+            @endphp
 
-        <div class="tools-card-grid">
-            @foreach ($navItems as $item)
-                @php
-                    $searchText = strtolower(implode(' ', [
-                        $item['label']['de'] ?? '',
-                        $item['label']['en'] ?? '',
-                        $item['description']['de'] ?? '',
-                        $item['description']['en'] ?? '',
-                        $item['id'] ?? '',
-                    ]));
-                    $workflowId = $item['workflow'] ?? null;
-                    $stepTotal = $workflowId ? ($workflowStepTotals[$workflowId] ?? null) : null;
-                @endphp
-                <x-tools.card
-                    :href="locale_route($item['route'])"
-                    :title="$item['label']['en']"
-                    :description="$item['description']['en']"
-                    :icon="$item['icon']"
-                    :accent="$item['accent']"
-                    :card-id="$item['id']"
-                    :example="$item['example'] ?? false"
-                    :overview-item="true"
-                    :search-text="$searchText"
-                    :dbt-badge="isset($item['workflow']) || ($item['dbt'] ?? false)"
-                    :meta="isset($item['workflowStep'], $stepTotal) ? 'Step ' . $item['workflowStep'] . '/' . $stepTotal : null"
-                />
+            <div class="tools-card-grid">
+                @foreach ($navItems as $item)
+                    @php
+                        $searchText = strtolower(implode(' ', [
+                            $item['label']['de'] ?? '',
+                            $item['label']['en'] ?? '',
+                            $item['description']['de'] ?? '',
+                            $item['description']['en'] ?? '',
+                            $item['id'] ?? '',
+                        ]));
+                        $workflowId = $item['workflow'] ?? null;
+                        $stepTotal = $workflowId ? ($workflowStepTotals[$workflowId] ?? null) : null;
+                    @endphp
+                    <x-tools.card
+                        :href="locale_route($item['route'])"
+                        :title="$item['label']['en']"
+                        :description="$item['description']['en']"
+                        :icon="$item['icon']"
+                        :accent="$item['accent']"
+                        :card-id="$item['id']"
+                        :example="$item['example'] ?? false"
+                        :overview-item="true"
+                        :search-text="$searchText"
+                        :dbt-badge="isset($item['workflow']) || ($item['dbt'] ?? false)"
+                        :meta="isset($item['workflowStep'], $stepTotal) ? 'Step ' . $item['workflowStep'] . '/' . $stepTotal : null"
+                    />
+                @endforeach
+            </div>
+
+            @foreach ($workflows as $workflowId => $workflow)
+                @php $steps = $workflow['steps'] ?? []; @endphp
+                <section class="tools-workflow-section" aria-labelledby="workflow-{{ $workflowId }}-title">
+                    <h2 id="workflow-{{ $workflowId }}-title" class="tools-section__title tools-section__title--with-icon">
+                        @if (! empty($workflow['icon']))
+                            <i class="fa-solid {{ $workflow['icon'] }} tools-section__title-icon" aria-hidden="true"></i>
+                        @endif
+                        <span>{{ $workflow['label']['en'] ?? $workflowId }}</span>
+                    </h2>
+                    @if (! empty($workflow['description']['en']))
+                        <p class="tools-section__lead">{{ $workflow['description']['en'] }}</p>
+                    @endif
+                    <ol class="tools-workflow-steps">
+                        @foreach ($steps as $index => $stepId)
+                            @php $step = $navById->get($stepId); @endphp
+                            @if ($step)
+                                <li class="tools-workflow-steps__item">
+                                    <span class="tools-workflow-steps__num">{{ $index + 1 }}</span>
+                                    <a href="{{ locale_route($step['route']) }}" class="tools-workflow-steps__link">
+                                        {{ $step['label']['en'] }}
+                                    </a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ol>
+                </section>
             @endforeach
         </div>
-
-        @foreach ($workflows as $workflowId => $workflow)
-            @php $steps = $workflow['steps'] ?? []; @endphp
-            <section class="tools-workflow-section" aria-labelledby="workflow-{{ $workflowId }}-title">
-                <h2 id="workflow-{{ $workflowId }}-title" class="tools-section__title tools-section__title--with-icon">
-                    @if (! empty($workflow['icon']))
-                        <i class="fa-solid {{ $workflow['icon'] }} tools-section__title-icon" aria-hidden="true"></i>
-                    @endif
-                    <span>{{ $workflow['label']['en'] ?? $workflowId }}</span>
-                </h2>
-                @if (! empty($workflow['description']['en']))
-                    <p class="tools-section__lead">{{ $workflow['description']['en'] }}</p>
-                @endif
-                <ol class="tools-workflow-steps">
-                    @foreach ($steps as $index => $stepId)
-                        @php $step = $navById->get($stepId); @endphp
-                        @if ($step)
-                            <li class="tools-workflow-steps__item">
-                                <span class="tools-workflow-steps__num">{{ $index + 1 }}</span>
-                                <a href="{{ locale_route($step['route']) }}" class="tools-workflow-steps__link">
-                                    {{ $step['label']['en'] }}
-                                </a>
-                            </li>
-                        @endif
-                    @endforeach
-                </ol>
-            </section>
-        @endforeach
     </div>
 @endsection
