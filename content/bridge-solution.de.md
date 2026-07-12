@@ -9,6 +9,7 @@ tags:
   - ai
   - architecture
 order: -1
+publishedAt: 2026-05-08
 hero: images/playbooks/bridge-hero.png
 ---
 

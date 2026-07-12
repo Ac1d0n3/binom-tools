@@ -12,6 +12,7 @@ tags:
   - retention
   - lineage
 order: -1
+publishedAt: 2026-06-05
 series: governance-pillars
 seriesPart: 5
 seriesTitle: The 8 Pillars of Data Governance

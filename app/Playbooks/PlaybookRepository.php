@@ -2,6 +2,7 @@
 
 namespace App\Playbooks;
 
+use App\Support\PlaybookImagePath;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -31,8 +32,9 @@ final class PlaybookRepository
      */
     public function allForIndex(): array
     {
-        return $this->sortedSlugs()
+        return collect($this->sortedSlugs())
             ->map(fn (string $slug): array => $this->buildPlaybook($slug)->toIndexArray())
+            ->sortByDesc(fn (array $item): int => $item['sortDate']->getTimestamp())
             ->values()
             ->all();
     }
@@ -86,6 +88,7 @@ final class PlaybookRepository
             order: $playbook->order,
             modifiedAt: $playbook->modifiedAt,
             variants: $playbook->variants,
+            publishedAt: $playbook->publishedAt,
             seriesId: $playbook->seriesId,
             seriesPart: $playbook->seriesPart,
             series: $series,
@@ -157,6 +160,7 @@ final class PlaybookRepository
         $heroUrl = null;
         $order = null;
         $modifiedAt = null;
+        $publishedAt = null;
         $seriesId = null;
         $seriesPart = null;
 
@@ -170,9 +174,14 @@ final class PlaybookRepository
             $variant = $this->buildLocaleVariant($path, $slug, $locale);
             $variants[$locale] = $variant;
 
+            $parsed = $this->frontmatterParser->parse(file_get_contents($path) ?: '', $slug);
+
             if ($order === null) {
-                $parsed = $this->frontmatterParser->parse(file_get_contents($path) ?: '', $slug);
                 $order = (int) ($parsed['meta']['order'] ?? 0);
+            }
+
+            if ($publishedAt === null) {
+                $publishedAt = $this->parsePublishedAt($parsed['meta']['publishedat'] ?? null);
             }
 
             if ($seriesId === null && is_string($variant->series) && $variant->series !== '') {
@@ -204,6 +213,7 @@ final class PlaybookRepository
             order: $order ?? 0,
             modifiedAt: $modifiedAt ?? now(),
             variants: $variants,
+            publishedAt: $publishedAt,
             seriesId: $seriesId,
             seriesPart: $seriesPart,
         );
@@ -352,7 +362,7 @@ final class PlaybookRepository
         $tags = is_array($meta['tags'] ?? null) ? $meta['tags'] : [];
 
         $hero = $meta['hero'] ?? null;
-        $heroUrl = is_string($hero) && $hero !== '' ? asset($hero) : null;
+        $heroUrl = PlaybookImagePath::assetUrl(is_string($hero) ? $hero : null);
 
         $series = $meta['series'] ?? null;
         $seriesPart = $meta['seriespart'] ?? $meta['seriesPart'] ?? null;
@@ -423,6 +433,19 @@ final class PlaybookRepository
         $mode = (string) config('playbooks.series_pager', 'both');
 
         return in_array($mode, ['both', 'series', 'global'], true) ? $mode : 'both';
+    }
+
+    private function parsePublishedAt(mixed $value): ?Carbon
+    {
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($value)->endOfDay();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     private function hasSlug(string $slug): bool

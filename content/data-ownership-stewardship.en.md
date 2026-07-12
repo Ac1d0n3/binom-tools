@@ -11,6 +11,7 @@ tags:
   - data-domains
   - data-products
 order: -1
+publishedAt: 2026-06-02
 series: governance-pillars
 seriesPart: 2
 seriesTitle: The 8 Pillars of Data Governance

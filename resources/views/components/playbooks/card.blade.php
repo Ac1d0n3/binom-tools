@@ -56,9 +56,10 @@
     ])
     data-playbook-index-card
     data-overview-item
+    data-playbook-slug="{{ $item['slug'] }}"
     data-card-id="playbook-{{ $item['slug'] }}"
     data-search-text="{{ $searchText }}"
-    data-sort-date="{{ $item['modifiedAt']->getTimestamp() }}"
+    data-sort-date="{{ $item['sortDate']->getTimestamp() }}"
     data-sort-title-de="{{ $titleDe }}"
     data-sort-title-en="{{ $titleEn }}"
     data-sort-series-id="{{ $seriesId ?? '' }}"

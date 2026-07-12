@@ -13,6 +13,7 @@ tags:
   - compliance
   - records-management
 order: -1
+publishedAt: 2026-06-09
 series: governance-pillars
 seriesPart: 9
 seriesTitle: The 8 Pillars of Data Governance

@@ -19,7 +19,7 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertNotNull($governance);
         $this->assertSame('The 8 Pillars of Data Governance', $governance->titleEn);
         $this->assertSame('Die 8 Säulen der Data Governance', $governance->titleDe);
-        $this->assertSame(8, $governance->partCount());
+        $this->assertSame(9, $governance->partCount());
         $this->assertNotNull($governance->heroUrl);
         $this->assertStringContainsString('eight-pillar-hero', $governance->heroUrl);
         $this->assertGreaterThan(0, $governance->totalReadingTimeEn);
@@ -31,6 +31,8 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertSame(7, $governance->parts[6]->part);
         $this->assertSame('access-security-governance', $governance->parts[7]->slug);
         $this->assertSame(8, $governance->parts[7]->part);
+        $this->assertSame('data-lifecycle-retention', $governance->parts[8]->slug);
+        $this->assertSame(9, $governance->parts[8]->part);
     }
 
     public function test_find_attaches_series_navigation_for_member(): void
@@ -43,7 +45,7 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertSame(3, $playbook->seriesPart);
         $this->assertNotNull($playbook->series);
         $this->assertSame(3, $playbook->series->currentPart);
-        $this->assertSame(8, $playbook->series->totalParts());
+        $this->assertSame(9, $playbook->series->totalParts());
 
         $currentParts = array_filter(
             $playbook->series->parts,
@@ -53,10 +55,17 @@ class PlaybookSeriesRepositoryTest extends TestCase
         $this->assertCount(1, $currentParts);
     }
 
-    public function test_story_index_orders_series_parts_when_order_matches(): void
+    public function test_series_overview_orders_governance_parts_by_series_part(): void
     {
         $repository = app(PlaybookRepository::class);
-        $slugs = array_column($repository->allForIndex(), 'slug');
+        $governance = collect($repository->allSeries())->firstWhere('id', 'governance-pillars');
+
+        $this->assertNotNull($governance);
+
+        $slugs = array_map(
+            fn ($part) => $part->slug,
+            $governance->parts,
+        );
 
         $eightPos = array_search('eight-pillars', $slugs, true);
         $ownershipPos = array_search('data-ownership-stewardship', $slugs, true);

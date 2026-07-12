@@ -40,7 +40,6 @@ final class LandingCatalog
     public function latestStories(): array
     {
         return collect($this->playbooks->allForIndex())
-            ->sortByDesc(fn (array $item): int => $item['modifiedAt']->getTimestamp())
             ->take(self::STORIES_PREVIEW_LIMIT)
             ->values()
             ->all();

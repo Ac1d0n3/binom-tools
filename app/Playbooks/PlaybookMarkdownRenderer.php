@@ -3,6 +3,7 @@
 namespace App\Playbooks;
 
 use App\Support\LocaleUrl;
+use App\Support\PlaybookImagePath;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -260,7 +261,7 @@ final class PlaybookMarkdownRenderer
             return $src;
         }
 
-        return asset(ltrim($src, '/'));
+        return PlaybookImagePath::assetUrl(PlaybookImagePath::normalize(ltrim($src, '/'))) ?? asset(ltrim($src, '/'));
     }
 
     private function enhanceLinks(DOMElement $root, string $locale): void

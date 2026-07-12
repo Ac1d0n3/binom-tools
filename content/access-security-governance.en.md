@@ -14,6 +14,7 @@ tags:
   - data-security
   - audit
 order: -1
+publishedAt: 2026-06-08
 series: governance-pillars
 seriesPart: 8
 seriesTitle: The 8 Pillars of Data Governance

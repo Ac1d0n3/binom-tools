@@ -51,6 +51,7 @@ final class PlaybookFrontmatterParser
             'category' => null,
             'tags' => [],
             'order' => 0,
+            'publishedAt' => null,
             'series' => null,
             'seriesPart' => null,
             'seriesTitle' => null,

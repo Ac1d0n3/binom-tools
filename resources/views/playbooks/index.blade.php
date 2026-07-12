@@ -91,6 +91,34 @@
                                 <span class="sr-only" data-i18n="overview.layoutList">List view</span>
                             </button>
                         </div>
+
+                        <div class="tools-overview-read-controls" role="group">
+                            <button
+                                type="button"
+                                class="tools-overview-read-controls__button"
+                                data-overview-hide-read
+                                aria-pressed="false"
+                                data-i18n-aria="overview.hideRead"
+                                aria-label="Hide read stories"
+                                title="Hide read stories"
+                            >
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                <span class="sr-only" data-i18n="overview.hideRead">Hide read stories</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="tools-overview-read-controls__button tools-overview-read-controls__button--reset"
+                                data-overview-read-reset
+                                disabled
+                                aria-disabled="true"
+                                data-i18n-aria="overview.resetRead"
+                                aria-label="Reset read status"
+                                title="Reset read status"
+                            >
+                                <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i>
+                                <span class="sr-only" data-i18n="overview.resetRead">Reset read status</span>
+                            </button>
+                        </div>
                     @endif
 
                     <div class="tools-overview-sort">
@@ -141,6 +169,10 @@
                 <div class="tools-overview-scroll">
                     <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
                         No matches for your search.
+                    </p>
+
+                    <p class="tools-overview-empty" data-overview-unread-empty hidden data-i18n="overview.noUnreadResults">
+                        All matching stories are already read.
                     </p>
 
                     <p class="tools-overview-empty" data-overview-series-empty hidden data-i18n="overview.seriesNoResults">

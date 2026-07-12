@@ -12,6 +12,7 @@ tags:
   - privacy-by-design
   - gdpr
 order: -1
+publishedAt: 2026-06-04
 series: governance-pillars
 seriesPart: 4
 seriesTitle: The 8 Pillars of Data Governance

@@ -15,12 +15,18 @@ final readonly class Playbook
         public int $order,
         public CarbonInterface $modifiedAt,
         public array $variants,
+        public ?CarbonInterface $publishedAt = null,
         public ?string $seriesId = null,
         public ?int $seriesPart = null,
         public ?PlaybookSeries $series = null,
         public ?PlaybookNavRef $prev = null,
         public ?PlaybookNavRef $next = null,
     ) {}
+
+    public function sortDate(): CarbonInterface
+    {
+        return $this->publishedAt ?? $this->modifiedAt;
+    }
 
     public function variant(string $locale): ?PlaybookLocaleVariant
     {
@@ -63,6 +69,7 @@ final readonly class Playbook
             'heroUrl' => $this->heroUrl,
             'order' => $this->order,
             'modifiedAt' => $this->modifiedAt,
+            'sortDate' => $this->sortDate(),
             'locales' => $locales,
             'tags' => $tags,
             'seriesId' => $this->seriesId,

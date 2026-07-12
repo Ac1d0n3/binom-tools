@@ -11,6 +11,7 @@ tags:
   - impact-analysis
   - data-discovery
 order: -1
+publishedAt: 2026-06-03
 series: governance-pillars
 seriesPart: 3
 seriesTitle: Die 8 Säulen der Data Governance

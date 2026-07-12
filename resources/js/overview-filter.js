@@ -1,10 +1,17 @@
 /** Client-side search and tag filtering for overview index pages. */
-import { getLocale } from './locale';
+import { getLocale, getShellLabel } from './locale';
+import { compareStoryItemsForSort } from './overview-filter.sort.js';
+import {
+    clearAllPlaybookRead,
+    hasAnyPlaybookRead,
+    isPlaybookRead,
+} from './playbooks/read-state';
 
 const TAG_SIDEBAR_STORAGE_KEY = 'binom-tools-tag-sidebar';
 const OVERVIEW_VIEW_STORAGE_KEY = 'binom-tools-overview-view';
 const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
 const OVERVIEW_LAYOUT_STORAGE_KEY = 'binom-tools-overview-layout';
+const OVERVIEW_HIDE_READ_STORAGE_KEY = 'binom-tools-overview-hide-read';
 
 /** @typedef {'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'} OverviewSortKey */
 /** @typedef {'grid' | 'list'} OverviewLayoutMode */
@@ -17,7 +24,6 @@ export function initOverviewFilters() {
     initTagSidebarSearch(root);
     initOverviewViewToggle(root);
     initOverviewLayoutToggle(root);
-    initOverviewSort(root);
 
     const searchInput = /** @type {HTMLInputElement | null} */ (
         root.querySelector('[data-overview-search]')
@@ -26,13 +32,18 @@ export function initOverviewFilters() {
     const storyItems = root.querySelectorAll('[data-overview-item]');
     const seriesItems = root.querySelectorAll('[data-overview-series-item]');
     const emptyEl = root.querySelector('[data-overview-empty]');
+    const unreadEmptyEl = root.querySelector('[data-overview-unread-empty]');
     const seriesEmptyEl = root.querySelector('[data-overview-series-empty]');
+    const hideReadToggle = root.querySelector('[data-overview-hide-read]');
+    const readResetButton = root.querySelector('[data-overview-read-reset]');
 
     /** @type {string} */
     let activeTag = 'all';
 
     /** @type {OverviewSortKey} */
     let activeSort = readOverviewSort(root);
+
+    let hideRead = localStorage.getItem(OVERVIEW_HIDE_READ_STORAGE_KEY) === 'true';
 
     /** @param {string} value */
     const normalize = (value) => value.toLowerCase().trim();
@@ -54,68 +65,8 @@ export function initOverviewFilters() {
         [...visible, ...hidden].forEach((item) => grid.appendChild(item));
     };
 
-    /** @param {number} timestampSeconds */
-    const daySortKey = (timestampSeconds) => {
-        const date = new Date(timestampSeconds * 1000);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-
-        return `${year}${month}${day}`;
-    };
-
     /** @param {Element} a @param {Element} b */
-    const compareStoryItems = (a, b) => {
-        const titleKey = locale() === 'de' ? 'data-sort-title-de' : 'data-sort-title-en';
-        const dateA = Number(a.getAttribute('data-sort-date') ?? 0);
-        const dateB = Number(b.getAttribute('data-sort-date') ?? 0);
-        const dayA = daySortKey(dateA);
-        const dayB = daySortKey(dateB);
-        const seriesA = a.getAttribute('data-sort-series-id') ?? '';
-        const seriesB = b.getAttribute('data-sort-series-id') ?? '';
-        const partA = Number(a.getAttribute('data-sort-series-part') ?? 0);
-        const partB = Number(b.getAttribute('data-sort-series-part') ?? 0);
-        const titleA = normalize(a.getAttribute(titleKey) ?? '');
-        const titleB = normalize(b.getAttribute(titleKey) ?? '');
-
-        if (activeSort.startsWith('date-')) {
-            const cmp = dayA.localeCompare(dayB);
-
-            if (cmp !== 0) {
-                return activeSort === 'date-desc' ? -cmp : cmp;
-            }
-
-            if (seriesA !== seriesB) {
-                if (seriesA === '') {
-                    return 1;
-                }
-
-                if (seriesB === '') {
-                    return -1;
-                }
-
-                return seriesA.localeCompare(seriesB);
-            }
-
-            if (partA !== partB) {
-                return activeSort === 'date-desc' ? partB - partA : partA - partB;
-            }
-
-            return titleA.localeCompare(titleB, locale());
-        }
-
-        const nameCmp = titleA.localeCompare(titleB, locale());
-
-        if (nameCmp !== 0) {
-            return activeSort === 'name-desc' ? -nameCmp : nameCmp;
-        }
-
-        if (partA !== partB) {
-            return partA - partB;
-        }
-
-        return dayB.localeCompare(dayA);
-    };
+    const compareStoryItems = (a, b) => compareStoryItemsForSort(a, b, activeSort, locale());
 
     /** @param {Element} a @param {Element} b */
     const compareSeriesItems = (a, b) => {
@@ -180,6 +131,7 @@ export function initOverviewFilters() {
     const applyStories = () => {
         const query = normalize(searchInput?.value ?? '');
         let visible = 0;
+        let wouldShowButRead = 0;
 
         storyItems.forEach((item) => {
             const text = normalize(item.getAttribute('data-search-text') ?? '');
@@ -187,18 +139,32 @@ export function initOverviewFilters() {
                 .split(',')
                 .map((tag) => tag.trim())
                 .filter(Boolean);
+            const slug = item.getAttribute('data-playbook-slug') ?? '';
             const matchesSearch = query === '' || text.includes(query);
             const matchesTag = activeTag === 'all' || tags.includes(activeTag);
-            const show = matchesSearch && matchesTag;
+            const read = isPlaybookRead(slug);
+
+            if (matchesSearch && matchesTag && hideRead && read) {
+                wouldShowButRead += 1;
+            }
+
+            const show = matchesSearch && matchesTag && (!hideRead || !read);
 
             item.hidden = !show;
             if (show) visible += 1;
         });
 
+        const showUnreadEmpty = hideRead && visible === 0 && wouldShowButRead > 0;
+
         if (emptyEl instanceof HTMLElement) {
-            emptyEl.hidden = visible > 0;
+            emptyEl.hidden = visible > 0 || showUnreadEmpty;
         }
 
+        if (unreadEmptyEl instanceof HTMLElement) {
+            unreadEmptyEl.hidden = !showUnreadEmpty;
+        }
+
+        syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
         sortStories();
     };
 
@@ -267,7 +233,69 @@ export function initOverviewFilters() {
         });
     });
 
+    if (hideReadToggle instanceof HTMLButtonElement) {
+        syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
+
+        hideReadToggle.addEventListener('click', () => {
+            hideRead = !hideRead;
+            localStorage.setItem(OVERVIEW_HIDE_READ_STORAGE_KEY, hideRead ? 'true' : 'false');
+            apply();
+        });
+    }
+
+    if (readResetButton instanceof HTMLButtonElement) {
+        readResetButton.addEventListener('click', () => {
+            if (!hasAnyPlaybookRead()) {
+                return;
+            }
+
+            const confirmed = window.confirm(getShellLabel('overview.resetReadConfirm'));
+
+            if (!confirmed) {
+                return;
+            }
+
+            clearAllPlaybookRead();
+            apply();
+        });
+    }
+
+    window.addEventListener('binom-tools:playbook-read', apply);
+    window.addEventListener('binom-tools:playbook-read-reset', apply);
+    window.addEventListener('pageshow', apply);
+
+    initOverviewSort(root);
     apply();
+}
+
+/**
+ * @param {Element | null} hideReadToggle
+ * @param {Element | null} readResetButton
+ * @param {boolean} hideRead
+ */
+function syncOverviewReadControls(hideReadToggle, readResetButton, hideRead) {
+    if (hideReadToggle instanceof HTMLButtonElement) {
+        hideReadToggle.setAttribute('aria-pressed', hideRead ? 'true' : 'false');
+        hideReadToggle.classList.toggle('tools-overview-read-controls__button--active', hideRead);
+
+        const icon = hideReadToggle.querySelector('i');
+        const labelKey = hideRead ? 'overview.showRead' : 'overview.hideRead';
+        const label = getShellLabel(labelKey);
+
+        if (icon instanceof HTMLElement) {
+            icon.classList.toggle('fa-eye', !hideRead);
+            icon.classList.toggle('fa-eye-slash', hideRead);
+        }
+
+        hideReadToggle.setAttribute('aria-label', label);
+        hideReadToggle.setAttribute('title', label);
+    }
+
+    if (readResetButton instanceof HTMLButtonElement) {
+        const canReset = hasAnyPlaybookRead();
+        readResetButton.disabled = !canReset;
+        readResetButton.setAttribute('aria-disabled', canReset ? 'false' : 'true');
+    }
 }
 
 /**

@@ -1,5 +1,6 @@
 import { initPlaybookPrism } from './prism-init';
 import { initPlaybookReadingPosition } from './reading-position';
+import { initPlaybookReadTracker } from './read-tracker';
 import { initPlaybookToc } from './toc';
 import { initPlaybookVideoEmbeds } from './video-embed';
 
@@ -30,6 +31,7 @@ export function initPlaybookDetail(root) {
 
     initActiveLocalePanel(root);
     initPlaybookReadingPosition(root);
+    initPlaybookReadTracker(root);
 
     try {
         initPlaybookPrism(root);

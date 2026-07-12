@@ -136,6 +136,11 @@ const shellLabels = {
         'overview.layoutToggle': 'Story-Layout',
         'overview.layoutGrid': 'Kartenansicht',
         'overview.layoutList': 'Listenansicht',
+        'overview.hideRead': 'Gelesene ausblenden',
+        'overview.showRead': 'Gelesene anzeigen',
+        'overview.resetRead': 'Gelesen-Status zurücksetzen',
+        'overview.resetReadConfirm': 'Alle Gelesen-Markierungen für Stories löschen? Das kann nicht rückgängig gemacht werden.',
+        'overview.noUnreadResults': 'Alle passenden Stories sind bereits gelesen.',
         'cookie.banner.text': 'Wir speichern Einstellungen lokal in Ihrem Browser. Externe Videos laden erst nach Ihrer Einwilligung zu externen Medien.',
         'cookie.banner.privacyLink': 'Datenschutz',
         'cookie.banner.essentialOnly': 'Nur notwendig',
@@ -280,6 +285,11 @@ const shellLabels = {
         'overview.layoutToggle': 'Story layout',
         'overview.layoutGrid': 'Grid view',
         'overview.layoutList': 'List view',
+        'overview.hideRead': 'Hide read stories',
+        'overview.showRead': 'Show read stories',
+        'overview.resetRead': 'Reset read status',
+        'overview.resetReadConfirm': 'Clear all read markers for stories? This cannot be undone.',
+        'overview.noUnreadResults': 'All matching stories are already read.',
         'cookie.banner.text': 'We store settings locally in your browser. External videos load only after you accept external media.',
         'cookie.banner.privacyLink': 'Privacy',
         'cookie.banner.essentialOnly': 'Essential only',
@@ -406,6 +416,14 @@ const shellLabels = {
         'legal.impressum.responsible.body': 'Thomas Lindackers\nVollckmarstr 28\n45219 Essen',
     },
 };
+
+/**
+ * @param {string} key
+ * @param {ToolsLocale} [locale]
+ */
+export function getShellLabel(key, locale = getLocale()) {
+    return shellLabels[locale]?.[key] ?? shellLabels.en?.[key] ?? key;
+}
 
 /** @param {ToolsLocale} locale @param {boolean} isDark */
 export function applyThemeToggleAria(locale, isDark) {

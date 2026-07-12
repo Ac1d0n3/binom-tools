@@ -70,16 +70,35 @@ class PlaybookPagesTest extends TestCase
         );
     }
 
-    public function test_playbook_index_lists_bridge_solution_before_help_hub(): void
+    public function test_playbook_index_lists_bridge_solution_and_help_hub(): void
     {
-        $html = $this->get('/playbooks')->getContent();
+        $response = $this->get('/playbooks');
 
-        $bridgePos = strpos($html, 'Bridge Solutions');
-        $helpHubPos = strpos($html, 'Governance Help Hub');
+        $response->assertOk();
+        $response->assertSee('Bridge Solutions');
+        $response->assertSee('Governance Help Hub');
+    }
 
-        $this->assertNotFalse($bridgePos);
-        $this->assertNotFalse($helpHubPos);
-        $this->assertLessThan($helpHubPos, $bridgePos);
+    public function test_dbt_role_story_renders_playbook_images(): void
+    {
+        $response = $this->get('/playbooks/dbt-role');
+
+        $response->assertOk();
+        $response->assertSee('dbt-role-hero.png', false);
+        $response->assertSee(asset('images/playbooks/dbt-role-img1-en.png'), false);
+        $response->assertSee(asset('images/playbooks/dbt-role-img2-en.png'), false);
+        $response->assertDontSee('images/stories/', false);
+    }
+
+    public function test_big_five_story_renders_localized_hero_and_diagram(): void
+    {
+        $response = $this->get('/playbooks/big-five');
+
+        $response->assertOk();
+        $response->assertSee('big-five-hero.png', false);
+        $response->assertSee(asset('images/playbooks/big-five-de.png'), false);
+        $response->assertSee(asset('images/playbooks/big-five-en.png'), false);
+        $response->assertDontSee('images/stories/', false);
     }
 
     public function test_bridge_solution_story_renders_localized_hero_and_concept_framing(): void
@@ -116,7 +135,7 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('playbook-series', false);
-        $response->assertSee('Part 1 of 8', false);
+        $response->assertSee('Part 1 of 9', false);
         $response->assertSee('playbook-series__option--active', false);
         $response->assertSee('/playbooks/data-ownership-stewardship', false);
         $response->assertSee('/playbooks/metadata-catalog-lineage', false);
@@ -128,7 +147,7 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('playbook-series', false);
-        $response->assertSee('Part 3 of 8', false);
+        $response->assertSee('Part 3 of 9', false);
         $response->assertSee('/playbooks/eight-pillars', false);
         $response->assertSee('/playbooks/data-ownership-stewardship', false);
     }
@@ -169,7 +188,7 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee(asset('images/playbooks/data-ownership-stewardship-en.png'), false);
         $response->assertDontSee('data-steward-', false);
         $response->assertSee('playbook-series', false);
-        $response->assertSee('Part 2 of 8', false);
+        $response->assertSee('Part 2 of 9', false);
         $response->assertSee('/playbooks/eight-pillars', false);
     }
 

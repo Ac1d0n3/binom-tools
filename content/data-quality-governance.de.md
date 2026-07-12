@@ -12,6 +12,7 @@ tags:
   - monitoring
   - data-products
 order: -1
+publishedAt: 2026-06-06
 series: governance-pillars
 seriesPart: 6
 seriesTitle: The 8 Pillars of Data Governance

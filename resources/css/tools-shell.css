@@ -1591,6 +1591,46 @@ html[data-color-scheme='dark'] .tools-hero {
     pointer-events: none;
 }
 
+.tools-overview-read-controls {
+    display: inline-flex;
+    padding: 0.2rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 8px;
+    background: var(--content-background-color);
+}
+
+.tools-overview-read-controls__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.tools-overview-read-controls__button--active {
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 12%, transparent);
+    color: var(--theme-color-primary, #2563eb);
+}
+
+.tools-overview-read-controls__button:disabled,
+.tools-overview-read-controls__button[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.tools-overview-layout--view-series .tools-overview-read-controls {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
 .tools-card-grid--list {
     display: flex;
     flex-direction: column;
