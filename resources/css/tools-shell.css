@@ -102,6 +102,11 @@ html[data-shell-full-width='true'] .tools-shell,
     max-width: none;
 }
 
+html[data-shell-full-width='true'] .tools-content,
+html[data-shell-full-width='true'] .tools-content--overview {
+    max-width: none;
+}
+
 .tools-shell__header {
     position: sticky;
     top: 0;
@@ -1633,7 +1638,8 @@ html[data-color-scheme='dark'] .tools-hero {
         gap: 1.5rem;
     }
 
-    .tools-overview-layout--with-tags:not(.tools-overview-layout--tags-collapsed)
+    html:not([data-shell-full-width='true'])
+        .tools-overview-layout--with-tags:not(.tools-overview-layout--tags-collapsed)
         .tools-overview-main
         .tools-card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
