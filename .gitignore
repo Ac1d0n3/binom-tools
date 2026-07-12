@@ -16,7 +16,6 @@
 /node_modules
 /public/build
 /deploy-ftp
-/deploy-upload
 /deployment
 /public/fonts-manifest.dev.json
 /public/hot

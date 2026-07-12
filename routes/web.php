@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../app/Support/helpers.php';
+
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
