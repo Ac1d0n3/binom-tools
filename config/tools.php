@@ -226,4 +226,18 @@ return [
         'binom_ngx_docs' => ToolLinks::BINOM_NGX_DOCS,
         'repository' => env('BINOM_TOOLS_REPO_URL', 'https://github.com/Ac1d0n3/binom-tools'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tools overview page header ( /tools )
+    |--------------------------------------------------------------------------
+    */
+    'overview' => [
+        'show_title' => env('TOOLS_OVERVIEW_SHOW_TITLE', false),
+        'show_lead' => env('TOOLS_OVERVIEW_SHOW_LEAD', false),
+        'title_de' => env('TOOLS_OVERVIEW_TITLE_DE'),
+        'title_en' => env('TOOLS_OVERVIEW_TITLE_EN'),
+        'lead_de' => env('TOOLS_OVERVIEW_LEAD_DE'),
+        'lead_en' => env('TOOLS_OVERVIEW_LEAD_EN'),
+    ],
 ];

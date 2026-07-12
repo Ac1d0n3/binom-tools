@@ -4,10 +4,29 @@
 
 @section('content')
     <div class="tools-content" data-overview-filter-root>
-        <h1 class="tools-page-title" data-i18n="tools.overviewTitle">Tools</h1>
-        <p class="tools-page-lead" data-i18n="tools.overviewLead">
-            Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
-        </p>
+        @if (config('tools.overview.show_title'))
+            <h1
+                class="tools-page-title"
+                @if (filled(config('tools.overview.title_en')) || filled(config('tools.overview.title_de')))
+                    data-text-de="{{ config('tools.overview.title_de') ?? config('tools.overview.title_en') }}"
+                    data-text-en="{{ config('tools.overview.title_en') ?? config('tools.overview.title_de') }}"
+                @else
+                    data-i18n="tools.overviewTitle"
+                @endif
+            >{{ config('tools.overview.title_en') ?? 'Tools' }}</h1>
+        @endif
+
+        @if (config('tools.overview.show_lead'))
+            <p
+                class="tools-page-lead"
+                @if (filled(config('tools.overview.lead_en')) || filled(config('tools.overview.lead_de')))
+                    data-text-de="{{ config('tools.overview.lead_de') ?? config('tools.overview.lead_en') }}"
+                    data-text-en="{{ config('tools.overview.lead_en') ?? config('tools.overview.lead_de') }}"
+                @else
+                    data-i18n="tools.overviewLead"
+                @endif
+            >Interactive reference workflows — step by step, copy-paste ready.</p>
+        @endif
 
         @php $navById = collect($navItems)->keyBy('id'); @endphp
 

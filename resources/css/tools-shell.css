@@ -636,6 +636,137 @@ html[data-shell-full-width='true'] .tools-shell,
     color: inherit;
 }
 
+.tools-card--story {
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.tools-card--story:hover {
+    transform: translateY(-2px);
+}
+
+.tools-card--story-has-hero .tools-card__story-body {
+    padding-top: 0.95rem;
+}
+
+.tools-card--story-in-series {
+    border-color: color-mix(in srgb, var(--theme-color-primary) 28%, var(--tools-card-border));
+}
+
+.tools-card__media {
+    position: relative;
+}
+
+.tools-card__hero {
+    aspect-ratio: 16 / 8;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--theme-color-primary) 8%, var(--surface-background-color));
+}
+
+.tools-card__hero--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tools-card__hero--placeholder .tools-card__icon-wrap {
+    width: 3.75rem;
+    height: 3.75rem;
+    font-size: 1.65rem;
+}
+
+.tools-card__series-badge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: calc(100% - 1.2rem);
+    padding: 0.28rem 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 22%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--content-background-color) 88%, transparent);
+    backdrop-filter: blur(6px);
+    color: var(--theme-color-primary, #2563eb);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.25;
+    box-shadow: 0 1px 4px color-mix(in srgb, #000 8%, transparent);
+}
+
+.tools-card__series-badge span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tools-card__series-badge i {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    opacity: 0.9;
+}
+
+.tools-card__hero-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.tools-card--story:hover .tools-card__hero-image {
+    transform: scale(1.03);
+}
+
+.tools-card__story-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    flex: 1 1 auto;
+    padding: 1rem 1.1rem 0.35rem;
+    min-width: 0;
+}
+
+.tools-card__meta--story {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--theme-color-accent, var(--bn-color-text-secondary));
+}
+
+.tools-card__title--story {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.35;
+}
+
+.tools-card__desc--story {
+    display: -webkit-box;
+    margin: 0;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--bn-color-text-secondary);
+}
+
+.tools-card__story-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.35rem 1.1rem 1rem;
+}
+
+.tools-card--story .tools-card__arrow {
+    margin-top: 0;
+}
+
 .tools-card--featured {
     padding: 1.35rem 1.4rem;
     background: linear-gradient(

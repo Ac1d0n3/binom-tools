@@ -52,6 +52,22 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-overview-filter-root', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-item', false);
+        $response->assertDontSee('data-i18n="tools.overviewTitle"', false);
+        $response->assertDontSee('data-i18n="tools.overviewLead"', false);
+    }
+
+    public function test_tools_overview_can_show_header_when_enabled(): void
+    {
+        config([
+            'tools.overview.show_title' => true,
+            'tools.overview.show_lead' => true,
+        ]);
+
+        $response = $this->get('/tools');
+
+        $response->assertOk();
+        $response->assertSee('data-i18n="tools.overviewTitle"', false);
+        $response->assertSee('data-i18n="tools.overviewLead"', false);
     }
 
     public function test_governance_macro_generator_page_renders(): void

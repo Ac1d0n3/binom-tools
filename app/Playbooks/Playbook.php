@@ -50,6 +50,7 @@ final readonly class Playbook
                 'category' => $variant->category,
                 'readingTimeMinutes' => $variant->readingTimeMinutes,
                 'tags' => $variant->tags,
+                'seriesTitle' => $variant->seriesTitle,
             ];
 
             if ($tags === [] && $variant->tags !== []) {
@@ -64,6 +65,8 @@ final readonly class Playbook
             'modifiedAt' => $this->modifiedAt,
             'locales' => $locales,
             'tags' => $tags,
+            'seriesId' => $this->seriesId,
+            'seriesPart' => $this->seriesPart,
         ];
     }
 }

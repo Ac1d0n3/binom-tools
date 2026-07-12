@@ -7,16 +7,40 @@
     $titleEn = $en['title'] ?? $titleDe;
     $descDe = $de['description'] ?? '';
     $descEn = $en['description'] ?? $descDe;
-    $metaDe = collect([$de['category'] ?? null, ($de['readingTimeMinutes'] ?? null) ? ($de['readingTimeMinutes'] . ' min') : null])->filter()->implode(' · ');
-    $metaEn = collect([$en['category'] ?? null, ($en['readingTimeMinutes'] ?? null) ? ($en['readingTimeMinutes'] . ' min') : null])->filter()->implode(' · ');
+    $categoryDe = $de['category'] ?? null;
+    $categoryEn = $en['category'] ?? $categoryDe;
+    $readingDe = ($de['readingTimeMinutes'] ?? null) ? ($de['readingTimeMinutes'] . ' min') : null;
+    $readingEn = ($en['readingTimeMinutes'] ?? null) ? ($en['readingTimeMinutes'] . ' min') : null;
+    $seriesId = $item['seriesId'] ?? null;
+    $seriesPart = $item['seriesPart'] ?? null;
+    $seriesTitleDe = $de['seriesTitle'] ?? null;
+    $seriesTitleEn = $en['seriesTitle'] ?? $seriesTitleDe;
+    $inSeries = filled($seriesId);
+
+    $seriesBadgeDe = null;
+    $seriesBadgeEn = null;
+
+    if ($inSeries && is_numeric($seriesPart)) {
+        $seriesLabelDe = $seriesTitleDe ?: 'Serie';
+        $seriesLabelEn = $seriesTitleEn ?: 'Series';
+        $seriesBadgeDe = "{$seriesLabelDe} · Teil {$seriesPart}";
+        $seriesBadgeEn = "{$seriesLabelEn} · Part {$seriesPart}";
+    }
+
+    $metaDe = collect([$categoryDe, $readingDe])->filter()->implode(' · ');
+    $metaEn = collect([$categoryEn, $readingEn])->filter()->implode(' · ');
+
     $tags = $item['tags'] ?? [];
+    $heroUrl = $item['heroUrl'] ?? null;
     $searchText = strtolower(implode(' ', array_filter([
         $titleDe,
         $titleEn,
         $descDe,
         $descEn,
-        $de['category'] ?? '',
-        $en['category'] ?? '',
+        $categoryDe ?? '',
+        $categoryEn ?? '',
+        $seriesBadgeDe ?? '',
+        $seriesBadgeEn ?? '',
         $item['slug'] ?? '',
         implode(' ', $tags),
     ])));
@@ -24,48 +48,75 @@
 
 <a
     href="{{ locale_route('playbooks.show', ['slug' => $item['slug']]) }}"
-    class="tools-card"
+    @class([
+        'tools-card',
+        'tools-card--story',
+        'tools-card--story-has-hero' => filled($heroUrl),
+        'tools-card--story-in-series' => $inSeries,
+    ])
     data-playbook-index-card
     data-overview-item
     data-card-id="playbook-{{ $item['slug'] }}"
     data-search-text="{{ $searchText }}"
     @if (count($tags) > 0) data-tags="{{ implode(',', $tags) }}" @endif
 >
-    <div class="tools-card__main">
-        <div class="tools-card__icon-wrap tools-card__icon-wrap--primary" aria-hidden="true">
-            <i class="fa-solid fa-book-open tools-card__icon"></i>
-        </div>
-        <div class="tools-card__body">
-            <div class="tools-card__title-row">
-                <h3
-                    class="tools-card__title"
-                    data-playbook-card-title
-                    data-text-de="{{ $titleDe }}"
-                    data-text-en="{{ $titleEn }}"
-                >{{ $titleEn }}</h3>
+    <div class="tools-card__media">
+        @if ($heroUrl)
+            <div class="tools-card__hero">
+                <img
+                    src="{{ $heroUrl }}"
+                    alt=""
+                    class="tools-card__hero-image"
+                    loading="lazy"
+                />
             </div>
-            @if ($metaDe !== '' || $metaEn !== '')
-                <p
-                    class="tools-card__meta"
-                    data-playbook-card-meta
-                    data-text-de="{{ $metaDe }}"
-                    data-text-en="{{ $metaEn }}"
-                >{{ $metaEn }}</p>
-            @endif
-            <p
-                class="tools-card__desc"
-                data-playbook-card-description
-                data-text-de="{{ $descDe }}"
-                data-text-en="{{ $descEn }}"
-            >{{ $descEn }}</p>
-            @if (count($tags) > 0)
-                <ul class="tools-card__tags" aria-label="Tags">
-                    @foreach ($tags as $tag)
-                        <li class="tools-card__tag">{{ $tag }}</li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
-        <i class="fa-solid fa-arrow-right tools-card__arrow" aria-hidden="true"></i>
+        @else
+            <div class="tools-card__hero tools-card__hero--placeholder" aria-hidden="true">
+                <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
+                    <i class="fa-solid fa-book-open tools-card__icon"></i>
+                </div>
+            </div>
+        @endif
+
+        @if ($seriesBadgeDe !== null && $seriesBadgeEn !== null)
+            <span
+                class="tools-card__series-badge"
+                data-playbook-card-series-badge
+                data-text-de="{{ $seriesBadgeDe }}"
+                data-text-en="{{ $seriesBadgeEn }}"
+            >
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                <span>{{ $seriesBadgeEn }}</span>
+            </span>
+        @endif
     </div>
+
+    <div class="tools-card__story-body">
+        @if ($metaDe !== '' || $metaEn !== '')
+            <p
+                class="tools-card__meta tools-card__meta--story"
+                data-playbook-card-meta
+                data-text-de="{{ $metaDe }}"
+                data-text-en="{{ $metaEn }}"
+            >{{ $metaEn }}</p>
+        @endif
+
+        <h3
+            class="tools-card__title tools-card__title--story"
+            data-playbook-card-title
+            data-text-de="{{ $titleDe }}"
+            data-text-en="{{ $titleEn }}"
+        >{{ $titleEn }}</h3>
+
+        <p
+            class="tools-card__desc tools-card__desc--story"
+            data-playbook-card-description
+            data-text-de="{{ $descDe }}"
+            data-text-en="{{ $descEn }}"
+        >{{ $descEn }}</p>
+    </div>
+
+    <span class="tools-card__story-footer" aria-hidden="true">
+        <i class="fa-solid fa-arrow-right tools-card__arrow"></i>
+    </span>
 </a>

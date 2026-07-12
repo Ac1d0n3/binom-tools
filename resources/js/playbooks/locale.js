@@ -15,10 +15,17 @@ export function applyPlaybookLocale(locale) {
         }
     });
 
-    document.querySelectorAll('[data-playbook-card-title], [data-playbook-card-description], [data-playbook-card-meta], [data-playbook-pager-title], [data-playbook-series-title], [data-playbook-series-part-of], [data-playbook-series-part-title], [data-playbook-series-card-title], [data-playbook-series-card-part-title]').forEach((element) => {
+    document.querySelectorAll('[data-playbook-card-title], [data-playbook-card-description], [data-playbook-card-meta], [data-playbook-card-series-badge], [data-playbook-pager-title], [data-playbook-series-title], [data-playbook-series-part-of], [data-playbook-series-part-title], [data-playbook-series-card-title], [data-playbook-series-card-part-title]').forEach((element) => {
         const text = element.getAttribute(`data-text-${locale}`);
         if (text !== null) {
-            element.textContent = text;
+            if (element.matches('[data-playbook-card-series-badge]')) {
+                const label = element.querySelector('span');
+                if (label) {
+                    label.textContent = text;
+                }
+            } else {
+                element.textContent = text;
+            }
         }
     });
 

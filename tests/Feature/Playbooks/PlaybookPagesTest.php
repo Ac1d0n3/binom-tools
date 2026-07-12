@@ -13,8 +13,9 @@ class PlaybookPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('Bridge Solutions');
         $response->assertSee('Governance Help Hub');
-        $response->assertSee('data-i18n="playbooks.indexTitle"', false);
         $response->assertSee('data-i18n="nav.stories"', false);
+        $response->assertDontSee('data-i18n="playbooks.indexTitle"', false);
+        $response->assertDontSee('data-i18n="playbooks.indexLead"', false);
         $response->assertDontSee('Snowflake Governance Playbook');
         $response->assertSee('data-playbook-card-title', false);
         $response->assertSee('data-overview-search', false);
@@ -34,6 +35,20 @@ class PlaybookPagesTest extends TestCase
             '/tools-overview-main[\s\S]*?data-tag-sidebar-toggle[\s\S]*?data-tag-sidebar/',
             $html,
         );
+    }
+
+    public function test_playbook_index_can_show_overview_header_when_enabled(): void
+    {
+        config([
+            'playbooks.overview.show_title' => true,
+            'playbooks.overview.show_lead' => true,
+        ]);
+
+        $response = $this->get('/playbooks');
+
+        $response->assertOk();
+        $response->assertSee('data-i18n="playbooks.indexTitle"', false);
+        $response->assertSee('data-i18n="playbooks.indexLead"', false);
     }
 
     public function test_playbook_index_tag_sidebar_lists_tags_by_usage_count(): void

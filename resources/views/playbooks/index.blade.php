@@ -9,10 +9,29 @@
             'tools-overview-layout--with-tags' => count($tagCounts) > 0,
         ])>
             <div class="tools-overview-main">
-                <h1 class="tools-page-title" data-i18n="playbooks.indexTitle">Stories</h1>
-                <p class="tools-page-lead" data-i18n="playbooks.indexLead">
-                    Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.
-                </p>
+                @if (config('playbooks.overview.show_title'))
+                    <h1
+                        class="tools-page-title"
+                        @if (filled(config('playbooks.overview.title_en')) || filled(config('playbooks.overview.title_de')))
+                            data-text-de="{{ config('playbooks.overview.title_de') ?? config('playbooks.overview.title_en') }}"
+                            data-text-en="{{ config('playbooks.overview.title_en') ?? config('playbooks.overview.title_de') }}"
+                        @else
+                            data-i18n="playbooks.indexTitle"
+                        @endif
+                    >{{ config('playbooks.overview.title_en') ?? 'Stories' }}</h1>
+                @endif
+
+                @if (config('playbooks.overview.show_lead'))
+                    <p
+                        class="tools-page-lead"
+                        @if (filled(config('playbooks.overview.lead_en')) || filled(config('playbooks.overview.lead_de')))
+                            data-text-de="{{ config('playbooks.overview.lead_de') ?? config('playbooks.overview.lead_en') }}"
+                            data-text-en="{{ config('playbooks.overview.lead_en') ?? config('playbooks.overview.lead_de') }}"
+                        @else
+                            data-i18n="playbooks.indexLead"
+                        @endif
+                    >Step-by-step governance guides — from idea to implementation.</p>
+                @endif
 
                 <div class="tools-overview-toolbar">
                     @if (count($seriesList) > 0)
