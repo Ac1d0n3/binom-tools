@@ -7,17 +7,21 @@
     min-width: 0;
 }
 
-/* ── Chrome: mode toggle + grouped drawers ── */
+/* ── Chrome: mode toggle above, drawers 50/50 ── */
 .prompt-studio__chrome {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
     padding: 0.85rem 1rem;
     border-radius: 12px;
     border: 1px solid var(--tools-card-border, var(--tools-border, rgba(255, 255, 255, 0.08)));
     background: var(--tools-card-background, var(--tools-panel-bg, rgba(255, 255, 255, 0.04)));
+}
+
+.prompt-studio__chrome-top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .prompt-studio__mode-toggle {
@@ -45,9 +49,9 @@
 
 .prompt-studio__chrome-drawers {
     display: grid;
-    grid-template-columns: repeat(2, minmax(200px, 1fr));
-    gap: 0.65rem;
-    flex: 1 1 420px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    width: 100%;
     min-width: 0;
 }
 
@@ -141,7 +145,7 @@
 /* ── Two-column workspace: builder | preview ── */
 .prompt-studio__workspace {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(300px, 36%);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     align-items: start;
     min-width: 0;
@@ -190,6 +194,27 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem 1.15rem 1.15rem;
+}
+
+.prompt-studio__builder-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--tools-border, rgba(255, 255, 255, 0.08));
+}
+
+.prompt-studio__builder-controls:empty {
+    display: none;
+}
+
+.prompt-studio__builder-controls:not(:has(:not([hidden]))) {
+    padding: 0;
+    border-bottom: 0;
+}
+
+.prompt-studio__builder-controls:has(.prompt-studio__builder-toolbar) {
+    gap: 0.75rem;
 }
 
 .prompt-studio__subpanel-header h3 {
@@ -472,12 +497,42 @@
 .prompt-studio__task-hint,
 .prompt-studio__workflow-suggestion {
     margin: 0;
-    padding: 0.65rem 0.85rem;
-    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
     background: color-mix(in srgb, var(--theme-color-info, #3b82f6) 10%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-color-info, #3b82f6) 25%, transparent);
     font-size: 0.875rem;
     line-height: 1.45;
+}
+
+.prompt-studio__workflow-suggestion {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+}
+
+.prompt-studio__workflow-suggestion-content {
+    flex: 1 1 12rem;
+    min-width: 0;
+}
+
+.prompt-studio__workflow-suggestion-title {
+    margin: 0;
+    font-weight: 600;
+    color: var(--content-font-color);
+}
+
+.prompt-studio__workflow-suggestion-desc {
+    margin: 0.3rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--bn-color-text-secondary);
+    line-height: 1.4;
+}
+
+.prompt-studio__workflow-suggestion .tools-btn {
+    flex-shrink: 0;
 }
 
 .prompt-studio__builder-toolbar {
@@ -486,7 +541,7 @@
     align-items: center;
     gap: 0.65rem;
     margin: 0;
-    padding: 0.55rem 0.65rem;
+    padding: 0.65rem 0.75rem;
     border-radius: 10px;
     border: 1px solid var(--base-border-color, var(--tools-border, rgba(255, 255, 255, 0.1)));
     background: var(--surface-background-color);
@@ -784,6 +839,27 @@
     border-radius: 10px;
     border: 1px solid var(--base-border-color, var(--tools-border, rgba(255, 255, 255, 0.1)));
     background: color-mix(in srgb, var(--surface-background-color, #fff) 4%, transparent);
+}
+
+.prompt-studio__chain-panel--open {
+    border-color: color-mix(in srgb, var(--theme-color-info, #3b82f6) 45%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-info, #3b82f6) 6%, var(--surface-background-color));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-color-info, #3b82f6) 12%, transparent);
+}
+
+.prompt-studio__chain-panel--focus {
+    animation: prompt-studio-chain-focus 1.6s ease;
+}
+
+@keyframes prompt-studio-chain-focus {
+    0%,
+    100% {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-color-info, #3b82f6) 12%, transparent);
+    }
+
+    35% {
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--theme-color-info, #3b82f6) 28%, transparent);
+    }
 }
 
 .prompt-studio__chain-learning {

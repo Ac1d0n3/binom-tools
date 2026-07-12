@@ -18,6 +18,37 @@ import {
 /** @typedef {import('./config-validator.js').PromptTemplateDef} PromptTemplateDef */
 
 /**
+ * Resolve config base to a same-origin path (robust for subfolder deploys and legacy asset() URLs).
+ * @param {string | undefined} rawBase
+ * @param {string} [appBase]
+ * @returns {string}
+ */
+export function resolveConfigBase(rawBase, appBase = '') {
+    const appRoot = appBase.replace(/\/$/, '');
+    const fallback = `${appRoot}/prompt-studio/config`;
+
+    const raw = rawBase?.trim();
+    if (!raw) {
+        return fallback;
+    }
+
+    if (/^https?:\/\//i.test(raw)) {
+        try {
+            const pathname = new URL(raw).pathname.replace(/\/$/, '');
+            return pathname || fallback;
+        } catch {
+            return fallback;
+        }
+    }
+
+    if (raw.startsWith('/')) {
+        return raw.replace(/\/$/, '');
+    }
+
+    return `${appRoot}/${raw}`.replace(/\/$/, '');
+}
+
+/**
  * @param {string} base
  * @param {string} path
  * @returns {string}

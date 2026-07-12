@@ -12,10 +12,35 @@ class PromptStudioPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('prompt-studio-app', false);
+        $response->assertSee('data-config-base="'.prompt_studio_config_path().'"', false);
         $response->assertSee('tools-workflow-flowchart', false);
         $response->assertSee('workflow.setupLabel.ai-prompt-workflow', false);
         $response->assertSee('ps-role-select', false);
         $response->assertSee('ps-sanitize-btn', false);
+    }
+
+    public function test_prompt_studio_config_manifest_is_public(): void
+    {
+        $response = $this->get('/prompt-studio/config/manifest.json');
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/json; charset=UTF-8');
+
+        $manifestPath = public_path('prompt-studio/config/manifest.json');
+        $this->assertFileExists($manifestPath);
+
+        $data = json_decode((string) file_get_contents($manifestPath), true);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('version', $data);
+        $this->assertArrayHasKey('files', $data);
+    }
+
+    public function test_prompt_studio_config_chain_file_is_public(): void
+    {
+        $response = $this->get('/prompt-studio/config/chains/business-visual.json');
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/json; charset=UTF-8');
     }
 
     public function test_governance_sanitizer_has_workflow_and_back_button(): void

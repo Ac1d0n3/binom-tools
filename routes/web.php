@@ -10,6 +10,7 @@ use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
+use App\Http\Controllers\Tools\PromptStudioConfigController;
 use App\Http\Controllers\Tools\PromptStudioController;
 use App\Http\Controllers\Tools\PiiPolicyGeneratorController;
 use App\Http\Controllers\Tools\PiiRecommendGeneratorController;
@@ -21,6 +22,12 @@ use Illuminate\Support\Facades\Route;
 
 $registerRoutes = static function (bool $localized): void {
     $name = static fn (string $base): string => $localized ? "localized.{$base}" : $base;
+
+    if (! $localized) {
+        Route::get('/prompt-studio/config/{file}', [PromptStudioConfigController::class, 'show'])
+            ->where('file', '.+')
+            ->name('prompt-studio.config');
+    }
 
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));

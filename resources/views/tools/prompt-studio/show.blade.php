@@ -14,11 +14,13 @@
         <div class="tools-page-stack">
             <x-tools.workflow-nav tool-id="prompt-studio" />
 
-            <div id="prompt-studio-app" class="prompt-studio prompt-studio--regular" data-config-base="{{ asset('prompt-studio/config') }}">
+            <div id="prompt-studio-app" class="prompt-studio prompt-studio--regular" data-config-base="{{ prompt_studio_config_path() }}">
                 <div class="prompt-studio__chrome">
-                    <div class="prompt-studio__mode-toggle" role="group" aria-label="UI mode">
-                        <button type="button" class="prompt-studio__mode-btn prompt-studio__mode-btn--active" data-ps-mode="regular" data-i18n="promptStudio.mode.regular">Regular</button>
-                        <button type="button" class="prompt-studio__mode-btn" data-ps-mode="tech" data-i18n="promptStudio.mode.tech">Tech</button>
+                    <div class="prompt-studio__chrome-top">
+                        <div class="prompt-studio__mode-toggle" role="group" aria-label="UI mode">
+                            <button type="button" class="prompt-studio__mode-btn prompt-studio__mode-btn--active" data-ps-mode="regular" data-i18n="promptStudio.mode.regular">Regular</button>
+                            <button type="button" class="prompt-studio__mode-btn" data-ps-mode="tech" data-i18n="promptStudio.mode.tech">Tech</button>
+                        </div>
                     </div>
 
                     <div class="prompt-studio__chrome-drawers">
@@ -98,11 +100,12 @@
                             </div>
                         </header>
 
-                        <div id="ps-bridge-banner" class="prompt-studio__bridge-banner" hidden role="status"></div>
-                        <div id="ps-task-change-hint" class="prompt-studio__task-hint" hidden role="status"></div>
-                        <div id="ps-workflow-suggestion" class="prompt-studio__workflow-suggestion" hidden></div>
+                        <div class="prompt-studio__builder-controls">
+                            <div id="ps-bridge-banner" class="prompt-studio__bridge-banner" hidden role="status"></div>
+                            <div id="ps-task-change-hint" class="prompt-studio__task-hint" hidden role="status"></div>
+                            <div id="ps-workflow-suggestion" class="prompt-studio__workflow-suggestion" hidden></div>
 
-                        <div class="prompt-studio__builder-toolbar">
+                            <div class="prompt-studio__builder-toolbar">
                             <div class="prompt-studio__toolbar-group" data-ps-toolbar="edit">
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-undo-btn" disabled data-i18n="promptStudio.undo">Undo</button>
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-redo-btn" disabled data-i18n="promptStudio.redo">Redo</button>
@@ -120,6 +123,21 @@
                         </div>
 
                         <div class="prompt-studio__builder-body">
+                            <div id="ps-chain-panel" class="prompt-studio__chain-panel" hidden>
+                                <header class="prompt-studio__subpanel-header">
+                                    <h3 data-i18n="promptStudio.chainTitle">Prompt chain</h3>
+                                    <p data-i18n="promptStudio.chain.lead">Multi-step workflow — copy and anonymize each step separately.</p>
+                                </header>
+                                <div id="ps-chain-learning" class="prompt-studio__chain-learning" hidden></div>
+                                <div id="ps-chain-steps"></div>
+                                <div class="prompt-studio__chain-actions">
+                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-prev-btn" data-i18n="promptStudio.chain.prev">Previous step</button>
+                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-next-btn" data-i18n="promptStudio.chain.next">Next step</button>
+                                    <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-chain-add-btn" data-i18n="promptStudio.chainAdd">+ Step</button>
+                                    <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-chain-custom-btn" data-i18n="promptStudio.chain.custom">+ Custom block</button>
+                                </div>
+                            </div>
+
                             <section class="prompt-studio__form-section">
                                 <div class="prompt-studio__builder-fields prompt-studio__builder-fields--row">
                                     <label class="tools-field">
@@ -168,21 +186,6 @@
                                     </div>
                                 </div>
                             </section>
-
-                            <div id="ps-chain-panel" class="prompt-studio__chain-panel" hidden>
-                                <header class="prompt-studio__subpanel-header">
-                                    <h3 data-i18n="promptStudio.chainTitle">Prompt chain</h3>
-                                    <p data-i18n="promptStudio.chain.lead">Multi-step workflow — copy and anonymize each step separately.</p>
-                                </header>
-                                <div id="ps-chain-learning" class="prompt-studio__chain-learning" hidden></div>
-                                <div id="ps-chain-steps"></div>
-                                <div class="prompt-studio__chain-actions">
-                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-prev-btn" data-i18n="promptStudio.chain.prev">Previous step</button>
-                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-next-btn" data-i18n="promptStudio.chain.next">Next step</button>
-                                    <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-chain-add-btn" data-i18n="promptStudio.chainAdd">+ Step</button>
-                                    <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-chain-custom-btn" data-i18n="promptStudio.chain.custom">+ Custom block</button>
-                                </div>
-                            </div>
 
                             <div id="ps-continue-panel" class="prompt-studio__continue-panel prompt-studio__toolbar-group--tech" hidden>
                                 <h3 data-i18n="promptStudio.continueTitle">Conversation history</h3>

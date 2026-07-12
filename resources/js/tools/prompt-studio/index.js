@@ -3,7 +3,7 @@ import { getLocale, applyShellLabels } from '../../locale.js';
 import { applyPromptStudioLabels, t } from './labels.js';
 import { resolveLocalizedLabel } from './localized-label.js';
 import { applyHowtoLabels } from './howto-labels.js';
-import { loadConfig, getTasksForRole, getParametersForTask } from './config-loader.js';
+import { loadConfig, resolveConfigBase, getTasksForRole, getParametersForTask } from './config-loader.js';
 import { createStateManager } from './state-manager.js';
 import { WorkspaceManager } from './workspace-manager.js';
 import { TemplateStore } from './template-store.js';
@@ -36,7 +36,10 @@ if (!app) {
     throw new Error('Prompt Studio root element not found');
 }
 
-const configBase = app.dataset.configBase ?? '/prompt-studio/config';
+const configBase = resolveConfigBase(
+    app.dataset.configBase,
+    document.documentElement.dataset.appBase ?? '',
+);
 
 const roleSelect = /** @type {HTMLSelectElement} */ (document.getElementById('ps-role-select'));
 const taskSelect = /** @type {HTMLSelectElement} */ (document.getElementById('ps-task-select'));
@@ -162,6 +165,21 @@ function applySongForbiddenDefaults() {
     }
 }
 
+function escapeHtml(value) {
+    return value
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+}
+
+function focusChainPanel() {
+    if (!chainPanel || chainPanel.hidden) return;
+    chainPanel.classList.add('prompt-studio__chain-panel--focus');
+    chainPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    window.setTimeout(() => chainPanel.classList.remove('prompt-studio__chain-panel--focus'), 1600);
+}
+
 function renderBuilderHints() {
     if (!config || !stateManager) return;
     const locale = currentLocale();
@@ -184,16 +202,21 @@ function renderBuilderHints() {
         const chain = workflowId ? config.chains.find((c) => c.id === workflowId) : null;
         if (chain) {
             const name = resolveLocalizedLabel(chain.label, locale, chain.id);
+            const description = resolveLocalizedLabel(chain.description, locale, '');
             workflowSuggestion.hidden = false;
             workflowSuggestion.innerHTML = `
-                <span>${tr('promptStudio.workflowSuggest', { name })}</span>
-                <button type="button" class="tools-btn tools-btn--sm" id="ps-workflow-start-btn">${tr('promptStudio.workflowStart')}</button>
+                <div class="prompt-studio__workflow-suggestion-content">
+                    <p class="prompt-studio__workflow-suggestion-title">${escapeHtml(tr('promptStudio.workflowSuggest', { name }))}</p>
+                    ${description ? `<p class="prompt-studio__workflow-suggestion-desc">${escapeHtml(description)}</p>` : ''}
+                </div>
+                <button type="button" class="tools-btn tools-btn--sm tools-btn--primary" id="ps-workflow-start-btn">${escapeHtml(tr('promptStudio.workflowStart'))}</button>
             `;
             document.getElementById('ps-workflow-start-btn')?.addEventListener('click', () => {
                 chainManager?.loadChain(chain.id, locale);
                 chainManager?.open();
                 syncChainStepToBuilder();
                 renderAll();
+                focusChainPanel();
             });
         } else {
             workflowSuggestion.hidden = true;
@@ -318,6 +341,7 @@ function renderWorkspace() {
 function renderChainPanel() {
     if (!chainManager || !chainSteps || !chainPanel) return;
     chainPanel.hidden = !chainManager.isOpen;
+    chainPanel.classList.toggle('prompt-studio__chain-panel--open', chainManager.isOpen);
     if (!chainManager.isOpen) return;
     chainSteps.innerHTML = chainManager.renderStepsHtml(currentLocale());
     if (chainLearning) {
@@ -378,14 +402,6 @@ function renderAll() {
     renderWorkspace();
     renderChainPanel();
     renderContinuePanel();
-}
-
-function escapeHtml(value) {
-    return value
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;');
 }
 
 function handleBridgeReturn() {
@@ -486,6 +502,7 @@ function bindEvents() {
             chainManager?.loadChain(workflowId, currentLocale());
             syncChainStepToBuilder();
             renderAll();
+            focusChainPanel();
             return;
         }
 
@@ -591,6 +608,7 @@ function bindEvents() {
     document.getElementById('ps-chain-btn')?.addEventListener('click', () => {
         chainManager?.toggleOpen();
         renderChainPanel();
+        if (chainManager?.isOpen) focusChainPanel();
     });
 
     chainSteps?.addEventListener('click', async (event) => {
@@ -871,7 +889,13 @@ async function init() {
 
 init().catch((error) => {
     console.error('Prompt Studio failed to initialize', error);
-    if (app) {
-        app.innerHTML = `<p class="tools-validation-banner tools-validation-banner--has-errors">${tr('promptStudio.validation.configFailed')}</p>`;
-    }
+    if (!app) return;
+    const detail = error instanceof Error ? error.message : String(error);
+    app.innerHTML = `
+        <div class="tools-validation-banner tools-validation-banner--has-errors">
+            <p>${escapeHtml(tr('promptStudio.validation.configFailed'))}</p>
+            <p class="tools-panel-meta">${escapeHtml(detail)}</p>
+            <p class="tools-panel-meta">${escapeHtml(tr('promptStudio.validation.configFailedHint', { base: configBase }))}</p>
+        </div>
+    `;
 });

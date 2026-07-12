@@ -113,6 +113,7 @@ export const promptStudioLabels = {
         'promptStudio.validation.missingRequired': 'Bitte alle Pflichtfelder ausfüllen.',
         'promptStudio.validation.importFailed': 'Import fehlgeschlagen.',
         'promptStudio.validation.configFailed': 'Prompt-Studio-Konfiguration konnte nicht geladen werden.',
+        'promptStudio.validation.configFailedHint': 'Pfad: {{base}} — prüfe public/prompt-studio/config und APP_URL auf dem Server.',
         'promptStudio.empty.workspace': 'Keine Einträge',
     },
     en: {
@@ -224,6 +225,7 @@ export const promptStudioLabels = {
         'promptStudio.validation.missingRequired': 'Please fill in all required fields.',
         'promptStudio.validation.importFailed': 'Import failed.',
         'promptStudio.validation.configFailed': 'Failed to load Prompt Studio configuration.',
+        'promptStudio.validation.configFailedHint': 'Path: {{base}} — verify public/prompt-studio/config and APP_URL on the server.',
         'promptStudio.empty.workspace': 'No items',
     },
 };

@@ -11,6 +11,19 @@ if (! function_exists('app_base_path')) {
     }
 }
 
+if (! function_exists('prompt_studio_config_path')) {
+    /**
+     * Same-origin path to Prompt Studio JSON config (works with subfolder deploys).
+     */
+    function prompt_studio_config_path(): string
+    {
+        $base = app_base_path();
+        $prefix = $base !== '' ? rtrim($base, '/') : '';
+
+        return $prefix.'/prompt-studio/config';
+    }
+}
+
 if (! function_exists('current_locale')) {
     function current_locale(): string
     {
