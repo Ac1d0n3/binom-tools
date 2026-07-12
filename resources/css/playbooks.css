@@ -51,7 +51,10 @@
 }
 
 .playbook-detail__hero {
+    /* 21.25rem = 340px max; scales with viewport height, floor ~14rem */
+    --playbook-hero-height: clamp(14rem, 34vh, 21.25rem);
     overflow: hidden;
+    height: var(--playbook-hero-height);
     margin-inline: -1.5rem;
     margin-bottom: 1rem;
     border: 0;
@@ -63,8 +66,7 @@
 .playbook-detail__hero-image {
     display: block;
     width: 100%;
-    height: auto;
-    max-height: min(42vh, 420px);
+    height: var(--playbook-hero-height);
     object-fit: cover;
     object-position: center;
     border: 0;
@@ -639,11 +641,9 @@ a.playbook-toc__title:hover {
     }
 
     .playbook-detail__hero {
+        /* 15.625rem = 250px max */
+        --playbook-hero-height: clamp(11rem, 26vh, 15.625rem);
         margin-inline: -1rem;
-    }
-
-    .playbook-detail__hero-image {
-        max-height: min(36vh, 240px);
     }
 
     .playbook-detail__actions .tools-btn {
