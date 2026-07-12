@@ -44,6 +44,7 @@ final class PlaybookCodeFenceParser
             'sh', 'shell' => 'bash',
             'yml' => 'yaml',
             'md' => 'markdown',
+            'env' => 'properties',
             default => $language !== '' ? strtolower($language) : 'text',
         };
     }

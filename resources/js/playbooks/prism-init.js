@@ -1,6 +1,8 @@
+import './prism-setup.js';
 import Prism from 'prismjs';
 
 import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-markup-templating';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
@@ -9,6 +11,7 @@ import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-properties';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-markdown';
 
@@ -144,13 +147,35 @@ function highlightPlaybookCode(root) {
     });
 }
 
+/** @type {WeakSet<HTMLElement>} */
+const prismInitializedRoots = new WeakSet();
+
+/**
+ * @param {ParentNode} root
+ */
+function highlightVisiblePanels(root) {
+    const panels = root.querySelectorAll('[data-playbook-locale-panel]:not([hidden])');
+
+    if (panels.length > 0) {
+        panels.forEach((panel) => highlightPlaybookCode(panel));
+    } else {
+        highlightPlaybookCode(root);
+    }
+}
+
 /**
  * @param {ParentNode} root
  */
 export function initPlaybookPrism(root) {
-    highlightPlaybookCode(root);
+    highlightVisiblePanels(root);
+
+    if (prismInitializedRoots.has(root)) {
+        return;
+    }
+
+    prismInitializedRoots.add(root);
 
     window.addEventListener('binom-tools:color-scheme', () => {
-        highlightPlaybookCode(root);
+        highlightVisiblePanels(root);
     });
 }

@@ -15,4 +15,11 @@ class PlaybookCodeFenceParserTest extends TestCase
         $this->assertSame('PlaybookRepository.php', $meta['title']);
         $this->assertSame('3-6', $meta['highlight']);
     }
+
+    public function test_normalizes_env_fence_to_properties(): void
+    {
+        $meta = PlaybookCodeFenceParser::parse('env');
+
+        $this->assertSame('properties', $meta['language']);
+    }
 }

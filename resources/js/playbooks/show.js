@@ -38,7 +38,6 @@ export function initPlaybookDetail(root) {
 
     window.addEventListener('binom-tools:playbook-locale', () => {
         initActiveLocalePanel(root);
-        initPlaybookReadingPosition(root);
 
         try {
             initPlaybookPrism(root);

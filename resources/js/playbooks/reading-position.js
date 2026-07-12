@@ -2,6 +2,9 @@ import { getScrollContainer, getScrollTop, scrollToAnchor } from './toc';
 
 const STORAGE_PREFIX = 'binom-tools-playbook-position:';
 
+/** @type {WeakSet<HTMLElement>} */
+const initializedRoots = new WeakSet();
+
 function storageKey(slug, locale) {
     return `${STORAGE_PREFIX}${slug}:${locale}`;
 }
@@ -25,14 +28,14 @@ function getActivePanel(root) {
 
 function currentAnchorFromViewport(panel) {
     const headings = [...panel.querySelectorAll('.playbook-prose h2[id], .playbook-prose h3[id]')];
-    const scrollContainer = getScrollContainer();
+    const scrollContainer = getScrollContainer(panel);
     const containerTop = scrollContainer === window ? 0 : scrollContainer.getBoundingClientRect().top;
-    const marker = getScrollTop() + 24;
+    const marker = getScrollTop(scrollContainer) + 24;
 
     let active = null;
 
     headings.forEach((heading) => {
-        const top = heading.getBoundingClientRect().top - containerTop + getScrollTop();
+        const top = heading.getBoundingClientRect().top - containerTop + getScrollTop(scrollContainer);
 
         if (top <= marker) {
             active = heading.id;
@@ -66,7 +69,7 @@ function restorePosition(root, panel, slug, locale) {
     }
 
     if (typeof saved.scrollY === 'number') {
-        const container = getScrollContainer();
+        const container = getScrollContainer(panel);
 
         if (container === window) {
             window.scrollTo({ top: saved.scrollY, behavior: 'auto' });
@@ -92,6 +95,12 @@ export function initPlaybookReadingPosition(root) {
 
     restoreActive();
 
+    if (initializedRoots.has(root)) {
+        return;
+    }
+
+    initializedRoots.add(root);
+
     let saveTimer = null;
 
     const save = () => {
@@ -102,12 +111,17 @@ export function initPlaybookReadingPosition(root) {
 
         writePosition(slug, locale, {
             anchor: currentAnchorFromViewport(panel),
-            scrollY: getScrollTop(),
+            scrollY: getScrollTop(getScrollContainer(panel)),
         });
     };
 
-    const container = getScrollContainer();
-    const scrollTarget = container === window ? window : container;
+    const bindScrollListener = () => {
+        const panel = getActivePanel(root);
+        const container = panel ? getScrollContainer(panel) : window;
+        return container === window ? window : container;
+    };
+
+    const scrollTarget = bindScrollListener();
 
     scrollTarget.addEventListener(
         'scroll',
