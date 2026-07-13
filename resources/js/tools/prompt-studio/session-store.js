@@ -34,6 +34,7 @@ import { createDefaultDraft, normalizeDraft, STORAGE_KEYS } from './storage.js';
  * @property {PromptSessionChain} activeChain
  * @property {PromptSessionVariants} variants
  * @property {string[]} forbiddenSongWords
+ * @property {string[]} forbiddenArtistNames
  */
 
 export const SESSION_STORAGE_KEY = 'binom-tools-prompt-studio-session';
@@ -67,6 +68,7 @@ export function createDefaultSession() {
         activeChain: createDefaultChain(),
         variants: createDefaultVariants(),
         forbiddenSongWords: [],
+        forbiddenArtistNames: [],
     };
 }
 
@@ -128,6 +130,9 @@ export function normalizeSession(raw) {
         forbiddenSongWords: Array.isArray(obj.forbiddenSongWords)
             ? obj.forbiddenSongWords.map(String).filter(Boolean)
             : [],
+        forbiddenArtistNames: Array.isArray(obj.forbiddenArtistNames)
+            ? obj.forbiddenArtistNames.map(String).filter(Boolean)
+            : [],
     };
 }
 
@@ -165,6 +170,7 @@ export function saveSession(patch, source = 'auto') {
         activeChain: patch.activeChain ? { ...base.activeChain, ...patch.activeChain } : base.activeChain,
         variants: patch.variants ? { ...base.variants, ...patch.variants } : base.variants,
         forbiddenSongWords: patch.forbiddenSongWords ?? base.forbiddenSongWords,
+        forbiddenArtistNames: patch.forbiddenArtistNames ?? base.forbiddenArtistNames,
     });
 
     const meta = { savedAt: new Date().toISOString(), source };
@@ -226,6 +232,16 @@ export function loadForbiddenSongWords() {
     if (session && 'data' in session) {
         const words = session.data.forbiddenSongWords;
         return Array.isArray(words) ? words.map(String).filter(Boolean) : [];
+    }
+    return [];
+}
+
+/** @returns {string[]} */
+export function loadForbiddenArtistNames() {
+    const session = loadSession();
+    if (session && 'data' in session) {
+        const names = session.data.forbiddenArtistNames;
+        return Array.isArray(names) ? names.map(String).filter(Boolean) : [];
     }
     return [];
 }

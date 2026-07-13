@@ -17,6 +17,25 @@ class LandingCatalogTest extends TestCase
         $this->assertSame('governance-ai-sanitizer', $latest[0]['id'] ?? null);
     }
 
+    public function test_latest_stories_preview_uses_catalog_entries_only(): void
+    {
+        $repository = app(PlaybookRepository::class);
+        $catalog = app(LandingCatalog::class);
+        $latest = $catalog->latestStories();
+
+        $this->assertLessThanOrEqual(LandingCatalog::STORIES_PREVIEW_LIMIT, count($latest));
+
+        $missingParts = collect($latest)
+            ->filter(fn (array $item): bool => ($item['seriesId'] ?? null) === 'missing-pieces')
+            ->pluck('seriesPart')
+            ->all();
+
+        $this->assertLessThanOrEqual(1, count($missingParts));
+        if ($missingParts !== []) {
+            $this->assertSame(1, $missingParts[0]);
+        }
+    }
+
     public function test_latest_stories_sorts_by_modified_at_descending(): void
     {
         $catalog = app(LandingCatalog::class);

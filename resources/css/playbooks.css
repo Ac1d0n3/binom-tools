@@ -512,6 +512,145 @@
 
 .playbook-prose__image--diagram {
     object-fit: contain;
+    cursor: zoom-in;
+}
+
+.playbook-prose__image--diagram:focus-visible {
+    outline: 2px solid var(--theme-color-primary);
+    outline-offset: 3px;
+}
+
+body.playbook-lightbox-open {
+    overflow: hidden;
+}
+
+.playbook-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+
+.playbook-lightbox[hidden] {
+    display: none;
+}
+
+.playbook-lightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, #0b1220 72%, transparent);
+    backdrop-filter: blur(2px);
+}
+
+.playbook-lightbox__panel {
+    position: relative;
+    z-index: 1;
+    width: min(96vw, 72rem);
+    max-height: calc(100vh - 2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.playbook-lightbox__figure {
+    margin: 0;
+    width: 100%;
+    max-height: calc(100vh - 8rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.playbook-lightbox__image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 10rem);
+    object-fit: contain;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, #ffffff 18%, var(--base-border-color));
+    background: var(--content-background-color);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+}
+
+.playbook-lightbox__caption {
+    margin: 0;
+    max-width: 48rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: #f4f7fb;
+    text-align: center;
+}
+
+.playbook-lightbox__counter {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.playbook-lightbox__close,
+.playbook-lightbox__nav {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid color-mix(in srgb, #ffffff 24%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, #0b1220 55%, transparent);
+    color: #ffffff;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.playbook-lightbox__close:hover,
+.playbook-lightbox__nav:hover {
+    background: color-mix(in srgb, #ffffff 16%, transparent);
+    border-color: color-mix(in srgb, #ffffff 42%, transparent);
+}
+
+.playbook-lightbox__close {
+    top: -0.25rem;
+    right: 0;
+}
+
+.playbook-lightbox__nav--prev {
+    left: -0.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.playbook-lightbox__nav--next {
+    right: -0.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+@media (max-width: 768px) {
+    .playbook-lightbox__panel {
+        width: 100%;
+    }
+
+    .playbook-lightbox__nav--prev {
+        left: 0.25rem;
+    }
+
+    .playbook-lightbox__nav--next {
+        right: 0.25rem;
+    }
+
+    .playbook-lightbox__close {
+        top: 0.25rem;
+        right: 0.25rem;
+    }
 }
 
 .playbook-prose__figure-caption {

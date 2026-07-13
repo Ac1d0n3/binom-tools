@@ -134,6 +134,8 @@ class PlaybookPagesTest extends TestCase
         $response->assertDontSee('src="/images/playbooks/bridge-solution-en.png"', false);
         $response->assertSee('playbook-prose__figure', false);
         $response->assertSee('playbook-prose__image--diagram', false);
+        $response->assertSee('data-playbook-lightbox-trigger="true"', false);
+        $response->assertDontSee('playbook-detail__hero-image" data-playbook-lightbox-trigger', false);
         $response->assertSee('Andere Wege zum Ziel');
         $response->assertSee('Other paths to the goal');
         $response->assertSee('binom-tools');

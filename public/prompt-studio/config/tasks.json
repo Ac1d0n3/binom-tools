@@ -104,7 +104,7 @@
       "label": { "de": "Song entwickeln", "en": "Develop song" },
       "description": { "de": "Song-Konzept, Struktur und Stimmung entwickeln", "en": "Develop song concept, structure, and mood" },
       "roleIds": ["songwriter", "music-producer"],
-      "parameterIds": ["genre", "bpm", "story", "mood", "instruments", "voice", "forbiddenLyricsWords", "previousOutput", "conversationHistory"],
+      "parameterIds": ["genre", "bpm", "story", "mood", "instruments", "voice", "forbiddenLyricsWords", "forbiddenArtistNames", "stripArtistNames", "previousOutput", "conversationHistory"],
       "templateId": "song-develop",
       "modelHints": ["chatgpt", "claude", "suno"]
     },
@@ -113,7 +113,7 @@
       "label": { "de": "Songtext", "en": "Lyrics" },
       "description": { "de": "Singbare Lyrics mit klarer Struktur", "en": "Singable lyrics with clear structure" },
       "roleIds": ["songwriter"],
-      "parameterIds": ["genre", "story", "mood", "voice", "forbiddenLyricsWords", "previousOutput", "conversationHistory"],
+      "parameterIds": ["genre", "story", "mood", "voice", "forbiddenLyricsWords", "forbiddenArtistNames", "stripArtistNames", "previousOutput", "conversationHistory"],
       "templateId": "lyrics",
       "modelHints": ["chatgpt", "claude", "suno"]
     },
@@ -122,7 +122,7 @@
       "label": { "de": "Hook", "en": "Hook" },
       "description": { "de": "Einprägsamen Hook und Chorus entwickeln", "en": "Develop a memorable hook and chorus" },
       "roleIds": ["songwriter", "music-producer"],
-      "parameterIds": ["genre", "mood", "story", "voice", "forbiddenLyricsWords", "previousOutput", "conversationHistory"],
+      "parameterIds": ["genre", "mood", "story", "voice", "forbiddenLyricsWords", "forbiddenArtistNames", "stripArtistNames", "previousOutput", "conversationHistory"],
       "templateId": "hook",
       "modelHints": ["chatgpt", "claude", "suno"]
     },
@@ -130,7 +130,7 @@
       "id": "suno-style",
       "label": { "de": "Suno Style", "en": "Suno style" },
       "roleIds": ["music-producer"],
-      "parameterIds": ["genre", "bpm", "mood", "instruments", "voice", "previousOutput"],
+      "parameterIds": ["genre", "bpm", "mood", "instruments", "voice", "forbiddenArtistNames", "stripArtistNames", "previousOutput"],
       "templateId": "suno-style",
       "modelHints": ["suno"]
     },
@@ -138,7 +138,7 @@
       "id": "album",
       "label": { "de": "Album", "en": "Album" },
       "roleIds": ["songwriter", "music-producer"],
-      "parameterIds": ["genre", "bpm", "story", "mood", "instruments", "previousOutput", "conversationHistory"],
+      "parameterIds": ["genre", "bpm", "story", "mood", "instruments", "forbiddenArtistNames", "stripArtistNames", "previousOutput", "conversationHistory"],
       "templateId": "album",
       "modelHints": ["chatgpt", "claude", "suno"]
     },

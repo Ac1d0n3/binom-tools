@@ -28,6 +28,21 @@ final readonly class Playbook
         return $this->publishedAt ?? $this->modifiedAt;
     }
 
+    /**
+     * Timestamp for overview sorting (also exposed as data-sort-date in cards).
+     * Series parts get a small offset so equal deploy/file times still sort by part number.
+     */
+    public function indexSortTimestamp(): int
+    {
+        $timestamp = $this->sortDate()->getTimestamp();
+
+        if ($this->seriesPart !== null && $this->seriesPart > 0) {
+            $timestamp += $this->seriesPart;
+        }
+
+        return $timestamp;
+    }
+
     public function variant(string $locale): ?PlaybookLocaleVariant
     {
         return $this->variants[$locale] ?? null;
@@ -70,6 +85,7 @@ final readonly class Playbook
             'order' => $this->order,
             'modifiedAt' => $this->modifiedAt,
             'sortDate' => $this->sortDate(),
+            'indexSortTimestamp' => $this->indexSortTimestamp(),
             'locales' => $locales,
             'tags' => $tags,
             'seriesId' => $this->seriesId,

@@ -139,7 +139,7 @@
         "system": "You are an experienced {{roleLabel}}. Create compelling songs with strong structure and emotional impact.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Develop a complete song concept for {{taskLabel}}.",
-        "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}",
+        "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
         "output": "Deliver:\n1. Song title and concept\n2. Verse/chorus/bridge structure\n3. Lyrical themes and hook ideas\n4. Production notes"
       }
     },
@@ -150,7 +150,7 @@
         "system": "You are an experienced {{roleLabel}}. Write evocative, singable lyrics with clear structure.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Write lyrics for {{taskLabel}}.",
-        "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}",
+        "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
         "output": "Deliver complete lyrics with:\n1. Verse 1\n2. Pre-chorus (if applicable)\n3. Chorus\n4. Verse 2\n5. Bridge\n6. Final chorus / outro"
       }
     },
@@ -161,7 +161,7 @@
         "system": "You are an experienced {{roleLabel}}. Create memorable, catchy hooks.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a hook for {{taskLabel}}.",
-        "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}",
+        "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
         "output": "Deliver:\n1. Three hook variations (melodic + lyrical)\n2. Recommended primary hook with rationale\n3. Suggested placement in song structure"
       }
     },
@@ -169,11 +169,11 @@
       "id": "suno-style",
       "label": { "de": "Suno Style", "en": "Suno style" },
       "sections": {
-        "system": "You are an experienced {{roleLabel}}. Create Suno-optimized style prompts.",
+        "system": "You are an experienced {{roleLabel}}. Create Suno-optimized style prompts without naming real artists or bands.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a Suno style prompt for {{taskLabel}}.",
-        "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}",
-        "output": "Deliver a compact Suno style tag string (max 120 chars) plus optional extended style description."
+        "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}{{#if forbiddenArtistNames}}\nNever reference these artists: {{forbiddenArtistNames}}{{/if}}\nUse descriptive tags only — no real artist or band names.",
+        "output": "Deliver a compact Suno style tag string (max 120 chars) plus optional extended style description. Never include real artist or band names."
       }
     },
     {

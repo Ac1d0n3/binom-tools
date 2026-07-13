@@ -14,6 +14,7 @@ import {
 } from './field-renderer.js';
 import { renderSectionsHtml, bindSectionEditors } from './prompt-sections.js';
 import { PiiPreview } from './pii-preview.js';
+import { postProcessCompiledPrompt } from './artist-name-stripper.js';
 import { ChainManager } from './chain-manager.js';
 import { ContinueManager } from './continue-manager.js';
 import { VariantsManager } from './variants-manager.js';
@@ -25,6 +26,7 @@ import {
     isLibraryDrawerOpen,
     setLibraryDrawerOpen,
     loadForbiddenSongWords,
+    loadForbiddenArtistNames,
     debouncedSaveSession,
 } from './session-store.js';
 import { getUiMode, setUiMode, applyUiModeClasses, splitParametersForMode, isTechMode } from './ui-mode.js';
@@ -50,6 +52,7 @@ const previewSingle = document.getElementById('ps-preview-single');
 const previewText = /** @type {HTMLTextAreaElement} */ (document.getElementById('ps-preview-text'));
 const workspaceList = document.getElementById('ps-workspace-list');
 const piiPreview = document.getElementById('ps-pii-preview');
+const artistStripNotice = document.getElementById('ps-artist-strip-notice');
 const charCount = document.getElementById('ps-char-count');
 const bridgeBanner = document.getElementById('ps-bridge-banner');
 const chainPanel = document.getElementById('ps-chain-panel');
@@ -92,6 +95,8 @@ const piiScanner = new PiiPreview();
 let activeMetaPrompt = '';
 /** @type {string} */
 let lastTaskId = '';
+/** @type {string[]} */
+let lastStrippedArtists = [];
 
 const TASK_WORKFLOW_MAP = {
     'song-develop': 'song-production',
@@ -127,10 +132,28 @@ function localeToolPath(toolSlug) {
 
 function getCompiledForDisplay() {
     if (!stateManager || !variantsManager) return '';
-    if (variantsManager.getState().enabled && variantsManager.getState().values.length > 0) {
-        return variantsManager.compileCurrent(stateManager.getDraft());
-    }
-    return stateManager.getCompiledPrompt();
+    const raw = variantsManager.getState().enabled && variantsManager.getState().values.length > 0
+        ? variantsManager.compileCurrent(stateManager.getDraft())
+        : stateManager.getCompiledPrompt();
+    const draft = stateManager.getDraft();
+    const processed = postProcessCompiledPrompt(raw, {
+        blocklist: config?.artistBlocklist ?? [],
+        parameterValues: draft.parameterValues,
+    });
+    lastStrippedArtists = processed.removed;
+    return processed.text;
+}
+
+/**
+ * @param {string} text
+ * @param {Record<string, unknown>} [parameterValues]
+ * @returns {string}
+ */
+function processCompiledOutput(text, parameterValues = stateManager?.getDraft().parameterValues ?? {}) {
+    return postProcessCompiledPrompt(text, {
+        blocklist: config?.artistBlocklist ?? [],
+        parameterValues,
+    }).text;
 }
 
 function populateSelect(select, items, selectedId, labelKey = 'label', allowEmpty = false) {
@@ -155,13 +178,27 @@ function populateSelect(select, items, selectedId, labelKey = 'label', allowEmpt
 function applySongForbiddenDefaults() {
     if (!stateManager) return;
     const draft = stateManager.getDraft();
-    const songTasks = new Set(['song-develop', 'lyrics', 'hook', 'album']);
+    const songTasks = new Set(['song-develop', 'lyrics', 'hook', 'album', 'suno-style']);
     if (!songTasks.has(draft.taskId)) return;
-    const saved = loadForbiddenSongWords();
-    if (!Array.isArray(saved) || saved.length === 0) return;
-    const current = draft.parameterValues.forbiddenLyricsWords;
-    if (!current || (Array.isArray(current) && current.length === 0)) {
-        stateManager.setParameterValues({ forbiddenLyricsWords: saved });
+
+    const savedWords = loadForbiddenSongWords();
+    if (Array.isArray(savedWords) && savedWords.length > 0) {
+        const current = draft.parameterValues.forbiddenLyricsWords;
+        if (!current || (Array.isArray(current) && current.length === 0)) {
+            stateManager.setParameterValues({ forbiddenLyricsWords: savedWords });
+        }
+    }
+
+    const savedArtists = loadForbiddenArtistNames();
+    if (Array.isArray(savedArtists) && savedArtists.length > 0) {
+        const current = draft.parameterValues.forbiddenArtistNames;
+        if (!current || (Array.isArray(current) && current.length === 0)) {
+            stateManager.setParameterValues({ forbiddenArtistNames: savedArtists });
+        }
+    }
+
+    if (!draft.parameterValues.stripArtistNames) {
+        stateManager.setParameterValues({ stripArtistNames: 'yes' });
     }
 }
 
@@ -255,6 +292,9 @@ function renderBuilder() {
             if (values.forbiddenLyricsWords && Array.isArray(values.forbiddenLyricsWords)) {
                 debouncedSaveSession({ forbiddenSongWords: values.forbiddenLyricsWords.map(String) });
             }
+            if (values.forbiddenArtistNames && Array.isArray(values.forbiddenArtistNames)) {
+                debouncedSaveSession({ forbiddenArtistNames: values.forbiddenArtistNames.map(String) });
+            }
             if (chainManager?.isOpen) {
                 const step = chainManager.getCurrentStep();
                 if (step) {
@@ -305,6 +345,18 @@ function renderPreview() {
         piiScanner.scan(compiled);
         piiPreview.hidden = false;
         piiPreview.innerHTML = piiScanner.renderHtml(tr);
+    }
+
+    if (artistStripNotice) {
+        if (lastStrippedArtists.length > 0) {
+            artistStripNotice.hidden = false;
+            artistStripNotice.textContent = tr('promptStudio.artists.removed', {
+                names: lastStrippedArtists.join(', '),
+            });
+        } else {
+            artistStripNotice.hidden = true;
+            artistStripNotice.textContent = '';
+        }
     }
 }
 
@@ -630,7 +682,10 @@ function bindEvents() {
             const index = Number(copyBtn.getAttribute('data-step-index'));
             const step = chainManager.activeSteps[index];
             if (!step) return;
-            const compiled = chainManager.compileStep(step, currentLocale());
+            const compiled = processCompiledOutput(
+                chainManager.compileStep(step, currentLocale()),
+                step.parameterValues ?? {},
+            );
             await copyFromButton(/** @type {HTMLButtonElement} */ (copyBtn), compiled, (k) => tr(k));
             return;
         }
@@ -640,7 +695,10 @@ function bindEvents() {
             const index = Number(sanitizeBtn.getAttribute('data-step-index'));
             const step = chainManager.activeSteps[index];
             if (!step) return;
-            const compiled = chainManager.compileStep(step, currentLocale());
+            const compiled = processCompiledOutput(
+                chainManager.compileStep(step, currentLocale()),
+                step.parameterValues ?? {},
+            );
             saveToSanitizer({
                 compiled,
                 sections: { user: compiled },

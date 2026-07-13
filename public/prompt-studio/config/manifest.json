@@ -8,6 +8,7 @@
     "parameters": "parameters.json",
     "models": "models.json",
     "templates": "templates.json",
+    "artistBlocklist": "artist-blocklist.json",
     "metaPrompts": ["meta-prompts/optimizer.json", "meta-prompts/split-task.json"],
     "chains": [
       "chains/song-production.json",

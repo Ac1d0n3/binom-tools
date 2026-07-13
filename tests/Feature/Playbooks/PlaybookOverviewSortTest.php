@@ -43,4 +43,33 @@ class PlaybookOverviewSortTest extends TestCase
         $this->assertLessThan($bridgePos, $bigFivePos);
         $this->assertLessThan($helpHubPos, $bridgePos);
     }
+
+    public function test_playbooks_overview_orders_missing_pieces_by_part_number_descending(): void
+    {
+        $html = $this->get('/playbooks')->getContent();
+
+        $positions = [];
+
+        foreach ([6, 5, 4, 3, 2, 1] as $part) {
+            $slug = match ($part) {
+                6 => 'missing-pieces-data-lifecycle-retirement',
+                5 => 'missing-pieces-policy-access-governance',
+                4 => 'missing-pieces-metadata-catalog-lineage',
+                3 => 'missing-pieces-ownership-stewardship',
+                2 => 'missing-pieces-trusted-metrics',
+                1 => 'missing-pieces-data-quality',
+            };
+
+            $positions[$part] = strpos($html, 'data-playbook-slug="'.$slug.'"');
+            $this->assertNotFalse($positions[$part], "Missing slug for part {$part}");
+        }
+
+        for ($part = 6; $part > 1; $part--) {
+            $this->assertLessThan(
+                $positions[$part - 1],
+                $positions[$part],
+                "Part {$part} should appear before part ".($part - 1),
+            );
+        }
+    }
 }

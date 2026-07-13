@@ -88,6 +88,34 @@ async function fetchJson(url) {
 
 /**
  * @param {unknown} raw
+ * @returns {string[]}
+ */
+function normalizeArtistBlocklist(raw) {
+    if (!raw || typeof raw !== 'object') return [];
+    const artists = /** @type {Record<string, unknown>} */ (raw).artists;
+    if (!Array.isArray(artists)) return [];
+    return artists.map(String).map((name) => name.trim()).filter(Boolean);
+}
+
+/**
+ * @param {string} baseUrl
+ * @param {Record<string, unknown>} [manifestFiles]
+ * @returns {Promise<string[]>}
+ */
+async function loadArtistBlocklist(baseUrl, manifestFiles) {
+    const path = typeof manifestFiles?.artistBlocklist === 'string'
+        ? manifestFiles.artistBlocklist
+        : 'artist-blocklist.json';
+    try {
+        const raw = await fetchJson(resolveConfigUrl(baseUrl, path));
+        return normalizeArtistBlocklist(raw);
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * @param {unknown} raw
  * @param {string[]} wrapperKeys
  * @returns {unknown[]}
  */
@@ -292,7 +320,9 @@ export async function loadConfig(baseUrl) {
         throw new Error(`Invalid config: ${validated.issues.map((i) => i.message).join('; ')}`);
     }
 
-    return loadAndMergePlugins(baseUrl, validated.config);
+    const artistBlocklist = await loadArtistBlocklist(baseUrl, files);
+
+    return loadAndMergePlugins(baseUrl, { ...validated.config, artistBlocklist });
 }
 
 /**

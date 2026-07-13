@@ -1,3 +1,4 @@
+import { initPlaybookImageLightbox } from './image-lightbox';
 import { initPlaybookPrism } from './prism-init';
 import { initPlaybookReadingPosition } from './reading-position';
 import { initPlaybookReadTracker } from './read-tracker';
@@ -6,6 +7,8 @@ import { initPlaybookVideoEmbeds } from './video-embed';
 
 /** @type {{ disconnect: () => void } | null} */
 let tocController = null;
+/** @type {{ disconnect: () => void } | null} */
+let lightboxController = null;
 
 function getActiveLocalePanel(root) {
     return root.querySelector('[data-playbook-locale-panel]:not([hidden])');
@@ -16,14 +19,21 @@ function destroyPlaybookToc() {
     tocController = null;
 }
 
+function destroyPlaybookLightbox() {
+    lightboxController?.disconnect();
+    lightboxController = null;
+}
+
 function initActiveLocalePanel(root) {
     destroyPlaybookToc();
+    destroyPlaybookLightbox();
 
     const panel = getActiveLocalePanel(root);
 
     if (!panel) return;
 
     tocController = initPlaybookToc(panel);
+    lightboxController = initPlaybookImageLightbox(panel);
 }
 
 export function initPlaybookDetail(root) {
@@ -50,7 +60,7 @@ export function initPlaybookDetail(root) {
             console.warn('Playbook syntax highlighting failed.', error);
         }
 
-        initPlaybookVideoEmbeds(panel);
+        initPlaybookVideoEmbeds(getActiveLocalePanel(root) ?? root);
     });
 }
 

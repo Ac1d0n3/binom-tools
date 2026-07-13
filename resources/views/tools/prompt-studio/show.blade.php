@@ -214,6 +214,7 @@
                                 <textarea id="ps-preview-text" class="tools-textarea prompt-studio__preview-text" rows="16" readonly></textarea>
                             </div>
                             <div id="ps-sections" class="prompt-studio__sections"></div>
+                            <div id="ps-artist-strip-notice" class="prompt-studio__artist-strip-notice" hidden></div>
                             <div id="ps-pii-preview" class="prompt-studio__pii-preview" hidden></div>
                         </div>
                         <footer class="prompt-studio__preview-actions">

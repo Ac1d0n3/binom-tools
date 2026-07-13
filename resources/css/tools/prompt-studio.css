@@ -804,6 +804,17 @@
     font-size: 0.8rem;
 }
 
+.prompt-studio__artist-strip-notice {
+    margin-top: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    border: 1px dashed color-mix(in srgb, var(--theme-color-primary) 35%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-primary) 6%, transparent);
+    color: var(--bn-color-text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
 .prompt-studio__pii-preview {
     font-size: 0.8rem;
 }

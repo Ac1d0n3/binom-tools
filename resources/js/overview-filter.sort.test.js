@@ -50,4 +50,32 @@ describe('overview story sort', () => {
 
         expect(compareStoryItemsForSort(partNine, partEight, 'date-desc', 'en')).toBeLessThan(0);
     });
+
+    it('sorts series parts by embedded index timestamp when base times match', () => {
+        const base = 1783940908;
+        const partSix = item({
+            'data-sort-date': String(base + 6),
+            'data-sort-title-de': 'Part 6',
+            'data-sort-title-en': 'Part 6',
+            'data-sort-series-id': 'missing-pieces',
+            'data-sort-series-part': '6',
+        });
+        const partThree = item({
+            'data-sort-date': String(base + 3),
+            'data-sort-title-de': 'Part 3',
+            'data-sort-title-en': 'Part 3',
+            'data-sort-series-id': 'missing-pieces',
+            'data-sort-series-part': '3',
+        });
+        const partFive = item({
+            'data-sort-date': String(base + 5),
+            'data-sort-title-de': 'Part 5',
+            'data-sort-title-en': 'Part 5',
+            'data-sort-series-id': 'missing-pieces',
+            'data-sort-series-part': '5',
+        });
+
+        expect(compareStoryItemsForSort(partSix, partFive, 'date-desc', 'en')).toBeLessThan(0);
+        expect(compareStoryItemsForSort(partFive, partThree, 'date-desc', 'en')).toBeLessThan(0);
+    });
 });

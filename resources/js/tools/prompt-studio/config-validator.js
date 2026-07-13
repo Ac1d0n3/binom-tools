@@ -75,6 +75,7 @@
  * @property {PromptTemplateDef[]} templates
  * @property {PromptChainDef[]} chains
  * @property {PromptMetaPromptDef[]} metaPrompts
+ * @property {string[]} [artistBlocklist]
  */
 
 /**

@@ -66,6 +66,7 @@ export const promptStudioLabels = {
         'promptStudio.variants.next': 'Weiter',
         'promptStudio.variants.counter': 'Variante {{current}} von {{total}}',
         'promptStudio.forbidden.useSaved': 'Gespeicherte verbotene Wörter übernehmen',
+        'promptStudio.artists.removed': 'Entfernte Künstlernamen: {{names}}',
         'promptStudio.bridge.banner':
             'Anonymisierter/restaurierter Prompt vom AI Sanitizer übernommen.',
         'promptStudio.bridge.apply': 'Als Entwurf übernehmen',
@@ -178,6 +179,7 @@ export const promptStudioLabels = {
         'promptStudio.variants.next': 'Next',
         'promptStudio.variants.counter': 'Variant {{current}} of {{total}}',
         'promptStudio.forbidden.useSaved': 'Use saved forbidden words',
+        'promptStudio.artists.removed': 'Removed artist names: {{names}}',
         'promptStudio.bridge.banner':
             'Anonymized/restored prompt received from AI Sanitizer.',
         'promptStudio.bridge.apply': 'Apply as draft',

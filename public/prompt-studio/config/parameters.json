@@ -384,6 +384,32 @@
       }
     },
     {
+      "id": "forbiddenArtistNames",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Zusätzliche Künstlernamen blockieren", "en": "Block additional artist names" },
+      "placeholder": { "de": "Namen kommagetrennt, z. B. Local Band", "en": "Comma-separated names, e.g. Local Band" },
+      "help": {
+        "de": "Bekannte Künstlernamen werden automatisch aus dem Prompt entfernt. Hier kannst du weitere Namen ergänzen.",
+        "en": "Known artist names are removed from the compiled prompt automatically. Add more names here if needed."
+      }
+    },
+    {
+      "id": "stripArtistNames",
+      "type": "select",
+      "group": "music",
+      "label": { "de": "Künstlernamen entfernen", "en": "Remove artist names" },
+      "options": [
+        { "value": "yes", "label": { "de": "Ja — aus Prompt entfernen", "en": "Yes — strip from prompt" } },
+        { "value": "no", "label": { "de": "Nein — Namen behalten", "en": "No — keep names" } }
+      ],
+      "default": "yes",
+      "help": {
+        "de": "Entfernt bekannte Künstlernamen und Stil-Referenzen (z. B. „in the style of …“) aus der Vorschau.",
+        "en": "Removes known artist names and style references (e.g. “in the style of …”) from the preview."
+      }
+    },
+    {
       "id": "artistName",
       "type": "text",
       "group": "image",

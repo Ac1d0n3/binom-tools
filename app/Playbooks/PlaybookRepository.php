@@ -35,11 +35,41 @@ final class PlaybookRepository
      */
     public function allForIndex(): array
     {
-        return collect($this->sortedSlugs())
+        $items = collect($this->sortedSlugs())
             ->map(fn (string $slug): array => $this->buildPlaybook($slug)->toIndexArray())
-            ->sortByDesc(fn (array $item): int => $item['sortDate']->getTimestamp())
-            ->values()
             ->all();
+
+        return $this->sortIndexEntries($items);
+    }
+
+    /**
+     * Index entries for grids: standalone stories plus the first part of each series.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function allForIndexCatalog(): array
+    {
+        $all = collect($this->allForIndex());
+
+        $firstSeriesParts = $all
+            ->filter(fn (array $item): bool => is_string($item['seriesId'] ?? null) && $item['seriesId'] !== '')
+            ->groupBy('seriesId')
+            ->map(
+                fn ($group) => $group
+                    ->sortBy(fn (array $item): array => [
+                        $item['seriesPart'] ?? PHP_INT_MAX,
+                        $item['slug'] ?? '',
+                    ])
+                    ->first(),
+            );
+
+        return $this->sortIndexEntries(
+            $all
+                ->filter(fn (array $item): bool => ! is_string($item['seriesId'] ?? null) || $item['seriesId'] === '')
+                ->merge($firstSeriesParts)
+                ->values()
+                ->all(),
+        );
     }
 
     /**
@@ -85,10 +115,7 @@ final class PlaybookRepository
                 $seriesId,
                 $playbooks->values()->all(),
             ))
-            ->sortBy(fn (PlaybookSeriesOverview $overview): array => [
-                $overview->titleEn,
-                $overview->id,
-            ])
+            ->sortByDesc(fn (PlaybookSeriesOverview $overview): int => $overview->modifiedAt)
             ->values()
             ->all();
     }
@@ -483,6 +510,51 @@ final class PlaybookRepository
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $items
+     * @return list<array<string, mixed>>
+     */
+    private function sortIndexEntries(array $items): array
+    {
+        usort($items, fn (array $a, array $b): int => $this->compareIndexEntries($a, $b));
+
+        return array_values($items);
+    }
+
+    /**
+     * @param  array<string, mixed>  $a
+     * @param  array<string, mixed>  $b
+     */
+    private function compareIndexEntries(array $a, array $b): int
+    {
+        $cmp = $this->indexSortTimestamp($b) <=> $this->indexSortTimestamp($a);
+
+        if ($cmp !== 0) {
+            return $cmp;
+        }
+
+        return strcmp((string) ($a['slug'] ?? ''), (string) ($b['slug'] ?? ''));
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function indexSortTimestamp(array $item): int
+    {
+        if (isset($item['indexSortTimestamp']) && is_int($item['indexSortTimestamp'])) {
+            return $item['indexSortTimestamp'];
+        }
+
+        $timestamp = $item['sortDate']->getTimestamp();
+        $seriesPart = $item['seriesPart'] ?? null;
+
+        if (is_int($seriesPart) && $seriesPart > 0) {
+            $timestamp += $seriesPart;
+        }
+
+        return $timestamp;
     }
 
     private function hasSlug(string $slug): bool

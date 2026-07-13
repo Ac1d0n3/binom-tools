@@ -35,16 +35,19 @@ final class LandingCatalog
     }
 
     /**
+     * Landing preview: standalone stories plus the first part of each series only.
+     *
      * @return list<array<string, mixed>>
      */
     public function latestStories(): array
     {
-        return collect($this->playbooks->allForIndex())
+        return collect($this->playbooks->allForIndexCatalog())
             ->take(self::STORIES_PREVIEW_LIMIT)
             ->values()
             ->all();
     }
 
+    /** Total stories in the full overview (all series parts included). */
     public function storyCount(): int
     {
         return count($this->playbooks->allForIndex());

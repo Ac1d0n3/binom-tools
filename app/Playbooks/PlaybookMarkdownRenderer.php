@@ -245,8 +245,15 @@ final class PlaybookMarkdownRenderer
                 }
 
                 $existing = trim($image->getAttribute('class'));
-                $image->setAttribute('class', trim($existing.' playbook-prose__image'));
+                $classes = trim($existing.' playbook-prose__image');
+                $image->setAttribute('class', $classes);
                 $image->setAttribute('loading', 'lazy');
+
+                if (str_contains($classes, 'playbook-prose__image--diagram')) {
+                    $image->setAttribute('data-playbook-lightbox-trigger', 'true');
+                    $image->setAttribute('tabindex', '0');
+                    $image->setAttribute('role', 'button');
+                }
             }
         }
     }
