@@ -17,7 +17,7 @@
                 <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">für Data-, BI- und Analytics-Teams.</span>
             </h1>
             <p class="tools-hero__tagline" data-i18n="home.hero.tagline">
-                Markdown-Playbooks, interaktive Referenz-Tools und ein schlanker Stack ohne CMS — Governance-Wissen versionierbar wie Code.
+                Stories zu Data Governance — von PII, Qualität und Lineage bis KPIs und Ownership. Plus interaktive Referenz-Tools, versionierbar wie Code.
             </p>
             <p class="tools-hero__notice" data-i18n="home.hero.notice">
                 Klonbar als Starter-Template: eigene Stories, Tools und Branding für euren internen Help Hub.

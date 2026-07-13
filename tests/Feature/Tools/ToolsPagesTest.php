@@ -201,6 +201,21 @@ class ToolsPagesTest extends TestCase
         $this->assertStringContainsString('DG Macro Generator', $toolsNav);
         $this->assertStringContainsString('PII Policy Generator', $toolsNav);
         $this->assertStringContainsString('DQ Rules Generator', $toolsNav);
+
+        $storiesNav = (string) str($response->getContent())
+            ->after('data-i18n="nav.stories">Stories</p>')
+            ->before('data-i18n="nav.tools">Tools</p>');
+
+        $storyLinkCount = substr_count($storiesNav, 'data-playbook-nav-title');
+        $this->assertLessThanOrEqual(\App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT, $storyLinkCount);
+
+        $totalStories = count(app(\App\Playbooks\PlaybookRepository::class)->allForIndex());
+        if ($totalStories > \App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT) {
+            $remaining = $totalStories - min($totalStories, \App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT);
+            $response->assertSee('data-i18n="nav.storiesMore"', false);
+            $response->assertSee('data-i18n-count="'.$remaining.'"', false);
+            $response->assertSee(route('playbooks.index'), false);
+        }
     }
 
     public function test_legacy_tool_urls_remain_available(): void

@@ -173,7 +173,7 @@ const shellLabels = {
         'home.hero.headline': 'Governance Help Hub',
         'home.hero.headlineAccent': 'für Data-, BI- und Analytics-Teams.',
         'home.hero.tagline':
-            'Markdown-Playbooks, interaktive Referenz-Tools und ein schlanker Stack ohne CMS — Governance-Wissen versionierbar wie Code.',
+            'Stories zu Data Governance — von PII, Qualität und Lineage bis KPIs und Ownership. Plus interaktive Referenz-Tools, versionierbar wie Code.',
         'home.hero.notice':
             'Klonbar als Starter-Template: eigene Stories, Tools und Branding für euren internen Help Hub.',
         'home.hero.ctaWorkflows': 'Interaktive Tools',
@@ -183,9 +183,9 @@ const shellLabels = {
         'home.workflowsLead':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
         'home.toolsTitle': 'Tools',
-        'home.storiesTitle': 'Stories',
+        'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
-            'Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.',
+            'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
         'home.viewAllTotal': 'insgesamt',
         'home.viewAllTools.title': 'Alle Tools',
         'home.viewAllTools.description': 'Zur Übersicht mit Suche und allen Workflow-Beispielen.',
@@ -283,6 +283,7 @@ const shellLabels = {
         'card.binom-ngx.meta': 'Docs & Demos',
         'nav.stories': 'Stories',
         'nav.storiesOverview': 'Übersicht',
+        'nav.storiesMore': '+ {{count}} weitere Stories',
         'playbooks.indexTitle': 'Stories',
         'playbooks.indexLead': 'Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.',
         'playbooks.empty': 'Noch keine Stories veröffentlicht.',
@@ -360,7 +361,7 @@ const shellLabels = {
         'home.hero.headline': 'Governance help hub',
         'home.hero.headlineAccent': 'for data, BI, and analytics teams.',
         'home.hero.tagline':
-            'Markdown playbooks, interactive reference tools, and a lean stack without a CMS — version governance knowledge like code.',
+            'Stories on data governance — from PII, quality, and lineage to KPIs and ownership. Plus interactive reference tools, versioned like code.',
         'home.hero.notice':
             'Clone as a starter template: your own stories, tools, and branding for an internal help hub.',
         'home.hero.ctaWorkflows': 'Explore tools',
@@ -370,9 +371,9 @@ const shellLabels = {
         'home.workflowsLead':
             'Interactive reference workflows — step by step, copy-paste ready.',
         'home.toolsTitle': 'Tools',
-        'home.storiesTitle': 'Stories',
+        'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
-            'Step-by-step governance guides — from idea to implementation.',
+            'Playbooks on data governance topics — step by step, from idea to implementation.',
         'home.viewAllTotal': 'total',
         'home.viewAllTools.title': 'All tools',
         'home.viewAllTools.description': 'Go to the overview with search and all workflow examples.',
@@ -470,6 +471,7 @@ const shellLabels = {
         'card.binom-ngx.meta': 'Docs & Demos',
         'nav.stories': 'Stories',
         'nav.storiesOverview': 'Overview',
+        'nav.storiesMore': '+ {{count}} more stories',
         'playbooks.indexTitle': 'Stories',
         'playbooks.indexLead': 'Step-by-step governance guides — from idea to implementation.',
         'playbooks.empty': 'No stories published yet.',
@@ -520,8 +522,11 @@ export function applyShellLabels(locale) {
 
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
+        const count = el.getAttribute('data-i18n-count');
         if (key && labels[key]) {
-            el.textContent = labels[key];
+            el.textContent = count !== null
+                ? labels[key].replace(/\{\{count\}\}/g, count)
+                : labels[key];
         }
     });
 

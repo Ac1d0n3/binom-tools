@@ -11,6 +11,9 @@ final class PlaybookRepository
 {
     private const LOCALES = ['de', 'en'];
 
+    /** Max story links in the global sidebar (Overview link is separate). */
+    public const SIDEBAR_INDEX_LIMIT = 10;
+
     public function __construct(
         private readonly PlaybookFrontmatterParser $frontmatterParser,
         private readonly PlaybookMarkdownRenderer $markdownRenderer,
@@ -37,6 +40,35 @@ final class PlaybookRepository
             ->sortByDesc(fn (array $item): int => $item['sortDate']->getTimestamp())
             ->values()
             ->all();
+    }
+
+    /**
+     * Latest stories for sidebar navigation (newest first).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function latestForIndex(int $limit = self::SIDEBAR_INDEX_LIMIT, ?string $ensureSlug = null): array
+    {
+        $all = $this->allForIndex();
+        $items = collect($all)->take($limit);
+
+        if ($ensureSlug !== null && $ensureSlug !== '') {
+            $containsCurrent = $items->contains(
+                static fn (array $item): bool => ($item['slug'] ?? '') === $ensureSlug,
+            );
+
+            if (! $containsCurrent) {
+                $current = collect($all)->first(
+                    static fn (array $item): bool => ($item['slug'] ?? '') === $ensureSlug,
+                );
+
+                if (is_array($current)) {
+                    $items = $items->take(max(0, $limit - 1))->prepend($current);
+                }
+            }
+        }
+
+        return $items->values()->all();
     }
 
     /**

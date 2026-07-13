@@ -11,9 +11,9 @@
 
         <div class="tools-content">
             <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.storiesTitle">Stories</h2>
+                <h2 class="tools-section__title" data-i18n="home.storiesTitle">Governance stories</h2>
                 <p class="tools-section__lead" data-i18n="home.storiesLead">
-                    Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.
+                    Playbooks on data governance topics — step by step, from idea to implementation.
                 </p>
                 <div class="tools-card-grid">
                     @foreach ($latestStories as $item)

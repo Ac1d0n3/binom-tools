@@ -378,6 +378,24 @@ html[data-shell-full-width='true'] .tools-content--overview {
     color: var(--theme-color-primary);
 }
 
+.tools-sidenav__more {
+    margin-top: 0.35rem;
+}
+
+.tools-sidenav__link--more {
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--theme-color-primary);
+    border: 1px dashed color-mix(in srgb, var(--theme-color-primary) 35%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-primary) 4%, transparent);
+}
+
+.tools-sidenav__link--more:hover {
+    border-color: var(--theme-color-primary);
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+}
+
 .tools-sidenav__link:hover {
     background: var(--state-layer-hover);
 }

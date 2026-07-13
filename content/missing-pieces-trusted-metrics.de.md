@@ -1,5 +1,5 @@
 ---
-title: "The Missing Pieces – Part 2: Trusted Metrics"
+title: "Die fehlenden Bausteine – Teil 2: Vertrauenswürdige Kennzahlen"
 description: "Warum zentralisierte Daten nicht automatisch zu konsistenten Geschäftskennzahlen führen – und wie gemeinsame Definitionen, sichtbare Ownership und verständliche Governance Vertrauen stärken können."
 author: Thomas Lindackers
 category: Data Governance
@@ -16,7 +16,7 @@ order: -1
 hero: images/playbooks/mp-metrics-hero.png
 series: missing-pieces
 seriesPart: 2
-seriesTitle: The Missing Pieces
+seriesTitle: Die fehlenden Bausteine
 ---
 ## Zentrale Daten bedeuten nicht automatisch eine zentrale Wahrheit
 

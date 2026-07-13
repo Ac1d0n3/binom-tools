@@ -5,7 +5,13 @@
     $workflows = \App\Support\ToolsNav::workflowsWithRegisteredRoutes(config('tools.workflows', []));
     $navById = collect($navItems)->keyBy('id');
     $currentSlug = request()->route('slug');
-    $sidebarPlaybooks = app(\App\Playbooks\PlaybookRepository::class)->allForIndex();
+    $playbookRepository = app(\App\Playbooks\PlaybookRepository::class);
+    $sidebarPlaybooks = $playbookRepository->latestForIndex(
+        \App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT,
+        is_string($currentSlug) ? $currentSlug : null,
+    );
+    $totalStoryCount = count($playbookRepository->allForIndex());
+    $remainingStoryCount = max(0, $totalStoryCount - count($sidebarPlaybooks));
 
     $workflowStepIds = [];
     foreach ($workflows as $workflow) {
@@ -79,6 +85,18 @@
                     </a>
                 </li>
             @endforeach
+            @if ($remainingStoryCount > 0)
+                <li class="tools-sidenav__more">
+                    <a
+                        href="{{ locale_route('playbooks.index') }}"
+                        class="tools-sidenav__link tools-sidenav__link--more {{ Locale::routeIs('playbooks.index') ? 'tools-sidenav__link--active' : '' }}"
+                        data-i18n="nav.storiesMore"
+                        data-i18n-count="{{ $remainingStoryCount }}"
+                    >
+                        + {{ $remainingStoryCount }} more stories
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 

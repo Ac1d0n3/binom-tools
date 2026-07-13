@@ -1,5 +1,5 @@
 ---
-title: "The Missing Pieces – Part 1: Data Quality"
+title: "Die fehlenden Bausteine – Teil 1: Datenqualität"
 description: "Warum korrigierte Daten downstream nicht automatisch bedeuten, dass die Ursache an der Quelle behoben wurde – und wie Governance den Kreislauf schließen kann."
 author: Thomas Lindackers
 category: Data Governance
@@ -15,7 +15,7 @@ order: -1
 hero: images/playbooks/mp-dq-hero.png
 series: missing-pieces
 seriesPart: 1
-seriesTitle: The Missing Pieces
+seriesTitle: Die fehlenden Bausteine
 ---
 
 ## Daten können besser werden, während die Ursache unverändert bleibt

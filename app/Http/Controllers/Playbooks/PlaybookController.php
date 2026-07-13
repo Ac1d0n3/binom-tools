@@ -84,7 +84,6 @@ class PlaybookController extends Controller
 
         return view('playbooks.show', [
             'playbook' => $playbook,
-            'sidebarPlaybooks' => $this->playbooks->allForIndex(),
         ]);
     }
 }
