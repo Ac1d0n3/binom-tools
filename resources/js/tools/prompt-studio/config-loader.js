@@ -18,6 +18,19 @@ import {
 /** @typedef {import('./config-validator.js').PromptTemplateDef} PromptTemplateDef */
 
 /**
+ * @param {string} path
+ * @param {string} appRoot
+ * @returns {string}
+ */
+function withAppRoot(path, appRoot) {
+    if (!appRoot || path === appRoot || path.startsWith(`${appRoot}/`)) {
+        return path;
+    }
+
+    return `${appRoot}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+/**
  * Resolve config base to a same-origin path (robust for subfolder deploys and legacy asset() URLs).
  * @param {string | undefined} rawBase
  * @param {string} [appBase]
@@ -25,27 +38,29 @@ import {
  */
 export function resolveConfigBase(rawBase, appBase = '') {
     const appRoot = appBase.replace(/\/$/, '');
-    const fallback = `${appRoot}/prompt-studio/config`;
+    const fallback = withAppRoot('/tools/prompt-studio/config', appRoot);
 
     const raw = rawBase?.trim();
     if (!raw) {
         return fallback;
     }
 
+    let path = fallback;
+
     if (/^https?:\/\//i.test(raw)) {
         try {
             const pathname = new URL(raw).pathname.replace(/\/$/, '');
-            return pathname || fallback;
+            path = pathname || fallback;
         } catch {
-            return fallback;
+            path = fallback;
         }
+    } else if (raw.startsWith('/')) {
+        path = raw.replace(/\/$/, '');
+    } else {
+        path = `${appRoot}/${raw}`.replace(/\/$/, '');
     }
 
-    if (raw.startsWith('/')) {
-        return raw.replace(/\/$/, '');
-    }
-
-    return `${appRoot}/${raw}`.replace(/\/$/, '');
+    return withAppRoot(path, appRoot);
 }
 
 /**

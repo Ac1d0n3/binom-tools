@@ -32,6 +32,20 @@ class ToolsPagesTest extends TestCase
         $this->assertNotFalse($storiesPos);
         $this->assertNotFalse($toolsPos);
         $this->assertLessThan($toolsPos, $storiesPos);
+        $response->assertSee('data-i18n="footer.about"', false);
+        $response->assertSee('v0.1.0', false);
+        $response->assertSee('tools-beta-badge', false);
+        $response->assertDontSee('class="tools-about-body"', false);
+    }
+
+    public function test_footer_shows_release_meta_on_all_pages(): void
+    {
+        $response = $this->get('/tools');
+
+        $response->assertOk();
+        $response->assertSee('tools-release-meta', false);
+        $response->assertSee('v0.1.0', false);
+        $response->assertSee('data-i18n="footer.about"', false);
     }
 
     public function test_tools_overview_lists_workflow_examples_with_search(): void
@@ -54,6 +68,11 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-overview-item', false);
         $response->assertSee('tools-shell__main--overview', false);
         $response->assertSee('tools-overview-scroll', false);
+        $response->assertSee('tools-overview-release', false);
+        $response->assertSee('tools-release-meta', false);
+        $response->assertSee('v0.1.0', false);
+        $response->assertSee('data-i18n="tools.overviewBetaNote"', false);
+        $response->assertSee('data-i18n="about.learnMore"', false);
         $response->assertDontSee('data-i18n="tools.overviewTitle"', false);
         $response->assertDontSee('data-i18n="tools.overviewLead"', false);
     }

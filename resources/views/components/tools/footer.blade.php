@@ -4,10 +4,21 @@
 
 <footer class="tools-site-bar">
     <div class="tools-site-bar__inner">
-        <span class="tools-site-bar__copyright" data-i18n="footer.copyright">
-            © {{ date('Y') }} Binom Governance
-        </span>
+        <div class="tools-site-bar__meta">
+            <span class="tools-site-bar__copyright" data-i18n="footer.copyright">
+                © {{ date('Y') }} Binom Governance
+            </span>
+            <x-tools.release-meta variant="footer" />
+        </div>
         <nav class="tools-site-bar__links" aria-label="Meta navigation">
+            <a
+                class="tools-site-bar__link"
+                href="{{ locale_route('about.show') }}"
+                data-i18n="footer.about"
+            >
+                About
+            </a>
+            <span class="tools-site-bar__sep" aria-hidden="true">·</span>
             <a
                 class="tools-site-bar__link"
                 href="{{ locale_route('legal.impressum') }}"

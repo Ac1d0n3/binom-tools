@@ -6,6 +6,9 @@
     RewriteEngine On
     RewriteBase /
 
+    # All /tools/* URLs are Laravel routes — never serve a physical public/tools/ directory.
+    RewriteRule ^tools(?:/.*)?$ index.php [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

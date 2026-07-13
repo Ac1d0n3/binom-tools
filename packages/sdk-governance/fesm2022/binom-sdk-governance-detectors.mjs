@@ -114,7 +114,7 @@ function detectPassportId(input, options) {
     return scanRegex(input, 'passportId', PASSPORT_PATTERN, 0.65, undefined, options);
 }
 
-const LICENSE_PLATE_PATTERN = /\b[A-Z]{1,3}[-\s]?[A-Z]{1,2}\s?\d{1,4}(?:\s?[A-Z]{1,2})?\b/gi;
+const LICENSE_PLATE_PATTERN = /\b[A-ZÄÖÜ]{1,3}[-\s][A-Z]{1,2}\s?\d{1,4}(?:\s?[A-Z]{1,2})?\b/g;
 function detectLicensePlate(input, options) {
     return scanRegex(input, 'licensePlate', LICENSE_PLATE_PATTERN, 0.7, undefined, options);
 }

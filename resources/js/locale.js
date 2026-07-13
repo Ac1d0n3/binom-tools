@@ -128,6 +128,28 @@ const shellLabels = {
         'footer.binomNgx': 'binom-ngx Docs',
         'footer.impressum': 'Impressum',
         'footer.privacy': 'Datenschutz',
+        'footer.about': 'Über das Projekt',
+        'meta.beta': 'BETA',
+        'tools.overviewBetaNote': 'Referenz-Tools in aktiver Entwicklung.',
+        'about.learnMore': 'Über das Projekt',
+        'about.title': 'Über binom-tools',
+        'about.lead': 'Hintergrund zum Projekt — was es ist und woher Inhalte und Visuals kommen.',
+        'about.project.title': 'Was ist binom-tools?',
+        'about.project.body':
+            'binom-tools ist ein Open-Source-Hobbyprojekt: ein Governance Help Hub mit Markdown-Stories und interaktiven Referenz-Tools — kein kommerzielles Produkt.',
+        'about.stories.title': 'Stories',
+        'about.stories.body':
+            'Die Playbooks geben einen generellen Einblick in Governance und die Welten darum — von Datenplattformen und BI über Prozesse bis zu den Themen, die in der Praxis wirklich zählen. Es ist Wissen, das ich über die Jahre zusammengetragen habe: Erfahrungen, Modelle und Denkanstöße, nicht ein fertiges Handbuch.',
+        'about.tools.title': 'Tools',
+        'about.tools.body':
+            'Interaktive Referenz-Workflows machen Ideen aus den Stories praktisch umsetzbar — Schritt für Schritt, copy-paste-fähig für Warehouse oder Governance-Setup.',
+        'about.visuals.title': 'Visuals',
+        'about.visuals.body':
+            'Diagramme und Schaubilder zu Playbook-Beispielen erstelle ich mit KI — abgestimmt auf ein einheitliches Corporate Design, damit Stories lesbar und vergleichbar bleiben.',
+        'about.feedback.title': 'Feedback & Mitmachen',
+        'about.feedback.body':
+            'Das Projekt lebt von Austausch. Feedback, Anregungen und Verbesserungsvorschläge sind willkommen — per GitHub.',
+        'about.feedback.github': 'Issues & Pull Requests auf GitHub',
         'overview.sortLabel': 'Sortieren',
         'overview.sortDateDesc': 'Neueste zuerst',
         'overview.sortDateAsc': 'Älteste zuerst',
@@ -293,6 +315,28 @@ const shellLabels = {
         'footer.binomNgx': 'binom-ngx Docs',
         'footer.impressum': 'Legal Notice',
         'footer.privacy': 'Privacy',
+        'footer.about': 'About',
+        'meta.beta': 'BETA',
+        'tools.overviewBetaNote': 'Reference tools in active development.',
+        'about.learnMore': 'About this project',
+        'about.title': 'About binom-tools',
+        'about.lead': 'Background on the project — what it is and where content and visuals come from.',
+        'about.project.title': 'What is binom-tools?',
+        'about.project.body':
+            'binom-tools is an open-source hobby project: a governance help hub with Markdown stories and interactive reference tools — not a commercial product.',
+        'about.stories.title': 'Stories',
+        'about.stories.body':
+            'The playbooks offer a general introduction to governance and the worlds around it — from data platforms and BI to processes and the topics that matter in practice. It is knowledge collected over the years: experience, models, and ideas to explore, not a finished handbook.',
+        'about.tools.title': 'Tools',
+        'about.tools.body':
+            'Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup.',
+        'about.visuals.title': 'Visuals',
+        'about.visuals.body':
+            'Diagrams and illustrations for playbook examples are created with AI, aligned with a consistent corporate design so stories stay readable and comparable.',
+        'about.feedback.title': 'Feedback',
+        'about.feedback.body':
+            'The project benefits from exchange. Feedback, suggestions, and improvements are welcome on GitHub.',
+        'about.feedback.github': 'Issues & pull requests on GitHub',
         'overview.sortLabel': 'Sort',
         'overview.sortDateDesc': 'Newest first',
         'overview.sortDateAsc': 'Oldest first',

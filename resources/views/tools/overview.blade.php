@@ -32,6 +32,16 @@
 
         @php $navById = collect($navItems)->keyBy('id'); @endphp
 
+        <div class="tools-overview-release">
+            <x-tools.release-meta variant="inline" />
+            <p class="tools-overview-release__note" data-i18n="tools.overviewBetaNote">
+                Reference tools in active development.
+            </p>
+            <a href="{{ locale_route('about.show') }}" class="tools-overview-release__link" data-i18n="about.learnMore">
+                About this project
+            </a>
+        </div>
+
         <div class="tools-overview-toolbar">
             <label class="tools-overview-search">
                 <span class="sr-only" data-i18n="overview.searchLabel">Search</span>

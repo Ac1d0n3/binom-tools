@@ -17,10 +17,9 @@ if (! function_exists('prompt_studio_config_path')) {
      */
     function prompt_studio_config_path(): string
     {
-        $base = app_base_path();
-        $prefix = $base !== '' ? rtrim($base, '/') : '';
+        $manifest = route('prompt-studio.config', ['file' => 'manifest.json'], false);
 
-        return $prefix.'/prompt-studio/config';
+        return dirname($manifest);
     }
 }
 
@@ -56,5 +55,34 @@ if (! function_exists('locale_route')) {
     function locale_route(string $name, mixed $parameters = [], ?string $locale = null): string
     {
         return LocaleUrl::route($name, $parameters, $locale);
+    }
+}
+
+if (! function_exists('tools_version')) {
+    function tools_version(): ?string
+    {
+        $version = config('tools.version');
+
+        return is_string($version) && trim($version) !== '' ? trim($version) : null;
+    }
+}
+
+if (! function_exists('tools_is_beta')) {
+    function tools_is_beta(): bool
+    {
+        return (bool) config('tools.beta', false);
+    }
+}
+
+if (! function_exists('tools_release_label')) {
+    function tools_release_label(): ?string
+    {
+        $version = tools_version();
+
+        if ($version === null) {
+            return null;
+        }
+
+        return str_starts_with($version, 'v') ? $version : 'v'.$version;
     }
 }

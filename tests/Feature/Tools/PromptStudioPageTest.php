@@ -21,7 +21,7 @@ class PromptStudioPageTest extends TestCase
 
     public function test_prompt_studio_config_manifest_is_public(): void
     {
-        $response = $this->get('/prompt-studio/config/manifest.json');
+        $response = $this->get('/tools/prompt-studio/config/manifest.json');
 
         $response->assertOk();
         $response->assertHeader('content-type', 'application/json; charset=UTF-8');
@@ -37,7 +37,7 @@ class PromptStudioPageTest extends TestCase
 
     public function test_prompt_studio_config_chain_file_is_public(): void
     {
-        $response = $this->get('/prompt-studio/config/chains/business-visual.json');
+        $response = $this->get('/tools/prompt-studio/config/chains/business-visual.json');
 
         $response->assertOk();
         $response->assertHeader('content-type', 'application/json; charset=UTF-8');
