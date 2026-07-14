@@ -50,8 +50,17 @@ class PlaybookRepositoryCatalogTest extends TestCase
             $this->markTestSkipped('Not enough series to test sort order.');
         }
 
-        $this->assertGreaterThanOrEqual($seriesList[1]->modifiedAt, $seriesList[0]->modifiedAt);
-        $this->assertSame('missing-pieces', $seriesList[0]->id);
+        for ($index = 0; $index < count($seriesList) - 1; $index++) {
+            $this->assertGreaterThanOrEqual(
+                $seriesList[$index + 1]->modifiedAt,
+                $seriesList[$index]->modifiedAt,
+                sprintf(
+                    'Series "%s" should sort before "%s" by modifiedAt descending.',
+                    $seriesList[$index]->id,
+                    $seriesList[$index + 1]->id,
+                ),
+            );
+        }
     }
 
     public function test_index_orders_series_parts_by_part_number_when_sort_dates_match(): void
