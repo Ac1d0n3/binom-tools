@@ -3,6 +3,7 @@
 ])
 
 @section('title', 'Tools — ' . config('app.name'))
+@section('meta_description', 'Interactive governance tools — dbt macros, PII policies, schema editors, and workflow examples you can copy into your stack.')
 
 @section('content')
     <div class="tools-content tools-content--overview" data-overview-filter-root>

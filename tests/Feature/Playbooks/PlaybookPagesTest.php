@@ -255,6 +255,18 @@ class PlaybookPagesTest extends TestCase
         $response->assertDontSee('data-playbook-restart', false);
     }
 
+    public function test_playbook_detail_includes_meta_description(): void
+    {
+        $response = $this->get('/playbooks/missing-pieces-data-quality');
+
+        $response->assertOk();
+        $response->assertSee('<meta name="description"', false);
+        $response->assertSee(
+            'Why corrected downstream data does not automatically mean that the source cause has been resolved',
+            false,
+        );
+    }
+
     public function test_playbook_toc_has_branches_and_leaves(): void
     {
         $html = $this->get('/playbooks/help-hub-platform')->getContent();

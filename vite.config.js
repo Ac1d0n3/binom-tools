@@ -3,11 +3,37 @@ import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
+/** Prefer swap so icon fonts do not block LCP/FCP (Font Awesome ships with block). */
+function fontAwesomeDisplaySwap() {
+    return {
+        name: 'fontawesome-font-display-swap',
+        enforce: 'pre',
+        transform(code, id) {
+            if (!id.includes('@fortawesome') || !id.includes('.css')) {
+                return null;
+            }
+
+            return {
+                code: code.replaceAll('font-display:block', 'font-display:swap'),
+                map: null,
+            };
+        },
+        generateBundle(_options, bundle) {
+            for (const chunk of Object.values(bundle)) {
+                if (chunk.type === 'asset' && typeof chunk.source === 'string' && chunk.fileName.endsWith('.css')) {
+                    chunk.source = chunk.source.replaceAll('font-display:block', 'font-display:swap');
+                }
+            }
+        },
+    };
+}
+
 export default defineConfig(({ command }) => ({
     // Relative asset URLs in CSS/JS — one build works for MAMP (/binom-tools/) and prod (/).
     // Laravel @vite resolves entry CSS/JS via asset() + APP_URL at runtime.
     base: command === 'build' ? './' : undefined,
     plugins: [
+        fontAwesomeDisplaySwap(),
         laravel({
             input: [
                 'resources/css/app.css',

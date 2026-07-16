@@ -1,6 +1,7 @@
 @extends('layouts.tools')
 
 @section('title', config('app.name'))
+@section('meta_description', 'Governance help hub with Markdown stories, interactive tools, and i18n — cloneable and CMS-free.')
 
 @section('content')
     <div class="tools-home">

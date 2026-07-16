@@ -1,6 +1,7 @@
 @extends('layouts.tools')
 
 @section('title', 'About — ' . config('app.name'))
+@section('meta_description', 'About binom-tools — an open-source governance help hub with Markdown stories and interactive reference tools.')
 
 @section('content')
     <div class="tools-content">

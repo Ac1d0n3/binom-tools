@@ -8,6 +8,33 @@
 
 @section('title', $playbook->title() . ' — ' . config('app.name'))
 
+@php
+    $activeLocale = current_locale();
+    $activeVariant = $playbook->variants[$activeLocale] ?? null;
+    $activeHeroUrl = $activeVariant?->heroUrl;
+    $activeHeroSources = filled($activeHeroUrl)
+        ? \App\Support\PlaybookImagePath::pictureSources($activeHeroUrl)
+        : null;
+    $metaDescription = trim((string) ($activeVariant?->description ?? ''));
+@endphp
+
+@push('head')
+    @if ($metaDescription !== '')
+        <meta name="description" content="{{ $metaDescription }}">
+    @endif
+    @if ($activeHeroSources)
+        <link
+            rel="preload"
+            as="image"
+            href="{{ $activeHeroSources['webp'] }}"
+            type="image/webp"
+            fetchpriority="high"
+        >
+    @elseif (filled($activeHeroUrl))
+        <link rel="preload" as="image" href="{{ $activeHeroUrl }}" fetchpriority="high">
+    @endif
+@endpush
+
 @section('content')
     <article
         class="playbook-detail"
@@ -20,10 +47,13 @@
         data-title-suffix=" — {{ config('app.name') }}"
     >
         @foreach ($playbook->variants as $locale => $variant)
+            @php
+                $isActiveLocale = $locale === $activeLocale;
+            @endphp
             <div
                 class="playbook-detail__locale"
                 data-playbook-locale-panel="{{ $locale }}"
-                @if ($locale !== current_locale()) hidden @endif
+                @if (! $isActiveLocale) hidden @endif
             >
                 <div class="playbook-detail__layout">
                     <div class="playbook-detail__main-column">
@@ -34,8 +64,9 @@
                                         :src="$variant->heroUrl"
                                         :alt="$variant->title"
                                         class="playbook-detail__hero-image"
-                                        loading="eager"
-                                        fetchpriority="high"
+                                        :loading="$isActiveLocale ? 'eager' : 'lazy'"
+                                        :fetchpriority="$isActiveLocale ? 'high' : null"
+                                        decoding="async"
                                     />
                                 </div>
                             @endif

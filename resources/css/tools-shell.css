@@ -2402,9 +2402,11 @@ html[data-color-scheme='dark'] .tools-hero {
 .tools-card__tag {
     padding: 0.15rem 0.45rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--theme-color-accent, #64748b) 12%, transparent);
-    color: var(--theme-color-accent, var(--bn-color-text-secondary));
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 28%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, var(--surface-background-color));
+    color: var(--content-font-color, var(--bn-color-text-primary, #1a2330));
     font-size: 0.7rem;
+    font-weight: 600;
     line-height: 1.3;
 }
 

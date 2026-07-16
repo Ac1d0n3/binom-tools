@@ -1,4 +1,4 @@
-/* Font Awesome Free — local, no Pro */
+/* Font Awesome Free — local, no Pro (font-display patched to swap in vite.config.js) */
 @import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
 @import '@fortawesome/fontawesome-free/css/solid.min.css';
 @import '@fortawesome/fontawesome-free/css/brands.min.css';

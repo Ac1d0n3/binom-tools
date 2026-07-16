@@ -74,6 +74,12 @@
     box-shadow: none;
 }
 
+/* Inactive locale panels stay out of the accessibility tree via [hidden];
+   keep them cheap for layout/paint until switched. */
+.playbook-detail__locale[hidden] {
+    content-visibility: hidden;
+}
+
 .playbook-detail__header {
     margin-bottom: 1.5rem;
 }
@@ -155,9 +161,12 @@
     align-items: center;
     padding: 0.15rem 0.55rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--surface-background-color));
-    color: var(--theme-color-primary);
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 32%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, var(--surface-background-color));
+    /* Body text color keeps WCAG AA contrast; primary was too light on tinted bg. */
+    color: var(--content-font-color, var(--bn-color-text-primary, #1a2330));
     font-size: 0.8125rem;
+    font-weight: 600;
 }
 
 .playbook-prose {

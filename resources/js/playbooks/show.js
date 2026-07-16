@@ -1,5 +1,4 @@
 import { initPlaybookImageLightbox } from './image-lightbox';
-import { initPlaybookPrism } from './prism-init';
 import { initPlaybookReadingPosition } from './reading-position';
 import { initPlaybookReadTracker } from './read-tracker';
 import { initPlaybookToc } from './toc';
@@ -36,30 +35,50 @@ function initActiveLocalePanel(root) {
     lightboxController = initPlaybookImageLightbox(panel);
 }
 
+/**
+ * Prism is large — load after first paint / when code blocks exist.
+ * @param {ParentNode} root
+ */
+function schedulePlaybookPrism(root) {
+    const run = () => {
+        void import('./prism-init')
+            .then(({ initPlaybookPrism }) => {
+                try {
+                    initPlaybookPrism(root);
+                } catch (error) {
+                    console.warn('Playbook syntax highlighting failed.', error);
+                }
+            })
+            .catch((error) => {
+                console.warn('Playbook syntax highlighting failed to load.', error);
+            });
+    };
+
+    const hasCode = root.querySelector('.playbook-code');
+
+    if (!hasCode) {
+        return;
+    }
+
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(run, { timeout: 2000 });
+    } else {
+        window.setTimeout(run, 1);
+    }
+}
+
 export function initPlaybookDetail(root) {
     if (!root) return;
 
     initActiveLocalePanel(root);
     initPlaybookReadingPosition(root);
     initPlaybookReadTracker(root);
-
-    try {
-        initPlaybookPrism(root);
-    } catch (error) {
-        console.warn('Playbook syntax highlighting failed.', error);
-    }
-
+    schedulePlaybookPrism(root);
     initPlaybookVideoEmbeds(root);
 
     window.addEventListener('binom-tools:playbook-locale', () => {
         initActiveLocalePanel(root);
-
-        try {
-            initPlaybookPrism(root);
-        } catch (error) {
-            console.warn('Playbook syntax highlighting failed.', error);
-        }
-
+        schedulePlaybookPrism(root);
         initPlaybookVideoEmbeds(getActiveLocalePanel(root) ?? root);
     });
 }

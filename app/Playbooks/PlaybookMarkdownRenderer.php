@@ -256,6 +256,7 @@ final class PlaybookMarkdownRenderer
             $classes = trim($existing.' playbook-prose__image');
             $image->setAttribute('class', $classes);
             $image->setAttribute('loading', 'lazy');
+            $image->setAttribute('decoding', 'async');
 
             if (str_contains($classes, 'playbook-prose__image--diagram')) {
                 $image->setAttribute('data-playbook-lightbox-trigger', 'true');
