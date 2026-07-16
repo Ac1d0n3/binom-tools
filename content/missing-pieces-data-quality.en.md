@@ -64,13 +64,15 @@ The problem begins when the temporary nature is lost.
 
 A typical pattern looks like this:
 
-Source error  
-→ temporary mapping rule  
-→ additional staging exception  
-→ further harmonization in the conformed layer  
-→ special logic in the business layer  
-→ local correction in the BI report  
-→ another workaround in Excel
+```flow linear vertical
+Source error
+temporary mapping rule
+additional staging exception
+further harmonization in the conformed layer
+special logic in the business layer
+local correction in the BI report
+another workaround in Excel
+```
 
 The original defect may no longer be visible to users. At the same time, the source remains unchanged and continues to produce the same issue.
 

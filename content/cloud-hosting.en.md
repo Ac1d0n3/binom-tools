@@ -291,17 +291,12 @@ In practice, organizations rarely build pure single-product landscapes. They com
 
 ### 1. On-premises or private cloud
 
-```text
+```flow linear vertical
 Enterprise Applications
-        ↓
 SAP S/4HANA / ERP / CRM
-        ↓
 SAP BW/4HANA
-        ↓
 Data Warehouse
-        ↓
 Data Marts / Semantic Layer
-        ↓
 SAP BusinessObjects / Qlik / other BI tools
 ```
 
@@ -325,15 +320,11 @@ Security and governance are implemented primarily through internal policies, net
 
 ### 2. Cloud-native
 
-```text
+```flow linear vertical
 Cloud Sources
-      ↓
 Ingestion Layer
-      ↓
 Snowflake / Databricks / BigQuery / Redshift / Fabric
-      ↓
 dbt or platform-native transformation
-      ↓
 Power BI / Tableau / Qlik / other analytics tools
 ```
 

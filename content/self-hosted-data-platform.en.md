@@ -94,14 +94,11 @@ There is no single on-prem stack. Different platform models can make sense depen
 
 ### 1. Traditional enterprise SQL stack
 
-```text
+```flowchart
 ERP / CRM / operational databases
-                ↓
-         ETL / replication
-                ↓
-         SQL data warehouse
-                ↓
-          Enterprise BI
+ETL / replication
+SQL data warehouse
+Enterprise BI
 ```
 
 Typical components may include:
@@ -129,15 +126,11 @@ This model can fit organizations that already have strong database, Windows, Lin
 
 ### 2. Modern analytical database stack
 
-```text
+```flowchart
 Source systems
-       ↓
 Replication / ELT
-       ↓
 Analytical database
-       ↓
 dbt Core / SQL transformation
-       ↓
 BI and analytics
 ```
 
@@ -163,15 +156,11 @@ Analytical databases are designed for large scans, filters and aggregation workl
 
 ### 3. Self-hosted open lakehouse
 
-```text
+```flowchart
 Source systems
-       ↓
 Object storage
-       ↓
 Open table format
-       ↓
 SQL or compute engine
-       ↓
 Analytics & reporting
 ```
 

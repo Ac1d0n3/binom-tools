@@ -210,15 +210,17 @@ Die Zugriffsentscheidung hängt anschließend von Kontext ab, zum Beispiel:
 
 Daraus entsteht ein Lifecycle:
 
-Identität  
-→ Rolle, Gruppe und Attribute  
-→ Zugriffsanforderung oder automatisiertes Entitlement  
-→ Policy- und Risikoprüfung  
-→ Genehmigung oder automatisierte Entscheidung  
-→ Bereitstellung  
-→ Nutzungsmonitoring  
-→ Review und Rezertifizierung  
-→ Anpassung oder Entzug
+```flow linear vertical
+Identität
+Rolle, Gruppe und Attribute
+Zugriffsanforderung oder automatisiertes Entitlement
+Policy- und Risikoprüfung
+Genehmigung oder automatisierte Entscheidung
+Bereitstellung
+Nutzungsmonitoring
+Review und Rezertifizierung
+Anpassung oder Entzug
+```
 
 Der Prozess sollte nicht davon ausgehen, dass jede Zugriffsanforderung eine lange manuelle Genehmigungskette benötigt.
 
@@ -263,12 +265,14 @@ Eine anfangs angemessene Berechtigung kann später zu weitreichend sein.
 
 Deshalb benötigt Least Privilege einen Lifecycle:
 
-Definieren  
-→ Gewähren  
-→ Beobachten  
-→ Überprüfen  
-→ Reduzieren oder entziehen  
-→ Neu bewerten
+```flow linear vertical
+Definieren
+Gewähren
+Beobachten
+Überprüfen
+Reduzieren oder entziehen
+Neu bewerten
+```
 
 Nutzungsevidenz kann Reviewern helfen, aktiv benötigte Zugriffe von Berechtigungen zu unterscheiden, die möglicherweise nicht mehr verwendet werden.
 
@@ -769,7 +773,18 @@ Eine technische Kontrolle belegt keine Policy-Wirksamkeit, solange Zweck, Owners
 
 Die operative Kette lautet:
 
-> **Policy-Absicht → gesteuerte Identität → begründeter Zugriffsbedarf → Entscheidung → technische Durchsetzung → Monitoring → Review → Entzug oder Verlängerung → Nachweis → Verbesserung**
+```flow linear vertical
+Policy-Absicht
+gesteuerte Identität
+begründeter Zugriffsbedarf
+Entscheidung
+technische Durchsetzung
+Monitoring
+Review
+Entzug oder Verlängerung
+Nachweis
+Verbesserung
+```
 
 Die zentrale Frage ist deshalb:
 

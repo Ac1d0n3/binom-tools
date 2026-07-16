@@ -78,13 +78,10 @@ Die Zielarchitektur lautet weder „viele isolierte Apps“ noch „eine App mit
 
 Sie beschreibt einen kontrollierten Fluss:
 
-```text
+```flow linear vertical
 Fokussierte Abteilungs-Facts
-              ↓
 Gemeinsames governed Unternehmensmodell
-              ↓
 Entscheidungsspezifische Filter und Aggregate
-              ↓
 Zweckorientierte Apps
 ```
 

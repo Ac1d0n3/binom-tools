@@ -75,11 +75,12 @@
     <div class="tools-card__media">
         @if ($heroUrl)
             <div class="tools-card__hero">
-                <img
-                    src="{{ $heroUrl }}"
+                <x-playbooks.responsive-image
+                    :src="$heroUrl"
                     alt=""
                     class="tools-card__hero-image"
                     loading="lazy"
+                    decoding="async"
                 />
             </div>
         @else

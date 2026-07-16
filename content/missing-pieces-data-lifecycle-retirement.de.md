@@ -104,15 +104,17 @@ Sie werden kopiert, transformiert, aggregiert, angereichert und wiederverwendet.
 
 Ein Kundendatensatz kann sich entwickeln zu:
 
-Quelldatensatz  
-→ RAW-Event  
-→ konformierte Kundentabelle  
-→ Sales Mart  
-→ Kundenkennzahl  
-→ Dashboard  
-→ Excel-Export  
-→ Machine-Learning-Feature  
-→ archivierter Snapshot
+```flow linear vertical
+Quelldatensatz
+RAW-Event
+konformierte Kundentabelle
+Sales Mart
+Kundenkennzahl
+Dashboard
+Excel-Export
+Machine-Learning-Feature
+archivierter Snapshot
+```
 
 Der Lebenszyklus jeder Repräsentation kann unterschiedlich sein.
 
@@ -671,7 +673,20 @@ Diese Sicherheit benötigt Kontext:
 
 Die Lifecycle-Kette lautet:
 
-> **Zweck → Erzeugung → Klassifizierung → Ownership → kontrollierte Nutzung → Monitoring → Aufbewahrung oder Archivierung → Stilllegungsentscheidung → Auflösung von Abhängigkeiten → Löschung oder Erhaltung → Nachweis → Review**
+```flow linear vertical
+Zweck
+Erzeugung
+Klassifizierung
+Ownership
+kontrollierte Nutzung
+Monitoring
+Aufbewahrung oder Archivierung
+Stilllegungsentscheidung
+Auflösung von Abhängigkeiten
+Löschung oder Erhaltung
+Nachweis
+Review
+```
 
 Die zentrale Frage lautet deshalb:
 

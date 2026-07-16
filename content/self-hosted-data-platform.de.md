@@ -94,14 +94,11 @@ Es gibt nicht den einen On-Prem-Stack. Unterschiedliche Plattformmodelle können
 
 ### 1. Klassischer Enterprise SQL Stack
 
-```text
+```flowchart
 ERP / CRM / operative Datenbanken
-              ↓
-       ETL / Replikation
-              ↓
-       SQL Data Warehouse
-              ↓
-       Enterprise BI
+ETL / Replikation
+SQL Data Warehouse
+Enterprise BI
 ```
 
 Typische Bausteine können sein:
@@ -129,15 +126,11 @@ Dieser Ansatz kann gut passen, wenn bereits Datenbank-, Windows-, Linux-, Qlik- 
 
 ### 2. Moderner analytischer Datenbank-Stack
 
-```text
+```flowchart
 Quellsysteme
-      ↓
 Replikation / ELT
-      ↓
 Analytische Datenbank
-      ↓
 dbt Core / SQL-Transformation
-      ↓
 BI und Analytics
 ```
 
@@ -163,15 +156,11 @@ Analytische Datenbanken sind auf große Scan-, Filter- und Aggregations-Workload
 
 ### 3. Selbst betriebenes Open Lakehouse
 
-```text
+```flowchart
 Quellsysteme
-      ↓
 Object Storage
-      ↓
 Offenes Tabellenformat
-      ↓
 SQL- oder Compute Engine
-      ↓
 Analytics & Reporting
 ```
 

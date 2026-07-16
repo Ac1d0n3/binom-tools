@@ -206,13 +206,15 @@ Technical lineage is highly valuable for impact analysis, root-cause investigati
 
 It can show a path such as:
 
-Source System  
-→ Ingestion  
-→ Raw Layer  
-→ Transformation  
-→ Data Mart  
-→ Semantic Model  
-→ Dashboard
+```flow linear vertical
+Source System
+Ingestion
+Raw Layer
+Transformation
+Data Mart
+Semantic Model
+Dashboard
+```
 
 That path answers important questions:
 
@@ -267,13 +269,15 @@ A complete technical graph without a business view can become too complex for ma
 
 A useful model allows people to move between levels:
 
-Business Term  
-→ Trusted Metric  
-→ Data Product  
-→ Semantic Model  
-→ Data Mart  
-→ Transformations  
-→ Source Fields
+```flow linear vertical
+Business Term
+Trusted Metric
+Data Product
+Semantic Model
+Data Mart
+Transformations
+Source Fields
+```
 
 The user can begin with meaning and drill into technical evidence when needed.
 
@@ -415,13 +419,15 @@ Many data paths do not end at a warehouse table.
 
 They continue into:
 
-Semantic Model  
-→ BI Measure  
-→ Report  
-→ Export  
-→ Spreadsheet  
-→ Presentation  
-→ Business Decision
+```flow linear vertical
+Semantic Model
+BI Measure
+Report
+Export
+Spreadsheet
+Presentation
+Business Decision
+```
 
 Not every downstream step can be captured automatically across every tool.
 
@@ -590,7 +596,15 @@ A searchable catalog does not automatically tell users which asset is appropriat
 
 The bridge requires:
 
-> **technical metadata → business terms → purpose and context → ownership → quality and policy → understandable lineage → continuous stewardship**
+```flow linear vertical
+technical metadata
+business terms
+purpose and context
+ownership
+quality and policy
+understandable lineage
+continuous stewardship
+```
 
 The central question is therefore:
 

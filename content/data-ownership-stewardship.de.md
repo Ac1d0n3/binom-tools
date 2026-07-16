@@ -140,15 +140,11 @@ Ein reifes Governance-Modell ermöglicht es Nutzern, Owner zu finden, Daten zu v
 
 Ownership sollte als wiederholbarer Prozess umgesetzt werden und nicht als einmalige Zuordnungsübung.
 
-```text
+```flow linear vertical
 Kritische Datenassets identifizieren
-        ↓
 Owner und Stewards zuweisen
-        ↓
 Standards und Entscheidungsrechte definieren
-        ↓
 Qualität, Probleme und Entscheidungen überwachen
-        ↓
 Überprüfen, verbessern und verankern
 ```
 
@@ -255,23 +251,14 @@ RACI-Matrizen können unterstützen, sollten aber das Operating Model nicht anst
 
 Policies beschreiben erwartetes Verhalten. Stewardship sorgt dafür, dass diese Erwartungen in operative Aktivitäten übersetzt werden.
 
-Zum Beispiel:
+Zum Beispiel kann eine Policy verlangen, dass kritische Kundendaten vollständig und geschützt sein müssen. Stewardship übersetzt das dann in konkrete Arbeit:
 
-```text
-Policy:
-Kritische Kundendaten müssen vollständig und geschützt sein.
-
-Stewardship:
+```flow linear vertical
 Kritische Felder definieren
-        ↓
 Fachliche Bedeutung dokumentieren
-        ↓
 PII klassifizieren
-        ↓
 Qualitätsschwellen festlegen
-        ↓
 Technische Kontrollen koordinieren
-        ↓
 Ergebnisse überwachen und Probleme lösen
 ```
 
@@ -417,17 +404,12 @@ Das Modell sollte einfach genug für die tägliche Nutzung und stark genug zur L
 
 Eine praktische Umsetzung kann diesem Pfad folgen:
 
-```text
+```flow linear vertical
 Kritisches Datenasset
-        ↓
 Owner + Steward + Custodian
-        ↓
 Definitionen + Policies + Entscheidungsrechte
-        ↓
 Metadaten + Qualitätsregeln + Kontrollen
-        ↓
 Monitoring + Issue Workflow + Nachweise
-        ↓
 Review + Verbesserung
 ```
 

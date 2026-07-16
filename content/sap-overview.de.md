@@ -170,11 +170,9 @@ Die meisten realen Landschaften ähneln einem von vier groben Mustern – oder e
 
 ### 1. Klassischer SAP-Stack
 
-```text
+```flowchart
 SAP ERP / ECC
-      ↓
-    SAP BW
-      ↓
+SAP BW
 SAP BusinessObjects
 ```
 
@@ -184,11 +182,9 @@ Herausfordernd kann es werden, wenn eine breitere Cloud-Integration, offener Dat
 
 ### 2. Moderner SAP-Cloud-Stack
 
-```text
+```flowchart
 SAP S/4HANA
-      ↓
 SAP Datasphere
-      ↓
 SAP Analytics Cloud
 ```
 
@@ -198,13 +194,10 @@ Es kann für Unternehmen attraktiv sein, die ein stärker verwaltetes und SAP-ze
 
 ### 3. Hybrider SAP-Stack
 
-```text
+```flowchart
 SAP S/4HANA
-      ↓
 SAP BW/4HANA
-      ↓
 SAP Datasphere
-      ↓
 SAP Analytics Cloud
 ```
 
@@ -214,13 +207,10 @@ Das Hauptrisiko ist unkontrollierte Duplizierung: Dieselbe Transformation, derse
 
 ### 4. Offener oder erweiterter SAP-Stack
 
-```text
+```flowchart
 SAP-Quellen
-      ↓
 Integration / Replikation
-      ↓
 Snowflake / Databricks / BigQuery
-      ↓
 Power BI / Qlik / Tableau
 ```
 

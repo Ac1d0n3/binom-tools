@@ -236,25 +236,59 @@ final class PlaybookMarkdownRenderer
 
     private function enhanceImages(DOMElement $root): void
     {
+        /** @var list<DOMElement> $images */
+        $images = [];
+
         foreach ($root->getElementsByTagName('img') as $image) {
             if ($image instanceof DOMElement) {
-                $src = trim($image->getAttribute('src'));
-
-                if ($src !== '') {
-                    $image->setAttribute('src', $this->resolveImageUrl($src));
-                }
-
-                $existing = trim($image->getAttribute('class'));
-                $classes = trim($existing.' playbook-prose__image');
-                $image->setAttribute('class', $classes);
-                $image->setAttribute('loading', 'lazy');
-
-                if (str_contains($classes, 'playbook-prose__image--diagram')) {
-                    $image->setAttribute('data-playbook-lightbox-trigger', 'true');
-                    $image->setAttribute('tabindex', '0');
-                    $image->setAttribute('role', 'button');
-                }
+                $images[] = $image;
             }
+        }
+
+        foreach ($images as $image) {
+            $src = trim($image->getAttribute('src'));
+
+            if ($src !== '') {
+                $image->setAttribute('src', $this->resolveImageUrl($src));
+            }
+
+            $existing = trim($image->getAttribute('class'));
+            $classes = trim($existing.' playbook-prose__image');
+            $image->setAttribute('class', $classes);
+            $image->setAttribute('loading', 'lazy');
+
+            if (str_contains($classes, 'playbook-prose__image--diagram')) {
+                $image->setAttribute('data-playbook-lightbox-trigger', 'true');
+                $image->setAttribute('tabindex', '0');
+                $image->setAttribute('role', 'button');
+            }
+
+            $pictureSources = PlaybookImagePath::pictureSources($src);
+
+            if ($pictureSources === null) {
+                continue;
+            }
+
+            $document = $image->ownerDocument;
+
+            if ($document === null) {
+                continue;
+            }
+
+            $picture = $document->createElement('picture');
+            $source = $document->createElement('source');
+            $source->setAttribute('srcset', $pictureSources['webp']);
+            $source->setAttribute('type', 'image/webp');
+
+            $parent = $image->parentNode;
+
+            if ($parent === null) {
+                continue;
+            }
+
+            $parent->replaceChild($picture, $image);
+            $picture->appendChild($source);
+            $picture->appendChild($image);
         }
     }
 

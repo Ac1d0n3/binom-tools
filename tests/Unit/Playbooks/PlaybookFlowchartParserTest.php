@@ -18,6 +18,7 @@ MD);
 
         $this->assertNotNull($parsed);
         $this->assertSame('chevron', $parsed['variant']);
+        $this->assertSame('horizontal', $parsed['layout']);
         $this->assertCount(3, $parsed['steps']);
         $this->assertSame('Collect metadata', $parsed['steps'][0]['label']);
         $this->assertNull($parsed['steps'][0]['state']);
@@ -36,7 +37,40 @@ MD);
 
         $this->assertNotNull($parsed);
         $this->assertSame('linear', $parsed['variant']);
+        $this->assertSame('horizontal', $parsed['layout']);
         $this->assertSame('Transform', $parsed['steps'][1]['label']);
+    }
+
+    public function test_parses_vertical_layout_in_any_token_order(): void
+    {
+        $parsed = PlaybookFlowchartParser::parse('flow vertical linear', <<<'MD'
+Focused departmental facts
+Shared governed enterprise model
+Purpose-built applications
+MD);
+
+        $this->assertNotNull($parsed);
+        $this->assertSame('linear', $parsed['variant']);
+        $this->assertSame('vertical', $parsed['layout']);
+        $this->assertCount(3, $parsed['steps']);
+    }
+
+    public function test_skips_arrow_only_rows(): void
+    {
+        $parsed = PlaybookFlowchartParser::parse('flow linear vertical', <<<'MD'
+Step A
+            ↓
+Step B
+            →
+Step C
+            ↺
+MD);
+
+        $this->assertNotNull($parsed);
+        $this->assertCount(3, $parsed['steps']);
+        $this->assertSame('Step A', $parsed['steps'][0]['label']);
+        $this->assertSame('Step B', $parsed['steps'][1]['label']);
+        $this->assertSame('Step C', $parsed['steps'][2]['label']);
     }
 
     #[DataProvider('invalidFlowchartBodies')]

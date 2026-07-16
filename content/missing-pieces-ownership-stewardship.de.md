@@ -62,12 +62,14 @@ Eine formale Zuweisung kann vollständig und korrekt sein, während der operativ
 
 Ein mögliches Muster sieht so aus:
 
-Data Asset / KPI / Report  
-→ Owner zugewiesen  
-→ Steward zugewiesen  
-→ Problem erkannt  
-→ unklarer Entscheidungs- oder Eskalationsweg  
-→ lokale Korrektur oder langsame Bearbeitung
+```flow linear vertical
+Data Asset / KPI / Report
+Owner zugewiesen
+Steward zugewiesen
+Problem erkannt
+unklarer Entscheidungs- oder Eskalationsweg
+lokale Korrektur oder langsame Bearbeitung
+```
 
 Das bedeutet nicht automatisch, dass die zugewiesenen Personen ihre Rolle nicht ernst nehmen. Häufig fehlen Rahmenbedingungen.
 
@@ -209,13 +211,15 @@ Ownership wird leichter greifbar, wenn Probleme, Entscheidungen und Änderungen 
 
 Ein möglicher Lifecycle:
 
-New  
-→ In Review  
-→ Assigned  
-→ In Progress  
-→ Resolved  
-→ Reviewed  
-→ Continuously Improved
+```flow linear vertical
+New
+In Review
+Assigned
+In Progress
+Resolved
+Reviewed
+Continuously Improved
+```
 
 Dabei sollten nicht nur technische Tickets sichtbar sein. Auch der fachliche Kontext gehört dazu.
 
@@ -472,7 +476,15 @@ Die mögliche Lücke liegt zwischen **Zuweisung** und **Handlung**.
 
 Ein Name im Katalog schafft Sichtbarkeit. Wirksame Verantwortung benötigt zusätzlich:
 
-> **klaren Scope → Zeit und Kapazität → Entscheidungsrechte → Eskalationswege → verständlichen Kontext → nutzbare Prozesse → kontinuierliches Review**
+```flow linear vertical
+klaren Scope
+Zeit und Kapazität
+Entscheidungsrechte
+Eskalationswege
+verständlichen Kontext
+nutzbare Prozesse
+kontinuierliches Review
+```
 
 Die zentrale Frage lautet deshalb:
 

@@ -267,7 +267,12 @@ Wähle möglichst die Plattform, die du später tatsächlich einsetzen möchtest
 
 Baue eine kleine Schichtenlogik:
 
-`Sources → Staging → Intermediate → Marts`
+```flowchart
+Sources
+Staging
+Intermediate
+Marts
+```
 
 Lerne dabei:
 

@@ -291,17 +291,12 @@ In der Praxis entstehen meist keine reinen Produktlandschaften. Unternehmen komb
 
 ### 1. On-Premises oder Private Cloud
 
-```text
+```flow linear vertical
 Enterprise-Anwendungen
-        ↓
 SAP S/4HANA / ERP / CRM
-        ↓
 SAP BW/4HANA
-        ↓
 Data Warehouse
-        ↓
 Data Marts / Semantische Schicht
-        ↓
 SAP BusinessObjects / Qlik / weitere BI-Werkzeuge
 ```
 
@@ -325,15 +320,11 @@ Sicherheit und Governance werden überwiegend über interne Richtlinien, Netzwer
 
 ### 2. Cloud-Native
 
-```text
+```flow linear vertical
 Cloud-Quellen
-      ↓
 Ingestion Layer
-      ↓
 Snowflake / Databricks / BigQuery / Redshift / Fabric
-      ↓
 dbt oder plattformeigene Transformation
-      ↓
 Power BI / Tableau / Qlik / weitere Analytics-Werkzeuge
 ```
 

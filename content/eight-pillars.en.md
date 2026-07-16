@@ -168,8 +168,12 @@ Data should not be stored indefinitely simply because storage is inexpensive. Re
 
 A complete lifecycle may include the following stages:
 
-```text
-Create → Use → Share → Archive → Delete or Anonymize
+```flowchart
+Create
+Use
+Share
+Archive
+Delete or Anonymize
 ```
 
 For relevant data classes, rules are defined for:
@@ -187,17 +191,12 @@ This pillar complements DSDR: retention governs regular, policy-based storage an
 
 The pillars are not separate programs. They reinforce each other:
 
-```text
+```flow linear vertical
 Ownership
-    ↓
 Metadata & Lineage
-    ↓
 PII Classification
-    ↓
 Access, Retention & DSDR Controls
-    ↓
 Data Quality & Trusted Metrics
-    ↓
 Reliable Decisions and Business Value
 ```
 
@@ -221,17 +220,12 @@ The goal is not maximum automation at any cost. What matters is that critical go
 
 In a modern data stack, governance can be implemented as an end-to-end chain:
 
-```text
+```flow linear vertical
 Business Definitions
-        ↓
 Metadata as Code
-        ↓
 dbt Models, Tests & Meta
-        ↓
 Warehouse Policies & Access Controls
-        ↓
 Catalog, Lineage & Monitoring
-        ↓
 Governed Data Products and KPIs
 ```
 

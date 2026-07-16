@@ -30,11 +30,12 @@
                         <div class="playbook-detail__scroll" data-playbook-scroll-root>
                             @if ($variant->heroUrl)
                                 <div class="playbook-detail__hero">
-                                    <img
-                                        src="{{ $variant->heroUrl }}"
-                                        alt="{{ $variant->title }}"
+                                    <x-playbooks.responsive-image
+                                        :src="$variant->heroUrl"
+                                        :alt="$variant->title"
                                         class="playbook-detail__hero-image"
                                         loading="eager"
+                                        fetchpriority="high"
                                     />
                                 </div>
                             @endif

@@ -74,7 +74,7 @@ function assertFontAwesomeBuildAssets(assetsDir) {
 }
 
 console.log('Building assets (local .htaccess unchanged)…');
-execSync('vite build && node scripts/rewrite-build-asset-urls.mjs', {
+execSync('npm run build', {
     cwd: root,
     stdio: 'inherit',
 });
@@ -88,6 +88,22 @@ copyPublicTree(join(root, 'public'), join(outDir, 'public'));
 cpSync(join(root, 'public/.htaccess.production'), join(outDir, 'public/.htaccess'));
 
 assertFontAwesomeBuildAssets(join(outDir, 'public/build/assets'));
+
+const playbookImagesDir = join(outDir, 'public/images/playbooks');
+const pngCount = existsSync(playbookImagesDir)
+    ? readdirSync(playbookImagesDir).filter((name) => name.endsWith('.png')).length
+    : 0;
+const webpCount = existsSync(playbookImagesDir)
+    ? readdirSync(playbookImagesDir).filter((name) => name.endsWith('.webp')).length
+    : 0;
+
+if (pngCount > 0 && webpCount < pngCount) {
+    throw new Error(
+        `WebP sync incomplete in deploy package (${webpCount}/${pngCount} playbook images). Run npm run sync:images before deploy.`,
+    );
+}
+
+console.log(`Playbook images packed: ${webpCount} WebP / ${pngCount} PNG`);
 
 for (const rel of deployPaths) {
     const src = join(root, rel);

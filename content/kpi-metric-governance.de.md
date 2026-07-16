@@ -191,19 +191,13 @@ Die entscheidende Frage ist:
 
 Ein belastbarer Lifecycle kann in sechs Schritten aufgebaut werden.
 
-```text
+```flow linear vertical
 1. KPI fachlich definieren
-        ↓
 2. Owner, Steward und Gültigkeit festlegen
-        ↓
 3. Berechnungslogik und Granularität standardisieren
-        ↓
 4. Freigegebene Metrik veröffentlichen
-        ↓
 5. Nutzung, Qualität und Abweichungen überwachen
-        ↓
 6. Review, Versionierung und kontrollierte Ablösung
-        ↺
 ```
 
 ## 1. KPI fachlich definieren
@@ -319,11 +313,9 @@ Das Ziel ist nicht, alle Nutzer in ein Tool zu zwingen.
 
 Das Ziel ist:
 
-```text
+```flow linear vertical
 One approved business meaning
-        ↓
 Consistent metric logic
-        ↓
 Multiple governed consumption tools
 ```
 
@@ -449,19 +441,13 @@ Eine Kennzahl sollte bis zu ihren Quellen nachvollziehbar sein.
 
 Beispiel:
 
-```text
+```flow linear vertical
 CRM + ERP
-    ↓
 RAW sales data
-    ↓
 CONFORM sales facts
-    ↓
 DIM customer / product / calendar
-    ↓
 Semantic Metric: Net Revenue
-    ↓
 Qlik / Excel / Power BI / Tableau
-    ↓
 Management Report
 ```
 
@@ -650,21 +636,14 @@ Erst die kontrollierte Verbindung von **Datenmodell, Metrikdefinition, Semantic 
 
 ## Praktisches Zielbild
 
-```text
+```flow linear vertical
 Business Definition
-        ↓
 KPI Owner + Steward
-        ↓
 Versioned Metric Specification
-        ↓
 Facts + Dimensions + Semantic Logic
-        ↓
 Certified Metric
-        ↓
 Qlik / Excel / Power BI / Tableau
-        ↓
 Monitoring + Reconciliation + Review
-        ↓
 Trusted Decisions
 ```
 

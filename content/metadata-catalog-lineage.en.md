@@ -135,15 +135,11 @@ A catalog with complete technical ingestion but little adoption does not solve t
 
 Metadata governance should be implemented as a continuous process, not as a one-time catalog project.
 
-```text
+```flow linear vertical
 Capture metadata from systems and pipelines
-        ↓
 Organize and classify assets in the catalog
-        ↓
 Map lineage across sources, models and reports
-        ↓
 Review ownership, quality and business context
-        ↓
 Use, improve and govern continuously
 ```
 
@@ -254,17 +250,12 @@ Before changing a source, model or KPI, teams should be able to answer:
 
 A practical change process can look like this:
 
-```text
+```flow linear vertical
 Planned change
-        ↓
 Analyze lineage and dependencies
-        ↓
 Identify critical assets, KPIs and policies
-        ↓
 Engage owners and affected teams
-        ↓
 Plan tests, migration and communication
-        ↓
 Implement the change and update lineage
 ```
 
@@ -412,17 +403,12 @@ Metadata is therefore more than documentation. It can become the control layer f
 
 A practical implementation can follow this path:
 
-```text
+```flow linear vertical
 Systems + Pipelines + Models + Reports
-        ↓
 Automated Technical Metadata
-        ↓
 Business Definitions + Ownership + Classifications
-        ↓
 Catalog + Search + Lineage + Impact Analysis
-        ↓
 Quality + Access + Privacy + Retention + Workflows
-        ↓
 Trusted Use + Continuous Improvement
 ```
 

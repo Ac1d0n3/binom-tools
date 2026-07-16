@@ -24,14 +24,16 @@ Unternehmen investieren viel in zentrale Datenplattformen, wiederverwendbare Dat
 
 Gleichzeitig entsteht fachliche Bedeutung heute an vielen Stellen:
 
-Source Data  
-→ Transformation / dbt Model  
-→ SQL View / Data Mart  
-→ Semantic Model  
-→ BI Measure  
-→ Report Expression  
-→ Anwendungslogik  
-→ Excel-Formel
+```flow linear vertical
+Source Data
+Transformation / dbt Model
+SQL View / Data Mart
+Semantic Model
+BI Measure
+Report Expression
+Anwendungslogik
+Excel-Formel
+```
 
 Jede dieser Ebenen kann einen legitimen Zweck erfüllen. Eine Kennzahl im Data Mart kann Wiederverwendung ermöglichen. Ein semantisches Modell kann Geschäftsbegriffe und Berechnungen für verschiedene Reports bereitstellen. Eine Report-Kennzahl kann einen lokalen Analysebedarf abdecken. Excel kann für Fachanwender der schnellste und vertrauteste Weg sein, Daten weiterzuverarbeiten.
 
@@ -154,12 +156,14 @@ Ein möglicher Weg ist, Excel weiterhin als Analyseoberfläche zu nutzen, aber d
 
 Trotzdem bleibt eine Grenze:
 
-Trusted Semantic Model  
-→ Excel Pivot / Connected Table  
-→ lokale Formel  
-→ manuelle Anpassung  
-→ neue Datei oder Kopie  
-→ geschäftliche Entscheidung
+```flow linear vertical
+Trusted Semantic Model
+Excel Pivot / Connected Table
+lokale Formel
+manuelle Anpassung
+neue Datei oder Kopie
+geschäftliche Entscheidung
+```
 
 Ab welchem Schritt wird aus persönlicher Analyse eine neue fachliche Definition?
 
@@ -286,13 +290,15 @@ Governance sollte also nicht nur kontrollieren. Sie sollte einen einfachen Weg a
 
 Eine Kennzahl kann ähnlich wie ein Datenprodukt einen Lebenszyklus besitzen:
 
-Draft  
-→ Review  
-→ Approved  
-→ Certified  
-→ Monitored  
-→ Changed / Versioned  
-→ Deprecated
+```flow linear vertical
+Draft
+Review
+Approved
+Certified
+Monitored
+Changed / Versioned
+Deprecated
+```
 
 Dabei sollten Änderungen nicht unsichtbar erfolgen.
 
@@ -334,7 +340,13 @@ Fachliche Bedeutung kann in Pipelines, Views, semantischen Modellen, BI-Measures
 
 Die fehlende Komponente ist deshalb nicht zwingend ein weiteres Tool. Häufig fehlt die Verbindung zwischen:
 
-> **gemeinsamer Definition → sichtbarer Verantwortung → verständlichem Kontext → technischer Wiederverwendung → kontinuierlichem Feedback**
+```flowchart
+gemeinsamer Definition
+sichtbarer Verantwortung
+verständlichem Kontext
+technischer Wiederverwendung
+kontinuierlichem Feedback
+```
 
 Die entscheidende Frage lautet:
 

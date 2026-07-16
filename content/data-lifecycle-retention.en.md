@@ -59,17 +59,12 @@ This creates common problems:
 
 A practical lifecycle can distinguish six stages:
 
-```text
+```flow linear vertical
 1. Create / Receive
-        ↓
 2. Use Actively
-        ↓
 3. Manage as Inactive
-        ↓
 4. Archive
-        ↓
 5. Review and Assess
-        ↓
 6. Delete or Anonymize Permanently
 ```
 
@@ -406,21 +401,14 @@ A modern data stack contains multiple copies.
 
 Example:
 
-```text
+```flow linear vertical
 Source
-  ↓
 Landing
-  ↓
 RAW
-  ↓
 CONFORM
-  ↓
 ANALYTICS
-  ↓
 Semantic Layer
-  ↓
 BI Extract
-  ↓
 Excel Export
 ```
 
@@ -435,13 +423,10 @@ Retention must answer:
 
 A common failure pattern is:
 
-```text
+```flowchart
 Source deleted
-        ↓
 Warehouse copy remains
-        ↓
 BI extract remains
-        ↓
 Excel export remains indefinitely
 ```
 
@@ -513,13 +498,10 @@ Define:
 
 A central control point is:
 
-```text
+```flow linear vertical
 Restore
-        ↓
 Reapply valid deletion and suppression rules
-        ↓
 Validate restored environment
-        ↓
 Release for use
 ```
 
@@ -736,21 +718,14 @@ Data Lifecycle & Retention provides the time dimension for all other governance 
 
 ## Practical target state
 
-```text
+```flow linear vertical
 Data Created
-        ↓
 Classified + Owned
-        ↓
 Active Use
-        ↓
 Usage and Value Monitoring
-        ↓
 Inactive / Archive
-        ↓
 Retention Review
-        ↓
 Delete / Anonymize / Retain with Justification
-        ↓
 Validation + Audit Evidence
 ```
 

@@ -153,19 +153,13 @@ Damit wird aus einer allgemeinen Erwartung ein steuerbarer Governance-Kontrollpu
 
 Ein belastbares Qualitätsmodell folgt einem kontinuierlichen Zyklus.
 
-```text
+```flow linear vertical
 1. Qualitätsziele und Verantwortlichkeiten definieren
-        ↓
 2. Daten profilieren und Regeln implementieren
-        ↓
 3. Qualität messen und überwachen
-        ↓
 4. Ursachen und Auswirkungen analysieren
-        ↓
 5. Korrektur- und Präventionsmaßnahmen umsetzen
-        ↓
 6. Ergebnisse validieren und Standards verbessern
-        ↺
 ```
 
 ## 1. Qualitätsziele und Verantwortlichkeiten definieren
@@ -226,17 +220,12 @@ Qualitätsmessung sollte möglichst nah an der Datenentstehung beginnen.
 
 Ein mögliches Kontrollmodell:
 
-```text
+```flow linear vertical
 Source
-  ↓
 Ingestion Checks
-  ↓
 RAW Structural Tests
-  ↓
 Conform Business Rules
-  ↓
 Analytics Reconciliation
-  ↓
 BI / KPI Validation
 ```
 
@@ -281,19 +270,13 @@ Ein Qualitätsproblem sollte nicht nur lokal betrachtet werden.
 
 Beispiel:
 
-```text
+```flow linear vertical
 CRM source
-   ↓
 customer_email contains invalid values
-   ↓
 RAW customer
-   ↓
 CONFORM customer
-   ↓
 Customer 360
-   ↓
 Campaign audience
-   ↓
 Delivery failures and incorrect KPI
 ```
 
@@ -468,19 +451,13 @@ Qualitätsprobleme benötigen einen definierten Workflow.
 
 Ein mögliches Modell:
 
-```text
+```flow linear vertical
 Detected
-  ↓
 Triaged
-  ↓
 Assigned
-  ↓
 Root Cause Identified
-  ↓
 Remediation in Progress
-  ↓
 Validated
-  ↓
 Closed
 ```
 
@@ -522,17 +499,12 @@ Ein Zertifizierungsstatus sollte automatisch oder halbautomatisch auf Qualitäts
 
 Beispiel:
 
-```text
+```flow linear vertical
 Critical Rule Failed
-        ↓
 Status: Certified → Degraded
-        ↓
 Owner + Consumers notified
-        ↓
 Issue created
-        ↓
 Validation passed
-        ↓
 Status restored
 ```
 
@@ -648,21 +620,14 @@ Data Quality Governance ist damit keine isolierte Testdisziplin. Sie verbindet f
 
 ## Praktisches Zielbild
 
-```text
+```flow linear vertical
 Business Expectation
-        ↓
 Data Owner + Steward
-        ↓
 Quality Rule + Threshold
-        ↓
 Automated Test + Monitoring
-        ↓
 Score + Certification Status
-        ↓
 Issue + Root Cause + Remediation
-        ↓
 Validation + Continuous Improvement
-        ↓
 Trusted Data Products
 ```
 

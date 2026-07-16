@@ -267,7 +267,12 @@ Choose the platform you are most likely to use in practice:
 
 Build a small layered architecture:
 
-`Sources → Staging → Intermediate → Marts`
+```flowchart
+Sources
+Staging
+Intermediate
+Marts
+```
 
 Focus on:
 

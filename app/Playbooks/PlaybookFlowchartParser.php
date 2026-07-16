@@ -14,6 +14,7 @@ final class PlaybookFlowchartParser
     /**
      * @return array{
      *     variant: 'chevron'|'linear',
+     *     layout: 'horizontal'|'vertical',
      *     steps: list<array{label: string, state: 'active'|'completed'|null}>
      * }|null
      */
@@ -24,12 +25,24 @@ final class PlaybookFlowchartParser
         }
 
         $info = trim($info);
-        $tokens = preg_split('/\s+/', $info) ?: [];
-        $variantToken = strtolower($tokens[1] ?? 'chevron');
-        $variant = match ($variantToken) {
-            'linear', 'box', 'boxes' => 'linear',
-            default => 'chevron',
-        };
+        $tokens = preg_split('/\s+/', strtolower($info)) ?: [];
+        // Skip the fence language token (flowchart|flow).
+        $optionTokens = array_slice($tokens, 1);
+
+        $variant = 'chevron';
+        $layout = 'horizontal';
+
+        foreach ($optionTokens as $token) {
+            if (in_array($token, ['linear', 'box', 'boxes'], true)) {
+                $variant = 'linear';
+            } elseif (in_array($token, ['chevron', 'chevrons'], true)) {
+                $variant = 'chevron';
+            } elseif ($token === 'vertical') {
+                $layout = 'vertical';
+            } elseif ($token === 'horizontal') {
+                $layout = 'horizontal';
+            }
+        }
 
         $steps = self::parseSteps($body);
 
@@ -39,6 +52,7 @@ final class PlaybookFlowchartParser
 
         return [
             'variant' => $variant,
+            'layout' => $layout,
             'steps' => $steps,
         ];
     }
@@ -54,6 +68,11 @@ final class PlaybookFlowchartParser
             $line = trim($line);
 
             if ($line === '') {
+                continue;
+            }
+
+            // Skip arrow-only rows from legacy ```text migrations (↓ → ↺ etc.).
+            if (preg_match('/^[↓↑←→⇓⇑⇐⇒➜➝➞➔➡️⬇️⬆️↺↻⟲⟳]+$/u', $line) === 1) {
                 continue;
             }
 

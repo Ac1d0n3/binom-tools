@@ -64,13 +64,15 @@ Das Problem entsteht, wenn der temporäre Charakter verloren geht.
 
 Ein typisches Muster sieht so aus:
 
-Source Error  
-→ temporäre Mapping-Regel  
-→ zusätzliche Ausnahme im Staging  
-→ weitere Harmonisierung im Conformed Layer  
-→ Sonderlogik im Business Layer  
-→ lokale Korrektur im BI-Report  
-→ zusätzlicher Excel-Workaround
+```flow linear vertical
+Source Error
+temporäre Mapping-Regel
+zusätzliche Ausnahme im Staging
+weitere Harmonisierung im Conformed Layer
+Sonderlogik im Business Layer
+lokale Korrektur im BI-Report
+zusätzlicher Excel-Workaround
+```
 
 Der ursprüngliche Fehler ist für die Nutzer möglicherweise nicht mehr sichtbar. Gleichzeitig bleibt die Quelle unverändert und produziert weiterhin dieselbe Abweichung.
 

@@ -21,11 +21,12 @@
 >
     @if ($series->heroUrl)
         <div class="tools-series-card__hero">
-            <img
-                src="{{ $series->heroUrl }}"
+            <x-playbooks.responsive-image
+                :src="$series->heroUrl"
                 alt=""
                 class="tools-series-card__hero-image"
                 loading="lazy"
+                decoding="async"
             />
         </div>
     @endif

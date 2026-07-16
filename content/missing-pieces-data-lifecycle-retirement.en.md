@@ -103,15 +103,17 @@ It is copied, transformed, aggregated, enriched and reused.
 
 A customer record may become:
 
-Source record  
-→ raw event  
-→ conformed customer table  
-→ sales mart  
-→ customer metric  
-→ dashboard  
-→ exported spreadsheet  
-→ machine-learning feature  
-→ archived snapshot
+```flow linear vertical
+Source record
+raw event
+conformed customer table
+sales mart
+customer metric
+dashboard
+exported spreadsheet
+machine-learning feature
+archived snapshot
+```
 
 The lifecycle of each representation may differ.
 
@@ -670,7 +672,20 @@ Confidence requires context:
 
 The lifecycle chain is:
 
-> **purpose → creation → classification → ownership → controlled use → monitoring → retention or archival → retirement decision → dependency resolution → deletion or preservation → evidence → review**
+```flow linear vertical
+purpose
+creation
+classification
+ownership
+controlled use
+monitoring
+retention or archival
+retirement decision
+dependency resolution
+deletion or preservation
+evidence
+review
+```
 
 The central question is therefore:
 

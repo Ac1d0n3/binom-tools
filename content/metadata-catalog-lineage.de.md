@@ -135,15 +135,11 @@ Ein Katalog mit vollständiger technischer Erfassung, aber geringer Nutzung, lö
 
 Metadata Governance sollte als kontinuierlicher Prozess umgesetzt werden — nicht als einmaliges Katalogprojekt.
 
-```text
+```flow linear vertical
 Metadaten aus Systemen und Pipelines erfassen
-        ↓
 Assets im Katalog organisieren und klassifizieren
-        ↓
 Lineage über Quellen, Modelle und Reports abbilden
-        ↓
 Ownership, Qualität und fachlichen Kontext prüfen
-        ↓
 Nutzen, verbessern und kontinuierlich steuern
 ```
 
@@ -254,17 +250,12 @@ Vor einer Änderung an Quelle, Modell oder KPI sollten Teams beantworten können
 
 Ein praktikabler Change-Prozess kann so aussehen:
 
-```text
+```flow linear vertical
 Geplante Änderung
-        ↓
 Lineage und Abhängigkeiten analysieren
-        ↓
 Kritische Assets, KPIs und Policies identifizieren
-        ↓
 Owner und betroffene Teams einbinden
-        ↓
 Tests, Migration und Kommunikation planen
-        ↓
 Änderung durchführen und Lineage aktualisieren
 ```
 
@@ -412,17 +403,12 @@ Metadaten sind damit nicht nur Dokumentation. Sie können zur Steuerungsschicht 
 
 Eine praktische Umsetzung kann diesem Pfad folgen:
 
-```text
+```flow linear vertical
 Systeme + Pipelines + Modelle + Reports
-        ↓
 Automatisierte technische Metadaten
-        ↓
 Fachliche Definitionen + Ownership + Klassifikationen
-        ↓
 Katalog + Suche + Lineage + Impact Analysis
-        ↓
 Qualität + Zugriff + Datenschutz + Retention + Workflows
-        ↓
 Vertrauenswürdige Nutzung + kontinuierliche Verbesserung
 ```
 

@@ -59,17 +59,12 @@ Dadurch entstehen typische Probleme:
 
 Ein praktischer Lebenszyklus kann sechs Phasen unterscheiden:
 
-```text
+```flow linear vertical
 1. Erzeugen / Erhalten
-        ↓
 2. Aktiv nutzen
-        ↓
 3. Inaktiv verwalten
-        ↓
 4. Archivieren
-        ↓
 5. Prüfen und bewerten
-        ↓
 6. Löschen oder dauerhaft anonymisieren
 ```
 
@@ -408,21 +403,14 @@ Ein moderner Data Stack enthält mehrere Kopien.
 
 Beispiel:
 
-```text
+```flow linear vertical
 Source
-  ↓
 Landing
-  ↓
 RAW
-  ↓
 CONFORM
-  ↓
 ANALYTICS
-  ↓
 Semantic Layer
-  ↓
 BI Extract
-  ↓
 Excel Export
 ```
 
@@ -437,13 +425,10 @@ Retention muss beantworten:
 
 Ein häufiger Fehler ist:
 
-```text
+```flowchart
 Quelle gelöscht
-        ↓
 Warehouse-Kopie bleibt bestehen
-        ↓
 BI-Extrakt bleibt bestehen
-        ↓
 Excel-Export bleibt unbegrenzt erhalten
 ```
 
@@ -515,13 +500,10 @@ Zu definieren sind:
 
 Ein zentraler Kontrollpunkt:
 
-```text
+```flow linear vertical
 Restore
-        ↓
 Reapply valid deletion and suppression rules
-        ↓
 Validate restored environment
-        ↓
 Release for use
 ```
 
@@ -738,21 +720,14 @@ Data Lifecycle & Retention bildet den zeitlichen Rahmen für alle anderen Govern
 
 ## Praktisches Zielbild
 
-```text
+```flow linear vertical
 Data Created
-        ↓
 Classified + Owned
-        ↓
 Active Use
-        ↓
 Usage and Value Monitoring
-        ↓
 Inactive / Archive
-        ↓
 Retention Review
-        ↓
 Delete / Anonymize / Retain with Justification
-        ↓
 Validation + Audit Evidence
 ```
 

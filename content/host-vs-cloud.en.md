@@ -476,27 +476,20 @@ Hosting location alone does not determine performance. What matters is where the
 
 A weak hybrid design may look like this:
 
-```text
+```flow linear vertical
 Local source systems
-        ↓
 Cloud warehouse
-        ↓
 Local BI with many live queries
-        ↓
 continuous network traffic and higher latency
 ```
 
 A more resilient design places analytical processing closer to the data and transfers intentionally:
 
-```text
+```flowchart
 Source systems
-        ↓
 incremental replication / CDC
-        ↓
 analytical storage close to compute
-        ↓
 curated models
-        ↓
 reporting and data products
 ```
 
@@ -541,15 +534,11 @@ A sound mixed model places each workload where it creates the most value — und
 
 #### Model A — controlled core, cloud for AI
 
-```text
+```flowchart
 SAP / ERP / CRM
-        ↓
 Self-hosted or sovereign core warehouse
-        ↓
 curated and classified data
-        ↓
 controlled AI gateway
-        ↓
 Cloud AI service
 ```
 
@@ -593,13 +582,10 @@ Risk: test data and configuration must not expose production information uninten
 
 #### Model D — European cloud as the core with local integration
 
-```text
+```flow linear vertical
 local SAP, ERP and production systems
-        ↓
 private connectivity / controlled replication
-        ↓
 European or sovereign cloud data platform
-        ↓
 BI, analytics and data products
 ```
 

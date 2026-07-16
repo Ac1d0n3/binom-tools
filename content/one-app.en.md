@@ -78,13 +78,10 @@ The target architecture is not “many isolated apps” and it is not “one app
 
 It is a controlled flow:
 
-```text
+```flow linear vertical
 Focused departmental facts
-            ↓
 Shared governed enterprise model
-            ↓
 Decision-specific filters and aggregates
-            ↓
 Purpose-built applications
 ```
 

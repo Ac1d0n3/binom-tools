@@ -153,19 +153,13 @@ This turns a general expectation into a governable control point.
 
 A robust quality model follows a continuous cycle.
 
-```text
+```flow linear vertical
 1. Define quality objectives and accountabilities
-        ↓
 2. Profile data and implement rules
-        ↓
 3. Measure and monitor quality
-        ↓
 4. Analyze root causes and impact
-        ↓
 5. Implement corrective and preventive action
-        ↓
 6. Validate results and improve standards
-        ↺
 ```
 
 ## 1. Define quality objectives and accountabilities
@@ -226,17 +220,12 @@ Quality measurement should begin as close as possible to where data is created.
 
 A possible control model:
 
-```text
+```flow linear vertical
 Source
-  ↓
 Ingestion Checks
-  ↓
 RAW Structural Tests
-  ↓
 Conform Business Rules
-  ↓
 Analytics Reconciliation
-  ↓
 BI / KPI Validation
 ```
 
@@ -281,19 +270,13 @@ A quality issue should not be treated as a local event only.
 
 Example:
 
-```text
+```flow linear vertical
 CRM source
-   ↓
 customer_email contains invalid values
-   ↓
 RAW customer
-   ↓
 CONFORM customer
-   ↓
 Customer 360
-   ↓
 Campaign audience
-   ↓
 Delivery failures and incorrect KPI
 ```
 
@@ -468,19 +451,13 @@ Quality problems require a defined workflow.
 
 A possible model:
 
-```text
+```flow linear vertical
 Detected
-  ↓
 Triaged
-  ↓
 Assigned
-  ↓
 Root Cause Identified
-  ↓
 Remediation in Progress
-  ↓
 Validated
-  ↓
 Closed
 ```
 
@@ -522,17 +499,12 @@ Certification status should react automatically or semi-automatically to quality
 
 Example:
 
-```text
+```flow linear vertical
 Critical Rule Failed
-        ↓
 Status: Certified → Degraded
-        ↓
 Owner + Consumers notified
-        ↓
 Issue created
-        ↓
 Validation passed
-        ↓
 Status restored
 ```
 
@@ -648,21 +620,14 @@ Data Quality Governance is therefore not an isolated testing discipline. It conn
 
 ## Practical target state
 
-```text
+```flow linear vertical
 Business Expectation
-        ↓
 Data Owner + Steward
-        ↓
 Quality Rule + Threshold
-        ↓
 Automated Test + Monitoring
-        ↓
 Score + Certification Status
-        ↓
 Issue + Root Cause + Remediation
-        ↓
 Validation + Continuous Improvement
-        ↓
 Trusted Data Products
 ```
 

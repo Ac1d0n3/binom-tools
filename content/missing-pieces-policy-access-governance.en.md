@@ -210,15 +210,17 @@ The access decision then depends on context such as:
 
 This creates a lifecycle:
 
-Identity  
-→ Role, group and attributes  
-→ Access request or automated entitlement  
-→ Policy and risk evaluation  
-→ Approval or automated decision  
-→ Provisioning  
-→ Usage monitoring  
-→ Review and recertification  
-→ Change or removal
+```flow linear vertical
+Identity
+Role, group and attributes
+Access request or automated entitlement
+Policy and risk evaluation
+Approval or automated decision
+Provisioning
+Usage monitoring
+Review and recertification
+Change or removal
+```
 
 The process should not assume that every access request requires a long manual approval chain.
 
@@ -263,12 +265,14 @@ An initially reasonable permission can become excessive later.
 
 This means least privilege requires a lifecycle:
 
-Define  
-→ Grant  
-→ Observe  
-→ Review  
-→ Reduce or remove  
-→ Reassess
+```flow linear vertical
+Define
+Grant
+Observe
+Review
+Reduce or remove
+Reassess
+```
 
 Usage evidence can help reviewers distinguish between access that is actively required and access that has become dormant.
 
@@ -769,7 +773,18 @@ A technical control does not demonstrate policy effectiveness unless its purpose
 
 The operational chain is:
 
-> **policy intent → governed identity → justified access need → decision → technical enforcement → monitoring → review → removal or renewal → evidence → improvement**
+```flow linear vertical
+policy intent
+governed identity
+justified access need
+decision
+technical enforcement
+monitoring
+review
+removal or renewal
+evidence
+improvement
+```
 
 The central question is therefore:
 

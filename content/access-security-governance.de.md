@@ -83,21 +83,14 @@ Ein technischer Login beweist nur, dass eine Identität bekannt ist. Er beweist 
 
 Ein belastbarer Lifecycle kann in sieben Schritten aufgebaut werden.
 
-```text
+```flow linear vertical
 1. Identitäten, Rollen, Systeme und Datenassets erfassen
-        ↓
 2. Daten, Risiken und Zugriffsstufen klassifizieren
-        ↓
 3. Zugriff fachlich genehmigen
-        ↓
 4. Berechtigung policy-basiert bereitstellen
-        ↓
 5. Nutzung, Anomalien und Ausnahmen überwachen
-        ↓
 6. Zugriffe regelmäßig rezertifizieren
-        ↓
 7. Veraltete oder riskante Berechtigungen entziehen
-        ↺
 ```
 
 Dieser Lifecycle gilt nicht nur für menschliche Nutzer, sondern auch für:
@@ -219,15 +212,11 @@ Direkte Einzelberechtigungen erschweren:
 
 RBAC ordnet Berechtigungen Rollen zu.
 
-```text
+```flowchart
 User
-  ↓
 Business Role
-  ↓
 Technical Role
-  ↓
 Permissions
-  ↓
 Data Asset
 ```
 
@@ -319,13 +308,10 @@ Ein häufiger Fehler ist, nur den Plattformzugriff zu steuern.
 
 Beispiel:
 
-```text
+```flow linear vertical
 User has access to BI workspace
-        ↓
 Can open report
-        ↓
 Can export underlying data
-        ↓
 Sensitive detail becomes available outside governed layer
 ```
 
@@ -337,9 +323,8 @@ Governance muss deshalb auch Export, Download, API-Nutzung und lokale Weitervera
 
 Beispiel:
 
-```text
+```flowchart
 Regional Manager
-        ↓
 sees only Region = "West"
 ```
 
@@ -347,9 +332,8 @@ sees only Region = "West"
 
 Beispiel:
 
-```text
+```flowchart
 Standard Analyst
-        ↓
 cannot see salary or email columns
 ```
 
@@ -365,9 +349,8 @@ email = t***@example.org
 
 Beispiel:
 
-```text
+```flowchart
 Customer Support
-        ↓
 may access contact data
 only for active support cases
 ```
@@ -589,21 +572,14 @@ Risk Signal
 
 Ein durchgängiges Modell kann so aussehen:
 
-```text
+```flow linear vertical
 Identity Provider
-        ↓
 Business Role
-        ↓
 Platform Role
-        ↓
 Warehouse / Lakehouse Policy
-        ↓
 Semantic Layer
-        ↓
 Qlik / Power BI / Tableau / Excel
-        ↓
 Export / API / Data Product
-        ↓
 Monitoring + Review
 ```
 
@@ -753,21 +729,14 @@ Access & Security Governance ist damit die operative Verbindung zwischen Identit
 
 ## Praktisches Zielbild
 
-```text
+```flow linear vertical
 Identity
-        ↓
 Business Role
-        ↓
 Access Request + Purpose
-        ↓
 Data Owner Approval
-        ↓
 RBAC / ABAC / Policy
-        ↓
 Warehouse + Semantic + BI Enforcement
-        ↓
 Monitoring + Logging
-        ↓
 Review + Revoke
 ```
 

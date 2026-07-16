@@ -115,19 +115,13 @@ Nicht nur das Quellsystem zählt. Auch Warehouses, Reports, Exporte, Modelle und
 
 Ein praxistauglicher Ablauf kann so aussehen:
 
-```text
+```flow linear vertical
 Anfrage erfassen
-        ↓
 Identität prüfen
-        ↓
 Daten finden und zuordnen
-        ↓
 Rechtlich/fachlich bewerten
-        ↓
 Löschen, sperren oder begründet ausnehmen
-        ↓
 Antwort bereitstellen und Nachweis sichern
-        ↓
 Protokollieren, überwachen und verbessern
 ```
 
@@ -300,15 +294,11 @@ Lineage ist für Löschprozesse besonders wertvoll.
 
 Beispiel:
 
-```text
+```flowchart
 CRM.customer
-        ↓
 RAW.customer
-        ↓
 CONFORM.customer_master
-        ↓
 ANALYTICS.customer_value_segment
-        ↓
 BI Dataset / Dashboard / API Export
 ```
 
@@ -448,19 +438,13 @@ DSDR Governance ist damit ein Querschnittsprozess, der mehrere Governance-Säule
 
 Ein robustes DSDR-Modell kann so aussehen:
 
-```text
+```flow linear vertical
 Betroffene Person / Anfrageportal
-        ↓
 Intake + Identitätsprüfung
-        ↓
 Katalog + PII-Metadaten + Owner + Lineage
-        ↓
 Bewertung von Löschbarkeit und Retention
-        ↓
 Systemübergreifende Ausführung + Nachverfolgung
-        ↓
 Antwort + Nachweis + Audit
-        ↓
 Review + Prozessverbesserung
 ```
 

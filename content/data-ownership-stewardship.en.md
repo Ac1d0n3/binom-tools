@@ -140,15 +140,11 @@ A mature governance model makes it easy for consumers to identify the owner, und
 
 Ownership should be implemented as a repeatable process rather than a one-time assignment exercise.
 
-```text
+```flow linear vertical
 Identify critical data assets
-        ↓
 Assign owners and stewards
-        ↓
 Define standards and decision rights
-        ↓
 Monitor quality, issues and decisions
-        ↓
 Review, improve and reinforce
 ```
 
@@ -255,23 +251,14 @@ RACI matrices can help, but they should support the operating model rather than 
 
 Policies describe expected behavior. Stewardship ensures that expectations are translated into operational activities.
 
-For example:
+For example, a policy might say that critical customer data must be complete and protected. Stewardship then turns that into concrete work:
 
-```text
-Policy:
-Critical customer data must be complete and protected.
-
-Stewardship:
+```flow linear vertical
 Define critical fields
-        ↓
 Document business meaning
-        ↓
 Classify PII
-        ↓
 Define quality thresholds
-        ↓
 Coordinate technical controls
-        ↓
 Monitor results and resolve issues
 ```
 
@@ -417,17 +404,12 @@ The model should be simple enough to use and strong enough to resolve real decis
 
 A practical implementation can follow this path:
 
-```text
+```flow linear vertical
 Critical Data Asset
-        ↓
 Owner + Steward + Custodian
-        ↓
 Definitions + Policies + Decision Rights
-        ↓
 Metadata + Quality Rules + Controls
-        ↓
 Monitoring + Issue Workflow + Evidence
-        ↓
 Review + Improvement
 ```
 

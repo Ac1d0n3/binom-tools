@@ -73,6 +73,33 @@ MD);
         );
     }
 
+    public function test_wraps_local_png_in_picture_when_webp_exists(): void
+    {
+        $webpPath = public_path('images/playbooks/playbook-renderer-picture-test.webp');
+
+        try {
+            if (! is_dir(dirname($webpPath))) {
+                mkdir(dirname($webpPath), 0755, true);
+            }
+
+            file_put_contents($webpPath, 'test');
+
+            $renderer = new PlaybookMarkdownRenderer;
+
+            $result = $renderer->render(
+                '<img src="images/playbooks/playbook-renderer-picture-test.png" alt="Diagram" class="playbook-prose__image--diagram" />',
+            );
+
+            $this->assertStringContainsString('<picture>', $result['html']);
+            $this->assertStringContainsString('type="image/webp"', $result['html']);
+            $this->assertStringContainsString('playbook-renderer-picture-test.webp', $result['html']);
+            $this->assertStringContainsString('playbook-renderer-picture-test.png', $result['html']);
+            $this->assertStringContainsString('data-playbook-lightbox-trigger="true"', $result['html']);
+        } finally {
+            @unlink($webpPath);
+        }
+    }
+
     public function test_renders_enhanced_blockquote_with_attribution(): void
     {
         $renderer = new PlaybookMarkdownRenderer;
@@ -131,9 +158,11 @@ Warehouse
 MD);
 
         $this->assertStringContainsString('playbook-flowchart--chevron', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart--horizontal', $result['html']);
         $this->assertStringContainsString('playbook-flowchart__chevron', $result['html']);
         $this->assertStringContainsString('Governance policy', $result['html']);
         $this->assertStringContainsString('dbt project', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart__connector', $result['html']);
     }
 
     public function test_renders_linear_flowchart_variant(): void
@@ -149,7 +178,27 @@ Publish
 MD);
 
         $this->assertStringContainsString('playbook-flowchart--linear', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart--horizontal', $result['html']);
         $this->assertStringContainsString('playbook-flowchart__step', $result['html']);
+    }
+
+    public function test_renders_vertical_linear_flowchart(): void
+    {
+        $renderer = new PlaybookMarkdownRenderer;
+
+        $result = $renderer->render(<<<'MD'
+```flow linear vertical
+Focused departmental facts
+Shared governed enterprise model
+Purpose-built applications
+```
+MD);
+
+        $this->assertStringContainsString('playbook-flowchart--linear', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart--vertical', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart__connector', $result['html']);
+        $this->assertStringContainsString('Focused departmental facts', $result['html']);
+        $this->assertStringNotContainsString('playbook-flowchart__chevron', $result['html']);
     }
 
     public function test_rewrites_internal_markdown_links_with_app_base_and_locale(): void

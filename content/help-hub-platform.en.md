@@ -80,7 +80,7 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 ````
 
-**Simple flow chart (chevron or linear boxes):**
+**Simple flow chart (chevron — same style as Tools workflows):**
 
 ````markdown
 ```flowchart
@@ -98,6 +98,14 @@ Publish catalog
 ````
 
 Optional markers: `[active]` or `[done]` on a step line highlight progress.
+
+**When to use which layout**
+
+| Fence | Use for |
+|-------|---------|
+| `flowchart` / `flow chevron` | Short process chains (Tools-style chevrons; stacks vertically when narrow) |
+| `flow linear` | Horizontal boxes with → arrows |
+| `flow linear vertical` | Longer stacks: Label / ↓ / Label (no outer box) |
 
 ```yaml
 ---

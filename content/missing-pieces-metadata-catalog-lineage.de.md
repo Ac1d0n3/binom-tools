@@ -206,13 +206,15 @@ Technische Lineage ist sehr wertvoll für Impact Analysis, Ursachenanalyse, Chan
 
 Sie kann einen Pfad wie diesen zeigen:
 
-Quellsystem  
-→ Ingestion  
-→ Raw Layer  
-→ Transformation  
-→ Data Mart  
-→ Semantic Model  
-→ Dashboard
+```flow linear vertical
+Quellsystem
+Ingestion
+Raw Layer
+Transformation
+Data Mart
+Semantic Model
+Dashboard
+```
 
 Dieser Pfad beantwortet wichtige Fragen:
 
@@ -267,13 +269,15 @@ Ein vollständiger technischer Graph ohne Business View kann für viele Nutzer z
 
 Ein nützliches Modell ermöglicht den Wechsel zwischen den Ebenen:
 
-Business Term  
-→ Trusted Metric  
-→ Datenprodukt  
-→ Semantic Model  
-→ Data Mart  
-→ Transformationen  
-→ Quellfelder
+```flow linear vertical
+Business Term
+Trusted Metric
+Datenprodukt
+Semantic Model
+Data Mart
+Transformationen
+Quellfelder
+```
 
 Der Nutzer kann bei der Bedeutung beginnen und bei Bedarf in technische Evidenz hineinzoomen.
 
@@ -415,13 +419,15 @@ Viele Datenpfade enden nicht an einer Warehouse-Tabelle.
 
 Sie laufen weiter:
 
-Semantic Model  
-→ BI Measure  
-→ Report  
-→ Export  
-→ Spreadsheet  
-→ Präsentation  
-→ Geschäftsentscheidung
+```flow linear vertical
+Semantic Model
+BI Measure
+Report
+Export
+Spreadsheet
+Präsentation
+Geschäftsentscheidung
+```
 
 Nicht jeder Downstream-Schritt lässt sich über jedes Tool automatisch erfassen.
 
@@ -590,7 +596,15 @@ Ein durchsuchbarer Katalog sagt Nutzern nicht automatisch, welches Asset für ih
 
 Die Brücke benötigt:
 
-> **technische Metadaten → Fachbegriffe → Zweck und Kontext → Ownership → Qualität und Richtlinien → verständliche Lineage → kontinuierliche Stewardship**
+```flow linear vertical
+technische Metadaten
+Fachbegriffe
+Zweck und Kontext
+Ownership
+Qualität und Richtlinien
+verständliche Lineage
+kontinuierliche Stewardship
+```
 
 Die zentrale Frage lautet deshalb:
 

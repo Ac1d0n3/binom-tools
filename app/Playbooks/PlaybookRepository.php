@@ -11,6 +11,9 @@ final class PlaybookRepository
 {
     private const LOCALES = ['de', 'en'];
 
+    /** @var array<string, Playbook> */
+    private static array $memoryCache = [];
+
     /** Max story links in the global sidebar (Overview link is separate). */
     public const SIDEBAR_INDEX_LIMIT = 10;
 
@@ -214,6 +217,82 @@ final class PlaybookRepository
     }
 
     private function buildPlaybook(string $slug): Playbook
+    {
+        $cacheKey = $this->playbookCacheKey($slug);
+
+        if (isset(self::$memoryCache[$cacheKey])) {
+            return self::$memoryCache[$cacheKey];
+        }
+
+        $cached = $this->readPlaybookCache($cacheKey);
+
+        if ($cached instanceof Playbook) {
+            self::$memoryCache[$cacheKey] = $cached;
+
+            return $cached;
+        }
+
+        $playbook = $this->buildPlaybookUncached($slug);
+        $this->writePlaybookCache($cacheKey, $playbook);
+        self::$memoryCache[$cacheKey] = $playbook;
+
+        return $playbook;
+    }
+
+    private function playbookCacheKey(string $slug): string
+    {
+        $mtime = 0;
+
+        foreach (self::LOCALES as $locale) {
+            $path = $this->contentPath($slug, $locale);
+
+            if (is_file($path)) {
+                $mtime = max($mtime, filemtime($path) ?: 0);
+            }
+        }
+
+        return "playbook:{$slug}:{$mtime}";
+    }
+
+    private function playbookCachePath(string $cacheKey): string
+    {
+        $safeKey = preg_replace('/[^a-zA-Z0-9._-]+/', '_', $cacheKey) ?: 'playbook';
+
+        return storage_path('framework/cache/playbooks/'.$safeKey.'.cache');
+    }
+
+    private function readPlaybookCache(string $cacheKey): ?Playbook
+    {
+        $path = $this->playbookCachePath($cacheKey);
+
+        if (! is_file($path)) {
+            return null;
+        }
+
+        $payload = file_get_contents($path);
+
+        if ($payload === false || $payload === '') {
+            return null;
+        }
+
+        $playbook = unserialize($payload, ['allowed_classes' => true]);
+
+        return $playbook instanceof Playbook ? $playbook : null;
+    }
+
+    private function writePlaybookCache(string $cacheKey, Playbook $playbook): void
+    {
+        $path = $this->playbookCachePath($cacheKey);
+        $directory = dirname($path);
+
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        file_put_contents($path, serialize($playbook));
+    }
+
+    private function buildPlaybookUncached(string $slug): Playbook
     {
         $variants = [];
         $heroUrl = null;

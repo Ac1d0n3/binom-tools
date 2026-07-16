@@ -80,7 +80,7 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 ````
 
-**Simple Flow Chart (Chevron oder Linear-Boxen):**
+**Simple Flow Chart (Chevron — gleicher Stil wie Tool-Workflows):**
 
 ````markdown
 ```flowchart
@@ -98,6 +98,14 @@ Katalog veröffentlichen
 ````
 
 Optionale Marker: `[active]` oder `[done]` in der Schrittzeile für Fortschritt.
+
+**Wann welches Layout**
+
+| Fence | Einsatz |
+|-------|---------|
+| `flowchart` / `flow chevron` | Kurze Prozessketten (Tool-Chevrons; bei wenig Platz vertikal gestapelt) |
+| `flow linear` | Horizontale Boxen mit →-Pfeilen |
+| `flow linear vertical` | Längere Stacks: Label / ↓ / Label (ohne äußere Box) |
 
 ```yaml
 ---

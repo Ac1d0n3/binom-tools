@@ -3,7 +3,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build && node scripts/rewrite-build-asset-urls.mjs",
+        "sync:images": "node scripts/sync-playbook-images.mjs",
+        "sync:images:force": "node scripts/sync-playbook-images.mjs --force",
+        "build": "npm run sync:images && vite build && node scripts/rewrite-build-asset-urls.mjs",
         "build:local": "npm run htaccess:local && npm run build",
         "build:production": "npm run build",
         "deploy:ftp": "node scripts/pack-ftp-deploy.mjs",
@@ -26,6 +28,7 @@
         "jsdom": "^29.1.1",
         "laravel-vite-plugin": "^3.1",
         "prismjs": "^1.30.0",
+        "sharp": "^0.34.3",
         "tailwindcss": "^4.0.0",
         "vite": "^8.0.0",
         "vitest": "^3.2.4"

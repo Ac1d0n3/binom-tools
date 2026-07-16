@@ -156,15 +156,11 @@ Privacy by Default bedeutet, dass die datenschutzfreundlichste sinnvolle Einstel
 
 PII & Privacy Governance sollte als kontinuierlicher Prozess umgesetzt werden.
 
-```text
+```flow linear vertical
 Personenbezogene Daten systemübergreifend identifizieren
-        ↓
 PII konsistent klassifizieren und taggen
-        ↓
 Richtlinien, Maskierung und Zugriffskontrollen anwenden
-        ↓
 Nutzung, Probleme und Compliance überwachen
-        ↓
 Kontinuierlich überprüfen, verbessern und steuern
 ```
 
@@ -214,15 +210,11 @@ Klassifikationen sollten automatisch oder halbautomatisch auf Schutzmaßnahmen a
 
 Beispiel:
 
-```text
+```flow linear vertical
 PII-Kategorie: direct_identifier
-        ↓
 Schutzregel: mask_default
-        ↓
 Warehouse Policy: Maskierung für Standardrollen
-        ↓
 Freigabe: unmask nur für genehmigte Rollen
-        ↓
 Monitoring: Nutzung und Ausnahmen protokollieren
 ```
 
@@ -230,15 +222,11 @@ Damit wird aus einem Metadatenfeld ein operativer Kontrollmechanismus.
 
 In einer modernen Datenplattform kann die Kette beispielsweise so aussehen:
 
-```text
+```flow linear vertical
 dbt meta / Catalog Classification
-        ↓
 Policy Mapping
-        ↓
 Snowflake Masking Policy oder Plattform-Policy
-        ↓
 Rollenbasierte Berechtigung
-        ↓
 BI- und Datenprodukt-Nutzung
 ```
 
@@ -301,15 +289,11 @@ Eine PII-Klassifikation darf nicht am Quellsystem oder RAW-Modell enden.
 
 Beispiel:
 
-```text
+```flowchart
 CRM.customer.email
-        ↓
 RAW.customer_email
-        ↓
 CONFORM.customer_email
-        ↓
 ANALYTICS.customer_contact
-        ↓
 BI Dataset / Report / API
 ```
 
@@ -440,19 +424,13 @@ PII & Privacy Governance ist damit keine isolierte Datenschutzdisziplin. Sie ist
 
 Ein praktisches Zielbild kann so aussehen:
 
-```text
+```flow linear vertical
 Quellsysteme + Dateien + APIs
-        ↓
 PII-Erkennung + fachliche Bestätigung
-        ↓
 Standardisierte Klassifikation + Ownership
-        ↓
 Metadaten-Propagation entlang der Lineage
-        ↓
 Maskierung + Zugriff + Minimierung + Retention
-        ↓
 Monitoring + Audit + kontinuierlicher Review
-        ↓
 Verantwortungsvolle und vertrauenswürdige Datennutzung
 ```
 

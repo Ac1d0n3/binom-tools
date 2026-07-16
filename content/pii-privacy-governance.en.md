@@ -156,15 +156,11 @@ Privacy by Default means that the most privacy-preserving reasonable setting is 
 
 PII & Privacy Governance should be implemented as a continuous process.
 
-```text
+```flow linear vertical
 Identify personal data across systems
-        ↓
 Classify and tag PII consistently
-        ↓
 Apply policies, masking and access controls
-        ↓
 Monitor usage, issues and compliance
-        ↓
 Review, improve and govern continuously
 ```
 
@@ -214,15 +210,11 @@ Classifications should map automatically or semi-automatically to protection mea
 
 Example:
 
-```text
+```flow linear vertical
 PII category: direct_identifier
-        ↓
 Protection rule: mask_default
-        ↓
 Warehouse policy: masked for standard roles
-        ↓
 Approval: unmask only for authorized roles
-        ↓
 Monitoring: log usage and exceptions
 ```
 
@@ -230,15 +222,11 @@ This turns a metadata field into an operational control.
 
 In a modern data platform, the chain could look like this:
 
-```text
+```flow linear vertical
 dbt meta / Catalog Classification
-        ↓
 Policy Mapping
-        ↓
 Snowflake Masking Policy or Platform Policy
-        ↓
 Role-based Authorization
-        ↓
 BI and Data Product Usage
 ```
 
@@ -301,15 +289,11 @@ A PII classification must not stop at the source system or RAW model.
 
 Example:
 
-```text
+```flowchart
 CRM.customer.email
-        ↓
 RAW.customer_email
-        ↓
 CONFORM.customer_email
-        ↓
 ANALYTICS.customer_contact
-        ↓
 BI Dataset / Report / API
 ```
 
@@ -440,19 +424,13 @@ PII & Privacy Governance is therefore not an isolated privacy discipline. It is 
 
 A practical target state can look like this:
 
-```text
+```flow linear vertical
 Source Systems + Files + APIs
-        ↓
 PII Detection + Business Confirmation
-        ↓
 Standardized Classification + Ownership
-        ↓
 Metadata Propagation across Lineage
-        ↓
 Masking + Access + Minimization + Retention
-        ↓
 Monitoring + Audit + Continuous Review
-        ↓
 Responsible and Trusted Data Use
 ```
 

@@ -83,21 +83,14 @@ A successful login proves only that an identity is known. It does not prove that
 
 A robust lifecycle can be structured in seven steps.
 
-```text
+```flow linear vertical
 1. Identify identities, roles, systems and data assets
-        ↓
 2. Classify data, risk and access levels
-        ↓
 3. Approve access based on business need
-        ↓
 4. Provision permissions through governed policies
-        ↓
 5. Monitor usage, anomalies and exceptions
-        ↓
 6. Recertify access regularly
-        ↓
 7. Revoke outdated or risky permissions
-        ↺
 ```
 
 This lifecycle applies not only to human users, but also to:
@@ -219,15 +212,11 @@ Direct user grants make the following more difficult:
 
 RBAC assigns permissions to roles.
 
-```text
+```flowchart
 User
-  ↓
 Business Role
-  ↓
 Technical Role
-  ↓
 Permissions
-  ↓
 Data Asset
 ```
 
@@ -319,13 +308,10 @@ A common mistake is controlling only platform access.
 
 Example:
 
-```text
+```flow linear vertical
 User has access to BI workspace
-        ↓
 Can open report
-        ↓
 Can export underlying data
-        ↓
 Sensitive detail becomes available outside governed layer
 ```
 
@@ -337,9 +323,8 @@ Governance must therefore include export, download, API usage and local processi
 
 Example:
 
-```text
+```flowchart
 Regional Manager
-        ↓
 sees only Region = "West"
 ```
 
@@ -347,9 +332,8 @@ sees only Region = "West"
 
 Example:
 
-```text
+```flowchart
 Standard Analyst
-        ↓
 cannot see salary or email columns
 ```
 
@@ -365,9 +349,8 @@ email = t***@example.org
 
 Example:
 
-```text
+```flowchart
 Customer Support
-        ↓
 may access contact data
 only for active support cases
 ```
@@ -589,21 +572,14 @@ Risk Signal
 
 An end-to-end model can look like this:
 
-```text
+```flow linear vertical
 Identity Provider
-        ↓
 Business Role
-        ↓
 Platform Role
-        ↓
 Warehouse / Lakehouse Policy
-        ↓
 Semantic Layer
-        ↓
 Qlik / Power BI / Tableau / Excel
-        ↓
 Export / API / Data Product
-        ↓
 Monitoring + Review
 ```
 
@@ -753,21 +729,14 @@ Access & Security Governance is therefore the operational connection between ide
 
 ## Practical target state
 
-```text
+```flow linear vertical
 Identity
-        ↓
 Business Role
-        ↓
 Access Request + Purpose
-        ↓
 Data Owner Approval
-        ↓
 RBAC / ABAC / Policy
-        ↓
 Warehouse + Semantic + BI Enforcement
-        ↓
 Monitoring + Logging
-        ↓
 Review + Revoke
 ```
 

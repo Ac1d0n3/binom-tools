@@ -24,14 +24,16 @@ Organizations invest heavily in centralized data platforms, reusable data produc
 
 At the same time, business meaning is created in many places:
 
-Source Data  
-→ Transformation / dbt Model  
-→ SQL View / Data Mart  
-→ Semantic Model  
-→ BI Measure  
-→ Report Expression  
-→ Application Logic  
-→ Excel Formula
+```flow linear vertical
+Source Data
+Transformation / dbt Model
+SQL View / Data Mart
+Semantic Model
+BI Measure
+Report Expression
+Application Logic
+Excel Formula
+```
 
 Each of these layers can serve a legitimate purpose. A metric in a data mart can enable reuse. A semantic model can provide business terminology and calculations to multiple reports. A report-level measure can cover a local analytical need. Excel may be the fastest and most familiar way for business users to continue working with data.
 
@@ -154,12 +156,14 @@ One possible approach is to keep Excel as the analysis interface while sourcing 
 
 However, a boundary remains:
 
-Trusted Semantic Model  
-→ Excel Pivot / Connected Table  
-→ local formula  
-→ manual adjustment  
-→ new file or copy  
-→ business decision
+```flow linear vertical
+Trusted Semantic Model
+Excel Pivot / Connected Table
+local formula
+manual adjustment
+new file or copy
+business decision
+```
 
 At which point does personal analysis become a new business definition?
 
@@ -286,13 +290,15 @@ Governance should therefore do more than control. It should provide an easy path
 
 A metric can have a lifecycle similar to a data product:
 
-Draft  
-→ Review  
-→ Approved  
-→ Certified  
-→ Monitored  
-→ Changed / Versioned  
-→ Deprecated
+```flow linear vertical
+Draft
+Review
+Approved
+Certified
+Monitored
+Changed / Versioned
+Deprecated
+```
 
 Changes should not happen invisibly.
 
@@ -334,7 +340,13 @@ Business meaning can continue to evolve in pipelines, views, semantic models, BI
 
 The missing piece is therefore not necessarily another tool. Often, it is the connection between:
 
-> **shared definition → visible ownership → understandable context → technical reuse → continuous feedback**
+```flowchart
+shared definition
+visible ownership
+understandable context
+technical reuse
+continuous feedback
+```
 
 The key question is:
 

@@ -191,19 +191,13 @@ The critical question is:
 
 A robust lifecycle can be structured in six steps.
 
-```text
+```flow linear vertical
 1. Define the KPI in business terms
-        ↓
 2. Assign Owner, Steward and validity
-        ↓
 3. Standardize formula, filters and grain
-        ↓
 4. Publish the approved metric
-        ↓
 5. Monitor usage, quality and divergence
-        ↓
 6. Review, version and deprecate under control
-        ↺
 ```
 
 ## 1. Define the KPI in business terms
@@ -319,11 +313,9 @@ The objective is not to force every user into one tool.
 
 The objective is:
 
-```text
+```flow linear vertical
 One approved business meaning
-        ↓
 Consistent metric logic
-        ↓
 Multiple governed consumption tools
 ```
 
@@ -449,19 +441,13 @@ A metric should be traceable back to its sources.
 
 Example:
 
-```text
+```flow linear vertical
 CRM + ERP
-    ↓
 RAW sales data
-    ↓
 CONFORM sales facts
-    ↓
 DIM customer / product / calendar
-    ↓
 Semantic Metric: Net Revenue
-    ↓
 Qlik / Excel / Power BI / Tableau
-    ↓
 Management Report
 ```
 
@@ -650,21 +636,14 @@ Trust emerges only when the **data model, metric definition, semantic layer and 
 
 ## Practical target state
 
-```text
+```flow linear vertical
 Business Definition
-        ↓
 KPI Owner + Steward
-        ↓
 Versioned Metric Specification
-        ↓
 Facts + Dimensions + Semantic Logic
-        ↓
 Certified Metric
-        ↓
 Qlik / Excel / Power BI / Tableau
-        ↓
 Monitoring + Reconciliation + Review
-        ↓
 Trusted Decisions
 ```
 

@@ -47,14 +47,13 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
         }
 
         $variant = $parsed['variant'];
+        $layout = $parsed['layout'];
         $listItems = [];
+        $stepCount = count($parsed['steps']);
+        $useChevronShape = $variant === 'chevron' && $layout === 'horizontal';
 
         foreach ($parsed['steps'] as $index => $step) {
-            $classes = ['playbook-flowchart__step'];
-
-            if ($variant === 'chevron') {
-                $classes[0] = 'playbook-flowchart__chevron';
-            }
+            $classes = [$useChevronShape ? 'playbook-flowchart__chevron' : 'playbook-flowchart__step'];
 
             if ($step['state'] === 'active') {
                 $classes[] = 'playbook-flowchart__step--active';
@@ -69,17 +68,30 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
                 new HtmlElement('span', ['class' => 'playbook-flowchart__label'], Xml::escape($step['label'])),
             ];
 
+            $itemChildren = [
+                new HtmlElement('span', ['class' => implode(' ', $classes)], $children),
+            ];
+
+            // Connectors: visible for vertical stacks and for stacked chevron fallback.
+            if ($index < $stepCount - 1) {
+                $itemChildren[] = new HtmlElement(
+                    'span',
+                    ['class' => 'playbook-flowchart__connector', 'aria-hidden' => 'true'],
+                    '',
+                );
+            }
+
             $listItems[] = new HtmlElement(
                 'li',
                 ['class' => 'playbook-flowchart__item'],
-                new HtmlElement('span', ['class' => implode(' ', $classes)], $children),
+                $itemChildren,
             );
         }
 
         return new HtmlElement(
             'nav',
             [
-                'class' => 'playbook-flowchart playbook-flowchart--'.$variant,
+                'class' => 'playbook-flowchart playbook-flowchart--'.$variant.' playbook-flowchart--'.$layout,
                 'aria-label' => 'Process flow',
             ],
             new HtmlElement('ol', ['class' => 'playbook-flowchart__list'], $listItems),

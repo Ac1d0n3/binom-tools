@@ -168,8 +168,12 @@ Daten sollten nicht unbegrenzt gespeichert werden, nur weil Speicher günstig is
 
 Ein vollständiger Lebenszyklus kann folgende Phasen umfassen:
 
-```text
-Create → Use → Share → Archive → Delete or Anonymize
+```flowchart
+Create
+Use
+Share
+Archive
+Delete or Anonymize
 ```
 
 Für relevante Datenklassen werden Regeln festgelegt für:
@@ -187,17 +191,12 @@ Diese Säule ergänzt DSDR: Retention steuert die reguläre, regelbasierte Aufbe
 
 Die Säulen sind keine getrennten Programme. Sie verstärken sich gegenseitig:
 
-```text
+```flow linear vertical
 Ownership
-    ↓
 Metadata & Lineage
-    ↓
 PII Classification
-    ↓
 Access, Retention & DSDR Controls
-    ↓
 Data Quality & Trusted Metrics
-    ↓
 Reliable Decisions and Business Value
 ```
 
@@ -221,17 +220,12 @@ Das Ziel ist nicht maximale Automatisierung um jeden Preis. Entscheidend ist, da
 
 In einem modernen Data Stack kann Governance als durchgängige Kette aufgebaut werden:
 
-```text
+```flow linear vertical
 Business Definitions
-        ↓
 Metadata as Code
-        ↓
 dbt Models, Tests & Meta
-        ↓
 Warehouse Policies & Access Controls
-        ↓
 Catalog, Lineage & Monitoring
-        ↓
 Governed Data Products and KPIs
 ```
 

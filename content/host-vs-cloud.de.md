@@ -476,27 +476,20 @@ Die Hosting-Entscheidung beeinflusst Performance nicht allein. Entscheidend ist,
 
 Eine ungünstige Hybridarchitektur kann beispielsweise so aussehen:
 
-```text
+```flow linear vertical
 Lokale Quellsysteme
-        ↓
 Cloud Warehouse
-        ↓
 Lokales BI mit vielen Live-Abfragen
-        ↓
 ständiger Netzwerkverkehr und hohe Latenz
 ```
 
 Eine robustere Architektur platziert analytische Verarbeitung näher an den Daten und überträgt gezielt:
 
-```text
+```flow linear vertical
 Quellsysteme
-        ↓
 inkrementelle Replikation / CDC
-        ↓
 analytischer Speicher nahe der Compute-Schicht
-        ↓
 kuratierte Modelle
-        ↓
 Reporting und Datenprodukte
 ```
 
@@ -541,15 +534,11 @@ Ein gutes Mixed-Modell platziert jeden Workload dort, wo er den größten Wert e
 
 #### Modell A — kontrollierter Core, Cloud für AI
 
-```text
+```flow linear vertical
 SAP / ERP / CRM
-        ↓
 Self-Hosted oder souveränes Core Warehouse
-        ↓
 kuratierte und klassifizierte Daten
-        ↓
 kontrolliertes AI Gateway
-        ↓
 Cloud AI Service
 ```
 
@@ -593,13 +582,10 @@ Risiko: Testdaten und Konfigurationen dürfen nicht unkontrolliert produktive In
 
 #### Modell D — europäische Cloud als Kern, lokale Integration
 
-```text
+```flow linear vertical
 lokale SAP-, ERP- und Produktionssysteme
-        ↓
 private Verbindung / kontrollierte Replikation
-        ↓
 europäische oder souveräne Cloud-Datenplattform
-        ↓
 BI, Analytics und Datenprodukte
 ```
 

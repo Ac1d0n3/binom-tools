@@ -62,12 +62,14 @@ A formal assignment can be complete and correct while the operational path remai
 
 One possible pattern looks like this:
 
-Data Asset / KPI / Report  
-→ Owner assigned  
-→ Steward assigned  
-→ Issue identified  
-→ unclear decision or escalation path  
-→ local workaround or slow response
+```flow linear vertical
+Data Asset / KPI / Report
+Owner assigned
+Steward assigned
+Issue identified
+unclear decision or escalation path
+local workaround or slow response
+```
 
 This does not automatically mean that the assigned people are neglecting their role. Often, enabling conditions are missing.
 
@@ -209,13 +211,15 @@ Ownership becomes easier to understand when issues, decisions and changes have a
 
 One possible lifecycle is:
 
-New  
-→ In Review  
-→ Assigned  
-→ In Progress  
-→ Resolved  
-→ Reviewed  
-→ Continuously Improved
+```flow linear vertical
+New
+In Review
+Assigned
+In Progress
+Resolved
+Reviewed
+Continuously Improved
+```
 
 The lifecycle should include business context, not only technical tickets.
 
@@ -472,7 +476,15 @@ The possible gap lies between **assignment** and **action**.
 
 A name in the catalog creates visibility. Effective accountability also needs:
 
-> **clear scope → time and capacity → decision rights → escalation paths → understandable context → usable processes → continuous review**
+```flow linear vertical
+clear scope
+time and capacity
+decision rights
+escalation paths
+understandable context
+usable processes
+continuous review
+```
 
 The central question is therefore:
 

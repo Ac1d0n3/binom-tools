@@ -170,11 +170,9 @@ Most real environments resemble one of four broad patterns — or a combination 
 
 ### 1. Classic SAP stack
 
-```text
+```flowchart
 SAP ERP / ECC
-      ↓
-    SAP BW
-      ↓
+SAP BW
 SAP BusinessObjects
 ```
 
@@ -184,11 +182,9 @@ It may become challenging when the organization needs broader cloud integration,
 
 ### 2. Modern SAP cloud stack
 
-```text
+```flowchart
 SAP S/4HANA
-      ↓
 SAP Datasphere
-      ↓
 SAP Analytics Cloud
 ```
 
@@ -198,13 +194,10 @@ It can be attractive for organizations seeking a more managed SAP-centric cloud 
 
 ### 3. Hybrid SAP stack
 
-```text
+```flowchart
 SAP S/4HANA
-      ↓
 SAP BW/4HANA
-      ↓
 SAP Datasphere
-      ↓
 SAP Analytics Cloud
 ```
 
@@ -214,13 +207,10 @@ The main risk is uncontrolled duplication: the same transformation, KPI or seman
 
 ### 4. Open or extended SAP stack
 
-```text
+```flowchart
 SAP Sources
-      ↓
 Integration / Replication
-      ↓
 Snowflake / Databricks / BigQuery
-      ↓
 Power BI / Qlik / Tableau
 ```
 

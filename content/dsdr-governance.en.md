@@ -115,19 +115,13 @@ Not only the source system matters. Warehouses, reports, exports, models and API
 
 A practical flow can look like this:
 
-```text
+```flow linear vertical
 Capture request
-        ↓
 Verify identity
-        ↓
 Find and map data
-        ↓
 Evaluate legal and business constraints
-        ↓
 Delete, restrict or legitimately exempt
-        ↓
 Respond and preserve evidence
-        ↓
 Log, monitor and improve
 ```
 
@@ -300,15 +294,11 @@ Lineage is especially valuable in deletion processes.
 
 Example:
 
-```text
+```flowchart
 CRM.customer
-        ↓
 RAW.customer
-        ↓
 CONFORM.customer_master
-        ↓
 ANALYTICS.customer_value_segment
-        ↓
 BI Dataset / Dashboard / API Export
 ```
 
@@ -448,19 +438,13 @@ DSDR Governance is therefore a cross-cutting operational process that brings sev
 
 A robust DSDR model can look like this:
 
-```text
+```flow linear vertical
 Data Subject / Request Portal
-        ↓
 Intake + Identity Verification
-        ↓
 Catalog + PII Metadata + Owners + Lineage
-        ↓
 Deletability and Retention Assessment
-        ↓
 Cross-system Execution + Tracking
-        ↓
 Response + Evidence + Audit
-        ↓
 Review + Process Improvement
 ```
 
