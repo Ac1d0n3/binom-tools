@@ -16,6 +16,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/trash-iinout-hero.png
+publishedAt: 2026-07-16 18:00
 ---
 
 ## KI beginnt nicht mit Intelligenz — sondern mit Daten

@@ -111,6 +111,7 @@ Optional markers: `[active]` or `[done]` on a step line highlight progress.
 ---
 title: My governance story
 description: Short description for cards and SEO.
+publishedAt: 2026-07-16
 category: Data platform
 tags:
   - rbac
@@ -128,6 +129,7 @@ The route `/playbooks/my-topic` is available on the next request — no entry in
 | --- | --- | --- |
 | `title` | yes | Page title |
 | `description` | yes | Lead text on detail and card views |
+| `publishedAt` | **yes for sorting** | Editorial publish date (`YYYY-MM-DD` or `YYYY-MM-DD HH:MM`). Drives Newest/Oldest — not file mtime |
 | `category` | no | Meta line (e.g. “Data platform”) |
 | `tags` | no | Filter chips on story overview |
 | `order` | no | Sort order in sidebar and index (ascending) |

@@ -63,14 +63,21 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
                 $classes[] = 'playbook-flowchart__step--completed';
             }
 
-            $children = [
+            $labelChildren = [
                 new HtmlElement('span', ['class' => 'playbook-flowchart__num'], (string) ($index + 1)),
                 new HtmlElement('span', ['class' => 'playbook-flowchart__label'], Xml::escape($step['label'])),
             ];
 
-            $itemChildren = [
-                new HtmlElement('span', ['class' => implode(' ', $classes)], $children),
-            ];
+            // Chevron: outer shell = border color, inner face = fill (real Rahmen via padding).
+            $stepNode = $useChevronShape
+                ? new HtmlElement(
+                    'span',
+                    ['class' => implode(' ', $classes)],
+                    [new HtmlElement('span', ['class' => 'playbook-flowchart__chevron-face'], $labelChildren)],
+                )
+                : new HtmlElement('span', ['class' => implode(' ', $classes)], $labelChildren);
+
+            $itemChildren = [$stepNode];
 
             // Connectors: visible for vertical stacks and for stacked chevron fallback.
             if ($index < $stepCount - 1) {
@@ -81,9 +88,10 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
                 );
             }
 
+            // Div items — avoid .playbook-prose li + li margin shifting step 1.
             $listItems[] = new HtmlElement(
-                'li',
-                ['class' => 'playbook-flowchart__item'],
+                'div',
+                ['class' => 'playbook-flowchart__item', 'role' => 'listitem'],
                 $itemChildren,
             );
         }
@@ -94,7 +102,11 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
                 'class' => 'playbook-flowchart playbook-flowchart--'.$variant.' playbook-flowchart--'.$layout,
                 'aria-label' => 'Process flow',
             ],
-            new HtmlElement('ol', ['class' => 'playbook-flowchart__list'], $listItems),
+            new HtmlElement(
+                'div',
+                ['class' => 'playbook-flowchart__list', 'role' => 'list'],
+                $listItems,
+            ),
         );
     }
 }

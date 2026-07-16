@@ -16,6 +16,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/one-billion-hero.png
+publishedAt: 2026-07-16 14:00
 ---
 
 ## More data does not automatically create more decision value

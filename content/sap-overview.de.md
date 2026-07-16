@@ -12,6 +12,7 @@ tags:
   - sap-analytics-cloud
   - datenplattform
 hero: images/playbooks/sap-overview-hero.png
+publishedAt: 2026-07-12
 ---
 
 ## Den einen SAP-Datenstack gibt es nicht

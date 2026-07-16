@@ -15,6 +15,7 @@ tags:
   - data-governance
 order: -1
 hero: images/playbooks/mp-meta-hero.png
+publishedAt: 2026-07-13
 series: missing-pieces
 seriesPart: 4
 seriesTitle: The Missing Pieces

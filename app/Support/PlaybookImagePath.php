@@ -14,8 +14,11 @@ final class PlaybookImagePath
         }
 
         if (str_starts_with($path, 'images/stories/')) {
-            return 'images/playbooks/'.substr($path, strlen('images/stories/'));
+            $path = 'images/playbooks/'.substr($path, strlen('images/stories/'));
         }
+
+        // Guard against accidental "name..png" / "name..webp" uploads.
+        $path = preg_replace('/\.\.(png|webp|jpe?g|gif|svg)$/i', '.$1', $path) ?? $path;
 
         return $path;
     }

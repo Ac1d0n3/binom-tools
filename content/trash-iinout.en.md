@@ -16,6 +16,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/trash-iinout-hero.png
+publishedAt: 2026-07-16 18:00
 ---
 
 ## AI does not begin with intelligence — it begins with data

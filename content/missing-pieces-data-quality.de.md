@@ -13,6 +13,7 @@ tags:
   - data-pipelines
 order: -1
 hero: images/playbooks/mp-dq-hero.png
+publishedAt: 2026-07-13
 series: missing-pieces
 seriesPart: 1
 seriesTitle: Die fehlenden Bausteine

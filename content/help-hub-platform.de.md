@@ -111,6 +111,7 @@ Optionale Marker: `[active]` oder `[done]` in der Schrittzeile für Fortschritt.
 ---
 title: Meine Governance Story
 description: Kurzbeschreibung für Karten und SEO.
+publishedAt: 2026-07-16
 category: Datenplattform
 tags:
   - rbac
@@ -128,6 +129,7 @@ Die Route `/playbooks/mein-thema` steht nach dem nächsten Request automatisch z
 | --- | --- | --- |
 | `title` | ja | Seitentitel |
 | `description` | ja | Lead-Text auf Detail- und Kartenansicht |
+| `publishedAt` | **ja für Sortierung** | Redaktionelles Publish-Datum (`YYYY-MM-DD` oder `YYYY-MM-DD HH:MM`). Steuert Neueste/Älteste — nicht die Datei-mtime |
 | `category` | nein | Meta-Zeile (z. B. „Datenplattform“) |
 | `tags` | nein | Filter-Chips in der Story-Übersicht |
 | `order` | nein | Sortierung in Sidebar und Index (aufsteigend) |

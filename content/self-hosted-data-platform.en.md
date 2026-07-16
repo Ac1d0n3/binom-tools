@@ -16,6 +16,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/stories/self-hosted-hero.png
+publishedAt: 2026-07-13
 ---
 
 ## Cloud is an option — not the architecture

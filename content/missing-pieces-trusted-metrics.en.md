@@ -14,6 +14,7 @@ tags:
   - data-governance
 order: -1
 hero: images/playbooks/mp-metrics-hero.png
+publishedAt: 2026-07-13
 series: missing-pieces
 seriesPart: 2
 seriesTitle: The Missing Pieces

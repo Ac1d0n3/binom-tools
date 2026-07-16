@@ -16,6 +16,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/one-app-hero.png
+publishedAt: 2026-07-16 10:00
 ---
 
 ## One universal app is not the same as one source of truth

@@ -14,6 +14,7 @@ tags:
   - governance-usability
 order: -1
 hero: images/playbooks/mp-ownership-hero.png
+publishedAt: 2026-07-13
 series: missing-pieces
 seriesPart: 3
 seriesTitle: The Missing Pieces

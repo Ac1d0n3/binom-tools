@@ -16,6 +16,7 @@ tags:
   - sap
   - big-five
 hero: images/playbooks/cloud-hosting-hero.png
+publishedAt: 2026-07-12
 ---
 
 ## Cloud ist kein einzelnes Betriebsmodell

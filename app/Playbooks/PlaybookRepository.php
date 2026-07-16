@@ -251,7 +251,30 @@ final class PlaybookRepository
             }
         }
 
+        // Bust cache when Markdown rendering / flowchart HTML changes.
+        $mtime = max($mtime, $this->playbookRendererMtime());
+
         return "playbook:{$slug}:{$mtime}";
+    }
+
+    private function playbookRendererMtime(): int
+    {
+        $files = [
+            app_path('Playbooks/PlaybookFlowchartFenceExtension.php'),
+            app_path('Playbooks/PlaybookFlowchartParser.php'),
+            app_path('Playbooks/PlaybookMarkdownRenderer.php'),
+            app_path('Playbooks/PlaybookVideoFenceExtension.php'),
+        ];
+
+        $mtime = 0;
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                $mtime = max($mtime, filemtime($file) ?: 0);
+            }
+        }
+
+        return $mtime;
     }
 
     private function playbookCachePath(string $cacheKey): string
@@ -584,8 +607,17 @@ final class PlaybookRepository
             return null;
         }
 
+        $value = trim($value);
+
         try {
-            return Carbon::parse($value)->endOfDay();
+            $parsed = Carbon::parse($value);
+
+            // Date-only frontmatter → end of day so same-day series parts can use part offsets.
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1) {
+                return $parsed->endOfDay();
+            }
+
+            return $parsed;
         } catch (\Throwable) {
             return null;
         }

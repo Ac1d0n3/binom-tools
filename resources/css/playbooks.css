@@ -199,18 +199,19 @@
 
 .playbook-prose p,
 .playbook-prose ul,
-.playbook-prose ol,
+.playbook-prose ol:not(.playbook-flowchart__list),
 .playbook-prose blockquote,
 .playbook-prose pre {
     margin: 0 0 1rem;
 }
 
 .playbook-prose ul,
-.playbook-prose ol {
+.playbook-prose ol:not(.playbook-flowchart__list) {
     padding-left: 1.35rem;
 }
 
-.playbook-prose li + li {
+.playbook-prose ul > li + li,
+.playbook-prose ol:not(.playbook-flowchart__list) > li + li {
     margin-top: 0.35rem;
 }
 
@@ -323,6 +324,8 @@
     border: 0;
     border-radius: 0;
     background: transparent;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     container-type: inline-size;
     container-name: playbook-flow;
 }
@@ -333,14 +336,18 @@
     list-style: none;
     display: flex;
     flex-wrap: nowrap;
-    align-items: stretch;
+    align-items: center;
     gap: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    width: max-content;
+    min-width: 100%;
+    overflow: visible;
 }
 
 .playbook-flowchart--chevron {
-    --playbook-flowchart-notch: 0.85rem;
+    --playbook-flowchart-h: 2.75rem;
+    --playbook-flowchart-tip: 0.75rem;
+    --playbook-flowchart-frame: var(--base-border-color);
+    --playbook-flowchart-fill: var(--surface-background-color);
 }
 
 .playbook-flowchart__item {
@@ -348,87 +355,139 @@
     flex: 0 0 auto;
     margin: 0;
     padding: 0;
+    position: relative;
 }
 
+/* Tip overlaps the next step — earlier z-index keeps the > on top. */
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:not(:last-child) {
-    margin-right: calc(-1 * var(--playbook-flowchart-notch, 0.85rem));
+    margin-right: calc(-1 * var(--playbook-flowchart-tip, 0.75rem));
 }
 
-.playbook-flowchart__chevron,
 .playbook-flowchart__step {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
     position: relative;
-    min-height: 2.75rem;
+    box-sizing: border-box;
+    height: var(--playbook-flowchart-h, 2.75rem);
+    min-height: var(--playbook-flowchart-h, 2.75rem);
+    padding: 0 0.9rem;
     font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1.2;
     color: var(--bn-color-text-primary, inherit);
-    background: var(--surface-background-color);
-    border: 1px solid var(--base-border-color);
-}
-
-.playbook-flowchart__chevron {
-    padding: 0.5rem 1.35rem 0.5rem 1.05rem;
-    white-space: nowrap;
-    clip-path: polygon(
-        0 0,
-        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 0,
-        100% 50%,
-        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 100%,
-        0 100%,
-        var(--playbook-flowchart-notch, 0.85rem) 50%
-    );
-    filter: drop-shadow(0 1px 2px rgb(15 23 42 / 6%));
-}
-
-.playbook-flowchart__step {
+    background: var(--playbook-flowchart-fill, var(--surface-background-color));
+    border: 1px solid var(--playbook-flowchart-frame, var(--base-border-color));
     white-space: nowrap;
 }
 
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:first-child .playbook-flowchart__chevron {
-    clip-path: polygon(
-        0 0,
-        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 0,
-        100% 50%,
-        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 100%,
-        0 100%
-    );
-    padding-left: 1rem;
+/*
+ * Real bordered > tip via CSS triangles (not clip-path).
+ * ::before = tip outline, ::after = tip fill — same pattern as classic breadcrumbs / Tools steppers.
+ */
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron {
+    display: flex;
+    position: relative;
+    box-sizing: border-box;
+    height: var(--playbook-flowchart-h, 2.75rem);
+    min-height: var(--playbook-flowchart-h, 2.75rem);
+    padding: 0;
+    border: 1px solid var(--playbook-flowchart-frame, var(--base-border-color));
+    border-right: 0;
+    background: var(--playbook-flowchart-fill, var(--surface-background-color));
+    clip-path: none;
+    white-space: nowrap;
+}
+
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron-face {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-width: 0;
+    height: 100%;
+    padding: 0 0.85rem 0 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: inherit;
+    background: transparent;
+}
+
+/* Make room under the overlapping tip from the previous step. */
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:not(:first-child) .playbook-flowchart__chevron-face {
+    padding-left: calc(0.65rem + var(--playbook-flowchart-tip, 0.75rem));
+}
+
+/* Tip border (outline of the >) */
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: calc(-1 * var(--playbook-flowchart-tip, 0.75rem) - 1px);
+    z-index: 1;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px) 0
+        calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px)
+        calc(var(--playbook-flowchart-tip, 0.75rem) + 1px);
+    border-color: transparent transparent transparent var(--playbook-flowchart-frame, var(--base-border-color));
+}
+
+/* Tip fill */
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: calc(-1 * var(--playbook-flowchart-tip, 0.75rem));
+    z-index: 2;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px) 0
+        calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px)
+        var(--playbook-flowchart-tip, 0.75rem);
+    border-color: transparent transparent transparent var(--playbook-flowchart-fill, var(--surface-background-color));
 }
 
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:last-child .playbook-flowchart__chevron {
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        100% 100%,
-        0 100%,
-        var(--playbook-flowchart-notch, 0.85rem) 50%
-    );
-    padding-right: 1rem;
+    border-right: 1px solid var(--playbook-flowchart-frame, var(--base-border-color));
 }
 
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(1) .playbook-flowchart__chevron { z-index: 1; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(2) .playbook-flowchart__chevron { z-index: 2; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(3) .playbook-flowchart__chevron { z-index: 3; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(4) .playbook-flowchart__chevron { z-index: 4; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(5) .playbook-flowchart__chevron { z-index: 5; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(6) .playbook-flowchart__chevron { z-index: 6; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(7) .playbook-flowchart__chevron { z-index: 7; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(8) .playbook-flowchart__chevron { z-index: 8; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:last-child .playbook-flowchart__chevron::before,
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:last-child .playbook-flowchart__chevron::after {
+    content: none;
+}
+
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(1) .playbook-flowchart__chevron { z-index: 10; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(2) .playbook-flowchart__chevron { z-index: 9; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(3) .playbook-flowchart__chevron { z-index: 8; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(4) .playbook-flowchart__chevron { z-index: 7; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(5) .playbook-flowchart__chevron { z-index: 6; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(6) .playbook-flowchart__chevron { z-index: 5; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(7) .playbook-flowchart__chevron { z-index: 4; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(8) .playbook-flowchart__chevron { z-index: 3; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(9) .playbook-flowchart__chevron { z-index: 2; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(10) .playbook-flowchart__chevron { z-index: 1; }
 
 .playbook-flowchart__step--active {
-    background: var(--theme-color-primary, #2563eb);
+    background: var(--theme-color-primary, #1e40af);
     color: #fff;
-    border-color: var(--theme-color-primary, #2563eb);
-    z-index: 10 !important;
+    border-color: var(--theme-color-primary, #1e40af);
+}
+
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron.playbook-flowchart__step--active {
+    z-index: 20;
+    --playbook-flowchart-fill: var(--theme-color-primary, #1e40af);
+    --playbook-flowchart-frame: var(--theme-color-primary, #1e40af);
+    color: #fff;
 }
 
 .playbook-flowchart__step--completed {
-    background: color-mix(in srgb, var(--theme-color-accent, #0ea5e9) 12%, var(--surface-background-color));
-    border-color: color-mix(in srgb, var(--theme-color-accent, #0ea5e9) 40%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-accent, #0ea5e9) 14%, var(--surface-background-color));
 }
 
 .playbook-flowchart__num {
@@ -441,11 +500,14 @@
     border-radius: 999px;
     font-size: 0.6875rem;
     font-weight: 700;
-    background: color-mix(in srgb, currentColor 12%, transparent);
+    color: #fff;
+    background: var(--theme-color-primary, #1e40af);
 }
 
-.playbook-flowchart__step--active .playbook-flowchart__num {
-    background: rgb(255 255 255 / 22%);
+.playbook-flowchart__step--active .playbook-flowchart__num,
+.playbook-flowchart__chevron.playbook-flowchart__step--active .playbook-flowchart__num {
+    color: var(--theme-color-primary, #1e40af);
+    background: #fff;
 }
 
 .playbook-flowchart--linear .playbook-flowchart__list {
@@ -495,13 +557,31 @@
     display: flex;
     width: 100%;
     max-width: 28rem;
+    height: auto;
+    min-height: 2.75rem;
     margin-inline: auto;
     padding: 0.65rem 1rem;
+    border: 1px solid var(--base-border-color);
     border-radius: 8px;
     white-space: normal;
     text-align: center;
     clip-path: none;
-    filter: none;
+    background: var(--surface-background-color);
+}
+
+.playbook-flowchart--vertical .playbook-flowchart__chevron::before,
+.playbook-flowchart--vertical .playbook-flowchart__chevron::after {
+    content: none;
+}
+
+.playbook-flowchart--vertical .playbook-flowchart__chevron-face {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    background: transparent;
 }
 
 .playbook-flowchart--vertical .playbook-flowchart__connector {
@@ -524,7 +604,7 @@
     border-top: 7px solid var(--theme-color-secondary, var(--base-border-color, #c8c8c8));
 }
 
-/* Hide connectors in wide horizontal chevron (clip-path forms the join). */
+/* Hide connectors in wide horizontal chevron (clip-path + stroke form the join). */
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__connector {
     display: none;
 }
@@ -559,13 +639,32 @@
         display: flex;
         width: 100%;
         max-width: 28rem;
+        height: auto;
+        min-height: 2.75rem;
         margin-inline: auto;
         padding: 0.65rem 1rem;
+        border: 1px solid var(--base-border-color);
+        border-right: 1px solid var(--base-border-color);
         border-radius: 8px;
         white-space: normal;
         text-align: center;
         clip-path: none;
-        filter: none;
+        background: var(--surface-background-color);
+    }
+
+    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::before,
+    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::after {
+        content: none;
+    }
+
+    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron-face {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        height: auto;
+        padding: 0 !important;
+        background: transparent;
     }
 
     .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__connector {
@@ -586,6 +685,7 @@
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         border-top: 7px solid var(--theme-color-secondary, var(--base-border-color, #c8c8c8));
+        font-size: 0;
     }
 
     .playbook-flowchart--linear.playbook-flowchart--horizontal .playbook-flowchart__list {

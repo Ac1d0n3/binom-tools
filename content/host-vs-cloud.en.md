@@ -18,6 +18,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/stories/host-vs-cloud-hero.png
+publishedAt: 2026-07-13
 ---
 
 ## Cloud or self-hosted is often the wrong first question

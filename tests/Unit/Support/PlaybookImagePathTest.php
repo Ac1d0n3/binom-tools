@@ -15,6 +15,14 @@ class PlaybookImagePathTest extends TestCase
         );
     }
 
+    public function test_normalize_collapses_double_dot_before_extension(): void
+    {
+        $this->assertSame(
+            'images/playbooks/slowlychange-dim-img2-en.png',
+            PlaybookImagePath::normalize('images/playbooks/slowlychange-dim-img2-en..png'),
+        );
+    }
+
     public function test_asset_url_uses_canonical_playbook_path(): void
     {
         $this->assertSame(

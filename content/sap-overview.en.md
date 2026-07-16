@@ -12,6 +12,7 @@ tags:
   - sap-analytics-cloud
   - data-platform
 hero: images/playbooks/sap-overview-hero.png
+publishedAt: 2026-07-12
 ---
 
 ## There is no single SAP data stack
