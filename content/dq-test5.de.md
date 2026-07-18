@@ -1,5 +1,5 @@
 ---
-title: One Rule, Three Platforms — Eine fachliche Datenqualitätsregel in Fabric, dbt und Databricks
+title: Eine Regel, drei Plattformen — Eine fachliche Datenqualitätsregel in Fabric, dbt und Databricks
 description: Wie dieselbe fachliche Datenqualitätsregel in Microsoft Fabric, dbt und Databricks unterschiedlich implementiert, aber mit identischer Semantik und einem gemeinsamen standardisierten Ergebnis überwacht wird.
 category: Datenqualität
 tags:
@@ -19,7 +19,7 @@ order: -1
 author: Thomas Lindackers
 series: operational-data-quality
 seriesPart: 5
-seriesTitle: Operational Data Quality
+seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test5-hero.png
 ---
 

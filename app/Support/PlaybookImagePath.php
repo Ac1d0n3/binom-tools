@@ -20,6 +20,14 @@ final class PlaybookImagePath
         // Guard against accidental "name..png" / "name..webp" uploads.
         $path = preg_replace('/\.\.(png|webp|jpe?g|gif|svg)$/i', '.$1', $path) ?? $path;
 
+        // Bare filenames in markdown (e.g. "hero.png") resolve under images/playbooks/.
+        if (! str_contains($path, '/') && preg_match('/\.(png|webp|jpe?g|gif|svg)$/i', $path) === 1) {
+            $candidate = 'images/playbooks/'.$path;
+            if (is_file(public_path($candidate))) {
+                return $candidate;
+            }
+        }
+
         return $path;
     }
 

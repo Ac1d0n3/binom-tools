@@ -291,8 +291,9 @@ return [
     'overview' => [
         'show_title' => env('TOOLS_OVERVIEW_SHOW_TITLE', false),
         'show_lead' => env('TOOLS_OVERVIEW_SHOW_LEAD', false),
-        'title_de' => env('TOOLS_OVERVIEW_TITLE_DE', 'Governance'),
-        'title_en' => env('TOOLS_OVERVIEW_TITLE_EN', 'Governance'),
+        // Optional overrides; when empty, Blade uses data-i18n keys (tools.overviewTitle / Lead).
+        'title_de' => env('TOOLS_OVERVIEW_TITLE_DE'),
+        'title_en' => env('TOOLS_OVERVIEW_TITLE_EN'),
         'lead_de' => env('TOOLS_OVERVIEW_LEAD_DE'),
         'lead_en' => env('TOOLS_OVERVIEW_LEAD_EN'),
     ],

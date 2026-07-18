@@ -1,5 +1,5 @@
 ---
-title: Data Quality Cockpit in Qlik und Power BI — Von der Kennzahl bis zur Behebung
+title: Datenqualitäts-Cockpit in Qlik und Power BI — Von der Kennzahl bis zur Behebung
 description: Wie eine standardisierte Data-Quality-Historie in Qlik und Power BI zu einem operativen Management-Cockpit mit Quality Score, Failure Rate, Trends, Ownership, SLA, Maßnahmen und Drill-down auf fehlerhafte Datensätze wird.
 category: Datenqualität
 tags:
@@ -20,7 +20,7 @@ order: -1
 author: Thomas Lindackers
 series: operational-data-quality
 seriesPart: 6
-seriesTitle: Operational Data Quality
+seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test6-hero.png
 ---
 

@@ -16,7 +16,7 @@
                 @else
                     data-i18n="tools.overviewTitle"
                 @endif
-            >{{ config('tools.overview.title_en') ?? 'Governance' }}</h1>
+            >{{ config('tools.overview.title_en') ?: 'Governance' }}</h1>
         @endif
 
         @if (config('tools.overview.show_lead'))

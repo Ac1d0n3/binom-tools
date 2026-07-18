@@ -15,6 +15,22 @@ class PlaybookImagePathTest extends TestCase
         );
     }
 
+    public function test_normalize_resolves_bare_filename_under_playbooks_dir(): void
+    {
+        $pngPath = public_path('images/playbooks/playbook-image-path-bare-test.png');
+        @unlink($pngPath);
+
+        try {
+            file_put_contents($pngPath, 'png');
+            $this->assertSame(
+                'images/playbooks/playbook-image-path-bare-test.png',
+                PlaybookImagePath::normalize('playbook-image-path-bare-test.png'),
+            );
+        } finally {
+            @unlink($pngPath);
+        }
+    }
+
     public function test_normalize_collapses_double_dot_before_extension(): void
     {
         $this->assertSame(

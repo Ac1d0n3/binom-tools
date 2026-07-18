@@ -1,5 +1,5 @@
 ---
-title: Data Quality in Databricks — Expectations, Event Log und historische DQ-Auswertung
+title: Datenqualität in Databricks — Expectations, Event Log und historische DQ-Auswertung
 description: Wie Lakeflow Expectations Datenqualität in Streaming Tables und Materialized Views durchsetzen, Warn-, Drop- und Fail-Verhalten steuern und ihre Event-Log-Metriken in ein gemeinsames historisches Datenmodell für Qlik und Power BI überführt werden.
 category: Datenqualität
 tags:
@@ -21,7 +21,7 @@ order: -1
 author: Thomas Lindackers
 series: operational-data-quality
 seriesPart: 4
-seriesTitle: Operational Data Quality
+seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test4-hero.png
 ---
 

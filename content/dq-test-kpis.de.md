@@ -1,5 +1,5 @@
 ---
-title: Von Tests zu messbarer Datenqualität — Operational Data Quality Monitoring
+title: Von Tests zu messbarer Datenqualität — Operatives Data-Quality-Monitoring
 description: Wie technische Datenqualitätstests so aufgebaut werden, dass jeder Lauf eine standardisierte Ergebniszeile erzeugt und dadurch in Qlik und Power BI historisch, vergleichbar und operativ auswertbar wird.
 category: Datenqualität
 tags:
@@ -19,7 +19,7 @@ order: -1
 author: Thomas Lindackers
 series: operational-data-quality
 seriesPart: 1
-seriesTitle: Operational Data Quality
+seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test-kpis-hero.png
 ---
 

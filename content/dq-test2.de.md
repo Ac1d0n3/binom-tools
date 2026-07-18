@@ -1,5 +1,5 @@
 ---
-title: Data Quality in Microsoft Fabric — Tests operationalisieren und Ergebnisse zentral auswerten
+title: Datenqualität in Microsoft Fabric — Tests operationalisieren und Ergebnisse zentral auswerten
 description: Wie Datenqualitätstests in Fabric Lakehouse und Warehouse mit SQL, Notebooks, Pipelines, Materialized Lake Views und Microsoft Purview ausgeführt und als standardisierte Delta- oder Warehouse-Ergebnisse für Qlik und Power BI gespeichert werden.
 category: Datenqualität
 tags:
@@ -21,7 +21,7 @@ order: -1
 author: Thomas Lindackers
 series: operational-data-quality
 seriesPart: 2
-seriesTitle: Operational Data Quality
+seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test2-hero.png
 ---
 

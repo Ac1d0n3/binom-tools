@@ -1,5 +1,5 @@
 ---
-title: Data Quality with dbt — Von Tests und Fehlertabellen zur historischen Überwachung
+title: Datenqualität mit dbt — Von Tests und Fehlertabellen zur historischen Überwachung
 description: Wie dbt Generic und Custom Data Tests in YAML definiert, fehlerhafte Datensätze mit store_failures persistiert und die Ergebnisse über eine zusätzliche Historientabelle für Qlik, Power BI und Data Governance operationalisiert werden.
 category: Datenqualität
 tags:
@@ -20,7 +20,7 @@ order: -1
 author: Thomas Lindackers
 series: operational-data-quality
 seriesPart: 3
-seriesTitle: Operational Data Quality
+seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test3-hero.png
 ---
 
