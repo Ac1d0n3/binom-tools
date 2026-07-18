@@ -86,6 +86,7 @@ class PlaybookController extends Controller
 
         return view('playbooks.show', [
             'playbook' => $playbook,
+            'engagementStats' => $this->stats->get($playbook->slug),
         ]);
     }
 }

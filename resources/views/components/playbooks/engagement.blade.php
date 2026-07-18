@@ -1,5 +1,7 @@
 @props([
     'slug',
+    'views' => 0,
+    'likes' => 0,
     'shareEnabled' => true,
 ])
 
@@ -7,6 +9,8 @@
     $statsShowUrl = locale_route('playbooks.stats.show', ['slug' => $slug]);
     $statsViewUrl = locale_route('playbooks.stats.view', ['slug' => $slug]);
     $statsLikeUrl = locale_route('playbooks.stats.like', ['slug' => $slug]);
+    $views = max(0, (int) $views);
+    $likes = max(0, (int) $likes);
 @endphp
 
 <div
@@ -19,7 +23,7 @@
 >
     <div class="playbook-engagement__stat" title="Views">
         <i class="fa-solid fa-eye" aria-hidden="true"></i>
-        <span data-playbook-views>0</span>
+        <span data-playbook-views>{{ $views }}</span>
         <span class="playbook-engagement__sr" data-i18n="playbooks.views">Views</span>
     </div>
 
@@ -32,7 +36,7 @@
         aria-label="Like"
     >
         <i class="fa-regular fa-heart" aria-hidden="true" data-like-icon></i>
-        <span data-playbook-likes>0</span>
+        <span data-playbook-likes>{{ $likes }}</span>
     </button>
 
     @if ($shareEnabled)

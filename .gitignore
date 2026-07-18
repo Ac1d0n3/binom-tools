@@ -23,6 +23,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/app/Playbooks/stats-seed/*
+!/app/Playbooks/stats-seed/.gitkeep
 _ide_helper.php
 Homestead.json
 Homestead.yaml

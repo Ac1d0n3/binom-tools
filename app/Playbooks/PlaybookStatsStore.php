@@ -7,17 +7,22 @@ use RuntimeException;
 
 /**
  * File-based playbook view/like counters (no database).
- * Storage: storage/app/playbook-stats/{slug}.json
+ * Runtime: storage/app/playbook-stats/{slug}.json
+ * Packaged seed (FTP-safe): app/Playbooks/stats-seed/{slug}.json
  */
 final class PlaybookStatsStore
 {
     public function __construct(
         private readonly string $directory,
+        private readonly ?string $seedDirectory = null,
     ) {}
 
     public static function default(): self
     {
-        return new self(storage_path('app/playbook-stats'));
+        return new self(
+            storage_path('app/playbook-stats'),
+            app_path('Playbooks/stats-seed'),
+        );
     }
 
     /**
@@ -28,11 +33,22 @@ final class PlaybookStatsStore
         $slug = $this->assertSlug($slug);
         $path = $this->path($slug);
 
-        if (! is_file($path)) {
-            return ['views' => 0, 'likes' => 0];
+        if (is_file($path)) {
+            return $this->readFile($path);
         }
 
-        return $this->readFile($path);
+        $seeded = $this->readSeed($slug);
+        if ($seeded !== null) {
+            try {
+                $this->writeAtomic($slug, $seeded);
+            } catch (\Throwable) {
+                // Storage may be missing/unwritable after FTP deploy — still serve seed counts.
+            }
+
+            return $seeded;
+        }
+
+        return ['views' => 0, 'likes' => 0];
     }
 
     /**
@@ -154,7 +170,11 @@ final class PlaybookStatsStore
             }
 
             $raw = stream_get_contents($handle);
-            $stats = $this->decode($raw === false || $raw === '' ? null : $raw);
+            if ($raw === false || $raw === '') {
+                $stats = $this->readSeed($slug) ?? ['views' => 0, 'likes' => 0];
+            } else {
+                $stats = $this->decode($raw);
+            }
             $stats = $callback($stats);
 
             ftruncate($handle, 0);
@@ -167,6 +187,37 @@ final class PlaybookStatsStore
             flock($handle, LOCK_UN);
             fclose($handle);
         }
+    }
+
+    /**
+     * @param  array{views: int, likes: int}  $stats
+     */
+    private function writeAtomic(string $slug, array $stats): void
+    {
+        $this->ensureDirectory();
+        $path = $this->path($slug);
+        $payload = json_encode($stats, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)."\n";
+
+        if (file_put_contents($path, $payload, LOCK_EX) === false) {
+            throw new RuntimeException('Unable to write playbook stats file: '.$path);
+        }
+    }
+
+    /**
+     * @return array{views: int, likes: int}|null
+     */
+    private function readSeed(string $slug): ?array
+    {
+        if ($this->seedDirectory === null || $this->seedDirectory === '') {
+            return null;
+        }
+
+        $path = $this->seedDirectory.DIRECTORY_SEPARATOR.$slug.'.json';
+        if (! is_file($path)) {
+            return null;
+        }
+
+        return $this->readFile($path);
     }
 
     /**

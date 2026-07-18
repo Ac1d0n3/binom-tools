@@ -31,11 +31,11 @@ final class PlaybookStatsTest extends TestCase
         $slug = 'eight-pillars';
         $cookieName = \App\Http\Controllers\Playbooks\PlaybookStatsController::ENGAGEMENT_COOKIE;
 
-        $this->getJson("/playbooks/{$slug}/stats")
+        $this->getJson("/playbooks/{$slug}/engagement")
             ->assertOk()
             ->assertJson(['views' => 0, 'likes' => 0, 'liked' => false]);
 
-        $this->postJson("/playbooks/{$slug}/stats/view")
+        $this->postJson("/playbooks/{$slug}/engagement/view")
             ->assertOk()
             ->assertJson(['views' => 1, 'counted' => true]);
 
@@ -44,7 +44,7 @@ final class PlaybookStatsTest extends TestCase
             'l' => [],
         ], JSON_THROW_ON_ERROR));
 
-        $this->call('POST', "/playbooks/{$slug}/stats/view", server: [
+        $this->call('POST', "/playbooks/{$slug}/engagement/view", server: [
             'HTTP_ACCEPT' => 'application/json',
         ], cookies: [
             $cookieName => $alreadyViewed,
@@ -55,7 +55,7 @@ final class PlaybookStatsTest extends TestCase
             'l' => [],
         ], JSON_THROW_ON_ERROR));
 
-        $this->call('POST', "/playbooks/{$slug}/stats/like", server: [
+        $this->call('POST', "/playbooks/{$slug}/engagement/like", server: [
             'HTTP_ACCEPT' => 'application/json',
         ], cookies: [
             $cookieName => $likedCookie,
@@ -66,7 +66,7 @@ final class PlaybookStatsTest extends TestCase
             'l' => [$slug => 1],
         ], JSON_THROW_ON_ERROR));
 
-        $this->call('POST', "/playbooks/{$slug}/stats/like", server: [
+        $this->call('POST', "/playbooks/{$slug}/engagement/like", server: [
             'HTTP_ACCEPT' => 'application/json',
         ], cookies: [
             $cookieName => $unlikeCookie,

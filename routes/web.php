@@ -32,21 +32,21 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/playbooks', [PlaybookController::class, 'index'])->name($name('playbooks.index'));
-    Route::get('/playbooks/{slug}', [PlaybookController::class, 'show'])
-        ->where('slug', '[a-z0-9-]+')
-        ->name($name('playbooks.show'));
-    Route::get('/playbooks/{slug}/stats', [PlaybookStatsController::class, 'show'])
+    Route::get('/playbooks/{slug}/engagement', [PlaybookStatsController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->middleware('throttle:60,1')
         ->name($name('playbooks.stats.show'));
-    Route::post('/playbooks/{slug}/stats/view', [PlaybookStatsController::class, 'view'])
+    Route::post('/playbooks/{slug}/engagement/view', [PlaybookStatsController::class, 'view'])
         ->where('slug', '[a-z0-9-]+')
         ->middleware('throttle:30,1')
         ->name($name('playbooks.stats.view'));
-    Route::post('/playbooks/{slug}/stats/like', [PlaybookStatsController::class, 'like'])
+    Route::post('/playbooks/{slug}/engagement/like', [PlaybookStatsController::class, 'like'])
         ->where('slug', '[a-z0-9-]+')
         ->middleware('throttle:30,1')
         ->name($name('playbooks.stats.like'));
+    Route::get('/playbooks/{slug}', [PlaybookController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name($name('playbooks.show'));
     Route::get('/about', [AboutController::class, 'show'])->name($name('about.show'));
     Route::get('/impressum', [ImpressumController::class, 'show'])->name($name('legal.impressum'));
     Route::get('/datenschutz', [PrivacyController::class, 'show'])->name($name('legal.privacy'));

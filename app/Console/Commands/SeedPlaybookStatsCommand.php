@@ -18,6 +18,13 @@ class SeedPlaybookStatsCommand extends Command
         $force = (bool) $this->option('force');
         $seeded = 0;
         $skipped = 0;
+        $seedDir = app_path('Playbooks/stats-seed');
+
+        if (! is_dir($seedDir) && ! mkdir($seedDir, 0775, true) && ! is_dir($seedDir)) {
+            $this->error('Unable to create seed directory: '.$seedDir);
+
+            return self::FAILURE;
+        }
 
         foreach ($playbooks->all() as $playbook) {
             $slug = $playbook->slug;
@@ -30,6 +37,13 @@ class SeedPlaybookStatsCommand extends Command
 
             [$views, $likes] = $this->randomCountsForSlug($slug);
             $stats->set($slug, $views, $likes);
+
+            $seedPath = $seedDir.DIRECTORY_SEPARATOR.$slug.'.json';
+            file_put_contents(
+                $seedPath,
+                json_encode(['views' => $views, 'likes' => $likes], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)."\n",
+            );
+
             $this->line("{$slug}: {$views} views, {$likes} likes");
             $seeded++;
         }

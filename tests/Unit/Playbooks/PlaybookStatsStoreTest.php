@@ -86,4 +86,23 @@ final class PlaybookStatsStoreTest extends TestCase
         $this->store->set('seeded', 200, 9);
         $this->assertSame(['views' => 200, 'likes' => 9], $this->store->get('seeded'));
     }
+
+    public function test_hydrates_from_seed_directory_when_runtime_missing(): void
+    {
+        $seedDir = sys_get_temp_dir().'/playbook-stats-seed-'.uniqid('', true);
+        mkdir($seedDir, 0775, true);
+        file_put_contents(
+            $seedDir.'/from-seed.json',
+            json_encode(['views' => 88, 'likes' => 12], JSON_THROW_ON_ERROR),
+        );
+
+        $store = new PlaybookStatsStore($this->dir, $seedDir);
+        $this->assertSame(['views' => 88, 'likes' => 12], $store->get('from-seed'));
+        $this->assertFileExists($this->dir.'/from-seed.json');
+
+        foreach (glob($seedDir.'/*.json') ?: [] as $file) {
+            unlink($file);
+        }
+        rmdir($seedDir);
+    }
 }

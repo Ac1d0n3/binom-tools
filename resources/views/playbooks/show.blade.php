@@ -83,6 +83,8 @@
 
                                 <x-playbooks.engagement
                                     :slug="$playbook->slug"
+                                    :views="(int) ($engagementStats['views'] ?? 0)"
+                                    :likes="(int) ($engagementStats['likes'] ?? 0)"
                                     :share-enabled="(bool) config('playbooks.share_enabled', true)"
                                 />
 

@@ -20,15 +20,21 @@ const deployPaths = [
     'app/Playbooks',
     'app/Support',
     'app/Catalog',
+    'app/Console/Commands',
+    'app/Providers/AppServiceProvider.php',
     'app/Http/Controllers/Tools',
     'app/Http/Controllers/About',
     'app/Http/Controllers/Playbooks',
     'app/Http/Controllers/Legal',
-    'app/Http/Middleware/SetLocaleFromRoute.php',
+    'app/Http/Middleware',
     'bootstrap/app.php',
     'config/tools.php',
+    'config/playbooks.php',
     'config/legal.php',
+    'config/app.php',
     'routes/web.php',
+    // Seeded story view/like counters (JSON files; created on first like/view if missing)
+    'storage/app/playbook-stats',
 ];
 
 /** Never mirror these from public/ (dev-only or replaced below). */
@@ -78,6 +84,21 @@ execSync('npm run build', {
     cwd: root,
     stdio: 'inherit',
 });
+
+const statsSeedDir = join(root, 'app/Playbooks/stats-seed');
+const seedJsonCount = existsSync(statsSeedDir)
+    ? readdirSync(statsSeedDir).filter((name) => name.endsWith('.json')).length
+    : 0;
+
+if (seedJsonCount === 0) {
+    console.log('No playbook stats seeds found — running php artisan playbooks:seed-stats --force…');
+    execSync('php artisan playbooks:seed-stats --force', {
+        cwd: root,
+        stdio: 'inherit',
+    });
+} else {
+    console.log(`Playbook stats seeds present: ${seedJsonCount} JSON file(s)`);
+}
 
 if (existsSync(outDir)) {
     rmSync(outDir, { recursive: true, force: true });
@@ -132,15 +153,23 @@ writeFileSync(
    - resources/views/       Blade-Templates
    - content/               Story-Markdown
    - app/Support/           Locale-Helper, Nav
-   - app/Playbooks/         Story-Renderer
+   - app/Playbooks/         Story-Renderer, Stats-Store
    - app/Catalog/
+   - app/Console/Commands/
+   - app/Providers/AppServiceProvider.php
    - app/Http/Controllers/Tools|Playbooks|Legal/
-   - app/Http/Middleware/SetLocaleFromRoute.php
+   - app/Http/Middleware/   (SetLocale + EnsureToolEnabled)
    - bootstrap/app.php
    - config/tools.php
+   - config/playbooks.php
+   - config/app.php
    - routes/web.php         lädt locale_route()-Helper
+   - storage/app/playbook-stats/  Optional runtime counters (werden aus Seed befüllt)
+   - app/Playbooks/stats-seed/    Seeded Views/Likes (lokal generiert, NICHT in Git; deploy:ftp packt sie)
 
    Wichtig: Gesamten deploy-ftp/-Baum hochladen — besonders public/build/assets/ komplett!
+   Ohne EnsureToolEnabled.php + aktualisiertes bootstrap/app.php → 500 auf der Startseite.
+   Views/Likes kommen aus app/Playbooks/stats-seed/ (FTP) und werden nach storage/app/playbook-stats/ kopiert.
 
 3. WICHTIG — falls von früheren Deploys noch vorhanden, per FTP LÖSCHEN:
    - public/tools/   (physischer Ordner blockiert /tools/ und alle Tool-Seiten!)
