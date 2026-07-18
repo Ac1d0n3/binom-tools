@@ -72,6 +72,17 @@ binom-tools/
 **Story flow:** `content/*.md` → `PlaybookRepository` → `playbooks/show`  
 **Governance cards:** `config/tools.php` → controllers → Blade cards + sidebar
 
+## Configuration (.env)
+
+| Key | Purpose |
+| --- | --- |
+| `APP_NAME` | Product name in page titles (`Story — Binom Governance`) |
+| `PLAYBOOKS_SHARE_ENABLED` | Show/hide share control on stories (default `true`) |
+| `TOOL_*_ENABLED` | Per-tool on/off (default `true`); disabled tools hide from nav/overview and return 404 |
+| `TOOLS_OVERVIEW_TITLE_*` | Optional governance overview H1 (defaults to Governance) |
+
+Story **views** and **likes** are stored as JSON under `storage/app/playbook-stats/` (no database). One view per browser/day (cookie); likes toggle with a cookie.
+
 ## Adding content
 
 1. **Story** — add `content/<slug>.en.md` (+ `.de.md`), then clear playbook cache if needed  

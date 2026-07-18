@@ -14,8 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->encryptCookies(except: [
+            \App\Http\Controllers\Playbooks\PlaybookStatsController::ENGAGEMENT_COOKIE,
+        ]);
         $middleware->web(append: [
             \App\Http\Middleware\SetLocaleFromRoute::class,
+            \App\Http\Middleware\EnsureToolEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

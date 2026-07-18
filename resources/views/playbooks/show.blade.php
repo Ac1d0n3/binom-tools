@@ -81,6 +81,11 @@
 
                                 <x-playbooks.meta :variant="$variant" :modified-at="$playbook->modifiedAt" />
 
+                                <x-playbooks.engagement
+                                    :slug="$playbook->slug"
+                                    :share-enabled="(bool) config('playbooks.share_enabled', true)"
+                                />
+
                                 @if ($playbook->slug === 'help-hub-platform' && config('tools.links.repository'))
                                     <div class="playbook-detail__actions">
                                         <x-tools.repo-clone-link variant="primary">

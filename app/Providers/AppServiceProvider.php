@@ -12,6 +12,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         require_once app_path('Support/helpers.php');
+
+        $this->app->singleton(\App\Playbooks\PlaybookStatsStore::class, static function (): \App\Playbooks\PlaybookStatsStore {
+            return \App\Playbooks\PlaybookStatsStore::default();
+        });
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Playbooks;
 
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
+use App\Playbooks\PlaybookStatsStore;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -11,11 +12,12 @@ class PlaybookController extends Controller
 {
     public function __construct(
         private readonly PlaybookRepository $playbooks,
+        private readonly PlaybookStatsStore $stats,
     ) {}
 
     public function index(): View
     {
-        $playbooks = $this->playbooks->allForIndex();
+        $playbooks = $this->stats->attachToItems($this->playbooks->allForIndex());
 
         $tagCounts = collect($playbooks)
             ->flatMap(fn (array $item): array => $item['tags'] ?? [])

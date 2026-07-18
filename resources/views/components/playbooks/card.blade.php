@@ -37,6 +37,8 @@
 
     $tags = $item['tags'] ?? [];
     $heroUrl = $item['heroUrl'] ?? null;
+    $views = max(0, (int) ($item['stats']['views'] ?? 0));
+    $likes = max(0, (int) ($item['stats']['likes'] ?? 0));
     $searchText = strtolower(implode(' ', array_filter([
         $titleDe,
         $titleEn,
@@ -129,7 +131,17 @@
         >{{ $descEn }}</p>
     </div>
 
-    <span class="tools-card__story-footer" aria-hidden="true">
-        <i class="fa-solid fa-arrow-right tools-card__arrow"></i>
+    <span class="tools-card__story-footer">
+        <span class="tools-card__story-stats">
+            <span class="tools-card__story-stat" title="Views">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                <span>{{ number_format($views) }}</span>
+            </span>
+            <span class="tools-card__story-stat" title="Likes">
+                <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                <span>{{ number_format($likes) }}</span>
+            </span>
+        </span>
+        <i class="fa-solid fa-arrow-right tools-card__arrow" aria-hidden="true"></i>
     </span>
 </a>

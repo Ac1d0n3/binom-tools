@@ -267,14 +267,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Per-tool enable flags (TOOL_{ID}_ENABLED, default true)
+    |--------------------------------------------------------------------------
+    */
+    'enabled' => [
+        'dbt-governance-macro-generator' => filter_var(env('TOOL_DBT_GOVERNANCE_MACRO_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'pii-policy-generator' => filter_var(env('TOOL_PII_POLICY_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'pii-unreviewed-gate-generator' => filter_var(env('TOOL_PII_UNREVIEWED_GATE_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'pii-recommend-generator' => filter_var(env('TOOL_PII_RECOMMEND_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'dbt-dq-macro-generator' => filter_var(env('TOOL_DBT_DQ_MACRO_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'dbt-dq-rules-generator' => filter_var(env('TOOL_DBT_DQ_RULES_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'dbt-dq-history-generator' => filter_var(env('TOOL_DBT_DQ_HISTORY_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'schema-yml-editor' => filter_var(env('TOOL_SCHEMA_YML_EDITOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'prompt-studio' => filter_var(env('TOOL_PROMPT_STUDIO_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'governance-ai-sanitizer' => filter_var(env('TOOL_GOVERNANCE_AI_SANITIZER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Governance overview page header ( /tools )
     |--------------------------------------------------------------------------
     */
     'overview' => [
         'show_title' => env('TOOLS_OVERVIEW_SHOW_TITLE', false),
         'show_lead' => env('TOOLS_OVERVIEW_SHOW_LEAD', false),
-        'title_de' => env('TOOLS_OVERVIEW_TITLE_DE'),
-        'title_en' => env('TOOLS_OVERVIEW_TITLE_EN'),
+        'title_de' => env('TOOLS_OVERVIEW_TITLE_DE', 'Governance'),
+        'title_en' => env('TOOLS_OVERVIEW_TITLE_EN', 'Governance'),
         'lead_de' => env('TOOLS_OVERVIEW_LEAD_DE'),
         'lead_en' => env('TOOLS_OVERVIEW_LEAD_EN'),
     ],

@@ -14,6 +14,11 @@ final class ToolsNavTest extends TestCase
         $this->assertSame($expected, ToolsNav::showsDbtBadge($item));
     }
 
+    public function test_enabled_env_key_and_default_enabled(): void
+    {
+        $this->assertSame('TOOL_PROMPT_STUDIO_ENABLED', ToolsNav::enabledEnvKey('prompt-studio'));
+    }
+
     /**
      * @return array<string, array{0: array<string, mixed>, 1: bool}>
      */

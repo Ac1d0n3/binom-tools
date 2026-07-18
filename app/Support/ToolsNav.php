@@ -7,6 +7,25 @@ use Illuminate\Support\Facades\Route;
 final class ToolsNav
 {
     /**
+     * Env/config key pattern: TOOL_{UPPER_SNAKE_ID}_ENABLED (default true).
+     */
+    public static function enabledEnvKey(string $toolId): string
+    {
+        return 'TOOL_'.strtoupper(str_replace('-', '_', $toolId)).'_ENABLED';
+    }
+
+    public static function isToolEnabled(string $toolId): bool
+    {
+        $map = config('tools.enabled', []);
+
+        if (array_key_exists($toolId, $map)) {
+            return (bool) $map[$toolId];
+        }
+
+        return true;
+    }
+
+    /**
      * @param  list<array<string, mixed>>  $items
      * @return list<array<string, mixed>>
      */
@@ -14,7 +33,19 @@ final class ToolsNav
     {
         return \App\Support\ToolWorkflow::enrichNavItems(array_values(array_filter(
             $items,
-            static fn (array $item): bool => isset($item['route']) && Route::has($item['route']),
+            static function (array $item): bool {
+                $id = $item['id'] ?? null;
+
+                if (! is_string($id) || $id === '') {
+                    return false;
+                }
+
+                if (! self::isToolEnabled($id)) {
+                    return false;
+                }
+
+                return isset($item['route']) && Route::has($item['route']);
+            },
         )));
     }
 
@@ -31,6 +62,10 @@ final class ToolsNav
             $registeredSteps = [];
 
             foreach ($steps as $stepId) {
+                if (! is_string($stepId) || ! self::isToolEnabled($stepId)) {
+                    continue;
+                }
+
                 $navItem = collect(config('tools.nav', []))->firstWhere('id', $stepId);
                 if ($navItem !== null && isset($navItem['route']) && Route::has($navItem['route'])) {
                     $registeredSteps[] = $stepId;

@@ -1,3 +1,4 @@
+import { initPlaybookEngagement } from './engagement';
 import { initPlaybookImageLightbox } from './image-lightbox';
 import { initPlaybookReadingPosition } from './reading-position';
 import { initPlaybookReadTracker } from './read-tracker';
@@ -73,11 +74,13 @@ export function initPlaybookDetail(root) {
     initActiveLocalePanel(root);
     initPlaybookReadingPosition(root);
     initPlaybookReadTracker(root);
+    initPlaybookEngagement(root);
     schedulePlaybookPrism(root);
     initPlaybookVideoEmbeds(root);
 
     window.addEventListener('binom-tools:playbook-locale', () => {
         initActiveLocalePanel(root);
+        initPlaybookEngagement(root);
         schedulePlaybookPrism(root);
         initPlaybookVideoEmbeds(getActiveLocalePanel(root) ?? root);
     });

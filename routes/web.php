@@ -6,6 +6,7 @@ use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
+use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
 use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
@@ -34,6 +35,18 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/playbooks/{slug}', [PlaybookController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name($name('playbooks.show'));
+    Route::get('/playbooks/{slug}/stats', [PlaybookStatsController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->middleware('throttle:60,1')
+        ->name($name('playbooks.stats.show'));
+    Route::post('/playbooks/{slug}/stats/view', [PlaybookStatsController::class, 'view'])
+        ->where('slug', '[a-z0-9-]+')
+        ->middleware('throttle:30,1')
+        ->name($name('playbooks.stats.view'));
+    Route::post('/playbooks/{slug}/stats/like', [PlaybookStatsController::class, 'like'])
+        ->where('slug', '[a-z0-9-]+')
+        ->middleware('throttle:30,1')
+        ->name($name('playbooks.stats.like'));
     Route::get('/about', [AboutController::class, 'show'])->name($name('about.show'));
     Route::get('/impressum', [ImpressumController::class, 'show'])->name($name('legal.impressum'));
     Route::get('/datenschutz', [PrivacyController::class, 'show'])->name($name('legal.privacy'));
