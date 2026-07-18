@@ -2,8 +2,8 @@
     'mainClass' => 'tools-shell__main--overview',
 ])
 
-@section('title', 'Tools — ' . config('app.name'))
-@section('meta_description', 'Interactive governance tools — dbt macros, PII policies, schema editors, and workflow examples you can copy into your stack.')
+@section('title', 'Governance — ' . config('app.name'))
+@section('meta_description', 'Interactive governance workflows — dbt macros, PII policies, schema editors, and workflow examples you can copy into your stack.')
 
 @section('content')
     <div class="tools-content tools-content--overview" data-overview-filter-root>
@@ -16,7 +16,7 @@
                 @else
                     data-i18n="tools.overviewTitle"
                 @endif
-            >{{ config('tools.overview.title_en') ?? 'Tools' }}</h1>
+            >{{ config('tools.overview.title_en') ?? 'Governance' }}</h1>
         @endif
 
         @if (config('tools.overview.show_lead'))
@@ -92,7 +92,7 @@
                         :example="$item['example'] ?? false"
                         :overview-item="true"
                         :search-text="$searchText"
-                        :dbt-badge="isset($item['workflow']) || ($item['dbt'] ?? false)"
+                        :dbt-badge="\App\Support\ToolsNav::showsDbtBadge($item)"
                         :meta="isset($item['workflowStep'], $stepTotal) ? 'Step ' . $item['workflowStep'] . '/' . $stepTotal : null"
                     />
                 @endforeach

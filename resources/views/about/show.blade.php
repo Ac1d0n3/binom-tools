@@ -25,7 +25,7 @@
         </section>
 
         <section class="tools-section">
-            <h2 class="tools-section__title" data-i18n="about.tools.title">Tools</h2>
+            <h2 class="tools-section__title" data-i18n="about.tools.title">Governance</h2>
             <p class="tools-about-body" data-i18n="about.tools.body">
                 Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup.
             </p>

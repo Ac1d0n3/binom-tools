@@ -101,7 +101,7 @@
     </div>
 
     <div class="tools-sidenav__group">
-        <p class="tools-sidenav__section" data-i18n="nav.tools">Tools</p>
+        <p class="tools-sidenav__section" data-i18n="nav.tools">Governance</p>
         <ul class="tools-sidenav__list">
             <li>
                 <a

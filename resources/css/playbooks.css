@@ -320,11 +320,13 @@
 
 .playbook-flowchart {
     margin: 1.25rem 0 1.5rem;
-    padding: 0;
+    padding: 0 0 0.65rem;
     border: 0;
     border-radius: 0;
     background: transparent;
     overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-gutter: stable;
     -webkit-overflow-scrolling: touch;
     container-type: inline-size;
     container-name: playbook-flow;
@@ -332,22 +334,20 @@
 
 .playbook-flowchart__list {
     margin: 0;
-    padding: 0;
+    padding: 4px 2px 6px;
     list-style: none;
     display: flex;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items: stretch;
     gap: 0;
     width: max-content;
     min-width: 100%;
+    /* overflow stays on the nav — overflow on the flex list shifts step 1 in Chromium */
     overflow: visible;
 }
 
 .playbook-flowchart--chevron {
-    --playbook-flowchart-h: 2.75rem;
-    --playbook-flowchart-tip: 0.75rem;
-    --playbook-flowchart-frame: var(--base-border-color);
-    --playbook-flowchart-fill: var(--surface-background-color);
+    --playbook-flowchart-notch: 0.85rem;
 }
 
 .playbook-flowchart__item {
@@ -355,139 +355,140 @@
     flex: 0 0 auto;
     margin: 0;
     padding: 0;
-    position: relative;
 }
 
-/* Tip overlaps the next step — earlier z-index keeps the > on top. */
+/* Tools-style full tip-in-kerf overlap. */
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:not(:last-child) {
-    margin-right: calc(-1 * var(--playbook-flowchart-tip, 0.75rem));
+    margin-right: calc(-1 * var(--playbook-flowchart-notch, 0.85rem));
 }
 
 .playbook-flowchart__step {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
     position: relative;
     box-sizing: border-box;
-    height: var(--playbook-flowchart-h, 2.75rem);
-    min-height: var(--playbook-flowchart-h, 2.75rem);
-    padding: 0 0.9rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.9rem;
     font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1.2;
     color: var(--bn-color-text-primary, inherit);
-    background: var(--playbook-flowchart-fill, var(--surface-background-color));
-    border: 1px solid var(--playbook-flowchart-frame, var(--base-border-color));
+    background: var(--surface-background-color);
+    border: 1px solid var(--base-border-color);
     white-space: nowrap;
 }
 
 /*
- * Real bordered > tip via CSS triangles (not clip-path).
- * ::before = tip outline, ::after = tip fill — same pattern as classic breadcrumbs / Tools steppers.
+ * Alternating theme fills (primary / accent) so interlocking chevrons stay readable.
+ * Colors come only from blue-water tokens — no hardcoded foreign palette.
  */
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron {
-    display: flex;
-    position: relative;
-    box-sizing: border-box;
-    height: var(--playbook-flowchart-h, 2.75rem);
-    min-height: var(--playbook-flowchart-h, 2.75rem);
-    padding: 0;
-    border: 1px solid var(--playbook-flowchart-frame, var(--base-border-color));
-    border-right: 0;
-    background: var(--playbook-flowchart-fill, var(--surface-background-color));
-    clip-path: none;
-    white-space: nowrap;
-}
-
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron-face {
-    display: flex;
-    flex: 1 1 auto;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
-    min-width: 0;
+    position: relative;
+    box-sizing: border-box;
+    min-height: 2.75rem;
     height: 100%;
-    padding: 0 0.85rem 0 1rem;
+    padding: 0.5rem 1.35rem 0.5rem 1.05rem;
     font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1.2;
-    color: inherit;
-    background: transparent;
+    color: var(--content-font-color, var(--bn-color-text-primary, inherit));
+    border: 0;
+    white-space: nowrap;
+    /* Odd steps — primary tint on surface */
+    background: color-mix(
+        in srgb,
+        var(--theme-color-primary, #2e6f91) 30%,
+        var(--surface-background-color, #f4f9fc)
+    );
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 0,
+        100% 50%,
+        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 100%,
+        0 100%,
+        var(--playbook-flowchart-notch, 0.85rem) 50%
+    );
+    filter: drop-shadow(0 1px 2px rgba(16, 39, 52, 0.1));
 }
 
-/* Make room under the overlapping tip from the previous step. */
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:not(:first-child) .playbook-flowchart__chevron-face {
-    padding-left: calc(0.65rem + var(--playbook-flowchart-tip, 0.75rem));
+/* Even steps — accent tint */
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(even) .playbook-flowchart__chevron {
+    background: color-mix(
+        in srgb,
+        var(--theme-color-accent, #3fa9c9) 38%,
+        var(--surface-background-color, #f4f9fc)
+    );
 }
 
-/* Tip border (outline of the >) */
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    right: calc(-1 * var(--playbook-flowchart-tip, 0.75rem) - 1px);
-    z-index: 1;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px) 0
-        calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px)
-        calc(var(--playbook-flowchart-tip, 0.75rem) + 1px);
-    border-color: transparent transparent transparent var(--playbook-flowchart-frame, var(--base-border-color));
-}
-
-/* Tip fill */
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    right: calc(-1 * var(--playbook-flowchart-tip, 0.75rem));
-    z-index: 2;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px) 0
-        calc(var(--playbook-flowchart-h, 2.75rem) / 2 + 1px)
-        var(--playbook-flowchart-tip, 0.75rem);
-    border-color: transparent transparent transparent var(--playbook-flowchart-fill, var(--surface-background-color));
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:first-child .playbook-flowchart__chevron {
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 0,
+        100% 50%,
+        calc(100% - var(--playbook-flowchart-notch, 0.85rem)) 100%,
+        0 100%
+    );
+    padding-left: 1rem;
 }
 
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:last-child .playbook-flowchart__chevron {
-    border-right: 1px solid var(--playbook-flowchart-frame, var(--base-border-color));
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        0 100%,
+        var(--playbook-flowchart-notch, 0.85rem) 50%
+    );
+    padding-right: 1rem;
 }
 
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:last-child .playbook-flowchart__chevron::before,
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:last-child .playbook-flowchart__chevron::after {
-    content: none;
-}
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(1) .playbook-flowchart__chevron { z-index: 1; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(2) .playbook-flowchart__chevron { z-index: 2; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(3) .playbook-flowchart__chevron { z-index: 3; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(4) .playbook-flowchart__chevron { z-index: 4; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(5) .playbook-flowchart__chevron { z-index: 5; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(6) .playbook-flowchart__chevron { z-index: 6; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(7) .playbook-flowchart__chevron { z-index: 7; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(8) .playbook-flowchart__chevron { z-index: 8; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(9) .playbook-flowchart__chevron { z-index: 9; }
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(10) .playbook-flowchart__chevron { z-index: 10; }
 
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(1) .playbook-flowchart__chevron { z-index: 10; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(2) .playbook-flowchart__chevron { z-index: 9; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(3) .playbook-flowchart__chevron { z-index: 8; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(4) .playbook-flowchart__chevron { z-index: 7; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(5) .playbook-flowchart__chevron { z-index: 6; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(6) .playbook-flowchart__chevron { z-index: 5; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(7) .playbook-flowchart__chevron { z-index: 4; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(8) .playbook-flowchart__chevron { z-index: 3; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(9) .playbook-flowchart__chevron { z-index: 2; }
-.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item:nth-child(10) .playbook-flowchart__chevron { z-index: 1; }
-
-.playbook-flowchart__step--active {
-    background: var(--theme-color-primary, #1e40af);
-    color: #fff;
-    border-color: var(--theme-color-primary, #1e40af);
+/* Explicit states still use theme tokens, not a third palette. */
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron.playbook-flowchart__step--completed {
+    background: color-mix(
+        in srgb,
+        var(--theme-color-accent, #3fa9c9) 18%,
+        var(--surface-background-color, #f4f9fc)
+    );
+    color: var(--content-font-color, var(--bn-color-text-primary, inherit));
 }
 
 .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron.playbook-flowchart__step--active {
+    background: var(--theme-color-primary, #2e6f91);
+    color: var(--theme-color-primary-contrast, #fff);
     z-index: 20;
-    --playbook-flowchart-fill: var(--theme-color-primary, #1e40af);
-    --playbook-flowchart-frame: var(--theme-color-primary, #1e40af);
-    color: #fff;
+}
+
+.playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron.playbook-flowchart__step--active .playbook-flowchart__num {
+    color: var(--theme-color-primary, #2e6f91);
+    background: #fff;
+}
+
+.playbook-flowchart__step--active {
+    background: var(--surface-background-color);
+    color: var(--bn-color-text-primary, inherit);
+    border-color: var(--base-border-color);
 }
 
 .playbook-flowchart__step--completed {
-    background: color-mix(in srgb, var(--theme-color-accent, #0ea5e9) 14%, var(--surface-background-color));
+    background: var(--surface-background-color);
+    border-color: var(--base-border-color);
 }
 
 .playbook-flowchart__num {
@@ -504,10 +505,9 @@
     background: var(--theme-color-primary, #1e40af);
 }
 
-.playbook-flowchart__step--active .playbook-flowchart__num,
-.playbook-flowchart__chevron.playbook-flowchart__step--active .playbook-flowchart__num {
-    color: var(--theme-color-primary, #1e40af);
-    background: #fff;
+.playbook-flowchart__step--active .playbook-flowchart__num {
+    color: #fff;
+    background: var(--theme-color-primary, #1e40af);
 }
 
 .playbook-flowchart--linear .playbook-flowchart__list {
@@ -535,12 +535,23 @@
     font-size: 0.875rem;
 }
 
-/* Explicit vertical stacks: Label → Arrow → Label */
+/* Explicit vertical stacks: Label → Arrow → Label (box width = content, centered). */
+.playbook-flowchart--vertical {
+    display: flex;
+    justify-content: center;
+    overflow-x: visible;
+    scrollbar-gutter: auto;
+}
+
 .playbook-flowchart--vertical .playbook-flowchart__list {
     flex-direction: column;
     flex-wrap: nowrap;
-    align-items: stretch;
+    align-items: center;
     overflow-x: visible;
+    width: max-content;
+    min-width: 0;
+    max-width: 100%;
+    margin-inline: auto;
     gap: 0;
 }
 
@@ -549,13 +560,13 @@
     flex-direction: column;
     align-items: center;
     flex: 0 0 auto;
-    width: 100%;
+    width: auto;
 }
 
 .playbook-flowchart--vertical .playbook-flowchart__step,
 .playbook-flowchart--vertical .playbook-flowchart__chevron {
-    display: flex;
-    width: 100%;
+    display: inline-flex;
+    width: auto;
     max-width: 28rem;
     height: auto;
     min-height: 2.75rem;
@@ -566,22 +577,8 @@
     white-space: normal;
     text-align: center;
     clip-path: none;
+    filter: none;
     background: var(--surface-background-color);
-}
-
-.playbook-flowchart--vertical .playbook-flowchart__chevron::before,
-.playbook-flowchart--vertical .playbook-flowchart__chevron::after {
-    content: none;
-}
-
-.playbook-flowchart--vertical .playbook-flowchart__chevron-face {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    background: transparent;
 }
 
 .playbook-flowchart--vertical .playbook-flowchart__connector {
@@ -615,82 +612,28 @@
 }
 
 /*
- * Narrow containers: Tools-style horizontal chevrons stack as Label / ↓ / Label
- * so steps never get clipped.
+ * Horizontal chevron stays Tools-like at every width: interlocking clip-path ribbon
+ * + overflow-x scroll on the nav (no @container stack — that hid the chevrons in
+ * typical playbook columns ≤40rem and looked identical to the old vertical boxes).
+ *
+ * Explicit `flowchart vertical` still uses the vertical stack styles above.
+ * Linear horizontal may still stack on narrow containers.
  */
 @container playbook-flow (max-width: 40rem) {
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__list {
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-items: stretch;
-        overflow-x: visible;
-        gap: 0;
-    }
-
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__item {
+    .playbook-flowchart--linear.playbook-flowchart--horizontal {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin-right: 0 !important;
-    }
-
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron {
-        display: flex;
-        width: 100%;
-        max-width: 28rem;
-        height: auto;
-        min-height: 2.75rem;
-        margin-inline: auto;
-        padding: 0.65rem 1rem;
-        border: 1px solid var(--base-border-color);
-        border-right: 1px solid var(--base-border-color);
-        border-radius: 8px;
-        white-space: normal;
-        text-align: center;
-        clip-path: none;
-        background: var(--surface-background-color);
-    }
-
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::before,
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron::after {
-        content: none;
-    }
-
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__chevron-face {
-        display: flex;
-        flex-wrap: wrap;
         justify-content: center;
-        width: 100%;
-        height: auto;
-        padding: 0 !important;
-        background: transparent;
-    }
-
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__connector {
-        display: block;
-        width: 2px;
-        height: 1.15rem;
-        margin: 0.15rem auto;
-        background: var(--theme-color-secondary, var(--base-border-color, #c8c8c8));
-        position: relative;
-    }
-
-    .playbook-flowchart--chevron.playbook-flowchart--horizontal .playbook-flowchart__connector::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        bottom: -1px;
-        transform: translateX(-50%);
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-top: 7px solid var(--theme-color-secondary, var(--base-border-color, #c8c8c8));
-        font-size: 0;
+        overflow-x: visible;
+        scrollbar-gutter: auto;
     }
 
     .playbook-flowchart--linear.playbook-flowchart--horizontal .playbook-flowchart__list {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
+        width: max-content;
+        min-width: 0;
+        max-width: 100%;
+        margin-inline: auto;
         gap: 0;
     }
 
@@ -698,7 +641,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 100%;
+        width: auto;
     }
 
     .playbook-flowchart--linear.playbook-flowchart--horizontal .playbook-flowchart__item:not(:last-child)::after {
@@ -706,7 +649,7 @@
     }
 
     .playbook-flowchart--linear.playbook-flowchart--horizontal .playbook-flowchart__step {
-        width: 100%;
+        width: auto;
         max-width: 28rem;
         white-space: normal;
         text-align: center;

@@ -792,15 +792,24 @@ html[data-shell-full-width='true'] .tools-content--overview {
     gap: 0.35rem;
     max-width: calc(100% - 1.2rem);
     padding: 0.28rem 0.55rem;
-    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 18%, var(--base-border-color, #b8cddd));
     border-radius: 999px;
-    background: color-mix(in srgb, var(--content-background-color) 88%, transparent);
+    background: #fff;
     backdrop-filter: blur(6px);
-    color: var(--theme-color-primary, #2563eb);
+    color: var(--theme-color-primary, #2e6f91);
     font-size: 0.68rem;
     font-weight: 700;
     line-height: 1.25;
-    box-shadow: 0 1px 4px color-mix(in srgb, #000 8%, transparent);
+    box-shadow: 0 1px 4px color-mix(in srgb, #000 12%, transparent);
+}
+
+html.bn-theme-blue-water-dark .tools-card__series-badge,
+.bn-theme-blue-water-dark .tools-card__series-badge,
+html[data-color-scheme='dark'] .tools-card__series-badge {
+    color: #fff;
+    border-color: color-mix(in srgb, #fff 22%, transparent);
+    background: color-mix(in srgb, #0e1620 72%, transparent);
+    box-shadow: 0 1px 4px color-mix(in srgb, #000 35%, transparent);
 }
 
 .tools-card__series-badge span {

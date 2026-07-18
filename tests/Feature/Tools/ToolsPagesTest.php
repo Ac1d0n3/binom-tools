@@ -181,7 +181,7 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
 
         $toolsNav = (string) str($response->getContent())
-            ->after('data-i18n="nav.tools">Tools</p>')
+            ->after('data-i18n="nav.tools">Governance</p>')
             ->before('</aside>');
 
         $this->assertStringContainsString('data-i18n-nav="dbt-governance-macro-generator"', $toolsNav);
@@ -204,7 +204,7 @@ class ToolsPagesTest extends TestCase
 
         $storiesNav = (string) str($response->getContent())
             ->after('data-i18n="nav.stories">Stories</p>')
-            ->before('data-i18n="nav.tools">Tools</p>');
+            ->before('data-i18n="nav.tools">Governance</p>');
 
         $storyLinkCount = substr_count($storiesNav, 'data-playbook-nav-title');
         $this->assertLessThanOrEqual(\App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT, $storyLinkCount);

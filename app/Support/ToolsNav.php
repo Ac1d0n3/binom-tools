@@ -51,14 +51,19 @@ final class ToolsNav
     }
 
     /**
+     * Whether the overview/landing card should show the dbt badge.
+     * Only dbt-related tools — not every tool that happens to sit in a workflow.
+     *
      * @param  array<string, mixed>  $item
      */
     public static function showsDbtBadge(array $item): bool
     {
-        if (isset($item['workflow'])) {
-            return true;
+        if (array_key_exists('dbt', $item)) {
+            return (bool) $item['dbt'];
         }
 
-        return (bool) ($item['dbt'] ?? false);
+        $workflow = $item['workflow'] ?? null;
+
+        return is_string($workflow) && str_starts_with($workflow, 'dbt-');
     }
 }

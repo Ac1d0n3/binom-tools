@@ -63,21 +63,14 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
                 $classes[] = 'playbook-flowchart__step--completed';
             }
 
-            $labelChildren = [
+            $children = [
                 new HtmlElement('span', ['class' => 'playbook-flowchart__num'], (string) ($index + 1)),
                 new HtmlElement('span', ['class' => 'playbook-flowchart__label'], Xml::escape($step['label'])),
             ];
 
-            // Chevron: outer shell = border color, inner face = fill (real Rahmen via padding).
-            $stepNode = $useChevronShape
-                ? new HtmlElement(
-                    'span',
-                    ['class' => implode(' ', $classes)],
-                    [new HtmlElement('span', ['class' => 'playbook-flowchart__chevron-face'], $labelChildren)],
-                )
-                : new HtmlElement('span', ['class' => implode(' ', $classes)], $labelChildren);
-
-            $itemChildren = [$stepNode];
+            $itemChildren = [
+                new HtmlElement('span', ['class' => implode(' ', $classes)], $children),
+            ];
 
             // Connectors: visible for vertical stacks and for stacked chevron fallback.
             if ($index < $stepCount - 1) {

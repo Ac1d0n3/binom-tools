@@ -31,7 +31,7 @@
             </section>
 
             <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.toolsTitle">Tools</h2>
+                <h2 class="tools-section__title" data-i18n="home.toolsTitle">Governance</h2>
                 <p class="tools-section__lead" data-i18n="home.workflowsLead">
                     Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
                 </p>
@@ -45,7 +45,7 @@
                             :accent="$item['accent']"
                             :card-id="$item['id']"
                             :example="$item['example'] ?? false"
-                            :dbt-badge="isset($item['workflow']) || ($item['dbt'] ?? false)"
+                            :dbt-badge="\App\Support\ToolsNav::showsDbtBadge($item)"
                         />
                     @endforeach
                     <x-tools.overview-card

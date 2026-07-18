@@ -51,7 +51,7 @@
         <div class="tools-sidebar-backdrop" data-tools-sidebar-backdrop hidden></div>
 
         <div class="tools-shell__body">
-            <aside class="tools-shell__sidebar" aria-label="Tools navigation">
+            <aside class="tools-shell__sidebar" aria-label="Governance navigation">
                 <x-tools.sidebar />
             </aside>
 

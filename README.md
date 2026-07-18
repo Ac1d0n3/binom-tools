@@ -1,58 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# binom-tools
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Governance Help Hub** for data, BI, and analytics teams — Markdown playbooks, interactive reference workflows, and bilingual UI. Cloneable starter template, no CMS.
 
-## About Laravel
+> Open-source hobby project by [Binom](https://binom.net) — not a commercial product.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## What you get
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Stories (Playbooks)** — Markdown guides under `content/` (DE/EN) with tags, TOC, and hero art
+- **Governance workflows** — interactive, copy-paste-ready tools (PII chain, data quality, Prompt Studio, AI Sanitizer, …)
+- **Help hub shell** — search, theme (light/dark), locale, sidebar, overview filters
+- **Local SDKs** — `@binom/sdk-governance` shipped in `packages/sdk-governance`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Live paths (unchanged technically): `/`, `/playbooks`, `/tools`, individual tool routes under `/tools/…`.
 
-## Learning Laravel
+## Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Layer | Tech |
+| --- | --- |
+| Backend | Laravel 13, PHP 8.3+ |
+| Frontend | Vite 8, vanilla JS, CSS (Tailwind 4 via Vite) |
+| Content | Markdown + YAML frontmatter |
+| Tests | PHPUnit, Vitest, Playwright |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Quick start
 
 ```bash
-composer require laravel/boost --dev
+composer install
+cp .env.example .env
+php artisan key:generate
 
-php artisan boost:install
+npm install
+npm run build:local   # or: npm run htaccess:local && npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+For Vite HMR during UI work:
 
-## Contributing
+```bash
+composer run dev
+# or: php artisan serve  +  npm run dev
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Local MAMP-style base path: use `public/.htaccess.local` via `npm run build:local`.
 
-## Code of Conduct
+## Useful scripts
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Command | Purpose |
+| --- | --- |
+| `npm run build` | Sync playbook images, Vite build, rewrite asset URLs |
+| `npm run build:local` | Local `.htaccess` + build |
+| `npm run deploy:ftp` | Pack FTP deploy bundle |
+| `npm test` / `npm run test:e2e` | Vitest / Playwright |
+| `php artisan test` | PHPUnit |
 
-## Security Vulnerabilities
+## Project layout
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```text
+binom-tools/
+├── app/                 # Controllers, playbooks, catalog, support
+├── config/tools.php     # Nav, workflows, ecosystem links
+├── content/             # Playbooks (.de.md / .en.md)
+├── packages/sdk-governance/
+├── public/              # Built assets, images, prompt-studio config
+├── resources/
+│   ├── css/             # Shell, playbooks, themes, tool CSS
+│   ├── js/              # Locale, overview, tool entrypoints
+│   └── views/           # Blade layouts & components
+└── routes/web.php
+```
+
+**Story flow:** `content/*.md` → `PlaybookRepository` → `playbooks/show`  
+**Governance cards:** `config/tools.php` → controllers → Blade cards + sidebar
+
+## Adding content
+
+1. **Story** — add `content/<slug>.en.md` (+ `.de.md`), then clear playbook cache if needed  
+2. **Workflow tool** — entry in `config/tools.php` → `nav`, route, controller, view under `resources/views/tools/…`, optional Vite entry in `vite.config.js`
+
+More detail: playbook [Governance Help Hub](content/help-hub-platform.en.md) / [DE](content/help-hub-platform.de.md).
+
+## Related
+
+- Website: [binom.net](https://binom.net)
+- Angular libs & docs: [ngx-docs.binom.net](https://ngx-docs.binom.net)
+- Repository: configure `BINOM_TOOLS_REPO_URL` / `config/tools.php` → `links.repository`
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT — see application / package license files as applicable.
