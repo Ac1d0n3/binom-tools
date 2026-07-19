@@ -39,6 +39,15 @@
                     <input type="checkbox" data-shell-full-width-toggle />
                     <span data-i18n="settings.fullWidth">Full width</span>
                 </label>
+                <label
+                    class="tools-header__settings-option"
+                    role="menuitemcheckbox"
+                    data-playbook-focus-setting
+                    hidden
+                >
+                    <input type="checkbox" data-playbook-focus-toggle />
+                    <span data-i18n="settings.hideSidebars">Hide sidebars</span>
+                </label>
             </div>
         </div>
         <button

@@ -105,6 +105,20 @@
                             <x-playbooks.pager :playbook="$playbook" />
                             </div>
                         </div>
+
+                        <div class="playbook-detail__toolbar">
+                            <button
+                                type="button"
+                                class="playbook-focus-toggle tools-btn tools-btn--ghost"
+                                data-playbook-focus-button
+                                aria-pressed="false"
+                                data-i18n-aria="playbooks.focusExpand"
+                                title="Hide sidebars"
+                            >
+                                <i class="fa-solid fa-arrows-left-right-to-line" aria-hidden="true"></i>
+                                <span class="sr-only" data-playbook-focus-label data-i18n="playbooks.focusExpand">Hide sidebars</span>
+                            </button>
+                        </div>
                     </div>
 
                     @if (count($variant->toc) > 0)

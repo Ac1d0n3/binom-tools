@@ -36,6 +36,11 @@
             var fullWidthKey = 'binom-tools-shell-full-width';
             document.documentElement.dataset.shellFullWidth =
                 localStorage.getItem(fullWidthKey) === 'true' ? 'true' : 'false';
+
+            var playbookFocusKey = 'binom-tools-playbook-focus';
+            var isPlaybookStory = /(?:^|\/)(?:de\/)?playbooks\/[a-z0-9-]+\/?$/.test(relative);
+            document.documentElement.dataset.playbookFocus =
+                isPlaybookStory && localStorage.getItem(playbookFocusKey) === 'true' ? 'true' : 'false';
         })();
     </script>
     @vite(array_merge(['resources/css/app.css', 'resources/js/app.js'], $viteEntries ?? []))

@@ -222,6 +222,9 @@ const shellLabels = {
         'theme.toggleToLight': 'Hellmodus aktivieren',
         'settings.openMenu': 'Einstellungen',
         'settings.fullWidth': 'Volle Breite',
+        'settings.hideSidebars': 'Sidebars ausblenden',
+        'playbooks.focusExpand': 'Sidebars ausblenden',
+        'playbooks.focusCollapse': 'Sidebars einblenden',
         'card.exampleBadge': 'Beispiel',
         'nav.dbt-governance-macro-generator': 'PII Macro Generator',
         'nav.pii-recommend-generator': 'PII Recommend Generator',
@@ -424,6 +427,9 @@ const shellLabels = {
         'theme.toggleToLight': 'Activate light mode',
         'settings.openMenu': 'Settings',
         'settings.fullWidth': 'Full width',
+        'settings.hideSidebars': 'Hide sidebars',
+        'playbooks.focusExpand': 'Hide sidebars',
+        'playbooks.focusCollapse': 'Show sidebars',
         'card.exampleBadge': 'Example',
         'nav.dbt-governance-macro-generator': 'PII Macro Generator',
         'nav.pii-recommend-generator': 'PII Recommend Generator',
@@ -659,6 +665,9 @@ export function initSidebarToggle() {
 
     backdrop?.addEventListener('click', close);
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) close();
+        const focus = document.documentElement.dataset.playbookFocus === 'true';
+        if (window.innerWidth > 768 && !focus) {
+            close();
+        }
     });
 }
