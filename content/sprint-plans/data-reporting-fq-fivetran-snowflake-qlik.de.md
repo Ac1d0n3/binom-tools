@@ -66,6 +66,8 @@ tasks:
       Achte auf: „alle“ als Stakeholder-Liste und fehlende operative Owner für Quelldaten.
     linkedStories: data-ownership-stewardship, missing-pieces-ownership-stewardship
     helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
       - label: Fehlende Bausteine – Ownership & Stewardship
         href: /playbooks/missing-pieces-ownership-stewardship
 
@@ -119,6 +121,8 @@ tasks:
       Achte auf: Schatten-Excel-Reports, doppelte KPIs unter anderen Namen und verwaiste Dashboards.
     linkedStories: bi-tools, one-app
     helpLinks:
+      - label: Report Inventory Canvas
+        href: /tools/report-inventory
       - label: Eine Geschäftsfrage, verschiedene BI-Engines
         href: /playbooks/bi-tools
       - label: Eine App kann nicht jede Frage beantworten
@@ -197,6 +201,8 @@ tasks:
       Achte auf: undokumentierte Excel-Extrakte und „jemand startet freitags ein Skript“.
     linkedStories: before-building-the-first-table, building-from-scratch
     helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
       - label: Ein Warehouse von Grund auf aufbauen
         href: /playbooks/building-from-scratch
 
@@ -380,6 +386,8 @@ tasks:
       Achte auf: KPIs ohne Owner und Metriken, die nur als Dashboard-Titel existieren.
     linkedStories: define-kpi, kpi-metric-governance
     helpLinks:
+      - label: KPI Definition Card
+        href: /tools/kpi-definition
       - label: KPI-Definition, Ownership und Versionierung
         href: /playbooks/define-kpi
       - label: KPI & Metric Governance
@@ -530,6 +538,8 @@ tasks:
       Achte auf: Bronze/Silver/Gold neu erfinden, ohne Geschäftsfragen zu beantworten.
     linkedStories: choosing-the-simplest-viable-architecture, beyond-bronze-silver-gold, big-five
     helpLinks:
+      - label: Architecture Fit Checklist
+        href: /tools/architecture-fit
       - label: Die einfachste tragfähige Architektur
         href: /playbooks/choosing-the-simplest-viable-architecture
       - label: Mehr als Bronze, Silver und Gold
@@ -595,6 +605,8 @@ tasks:
       Achte auf: Lieblingsprojekte hoch zu scoren, weil sie technisch interessant sind.
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
       - label: Einfachste tragfähige Architektur

@@ -38,6 +38,8 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
     linkedStories: data-ownership-stewardship
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: Ownership & Stewardship
         href: /playbooks/data-ownership-stewardship
   - id: w1-run-week
@@ -142,6 +144,9 @@ tasks:
     helpText: |
       1–3 Outcomes für die Woche an Quartalszielen ausrichten.
       Liste kurz genug halten, um fertig zu werden.
+    helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
   - id: w4-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15
@@ -180,6 +185,9 @@ tasks:
     helpText: |
       1–3 Outcomes für die Woche an Quartalszielen ausrichten.
       Liste kurz genug halten, um fertig zu werden.
+    helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
   - id: w5-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15

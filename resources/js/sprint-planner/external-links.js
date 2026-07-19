@@ -1,5 +1,6 @@
 /**
- * External help/community links only — no playbook/story paths or bare slugs.
+ * Help/community links: external URLs plus in-app /tools/ paths.
+ * Playbook/story paths and bare slugs stay out of helpLinks.
  */
 
 /**
@@ -14,31 +15,106 @@ export function isExternalHelpHref(href) {
     if (/^https?:\/\//i.test(value) || /^mailto:/i.test(value)) {
         return true;
     }
-    // Reject app-internal paths (playbooks, planner, etc.) and bare slugs.
-    if (value.startsWith('/')) {
-        return false;
-    }
-    if (/^[a-z0-9-]+$/i.test(value)) {
-        return false;
-    }
     return false;
 }
 
 /**
- * Resolve href for help/community links. Only external URLs are returned.
+ * In-app discovery/generator tools (locale-optional).
+ * @param {string} href
+ * @returns {boolean}
+ */
+export function isAppToolHref(href) {
+    const value = String(href || '').trim();
+    return /^\/(?:de\/|en\/)?tools\//i.test(value);
+}
+
+/**
+ * @param {string} href
+ * @returns {boolean}
+ */
+export function isAllowedHelpHref(href) {
+    return isExternalHelpHref(href) || isAppToolHref(href);
+}
+
+/**
+ * Prefer locale-prefixed tool paths when opened from a localized plan page.
+ * @param {string} href
+ * @param {string} [locale]
+ * @returns {string}
+ */
+export function localizeToolHref(href, locale = 'en') {
+    const value = String(href || '').trim();
+    if (!isAppToolHref(value)) {
+        return value;
+    }
+    const stripped = value.replace(/^\/(de|en)(?=\/)/i, '');
+    const loc = locale === 'de' || locale === 'en' ? locale : 'en';
+    return `/${loc}${stripped}`;
+}
+
+/**
+ * Resolve href for help links. External URLs and /tools/ paths only.
+ * @param {string} href
+ * @param {string} [locale]
+ * @returns {string}
+ */
+export function resolveHelpHref(href, locale = 'en') {
+    const value = String(href || '').trim();
+    if (isExternalHelpHref(value)) {
+        return value;
+    }
+    if (isAppToolHref(value)) {
+        return localizeToolHref(value, locale);
+    }
+    return '#';
+}
+
+/**
+ * @deprecated Prefer resolveHelpHref — kept for call sites that only need externals.
  * @param {string} href
  * @returns {string}
  */
 export function resolveExternalHelpHref(href) {
-    const value = String(href || '').trim();
-    if (!isExternalHelpHref(value)) {
-        return '#';
-    }
-    return value;
+    return resolveHelpHref(href);
 }
 
 /**
- * Parse "Label | https://…" lines. Rejects story slugs and /playbooks paths.
+ * @typedef {{
+ *   instanceId: string,
+ *   itemKey: string,
+ *   kind: 'task'|'deliverable',
+ *   sprintId: string,
+ *   custom: boolean,
+ *   returnUrl: string,
+ * }} PlanToolContext
+ */
+
+/**
+ * Append plan return context so discovery tools can write back into the open item.
+ * @param {string} href
+ * @param {PlanToolContext} context
+ * @param {string} [locale]
+ * @returns {string}
+ */
+export function buildPlanToolHref(href, context, locale = 'en') {
+    const path = resolveHelpHref(href, locale);
+    if (path === '#' || !context?.instanceId || !context?.itemKey) {
+        return path;
+    }
+    const params = new URLSearchParams({
+        fromPlan: '1',
+        instanceId: String(context.instanceId),
+        itemKey: String(context.itemKey),
+        kind: String(context.kind || 'task'),
+        sprintId: String(context.sprintId || ''),
+        custom: context.custom ? '1' : '0',
+        return: String(context.returnUrl || ''),
+    });
+    return `${path}?${params.toString()}`;
+}
+
+/**
+ * Parse "Label | https://…" lines. Allows external URLs and /tools/ paths.
  * @param {string} raw
  * @returns {{links: Array<{label: string, href: string}>, rejected: string[]}}
  */
@@ -65,7 +141,7 @@ export function parseExternalLinksTextarea(raw) {
         if (!href) {
             continue;
         }
-        if (!isExternalHelpHref(href)) {
+        if (!isAllowedHelpHref(href)) {
             rejected.push(trimmed);
             continue;
         }
@@ -79,7 +155,7 @@ export function parseExternalLinksTextarea(raw) {
  */
 export function formatExternalLinksTextarea(links = []) {
     return (links || [])
-        .filter((link) => link?.href && isExternalHelpHref(link.href))
+        .filter((link) => link?.href && isAllowedHelpHref(link.href))
         .map((link) => (link.label && link.label !== link.href
             ? `${link.label} | ${link.href}`
             : link.href))
@@ -87,7 +163,7 @@ export function formatExternalLinksTextarea(links = []) {
 }
 
 /**
- * Drop non-external links when normalizing stored help links.
+ * Drop non-allowed links when normalizing stored help links.
  * @param {unknown} links
  * @param {string} [locale]
  * @returns {Array<{label: string, href: string}>}
@@ -103,7 +179,7 @@ export function filterExternalHelpLinks(links, locale = 'en') {
             continue;
         }
         const href = String(/** @type {any} */ (link).href || '').trim();
-        if (!isExternalHelpHref(href)) {
+        if (!isAllowedHelpHref(href)) {
             continue;
         }
         let label = /** @type {any} */ (link).label;

@@ -178,6 +178,52 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('meta-access-box', false);
     }
 
+    public function test_discovery_assessment_tools_render(): void
+    {
+        $this->get('/tools/stakeholder-matrix')
+            ->assertOk()
+            ->assertSee('stakeholder-matrix-app', false)
+            ->assertSee('tools-workflow-flowchart', false)
+            ->assertSee('data-discovery-table', false)
+            ->assertSee('discovery-ephemeral-banner', false)
+            ->assertSee('data-i18n="discovery.warnTitle"', false);
+
+        $this->get('/tools/report-inventory')
+            ->assertOk()
+            ->assertSee('report-inventory-app', false)
+            ->assertSee('data-copy-md', false)
+            ->assertSee('data-download-md', false)
+            ->assertSee('discovery.exportHint', false);
+
+        $this->get('/tools/kpi-definition')
+            ->assertOk()
+            ->assertSee('kpi-definition-app', false);
+
+        $this->get('/tools/architecture-fit')
+            ->assertOk()
+            ->assertSee('architecture-fit-app', false)
+            ->assertSee('data-discovery-checklist', false)
+            ->assertSee('discovery-ephemeral-banner', false);
+
+        $this->get('/tools/impact-effort')
+            ->assertOk()
+            ->assertSee('impact-effort-app', false)
+            ->assertSee('data-discovery-extra', false);
+    }
+
+    public function test_tools_overview_lists_discovery_workflow(): void
+    {
+        $response = $this->get('/tools');
+
+        $response->assertOk();
+        $response->assertSee('Discovery &amp; assessment', false);
+        $response->assertSee('Stakeholder &amp; RACI Matrix', false);
+        $response->assertSee('Report Inventory Canvas', false);
+        $response->assertSee('KPI Definition Card', false);
+        $response->assertSee('Architecture Fit Checklist', false);
+        $response->assertSee('Impact–Effort Prioritizer', false);
+    }
+
     public function test_sidebar_includes_home_link(): void
     {
         $response = $this->get('/playbooks');

@@ -40,6 +40,10 @@ tasks:
       Vanity Metrics vermeiden.
     linkedStories: define-kpi, kpi-metric-governance
     helpLinks:
+      - label: Report Inventory Canvas
+        href: /tools/report-inventory
+      - label: KPI Definition Card
+        href: /tools/kpi-definition
       - label: KPI definieren
         href: /playbooks/define-kpi
       - label: KPI-Governance
@@ -79,6 +83,8 @@ tasks:
       Set klein halten.
     linkedStories: define-kpi
     helpLinks:
+      - label: KPI Definition Card
+        href: /tools/kpi-definition
       - label: KPI definieren
         href: /playbooks/define-kpi
   - id: w2-defs

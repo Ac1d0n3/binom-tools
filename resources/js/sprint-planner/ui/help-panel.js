@@ -1,6 +1,10 @@
 import { getLocale, withAppBasePath } from '../../locale.js';
 import { isAccountsMode, readAccountsBootstrap } from '../accounts-bridge.js';
-import { resolveExternalHelpHref } from '../external-links.js';
+import {
+    buildPlanToolHref,
+    isAppToolHref,
+    resolveHelpHref as resolveAllowedHelpHref,
+} from '../external-links.js';
 import { isPlaybookRead, markPlaybookRead } from '../../playbooks/read-state.js';
 import { itemHasHelp, requiredStoryProgress } from '../progress.js';
 import { createIconButton, createRequiredIcon } from './icons.js';
@@ -91,7 +95,7 @@ export function resolveHelpHref(href) {
 /**
  * @param {string} href
  */
-export { resolveExternalHelpHref } from '../external-links.js';
+export { resolveHelpHref as resolveExternalHelpHref } from '../external-links.js';
 
 /**
  * @param {import('../progress.js').SpStoryRef} story
@@ -235,6 +239,7 @@ export function renderHelpButton(item, openHelp) {
  * @param {import('../progress.js').SpHelpLink[]} [payload.helpLinks]
  * @param {string|null} [payload.demoCode]
  * @param {import('../progress.js').SpFlow|null} [payload.flow]
+ * @param {import('../external-links.js').PlanToolContext|null} [payload.planContext]
  * @param {() => void} onChanged
  */
 export function fillHelpPanel(payload, onChanged) {
@@ -308,21 +313,32 @@ export function fillHelpPanel(payload, onChanged) {
         head.textContent = spT('sp.help.links');
         const list = document.createElement('ul');
         list.className = 'sp-help-panel__links';
+        const locale = getLocale();
         for (const link of payload.helpLinks) {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            const href = resolveExternalHelpHref(link.href);
+            const isTool = isAppToolHref(link.href);
+            let href = resolveAllowedHelpHref(link.href, locale);
             if (href === '#') {
                 continue;
             }
+            if (isTool && payload.planContext) {
+                href = buildPlanToolHref(link.href, payload.planContext, locale);
+            }
             a.href = href;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
+            if (isTool && payload.planContext) {
+                a.rel = 'noopener';
+            } else {
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+            }
             a.textContent = link.label || link.href;
             li.appendChild(a);
             list.appendChild(li);
         }
-        body.append(head, list);
+        if (list.childNodes.length) {
+            body.append(head, list);
+        }
     }
 
     if (payload.demoCode) {

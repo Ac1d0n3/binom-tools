@@ -38,6 +38,8 @@ tasks:
       Erfolgskriterien schriftlich vereinbaren.
     linkedStories: eight-pillars
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: 8 Säulen
         href: /playbooks/eight-pillars
   - id: w1-standup-board
@@ -80,6 +82,9 @@ tasks:
     assigneeId: null
     helpText: |
       Board nach Standup oder Midweek-Check aktuell halten.
+    helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
 
 deliverables:
   - id: w2-week-outcome
@@ -105,6 +110,9 @@ tasks:
     assigneeId: null
     helpText: |
       Scope kürzen vs. verschieben entscheiden. Eskalation nur mit klarer Bitte.
+    helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
   - id: w3-standup-board
     label: Board und Owner aktualisieren
     plannedMinutes: 15

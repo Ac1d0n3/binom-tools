@@ -29,8 +29,15 @@ import {
 import {
     formatExternalLinksTextarea,
     parseExternalLinksTextarea,
-    resolveExternalHelpHref,
+    resolveHelpHref,
 } from '../external-links.js';
+import { createLocalId } from '../ids.js';
+import {
+    appendDiscoveryRowsToItemTable,
+    appendMarkdownToNote,
+    consumeTransferPayload,
+    peekTransferPayload,
+} from '../../tools/discovery-shared/plan-bridge.js';
 import { countActiveItemFilters, emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
 import {
     addCustomItem,
@@ -117,6 +124,8 @@ let assignDialogState = null;
 /** @type {import('../attachments.js').SpAttachment[]} */
 let dialogAttachments = [];
 let bound = false;
+/** Avoid re-applying the same tool transfer on subsequent renders. */
+let toolTransferHandled = false;
 /** @type {'executive'|'detailed'|'documentation'|'time'} */
 let reportMode = 'executive';
 /** @type {{instance: object, template: object|undefined, sprints: object[], workspace: object, locale: 'de'|'en'}|null} */
@@ -477,6 +486,7 @@ function renderPlan(instanceId) {
     renderSprints(filtered, currentNumber, instance, template, locale, workspace);
     renderFilterEmpty(filtered, sprints, filters);
     syncUndoHistoryChrome(instanceId);
+    applyPendingToolTransfer(instanceId, sprints, locale);
 }
 
 /**
@@ -2160,13 +2170,129 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
  * @param {import('../progress.js').ResolvedItem} item
  */
 function openItemHelp(item) {
+    const root = document.getElementById('sp-app');
+    const instanceId = root?.dataset?.spInstanceId || '';
     fillHelpPanel({
         title: item.label,
         helpText: item.helpText,
         stories: item.stories,
         helpLinks: item.helpLinks,
         demoCode: item.demoCode,
+        planContext: instanceId
+            ? {
+                instanceId,
+                itemKey: item.statusKey,
+                kind: item.kind,
+                sprintId: item.sprintId,
+                custom: Boolean(item.custom),
+                returnUrl: `${window.location.pathname}${window.location.search}`,
+            }
+            : null,
     }, () => rerender());
+}
+
+/**
+ * Apply discovery-tool transfer written via sessionStorage when returning from /tools/*.
+ * @param {string} instanceId
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {string} locale
+ */
+function applyPendingToolTransfer(instanceId, sprints, locale) {
+    if (toolTransferHandled) {
+        return;
+    }
+    const pending = peekTransferPayload();
+    if (!pending || String(pending.instanceId) !== String(instanceId)) {
+        return;
+    }
+    toolTransferHandled = true;
+    const payload = consumeTransferPayload();
+    if (!payload) {
+        return;
+    }
+
+    /** @type {import('../progress.js').ResolvedItem|null} */
+    let item = null;
+    for (const sprint of sprints) {
+        const found = [...sprint.tasks, ...sprint.deliverables]
+            .find((entry) => entry.statusKey === payload.itemKey);
+        if (found) {
+            item = found;
+            break;
+        }
+    }
+    if (!item) {
+        showToast(spT('sp.toast.toolTransferMissing'));
+        return;
+    }
+
+    const hasTable = Boolean(item.table?.columns?.length);
+    const hasRows = Array.isArray(payload.rows) && payload.rows.length > 0;
+    let nextTable = item.table;
+    let nextNote = item.note || '';
+    let appliedTo = 'note';
+
+    if (hasTable && hasRows) {
+        nextTable = appendDiscoveryRowsToItemTable(
+            item.table,
+            payload.columns || [],
+            payload.rows,
+            createLocalId,
+        );
+        appliedTo = 'table';
+    } else if (payload.markdown) {
+        nextNote = appendMarkdownToNote(nextNote, payload.markdown);
+        appliedTo = 'note';
+    } else {
+        showToast(spT('sp.toast.toolTransferEmpty'));
+        return;
+    }
+
+    const result = updateItemMeta(
+        instanceId,
+        item.kind,
+        item.statusKey,
+        {
+            status: item.dependencyBlocked
+                ? (item.storedStatus || 'open')
+                : item.status,
+            priority: item.priority,
+            assigneeType: item.assigneeType,
+            assigneeId: item.assigneeId,
+            dueDate: item.dueDate,
+            note: nextNote,
+            plannedMinutes: item.plannedMinutes,
+            actualMinutes: item.actualMinutes,
+            blockerReason: item.dependencyBlocked && item.storedStatus !== 'blocked'
+                ? ''
+                : item.blockerReason,
+            blockerSince: item.blockerSince,
+            dependsOn: item.dependsOn || [],
+            attachments: item.attachments,
+            table: nextTable,
+            labelDe: item.label,
+            labelEn: item.label,
+        },
+        item.custom,
+        item.sprintId,
+    );
+    if (!result.ok) {
+        showToast(storageErrorMessage(result.error));
+        return;
+    }
+
+    if (appliedTo === 'table') {
+        const prefs = loadPreferences();
+        prefs.expandedItemTables = prefs.expandedItemTables || {};
+        prefs.expandedItemTables[`${instanceId}:${item.statusKey}`] = true;
+        savePreferences(prefs);
+    }
+
+    setSaveStatus('saved');
+    showToast(spT(appliedTo === 'table' ? 'sp.toast.toolTransferTable' : 'sp.toast.toolTransferNote'));
+    void locale;
+    // Re-render once so the merged table/note is visible (avoid nested render).
+    queueMicrotask(() => rerender());
 }
 
 /**
@@ -2176,16 +2302,17 @@ function openItemHelp(item) {
 function renderGenericLinks(links, className) {
     const wrap = document.createElement('div');
     wrap.className = className;
+    const locale = getLocale();
     for (const link of links) {
         if (!link?.href) {
             continue;
         }
         const a = document.createElement('a');
-        a.href = resolveExternalHelpHref(link.href);
+        a.href = resolveHelpHref(link.href, locale);
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
         a.textContent = link.label || link.href;
-        if (a.href === '#') {
+        if (a.getAttribute('href') === '#') {
             continue;
         }
         wrap.appendChild(a);
@@ -3633,8 +3760,8 @@ function buildDetailedItemCard(item, workspace, locale, instanceId) {
         for (const link of item.helpLinks) {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.href = resolveExternalHelpHref(link.href);
-            if (a.href === '#') {
+            a.href = resolveHelpHref(link.href, locale);
+            if (a.getAttribute('href') === '#') {
                 continue;
             }
             a.textContent = link.label || link.href;
@@ -3696,7 +3823,7 @@ function renderDocumentationReport(body, ctx) {
             const links = document.createElement('ul');
             links.className = 'sp-report-item__links';
             for (const link of sprint.links) {
-                const href = resolveExternalHelpHref(link.href);
+                const href = resolveHelpHref(link.href, locale);
                 if (href === '#') {
                     continue;
                 }
@@ -3758,7 +3885,7 @@ function buildDocumentationItemCard(item, workspace, locale, instanceId) {
         const links = document.createElement('ul');
         links.className = 'sp-report-item__links';
         for (const link of item.helpLinks) {
-            const href = resolveExternalHelpHref(link.href);
+            const href = resolveHelpHref(link.href, locale);
             if (href === '#') {
                 continue;
             }

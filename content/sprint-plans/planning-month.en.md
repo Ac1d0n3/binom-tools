@@ -38,6 +38,8 @@ tasks:
       Agree success criteria in writing.
     linkedStories: eight-pillars
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: 8 Pillars
         href: /playbooks/eight-pillars
   - id: w1-standup-board
@@ -80,6 +82,9 @@ tasks:
     assigneeId: null
     helpText: |
       Keep the board current after each standup or mid-week check.
+    helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
 
 deliverables:
   - id: w2-week-outcome
@@ -105,6 +110,9 @@ tasks:
     assigneeId: null
     helpText: |
       Decide cut scope vs push. Escalate only with a clear ask.
+    helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
   - id: w3-standup-board
     label: Update board and owners
     plannedMinutes: 15

@@ -67,6 +67,8 @@ tasks:
       Watch for: “everyone” as a stakeholder list, and missing operational owners for source data.
     linkedStories: data-ownership-stewardship, missing-pieces-ownership-stewardship
     helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
       - label: Missing Pieces – Ownership & Stewardship
         href: /playbooks/missing-pieces-ownership-stewardship
 
@@ -120,6 +122,8 @@ tasks:
       Watch for: shadow Excel reports, duplicated KPIs under different names, and orphaned dashboards.
     linkedStories: bi-tools, one-app
     helpLinks:
+      - label: Report Inventory Canvas
+        href: /tools/report-inventory
       - label: One Business Question, Different BI Engines
         href: /playbooks/bi-tools
       - label: One App Cannot Answer Every Question
@@ -198,6 +202,8 @@ tasks:
       Watch for: undocumented Excel extracts and “someone runs a script on Fridays”.
     linkedStories: before-building-the-first-table, building-from-scratch
     helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
       - label: Building a Warehouse from Scratch
         href: /playbooks/building-from-scratch
 
@@ -381,6 +387,8 @@ tasks:
       Watch for: KPIs without an owner and metrics that only exist as dashboard titles.
     linkedStories: define-kpi, kpi-metric-governance
     helpLinks:
+      - label: KPI Definition Card
+        href: /tools/kpi-definition
       - label: KPI Definition, Ownership and Versioning
         href: /playbooks/define-kpi
       - label: KPI & Metric Governance
@@ -531,6 +539,8 @@ tasks:
       Watch for: reinventing bronze/silver/gold without answering business questions.
     linkedStories: choosing-the-simplest-viable-architecture, beyond-bronze-silver-gold, big-five
     helpLinks:
+      - label: Architecture Fit Checklist
+        href: /tools/architecture-fit
       - label: Choosing the Simplest Viable Architecture
         href: /playbooks/choosing-the-simplest-viable-architecture
       - label: Beyond Bronze, Silver and Gold
@@ -596,6 +606,8 @@ tasks:
       Watch for: scoring pet projects high because they are technically interesting.
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
       - label: Simplest Viable Architecture

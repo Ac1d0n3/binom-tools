@@ -53,6 +53,8 @@ tasks:
     helpLinks:
       - label: Meta-Export Generator
         href: /tools/meta-export-generator
+      - label: Architecture Fit Checklist
+        href: /tools/architecture-fit
 
 deliverables:
   - id: w1-scope-note
@@ -81,6 +83,8 @@ tasks:
       Einfachst-sinnvolle Struktur bevorzugen.
     linkedStories: beyond-bronze-silver-gold, choosing-the-simplest-viable-architecture
     helpLinks:
+      - label: Architecture Fit Checklist
+        href: /tools/architecture-fit
       - label: Beyond Bronze/Silver/Gold
         href: /playbooks/beyond-bronze-silver-gold
   - id: w2-rels
@@ -122,6 +126,11 @@ tasks:
     assigneeId: null
     helpText: |
       Defaults und Pflichtfelder; PII-Kandidaten notieren.
+    helpLinks:
+      - label: Schema YML Editor
+        href: /tools/schema-yml-editor
+      - label: PII Policy Generator
+        href: /tools/pii-policy-generator
 
 deliverables:
   - id: w3-standards
@@ -149,6 +158,8 @@ tasks:
       Offene Fragen und Acceptance von v1 festhalten.
     linkedStories: data-ownership-stewardship
     helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
       - label: Ownership & Stewardship
         href: /playbooks/data-ownership-stewardship
   - id: w4-freeze

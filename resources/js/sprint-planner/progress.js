@@ -6,6 +6,7 @@ import {
     pickRawDependsOn,
     resolveDependsOnKeys,
 } from './dependencies.js';
+import { isAllowedHelpHref } from './external-links.js';
 import { mergeItemTable, normalizeItemTable } from './item-table.js';
 import { t } from './labels.js';
 import { resolveActualMinutes, resolvePlannedMinutes } from './time.js';
@@ -556,8 +557,8 @@ function normalizeHelpLinks(links, locale) {
             continue;
         }
         const href = String(/** @type {any} */ (link).href || '').trim();
-        // Help/community links must be external (http/https/mailto), not playbook paths.
-        if (!/^https?:\/\//i.test(href) && !/^mailto:/i.test(href)) {
+        // External help URLs or in-app /tools/ — not playbook paths or bare slugs.
+        if (!isAllowedHelpHref(href)) {
             continue;
         }
         let label = /** @type {any} */ (link).label;

@@ -239,6 +239,7 @@ const shellLabels = {
         'workflow.setupLabel.dbt-pii-governance': 'Security & Governance',
         'workflow.setupLabel.dbt-dq-governance': 'Datenqualität',
         'workflow.setupLabel.ai-prompt-workflow': 'AI Prompt Workflow',
+        'workflow.setupLabel.discovery-assessment': 'Discovery & Assessment',
         'workflow.stepPrefix': 'Schritt',
         'workflow.prev': '← Zurück',
         'workflow.next': 'Weiter →',
@@ -251,6 +252,11 @@ const shellLabels = {
         'workflow.step-dbt-dq-history-generator': 'DQ History Generator',
         'workflow.step-prompt-studio': 'Prompt Studio',
         'workflow.step-governance-ai-sanitizer': 'AI Sanitizer',
+        'workflow.step-stakeholder-matrix': 'Stakeholder Matrix',
+        'workflow.step-report-inventory': 'Report Inventory',
+        'workflow.step-kpi-definition': 'KPI Definition',
+        'workflow.step-architecture-fit': 'Architecture Fit',
+        'workflow.step-impact-effort': 'Impact–Effort',
         'nav.dbt-dq-macro-generator': 'DG Macro Generator',
         'card.dbt-dq-macro-generator.title': 'DQ Macro Generator',
         'card.dbt-dq-macro-generator.description':
@@ -287,6 +293,26 @@ const shellLabels = {
         'card.meta-export-generator.title': 'Meta Export Generator',
         'card.meta-export-generator.description':
             'Copy-Paste-SQL/Scripts für Schemas, Tabellen, Spalten und Access-Meta — 10 Plattformen, kein Live-Connect.',
+        'nav.stakeholder-matrix': 'Stakeholder Matrix',
+        'card.stakeholder-matrix.title': 'Stakeholder & RACI Matrix',
+        'card.stakeholder-matrix.description':
+            'Export für den Plan (keine Tool-Speicherung) — Einfluss, Interesse, optional RACI.',
+        'nav.report-inventory': 'Report Inventory',
+        'card.report-inventory.title': 'Report Inventory Canvas',
+        'card.report-inventory.description':
+            'Report-Inventar erzeugen und in den Sprint-Plan kopieren — nichts wird im Tool gespeichert.',
+        'nav.kpi-definition': 'KPI Definition',
+        'card.kpi-definition.title': 'KPI Definition Card',
+        'card.kpi-definition.description':
+            'KPI-Definitionen für Plan-Deliverables — nur Export, keine Speicherung im Tool.',
+        'nav.architecture-fit': 'Architecture Fit',
+        'card.architecture-fit.title': 'Architecture Fit Checklist',
+        'card.architecture-fit.description':
+            'Architekturdiagnose als Markdown für den Plan — Persistenz nur im Sprint Planner.',
+        'nav.impact-effort': 'Impact–Effort',
+        'card.impact-effort.title': 'Impact–Effort Prioritizer',
+        'card.impact-effort.description':
+            'Priorisierungsmatrix für den Plan exportieren — keine Speicherung im Tool.',
         'card.binom-ngx.title': 'binom-ngx',
         'card.binom-ngx.description': 'Angular UI Libraries, SDKs und interaktive Dokumentation.',
         'card.binom-ngx.meta': 'Docs & Demos',
@@ -544,6 +570,7 @@ const shellLabels = {
         'workflow.setupLabel.dbt-pii-governance': 'Security & governance',
         'workflow.setupLabel.dbt-dq-governance': 'Data quality',
         'workflow.setupLabel.ai-prompt-workflow': 'AI prompt workflow',
+        'workflow.setupLabel.discovery-assessment': 'Discovery & assessment',
         'workflow.stepPrefix': 'Step',
         'workflow.prev': '← Previous',
         'workflow.next': 'Next →',
@@ -556,6 +583,11 @@ const shellLabels = {
         'workflow.step-dbt-dq-history-generator': 'DQ History Generator',
         'workflow.step-prompt-studio': 'Prompt Studio',
         'workflow.step-governance-ai-sanitizer': 'AI Sanitizer',
+        'workflow.step-stakeholder-matrix': 'Stakeholder Matrix',
+        'workflow.step-report-inventory': 'Report Inventory',
+        'workflow.step-kpi-definition': 'KPI Definition',
+        'workflow.step-architecture-fit': 'Architecture Fit',
+        'workflow.step-impact-effort': 'Impact–Effort',
         'nav.dbt-dq-macro-generator': 'DG Macro Generator',
         'card.dbt-dq-macro-generator.title': 'DQ Macro Generator',
         'card.dbt-dq-macro-generator.description':
@@ -592,6 +624,26 @@ const shellLabels = {
         'card.meta-export-generator.title': 'Meta Export Generator',
         'card.meta-export-generator.description':
             'Copy-paste SQL/scripts for schemas, tables, columns and access meta — 10 platforms, no live connect.',
+        'nav.stakeholder-matrix': 'Stakeholder Matrix',
+        'card.stakeholder-matrix.title': 'Stakeholder & RACI Matrix',
+        'card.stakeholder-matrix.description':
+            'Export for the plan (nothing stored in the tool) — influence, interest, optional RACI.',
+        'nav.report-inventory': 'Report Inventory',
+        'card.report-inventory.title': 'Report Inventory Canvas',
+        'card.report-inventory.description':
+            'Build a report inventory and paste it into the sprint plan — nothing stored in the tool.',
+        'nav.kpi-definition': 'KPI Definition',
+        'card.kpi-definition.title': 'KPI Definition Card',
+        'card.kpi-definition.description':
+            'KPI definitions for plan deliverables — export only, nothing stored in the tool.',
+        'nav.architecture-fit': 'Architecture Fit',
+        'card.architecture-fit.title': 'Architecture Fit Checklist',
+        'card.architecture-fit.description':
+            'Architecture diagnosis as Markdown for the plan — persistence only in the Sprint Planner.',
+        'nav.impact-effort': 'Impact–Effort',
+        'card.impact-effort.title': 'Impact–Effort Prioritizer',
+        'card.impact-effort.description':
+            'Export a prioritization matrix for the plan — nothing stored in the tool.',
         'card.binom-ngx.title': 'binom-ngx',
         'card.binom-ngx.description': 'Angular UI libraries, SDKs, and interactive documentation.',
         'card.binom-ngx.meta': 'Docs & Demos',

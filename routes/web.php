@@ -15,18 +15,23 @@ use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
+use App\Http\Controllers\Tools\ArchitectureFitController;
 use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
 use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
+use App\Http\Controllers\Tools\ImpactEffortController;
+use App\Http\Controllers\Tools\KpiDefinitionController;
+use App\Http\Controllers\Tools\MetaExportGeneratorController;
 use App\Http\Controllers\Tools\PiiPolicyGeneratorController;
 use App\Http\Controllers\Tools\PiiRecommendGeneratorController;
 use App\Http\Controllers\Tools\PiiUnreviewedGateGeneratorController;
 use App\Http\Controllers\Tools\PromptStudioConfigController;
 use App\Http\Controllers\Tools\PromptStudioController;
+use App\Http\Controllers\Tools\ReportInventoryController;
 use App\Http\Controllers\Tools\SchemaYmlEditorController;
-use App\Http\Controllers\Tools\MetaExportGeneratorController;
+use App\Http\Controllers\Tools\StakeholderMatrixController;
 use App\Http\Controllers\Tools\ToolsLandingController;
 use App\Http\Controllers\Tools\ToolsOverviewController;
 use Illuminate\Support\Facades\Route;
@@ -177,6 +182,16 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.schema-yml-editor'));
     Route::get('/tools/meta-export-generator', [MetaExportGeneratorController::class, 'show'])
         ->name($name('tools.meta-export-generator'));
+    Route::get('/tools/stakeholder-matrix', [StakeholderMatrixController::class, 'show'])
+        ->name($name('tools.stakeholder-matrix'));
+    Route::get('/tools/report-inventory', [ReportInventoryController::class, 'show'])
+        ->name($name('tools.report-inventory'));
+    Route::get('/tools/kpi-definition', [KpiDefinitionController::class, 'show'])
+        ->name($name('tools.kpi-definition'));
+    Route::get('/tools/architecture-fit', [ArchitectureFitController::class, 'show'])
+        ->name($name('tools.architecture-fit'));
+    Route::get('/tools/impact-effort', [ImpactEffortController::class, 'show'])
+        ->name($name('tools.impact-effort'));
     Route::get('/tools/dbt-dq-macro-generator', [DbtDqMacroGeneratorController::class, 'show'])
         ->name($name('tools.dbt-dq-macro-generator'));
     Route::get('/tools/dbt-dq-rules-generator', [DbtDqRulesGeneratorController::class, 'show'])

@@ -38,6 +38,8 @@ tasks:
       Keep the list short enough to finish.
     linkedStories: data-ownership-stewardship
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: Ownership & Stewardship
         href: /playbooks/data-ownership-stewardship
   - id: w1-run-week
@@ -142,6 +144,9 @@ tasks:
     helpText: |
       Define 1–3 outcomes for the week tied to quarter goals.
       Keep the list short enough to finish.
+    helpLinks:
+      - label: Stakeholder & RACI Matrix
+        href: /tools/stakeholder-matrix
   - id: w4-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -180,6 +185,9 @@ tasks:
     helpText: |
       Define 1–3 outcomes for the week tied to quarter goals.
       Keep the list short enough to finish.
+    helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
   - id: w5-run-week
     label: Run and update the board
     plannedMinutes: 15

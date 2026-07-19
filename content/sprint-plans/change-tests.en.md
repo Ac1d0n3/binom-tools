@@ -40,6 +40,8 @@ tasks:
       Keep the change description testable.
     linkedStories: data-quality-governance, missing-pieces-data-quality
     helpLinks:
+      - label: Impact–Effort Prioritizer
+        href: /tools/impact-effort
       - label: Data quality governance
         href: /playbooks/data-quality-governance
   - id: w1-scope
@@ -77,6 +79,10 @@ tasks:
       Prefer existing DQ patterns.
     linkedStories: dq-test-kpis, dq-test2
     helpLinks:
+      - label: DQ Rules Generator
+        href: /tools/dbt-dq-rules-generator
+      - label: DQ Macro Generator
+        href: /tools/dbt-dq-macro-generator
       - label: DQ test KPIs
         href: /playbooks/dq-test-kpis
       - label: DQ tests
@@ -113,6 +119,9 @@ tasks:
     assigneeId: null
     helpText: |
       Record results; fail closed on critical checks.
+    helpLinks:
+      - label: DQ History Generator
+        href: /tools/dbt-dq-history-generator
   - id: w3-release
     label: Release notes and monitoring
     plannedMinutes: 60
