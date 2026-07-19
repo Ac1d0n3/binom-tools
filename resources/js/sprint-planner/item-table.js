@@ -59,16 +59,59 @@ export function normalizeItemTable(raw) {
 }
 
 /**
- * Merge template table with override (override wins when present).
+ * Merge template table with override.
+ * Template columns win unless override explicitly defines columns; rows come from override when present.
  * @param {unknown} base
  * @param {unknown} override
  * @returns {SpItemTable|null}
  */
 export function mergeItemTable(base, override) {
-    if (override !== undefined && override !== null) {
+    const baseNorm = normalizeItemTable(base);
+    if (override === undefined || override === null) {
+        return baseNorm;
+    }
+    if (!override || typeof override !== 'object') {
+        return baseNorm;
+    }
+    const source = /** @type {Record<string, unknown>} */ (override);
+    const overrideHasColumns = Array.isArray(source.columns) && source.columns.length > 0;
+    /** @type {SpTableColumn[]} */
+    let columns = [];
+    if (overrideHasColumns) {
+        const overNorm = normalizeItemTable({ columns: source.columns, rows: [] });
+        columns = overNorm?.columns || baseNorm?.columns || [];
+    } else {
+        columns = baseNorm?.columns || [];
+    }
+    if (!columns.length) {
         return normalizeItemTable(override);
     }
-    return normalizeItemTable(base);
+    const colIds = new Set(columns.map((c) => c.id));
+    const rawRows = Array.isArray(source.rows)
+        ? source.rows
+        : (baseNorm?.rows || []);
+    const rows = rawRows
+        .map((row, index) => {
+            if (!row || typeof row !== 'object') {
+                return null;
+            }
+            const entry = /** @type {Record<string, unknown>} */ (row);
+            const id = String(entry.id || `row_${index + 1}`).trim() || createLocalId('row_');
+            /** @type {Record<string, string>} */
+            const cells = {};
+            const rawCells = entry.cells && typeof entry.cells === 'object'
+                ? /** @type {Record<string, unknown>} */ (entry.cells)
+                : {};
+            for (const colId of colIds) {
+                cells[colId] = String(rawCells[colId] ?? '');
+            }
+            return { id, cells };
+        })
+        .filter(Boolean);
+    return {
+        columns,
+        rows: /** @type {SpTableRow[]} */ (rows),
+    };
 }
 
 /**
@@ -127,12 +170,22 @@ export function readTableEditor(host) {
  * Render editable table into host.
  * @param {HTMLElement} host
  * @param {SpItemTable|null} table
- * @param {{spT: (key: string, vars?: object) => string}} i18n
+ * @param {{spT: (key: string, vars?: object) => string, columnsOnly?: boolean, columnsLocked?: boolean}} i18n
  */
 export function renderTableEditor(host, table, i18n) {
     const { spT } = i18n;
+    const columnsOnly = Boolean(i18n.columnsOnly);
+    const columnsLocked = Boolean(i18n.columnsLocked);
     host.innerHTML = '';
     host.hidden = false;
+
+    if (columnsLocked && !columnsOnly) {
+        const note = document.createElement('p');
+        note.className = 'sp-password-note';
+        note.textContent = spT('sp.field.tableInlineHint');
+        host.appendChild(note);
+        return;
+    }
 
     const columnsLabel = document.createElement('label');
     columnsLabel.className = 'sp-field';
@@ -144,8 +197,18 @@ export function renderTableEditor(host, table, i18n) {
     columnsInput.setAttribute('data-sp-table-columns', '1');
     columnsInput.value = formatTableColumnsText(table?.columns || []);
     columnsInput.placeholder = spT('sp.field.tableColumnsHint');
+    columnsInput.readOnly = columnsLocked;
+    columnsInput.disabled = columnsLocked;
     columnsLabel.append(columnsSpan, columnsInput);
     host.appendChild(columnsLabel);
+
+    if (columnsOnly) {
+        const hint = document.createElement('p');
+        hint.className = 'sp-password-note';
+        hint.textContent = spT('sp.field.tableColumnsOnlyHint');
+        host.appendChild(hint);
+        return;
+    }
 
     const tableWrap = document.createElement('div');
     tableWrap.className = 'sp-item-table-wrap';
@@ -158,6 +221,7 @@ export function renderTableEditor(host, table, i18n) {
         renderRows(tableWrap, cols, previous.length ? previous : (table?.rows || []), spT);
     };
 
+    columnsInput.addEventListener('input', rebuildRows);
     columnsInput.addEventListener('change', rebuildRows);
     columnsInput.addEventListener('blur', rebuildRows);
 
@@ -186,12 +250,65 @@ export function renderTableEditor(host, table, i18n) {
 }
 
 /**
+ * Inline plan-view table editor (rows). Persists via onChange.
+ * @param {HTMLElement} host
+ * @param {SpItemTable} table
+ * @param {{spT: (key: string, vars?: object) => string, onChange: (table: SpItemTable) => void}} opts
+ */
+export function renderInlineTableEditor(host, table, opts) {
+    const { spT, onChange } = opts;
+    host.innerHTML = '';
+    const columns = table.columns || [];
+    if (!columns.length) {
+        return;
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'sp-item-table-wrap';
+    host.appendChild(wrap);
+
+    const persist = () => {
+        const rows = readRowsFromDom(wrap, columns);
+        onChange({ columns, rows });
+    };
+
+    const draw = (rows) => {
+        renderRows(wrap, columns, rows, spT, { onDelete: persist });
+        wrap.querySelectorAll('input[data-col-id]').forEach((input) => {
+            input.addEventListener('change', persist);
+            input.addEventListener('blur', persist);
+        });
+    };
+
+    const actions = document.createElement('div');
+    actions.className = 'sp-action-row';
+    const addRow = document.createElement('button');
+    addRow.type = 'button';
+    addRow.className = 'tools-btn tools-btn--secondary tools-btn--small';
+    addRow.textContent = spT('sp.action.addTableRow');
+    addRow.addEventListener('click', () => {
+        const rows = readRowsFromDom(wrap, columns);
+        rows.push({
+            id: createLocalId('row_'),
+            cells: Object.fromEntries(columns.map((c) => [c.id, ''])),
+        });
+        draw(rows);
+        persist();
+    });
+    actions.appendChild(addRow);
+    host.appendChild(actions);
+
+    draw(table.rows || []);
+}
+
+/**
  * @param {HTMLElement} wrap
  * @param {SpTableColumn[]} columns
  * @param {SpTableRow[]} rows
  * @param {(key: string) => string} spT
+ * @param {{ onDelete?: () => void }} [opts]
  */
-function renderRows(wrap, columns, rows, spT) {
+function renderRows(wrap, columns, rows, spT, opts = {}) {
     wrap.innerHTML = '';
     if (!columns.length) {
         return;
@@ -235,6 +352,7 @@ function renderRows(wrap, columns, rows, spT) {
         remove.textContent = spT('sp.action.delete');
         remove.addEventListener('click', () => {
             tr.remove();
+            opts.onDelete?.();
         });
         tdAction.appendChild(remove);
         tr.appendChild(tdAction);

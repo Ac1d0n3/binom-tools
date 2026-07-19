@@ -105,6 +105,45 @@ if (seedJsonCount === 0) {
     console.log(`Playbook stats seeds present: ${seedJsonCount} JSON file(s)`);
 }
 
+// Snapshot local accounts / user-templates into FTP-safe seeds (not in Git).
+const bnToolsRuntime = join(root, 'storage/app/bn-tools');
+const bnToolsSeedDir = join(root, 'app/SprintPlanner/bn-tools-seed');
+mkdirSync(bnToolsSeedDir, { recursive: true });
+
+/**
+ * @param {string} src
+ * @param {string} dest
+ */
+function copyFileIfExists(src, dest) {
+    if (!existsSync(src)) {
+        return false;
+    }
+    mkdirSync(dirname(dest), { recursive: true });
+    cpSync(src, dest);
+    return true;
+}
+
+let bnToolsSeedCount = 0;
+for (const name of ['users.json', 'teams.json', 'story-acl.json']) {
+    if (copyFileIfExists(join(bnToolsRuntime, name), join(bnToolsSeedDir, name))) {
+        bnToolsSeedCount += 1;
+    }
+}
+const userTemplatesSrc = join(bnToolsRuntime, 'user-templates');
+const userTemplatesSeed = join(bnToolsSeedDir, 'user-templates');
+if (existsSync(userTemplatesSrc)) {
+    mkdirSync(userTemplatesSeed, { recursive: true });
+    for (const name of readdirSync(userTemplatesSrc).filter((n) => n.endsWith('.json'))) {
+        cpSync(join(userTemplatesSrc, name), join(userTemplatesSeed, name));
+        bnToolsSeedCount += 1;
+    }
+}
+console.log(
+    bnToolsSeedCount > 0
+        ? `bn-tools seeds packed: ${bnToolsSeedCount} JSON file(s) → app/SprintPlanner/bn-tools-seed/`
+        : 'No local bn-tools users/templates found — FTP bundle will not include account seeds',
+);
+
 if (existsSync(outDir)) {
     rmSync(outDir, { recursive: true, force: true });
 }
@@ -171,10 +210,12 @@ writeFileSync(
    - routes/web.php         lädt locale_route()-Helper
    - storage/app/playbook-stats/  Optional runtime counters (werden aus Seed befüllt)
    - app/Playbooks/stats-seed/    Seeded Views/Likes (lokal generiert, NICHT in Git; deploy:ftp packt sie)
+   - app/SprintPlanner/bn-tools-seed/  Lokale Accounts + User-Templates (NICHT in Git; deploy:ftp packt sie)
 
    Wichtig: Gesamten deploy-ftp/-Baum hochladen — besonders public/build/assets/ komplett!
    Ohne EnsureToolEnabled.php + aktualisiertes bootstrap/app.php → 500 auf der Startseite.
    Views/Likes kommen aus app/Playbooks/stats-seed/ (FTP) und werden nach storage/app/playbook-stats/ kopiert.
+   Users/Teams/ACL/User-Templates kommen aus app/SprintPlanner/bn-tools-seed/ und werden nach storage/app/bn-tools/ kopiert (nur wenn dort noch fehlend).
 
 3. WICHTIG — falls von früheren Deploys noch vorhanden, per FTP LÖSCHEN:
    - public/tools/   (physischer Ordner blockiert /tools/ und alle Tool-Seiten!)

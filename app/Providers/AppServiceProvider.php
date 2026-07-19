@@ -16,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Playbooks\PlaybookStatsStore::class, static function (): \App\Playbooks\PlaybookStatsStore {
             return \App\Playbooks\PlaybookStatsStore::default();
         });
+
+        $this->app->singleton(\App\SprintPlanner\BnToolsSeedStore::class, static function (): \App\SprintPlanner\BnToolsSeedStore {
+            return \App\SprintPlanner\BnToolsSeedStore::default();
+        });
     }
 
     /**
@@ -23,6 +27,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        try {
+            app(\App\SprintPlanner\BnToolsSeedStore::class)->hydrateRuntimeFromSeeds();
+        } catch (\Throwable) {
+            // Ignore seed hydration failures (e.g. missing storage on first boot).
+        }
+
         view()->composer('*', function ($view): void {
             $config = app(\App\Accounts\AccountsConfig::class);
             if (! $config->enabled()) {

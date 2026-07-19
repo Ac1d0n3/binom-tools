@@ -210,6 +210,9 @@ export function renderHelpButton(item, openHelp) {
         const badge = document.createElement('span');
         badge.className = 'sp-icon-btn__badge';
         badge.textContent = `${progress.done}/${progress.total}`;
+        if (pending) {
+            badge.dataset.pending = '1';
+        }
         btn.appendChild(badge);
     }
     return btn;
@@ -340,7 +343,10 @@ export function fillHelpPanel(payload, onChanged) {
 export function closeHelpPanel() {
     const panel = document.getElementById('sp-help-panel');
     const backdrop = document.getElementById('sp-help-backdrop');
-    if (panel) {
+    if (panel && !panel.hidden) {
+        if (panel.contains(document.activeElement) && document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
         panel.hidden = true;
         panel.setAttribute('aria-hidden', 'true');
     }

@@ -137,9 +137,13 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
 
     /** @type {ResolvedItem[]} */
     const tasks = [];
+    const removedKeys = new Set(instance.removedItemKeys || []);
     const textTasks = Object.fromEntries((texts.tasks || []).map((t) => [t.id, t]));
     for (const task of sprint.tasks || []) {
         const key = statusKey(templateSlug, sprint.id, 'task', task.id);
+        if (removedKeys.has(key)) {
+            continue;
+        }
         const itemOverride = instance.itemOverrides?.[key] || {};
         const textTask = textTasks[task.id] || {};
         tasks.push(resolveTemplateItem({
@@ -164,6 +168,9 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
     const textDels = Object.fromEntries((texts.deliverables || []).map((d) => [d.id, d]));
     for (const del of sprint.deliverables || []) {
         const key = statusKey(templateSlug, sprint.id, 'deliverable', del.id);
+        if (removedKeys.has(key)) {
+            continue;
+        }
         const itemOverride = instance.itemOverrides?.[key] || {};
         const textDel = textDels[del.id] || {};
         deliverables.push(resolveTemplateItem({

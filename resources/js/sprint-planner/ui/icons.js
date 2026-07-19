@@ -5,7 +5,7 @@
 import { spT } from './helpers.js';
 
 /**
- * @param {'help'|'owner'|'edit'|'delete'|'open'|'check'|'close'|'required'} name
+ * @param {'help'|'owner'|'edit'|'delete'|'open'|'check'|'close'|'required'|'list'} name
  * @returns {string}
  */
 export function iconSvg(name) {
@@ -19,6 +19,8 @@ export function iconSvg(name) {
             return `<svg ${common}><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
         case 'delete':
             return `<svg ${common}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+        case 'list':
+            return `<svg ${common}><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
         case 'open':
             return `<svg ${common}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
         case 'check':
@@ -55,9 +57,7 @@ export function createIconButton(opts) {
     el.innerHTML = iconSvg(opts.icon);
     el.title = opts.title || opts.label;
     el.setAttribute('aria-label', opts.label);
-    if (opts.pending) {
-        el.dataset.pending = '1';
-    }
+    // Pending indicator lives on the count badge (badge-on-badge), not on the button.
     if (opts.onClick) {
         el.addEventListener('click', opts.onClick);
     }

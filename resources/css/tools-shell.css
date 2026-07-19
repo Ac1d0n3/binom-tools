@@ -141,7 +141,8 @@ html[data-shell-full-width='true'] .tools-content--overview {
 }
 
 .tools-shell:has(.tools-shell__main--playbook),
-.tools-shell:has(.tools-shell__main--overview) {
+.tools-shell:has(.tools-shell__main--overview),
+.tools-shell:has(.tools-shell__main--sprint-planner) {
     height: 100dvh;
     overflow: hidden;
 }
@@ -153,6 +154,28 @@ html[data-shell-full-width='true'] .tools-content--overview {
     flex: 1 1 auto;
     min-height: 0;
     overflow: hidden;
+}
+
+.tools-shell__main--sprint-planner {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.tools-shell__main--sprint-planner > .sp-app {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 1.25rem;
+    padding-block: 0.75rem 0;
+    box-sizing: border-box;
 }
 
 .tools-shell__footer {
@@ -329,17 +352,20 @@ html[data-shell-full-width='true'] .tools-content--overview {
     display: none !important;
 }
 
-/* Playbook focus mode: hide nav rail, open it as overlay via hamburger. */
+/* Playbook / sprint-planner focus mode: hide nav rail, open it as overlay via hamburger. */
 @media (min-width: 769px) {
-    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-header {
+    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-header,
+    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--sprint-planner) .tools-header {
         grid-template-columns: auto minmax(0, 1fr);
     }
 
-    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-header__menu-btn {
+    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-header__menu-btn,
+    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--sprint-planner) .tools-header__menu-btn {
         display: inline-flex !important;
     }
 
-    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-shell__sidebar {
+    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-shell__sidebar,
+    html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar {
         position: fixed;
         top: var(--tools-header-height);
         left: 0;
@@ -353,12 +379,18 @@ html[data-shell-full-width='true'] .tools-content--overview {
 
     html[data-playbook-focus='true']
         .tools-shell--sidebar-open:has(.tools-shell__main--playbook)
+        .tools-shell__sidebar,
+    html[data-playbook-focus='true']
+        .tools-shell--sidebar-open:has(.tools-shell__main--sprint-planner)
         .tools-shell__sidebar {
         transform: translateX(0);
     }
 
     html[data-playbook-focus='true']
         .tools-shell--sidebar-open:has(.tools-shell__main--playbook)
+        .tools-sidebar-backdrop,
+    html[data-playbook-focus='true']
+        .tools-shell--sidebar-open:has(.tools-shell__main--sprint-planner)
         .tools-sidebar-backdrop {
         display: block;
     }

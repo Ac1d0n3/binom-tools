@@ -63,6 +63,7 @@ export function normalizePlanFilters(raw = {}) {
         status: String(source.status || ''),
         priority: String(source.priority || ''),
         filterLogic,
+        search: String(source.search || '').trim(),
     };
 }
 
@@ -99,6 +100,14 @@ export function itemMatchesFilters(item, filters, ctx) {
     }
     if (normalized.priority && item.priority !== normalized.priority) {
         return false;
+    }
+    if (normalized.search) {
+        const q = normalized.search.toLowerCase();
+        const label = String(item.label || '').toLowerCase();
+        const note = String(item.note || '').toLowerCase();
+        if (!label.includes(q) && !note.includes(q)) {
+            return false;
+        }
     }
 
     /** @type {Array<() => boolean>} */
@@ -163,7 +172,8 @@ export function filterSprints(sprints, filters, currentSprintNumber, ctx) {
                 || normalized.personId
                 || normalized.teamId
                 || normalized.status
-                || normalized.priority;
+                || normalized.priority
+                || normalized.search;
             if (hasItemFilters && tasks.length === 0 && deliverables.length === 0) {
                 return null;
             }
@@ -186,6 +196,7 @@ export function hasActiveItemFilters(filters) {
         || normalized.personId
         || normalized.teamId
         || normalized.status
-        || normalized.priority,
+        || normalized.priority
+        || normalized.search,
     );
 }

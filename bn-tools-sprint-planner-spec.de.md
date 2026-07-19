@@ -404,7 +404,7 @@ table: {
 }
 ```
 
-Vorlagen/Creator können Spalten vorgeben (z. B. Source, Owner, Access, Consumed by); Instanzen füllen Zeilen. Darstellung in der Planansicht, im Item-Dialog und in Detailed-/Documentation-Reports.
+Vorlagen/Creator können Spalten vorgeben (z. B. Source, Owner, Access, Consumed by); Instanzen füllen Zeilen. In Markdown-Vorlagen: `tableColumns: Name, Rolle, …`. Darstellung als aufklappbare Tabelle unter der Item-Zeile (Zeilen bearbeiten), im Item-Dialog höchstens Spalten (Custom-Items), und in Detailed-/Documentation-Reports (readonly).
 
 Hilfe-Panel (UI): Story-Karten mit Titel, Pflicht/Optional, gelesen/ungelesen, Öffnen, Als gelesen markieren. Item-Zeile zeigt `?` mit Lese-Fortschritt, keine Slug-Badges.
 
@@ -1112,6 +1112,8 @@ Nicht implementieren:
 **Hinweis:** Accounts-Modus (Login, geteilte Pläne, Datei-Upload für Anhänge, User-Templates) existiert als optionale Server-Erweiterung. Der lokale Modus ohne Login bleibt vollständig nutzbar; Dateianhänge liegen dann in IndexedDB. Der Plan Creator kann lokal einen Plan mit `templateSnapshot` starten; Speichern als wiederverwendbare Vorlage erfordert Login.
 
 ### User-Templates und Plan Creator
+
+User-Templates liegen unter `storage/app/bn-tools/user-templates/` (nicht in Git). Beim FTP-Deploy (`npm run deploy:ftp`) werden lokale `users.json`, `teams.json`, `story-acl.json` und User-Templates nach `app/SprintPlanner/bn-tools-seed/` gespiegelt und mit ausgeliefert. Zur Laufzeit füllt `BnToolsSeedStore` fehlende Dateien unter `storage/app/bn-tools/` aus diesen Seeds (analog Playbook-Stats-Seeds).
 
 - Repo-Markdown-Vorlagen bleiben read-only.
 - Eingeloggte Nutzer speichern eigene Vorlagen unter `storage/app/bn-tools/user-templates/` (`utpl_*`).

@@ -229,6 +229,7 @@ final class SprintPlanRepository
                         'stories' => $taskStories,
                         'linkedStorySlugs' => array_values(array_map(static fn (array $s): string => $s['slug'], $taskStories)),
                         'helpLinks' => $this->normalizeStructuralHrefLinks($t['helpLinks'] ?? []),
+                        'table' => $this->normalizeStructuralTable($t['table'] ?? null),
                     ];
                 }, $sprint['tasks'] ?? []),
                 'deliverables' => array_map(function (array $d): array {
@@ -236,6 +237,7 @@ final class SprintPlanRepository
                         'id' => $d['id'],
                         'stories' => $this->normalizeStructuralStories($d['stories'] ?? []),
                         'helpLinks' => $this->normalizeStructuralHrefLinks($d['helpLinks'] ?? []),
+                        'table' => $this->normalizeStructuralTable($d['table'] ?? null),
                     ];
                 }, $sprint['deliverables'] ?? []),
                 'fields' => array_map(static fn (array $f): array => [
@@ -245,6 +247,46 @@ final class SprintPlanRepository
                 ], $sprint['fields'] ?? []),
             ];
         }, $base);
+    }
+
+    /**
+     * @return array{columns: list<array{id: string, label: string}>, rows: list<array{id: string, cells: array<string, string>}>}|null
+     */
+    private function normalizeStructuralTable(mixed $table): ?array
+    {
+        if (! is_array($table)) {
+            return null;
+        }
+        $columns = $table['columns'] ?? null;
+        if (! is_array($columns) || $columns === []) {
+            return null;
+        }
+        $normalizedColumns = [];
+        foreach ($columns as $index => $col) {
+            if (! is_array($col)) {
+                continue;
+            }
+            $id = trim((string) ($col['id'] ?? ''));
+            $label = trim((string) ($col['label'] ?? $id));
+            if ($id === '' && $label === '') {
+                continue;
+            }
+            if ($id === '') {
+                $id = 'col_'.($index + 1);
+            }
+            if ($label === '') {
+                $label = $id;
+            }
+            $normalizedColumns[] = ['id' => $id, 'label' => $label];
+        }
+        if ($normalizedColumns === []) {
+            return null;
+        }
+
+        return [
+            'columns' => $normalizedColumns,
+            'rows' => [],
+        ];
     }
 
     /**

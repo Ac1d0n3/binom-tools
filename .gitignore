@@ -28,6 +28,8 @@
 /vendor
 /app/Playbooks/stats-seed/*
 !/app/Playbooks/stats-seed/.gitkeep
+/app/SprintPlanner/bn-tools-seed/**
+!/app/SprintPlanner/bn-tools-seed/.gitkeep
 _ide_helper.php
 Homestead.json
 Homestead.yaml

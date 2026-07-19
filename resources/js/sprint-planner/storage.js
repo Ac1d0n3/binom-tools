@@ -64,6 +64,7 @@ export const WORKSPACE_EVENT = 'bn-tools:sprint-planner:workspace';
  * @property {Array<Record<string, unknown>>} customSprints
  * @property {Record<string, Record<string, unknown>>} sprintOverrides
  * @property {Record<string, Record<string, unknown>>} itemOverrides
+ * @property {string[]} [removedItemKeys] status keys of template items removed from this plan
  * @property {string|null} [passwordHash]
  * @property {string|null} [passwordSalt]
  * @property {string|null} [ownerUserId]
@@ -116,16 +117,20 @@ export function createDefaultPreferences() {
             hideDone: false,
             openOnly: false,
             blocked: false,
-            myTasks: false,
-            unassigned: false,
+            myTasks: true,
+            unassigned: true,
             personId: '',
             teamId: '',
             status: '',
             priority: '',
-            filterLogic: 'and',
+            filterLogic: 'or',
+            search: '',
         },
-        planFiltersVersion: 4,
+        planFiltersVersion: 5,
         expandedSprints: {},
+        expandedItemTables: {},
+        planHeaderExpanded: {},
+        planFilterSidebarCollapsed: {},
         manualCurrentSprint: {},
     };
 }
@@ -271,6 +276,7 @@ function normalizeInstances(instances) {
             customSprints: Array.isArray(item.customSprints) ? /** @type {any} */ (item.customSprints) : [],
             sprintOverrides: isPlainObject(item.sprintOverrides) ? /** @type {any} */ (item.sprintOverrides) : {},
             itemOverrides: isPlainObject(item.itemOverrides) ? /** @type {any} */ (item.itemOverrides) : {},
+            removedItemKeys: Array.isArray(item.removedItemKeys) ? item.removedItemKeys.map(String) : [],
             templateSnapshot: isPlainObject(item.templateSnapshot) ? /** @type {any} */ (item.templateSnapshot) : null,
             passwordHash: item.passwordHash ? String(item.passwordHash) : null,
             passwordSalt: item.passwordSalt ? String(item.passwordSalt) : null,

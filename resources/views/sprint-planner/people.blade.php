@@ -87,7 +87,7 @@
                     <div id="sp-person-color" class="sp-color-swatches" role="radiogroup"></div>
                 </fieldset>
                 <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
                 </div>
             </form>
@@ -111,7 +111,7 @@
                     <div id="sp-team-members" class="sp-checkbox-list"></div>
                 </fieldset>
                 <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
                 </div>
             </form>

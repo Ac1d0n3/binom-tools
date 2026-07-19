@@ -692,7 +692,7 @@ export function initLocaleControls() {
 
     window.addEventListener('binom-tools:locale', (event) => {
         const detail = /** @type {CustomEvent<{ locale: ToolsLocale }>} */ (event).detail;
-        applyShellLabels(detail.locale);
+        applyShellLabels(detail?.locale ?? getLocale());
     });
 }
 

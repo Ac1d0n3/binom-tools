@@ -63,15 +63,15 @@ function hasAssigneeId(value) {
 }
 
 /**
- * Assignee chip for a resolved item.
+ * Assignee chip for a resolved item. Returns null when unassigned (no empty blue circle).
  * @param {{assigneeType?: string|null, assigneeId?: string|null}} item
  * @param {import('../storage.js').SpWorkspaceRoot} workspace
  * @param {'de'|'en'} locale
- * @returns {HTMLSpanElement}
+ * @returns {HTMLSpanElement|null}
  */
 export function renderAssigneeChip(item, workspace, locale) {
     if (!hasAssigneeId(item?.assigneeId)) {
-        return renderChip('accent-1', '—', spT('sp.report.unassigned'), 'empty');
+        return null;
     }
     const id = String(item.assigneeId);
     if (item.assigneeType === 'team') {

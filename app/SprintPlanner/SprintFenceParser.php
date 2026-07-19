@@ -33,6 +33,7 @@ final class SprintFenceParser
         'helptext',
         'stories',
         'democode',
+        'tablecolumns',
     ];
 
     /**
@@ -574,6 +575,7 @@ final class SprintFenceParser
                 'helpText' => $this->normalizeItemMultilineText($item, 'helptext'),
                 'helpLinks' => $this->normalizeItemHelpLinks($item),
                 'demoCode' => $this->normalizeItemMultilineText($item, 'democode'),
+                'table' => $this->normalizeItemTable($item),
             ];
         }
 
@@ -587,6 +589,7 @@ final class SprintFenceParser
                 'helpText' => $this->normalizeItemMultilineText($item, 'helptext'),
                 'helpLinks' => $this->normalizeItemHelpLinks($item),
                 'demoCode' => $this->normalizeItemMultilineText($item, 'democode'),
+                'table' => $this->normalizeItemTable($item),
             ];
         }
 
@@ -603,6 +606,97 @@ final class SprintFenceParser
             'placeholder' => isset($item['placeholder']) ? (string) $item['placeholder'] : null,
             'options' => $item['options'] ?? null,
         ];
+    }
+
+    /**
+     * Parse tableColumns: "Name, Role, …" into { columns, rows: [] }.
+     *
+     * @param  array<string, mixed>  $item
+     * @return array{columns: list<array{id: string, label: string}>, rows: list<array{id: string, cells: array<string, string>}>}|null
+     */
+    private function normalizeItemTable(array $item): ?array
+    {
+        $raw = $item['tablecolumns'] ?? $item['tableColumns'] ?? null;
+        if (! is_string($raw) || trim($raw) === '') {
+            // Allow already-normalized nested table from other sources.
+            if (isset($item['table']) && is_array($item['table'])) {
+                $columns = $item['table']['columns'] ?? null;
+                if (is_array($columns) && $columns !== []) {
+                    return [
+                        'columns' => $this->normalizeTableColumns($columns),
+                        'rows' => [],
+                    ];
+                }
+            }
+
+            return null;
+        }
+
+        $labels = preg_split('/\s*,\s*/', $raw) ?: [];
+        $columns = [];
+        foreach ($labels as $index => $label) {
+            $label = trim((string) $label);
+            if ($label === '') {
+                continue;
+            }
+            $id = $this->slugifyColumnId($label, $index);
+            $columns[] = ['id' => $id, 'label' => $label];
+        }
+
+        if ($columns === []) {
+            return null;
+        }
+
+        return [
+            'columns' => $columns,
+            'rows' => [],
+        ];
+    }
+
+    /**
+     * @param  list<mixed>  $columns
+     * @return list<array{id: string, label: string}>
+     */
+    private function normalizeTableColumns(array $columns): array
+    {
+        $out = [];
+        foreach ($columns as $index => $col) {
+            if (is_string($col)) {
+                $label = trim($col);
+                if ($label === '') {
+                    continue;
+                }
+                $out[] = ['id' => $this->slugifyColumnId($label, $index), 'label' => $label];
+
+                continue;
+            }
+            if (! is_array($col)) {
+                continue;
+            }
+            $label = trim((string) ($col['label'] ?? $col['id'] ?? ''));
+            $id = trim((string) ($col['id'] ?? ''));
+            if ($label === '' && $id === '') {
+                continue;
+            }
+            if ($id === '') {
+                $id = $this->slugifyColumnId($label, $index);
+            }
+            if ($label === '') {
+                $label = $id;
+            }
+            $out[] = ['id' => $id, 'label' => $label];
+        }
+
+        return $out;
+    }
+
+    private function slugifyColumnId(string $label, int $index): string
+    {
+        $slug = strtolower(trim($label));
+        $slug = preg_replace('/[^a-z0-9]+/', '_', $slug) ?? '';
+        $slug = trim($slug, '_');
+
+        return $slug !== '' ? $slug : ('col_'.($index + 1));
     }
 
     private function castItemValue(string $key, string $value): mixed

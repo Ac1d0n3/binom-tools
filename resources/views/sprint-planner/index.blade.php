@@ -141,7 +141,7 @@
                     <div id="sp-start-participants" class="sp-checkbox-list"></div>
                 </fieldset>
                 <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="demo" class="tools-btn tools-btn--secondary" id="sp-start-demo" data-i18n="sp.action.startDemo">Start demo (session only)</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" id="sp-start-save" data-i18n="sp.action.start">Start</button>
                 </div>

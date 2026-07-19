@@ -47,8 +47,10 @@
 
             var playbookFocusKey = 'binom-tools-playbook-focus';
             var isPlaybookStory = /(?:^|\/)(?:de\/)?playbooks\/[a-z0-9-]+\/?$/.test(relative);
+            var isSprintPlan = /(?:^|\/)(?:de\/)?sprint-planner\/(?!templates(?:\/|$)|create(?:\/|$)|people(?:\/|$))[^/]+\/?$/.test(relative)
+                && !/\/settings\/?$/.test(relative);
             document.documentElement.dataset.playbookFocus =
-                isPlaybookStory && localStorage.getItem(playbookFocusKey) === 'true' ? 'true' : 'false';
+                (isPlaybookStory || isSprintPlan) && localStorage.getItem(playbookFocusKey) === 'true' ? 'true' : 'false';
         })();
     </script>
     @vite(array_merge(['resources/css/app.css', 'resources/js/app.js'], $viteEntries ?? []))

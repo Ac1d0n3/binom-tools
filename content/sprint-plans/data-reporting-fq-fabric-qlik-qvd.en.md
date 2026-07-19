@@ -60,6 +60,7 @@ tasks:
     label: Identify relevant stakeholders
     assigneeType: team
     assigneeId: null
+    tableColumns: Name, Role, Influence, Interest, Owner
     helpText: |
       Map decision makers, report consumers, data producers, and platform owners. Prefer named people over departments.
       Note influence, interest, and who can block access to systems or definitions.
@@ -71,9 +72,9 @@ tasks:
 
 deliverables:
   - id: stakeholder-list
-    label: Stakeholder list created
+    label: Create stakeholder list
     helpText: |
-      Deliverable “Stakeholder list created”: keep it short, traceable, and with owner/date.
+      Deliverable “Create stakeholder list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: initial-mandate
     label: Initial mandate documented
@@ -112,6 +113,7 @@ tasks:
     label: Inventory existing reports
     assigneeType: person
     assigneeId: null
+    tableColumns: Report, Owner, Tool, Cadence, Business question
     helpText: |
       List active reports/dashboards with owner, tool, refresh cadence, and business question answered.
       Mark critical vs. rarely used. Prefer evidence (usage logs, interviews) over assumptions.
@@ -173,6 +175,7 @@ tasks:
     label: Capture source systems and owners
     assigneeType: person
     assigneeId: null
+    tableColumns: Source, Owner, Access, Consumed by
     helpText: |
       Inventory systems that feed reporting: ERP, CRM, finance, files, APIs. Record system owner and data steward if known.
       Rank by criticality for the reports you already inventoried.

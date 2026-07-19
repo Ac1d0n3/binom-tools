@@ -59,6 +59,7 @@ tasks:
     label: Relevante Stakeholder identifizieren
     assigneeType: team
     assigneeId: null
+    tableColumns: Name, Rolle, Einfluss, Interesse, Owner
     helpText: |
       Mappe Entscheider, Report-Nutzer, Datenproduzenten und Plattform-Verantwortliche. Lieber namentlich als nur Abteilungen.
       Notiere Einfluss, Interesse und wer Zugänge zu Systemen oder Definitionen blockieren kann.
@@ -70,9 +71,9 @@ tasks:
 
 deliverables:
   - id: stakeholder-list
-    label: Stakeholder-Liste erstellt
+    label: Stakeholder-Liste erstellen
     helpText: |
-      Deliverable „Stakeholder-Liste erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
+      Deliverable „Stakeholder-Liste erstellen“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: initial-mandate
     label: Initialen Auftrag dokumentiert
@@ -111,6 +112,7 @@ tasks:
     label: Bestehende Reports inventarisieren
     assigneeType: person
     assigneeId: null
+    tableColumns: Report, Owner, Tool, Rhythmus, Geschäftsfrage
     helpText: |
       Liste aktive Reports/Dashboards mit Owner, Tool, Aktualisierungsrhythmus und beantworteter Geschäftsfrage.
       Markiere kritisch vs. selten genutzt. Lieber Belege (Nutzungslogs, Interviews) als Annahmen.
@@ -172,6 +174,7 @@ tasks:
     label: Quellsysteme und Owner erfassen
     assigneeType: person
     assigneeId: null
+    tableColumns: Source, Owner, Access, Consumed by
     helpText: |
       Inventarisiere Systeme, die Reporting speisen: ERP, CRM, Finance, Dateien, APIs. Erfasse System-Owner und ggf. Data Steward.
       Priorisiere nach Relevanz für die bereits inventarisierten Reports.

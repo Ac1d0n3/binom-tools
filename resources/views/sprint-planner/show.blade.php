@@ -4,6 +4,7 @@
         'resources/css/sprint-planner.css',
         'resources/js/sprint-planner/show.js',
     ],
+    'mainClass' => 'tools-shell__main--sprint-planner',
 ])
 
 @section('title', 'Sprint Plan — ' . config('app.name'))
@@ -21,7 +22,6 @@
         @include('components.sprint-planner.accounts-attrs')
     >
         @include('components.sprint-planner.bootstrap-json')
-        <x-sprint-planner.subnav active="plans" />
 
         <p id="sp-ephemeral-banner" class="sp-local-banner" role="status" hidden>
             <i class="fa-solid fa-flask" aria-hidden="true"></i>
@@ -59,105 +59,186 @@
             </form>
         </div>
 
-        <div id="sp-plan-view" hidden>
-            <header class="sp-plan-header">
-                <div class="sp-plan-header__main">
-                    <h1 class="tools-page-title" id="sp-plan-title"></h1>
-                    <p class="tools-page-lead" id="sp-plan-description"></p>
-                    <dl class="sp-meta">
-                        <div><dt data-i18n="sp.field.startDate">Start date</dt><dd id="sp-plan-started"></dd></div>
-                        <div><dt data-i18n="sp.field.owner">Owner</dt><dd id="sp-plan-owner"></dd></div>
-                        <div><dt data-i18n="sp.field.currentSprint">Current sprint</dt><dd id="sp-plan-current-sprint"></dd></div>
-                        <div><dt data-i18n="sp.field.status">Status</dt><dd id="sp-plan-status"></dd></div>
-                        <div><dt data-i18n="sp.field.team">Team</dt><dd id="sp-plan-team"></dd></div>
-                        <div><dt data-i18n="sp.field.participants">Participants</dt><dd id="sp-plan-participants"></dd></div>
-                    </dl>
-                    <div class="sp-progress" id="sp-plan-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                        <div class="sp-progress__bar" id="sp-plan-progress-bar"></div>
-                        <span class="sp-progress__label" id="sp-plan-progress-label">0%</span>
+        <div id="sp-plan-view" class="sp-plan-shell" hidden>
+            <header class="sp-plan-header" id="sp-plan-header" data-expanded="0">
+                <div class="sp-plan-header__toolbar">
+                    <label class="sp-plan-header__search">
+                        <span class="visually-hidden" data-i18n="sp.filter.search">Search</span>
+                        <input
+                            type="search"
+                            id="sp-plan-search"
+                            class="tools-input"
+                            data-i18n-placeholder="sp.filter.searchPlaceholder"
+                            placeholder="Search tasks…"
+                            autocomplete="off"
+                        >
+                    </label>
+                    <div class="sp-plan-header__toolbar-actions">
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--secondary tools-btn--small sp-chrome-icon-btn"
+                            id="sp-expand-all-sprints"
+                            data-sp-chrome="expand-all"
+                            data-i18n-aria="sp.action.expandAllSprints"
+                            title="Expand all"
+                        >
+                            <i class="fa-solid fa-angles-down" aria-hidden="true"></i>
+                            <span class="sr-only" data-i18n="sp.action.expandAllSprints">Expand all</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--secondary tools-btn--small sp-chrome-icon-btn"
+                            id="sp-collapse-all-sprints"
+                            data-sp-chrome="collapse-all"
+                            data-i18n-aria="sp.action.collapseAllSprints"
+                            title="Collapse all"
+                        >
+                            <i class="fa-solid fa-angles-up" aria-hidden="true"></i>
+                            <span class="sr-only" data-i18n="sp.action.collapseAllSprints">Collapse all</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--secondary tools-btn--small sp-filter-toggle"
+                            id="sp-filter-sidebar-toggle"
+                            data-sp-chrome="filters-toggle"
+                            aria-expanded="true"
+                            data-i18n-aria="sp.action.hideFilters"
+                            title="Hide filters"
+                        >
+                            <i class="fa-solid fa-filter" aria-hidden="true" data-sp-filter-icon></i>
+                            <span data-i18n="sp.action.toggleFilters">Filter</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="playbook-focus-toggle tools-btn tools-btn--ghost tools-btn--small"
+                            data-playbook-focus-button
+                            aria-pressed="false"
+                            data-i18n-aria="playbooks.focusExpand"
+                            title="Hide sidebars"
+                        >
+                            <i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i>
+                            <span class="sr-only" data-playbook-focus-label data-i18n="playbooks.focusExpand">Hide sidebars</span>
+                        </button>
+                        <button type="button" class="tools-btn tools-btn--secondary tools-btn--small" id="sp-status-report-btn" data-i18n="sp.action.statusReport">Report</button>
+                        <a href="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.action.settings">Settings</a>
+                        <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-add-sprint" data-i18n="sp.action.addSprint">Add sprint</button>
                     </div>
                 </div>
-                <div class="sp-plan-header__actions">
-                    <button type="button" class="tools-btn tools-btn--secondary" id="sp-status-report-btn" data-i18n="sp.action.statusReport">Report</button>
-                    <a href="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.settings">Settings</a>
-                    <button type="button" class="tools-btn tools-btn--primary" id="sp-add-sprint" data-i18n="sp.action.addSprint">Add sprint</button>
+                <div class="sp-plan-header__title-row">
+                    <h1 class="sp-plan-header__title" id="sp-plan-title"></h1>
+                    <button
+                        type="button"
+                        class="sp-icon-btn sp-plan-header__size-toggle"
+                        id="sp-header-size-toggle"
+                        data-sp-chrome="header-toggle"
+                        aria-expanded="false"
+                        data-i18n-aria="sp.action.expandHeader"
+                        title="Expand header"
+                    >
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true" data-sp-header-icon></i>
+                        <span class="sr-only" data-i18n="sp.action.expandHeader">Expand header</span>
+                    </button>
+                </div>
+                <div class="sp-plan-header__expanded" id="sp-plan-header-expanded">
+                    <div class="sp-plan-header__main">
+                        <p class="tools-page-lead" id="sp-plan-description"></p>
+                        <dl class="sp-meta">
+                            <div><dt data-i18n="sp.field.startDate">Start date</dt><dd id="sp-plan-started"></dd></div>
+                            <div><dt data-i18n="sp.field.owner">Owner</dt><dd id="sp-plan-owner"></dd></div>
+                            <div><dt data-i18n="sp.field.currentSprint">Current sprint</dt><dd id="sp-plan-current-sprint"></dd></div>
+                            <div><dt data-i18n="sp.field.status">Status</dt><dd id="sp-plan-status"></dd></div>
+                            <div><dt data-i18n="sp.field.team">Team</dt><dd id="sp-plan-team"></dd></div>
+                            <div><dt data-i18n="sp.field.participants">Participants</dt><dd id="sp-plan-participants"></dd></div>
+                        </dl>
+                        <div class="sp-progress" id="sp-plan-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <div class="sp-progress__bar" id="sp-plan-progress-bar"></div>
+                            <span class="sp-progress__label" id="sp-plan-progress-label">0%</span>
+                        </div>
+                    </div>
                 </div>
             </header>
 
-            <div id="sp-unassigned-banner" class="sp-unassigned-banner" role="status" hidden>
-                <p id="sp-unassigned-banner-text" data-i18n="sp.unassigned.banner">All tasks are unassigned.</p>
-                <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-claim-all-btn" data-i18n="sp.action.claimAll">Claim all as me</button>
-            </div>
+            <div class="sp-plan-body" id="sp-plan-layout">
+                <div class="sp-plan-scroll" id="sp-plan-scroll">
+                    <div id="sp-unassigned-banner" class="sp-unassigned-banner" role="status" hidden>
+                        <p id="sp-unassigned-banner-text" data-i18n="sp.unassigned.banner">All tasks are unassigned.</p>
+                        <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-claim-all-btn" data-i18n="sp.action.claimAll">Claim all as me</button>
+                    </div>
 
-            <div id="sp-template-missing" class="sp-empty sp-template-recover" hidden>
-                <p id="sp-template-missing-text"></p>
-                <p class="sp-password-note" data-i18n="sp.recover.lead">
-                    Choose the original template to restore this plan’s tasks. Progress and assignments are kept when status keys still match.
-                </p>
-                <div class="sp-action-row sp-template-recover__row">
-                    <label class="sp-field">
-                        <span data-i18n="sp.recover.pickTemplate">Template</span>
-                        <select id="sp-recover-template" class="tools-input"></select>
-                    </label>
-                    <button type="button" class="tools-btn tools-btn--primary" id="sp-recover-template-btn" data-i18n="sp.recover.apply">
-                        Restore template
-                    </button>
+                    <div id="sp-template-missing" class="sp-empty sp-template-recover" hidden>
+                        <p id="sp-template-missing-text"></p>
+                        <p class="sp-password-note" data-i18n="sp.recover.lead">
+                            Choose the original template to restore this plan’s tasks. Progress and assignments are kept when status keys still match.
+                        </p>
+                        <div class="sp-action-row sp-template-recover__row">
+                            <label class="sp-field">
+                                <span data-i18n="sp.recover.pickTemplate">Template</span>
+                                <select id="sp-recover-template" class="tools-input"></select>
+                            </label>
+                            <button type="button" class="tools-btn tools-btn--primary" id="sp-recover-template-btn" data-i18n="sp.recover.apply">
+                                Restore template
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="sp-blockers" class="sp-blockers" hidden></div>
+                    <p id="sp-filter-empty" class="sp-empty sp-filter-empty" hidden data-i18n="sp.filter.empty">No tasks match these filters.</p>
+                    <div id="sp-sprints" class="sp-sprints"></div>
                 </div>
+
+                <aside class="sp-filter-sidebar" id="sp-filter-sidebar" aria-label="Plan filters">
+                    <div class="sp-filter-sidebar__head">
+                        <h2 class="sp-filter-sidebar__title" data-i18n="sp.filter.sidebarTitle">Filters</h2>
+                    </div>
+                    <div class="sp-filters sp-filters--plan" role="group" aria-label="Plan item filters">
+                        <div class="sp-filter-logic" role="group" aria-label="Filter logic">
+                            <span class="sp-filter-logic__label" data-i18n="sp.filter.logicLabel">Combine filters</span>
+                            <label class="sp-check sp-check--inline">
+                                <input type="radio" name="sp-filter-logic" id="sp-filter-logic-and" value="and">
+                                <span data-i18n="sp.filter.logicAnd">AND</span>
+                            </label>
+                            <label class="sp-check sp-check--inline">
+                                <input type="radio" name="sp-filter-logic" id="sp-filter-logic-or" value="or" checked>
+                                <span data-i18n="sp.filter.logicOr">OR</span>
+                            </label>
+                        </div>
+                        <label class="sp-check"><input type="checkbox" id="sp-filter-current-week"> <span data-i18n="sp.filter.currentWeek">Current plan week only</span></label>
+                        <label class="sp-check"><input type="checkbox" id="sp-filter-hide-done"> <span data-i18n="sp.filter.hideDone">Hide completed</span></label>
+                        <label class="sp-check"><input type="checkbox" id="sp-filter-open-only"> <span data-i18n="sp.filter.openOnly">Open items only</span></label>
+                        <label class="sp-check"><input type="checkbox" id="sp-filter-blocked"> <span data-i18n="sp.filter.blocked">Blocked items</span></label>
+                        <label class="sp-check"><input type="checkbox" id="sp-filter-my-tasks" checked> <span data-i18n="sp.filter.myTasks">My tasks</span></label>
+                        <label class="sp-check"><input type="checkbox" id="sp-filter-unassigned" checked> <span data-i18n="sp.filter.unassigned">Unassigned</span></label>
+                        <label class="sp-field sp-field--compact">
+                            <span data-i18n="sp.filter.person">Person</span>
+                            <select id="sp-filter-person" class="tools-input"></select>
+                        </label>
+                        <label class="sp-field sp-field--compact">
+                            <span data-i18n="sp.filter.teamSelect">Team</span>
+                            <select id="sp-filter-team" class="tools-input"></select>
+                        </label>
+                        <label class="sp-field sp-field--compact">
+                            <span data-i18n="sp.filter.status">Status</span>
+                            <select id="sp-filter-status" class="tools-input">
+                                <option value="" data-i18n="sp.filter.any">Any</option>
+                                <option value="open" data-i18n="sp.status.open">Open</option>
+                                <option value="in_progress" data-i18n="sp.status.inProgress">In progress</option>
+                                <option value="blocked" data-i18n="sp.status.blocked">Blocked</option>
+                                <option value="completed" data-i18n="sp.status.completed">Completed</option>
+                            </select>
+                        </label>
+                        <label class="sp-field sp-field--compact">
+                            <span data-i18n="sp.filter.priority">Priority</span>
+                            <select id="sp-filter-priority" class="tools-input">
+                                <option value="" data-i18n="sp.filter.any">Any</option>
+                                <option value="low" data-i18n="sp.priority.low">Low</option>
+                                <option value="normal" data-i18n="sp.priority.normal">Normal</option>
+                                <option value="high" data-i18n="sp.priority.high">High</option>
+                                <option value="critical" data-i18n="sp.priority.critical">Critical</option>
+                            </select>
+                        </label>
+                    </div>
+                </aside>
             </div>
-
-            <div class="sp-filters sp-filters--plan" role="group" aria-label="Plan item filters">
-                <div class="sp-filter-logic" role="group" aria-label="Filter logic">
-                    <span class="sp-filter-logic__label" data-i18n="sp.filter.logicLabel">Combine filters</span>
-                    <label class="sp-check sp-check--inline">
-                        <input type="radio" name="sp-filter-logic" id="sp-filter-logic-and" value="and" checked>
-                        <span data-i18n="sp.filter.logicAnd">AND</span>
-                    </label>
-                    <label class="sp-check sp-check--inline">
-                        <input type="radio" name="sp-filter-logic" id="sp-filter-logic-or" value="or">
-                        <span data-i18n="sp.filter.logicOr">OR</span>
-                    </label>
-                </div>
-                <label class="sp-check"><input type="checkbox" id="sp-filter-current-week"> <span data-i18n="sp.filter.currentWeek">Current plan week only</span></label>
-                <label class="sp-check"><input type="checkbox" id="sp-filter-hide-done"> <span data-i18n="sp.filter.hideDone">Hide completed</span></label>
-                <label class="sp-check"><input type="checkbox" id="sp-filter-open-only"> <span data-i18n="sp.filter.openOnly">Open items only</span></label>
-                <label class="sp-check"><input type="checkbox" id="sp-filter-blocked"> <span data-i18n="sp.filter.blocked">Blocked items</span></label>
-                <label class="sp-check"><input type="checkbox" id="sp-filter-my-tasks"> <span data-i18n="sp.filter.myTasks">My tasks</span></label>
-                <label class="sp-check"><input type="checkbox" id="sp-filter-unassigned"> <span data-i18n="sp.filter.unassigned">Unassigned</span></label>
-                <label class="sp-field sp-field--compact">
-                    <span data-i18n="sp.filter.person">Person</span>
-                    <select id="sp-filter-person" class="tools-input"></select>
-                </label>
-                <label class="sp-field sp-field--compact">
-                    <span data-i18n="sp.filter.teamSelect">Team</span>
-                    <select id="sp-filter-team" class="tools-input"></select>
-                </label>
-                <label class="sp-field sp-field--compact">
-                    <span data-i18n="sp.filter.status">Status</span>
-                    <select id="sp-filter-status" class="tools-input">
-                        <option value="" data-i18n="sp.filter.any">Any</option>
-                        <option value="open" data-i18n="sp.status.open">Open</option>
-                        <option value="in_progress" data-i18n="sp.status.inProgress">In progress</option>
-                        <option value="blocked" data-i18n="sp.status.blocked">Blocked</option>
-                        <option value="completed" data-i18n="sp.status.completed">Completed</option>
-                    </select>
-                </label>
-                <label class="sp-field sp-field--compact">
-                    <span data-i18n="sp.filter.priority">Priority</span>
-                    <select id="sp-filter-priority" class="tools-input">
-                        <option value="" data-i18n="sp.filter.any">Any</option>
-                        <option value="low" data-i18n="sp.priority.low">Low</option>
-                        <option value="normal" data-i18n="sp.priority.normal">Normal</option>
-                        <option value="high" data-i18n="sp.priority.high">High</option>
-                        <option value="critical" data-i18n="sp.priority.critical">Critical</option>
-                    </select>
-                </label>
-            </div>
-
-            <div id="sp-blockers" class="sp-blockers" hidden></div>
-
-            <p id="sp-filter-empty" class="sp-empty sp-filter-empty" hidden data-i18n="sp.filter.empty">No tasks match these filters.</p>
-
-            <div id="sp-sprints" class="sp-sprints"></div>
         </div>
 
         <dialog id="sp-sprint-dialog" class="sp-dialog">
@@ -179,7 +260,7 @@
                     <textarea id="sp-sprint-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | https://…"></textarea>
                 </label>
                 <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
                 </div>
             </form>
@@ -251,7 +332,8 @@
                     </div>
                 </fieldset>
                 <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="button" id="sp-item-delete" class="tools-btn tools-btn--danger" hidden data-i18n="sp.action.delete">Delete</button>
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
                 </div>
             </form>
@@ -273,7 +355,7 @@
                 </label>
                 <label class="sp-field"><span data-i18n="sp.field.assignee">Assignee</span><select id="sp-assign-assignee-id" class="tools-input"></select></label>
                 <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.assign">Assign</button>
                 </div>
             </form>

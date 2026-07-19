@@ -369,4 +369,33 @@ MD;
         ], $deliverable['stories']);
         $this->assertNull($deliverable['demoCode']);
     }
+
+    public function test_parses_table_columns_on_task(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+tasks:
+  - id: identify-stakeholders
+    label: Identify stakeholders
+    assigneeType: team
+    assigneeId: null
+    tableColumns: Name, Role, Influence, Interest, Owner
+```
+MD;
+
+        $result = $parser->parse($body);
+        $this->assertSame([], $result['errors']);
+        $table = $result['sprints'][0]['tasks'][0]['table'] ?? null;
+        $this->assertIsArray($table);
+        $this->assertCount(5, $table['columns']);
+        $this->assertSame('name', $table['columns'][0]['id']);
+        $this->assertSame('Name', $table['columns'][0]['label']);
+        $this->assertSame([], $table['rows']);
+    }
 }

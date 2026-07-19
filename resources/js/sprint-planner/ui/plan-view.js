@@ -1,4 +1,5 @@
 import { getLocale } from '../../locale.js';
+import { applyPlaybookFocus, getPlaybookFocus } from '../../shell-layout.js';
 import {
     isAccountsMode,
     readAccountsBootstrap,
@@ -17,7 +18,8 @@ import {
     resolveAttachmentHref,
 } from '../attachment-store.js';
 import {
-    readTableEditor,
+    parseTableColumnsText,
+    renderInlineTableEditor,
     renderItemTableReadonly,
     renderTableEditor,
 } from '../item-table.js';
@@ -34,8 +36,8 @@ import {
     backfillParticipantsFromAssignees,
     claimAllUnassigned,
     claimItem,
-    deleteCustomItem,
     deleteCustomSprint,
+    removePlanItem,
     duplicateSprint,
     moveSprint,
     resetSprint,
@@ -129,6 +131,7 @@ export function initPlanShowPage() {
             render();
         });
         bindFilters(render);
+        bindPlanChrome(instanceId, render);
         bindDialogs(instanceId, render);
         bindHelpPanelChrome();
         bindStatusReport();
@@ -368,10 +371,10 @@ function renderPlan(instanceId) {
         ? computeScheduleHealth(sprints, currentNumber)
         : { weeksBehind: 0, openCount: 0, onTrack: true, sources: [] };
 
-    document.getElementById('sp-plan-title').textContent =
-        instance.translations?.[locale]?.title
+    const planTitle = instance.translations?.[locale]?.title
         || template?.locales?.[locale]?.title
         || instance.templateSlug;
+    document.getElementById('sp-plan-title').textContent = planTitle;
     document.getElementById('sp-plan-description').textContent =
         instance.translations?.[locale]?.description
         || template?.locales?.[locale]?.description
@@ -415,10 +418,17 @@ function renderPlan(instanceId) {
     const progressEl = document.getElementById('sp-plan-progress');
     const bar = document.getElementById('sp-plan-progress-bar');
     const label = document.getElementById('sp-plan-progress-label');
-    progressEl.setAttribute('aria-valuenow', String(progress.percent));
-    progressEl.setAttribute('aria-label', spT('sp.card.progress', { percent: progress.percent }));
-    bar.style.width = `${progress.percent}%`;
-    label.textContent = `${progress.percent}% (${progress.done}/${progress.total})`;
+    const progressText = `${progress.percent}% (${progress.done}/${progress.total})`;
+    progressEl?.setAttribute('aria-valuenow', String(progress.percent));
+    progressEl?.setAttribute('aria-label', spT('sp.card.progress', { percent: progress.percent }));
+    if (bar) {
+        bar.style.width = `${progress.percent}%`;
+    }
+    if (label) {
+        label.textContent = progressText;
+    }
+    applyPlanHeaderState(instance.id);
+    applyFilterSidebarState(instance.id);
 
     renderScheduleBanner(schedule);
 
@@ -655,6 +665,17 @@ function bindFilters(render) {
         prefs.planFiltersVersion = 4;
         savePreferences(prefs);
     }
+    // Default view: OR + my tasks + unassigned (once per prefs upgrade).
+    if (Number(prefs.planFiltersVersion) < 5) {
+        prefs.planFilters = normalizePlanFilters({
+            ...(prefs.planFilters || {}),
+            myTasks: true,
+            unassigned: true,
+            filterLogic: 'or',
+        });
+        prefs.planFiltersVersion = 5;
+        savePreferences(prefs);
+    }
     const planFilters = normalizePlanFilters(prefs.planFilters || {});
 
     const checkboxMap = {
@@ -704,6 +725,178 @@ function bindFilters(render) {
             render();
         });
     }
+
+    const search = document.getElementById('sp-plan-search');
+    if (search) {
+        search.value = planFilters.search || '';
+        let searchTimer = 0;
+        search.addEventListener('input', () => {
+            window.clearTimeout(searchTimer);
+            searchTimer = window.setTimeout(() => {
+                persistFilters();
+                render();
+            }, 180);
+        });
+    }
+}
+
+/**
+ * @param {string} instanceId
+ * @param {() => void} render
+ */
+function bindPlanChrome(instanceId, render) {
+    const root = document.getElementById('sp-app');
+    if (!root) {
+        return;
+    }
+
+    if (root.dataset.spChromeBound !== '1') {
+        root.dataset.spChromeBound = '1';
+        root.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!(target instanceof Element)) {
+                return;
+            }
+            const actionEl = target.closest('[data-sp-chrome]');
+            if (!(actionEl instanceof HTMLElement)) {
+                return;
+            }
+            const action = actionEl.getAttribute('data-sp-chrome');
+            if (!action) {
+                return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (action === 'header-toggle') {
+                const prefs = loadPreferences();
+                const map = { ...(prefs.planHeaderExpanded || {}) };
+                map[instanceId] = !Boolean(map[instanceId]);
+                prefs.planHeaderExpanded = map;
+                savePreferences(prefs);
+                applyPlanHeaderState(instanceId);
+                return;
+            }
+
+            if (action === 'filters-toggle') {
+                const prefs = loadPreferences();
+                const map = { ...(prefs.planFilterSidebarCollapsed || {}) };
+                map[instanceId] = !Boolean(map[instanceId]);
+                prefs.planFilterSidebarCollapsed = map;
+                savePreferences(prefs);
+                applyFilterSidebarState(instanceId);
+                return;
+            }
+
+            if (action === 'expand-all') {
+                setAllSprintsExpanded(instanceId, true);
+                render();
+                return;
+            }
+
+            if (action === 'collapse-all') {
+                setAllSprintsExpanded(instanceId, false);
+                render();
+            }
+        });
+    }
+
+    applyPlanHeaderState(instanceId);
+    applyFilterSidebarState(instanceId);
+    applyPlaybookFocus(getPlaybookFocus());
+}
+
+/**
+ * @param {string} instanceId
+ */
+function applyPlanHeaderState(instanceId) {
+    const prefs = loadPreferences();
+    const expanded = Boolean(prefs.planHeaderExpanded?.[instanceId]);
+    const header = document.getElementById('sp-plan-header');
+    const expandedEl = document.getElementById('sp-plan-header-expanded');
+    const toggle = document.getElementById('sp-header-size-toggle');
+    if (header) {
+        header.dataset.expanded = expanded ? '1' : '0';
+    }
+    if (expandedEl) {
+        expandedEl.hidden = !expanded;
+        expandedEl.toggleAttribute('hidden', !expanded);
+    }
+    if (toggle) {
+        const label = expanded ? spT('sp.action.collapseHeader') : spT('sp.action.expandHeader');
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggle.setAttribute('aria-label', label);
+        toggle.setAttribute('title', label);
+        toggle.setAttribute('data-i18n-aria', expanded ? 'sp.action.collapseHeader' : 'sp.action.expandHeader');
+        const sr = toggle.querySelector('.sr-only');
+        if (sr) {
+            sr.textContent = label;
+            sr.setAttribute('data-i18n', expanded ? 'sp.action.collapseHeader' : 'sp.action.expandHeader');
+        }
+        const icon = toggle.querySelector('[data-sp-header-icon]');
+        if (icon) {
+            icon.className = expanded
+                ? 'fa-solid fa-chevron-up'
+                : 'fa-solid fa-chevron-down';
+        }
+    }
+}
+
+/**
+ * @param {string} instanceId
+ */
+function applyFilterSidebarState(instanceId) {
+    const prefs = loadPreferences();
+    const collapsed = Boolean(prefs.planFilterSidebarCollapsed?.[instanceId]);
+    const layout = document.getElementById('sp-plan-layout');
+    const sidebar = document.getElementById('sp-filter-sidebar');
+    const toggle = document.getElementById('sp-filter-sidebar-toggle');
+    layout?.classList.toggle('sp-plan-layout--filters-collapsed', collapsed);
+    if (sidebar) {
+        sidebar.hidden = collapsed;
+        sidebar.toggleAttribute('hidden', collapsed);
+    }
+    if (toggle) {
+        const label = collapsed ? spT('sp.action.showFilters') : spT('sp.action.hideFilters');
+        toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        toggle.setAttribute('aria-label', label);
+        toggle.setAttribute('title', label);
+        toggle.setAttribute('data-i18n-aria', collapsed ? 'sp.action.showFilters' : 'sp.action.hideFilters');
+        toggle.classList.toggle('sp-filter-toggle--collapsed', collapsed);
+        const icon = toggle.querySelector('[data-sp-filter-icon]');
+        if (icon) {
+            icon.className = collapsed
+                ? 'fa-solid fa-filter'
+                : 'fa-solid fa-filter-circle-xmark';
+        }
+    }
+}
+
+/**
+ * @param {string} instanceId
+ * @param {boolean} open
+ */
+function setAllSprintsExpanded(instanceId, open) {
+    const prefs = loadPreferences();
+    prefs.expandedSprints = prefs.expandedSprints || {};
+    /** @type {Record<string, boolean>} */
+    const map = { ...(prefs.expandedSprints[instanceId] || {}) };
+    const fromDom = [...(document.querySelectorAll('#sp-sprints details.sp-sprint[data-sprint-id]') || [])]
+        .map((el) => el.getAttribute('data-sprint-id'))
+        .filter(Boolean);
+    const fromContext = (lastRenderContext?.sprints || []).map((sprint) => String(sprint.id));
+    const ids = [...new Set([...fromDom, ...fromContext])];
+    for (const id of ids) {
+        map[id] = open;
+    }
+    prefs.expandedSprints[instanceId] = map;
+    savePreferences(prefs);
+
+    document.querySelectorAll('#sp-sprints details.sp-sprint').forEach((details) => {
+        if (details instanceof HTMLDetailsElement) {
+            details.open = open;
+        }
+    });
 }
 
 /**
@@ -863,6 +1056,7 @@ function readFilters(prefs) {
         teamId: document.getElementById('sp-filter-team')?.value || '',
         status: document.getElementById('sp-filter-status')?.value || '',
         priority: document.getElementById('sp-filter-priority')?.value || '',
+        search: document.getElementById('sp-plan-search')?.value || prefs.planFilters?.search || '',
         filterLogic: logicOr
             ? 'or'
             : (document.getElementById('sp-filter-logic-and')
@@ -982,6 +1176,7 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
     for (const sprint of sprints) {
         const details = document.createElement('details');
         details.className = 'sp-sprint';
+        details.setAttribute('data-sprint-id', sprint.id);
         const isCurrent = currentNumber > 0 && sprint.number === currentNumber;
         const isUpcoming = currentNumber === 0 && sprint.number === 1;
         const isOverdue = currentNumber > 0
@@ -1037,14 +1232,10 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
                     continue;
                 }
                 seen.add(String(item.assigneeId));
-                assigneesHost.appendChild(renderAssigneeChip(item, workspace, locale));
-            }
-            if (!seen.size) {
-                assigneesHost.appendChild(renderAssigneeChip(
-                    { assigneeType: null, assigneeId: null },
-                    workspace,
-                    locale,
-                ));
+                const chip = renderAssigneeChip(item, workspace, locale);
+                if (chip) {
+                    assigneesHost.appendChild(chip);
+                }
             }
         }
         const statusHost = summary.querySelector('.sp-sprint__status');
@@ -1104,14 +1295,12 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
 function renderSprintStoriesRow(sprint) {
     const row = document.createElement('div');
     row.className = 'sp-sprint__stories-btn';
-    const label = document.createElement('span');
-    label.textContent = spT('sp.sprint.storiesTitle');
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'tools-btn tools-btn--secondary tools-btn--small';
-    btn.textContent = spT('sp.action.readStories');
+    btn.textContent = spT('sp.action.relatedStories');
     btn.addEventListener('click', () => openSprintHelp(sprint));
-    row.append(label, btn);
+    row.appendChild(btn);
     return row;
 }
 
@@ -1159,9 +1348,14 @@ function renderItemSection(kind, sprint, instance, locale, workspace) {
 
 function renderItemRow(item, sprint, instance, locale, workspace) {
     const li = document.createElement('li');
-    li.className = `sp-item sp-item--${item.status}`;
+    li.className = `sp-item-wrap sp-item-wrap--${item.status}`;
+
+    const row = document.createElement('div');
+    row.className = `sp-item sp-item--${item.status}`;
+
     const check = document.createElement('input');
     check.type = 'checkbox';
+    check.className = 'sp-item__check';
     check.checked = item.completed;
     check.setAttribute('aria-label', item.label);
     check.addEventListener('change', () => {
@@ -1176,7 +1370,9 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     });
 
     const chip = renderAssigneeChip(item, workspace, locale);
-    chip.classList.add('sp-item__assignee');
+    if (chip) {
+        chip.classList.add('sp-item__assignee');
+    }
 
     const main = document.createElement('div');
     main.className = 'sp-item__main';
@@ -1253,28 +1449,135 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         main.appendChild(attBadge);
     }
 
-    if (item.custom) {
-        actions.appendChild(createIconButton({
-            icon: 'delete',
-            label: spT('sp.action.delete'),
-            className: 'sp-icon-btn--danger',
+    // Fixed-width slot keeps assignee + action icons aligned across rows.
+    const tableSlot = document.createElement('div');
+    tableSlot.className = 'sp-item__table-slot';
+    tableSlot.setAttribute('aria-hidden', 'true');
+
+    const hasTable = Boolean(item.table?.columns?.length);
+    /** @type {HTMLButtonElement|null} */
+    let tableToggle = null;
+    /** @type {HTMLSpanElement|null} */
+    let tableBadge = null;
+    /** @type {HTMLDivElement|null} */
+    let tablePanel = null;
+    /** @type {(() => void)|null} */
+    let mountTableEditor = null;
+
+    if (hasTable) {
+        tableSlot.removeAttribute('aria-hidden');
+        const prefs = loadPreferences();
+        const expandedKey = `${instance.id}:${item.statusKey}`;
+        const initiallyOpen = Boolean(prefs.expandedItemTables?.[expandedKey]);
+
+        const syncTableToggle = (open, rowCount = item.table.rows?.length || 0) => {
+            if (!tableToggle) {
+                return;
+            }
+            const label = open
+                ? spT('sp.action.collapseTable')
+                : (rowCount
+                    ? spT('sp.action.expandTableRows', { count: rowCount })
+                    : spT('sp.action.expandTable'));
+            tableToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            tableToggle.setAttribute('aria-label', label);
+            tableToggle.title = label;
+            if (tableBadge) {
+                tableBadge.hidden = rowCount <= 0;
+                tableBadge.textContent = String(rowCount);
+            }
+        };
+
+        tableToggle = createIconButton({
+            icon: 'list',
+            label: spT('sp.action.expandTable'),
+            className: 'sp-item__table-toggle',
             onClick: () => {
-                deleteCustomItem(instance.id, sprint.id, item.kind, item.id, item.statusKey);
-                rerender();
+                if (!tablePanel || !mountTableEditor) {
+                    return;
+                }
+                const open = tablePanel.hidden;
+                tablePanel.hidden = !open;
+                syncTableToggle(open);
+                const next = loadPreferences();
+                next.expandedItemTables = next.expandedItemTables || {};
+                if (open) {
+                    next.expandedItemTables[expandedKey] = true;
+                    const host = tablePanel.querySelector('.sp-item__table-editor');
+                    if (host && !host.childElementCount) {
+                        mountTableEditor();
+                    }
+                } else {
+                    delete next.expandedItemTables[expandedKey];
+                }
+                savePreferences(next);
             },
-        }));
+        });
+        tableToggle.setAttribute('aria-expanded', initiallyOpen ? 'true' : 'false');
+
+        tableBadge = document.createElement('span');
+        tableBadge.className = 'sp-icon-btn__badge';
+        tableToggle.appendChild(tableBadge);
+        syncTableToggle(initiallyOpen);
+        tableSlot.appendChild(tableToggle);
+
+        tablePanel = document.createElement('div');
+        tablePanel.className = 'sp-item__table-panel';
+        tablePanel.hidden = !initiallyOpen;
+        const editorHost = document.createElement('div');
+        editorHost.className = 'sp-item__table-editor';
+        tablePanel.appendChild(editorHost);
+
+        mountTableEditor = () => {
+            renderInlineTableEditor(editorHost, item.table, {
+                spT,
+                onChange: (nextTable) => {
+                    const result = updateItemMeta(
+                        instance.id,
+                        item.kind,
+                        item.statusKey,
+                        {
+                            status: item.status,
+                            priority: item.priority,
+                            assigneeType: item.assigneeType,
+                            assigneeId: item.assigneeId,
+                            dueDate: item.dueDate,
+                            note: item.note,
+                            blockerReason: item.blockerReason,
+                            blockerSince: item.blockerSince,
+                            attachments: item.attachments,
+                            table: nextTable,
+                            labelDe: item.label,
+                            labelEn: item.label,
+                        },
+                        item.custom,
+                        sprint.id,
+                    );
+                    if (!result.ok) {
+                        showToast(storageErrorMessage(result.error));
+                        return;
+                    }
+                    setSaveStatus('saved');
+                    item.table = nextTable;
+                    syncTableToggle(!tablePanel?.hidden, nextTable.rows?.length || 0);
+                },
+            });
+        };
+
+        if (initiallyOpen) {
+            mountTableEditor();
+        }
     }
 
-    li.append(check, main, chip, actions);
-
-    const tableEl = renderItemTableReadonly(item.table);
-    if (tableEl) {
-        const tableHost = document.createElement('div');
-        tableHost.className = 'sp-item__table';
-        tableHost.appendChild(tableEl);
-        li.appendChild(tableHost);
+    row.append(check, main, tableSlot);
+    if (chip) {
+        row.appendChild(chip);
     }
-
+    row.appendChild(actions);
+    li.appendChild(row);
+    if (tablePanel) {
+        li.appendChild(tablePanel);
+    }
     return li;
 }
 
@@ -1517,6 +1820,31 @@ function bindDialogs(instanceId, render) {
         render();
     });
 
+    document.getElementById('sp-item-delete')?.addEventListener('click', () => {
+        if (itemDialogState.create || !itemDialogState.item) {
+            return;
+        }
+        if (!window.confirm(spT('sp.confirm.deleteItem'))) {
+            return;
+        }
+        const result = removePlanItem(instanceId, {
+            custom: Boolean(itemDialogState.custom),
+            sprintId: itemDialogState.sprintId,
+            kind: itemDialogState.kind,
+            itemId: itemDialogState.item.id,
+            statusKey: itemDialogState.item.statusKey,
+        });
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        const dialog = document.getElementById('sp-item-dialog');
+        if (dialog?.open) {
+            dialog.close('cancel');
+        }
+        render();
+    });
+
     const itemDialog = document.getElementById('sp-item-dialog');
     itemDialog?.addEventListener('close', () => {
         if (itemDialog.returnValue !== 'confirm') {
@@ -1529,6 +1857,24 @@ function bindDialogs(instanceId, render) {
             ? (previousStatus === 'blocked' ? (itemDialogState.item?.blockerSince || todayIso()) : todayIso())
             : null;
         const allowLabels = Boolean(itemDialogState.create || itemDialogState.custom);
+        const isTemplateItem = Boolean(itemDialogState.item && !itemDialogState.custom && !itemDialogState.create);
+        /** @type {import('../item-table.js').SpItemTable|null|undefined} */
+        let table;
+        if (isTemplateItem) {
+            // Rows are edited inline under the item; keep existing override/template merge.
+            table = undefined;
+        } else {
+            const columnsRaw = document.querySelector('#sp-item-table-editor [data-sp-table-columns]')?.value || '';
+            const columns = parseTableColumnsText(columnsRaw);
+            if (columns.length) {
+                table = {
+                    columns,
+                    rows: itemDialogState.item?.table?.rows || [],
+                };
+            } else {
+                table = null;
+            }
+        }
         const data = {
             id: document.getElementById('sp-item-id').value,
             labelDe: allowLabels
@@ -1543,7 +1889,7 @@ function bindDialogs(instanceId, render) {
             priority: document.getElementById('sp-item-priority').value,
             dueDate: document.getElementById('sp-item-due').value || null,
             note: document.getElementById('sp-item-note').value,
-            table: readTableEditor(document.getElementById('sp-item-table-editor')),
+            table,
             blockerReason,
             blockerSince,
             attachments: normalizeAttachments(dialogAttachments),
@@ -1732,8 +2078,18 @@ function openItemDialog(state) {
     const instanceId = document.getElementById('sp-app')?.dataset?.spInstanceId || '';
     renderDialogAttachments(instanceId);
     const tableHost = document.getElementById('sp-item-table-editor');
-    if (tableHost) {
-        renderTableEditor(tableHost, state.item?.table || null, { spT });
+    const tableField = document.getElementById('sp-item-table-field');
+    if (tableHost && tableField) {
+        if (isTemplateItem) {
+            tableField.hidden = true;
+            tableHost.innerHTML = '';
+        } else {
+            tableField.hidden = false;
+            renderTableEditor(tableHost, state.item?.table || null, {
+                spT,
+                columnsOnly: true,
+            });
+        }
     }
     refreshAssigneeOptions(defaultAssigneeId || '');
     updateBlockerFieldVisibility();
@@ -1742,6 +2098,10 @@ function openItemDialog(state) {
         title.textContent = state.create
             ? spT('sp.dialog.itemCreateTitle')
             : spT('sp.dialog.itemTitle');
+    }
+    const deleteBtn = document.getElementById('sp-item-delete');
+    if (deleteBtn) {
+        deleteBtn.hidden = Boolean(state.create || !state.item);
     }
     document.getElementById('sp-item-dialog').showModal();
 }
@@ -1902,7 +2262,11 @@ function bindStatusReport() {
         refreshStatusReport();
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
+        if (event.key !== 'Escape') {
+            return;
+        }
+        const report = document.getElementById('sp-status-report');
+        if (report && !report.hidden) {
             closeStatusReport();
         }
     });
@@ -1930,15 +2294,26 @@ function showStatusReport() {
     if (el) {
         el.hidden = false;
         el.setAttribute('aria-hidden', 'false');
+        document.getElementById('sp-status-report-close')?.focus();
     }
 }
 
 function closeStatusReport() {
     const el = document.getElementById('sp-status-report');
-    if (el) {
-        el.hidden = true;
-        el.setAttribute('aria-hidden', 'true');
+    if (!el || el.hidden) {
+        return;
     }
+    // Move focus out before aria-hidden, otherwise AT warns about focused descendants.
+    const opener = document.getElementById('sp-status-report-btn');
+    if (el.contains(document.activeElement)) {
+        if (opener) {
+            opener.focus();
+        } else if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+    }
+    el.hidden = true;
+    el.setAttribute('aria-hidden', 'true');
 }
 
 /**

@@ -65,6 +65,6 @@ export function initPlaybookLocale() {
 
     window.addEventListener('binom-tools:locale', (event) => {
         const detail = /** @type {CustomEvent<{ locale: ToolsLocale }>} */ (event).detail;
-        applyPlaybookLocale(detail.locale);
+        applyPlaybookLocale(detail?.locale ?? getLocale());
     });
 }

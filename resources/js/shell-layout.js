@@ -1,3 +1,5 @@
+import { getLocale } from './locale.js';
+
 const FULL_WIDTH_STORAGE_KEY = 'binom-tools-shell-full-width';
 const PLAYBOOK_FOCUS_STORAGE_KEY = 'binom-tools-playbook-focus';
 
@@ -13,7 +15,11 @@ export function getPlaybookFocus() {
 
 /** @returns {boolean} */
 function isPlaybookPage() {
-    return Boolean(document.querySelector('.tools-shell__main--playbook'));
+    return Boolean(
+        document.querySelector('.tools-shell__main--playbook')
+        || document.querySelector('.tools-shell__main--sprint-planner')
+        || document.querySelector('.sp-app[data-sp-page="show"]'),
+    );
 }
 
 /** @param {boolean} enabled */
@@ -91,7 +97,8 @@ export function setPlaybookFocus(enabled) {
     localStorage.setItem(PLAYBOOK_FOCUS_STORAGE_KEY, enabled ? 'true' : 'false');
     applyPlaybookFocus(enabled);
     window.dispatchEvent(new CustomEvent('binom-tools:playbook-focus', { detail: { focus: enabled } }));
-    window.dispatchEvent(new CustomEvent('binom-tools:locale'));
+    const locale = getLocale();
+    window.dispatchEvent(new CustomEvent('binom-tools:locale', { detail: { locale } }));
 }
 
 function closeSettingsMenu() {

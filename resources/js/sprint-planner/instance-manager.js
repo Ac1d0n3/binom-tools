@@ -71,6 +71,7 @@ export function startInstanceFromTemplate(template, options) {
         itemOverrides: activePersonId
             ? buildDefaultAssigneeOverrides(template, activePersonId)
             : {},
+        removedItemKeys: [],
         // Always keep a snapshot so the plan stays renderable if the slug is lost or the template catalog fails to load.
         templateSnapshot: structuredCloneSafe(template),
         ownerUserId: usesServerPlans() && ! ephemeral
@@ -444,6 +445,9 @@ export function resetSprint(instanceId, sprintId, templateSlug) {
                 delete instance.itemOverrides[key];
             }
         }
+        if (Array.isArray(instance.removedItemKeys)) {
+            instance.removedItemKeys = instance.removedItemKeys.filter((key) => !key.startsWith(prefix));
+        }
     });
 }
 
@@ -598,6 +602,29 @@ export function deleteCustomItem(instanceId, sprintId, kind, itemId, statusKeyVa
         instance[bag][sprintId] = (instance[bag][sprintId] || []).filter((item) => item.id !== itemId);
         const list = kind === 'task' ? 'completedTasks' : 'completedDeliverables';
         instance[list] = instance[list].filter((key) => key !== statusKeyValue);
+        delete instance.itemOverrides[statusKeyValue];
+    });
+}
+
+/**
+ * Remove a plan item (custom delete, or soft-remove a template item for this plan).
+ * @param {string} instanceId
+ * @param {{custom: boolean, sprintId: string, kind: string, itemId: string, statusKey: string}} opts
+ */
+export function removePlanItem(instanceId, opts) {
+    if (opts.custom) {
+        return deleteCustomItem(instanceId, opts.sprintId, opts.kind, opts.itemId, opts.statusKey);
+    }
+    return updateInstance(instanceId, (instance) => {
+        if (!Array.isArray(instance.removedItemKeys)) {
+            instance.removedItemKeys = [];
+        }
+        if (!instance.removedItemKeys.includes(opts.statusKey)) {
+            instance.removedItemKeys.push(opts.statusKey);
+        }
+        const list = opts.kind === 'task' ? 'completedTasks' : 'completedDeliverables';
+        instance[list] = instance[list].filter((key) => key !== opts.statusKey);
+        delete instance.itemOverrides[opts.statusKey];
     });
 }
 
@@ -640,6 +667,7 @@ export function resetInstanceProgress(instanceId) {
         instance.customSprints = [];
         instance.sprintOverrides = {};
         instance.itemOverrides = {};
+        instance.removedItemKeys = [];
         instance.status = 'active';
     });
 }
