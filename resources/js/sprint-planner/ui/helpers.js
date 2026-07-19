@@ -98,6 +98,12 @@ export function storageErrorMessage(key) {
     if (key === 'unsupported-schema' || key === 'import-schema') {
         return spT('sp.error.importSchema');
     }
+    if (key === 'deps-cycle') {
+        return spT('sp.error.depsCycle');
+    }
+    if (key === 'deps-self' || key === 'deps-invalid') {
+        return spT('sp.error.depsInvalid');
+    }
     return spT('sp.error.importInvalid');
 }
 

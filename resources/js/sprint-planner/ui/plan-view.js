@@ -1194,6 +1194,7 @@ function renderPlanStatusOverview(sprints) {
     const counts = {
         open: 0,
         in_progress: 0,
+        on_hold: 0,
         blocked: 0,
         completed: 0,
     };
@@ -1208,7 +1209,7 @@ function renderPlanStatusOverview(sprints) {
         }
     }
 
-    const total = counts.open + counts.in_progress + counts.blocked + counts.completed;
+    const total = counts.open + counts.in_progress + counts.on_hold + counts.blocked + counts.completed;
     host.innerHTML = '';
     if (total === 0) {
         host.hidden = true;
@@ -1228,6 +1229,7 @@ function renderPlanStatusOverview(sprints) {
     const entries = [
         { key: 'open', icon: 'fa-solid fa-circle', count: counts.open },
         { key: 'in_progress', icon: 'fa-solid fa-play', count: counts.in_progress },
+        { key: 'on_hold', icon: 'fa-solid fa-pause', count: counts.on_hold },
         { key: 'blocked', icon: 'fa-solid fa-ban', count: counts.blocked },
         { key: 'completed', icon: 'fa-solid fa-check', count: counts.completed },
     ];
@@ -1468,11 +1470,15 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
             const items = [...sprint.tasks, ...sprint.deliverables];
             const blockedCount = items.filter((item) => item.status === 'blocked').length;
             const inProgressCount = items.filter((item) => item.status === 'in_progress').length;
+            const onHoldCount = items.filter((item) => item.status === 'on_hold').length;
             if (blockedCount > 0) {
                 statusHost.appendChild(renderSprintStatusCountChip('blocked', blockedCount));
             }
             if (inProgressCount > 0) {
                 statusHost.appendChild(renderSprintStatusCountChip('in_progress', inProgressCount));
+            }
+            if (onHoldCount > 0) {
+                statusHost.appendChild(renderSprintStatusCountChip('on_hold', onHoldCount));
             }
         }
         details.appendChild(summary);
@@ -1758,14 +1764,20 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
                         item.kind,
                         item.statusKey,
                         {
-                            status: item.status,
+                            status: item.dependencyBlocked
+                                ? (item.storedStatus || 'open')
+                                : item.status,
                             priority: item.priority,
                             assigneeType: item.assigneeType,
                             assigneeId: item.assigneeId,
                             dueDate: item.dueDate,
                             note: item.note,
-                            blockerReason: item.blockerReason,
+                            blockerReason: item.dependencyBlocked
+                                && item.storedStatus !== 'blocked'
+                                ? ''
+                                : item.blockerReason,
                             blockerSince: item.blockerSince,
+                            dependsOn: item.dependsOn || [],
                             attachments: item.attachments,
                             table: nextTable,
                             labelDe: item.label,
@@ -1840,26 +1852,34 @@ function renderGenericLinks(links, className) {
 }
 
 function statusKeyToLabel(status) {
-    return status === 'in_progress' ? 'inProgress' : status;
+    if (status === 'in_progress') {
+        return 'inProgress';
+    }
+    if (status === 'on_hold') {
+        return 'onHold';
+    }
+    return status;
 }
 
 /**
  * Compact sprint-summary marker: colored icon + count badge.
- * @param {'blocked'|'in_progress'} status
+ * @param {'blocked'|'in_progress'|'on_hold'} status
  * @param {number} count
  * @returns {HTMLSpanElement}
  */
 function renderSprintStatusCountChip(status, count) {
     const chip = document.createElement('span');
     chip.className = `sp-status-mark sp-status-mark--${status}`;
-    const labelKey = status === 'blocked' ? 'sp.sprint.blockedCount' : 'sp.sprint.inProgressCount';
+    const labelKey = status === 'blocked'
+        ? 'sp.sprint.blockedCount'
+        : (status === 'on_hold' ? 'sp.sprint.onHoldCount' : 'sp.sprint.inProgressCount');
     chip.title = spT(labelKey, { count });
     chip.setAttribute('aria-label', spT(labelKey, { count }));
 
     const icon = document.createElement('i');
     icon.className = status === 'blocked'
         ? 'fa-solid fa-ban'
-        : 'fa-solid fa-play';
+        : (status === 'on_hold' ? 'fa-solid fa-pause' : 'fa-solid fa-play');
     icon.setAttribute('aria-hidden', 'true');
 
     const badge = document.createElement('span');
@@ -2211,6 +2231,7 @@ function bindDialogs(instanceId, render) {
             table,
             blockerReason,
             blockerSince,
+            dependsOn: readDependsOnSelect(),
             attachments: normalizeAttachments(dialogAttachments),
         };
         if (allowLabels && !String(data.labelDe || data.labelEn || '').trim()) {
@@ -2362,6 +2383,47 @@ function updateBlockerFieldVisibility() {
     }
 }
 
+/**
+ * @param {{sprintId: string, kind: string, custom?: boolean, create?: boolean, item?: object}} state
+ */
+function fillDependsOnSelect(state) {
+    const select = /** @type {HTMLSelectElement|null} */ (document.getElementById('sp-item-depends-on'));
+    if (!select) {
+        return;
+    }
+    select.innerHTML = '';
+    const sprint = lastRenderContext?.sprints?.find((entry) => entry.id === state.sprintId);
+    const peers = sprint
+        ? [...(sprint.tasks || []), ...(sprint.deliverables || [])]
+        : [];
+    const selfKey = state.item?.statusKey || '';
+    const selected = new Set(Array.isArray(state.item?.dependsOn) ? state.item.dependsOn : []);
+    for (const peer of peers) {
+        if (peer.statusKey === selfKey) {
+            continue;
+        }
+        const opt = document.createElement('option');
+        opt.value = peer.statusKey;
+        const kindLabel = peer.kind === 'deliverable'
+            ? spT('sp.deps.deliverable')
+            : spT('sp.deps.task');
+        opt.textContent = `${kindLabel}: ${peer.label}`;
+        opt.selected = selected.has(peer.statusKey);
+        select.appendChild(opt);
+    }
+}
+
+/**
+ * @returns {string[]}
+ */
+function readDependsOnSelect() {
+    const select = /** @type {HTMLSelectElement|null} */ (document.getElementById('sp-item-depends-on'));
+    if (!select) {
+        return [];
+    }
+    return [...select.selectedOptions].map((opt) => opt.value).filter(Boolean);
+}
+
 function openItemDialog(state) {
     closeHelpPanel();
     const workspace = loadWorkspace().data;
@@ -2394,14 +2456,20 @@ function openItemDialog(state) {
         ? activePersonId
         : (state.item?.assigneeId || '');
     document.getElementById('sp-item-assignee-type').value = defaultAssigneeType || 'person';
-    document.getElementById('sp-item-status').value = state.item?.status || 'open';
+    const storedStatus = state.item?.dependencyBlocked
+        ? (state.item?.storedStatus || 'open')
+        : (state.item?.status || 'open');
+    document.getElementById('sp-item-status').value = storedStatus;
     document.getElementById('sp-item-priority').value = state.item?.priority || 'normal';
     document.getElementById('sp-item-due').value = state.item?.dueDate || '';
     document.getElementById('sp-item-note').value = state.item?.note || '';
     const blockerReasonEl = document.getElementById('sp-item-blocker-reason');
     if (blockerReasonEl) {
-        blockerReasonEl.value = state.item?.blockerReason || '';
+        const showManualReason = storedStatus === 'blocked'
+            || (state.item?.blockerReason && !state.item?.dependencyBlocked);
+        blockerReasonEl.value = showManualReason ? (state.item?.blockerReason || '') : '';
     }
+    fillDependsOnSelect(state);
     dialogAttachments = normalizeAttachments(state.item?.attachments || []);
     const instanceId = document.getElementById('sp-app')?.dataset?.spInstanceId || '';
     renderDialogAttachments(instanceId);

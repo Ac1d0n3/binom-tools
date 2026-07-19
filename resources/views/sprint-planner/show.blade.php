@@ -231,6 +231,7 @@
                                 <option value="" data-i18n="sp.filter.any">Any</option>
                                 <option value="open" data-i18n="sp.status.open">Open</option>
                                 <option value="in_progress" data-i18n="sp.status.inProgress">In progress</option>
+                                <option value="on_hold" data-i18n="sp.status.onHold">On hold</option>
                                 <option value="blocked" data-i18n="sp.status.blocked">Blocked</option>
                                 <option value="completed" data-i18n="sp.status.completed">Completed</option>
                             </select>
@@ -321,6 +322,7 @@
                     <select id="sp-item-status" class="tools-input">
                         <option value="open" data-i18n="sp.status.open">Open</option>
                         <option value="in_progress" data-i18n="sp.status.inProgress">In progress</option>
+                        <option value="on_hold" data-i18n="sp.status.onHold">On hold</option>
                         <option value="blocked" data-i18n="sp.status.blocked">Blocked</option>
                         <option value="completed" data-i18n="sp.status.completed">Completed</option>
                     </select>
@@ -337,6 +339,11 @@
                 <label class="sp-field" id="sp-item-blocker-field" hidden>
                     <span data-i18n="sp.field.blockerReason">Blocker reason</span>
                     <textarea id="sp-item-blocker-reason" class="tools-input" rows="2" maxlength="2000"></textarea>
+                </label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.dependsOn">Depends on</span>
+                    <select id="sp-item-depends-on" class="tools-input" multiple size="5"></select>
+                    <span class="sp-field__hint" data-i18n="sp.field.dependsOnHint">Empty = parallel; selection = waits on predecessors (same sprint).</span>
                 </label>
                 <label class="sp-field"><span data-i18n="sp.field.note">Note</span><textarea id="sp-item-note" class="tools-input" rows="2" maxlength="4000"></textarea></label>
                 <fieldset class="sp-field" id="sp-item-table-field">

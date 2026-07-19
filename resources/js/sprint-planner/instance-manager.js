@@ -5,6 +5,13 @@ import {
     usesServerPlans,
 } from './accounts-bridge.js';
 import { normalizeAttachments } from './attachments.js';
+import {
+    buildDependsOnGraph,
+    collectSprintItemKeys,
+    pickRawDependsOn,
+    resolveDependsOnKeys,
+    validateDependsOn,
+} from './dependencies.js';
 import { createDeliverableId, createPlanId, createSprintId, createTaskId, statusKey } from './ids.js';
 import { resolveSprints } from './progress.js';
 import { loadWorkspace, saveWorkspace, clearLastOpenedPlanIdIf } from './storage.js';
@@ -730,9 +737,19 @@ export function resetSprint(instanceId, sprintId, templateSlug) {
 }
 
 export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
-    return updateInstance(instanceId, (instance) => {
-        const id = kind === 'task' ? createTaskId() : createDeliverableId();
-        const key = statusKey(templateSlug, sprintId, kind, id);
+    const loaded = loadWorkspace();
+    const instance = loaded.data.instances[instanceId];
+    if (!instance) {
+        return { ok: false, error: 'plan-missing' };
+    }
+    const id = kind === 'task' ? createTaskId() : createDeliverableId();
+    const key = statusKey(templateSlug, sprintId, kind, id);
+    const depsCheck = sanitizeDependsOnForItem(instance, sprintId, key, data.dependsOn ?? []);
+    if (!depsCheck.ok) {
+        return depsCheck;
+    }
+
+    return updateInstance(instanceId, (plan) => {
         const item = {
             id,
             statusKey: key,
@@ -750,26 +767,41 @@ export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
             demoCode: '',
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
+            dependsOn: depsCheck.dependsOn,
             attachments: normalizeAttachments(data.attachments),
             table: data.table || null,
         };
         const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
-        if (!instance[bag][sprintId]) {
-            instance[bag][sprintId] = [];
+        if (!plan[bag][sprintId]) {
+            plan[bag][sprintId] = [];
         }
-        instance[bag][sprintId].push(item);
+        plan[bag][sprintId].push(item);
         if (item.status === 'completed') {
             const list = kind === 'task' ? 'completedTasks' : 'completedDeliverables';
-            instance[list] = [...new Set([...instance[list], key])];
+            plan[list] = [...new Set([...plan[list], key])];
         }
     });
 }
 
 export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) {
-    return updateInstance(instanceId, (instance) => {
+    const loaded = loadWorkspace();
+    const instance = loaded.data.instances[instanceId];
+    if (!instance) {
+        return { ok: false, error: 'plan-missing' };
+    }
+    let dependsOn = undefined;
+    if (data.dependsOn !== undefined) {
+        const depsCheck = sanitizeDependsOnForItem(instance, sprintId, key, data.dependsOn);
+        if (!depsCheck.ok) {
+            return depsCheck;
+        }
+        dependsOn = depsCheck.dependsOn;
+    }
+
+    return updateInstance(instanceId, (plan) => {
         if (isCustom) {
             const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
-            const list = instance[bag][sprintId] || [];
+            const list = plan[bag][sprintId] || [];
             const item = list.find((entry) => entry.statusKey === key || entry.id === data.id);
             if (!item) {
                 return;
@@ -780,22 +812,25 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             item.assigneeType = data.assigneeType;
             item.assigneeId = data.assigneeId || null;
             if (item.assigneeType === 'person') {
-                ensureParticipant(instance, item.assigneeId);
+                ensureParticipant(plan, item.assigneeId);
             }
             item.dueDate = data.dueDate || null;
             item.note = data.note || '';
             item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
             item.blockerSince = item.status === 'blocked' ? (data.blockerSince || null) : null;
+            if (dependsOn !== undefined) {
+                item.dependsOn = dependsOn;
+            }
             if (Array.isArray(data.attachments) || data.attachments === null) {
                 item.attachments = normalizeAttachments(data.attachments || []);
             }
             if (data.table !== undefined) {
                 item.table = data.table;
             }
-            syncCompletion(instance, kind, key, item.status === 'completed');
+            syncCompletion(plan, kind, key, item.status === 'completed');
             return;
         }
-        const previous = instance.itemOverrides[key] || {};
+        const previous = plan.itemOverrides[key] || {};
         /** @type {Record<string, unknown>} */
         const next = {
             ...previous,
@@ -808,6 +843,9 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
         };
+        if (dependsOn !== undefined) {
+            next.dependsOn = dependsOn;
+        }
         // Plan overrides must not store template content (help/stories/labels) — that broke DE/EN help.
         delete next.label;
         delete next.helpText;
@@ -821,11 +859,124 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
         if (data.table !== undefined) {
             next.table = data.table;
         }
-        instance.itemOverrides[key] = next;
+        plan.itemOverrides[key] = next;
         if (next.assigneeType === 'person') {
-            ensureParticipant(instance, /** @type {string|null} */ (next.assigneeId));
+            ensureParticipant(plan, /** @type {string|null} */ (next.assigneeId));
         }
-        syncCompletion(instance, kind, key, data.status === 'completed');
+        syncCompletion(plan, kind, key, data.status === 'completed');
+    });
+}
+
+/**
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {string} sprintId
+ * @returns {Set<string>}
+ */
+function allowedKeysForSprint(instance, sprintId) {
+    const snap = instance.templateSnapshot;
+    const templateSprint = (snap?.sprints || []).find((entry) => entry.id === sprintId);
+    return collectSprintItemKeys({
+        templateSlug: String(instance.templateSlug || snap?.slug || ''),
+        sprintId,
+        templateTasks: templateSprint?.tasks || [],
+        templateDeliverables: templateSprint?.deliverables || [],
+        customTasks: instance.customTasks?.[sprintId] || [],
+        customDeliverables: instance.customDeliverables?.[sprintId] || [],
+        removedItemKeys: instance.removedItemKeys || [],
+    });
+}
+
+/**
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {string} sprintId
+ * @param {Set<string>} allowedKeys
+ * @returns {Map<string, string[]>}
+ */
+function storedDependsGraph(instance, sprintId, allowedKeys) {
+    const slug = String(instance.templateSlug || instance.templateSnapshot?.slug || '');
+    const snap = instance.templateSnapshot;
+    const templateSprint = (snap?.sprints || []).find((entry) => entry.id === sprintId);
+    /** @type {Array<{statusKey: string, dependsOn?: string[]}>} */
+    const items = [];
+
+    for (const task of templateSprint?.tasks || []) {
+        const key = statusKey(slug, sprintId, 'task', task.id);
+        if (!allowedKeys.has(key)) {
+            continue;
+        }
+        const override = instance.itemOverrides?.[key] || {};
+        items.push({
+            statusKey: key,
+            dependsOn: resolveDependsOnKeys(pickRawDependsOn(override, task), {
+                templateSlug: slug,
+                sprintId,
+                allowedKeys,
+                selfKey: key,
+            }),
+        });
+    }
+    for (const del of templateSprint?.deliverables || []) {
+        const key = statusKey(slug, sprintId, 'deliverable', del.id);
+        if (!allowedKeys.has(key)) {
+            continue;
+        }
+        const override = instance.itemOverrides?.[key] || {};
+        items.push({
+            statusKey: key,
+            dependsOn: resolveDependsOnKeys(pickRawDependsOn(override, del), {
+                templateSlug: slug,
+                sprintId,
+                allowedKeys,
+                selfKey: key,
+            }),
+        });
+    }
+    for (const task of instance.customTasks?.[sprintId] || []) {
+        const key = task.statusKey || statusKey(slug, sprintId, 'task', task.id);
+        items.push({
+            statusKey: key,
+            dependsOn: resolveDependsOnKeys(task.dependsOn, {
+                templateSlug: slug,
+                sprintId,
+                allowedKeys,
+                selfKey: key,
+            }),
+        });
+    }
+    for (const del of instance.customDeliverables?.[sprintId] || []) {
+        const key = del.statusKey || statusKey(slug, sprintId, 'deliverable', del.id);
+        items.push({
+            statusKey: key,
+            dependsOn: resolveDependsOnKeys(del.dependsOn, {
+                templateSlug: slug,
+                sprintId,
+                allowedKeys,
+                selfKey: key,
+            }),
+        });
+    }
+    return buildDependsOnGraph(items);
+}
+
+/**
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {string} sprintId
+ * @param {string} itemKey
+ * @param {unknown} rawDependsOn
+ * @returns {{ ok: true, dependsOn: string[] }|{ ok: false, error: string }}
+ */
+function sanitizeDependsOnForItem(instance, sprintId, itemKey, rawDependsOn) {
+    const allowedKeys = allowedKeysForSprint(instance, sprintId);
+    // Include the new key when creating custom items that are not yet in storage.
+    allowedKeys.add(itemKey);
+    const graph = storedDependsGraph(instance, sprintId, allowedKeys);
+    if (!graph.has(itemKey)) {
+        graph.set(itemKey, []);
+    }
+    return validateDependsOn(itemKey, rawDependsOn, {
+        sprintId,
+        allowedKeys,
+        graph,
     });
 }
 

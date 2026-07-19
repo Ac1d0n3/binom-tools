@@ -563,6 +563,12 @@
     color: #1d4ed8;
 }
 
+.sp-status-overview__item--on_hold {
+    border-color: color-mix(in srgb, #64748b 45%, var(--sp-border));
+    background: color-mix(in srgb, #64748b 8%, transparent);
+    color: #475569;
+}
+
 .sp-status-overview__item--blocked {
     border-color: color-mix(in srgb, #b45309 45%, var(--sp-border));
     background: color-mix(in srgb, #b45309 8%, transparent);
@@ -767,6 +773,12 @@
     display: grid;
     gap: 0.35rem;
     margin-bottom: 0.75rem;
+}
+
+.sp-field__hint {
+    font-size: 0.82rem;
+    opacity: 0.75;
+    line-height: 1.35;
 }
 
 .sp-field--inline,
@@ -1108,6 +1120,16 @@
     background: #2563eb;
 }
 
+.sp-status-mark--on_hold {
+    border-color: color-mix(in srgb, #64748b 55%, var(--sp-border));
+    background: color-mix(in srgb, #64748b 14%, transparent);
+    color: #475569;
+}
+
+.sp-status-mark--on_hold .sp-status-mark__badge {
+    background: #64748b;
+}
+
 .sp-item-wrap--blocked {
     border-color: color-mix(in srgb, #b45309 55%, var(--sp-border));
 }
@@ -1116,13 +1138,18 @@
     border-color: color-mix(in srgb, #2563eb 55%, var(--sp-border));
 }
 
+.sp-item-wrap--on_hold {
+    border-color: color-mix(in srgb, #64748b 55%, var(--sp-border));
+}
+
 .sp-item--completed .sp-item__label {
     text-decoration: line-through;
     opacity: 0.75;
 }
 
 .sp-item--blocked,
-.sp-item--in_progress {
+.sp-item--in_progress,
+.sp-item--on_hold {
     border-color: transparent;
 }
 

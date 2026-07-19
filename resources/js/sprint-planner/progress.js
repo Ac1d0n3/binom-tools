@@ -1,6 +1,13 @@
 import { statusKey } from './ids.js';
 import { normalizeAttachments } from './attachments.js';
+import {
+    applySprintDependencyBlocks,
+    collectSprintItemKeys,
+    pickRawDependsOn,
+    resolveDependsOnKeys,
+} from './dependencies.js';
 import { mergeItemTable, normalizeItemTable } from './item-table.js';
+import { t } from './labels.js';
 
 /**
  * @typedef {Object} SpHelpLink
@@ -43,6 +50,9 @@ import { mergeItemTable, normalizeItemTable } from './item-table.js';
  * @property {string|null} demoCode
  * @property {string} blockerReason
  * @property {string|null} blockerSince
+ * @property {string[]} dependsOn
+ * @property {boolean} dependencyBlocked
+ * @property {string} storedStatus
  * @property {import('./attachments.js').SpAttachment[]} attachments
  */
 
@@ -135,10 +145,20 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         || null;
     const notesEnabled = override.notes ?? sprint.notes ?? true;
 
+    const allowedKeys = collectSprintItemKeys({
+        templateSlug,
+        sprintId: sprint.id,
+        templateTasks: sprint.tasks || [],
+        templateDeliverables: sprint.deliverables || [],
+        customTasks: instance.customTasks?.[sprint.id] || [],
+        customDeliverables: instance.customDeliverables?.[sprint.id] || [],
+        removedItemKeys: instance.removedItemKeys || [],
+    });
+
     /** @type {ResolvedItem[]} */
     const tasks = [];
     const removedKeys = new Set(instance.removedItemKeys || []);
-    const textTasks = Object.fromEntries((texts.tasks || []).map((t) => [t.id, t]));
+    const textTasks = Object.fromEntries((texts.tasks || []).map((entry) => [entry.id, entry]));
     for (const task of sprint.tasks || []) {
         const key = statusKey(templateSlug, sprint.id, 'task', task.id);
         if (removedKeys.has(key)) {
@@ -155,17 +175,28 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
             sprintId: sprint.id,
             completedList: instance.completedTasks,
             locale,
+            templateSlug,
+            allowedKeys,
         }));
     }
 
     for (const task of instance.customTasks?.[sprint.id] || []) {
         const key = task.statusKey || statusKey(templateSlug, sprint.id, 'task', task.id);
-        tasks.push(resolveCustomItem(task, key, 'task', sprint.id, instance.completedTasks, locale));
+        tasks.push(resolveCustomItem(
+            task,
+            key,
+            'task',
+            sprint.id,
+            instance.completedTasks,
+            locale,
+            templateSlug,
+            allowedKeys,
+        ));
     }
 
     /** @type {ResolvedItem[]} */
     const deliverables = [];
-    const textDels = Object.fromEntries((texts.deliverables || []).map((d) => [d.id, d]));
+    const textDels = Object.fromEntries((texts.deliverables || []).map((entry) => [entry.id, entry]));
     for (const del of sprint.deliverables || []) {
         const key = statusKey(templateSlug, sprint.id, 'deliverable', del.id);
         if (removedKeys.has(key)) {
@@ -182,14 +213,29 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
             sprintId: sprint.id,
             completedList: instance.completedDeliverables,
             locale,
+            templateSlug,
+            allowedKeys,
             defaultAssigneeType: null,
         }));
     }
 
     for (const del of instance.customDeliverables?.[sprint.id] || []) {
         const key = del.statusKey || statusKey(templateSlug, sprint.id, 'deliverable', del.id);
-        deliverables.push(resolveCustomItem(del, key, 'deliverable', sprint.id, instance.completedDeliverables, locale));
+        deliverables.push(resolveCustomItem(
+            del,
+            key,
+            'deliverable',
+            sprint.id,
+            instance.completedDeliverables,
+            locale,
+            templateSlug,
+            allowedKeys,
+        ));
     }
+
+    applySprintDependencyBlocks([...tasks, ...deliverables], (labels) => (
+        t('sp.deps.waitingOn', locale, { labels: labels.join(', ') })
+    ));
 
     const textFields = Object.fromEntries((texts.fields || []).map((f) => [f.id, f]));
     const fields = (sprint.fields || []).map((field) => {
@@ -261,6 +307,8 @@ function resolveTemplateItem({
     sprintId,
     completedList,
     locale,
+    templateSlug,
+    allowedKeys,
     defaultAssigneeType = 'person',
 }) {
     const completed = completedList.includes(key) || itemOverride.status === 'completed';
@@ -279,6 +327,12 @@ function resolveTemplateItem({
         || String(rawAssigneeId) === 'null'
         ? null
         : String(rawAssigneeId);
+    const dependsOn = resolveDependsOnKeys(pickRawDependsOn(itemOverride, item), {
+        templateSlug,
+        sprintId,
+        allowedKeys,
+        selfKey: key,
+    });
     return {
         id: item.id,
         statusKey: key,
@@ -288,6 +342,7 @@ function resolveTemplateItem({
             || item.id,
         completed,
         status,
+        storedStatus: status,
         priority: itemOverride.priority || 'normal',
         assigneeType: assigneeId ? (assigneeType || 'person') : (assigneeType || null),
         assigneeId,
@@ -304,15 +359,23 @@ function resolveTemplateItem({
         demoCode: pickDemoCode(textItem, locale),
         blockerReason: status === 'blocked' ? String(itemOverride.blockerReason || '') : '',
         blockerSince: status === 'blocked' ? (itemOverride.blockerSince || null) : null,
+        dependsOn,
+        dependencyBlocked: false,
         attachments: normalizeAttachments(itemOverride.attachments),
         table: mergeItemTable(item.table, itemOverride.table),
     };
 }
 
-function resolveCustomItem(item, key, kind, sprintId, completedList, locale) {
+function resolveCustomItem(item, key, kind, sprintId, completedList, locale, templateSlug, allowedKeys) {
     const completed = completedList.includes(key) || item.status === 'completed';
     const status = item.status || (completed ? 'completed' : 'open');
     const stories = normalizeStories(item.stories || item.linkedStorySlugs);
+    const dependsOn = resolveDependsOnKeys(item.dependsOn, {
+        templateSlug,
+        sprintId,
+        allowedKeys,
+        selfKey: key,
+    });
     return {
         id: item.id,
         statusKey: key,
@@ -320,6 +383,7 @@ function resolveCustomItem(item, key, kind, sprintId, completedList, locale) {
         label: item.label?.[locale] || item.label?.en || item.label?.de || item.label || item.id,
         completed,
         status,
+        storedStatus: status,
         priority: item.priority || 'normal',
         assigneeType: item.assigneeType || (kind === 'task' ? 'person' : null),
         assigneeId: item.assigneeId || null,
@@ -334,6 +398,8 @@ function resolveCustomItem(item, key, kind, sprintId, completedList, locale) {
         demoCode: pickLocalizedHelpText(item.demoCode, locale),
         blockerReason: status === 'blocked' ? String(item.blockerReason || '') : '',
         blockerSince: status === 'blocked' ? (item.blockerSince || null) : null,
+        dependsOn,
+        dependencyBlocked: false,
         attachments: normalizeAttachments(item.attachments),
         table: normalizeItemTable(item.table),
     };

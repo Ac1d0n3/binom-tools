@@ -440,6 +440,18 @@ blockerReason: "…"
 blockerSince: YYYY-MM-DD
 ```
 
+Sprint-interne Abhängigkeiten (Parallel vs. Kette):
+
+```text
+dependsOn: string[]   // statusKeys derselben Sprint-ID
+```
+
+- **Parallel** = leeres `dependsOn`; **Kette** = ein oder mehrere Vorgänger (Tasks und/oder Deliverables im gleichen Sprint).
+- Solange ein Vorgänger nicht `completed` ist, ist das abhängige Item **effektiv `blocked`** (Auto-Grund „Wartet auf …“), ohne den gespeicherten Basisstatus zu überschreiben.
+- Manuelles `blocked` + `blockerReason` bleibt für externe Blockaden parallel möglich.
+- Keine Selbst-Referenzen, keine Zyklen, keine Cross-Sprint-Refs.
+- In Template-YAML optional als lokale Item-IDs (`dependsOn: [task-a]`), zur Laufzeit zu Status-Keys aufgelöst.
+
 Statusbericht: druckbare HTML-Ansicht (Browser „Als PDF speichern“) mit drei Modi:
 
 - **Executive (CEO):** KPI-Strip (Fortschritt, aktueller Sprint, Blocker-Anzahl, Unassigned), Sprint-Ziel, Top-Blocker, offene Items des aktuellen Sprints, Fortschritt je Sprint
@@ -600,15 +612,18 @@ Empfohlene Statuswerte:
 ```text
 open
 in_progress
+on_hold
 blocked
 completed
 ```
 
 Darstellung:
 
-- Jedes Item zeigt einen **Status-Chip** (nicht nur Meta-Text).
-- `blocked` → amber Rahmen; `in_progress` → blauer Rahmen.
-- Zugeklappte Sprint-Summary zeigt Counts **Blockiert (n)** / **In Arbeit (n)**, zusätzlich zum Schedule-Badge.
+- Status erscheint als Meta-Text am Item (keine Chips neben dem Titel).
+- Rahmenfarbe: `blocked` → amber; `in_progress` → blau; `on_hold` → slate/grau.
+- Plan-Header: Status-Übersicht mit Icons + Counts für alle fünf Werte.
+- Zugeklappte Sprint-Summary: kompakte Marker (Icon + Badge) für Blockiert / In Arbeit / Pausiert.
+- `dependsOn` (gleicher Sprint): offene Vorgänger → effektiver Status `blocked` mit Auto-Hinweis; leer = parallel.
 
 Empfohlene Prioritäten:
 
@@ -1100,7 +1115,8 @@ Die Umsetzung ist abgeschlossen, wenn:
 22. Hilfe-Links sind nur externe URLs; Stories bleiben im Stories-Feld.
 23. Eingeloggte Nutzer können User-Templates erstellen, bearbeiten und löschen (Plan Creator).
 24. Task-Tabellen mit vorgebbaren Spalten und editierbaren Zeilen funktionieren.
-25. Status-Chips an Items und Blocked/In-Arbeit-Counts in zugeklappten Sprint-Summaries.
+25. Status als Meta-Text an Items; Blocked/In-Arbeit/Pausiert-Marker in zugeklappten Sprint-Summaries.
+26. Sprint-interne `dependsOn`: Auto-blocked bei offenen Vorgängern; Zyklen und Cross-Sprint-Refs abgewiesen.
 26. „My Plans“ öffnet den zuletzt geöffneten Plan; Liste über Back/`?list=1`.
 27. Plan History (Accounts): Actor, Diff, Restore; Session-Undo lokal und Accounts.
 
