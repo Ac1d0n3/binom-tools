@@ -91,6 +91,32 @@ class MembershipSyncTest extends TestCase
         $this->assertSame([], $teams->findById('team_x')?->memberIds);
     }
 
+    public function test_remove_user_from_teams_clears_member_roles(): void
+    {
+        [$users, $teams, $sync] = $this->services();
+        $hash = password_hash('password123', PASSWORD_DEFAULT);
+
+        $users->upsert([
+            'id' => 'user_a',
+            'email' => 'a@example.com',
+            'displayName' => 'A',
+            'passwordHash' => $hash,
+            'teamIds' => ['team_q'],
+        ]);
+        $teams->upsert([
+            'id' => 'team_q',
+            'name' => ['de' => 'Q', 'en' => 'Q'],
+            'memberIds' => ['user_a'],
+            'memberRoles' => ['user_a' => 'ceo'],
+        ]);
+
+        $sync->removeUserFromTeams('user_a');
+
+        $team = $teams->findById('team_q');
+        $this->assertSame([], $team?->memberIds);
+        $this->assertSame([], $team?->memberRoles);
+    }
+
     /**
      * @return array{0: UserRepository, 1: TeamRepository, 2: MembershipSync}
      */

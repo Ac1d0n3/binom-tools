@@ -3,11 +3,18 @@
 ])
 
 @php
+    use App\Accounts\AccountTeam;
+
     $isEdit = is_array($team);
     $titleKey = $isEdit ? 'accounts.editTeam' : 'accounts.addTeam';
     $action = $isEdit
         ? locale_route('accounts.teams.update', ['teamId' => $team['id']])
         : locale_route('accounts.teams.store');
+    $selectedMembers = array_map('strval', old('memberIds', $team['memberIds'] ?? []));
+    $memberRoles = old('memberRoles', $team['memberRoles'] ?? []);
+    if (! is_array($memberRoles)) {
+        $memberRoles = [];
+    }
 @endphp
 
 @section('title', ($isEdit ? 'Edit team' : 'Add team') . ' — ' . config('app.name'))
@@ -44,7 +51,16 @@
 
             <label class="sp-field">
                 <span data-i18n="accounts.shortName">Trigram</span>
-                <input type="text" name="shortName" class="tools-input" maxlength="3" value="{{ old('shortName', $team['shortName'] ?? '') }}">
+                <input
+                    type="text"
+                    name="shortName"
+                    class="tools-input"
+                    minlength="2"
+                    maxlength="3"
+                    pattern="[A-Za-z]{2,3}"
+                    title="2–3 letters"
+                    value="{{ old('shortName', $team['shortName'] ?? '') }}"
+                >
             </label>
 
             <label class="sp-field">
@@ -61,13 +77,53 @@
                 :tokens="\App\Support\AccentColors::TEAM_TOKENS"
             />
 
-            <x-accounts.checkbox-filter
-                :items="$users"
-                name="memberIds"
-                :selected="old('memberIds', $team['memberIds'] ?? [])"
-                label-key="displayName"
-                legend-key="accounts.members"
-            />
+            <fieldset class="sp-field" data-accounts-checkbox-filter>
+                <legend data-i18n="accounts.members">Members</legend>
+                <p class="sp-field-hint" data-i18n="accounts.roleHint">
+                    Managers often own team plans — anyone can still create their own plan.
+                </p>
+                <label class="sp-field">
+                    <span class="visually-hidden" data-i18n="accounts.filterMembers">Filter</span>
+                    <input
+                        type="search"
+                        class="tools-input"
+                        data-accounts-filter-input
+                        placeholder="Filter…"
+                        data-i18n-placeholder="accounts.filterMembers"
+                        autocomplete="off"
+                    >
+                </label>
+                <div class="sp-checkbox-list">
+                    @forelse ($users as $user)
+                        @php
+                            $uid = (string) ($user['id'] ?? '');
+                            $label = (string) ($user['displayName'] ?? $user['email'] ?? $uid);
+                            $checked = in_array($uid, $selectedMembers, true);
+                            $role = AccountTeam::normalizeRole($memberRoles[$uid] ?? AccountTeam::ROLE_MEMBER);
+                        @endphp
+                        <div
+                            class="sp-member-role-row"
+                            data-accounts-filter-row
+                            data-filter-text="{{ strtolower($label.' '.$uid) }}"
+                        >
+                            <label class="sp-check">
+                                <input type="checkbox" name="memberIds[]" value="{{ $uid }}" @checked($checked)>
+                                {{ $label }}
+                            </label>
+                            <label class="sp-field sp-field--compact">
+                                <span class="visually-hidden" data-i18n="accounts.role">Role</span>
+                                <select name="memberRoles[{{ $uid }}]" class="tools-input">
+                                    <option value="member" @selected($role === 'member') data-i18n="accounts.role.member">Member</option>
+                                    <option value="manager" @selected($role === 'manager') data-i18n="accounts.role.manager">Manager</option>
+                                    <option value="ceo" @selected($role === 'ceo') data-i18n="accounts.role.ceo">CEO</option>
+                                </select>
+                            </label>
+                        </div>
+                    @empty
+                        <p class="tools-page-lead" data-i18n="accounts.noItems">No items yet.</p>
+                    @endforelse
+                </div>
+            </fieldset>
 
             @if ($isEdit)
                 <label class="sp-check">
@@ -96,4 +152,21 @@
             </form>
         @endif
     </div>
+
+    <script>
+    (() => {
+        document.querySelectorAll('[data-accounts-checkbox-filter]').forEach((root) => {
+            const input = root.querySelector('[data-accounts-filter-input]');
+            if (!input || input.dataset.bound === '1') return;
+            input.dataset.bound = '1';
+            input.addEventListener('input', () => {
+                const q = String(input.value || '').trim().toLowerCase();
+                root.querySelectorAll('[data-accounts-filter-row]').forEach((row) => {
+                    const text = row.getAttribute('data-filter-text') || '';
+                    row.hidden = q !== '' && !text.includes(q);
+                });
+            });
+        });
+    })();
+    </script>
 @endsection

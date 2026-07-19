@@ -25,8 +25,14 @@ import { spT } from './helpers.js';
 export function renderChip(colorToken, text, title, kind = 'person', options = {}) {
     const token = normalizeColorToken(colorToken);
     const icon = kind === 'person' ? normalizeAvatarIcon(options.icon) : '';
+    const label = String(text || '');
     const chip = document.createElement('span');
-    chip.className = `sp-avatar sp-avatar--${token} sp-avatar--${kind}${icon ? ' sp-avatar--icon' : ''}`;
+    const trigram3 = !icon && label.length >= 3;
+    chip.className = [
+        `sp-avatar sp-avatar--${token} sp-avatar--${kind}`,
+        icon ? 'sp-avatar--icon' : '',
+        trigram3 ? 'sp-avatar--trigram-3' : '',
+    ].filter(Boolean).join(' ');
     applyAvatarColor(chip, token, kind);
     chip.title = title || text || '';
     chip.setAttribute('aria-label', title || text || spT('sp.report.unassigned'));

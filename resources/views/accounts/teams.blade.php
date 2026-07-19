@@ -34,13 +34,19 @@
                     @php
                         $label = $team['name']['en'] ?? $team['name']['de'] ?? $team['id'];
                         $memberCount = count($team['memberIds'] ?? []);
-                        $chip = $team['shortName'] ?: strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $label) ?: 'TM', 0, 3));
+                        $chip = $team['shortName'] ?: strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $label) ?: 'TM', 0, 3));
+                        if (strlen($chip) === 1) {
+                            $chip = str_pad($chip, 2, 'X');
+                        }
                         $color = AccentColors::normalize($team['colorToken'] ?? null);
+                        $roles = is_array($team['memberRoles'] ?? null) ? $team['memberRoles'] : [];
+                        $managerCount = count(array_filter($roles, static fn ($r) => $r === 'manager'));
+                        $ceoCount = count(array_filter($roles, static fn ($r) => $r === 'ceo'));
                     @endphp
                     <div class="sp-list__row">
                         <div class="sp-list__identity">
                             <span
-                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--team"
+                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--team{{ strlen($chip) >= 3 ? ' sp-avatar--trigram-3' : '' }}"
                                 style="{{ AccentColors::chipStyle($color) }}"
                                 aria-hidden="true"
                             >{{ $chip }}</span>
@@ -50,6 +56,12 @@
                                     {{ $team['id'] }}
                                     ·
                                     <span data-i18n="accounts.memberCount" data-i18n-count="{{ $memberCount }}">{{ $memberCount }} members</span>
+                                    @if ($managerCount > 0)
+                                        · <span data-i18n="accounts.role.manager">Manager</span> ×{{ $managerCount }}
+                                    @endif
+                                    @if ($ceoCount > 0)
+                                        · <span data-i18n="accounts.role.ceo">CEO</span> ×{{ $ceoCount }}
+                                    @endif
                                     @if (! empty($team['archived']))
                                         · <span data-i18n="accounts.archived">Archived</span>
                                     @endif

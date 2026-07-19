@@ -4,6 +4,7 @@ namespace App\Accounts;
 
 use App\Support\AccentColors;
 use App\Support\AvatarIcons;
+use App\Support\ShortName;
 
 final class AccountUser
 {
@@ -65,7 +66,7 @@ final class AccountUser
             canManageUsers: (bool) ($data['canManageUsers'] ?? false),
             canManageTeams: (bool) ($data['canManageTeams'] ?? false),
             active: (bool) ($data['active'] ?? true),
-            shortName: strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', (string) ($data['shortName'] ?? '')) ?: '', 0, 3)),
+            shortName: ShortName::normalize($data['shortName'] ?? ''),
             colorToken: AccentColors::normalize($data['colorToken'] ?? null),
             avatarIcon: AvatarIcons::normalize($data['avatarIcon'] ?? null),
         );

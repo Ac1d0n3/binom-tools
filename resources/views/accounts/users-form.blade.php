@@ -59,7 +59,17 @@
 
             <label class="sp-field">
                 <span data-i18n="accounts.shortName">Trigram</span>
-                <input type="text" name="shortName" class="tools-input" maxlength="3" value="{{ old('shortName', $user['shortName'] ?? '') }}">
+                <input
+                    type="text"
+                    name="shortName"
+                    class="tools-input"
+                    minlength="2"
+                    maxlength="3"
+                    pattern="[A-Za-z]{2,3}"
+                    title="2–3 letters"
+                    value="{{ old('shortName', $user['shortName'] ?? '') }}"
+                >
+                <span class="sp-field-hint" data-i18n="accounts.shortNameHint">2–3 letters (A–Z), optional.</span>
             </label>
 
             <x-accounts.icon-picker :selected="old('avatarIcon', $user['avatarIcon'] ?? '')" />

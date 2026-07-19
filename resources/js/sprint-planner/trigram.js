@@ -6,6 +6,8 @@ export const ACCENT_TOKENS = [
     'accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5', 'accent-6',
     'accent-7', 'accent-8', 'accent-9', 'accent-10', 'accent-11', 'accent-12',
     'outline-1', 'outline-2', 'outline-3', 'outline-4', 'outline-5', 'outline-6',
+    'dotted-1', 'dotted-2', 'dotted-3', 'dotted-4', 'dotted-5', 'dotted-6',
+    'dashed-1', 'dashed-2', 'dashed-3', 'dashed-4', 'dashed-5', 'dashed-6',
 ];
 
 export const TEAM_ACCENT_TOKENS = [
@@ -32,6 +34,18 @@ export const ACCENT_HEX = {
     'outline-4': '#7c3aed',
     'outline-5': '#be185d',
     'outline-6': '#475569',
+    'dotted-1': '#2563eb',
+    'dotted-2': '#0d9488',
+    'dotted-3': '#c2410c',
+    'dotted-4': '#7c3aed',
+    'dotted-5': '#be185d',
+    'dotted-6': '#475569',
+    'dashed-1': '#2563eb',
+    'dashed-2': '#0d9488',
+    'dashed-3': '#c2410c',
+    'dashed-4': '#7c3aed',
+    'dashed-5': '#be185d',
+    'dashed-6': '#475569',
 };
 
 export const AVATAR_ICON_OPTIONS = [
@@ -40,6 +54,12 @@ export const AVATAR_ICON_OPTIONS = [
     'hat-wizard', 'crown', 'rocket', 'flask', 'code', 'laptop-code', 'database',
     'chart-line', 'shield-halved', 'lightbulb', 'star', 'heart', 'paw', 'cat', 'dog',
     'mug-hot', 'headphones', 'camera', 'gamepad', 'music', 'brush', 'compass', 'sitemap', 'brain',
+    'briefcase', 'gear', 'globe', 'trophy', 'puzzle-piece', 'microscope', 'leaf', 'fire',
+    'moon', 'sun', 'dragon', 'fish', 'handshake', 'key', 'wrench', 'gift', 'glasses',
+    'feather', 'cube', 'cloud', 'bug', 'book', 'bicycle', 'seedling',
+    'yin-yang', 'atom', 'bolt', 'ghost', 'gem', 'ankh', 'om', 'peace', 'spa',
+    'wand-magic-sparkles', 'infinity', 'fingerprint', 'cookie', 'bomb',
+    'layer-group', 'diagram-project', 'circle-nodes',
 ];
 
 /**
@@ -61,6 +81,30 @@ export function isOutlineColorToken(token) {
 
 /**
  * @param {string} token
+ * @returns {boolean}
+ */
+export function isBorderedColorToken(token) {
+    const value = normalizeColorToken(token);
+    return value.startsWith('outline-') || value.startsWith('dotted-') || value.startsWith('dashed-');
+}
+
+/**
+ * @param {string} token
+ * @returns {'solid'|'dotted'|'dashed'}
+ */
+export function colorTokenBorderStyle(token) {
+    const value = normalizeColorToken(token);
+    if (value.startsWith('dotted-')) {
+        return 'dotted';
+    }
+    if (value.startsWith('dashed-')) {
+        return 'dashed';
+    }
+    return 'solid';
+}
+
+/**
+ * @param {string} token
  * @returns {string}
  */
 export function colorTokenHex(token) {
@@ -77,14 +121,16 @@ export function applyAvatarColor(el, token, kind = 'person') {
         el.style.backgroundColor = '';
         el.style.color = '';
         el.style.borderColor = '';
+        el.style.borderStyle = '';
+        el.style.borderWidth = '';
         return;
     }
     const normalized = normalizeColorToken(token);
     const hex = colorTokenHex(normalized);
-    if (isOutlineColorToken(normalized)) {
+    if (isBorderedColorToken(normalized)) {
         el.style.backgroundColor = '#fff';
         el.style.color = hex;
-        el.style.border = `2px solid ${hex}`;
+        el.style.border = `2px ${colorTokenBorderStyle(normalized)} ${hex}`;
         return;
     }
     el.style.backgroundColor = hex;
@@ -151,21 +197,25 @@ export function trigramFromName(displayName) {
 }
 
 /**
- * Normalize an existing shortName to exactly 3 uppercase characters.
+ * Normalize a persisted shortName: keep 2–3 A–Z as-is; otherwise derive from displayName.
  * @param {string} shortName
  * @param {string} [displayName]
  * @returns {string}
  */
 export function normalizeTrigram(shortName, displayName = '') {
-    const raw = String(shortName || '').trim().toUpperCase().replace(/[^A-ZÀ-ÿ0-9]/g, '');
-    if (raw.length >= 3) {
+    const raw = String(shortName || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+    if (raw.length >= 2 && raw.length <= 3) {
+        return raw;
+    }
+    if (raw.length > 3) {
         return raw.slice(0, 3);
     }
-    if (raw.length > 0) {
-        const fromName = trigramFromName(displayName);
-        return (raw + fromName).slice(0, 3);
+    if (raw.length === 1) {
+        const fromName = trigramFromName(displayName).replace(/[^A-Z]/g, '');
+        const merged = (raw + fromName).replace(/[^A-Z]/g, '');
+        return merged.length >= 2 ? merged.slice(0, 3) : trigramFromName(displayName).slice(0, 3);
     }
-    return trigramFromName(displayName);
+    return trigramFromName(displayName).slice(0, 3);
 }
 
 /**

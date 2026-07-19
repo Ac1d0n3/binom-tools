@@ -17,10 +17,10 @@
         @foreach ($palette as $token)
             @php
                 $token = AccentColors::normalize($token);
-                $isOutline = AccentColors::isOutline($token);
+                $isBordered = AccentColors::isBordered($token);
             @endphp
             <label
-                class="sp-color-swatch sp-avatar--{{ $token }}{{ $isOutline ? ' sp-color-swatch--outline' : '' }}"
+                class="sp-color-swatch sp-avatar--{{ $token }}{{ $isBordered ? ' sp-color-swatch--bordered' : '' }}"
                 style="{{ AccentColors::chipStyle($token) }}"
                 title="{{ $token }}"
             >
@@ -30,6 +30,6 @@
         @endforeach
     </div>
     <p class="sp-field-hint" data-i18n="accounts.colorHint">
-        Solid fills or outlined chips (white background + colored border).
+        Solid fills or white chips with solid, dotted, or dashed colored borders.
     </p>
 </fieldset>

@@ -42,7 +42,8 @@ function renderColorSwatches(hostId, selected = 'accent-1', tokens = ACCENT_TOKE
     host.innerHTML = '';
     for (const token of tokens) {
         const label = document.createElement('label');
-        label.className = `sp-color-swatch sp-avatar--${token}`;
+        const bordered = /^(?:outline|dotted|dashed)-/.test(token);
+        label.className = `sp-color-swatch sp-avatar--${token}${bordered ? ' sp-color-swatch--bordered' : ''}`;
         applyAvatarColor(label, token, 'person');
         const input = document.createElement('input');
         input.type = 'radio';

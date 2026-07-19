@@ -9,6 +9,7 @@ use App\Accounts\UserRepository;
 use App\Http\Controllers\Controller;
 use App\Support\AccentColors;
 use App\Support\AvatarIcons;
+use App\Support\ShortName;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -71,7 +72,7 @@ class UsersController extends Controller
             'canManageUsers' => ['sometimes', 'boolean'],
             'canManageTeams' => ['sometimes', 'boolean'],
             'active' => ['sometimes', 'boolean'],
-            'shortName' => ['nullable', 'string', 'max:3'],
+            'shortName' => ShortName::rules(),
             'colorToken' => ['nullable', 'string', Rule::in(AccentColors::TOKENS)],
             'avatarIcon' => ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))],
         ]);
@@ -112,7 +113,7 @@ class UsersController extends Controller
             'canManageUsers' => ['sometimes', 'boolean'],
             'canManageTeams' => ['sometimes', 'boolean'],
             'active' => ['sometimes', 'boolean'],
-            'shortName' => ['nullable', 'string', 'max:3'],
+            'shortName' => ShortName::rules(),
             'colorToken' => ['nullable', 'string', Rule::in(AccentColors::TOKENS)],
             'avatarIcon' => ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))],
         ]);

@@ -43,6 +43,7 @@ export const WORKSPACE_EVENT = 'bn-tools:sprint-planner:workspace';
  * @property {string} shortName
  * @property {string} colorToken
  * @property {string[]} memberIds
+ * @property {Record<string, string>} [memberRoles]
  * @property {boolean} archived
  */
 
@@ -236,6 +237,12 @@ function normalizeTeams(teams) {
             shortName,
             colorToken: normalizeColorToken(String(item.colorToken || '')),
             memberIds: Array.isArray(item.memberIds) ? item.memberIds.map(String) : [],
+            memberRoles: isPlainObject(item.memberRoles)
+                ? Object.fromEntries(
+                    Object.entries(/** @type {Record<string, unknown>} */ (item.memberRoles))
+                        .map(([uid, role]) => [String(uid), String(role || 'member')]),
+                )
+                : {},
             archived: Boolean(item.archived),
         };
     }

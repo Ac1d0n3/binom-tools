@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\AccountTeam;
 use App\Accounts\MembershipSync;
 use App\Accounts\TeamRepository;
 use App\Accounts\UserRepository;
 use App\Http\Controllers\Controller;
 use App\Support\AccentColors;
+use App\Support\ShortName;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -60,6 +62,12 @@ class TeamsController extends Controller
         $this->assertCanManage();
         $data = $this->validated($request);
 
+        $memberIds = array_values(array_map('strval', $data['memberIds'] ?? []));
+        $memberRoles = AccountTeam::normalizeMemberRoles(
+            is_array($data['memberRoles'] ?? null) ? $data['memberRoles'] : [],
+            $memberIds,
+        );
+
         $team = $this->teams->upsert([
             'name' => [
                 'de' => $data['name_de'],
@@ -69,7 +77,8 @@ class TeamsController extends Controller
                 'de' => $data['description_de'] ?? '',
                 'en' => $data['description_en'] ?? ($data['description_de'] ?? ''),
             ],
-            'memberIds' => $data['memberIds'] ?? [],
+            'memberIds' => $memberIds,
+            'memberRoles' => $memberRoles,
             'shortName' => $data['shortName'] ?? '',
             'colorToken' => $data['colorToken'] ?? $this->nextColorToken(),
             'archived' => false,
@@ -89,6 +98,12 @@ class TeamsController extends Controller
 
         $data = $this->validated($request, true);
 
+        $memberIds = array_values(array_map('strval', $data['memberIds'] ?? []));
+        $memberRoles = AccountTeam::normalizeMemberRoles(
+            is_array($data['memberRoles'] ?? null) ? $data['memberRoles'] : [],
+            $memberIds,
+        );
+
         $team = $this->teams->upsert([
             'id' => $teamId,
             'name' => [
@@ -99,7 +114,8 @@ class TeamsController extends Controller
                 'de' => $data['description_de'] ?? '',
                 'en' => $data['description_en'] ?? ($data['description_de'] ?? ''),
             ],
-            'memberIds' => $data['memberIds'] ?? [],
+            'memberIds' => $memberIds,
+            'memberRoles' => $memberRoles,
             'shortName' => $data['shortName'] ?? '',
             'colorToken' => $data['colorToken'] ?? 'accent-1',
             'archived' => $request->boolean('archived'),
@@ -153,7 +169,9 @@ class TeamsController extends Controller
             'description_en' => ['nullable', 'string', 'max:2000'],
             'memberIds' => ['nullable', 'array'],
             'memberIds.*' => ['string'],
-            'shortName' => ['nullable', 'string', 'max:3'],
+            'memberRoles' => ['nullable', 'array'],
+            'memberRoles.*' => ['string', 'in:'.implode(',', AccountTeam::ROLES)],
+            'shortName' => ShortName::rules(),
             'colorToken' => ['nullable', 'string', 'in:'.implode(',', AccentColors::TEAM_TOKENS)],
         ];
 

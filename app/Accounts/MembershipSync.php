@@ -70,6 +70,10 @@ final class MembershipSync
             $this->teams->upsert([
                 ...$team->toArray(),
                 'memberIds' => array_values(array_unique($next)),
+                'memberRoles' => AccountTeam::normalizeMemberRoles(
+                    $team->memberRoles,
+                    array_values(array_unique($next)),
+                ),
             ]);
         }
     }
@@ -96,12 +100,14 @@ final class MembershipSync
             if (! in_array($userId, $team->memberIds, true)) {
                 continue;
             }
+            $nextMembers = array_values(array_filter(
+                $team->memberIds,
+                static fn (string $id): bool => $id !== $userId,
+            ));
             $this->teams->upsert([
                 ...$team->toArray(),
-                'memberIds' => array_values(array_filter(
-                    $team->memberIds,
-                    static fn (string $id): bool => $id !== $userId,
-                )),
+                'memberIds' => $nextMembers,
+                'memberRoles' => AccountTeam::normalizeMemberRoles($team->memberRoles, $nextMembers),
             ]);
         }
     }

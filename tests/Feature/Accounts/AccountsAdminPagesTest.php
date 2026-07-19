@@ -64,6 +64,68 @@ class AccountsAdminPagesTest extends TestCase
         $this->get('/account/teams/'.$team->id.'/edit')->assertOk()->assertSee('Analytics');
     }
 
+    public function test_team_member_roles_persist(): void
+    {
+        $this->loginAdmin();
+
+        $this->post('/account/teams', [
+            'name_de' => 'Team Q',
+            'name_en' => 'Team Q',
+            'memberIds' => ['user_admin'],
+            'memberRoles' => ['user_admin' => 'manager'],
+            'shortName' => 'TQ',
+            'colorToken' => 'accent-1',
+        ])->assertRedirect('/account/teams');
+
+        $team = collect(app(TeamRepository::class)->all(true))->first(
+            static fn ($t) => ($t->name['en'] ?? '') === 'Team Q',
+        );
+        $this->assertNotNull($team);
+        $this->assertSame(['user_admin' => 'manager'], $team->memberRoles);
+        $this->assertSame('manager', $team->roleFor('user_admin'));
+        $this->assertSame('member', $team->roleFor('user_other'));
+    }
+
+    public function test_short_name_rejects_invalid_lengths_and_digits(): void
+    {
+        $this->loginAdmin();
+
+        $this->post('/account/users', [
+            'email' => 'bad1@example.com',
+            'displayName' => 'Bad One',
+            'password' => 'password123',
+            'shortName' => 'A',
+            'active' => '1',
+        ])->assertSessionHasErrors('shortName');
+
+        $this->post('/account/users', [
+            'email' => 'bad2@example.com',
+            'displayName' => 'Bad Two',
+            'password' => 'password123',
+            'shortName' => 'ABCD',
+            'active' => '1',
+        ])->assertSessionHasErrors('shortName');
+
+        $this->post('/account/users', [
+            'email' => 'bad3@example.com',
+            'displayName' => 'Bad Three',
+            'password' => 'password123',
+            'shortName' => 'A1',
+            'active' => '1',
+        ])->assertSessionHasErrors('shortName');
+
+        $this->post('/account/users', [
+            'email' => 'ok@example.com',
+            'displayName' => 'Ok User',
+            'password' => 'password123',
+            'shortName' => 'OK',
+            'active' => '1',
+        ])->assertRedirect('/account/users');
+
+        $ok = app(UserRepository::class)->findByEmail('ok@example.com');
+        $this->assertSame('OK', $ok?->shortName);
+    }
+
     public function test_user_create_edit_pages(): void
     {
         $this->loginAdmin();

@@ -31,9 +31,31 @@ final class AccentColors
     ];
 
     /** @var list<string> */
+    public const DOTTED_TOKENS = [
+        'dotted-1',
+        'dotted-2',
+        'dotted-3',
+        'dotted-4',
+        'dotted-5',
+        'dotted-6',
+    ];
+
+    /** @var list<string> */
+    public const DASHED_TOKENS = [
+        'dashed-1',
+        'dashed-2',
+        'dashed-3',
+        'dashed-4',
+        'dashed-5',
+        'dashed-6',
+    ];
+
+    /** @var list<string> */
     public const TOKENS = [
         ...self::SOLID_TOKENS,
         ...self::OUTLINE_TOKENS,
+        ...self::DOTTED_TOKENS,
+        ...self::DASHED_TOKENS,
     ];
 
     /** Team picker stays on the first six solid accents. */
@@ -66,6 +88,18 @@ final class AccentColors
         'outline-4' => '#7c3aed',
         'outline-5' => '#be185d',
         'outline-6' => '#475569',
+        'dotted-1' => '#2563eb',
+        'dotted-2' => '#0d9488',
+        'dotted-3' => '#c2410c',
+        'dotted-4' => '#7c3aed',
+        'dotted-5' => '#be185d',
+        'dotted-6' => '#475569',
+        'dashed-1' => '#2563eb',
+        'dashed-2' => '#0d9488',
+        'dashed-3' => '#c2410c',
+        'dashed-4' => '#7c3aed',
+        'dashed-5' => '#be185d',
+        'dashed-6' => '#475569',
     ];
 
     public static function normalize(?string $token): string
@@ -78,6 +112,42 @@ final class AccentColors
     public static function isOutline(?string $token): bool
     {
         return str_starts_with(self::normalize($token), 'outline-');
+    }
+
+    public static function isDotted(?string $token): bool
+    {
+        return str_starts_with(self::normalize($token), 'dotted-');
+    }
+
+    public static function isDashed(?string $token): bool
+    {
+        return str_starts_with(self::normalize($token), 'dashed-');
+    }
+
+    /** White chip with colored border (outline / dotted / dashed). */
+    public static function isBordered(?string $token): bool
+    {
+        $normalized = self::normalize($token);
+
+        return self::isOutline($normalized)
+            || self::isDotted($normalized)
+            || self::isDashed($normalized);
+    }
+
+    public static function borderStyle(?string $token): string
+    {
+        $normalized = self::normalize($token);
+        if (self::isDotted($normalized)) {
+            return 'dotted';
+        }
+        if (self::isDashed($normalized)) {
+            return 'dashed';
+        }
+        if (self::isOutline($normalized)) {
+            return 'solid';
+        }
+
+        return 'solid';
     }
 
     public static function hex(?string $token): string
@@ -95,8 +165,10 @@ final class AccentColors
         $normalized = self::normalize($token);
         $hex = self::HEX[$normalized];
 
-        if (self::isOutline($normalized)) {
-            return 'background-color:#fff;color:'.$hex.';border:2px solid '.$hex.';';
+        if (self::isBordered($normalized)) {
+            $style = self::borderStyle($normalized);
+
+            return 'background-color:#fff;color:'.$hex.';border:2px '.$style.' '.$hex.';';
         }
 
         return 'background-color:'.$hex.';color:#fff;border:2px solid transparent;';

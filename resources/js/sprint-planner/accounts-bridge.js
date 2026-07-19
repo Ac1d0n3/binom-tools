@@ -280,7 +280,7 @@ export function catalogFromAccounts(users, teams) {
             shortName: persistedShort || normalizeTrigram('', displayName),
             email: String(user.email || ''),
             role: '',
-            colorToken: /^accent-(?:[1-9]|1[0-2])$|^outline-[1-6]$/.test(persistedColor)
+            colorToken: /^accent-(?:[1-9]|1[0-2])$|^(?:outline|dotted|dashed)-[1-6]$/.test(persistedColor)
                 ? persistedColor
                 : `accent-${((accent - 1) % 12) + 1}`,
             avatarIcon: persistedIcon,
@@ -310,10 +310,16 @@ export function catalogFromAccounts(users, teams) {
             name: nameObj,
             description: { de: description.de || '', en: description.en || '' },
             shortName: persistedShort || teamTrigram({ name: nameObj }, 'en'),
-            colorToken: /^accent-(?:[1-9]|1[0-2])$|^outline-[1-6]$/.test(persistedColor)
+            colorToken: /^accent-(?:[1-9]|1[0-2])$|^(?:outline|dotted|dashed)-[1-6]$/.test(persistedColor)
                 ? persistedColor
                 : `accent-${((Object.keys(teamMap).length % 6) + 1)}`,
             memberIds: Array.isArray(team.memberIds) ? team.memberIds.map(String) : [],
+            memberRoles: team.memberRoles && typeof team.memberRoles === 'object' && !Array.isArray(team.memberRoles)
+                ? Object.fromEntries(
+                    Object.entries(/** @type {Record<string, unknown>} */ (team.memberRoles))
+                        .map(([uid, role]) => [String(uid), String(role || 'member')]),
+                )
+                : {},
             archived: Boolean(team.archived),
         };
     }

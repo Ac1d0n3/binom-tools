@@ -51,6 +51,7 @@ final class TeamRepository
             'name' => $input['name'] ?? $current?->name ?? ['de' => $id, 'en' => $id],
             'description' => $input['description'] ?? $current?->description ?? ['de' => '', 'en' => ''],
             'memberIds' => $input['memberIds'] ?? $current?->memberIds ?? [],
+            'memberRoles' => $input['memberRoles'] ?? $current?->memberRoles ?? [],
             'archived' => $input['archived'] ?? $current?->archived ?? false,
             'shortName' => $input['shortName'] ?? $current?->shortName ?? '',
             'colorToken' => $input['colorToken'] ?? $current?->colorToken ?? 'accent-1',

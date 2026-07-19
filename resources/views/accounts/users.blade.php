@@ -39,7 +39,10 @@
             <div class="sp-list">
                 @forelse ($users as $user)
                     @php
-                        $chip = $user['shortName'] ?: strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $user['displayName'] ?? '') ?: 'U', 0, 3));
+                        $chip = $user['shortName'] ?: strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $user['displayName'] ?? '') ?: 'U', 0, 3));
+                        if (strlen($chip) === 1) {
+                            $chip .= 'X';
+                        }
                         $color = AccentColors::normalize($user['colorToken'] ?? null);
                         $iconSvg = \App\Support\AvatarIcons::svgMarkup($user['avatarIcon'] ?? '');
                         $userTeams = array_values(array_filter(array_map(
@@ -50,7 +53,7 @@
                     <div class="sp-list__row">
                         <div class="sp-list__identity">
                             <span
-                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--person{{ $iconSvg !== '' ? ' sp-avatar--icon' : '' }}"
+                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--person{{ $iconSvg !== '' ? ' sp-avatar--icon' : '' }}{{ $iconSvg === '' && strlen($chip) >= 3 ? ' sp-avatar--trigram-3' : '' }}"
                                 style="{{ AccentColors::chipStyle($color) }}"
                                 aria-hidden="true"
                             >
