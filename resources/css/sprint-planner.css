@@ -370,21 +370,12 @@ html.bn-theme-blue-water-dark .sp-app,
 }
 
 .sp-filter-toggle {
+    position: relative;
     justify-content: center;
     gap: 0.4rem;
 }
 
-.sp-filter-toggle--active {
-    border-color: var(--sp-accent);
-    background: color-mix(in srgb, var(--sp-accent) 16%, var(--sp-surface));
-    color: var(--sp-accent);
-    font-weight: 650;
-}
-
-.sp-filter-toggle--active:hover {
-    border-color: var(--sp-accent);
-    background: color-mix(in srgb, var(--sp-accent) 24%, var(--sp-surface));
-}
+/* Active styles live after .tools-btn--secondary (see below) so they win the cascade. */
 
 .sp-filter-toggle i,
 .sp-chrome-icon-btn i {
@@ -1577,6 +1568,39 @@ html.bn-theme-blue-water-dark .sp-status-mark--on_hold {
 
 .tools-btn--secondary:hover:not(:disabled) {
     background: color-mix(in srgb, var(--sp-accent) 10%, transparent);
+}
+
+/* Must beat .tools-btn--secondary (same file, later) so active filters stay visible. */
+.tools-btn.tools-btn--secondary.sp-filter-toggle.sp-filter-toggle--active {
+    border-color: var(--sp-accent);
+    background: color-mix(in srgb, var(--sp-accent) 20%, var(--sp-surface));
+    color: var(--sp-accent);
+    font-weight: 650;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sp-accent) 40%, transparent);
+}
+
+.tools-btn.tools-btn--secondary.sp-filter-toggle.sp-filter-toggle--active:hover:not(:disabled) {
+    border-color: var(--sp-accent);
+    background: color-mix(in srgb, var(--sp-accent) 28%, var(--sp-surface));
+    color: var(--sp-accent);
+}
+
+.sp-filter-toggle__badge {
+    display: none;
+    min-width: 1.05rem;
+    height: 1.05rem;
+    padding: 0 0.28rem;
+    border-radius: 999px;
+    background: var(--sp-accent);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1.05rem;
+    text-align: center;
+}
+
+.sp-filter-toggle--active .sp-filter-toggle__badge {
+    display: inline-block;
 }
 
 .tools-btn--danger {

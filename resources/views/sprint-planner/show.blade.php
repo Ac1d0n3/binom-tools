@@ -107,6 +107,7 @@
                         >
                             <i class="fa-solid fa-filter" aria-hidden="true" data-sp-filter-icon></i>
                             <span data-i18n="sp.action.toggleFilters">Filter</span>
+                            <span class="sp-filter-toggle__badge" data-sp-filter-badge hidden aria-hidden="true">0</span>
                         </button>
                         <button
                             type="button"

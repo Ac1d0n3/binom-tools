@@ -31,7 +31,7 @@ import {
     parseExternalLinksTextarea,
     resolveExternalHelpHref,
 } from '../external-links.js';
-import { emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
+import { countActiveItemFilters, emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
 import {
     addCustomItem,
     addCustomSprint,
@@ -1005,10 +1005,17 @@ function applyFilterSidebarState(instanceId) {
  * @param {ReturnType<typeof normalizePlanFilters>} filters
  */
 function syncFilterActiveChrome(filters) {
-    const active = hasActiveItemFilters(filters);
+    const activeCount = countActiveItemFilters(filters);
+    const active = activeCount > 0;
     const toggle = document.getElementById('sp-filter-sidebar-toggle');
     if (toggle) {
         toggle.classList.toggle('sp-filter-toggle--active', active);
+        const badge = toggle.querySelector('[data-sp-filter-badge]');
+        if (badge) {
+            badge.hidden = !active;
+            badge.textContent = active ? String(activeCount) : '0';
+            badge.setAttribute('aria-hidden', active ? 'false' : 'true');
+        }
         const baseLabel = toggle.getAttribute('aria-expanded') === 'false'
             ? spT('sp.action.showFilters')
             : spT('sp.action.hideFilters');

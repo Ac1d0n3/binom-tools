@@ -224,20 +224,29 @@ export function filterSprints(sprints, filters, currentSprintNumber, ctx) {
  * @param {ReturnType<typeof normalizePlanFilters>} filters
  */
 export function hasActiveItemFilters(filters) {
+    return countActiveItemFilters(filters) > 0;
+}
+
+/**
+ * Count independent filter facets that currently constrain the plan view.
+ * @param {ReturnType<typeof normalizePlanFilters>} filters
+ * @returns {number}
+ */
+export function countActiveItemFilters(filters) {
     const normalized = normalizePlanFilters(filters);
-    return Boolean(
-        normalized.currentWeek
-        || normalized.hideDone
-        || normalized.openOnly
-        || normalized.blocked
-        || normalized.myTasks
-        || normalized.unassigned
-        || normalized.personId
-        || normalized.teamId
-        || normalized.status
-        || normalized.priority
-        || normalized.search,
-    );
+    let count = 0;
+    if (normalized.currentWeek) count += 1;
+    if (normalized.hideDone) count += 1;
+    if (normalized.openOnly) count += 1;
+    if (normalized.blocked) count += 1;
+    if (normalized.myTasks) count += 1;
+    if (normalized.unassigned) count += 1;
+    if (normalized.personId) count += 1;
+    if (normalized.teamId) count += 1;
+    if (normalized.status) count += 1;
+    if (normalized.priority) count += 1;
+    if (normalized.search) count += 1;
+    return count;
 }
 
 /**

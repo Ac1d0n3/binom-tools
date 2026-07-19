@@ -18,7 +18,7 @@ import {
     calculateOverallProgress,
     resolveSprints,
 } from './progress.js';
-import { emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, itemMatchesFilters, normalizePlanFilters } from './filters.js';
+import { countActiveItemFilters, emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, itemMatchesFilters, normalizePlanFilters } from './filters.js';
 import {
     EXPORT_TYPE_WORKSPACE,
     applyImport,
@@ -427,6 +427,7 @@ describe('filters', () => {
         expect(hasActiveItemFilters({ currentWeek: true })).toBe(true);
         expect(hasActiveItemFilters({})).toBe(false);
         expect(hasActiveItemFilters({ myTasks: true })).toBe(true);
+        expect(countActiveItemFilters({ currentWeek: true, hideDone: true, search: 'api' })).toBe(3);
     });
 
     it('emptyPlanFilters clears all facets', () => {
