@@ -15,6 +15,8 @@ final class AccountTeam
         public readonly array $description,
         public readonly array $memberIds,
         public readonly bool $archived = false,
+        public readonly string $shortName = '',
+        public readonly string $colorToken = 'accent-1',
     ) {}
 
     /**
@@ -60,6 +62,8 @@ final class AccountTeam
             ],
             memberIds: $memberIds,
             archived: (bool) ($data['archived'] ?? false),
+            shortName: strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', (string) ($data['shortName'] ?? '')) ?: '', 0, 3)),
+            colorToken: \App\Support\AccentColors::normalize($data['colorToken'] ?? null),
         );
     }
 
@@ -74,6 +78,8 @@ final class AccountTeam
             'description' => $this->description,
             'memberIds' => $this->memberIds,
             'archived' => $this->archived,
+            'shortName' => $this->shortName,
+            'colorToken' => $this->colorToken,
         ];
     }
 }

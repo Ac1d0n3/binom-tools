@@ -146,6 +146,11 @@
     margin-bottom: 1.25rem;
 }
 
+.sp-toolbar--start {
+    justify-content: flex-start;
+    margin-top: 0.25rem;
+}
+
 .sp-toolbar__actions,
 .sp-action-row {
     display: flex;
@@ -153,8 +158,24 @@
     gap: 0.5rem;
 }
 
+.sp-page-header {
+    margin-bottom: 1.25rem;
+}
+
+.sp-page-header .tools-page-lead {
+    margin-bottom: 1rem;
+}
+
+.sp-page-header .sp-subnav {
+    margin-top: 0;
+}
+
 .sp-section {
     margin-bottom: 2rem;
+}
+
+.sp-section--compact {
+    margin-bottom: 1.25rem;
 }
 
 .sp-section__header {
@@ -164,11 +185,64 @@
     justify-content: space-between;
     gap: 0.75rem;
     margin-bottom: 0.75rem;
+    min-height: 2.25rem;
+}
+
+.sp-section__actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    /* Reserve action slot so headers don't jump when empty */
+    min-height: 2rem;
 }
 
 .sp-section__title {
     margin: 0 0 0.75rem;
     font-size: 1.15rem;
+}
+
+.sp-section__header .sp-section__title {
+    margin-bottom: 0;
+}
+
+.sp-context-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--sp-border, var(--base-border-color));
+    border-radius: var(--sp-radius, 10px);
+    background: color-mix(in srgb, var(--bn-color-surface, #fff) 96%, transparent);
+}
+
+.sp-context-bar__title {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    flex: 0 0 auto;
+    align-self: center;
+}
+
+.sp-context-bar__fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    flex: 1 1 16rem;
+    align-items: flex-end;
+}
+
+.sp-context-bar .sp-field {
+    margin-bottom: 0;
+    flex: 1 1 12rem;
+}
+
+.sp-context-bar .tools-input {
+    width: 100%;
 }
 
 .sp-card-grid {
@@ -930,6 +1004,20 @@
     opacity: 0.75;
 }
 
+.sp-status {
+    display: inline;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.sp-status--public {
+    color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
+.sp-status--restricted {
+    color: var(--bn-color-accent, #0b6bcb);
+}
+
 .sp-dialog {
     border: 1px solid var(--sp-border);
     border-radius: 0.75rem;
@@ -1508,6 +1596,8 @@
     line-height: 1;
     color: #fff;
     flex-shrink: 0;
+    box-sizing: border-box;
+    border: 2px solid transparent;
 }
 
 .sp-avatar--team {
@@ -1515,16 +1605,48 @@
 }
 
 .sp-avatar--empty {
-    background: color-mix(in srgb, currentColor 18%, transparent);
+    background-color: color-mix(in srgb, currentColor 18%, transparent);
     color: color-mix(in srgb, currentColor 55%, transparent);
 }
 
-.sp-avatar--accent-1 { background: #2563eb; }
-.sp-avatar--accent-2 { background: #0d9488; }
-.sp-avatar--accent-3 { background: #c2410c; }
-.sp-avatar--accent-4 { background: #7c3aed; }
-.sp-avatar--accent-5 { background: #be185d; }
-.sp-avatar--accent-6 { background: #475569; }
+.sp-avatar--icon {
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.sp-avatar--icon i {
+    line-height: 1;
+}
+
+.sp-avatar--accent-1 { background-color: #2563eb; }
+.sp-avatar--accent-2 { background-color: #0d9488; }
+.sp-avatar--accent-3 { background-color: #c2410c; }
+.sp-avatar--accent-4 { background-color: #7c3aed; }
+.sp-avatar--accent-5 { background-color: #be185d; }
+.sp-avatar--accent-6 { background-color: #475569; }
+.sp-avatar--accent-7 { background-color: #15803d; }
+.sp-avatar--accent-8 { background-color: #d97706; }
+.sp-avatar--accent-9 { background-color: #0891b2; }
+.sp-avatar--accent-10 { background-color: #4338ca; }
+.sp-avatar--accent-11 { background-color: #e11d48; }
+.sp-avatar--accent-12 { background-color: #65a30d; }
+
+.sp-avatar--outline-1,
+.sp-avatar--outline-2,
+.sp-avatar--outline-3,
+.sp-avatar--outline-4,
+.sp-avatar--outline-5,
+.sp-avatar--outline-6 {
+    background-color: #fff;
+}
+
+.sp-avatar--outline-1 { color: #2563eb; border-color: #2563eb; }
+.sp-avatar--outline-2 { color: #0d9488; border-color: #0d9488; }
+.sp-avatar--outline-3 { color: #c2410c; border-color: #c2410c; }
+.sp-avatar--outline-4 { color: #7c3aed; border-color: #7c3aed; }
+.sp-avatar--outline-5 { color: #be185d; border-color: #be185d; }
+.sp-avatar--outline-6 { color: #475569; border-color: #475569; }
 
 .sp-avatar-row {
     display: flex;
@@ -1668,6 +1790,13 @@ html[data-color-scheme='dark'] .sp-app {
     gap: 0.35rem;
 }
 
+.sp-story-card__hint {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
 /* Schedule */
 .sp-schedule-banner {
     margin: 0.75rem 0 0;
@@ -1697,6 +1826,11 @@ html[data-color-scheme='dark'] .sp-app {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+}
+
+.sp-color-swatch--outline {
+    background-color: #fff;
 }
 
 .sp-color-swatch input {
@@ -1707,7 +1841,57 @@ html[data-color-scheme='dark'] .sp-app {
 }
 
 .sp-color-swatch:has(input:checked) {
-    border-color: currentColor;
     outline: 2px solid var(--bn-color-accent, #2563eb);
     outline-offset: 2px;
 }
+
+.sp-field-hint {
+    margin: 0.35rem 0 0;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, currentColor 68%, transparent);
+}
+
+.sp-icon-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.sp-icon-picker__option {
+    cursor: pointer;
+    border: 1px solid var(--sp-border, var(--base-border-color));
+    border-radius: 0.45rem;
+    background: color-mix(in srgb, var(--bn-color-surface, #fff) 94%, transparent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+}
+
+.sp-icon-picker__option input {
+    appearance: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+.sp-icon-picker__option--active,
+.sp-icon-picker__option:has(input:checked) {
+    border-color: var(--bn-color-accent, #2563eb);
+    outline: 2px solid color-mix(in srgb, var(--bn-color-accent, #2563eb) 45%, transparent);
+    outline-offset: 1px;
+}
+
+.sp-icon-picker__preview {
+    font-size: 0.95rem;
+    line-height: 1;
+    color: inherit;
+}
+
+.sp-icon-picker__preview--trigram {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+

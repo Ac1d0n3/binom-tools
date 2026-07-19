@@ -27,21 +27,23 @@ import {
     storageErrorMessage,
 } from './helpers.js';
 
-const COLOR_TOKENS = ['accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5', 'accent-6'];
+import { applyAvatarColor, ACCENT_TOKENS, TEAM_ACCENT_TOKENS } from '../trigram.js';
 
 /**
  * @param {string} hostId
  * @param {string} [selected]
+ * @param {string[]} [tokens]
  */
-function renderColorSwatches(hostId, selected = 'accent-1') {
+function renderColorSwatches(hostId, selected = 'accent-1', tokens = ACCENT_TOKENS) {
     const host = document.getElementById(hostId);
     if (!host) {
         return;
     }
     host.innerHTML = '';
-    for (const token of COLOR_TOKENS) {
+    for (const token of tokens) {
         const label = document.createElement('label');
         label.className = `sp-color-swatch sp-avatar--${token}`;
+        applyAvatarColor(label, token, 'person');
         const input = document.createElement('input');
         input.type = 'radio';
         input.name = hostId;
@@ -66,10 +68,6 @@ export function initPeoplePage() {
     }
 
     const accountsOn = isAccountsMode();
-    if (accountsOn) {
-        document.getElementById('sp-add-person')?.setAttribute('hidden', 'hidden');
-        document.getElementById('sp-add-team')?.setAttribute('hidden', 'hidden');
-    }
 
     applySpI18n(root);
     window.addEventListener('binom-tools:locale', () => {
@@ -178,6 +176,8 @@ export function initPeoplePage() {
 }
 
 function render() {
+    const root = document.getElementById('sp-app');
+    const accountsOn = isAccountsMode();
     const locale = getLocale();
     const { data: workspace } = loadWorkspace();
     const people = listPeople(true);
@@ -221,7 +221,12 @@ function render() {
         left.appendChild(text);
         const actions = document.createElement('div');
         actions.className = 'sp-action-row';
-        if (!isAccountsMode()) {
+        if (accountsOn) {
+            const editUrl = editUrlFromTemplate(root.dataset.userEditUrl, person.id);
+            if (editUrl) {
+                actions.appendChild(linkButton(spT('sp.action.edit'), editUrl));
+            }
+        } else {
             const edit = button(spT('sp.action.edit'), () => openPersonDialog(person));
             const archive = button(
                 person.archived ? spT('sp.action.save') : spT('sp.action.archive'),
@@ -258,7 +263,12 @@ function render() {
         left.appendChild(text);
         const actions = document.createElement('div');
         actions.className = 'sp-action-row';
-        if (!isAccountsMode()) {
+        if (accountsOn) {
+            const editUrl = editUrlFromTemplate(root.dataset.teamEditUrl, team.id);
+            if (editUrl) {
+                actions.appendChild(linkButton(spT('sp.action.edit'), editUrl));
+            }
+        } else {
             actions.append(
                 button(spT('sp.action.edit'), () => openTeamDialog(team)),
                 button(
@@ -275,6 +285,18 @@ function render() {
     }
 }
 
+/**
+ * @param {string|undefined} template
+ * @param {string} id
+ * @returns {string|null}
+ */
+function editUrlFromTemplate(template, id) {
+    if (!template || !id) {
+        return null;
+    }
+    return template.replace('__ID__', encodeURIComponent(id));
+}
+
 function button(label, onClick) {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -284,13 +306,25 @@ function button(label, onClick) {
     return btn;
 }
 
+/**
+ * @param {string} label
+ * @param {string} href
+ */
+function linkButton(label, href) {
+    const a = document.createElement('a');
+    a.href = href;
+    a.className = 'tools-btn tools-btn--secondary tools-btn--small';
+    a.textContent = label;
+    return a;
+}
+
 function openPersonDialog(person) {
     document.getElementById('sp-person-id').value = person?.id || '';
     document.getElementById('sp-person-display-name').value = person?.displayName || '';
     document.getElementById('sp-person-short-name').value = person?.shortName || '';
     document.getElementById('sp-person-email').value = person?.email || '';
     document.getElementById('sp-person-role').value = person?.role || '';
-    renderColorSwatches('sp-person-color', person?.colorToken || 'accent-1');
+    renderColorSwatches('sp-person-color', person?.colorToken || 'accent-1', ACCENT_TOKENS);
     document.getElementById('sp-person-dialog').showModal();
 }
 
@@ -304,7 +338,7 @@ function openTeamDialog(team) {
     }
     document.getElementById('sp-team-desc-de').value = team?.description?.de || '';
     document.getElementById('sp-team-desc-en').value = team?.description?.en || '';
-    renderColorSwatches('sp-team-color', team?.colorToken || 'accent-1');
+    renderColorSwatches('sp-team-color', team?.colorToken || 'accent-1', TEAM_ACCENT_TOKENS);
     const host = document.getElementById('sp-team-members');
     host.innerHTML = '';
     const selected = new Set(team?.memberIds || []);

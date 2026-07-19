@@ -56,6 +56,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('AI Sanitizer');
         $response->assertSee('PII Macro Generator');
         $response->assertSee('DQ Macro Generator');
+        $response->assertSee('Schema YML Editor');
+        $response->assertSee('Meta Export Generator');
         $response->assertSee('PII Policy Generator');
         $response->assertSee('DQ Rules Generator');
         $response->assertSee('PII Table Gate');
@@ -162,6 +164,18 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('dbt-dq-history-generator-app', false);
         $response->assertSee('dq-history-pre', false);
+    }
+
+    public function test_meta_export_generator_page_renders(): void
+    {
+        $response = $this->get('/tools/meta-export-generator');
+
+        $response->assertOk();
+        $response->assertSee('meta-export-generator-app', false);
+        $response->assertSee('meta-platform', false);
+        $response->assertSee('meta-schemas-box', false);
+        $response->assertSee('playbook-code', false);
+        $response->assertSee('meta-access-box', false);
     }
 
     public function test_sidebar_includes_home_link(): void

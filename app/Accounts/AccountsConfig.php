@@ -9,6 +9,11 @@ final class AccountsConfig
         return (bool) config('accounts.enabled', false);
     }
 
+    public function profileAvatarEnabled(): bool
+    {
+        return (bool) config('accounts.profile_avatar_enabled', true);
+    }
+
     public function basePath(): string
     {
         $path = (string) config('accounts.path', storage_path('app/bn-tools'));

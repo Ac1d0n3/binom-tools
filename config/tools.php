@@ -204,6 +204,21 @@ return [
             'accent' => 'primary',
         ],
         [
+            'id' => 'meta-export-generator',
+            'route' => 'tools.meta-export-generator',
+            'label' => [
+                'de' => 'Meta Export Generator',
+                'en' => 'Meta Export Generator',
+            ],
+            'description' => [
+                'de' => 'Copy-Paste-SQL/Scripts für Schemas, Tabellen, Spalten und Access-Meta — 10 Plattformen, kein Live-Connect.',
+                'en' => 'Copy-paste SQL/scripts for schemas, tables, columns and access meta — 10 platforms, no live connect.',
+            ],
+            'example' => true,
+            'icon' => 'fa-database',
+            'accent' => 'accent',
+        ],
+        [
             'id' => 'prompt-studio',
             'route' => 'tools.prompt-studio',
             'label' => [
@@ -279,6 +294,7 @@ return [
         'dbt-dq-rules-generator' => filter_var(env('TOOL_DBT_DQ_RULES_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'dbt-dq-history-generator' => filter_var(env('TOOL_DBT_DQ_HISTORY_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'schema-yml-editor' => filter_var(env('TOOL_SCHEMA_YML_EDITOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'meta-export-generator' => filter_var(env('TOOL_META_EXPORT_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'prompt-studio' => filter_var(env('TOOL_PROMPT_STUDIO_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'governance-ai-sanitizer' => filter_var(env('TOOL_GOVERNANCE_AI_SANITIZER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
     ],
@@ -300,6 +316,7 @@ return [
         'dbt-dq-rules-generator' => filter_var(env('TOOL_DBT_DQ_RULES_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'dbt-dq-history-generator' => filter_var(env('TOOL_DBT_DQ_HISTORY_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'schema-yml-editor' => filter_var(env('TOOL_SCHEMA_YML_EDITOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'meta-export-generator' => filter_var(env('TOOL_META_EXPORT_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'prompt-studio' => filter_var(env('TOOL_PROMPT_STUDIO_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'governance-ai-sanitizer' => filter_var(env('TOOL_GOVERNANCE_AI_SANITIZER_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
     ],

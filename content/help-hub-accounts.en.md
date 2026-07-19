@@ -30,6 +30,8 @@ In `.env`:
 ```env
 BINOM_TOOLS_ACCOUNTS_ENABLED=true
 SESSION_DRIVER=file
+# Optional: self-service avatar on /account (default true)
+# BINOM_TOOLS_ACCOUNTS_PROFILE_AVATAR_ENABLED=false
 ```
 
 Runtime data lives under `storage/app/bn-tools/` (gitignored):
@@ -65,11 +67,11 @@ php artisan bn-tools:user-password you@example.com
 | `canManageTeams` | Manage teams |
 | `teamIds` | Team membership (for ACL and plan viewers) |
 
-Manage users and teams in the Account UI (requires manage rights).
+Manage users and teams in the Account UI (requires manage rights): compact lists under `/account/users` and `/account/teams`, with dedicated create/edit pages. Team `memberIds` and user `teamIds` stay in sync. Optional `shortName` / `colorToken` / `avatarIcon` feed Sprint Planner chips. Users can also set avatar color and icon under **Account** (`BINOM_TOOLS_ACCOUNTS_PROFILE_AVATAR_ENABLED`, default on).
 
 ## Story ACL
 
-Playbooks are **public** by default. In `story-acl.json` you can restrict individual slugs:
+Playbooks are **public** by default. In `story-acl.json` you can restrict individual slugs — or use Account → Story access in the UI (list + per-story edit):
 
 | `visibility` | Behaviour |
 | --- | --- |

@@ -126,7 +126,8 @@ export function renderStoryCard(story, onChanged) {
         href: resolveHelpHref(`/playbooks/${story.slug}`),
     }));
 
-    if (!read) {
+    // Required stories must be read in the playbook itself — no manual check-off.
+    if (!read && !story.required) {
         actions.appendChild(createIconButton({
             icon: 'check',
             label: spT('sp.help.markRead'),
@@ -143,6 +144,14 @@ export function renderStoryCard(story, onChanged) {
     }
 
     card.append(head, meta, actions);
+
+    if (!read && story.required) {
+        const hint = document.createElement('p');
+        hint.className = 'sp-story-card__hint';
+        hint.textContent = spT('sp.help.requiredMustOpen');
+        card.appendChild(hint);
+    }
+
     return card;
 }
 

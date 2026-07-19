@@ -26,21 +26,21 @@ class StoryAclController extends Controller
 
     public function index(): View
     {
-        $actor = $this->auth->user();
-        abort_if($actor === null || ! $actor->canManageUsers, 403);
-
-        $stories = [];
-        foreach ($this->playbooks->allForIndex() as $item) {
-            $slug = (string) ($item['slug'] ?? '');
-            $stories[] = [
-                'slug' => $slug,
-                'title' => $item['locales']['en']['title'] ?? $slug,
-                'acl' => $this->acl->forSlug($slug),
-            ];
-        }
+        $this->assertCanManage();
 
         return view('accounts.story-acl', [
-            'stories' => $stories,
+            'stories' => $this->storyRows(),
+        ]);
+    }
+
+    public function edit(string $slug): View
+    {
+        $this->assertCanManage();
+        $story = $this->findStory($slug);
+        abort_if($story === null, 404);
+
+        return view('accounts.story-acl-form', [
+            'story' => $story,
             'users' => array_map(static fn ($u) => $u->toPublicArray(), $this->users->all()),
             'teams' => array_map(static fn ($t) => $t->toArray(), $this->teams->all(true)),
         ]);
@@ -48,8 +48,8 @@ class StoryAclController extends Controller
 
     public function update(Request $request, string $slug): RedirectResponse
     {
-        $actor = $this->auth->user();
-        abort_if($actor === null || ! $actor->canManageUsers, 403);
+        $this->assertCanManage();
+        abort_if($this->findStory($slug) === null, 404);
 
         $data = $request->validate([
             'visibility' => ['required', 'in:public,restricted'],
@@ -65,7 +65,9 @@ class StoryAclController extends Controller
             'teamIds' => $data['teamIds'] ?? [],
         ]);
 
-        return back()->with('status', 'acl-updated');
+        return redirect()
+            ->to(locale_route('accounts.story-acl'))
+            ->with('status', 'acl-updated');
     }
 
     public function markRead(Request $request, string $slug): RedirectResponse|\Illuminate\Http\JsonResponse
@@ -81,5 +83,73 @@ class StoryAclController extends Controller
         }
 
         return back();
+    }
+
+    private function assertCanManage(): void
+    {
+        $actor = $this->auth->user();
+        abort_if($actor === null || ! $actor->canManageUsers, 403);
+    }
+
+    /**
+     * @return list<array{slug: string, title: string, acl: array{visibility: string, userIds: list<string>, teamIds: list<string>}}>
+     */
+    private function storyRows(): array
+    {
+        $locale = current_locale();
+        $stories = [];
+
+        foreach ($this->playbooks->allForIndex() as $item) {
+            $slug = (string) ($item['slug'] ?? '');
+            if ($slug === '') {
+                continue;
+            }
+
+            $stories[] = [
+                'slug' => $slug,
+                'title' => $this->titleFor($item, $locale),
+                'acl' => $this->acl->forSlug($slug),
+            ];
+        }
+
+        return $stories;
+    }
+
+    /**
+     * @return array{slug: string, title: string, acl: array{visibility: string, userIds: list<string>, teamIds: list<string>}}|null
+     */
+    private function findStory(string $slug): ?array
+    {
+        $locale = current_locale();
+
+        foreach ($this->playbooks->allForIndex() as $item) {
+            if ((string) ($item['slug'] ?? '') !== $slug) {
+                continue;
+            }
+
+            return [
+                'slug' => $slug,
+                'title' => $this->titleFor($item, $locale),
+                'acl' => $this->acl->forSlug($slug),
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function titleFor(array $item, string $locale): string
+    {
+        $slug = (string) ($item['slug'] ?? '');
+        $locales = is_array($item['locales'] ?? null) ? $item['locales'] : [];
+
+        return (string) (
+            $locales[$locale]['title']
+            ?? $locales['en']['title']
+            ?? $locales['de']['title']
+            ?? $slug
+        );
     }
 }

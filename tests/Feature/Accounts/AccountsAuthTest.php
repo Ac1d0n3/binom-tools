@@ -99,6 +99,61 @@ class AccountsAuthTest extends TestCase
         $this->get('/login')->assertNotFound();
     }
 
+    public function test_profile_can_update_avatar_when_enabled(): void
+    {
+        Config::set('accounts.profile_avatar_enabled', true);
+
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password123',
+        ]);
+
+        $this->get('/account')
+            ->assertOk()
+            ->assertSee('accounts.avatarIcon', false);
+
+        $this->put('/account', [
+            'displayName' => 'Admin',
+            'shortName' => 'ADM',
+            'colorToken' => 'outline-3',
+            'avatarIcon' => 'user-astronaut',
+        ])->assertRedirect();
+
+        $user = app(UserRepository::class)->findById('user_admin');
+        $this->assertNotNull($user);
+        $this->assertSame('ADM', $user->shortName);
+        $this->assertSame('outline-3', $user->colorToken);
+        $this->assertSame('user-astronaut', $user->avatarIcon);
+    }
+
+    public function test_profile_rejects_avatar_fields_when_disabled(): void
+    {
+        Config::set('accounts.profile_avatar_enabled', false);
+
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password123',
+        ]);
+
+        $this->get('/account')
+            ->assertOk()
+            ->assertDontSee('accounts.avatarIcon', false);
+
+        $this->put('/account', [
+            'displayName' => 'Admin Renamed',
+            'shortName' => 'XXX',
+            'colorToken' => 'accent-9',
+            'avatarIcon' => 'rocket',
+        ])->assertRedirect();
+
+        $user = app(UserRepository::class)->findById('user_admin');
+        $this->assertNotNull($user);
+        $this->assertSame('Admin Renamed', $user->displayName);
+        $this->assertSame('', $user->shortName);
+        $this->assertSame('accent-1', $user->colorToken);
+        $this->assertSame('', $user->avatarIcon);
+    }
+
     private function removeDir(string $path): void
     {
         if (! is_dir($path)) {

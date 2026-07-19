@@ -7,6 +7,7 @@ import {
 } from './accounts-bridge.js';
 import { ensureDefaultCatalog } from './defaults.js';
 import {
+    normalizeAvatarIcon,
     normalizeColorToken,
     normalizeTeamIds,
     normalizeTrigram,
@@ -30,6 +31,7 @@ export const WORKSPACE_EVENT = 'bn-tools:sprint-planner:workspace';
  * @property {string} email
  * @property {string} role
  * @property {string} colorToken
+ * @property {string} [avatarIcon]
  * @property {boolean} archived
  */
 
@@ -194,6 +196,7 @@ function normalizePeople(people) {
             email: String(item.email || ''),
             role: String(item.role || ''),
             colorToken: normalizeColorToken(String(item.colorToken || '')),
+            avatarIcon: normalizeAvatarIcon(item.avatarIcon),
             archived: Boolean(item.archived),
         };
     }
@@ -451,10 +454,11 @@ function loadAccountsWorkspace() {
         catalog.people[id] = {
             id,
             displayName,
-            shortName: normalizeTrigram('', displayName),
+            shortName: normalizeTrigram(String(accountUser.shortName || ''), displayName),
             email: String(accountUser.email || ''),
             role: '',
-            colorToken: 'accent-1',
+            colorToken: normalizeColorToken(String(accountUser.colorToken || 'accent-1')),
+            avatarIcon: String(accountUser.avatarIcon || ''),
             archived: false,
         };
     }

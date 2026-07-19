@@ -45,7 +45,10 @@ final class UserRepository
      *   teamIds?: list<string>,
      *   canManageUsers?: bool,
      *   canManageTeams?: bool,
-     *   active?: bool
+     *   active?: bool,
+     *   shortName?: string,
+     *   colorToken?: string,
+     *   avatarIcon?: string
      * }  $input
      */
     public function upsert(array $input): AccountUser
@@ -90,6 +93,11 @@ final class UserRepository
             'canManageUsers' => $input['canManageUsers'] ?? $current?->canManageUsers ?? false,
             'canManageTeams' => $input['canManageTeams'] ?? $current?->canManageTeams ?? false,
             'active' => $input['active'] ?? $current?->active ?? true,
+            'shortName' => $input['shortName'] ?? $current?->shortName ?? '',
+            'colorToken' => $input['colorToken'] ?? $current?->colorToken ?? 'accent-1',
+            'avatarIcon' => array_key_exists('avatarIcon', $input)
+                ? $input['avatarIcon']
+                : ($current?->avatarIcon ?? ''),
         ]);
 
         $users[$id] = $user;

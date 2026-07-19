@@ -2,7 +2,45 @@
  * Trigram helpers for people and teams (3-letter short names).
  */
 
-const ACCENT_TOKENS = ['accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5', 'accent-6'];
+export const ACCENT_TOKENS = [
+    'accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5', 'accent-6',
+    'accent-7', 'accent-8', 'accent-9', 'accent-10', 'accent-11', 'accent-12',
+    'outline-1', 'outline-2', 'outline-3', 'outline-4', 'outline-5', 'outline-6',
+];
+
+export const TEAM_ACCENT_TOKENS = [
+    'accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5', 'accent-6',
+];
+
+/** @type {Record<string, string>} */
+export const ACCENT_HEX = {
+    'accent-1': '#2563eb',
+    'accent-2': '#0d9488',
+    'accent-3': '#c2410c',
+    'accent-4': '#7c3aed',
+    'accent-5': '#be185d',
+    'accent-6': '#475569',
+    'accent-7': '#15803d',
+    'accent-8': '#d97706',
+    'accent-9': '#0891b2',
+    'accent-10': '#4338ca',
+    'accent-11': '#e11d48',
+    'accent-12': '#65a30d',
+    'outline-1': '#2563eb',
+    'outline-2': '#0d9488',
+    'outline-3': '#c2410c',
+    'outline-4': '#7c3aed',
+    'outline-5': '#be185d',
+    'outline-6': '#475569',
+};
+
+export const AVATAR_ICON_OPTIONS = [
+    'user', 'user-tie', 'user-gear', 'user-graduate', 'user-astronaut', 'user-ninja',
+    'user-secret', 'user-doctor', 'users', 'people-group', 'person', 'face-smile',
+    'hat-wizard', 'crown', 'rocket', 'flask', 'code', 'laptop-code', 'database',
+    'chart-line', 'shield-halved', 'lightbulb', 'star', 'heart', 'paw', 'cat', 'dog',
+    'mug-hot', 'headphones', 'camera', 'gamepad', 'music', 'brush', 'compass', 'sitemap', 'brain',
+];
 
 /**
  * @param {string} token
@@ -11,6 +49,77 @@ const ACCENT_TOKENS = ['accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5
 export function normalizeColorToken(token) {
     const value = String(token || '').trim();
     return ACCENT_TOKENS.includes(value) ? value : 'accent-1';
+}
+
+/**
+ * @param {string} token
+ * @returns {boolean}
+ */
+export function isOutlineColorToken(token) {
+    return normalizeColorToken(token).startsWith('outline-');
+}
+
+/**
+ * @param {string} token
+ * @returns {string}
+ */
+export function colorTokenHex(token) {
+    return ACCENT_HEX[normalizeColorToken(token)];
+}
+
+/**
+ * @param {HTMLElement} el
+ * @param {string} token
+ * @param {'person'|'team'|'empty'} [kind]
+ */
+export function applyAvatarColor(el, token, kind = 'person') {
+    if (kind === 'empty') {
+        el.style.backgroundColor = '';
+        el.style.color = '';
+        el.style.borderColor = '';
+        return;
+    }
+    const normalized = normalizeColorToken(token);
+    const hex = colorTokenHex(normalized);
+    if (isOutlineColorToken(normalized)) {
+        el.style.backgroundColor = '#fff';
+        el.style.color = hex;
+        el.style.border = `2px solid ${hex}`;
+        return;
+    }
+    el.style.backgroundColor = hex;
+    el.style.color = '#fff';
+    el.style.border = '2px solid transparent';
+}
+
+/**
+ * @param {string|null|undefined} icon
+ * @returns {string}
+ */
+export function normalizeAvatarIcon(icon) {
+    let value = String(icon || '').trim().toLowerCase();
+    value = value.replace(/^fa-(solid|regular|brands)\s+/, '').replace(/^fa-/, '').trim();
+    if (!value || value === 'none' || value === 'trigram') {
+        return '';
+    }
+    return AVATAR_ICON_OPTIONS.includes(value) ? value : '';
+}
+
+/**
+ * First unused accent token, or cycle by count when all are taken.
+ * @param {Iterable<string>} usedTokens
+ * @param {number} [existingCount]
+ * @param {string[]} [pool]
+ * @returns {string}
+ */
+export function nextUnusedColorToken(usedTokens, existingCount = 0, pool = TEAM_ACCENT_TOKENS) {
+    const used = new Set([...usedTokens].map((token) => normalizeColorToken(token)));
+    for (const token of pool) {
+        if (!used.has(token)) {
+            return token;
+        }
+    }
+    return pool[existingCount % pool.length];
 }
 
 /**

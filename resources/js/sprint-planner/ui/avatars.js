@@ -4,7 +4,13 @@
 
 import { readAccountsBootstrap } from '../accounts-bridge.js';
 import { localizedText } from '../people-teams.js';
-import { normalizeColorToken, normalizeTrigram, teamTrigram } from '../trigram.js';
+import {
+    applyAvatarColor,
+    normalizeAvatarIcon,
+    normalizeColorToken,
+    normalizeTrigram,
+    teamTrigram,
+} from '../trigram.js';
 import { spT } from './helpers.js';
 
 /**
@@ -12,14 +18,26 @@ import { spT } from './helpers.js';
  * @param {string} text
  * @param {string} title
  * @param {'person'|'team'|'empty'} kind
+ * @param {{icon?: string|null}} [options]
  * @returns {HTMLSpanElement}
  */
-export function renderChip(colorToken, text, title, kind = 'person') {
+export function renderChip(colorToken, text, title, kind = 'person', options = {}) {
+    const token = normalizeColorToken(colorToken);
+    const icon = kind === 'person' ? normalizeAvatarIcon(options.icon) : '';
     const chip = document.createElement('span');
-    chip.className = `sp-avatar sp-avatar--${normalizeColorToken(colorToken)} sp-avatar--${kind}`;
-    chip.textContent = text || '—';
+    chip.className = `sp-avatar sp-avatar--${token} sp-avatar--${kind}${icon ? ' sp-avatar--icon' : ''}`;
+    applyAvatarColor(chip, token, kind);
     chip.title = title || text || '';
     chip.setAttribute('aria-label', title || text || spT('sp.report.unassigned'));
+
+    if (icon) {
+        const i = document.createElement('i');
+        i.className = `fa-solid fa-${icon}`;
+        i.setAttribute('aria-hidden', 'true');
+        chip.appendChild(i);
+    } else {
+        chip.textContent = text || '—';
+    }
     return chip;
 }
 
@@ -32,7 +50,9 @@ export function renderPersonChip(person) {
         return renderChip('accent-1', '—', spT('sp.report.unassigned'), 'empty');
     }
     const tri = normalizeTrigram(person.shortName, person.displayName);
-    return renderChip(person.colorToken, tri, person.displayName, 'person');
+    return renderChip(person.colorToken, tri, person.displayName, 'person', {
+        icon: person.avatarIcon,
+    });
 }
 
 /**
@@ -89,10 +109,11 @@ export function renderAssigneeChip(item, workspace, locale) {
     if (account && String(account.id) === id) {
         const displayName = String(account.displayName || account.email || id);
         return renderChip(
-            'accent-1',
-            normalizeTrigram('', displayName),
+            String(account.colorToken || 'accent-1'),
+            normalizeTrigram(String(account.shortName || ''), displayName),
             displayName,
             'person',
+            { icon: account.avatarIcon },
         );
     }
     return renderChip('accent-1', normalizeTrigram('', id), id, 'person');
@@ -122,10 +143,11 @@ export function renderParticipantChips(participantIds, workspace) {
         if (account && String(account.id) === String(id)) {
             const displayName = String(account.displayName || account.email || id);
             wrap.appendChild(renderChip(
-                'accent-1',
-                normalizeTrigram('', displayName),
+                String(account.colorToken || 'accent-1'),
+                normalizeTrigram(String(account.shortName || ''), displayName),
                 displayName,
                 'person',
+                { icon: account.avatarIcon },
             ));
             continue;
         }

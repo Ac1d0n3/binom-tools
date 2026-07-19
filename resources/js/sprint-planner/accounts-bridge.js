@@ -271,13 +271,19 @@ export function catalogFromAccounts(users, teams) {
             continue;
         }
         const displayName = String(user.displayName || user.email || id);
+        const persistedShort = String(user.shortName || '').trim();
+        const persistedColor = String(user.colorToken || '').trim();
+        const persistedIcon = String(user.avatarIcon || '').trim();
         people[id] = {
             id,
             displayName,
-            shortName: normalizeTrigram('', displayName),
+            shortName: persistedShort || normalizeTrigram('', displayName),
             email: String(user.email || ''),
             role: '',
-            colorToken: `accent-${((accent - 1) % 6) + 1}`,
+            colorToken: /^accent-(?:[1-9]|1[0-2])$|^outline-[1-6]$/.test(persistedColor)
+                ? persistedColor
+                : `accent-${((accent - 1) % 12) + 1}`,
+            avatarIcon: persistedIcon,
             archived: user.active === false,
         };
         accent += 1;
@@ -297,12 +303,16 @@ export function catalogFromAccounts(users, teams) {
             ? /** @type {{de?: string, en?: string}} */ (team.description)
             : { de: '', en: '' };
         const nameObj = { de: name.de || name.en || id, en: name.en || name.de || id };
+        const persistedShort = String(team.shortName || '').trim();
+        const persistedColor = String(team.colorToken || '').trim();
         teamMap[id] = {
             id,
             name: nameObj,
             description: { de: description.de || '', en: description.en || '' },
-            shortName: teamTrigram({ name: nameObj }, 'en'),
-            colorToken: `accent-${((Object.keys(teamMap).length % 6) + 1)}`,
+            shortName: persistedShort || teamTrigram({ name: nameObj }, 'en'),
+            colorToken: /^accent-(?:[1-9]|1[0-2])$|^outline-[1-6]$/.test(persistedColor)
+                ? persistedColor
+                : `accent-${((Object.keys(teamMap).length % 6) + 1)}`,
             memberIds: Array.isArray(team.memberIds) ? team.memberIds.map(String) : [],
             archived: Boolean(team.archived),
         };

@@ -2,6 +2,9 @@
 
 namespace App\Accounts;
 
+use App\Support\AccentColors;
+use App\Support\AvatarIcons;
+
 final class AccountUser
 {
     /**
@@ -16,6 +19,9 @@ final class AccountUser
         public readonly bool $canManageUsers,
         public readonly bool $canManageTeams,
         public readonly bool $active,
+        public readonly string $shortName = '',
+        public readonly string $colorToken = 'accent-1',
+        public readonly string $avatarIcon = '',
     ) {}
 
     /**
@@ -48,15 +54,20 @@ final class AccountUser
             $teamIds = array_values(array_map('strval', $data['teamIds']));
         }
 
+        $displayName = trim((string) ($data['displayName'] ?? $email));
+
         return new self(
             id: $id,
             email: $email,
-            displayName: trim((string) ($data['displayName'] ?? $email)),
+            displayName: $displayName,
             passwordHash: $hash,
             teamIds: $teamIds,
             canManageUsers: (bool) ($data['canManageUsers'] ?? false),
             canManageTeams: (bool) ($data['canManageTeams'] ?? false),
             active: (bool) ($data['active'] ?? true),
+            shortName: strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', (string) ($data['shortName'] ?? '')) ?: '', 0, 3)),
+            colorToken: AccentColors::normalize($data['colorToken'] ?? null),
+            avatarIcon: AvatarIcons::normalize($data['avatarIcon'] ?? null),
         );
     }
 
@@ -74,6 +85,9 @@ final class AccountUser
             'canManageUsers' => $this->canManageUsers,
             'canManageTeams' => $this->canManageTeams,
             'active' => $this->active,
+            'shortName' => $this->shortName,
+            'colorToken' => $this->colorToken,
+            'avatarIcon' => $this->avatarIcon,
         ];
     }
 
@@ -92,6 +106,9 @@ final class AccountUser
             'canManageUsers' => $this->canManageUsers,
             'canManageTeams' => $this->canManageTeams,
             'active' => $this->active,
+            'shortName' => $this->shortName,
+            'colorToken' => $this->colorToken,
+            'avatarIcon' => $this->avatarIcon,
         ];
     }
 }

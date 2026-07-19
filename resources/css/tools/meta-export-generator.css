@@ -1,0 +1,105 @@
+@import '../prism/prism-playbook.css';
+
+.meta-export-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+}
+
+.meta-export-controls .sp-field,
+.meta-export-controls .schema-editor-field {
+    flex: 1 1 16rem;
+    margin: 0;
+}
+
+.meta-export-note {
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--tools-accent, #3b82f6) 12%, transparent);
+    font-size: 0.925rem;
+}
+
+.meta-export-note[hidden] {
+    display: none;
+}
+
+/* Prism viewbox chrome (same as playbook examples) */
+.meta-export-generator .playbook-code,
+#meta-export-generator-app .playbook-code {
+    margin: 0.75rem 0 0;
+    border: 1px solid var(--base-border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--content-background-color);
+}
+
+#meta-export-generator-app .playbook-code__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--base-border-color);
+    background: var(--surface-background-color);
+}
+
+#meta-export-generator-app .playbook-code__title {
+    min-width: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--content-font-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#meta-export-generator-app .playbook-code__toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+#meta-export-generator-app .playbook-code__language {
+    padding: 0.12rem 0.45rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--theme-color-accent) 14%, var(--surface-background-color));
+    color: var(--theme-color-accent);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+#meta-export-generator-app .playbook-code__copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--bn-color-text-secondary);
+    cursor: pointer;
+}
+
+#meta-export-generator-app .playbook-code__copy:hover {
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+    color: var(--content-font-color);
+}
+
+#meta-export-generator-app .playbook-code pre {
+    margin: 0;
+    overflow-x: auto;
+    max-height: 28rem;
+}
+
+#meta-export-generator-app .playbook-code code[class*='language-'] {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    tab-size: 4;
+}

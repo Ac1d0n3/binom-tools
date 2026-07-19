@@ -6,8 +6,11 @@ use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
 use App\Accounts\UserRepository;
 use App\Http\Controllers\Controller;
+use App\Support\AccentColors;
+use App\Support\AvatarIcons;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -68,6 +71,7 @@ class AuthController extends Controller
 
         return view('accounts.profile', [
             'account' => $user->toPublicArray(),
+            'profileAvatarEnabled' => $this->config->profileAvatarEnabled(),
         ]);
     }
 
@@ -76,16 +80,30 @@ class AuthController extends Controller
         $user = $this->auth->user();
         abort_if($user === null, 401);
 
-        $data = $request->validate([
+        $rules = [
             'displayName' => ['required', 'string', 'max:120'],
             'current_password' => ['nullable', 'string'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
+
+        if ($this->config->profileAvatarEnabled()) {
+            $rules['shortName'] = ['nullable', 'string', 'max:3'];
+            $rules['colorToken'] = ['nullable', 'string', Rule::in(AccentColors::TOKENS)];
+            $rules['avatarIcon'] = ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))];
+        }
+
+        $data = $request->validate($rules);
 
         $payload = [
             ...$user->toArray(),
             'displayName' => $data['displayName'],
         ];
+
+        if ($this->config->profileAvatarEnabled()) {
+            $payload['shortName'] = $data['shortName'] ?? '';
+            $payload['colorToken'] = $data['colorToken'] ?? 'accent-1';
+            $payload['avatarIcon'] = AvatarIcons::normalize($data['avatarIcon'] ?? '');
+        }
 
         if (! empty($data['password'])) {
             if (empty($data['current_password']) || ! password_verify($data['current_password'], $user->passwordHash)) {

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\MembershipSync;
 use App\Accounts\TeamRepository;
 use App\Accounts\UserRepository;
 use App\Http\Controllers\Controller;
+use App\Support\AccentColors;
+use App\Support\AvatarIcons;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class UsersController extends Controller
@@ -16,23 +20,47 @@ class UsersController extends Controller
         private readonly AccountAuth $auth,
         private readonly UserRepository $users,
         private readonly TeamRepository $teams,
+        private readonly MembershipSync $membership,
     ) {}
 
     public function index(): View
     {
-        $actor = $this->auth->user();
-        abort_if($actor === null || ! $actor->canManageUsers, 403);
+        $this->assertCanManage();
 
         return view('accounts.users', [
             'users' => array_map(static fn ($u) => $u->toPublicArray(), $this->users->all()),
             'teams' => array_map(static fn ($t) => $t->toArray(), $this->teams->all(true)),
+            'actorId' => $this->auth->id(),
+        ]);
+    }
+
+    public function create(): View
+    {
+        $this->assertCanManage();
+
+        return view('accounts.users-form', [
+            'user' => null,
+            'teams' => array_map(static fn ($t) => $t->toArray(), $this->teams->all(true)),
+            'actorId' => $this->auth->id(),
+        ]);
+    }
+
+    public function edit(string $userId): View
+    {
+        $this->assertCanManage();
+        $user = $this->users->findById($userId);
+        abort_if($user === null, 404);
+
+        return view('accounts.users-form', [
+            'user' => $user->toPublicArray(),
+            'teams' => array_map(static fn ($t) => $t->toArray(), $this->teams->all(true)),
+            'actorId' => $this->auth->id(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $actor = $this->auth->user();
-        abort_if($actor === null || ! $actor->canManageUsers, 403);
+        $this->assertCanManage();
 
         $data = $request->validate([
             'email' => ['required', 'email'],
@@ -43,9 +71,12 @@ class UsersController extends Controller
             'canManageUsers' => ['sometimes', 'boolean'],
             'canManageTeams' => ['sometimes', 'boolean'],
             'active' => ['sometimes', 'boolean'],
+            'shortName' => ['nullable', 'string', 'max:3'],
+            'colorToken' => ['nullable', 'string', Rule::in(AccentColors::TOKENS)],
+            'avatarIcon' => ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))],
         ]);
 
-        $this->users->upsert([
+        $user = $this->users->upsert([
             'email' => $data['email'],
             'displayName' => $data['displayName'],
             'passwordHash' => password_hash($data['password'], PASSWORD_DEFAULT),
@@ -53,15 +84,21 @@ class UsersController extends Controller
             'canManageUsers' => $request->boolean('canManageUsers'),
             'canManageTeams' => $request->boolean('canManageTeams'),
             'active' => $request->boolean('active', true),
+            'shortName' => $data['shortName'] ?? '',
+            'colorToken' => $data['colorToken'] ?? 'accent-1',
+            'avatarIcon' => AvatarIcons::normalize($data['avatarIcon'] ?? ''),
         ]);
 
-        return back()->with('status', 'user-created');
+        $this->membership->syncTeamsFromUser($user);
+
+        return redirect()
+            ->to(locale_route('accounts.users'))
+            ->with('status', 'user-created');
     }
 
     public function update(Request $request, string $userId): RedirectResponse
     {
-        $actor = $this->auth->user();
-        abort_if($actor === null || ! $actor->canManageUsers, 403);
+        $this->assertCanManage();
 
         $existing = $this->users->findById($userId);
         abort_if($existing === null, 404);
@@ -75,6 +112,9 @@ class UsersController extends Controller
             'canManageUsers' => ['sometimes', 'boolean'],
             'canManageTeams' => ['sometimes', 'boolean'],
             'active' => ['sometimes', 'boolean'],
+            'shortName' => ['nullable', 'string', 'max:3'],
+            'colorToken' => ['nullable', 'string', Rule::in(AccentColors::TOKENS)],
+            'avatarIcon' => ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))],
         ]);
 
         $payload = [
@@ -85,6 +125,9 @@ class UsersController extends Controller
             'canManageUsers' => $request->boolean('canManageUsers'),
             'canManageTeams' => $request->boolean('canManageTeams'),
             'active' => $request->boolean('active', true),
+            'shortName' => $data['shortName'] ?? '',
+            'colorToken' => $data['colorToken'] ?? 'accent-1',
+            'avatarIcon' => AvatarIcons::normalize($data['avatarIcon'] ?? ''),
         ];
 
         if (! empty($data['password'])) {
@@ -92,19 +135,31 @@ class UsersController extends Controller
         }
 
         unset($payload['password']);
-        $this->users->upsert($payload);
+        $user = $this->users->upsert($payload);
+        $this->membership->syncTeamsFromUser($user);
 
-        return back()->with('status', 'user-updated');
+        return redirect()
+            ->to(locale_route('accounts.users'))
+            ->with('status', 'user-updated');
     }
 
     public function destroy(string $userId): RedirectResponse
     {
-        $actor = $this->auth->user();
-        abort_if($actor === null || ! $actor->canManageUsers, 403);
-        abort_if($actor->id === $userId, 422);
+        $this->assertCanManage();
+        abort_if($this->auth->id() === $userId, 422);
+        abort_if($this->users->findById($userId) === null, 404);
 
         $this->users->delete($userId);
+        $this->membership->removeUserFromTeams($userId);
 
-        return back()->with('status', 'user-deleted');
+        return redirect()
+            ->to(locale_route('accounts.users'))
+            ->with('status', 'user-deleted');
+    }
+
+    private function assertCanManage(): void
+    {
+        $actor = $this->auth->user();
+        abort_if($actor === null || ! $actor->canManageUsers, 403);
     }
 }

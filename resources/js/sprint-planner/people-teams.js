@@ -1,6 +1,6 @@
 import { createPersonId, createTeamId } from './ids.js';
 import { loadWorkspace, saveWorkspace } from './storage.js';
-import { normalizeColorToken, normalizeTrigram, teamTrigram } from './trigram.js';
+import { normalizeAvatarIcon, normalizeColorToken, normalizeTrigram, teamTrigram } from './trigram.js';
 
 export function listPeople(includeArchived = false) {
     const { data } = loadWorkspace();
@@ -24,6 +24,7 @@ export function upsertPerson(input) {
         email: String(input.email || '').trim(),
         role: String(input.role || '').trim(),
         colorToken: normalizeColorToken(input.colorToken || 'accent-1'),
+        avatarIcon: normalizeAvatarIcon(input.avatarIcon),
         archived: Boolean(input.archived),
     };
     if (!workspace.people[id].displayName) {

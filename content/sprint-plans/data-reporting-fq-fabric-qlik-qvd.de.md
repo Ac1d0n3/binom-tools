@@ -182,6 +182,8 @@ tasks:
       Achte auf: inoffizielle Datenbanken, Shared Drives als „System of Record“ und unklare SAP- vs. Satelliten-Ownership.
     linkedStories: before-building-the-first-table, sap-overview
     helpLinks:
+      - label: Meta Export Generator
+        href: /tools/meta-export-generator
       - label: Bevor die erste Tabelle entsteht
         href: /playbooks/before-building-the-first-table
       - label: SAP Data & Analytics Stack
@@ -314,6 +316,8 @@ tasks:
       Achte auf: falsche Sicherheit durch Tool-Lineage, die nur einen Teilpfad abdeckt.
     linkedStories: metadata-catalog-lineage, missing-pieces-metadata-catalog-lineage
     helpLinks:
+      - label: Meta Export Generator
+        href: /tools/meta-export-generator
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
       - label: Fehlende Bausteine – Metadaten, Katalog & Lineage
@@ -710,6 +714,8 @@ stories:
 links:
   - label: Schema YML Editor
     href: /tools/schema-yml-editor
+  - label: Meta Export Generator
+    href: /tools/meta-export-generator
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
 
@@ -736,6 +742,8 @@ tasks:
         href: /playbooks/dbt-role
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
+      - label: Meta Export Generator
+        href: /tools/meta-export-generator
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
   - id: track-pilot-blockers

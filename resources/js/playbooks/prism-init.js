@@ -121,7 +121,7 @@ function highlightCodeBlock(block) {
     const raw = originalCodeCache.get(code) ?? '';
     const grammar = Prism.languages[language];
 
-    pre.classList.add('line-numbers', `language-${language}`);
+    pre.className = `line-numbers language-${language}`;
     code.className = `language-${language}`;
 
     if (!grammar) {
@@ -161,6 +161,41 @@ function highlightVisiblePanels(root) {
     } else {
         highlightPlaybookCode(root);
     }
+}
+
+/**
+ * @param {HTMLElement} block
+ * @param {string} rawCode
+ * @param {{ language?: string, title?: string }} [options]
+ */
+export function setPlaybookCodeContent(block, rawCode, options = {}) {
+    if (!(block instanceof HTMLElement)) {
+        return;
+    }
+
+    if (options.language) {
+        block.dataset.language = options.language;
+        const languageEl = block.querySelector('.playbook-code__language');
+        if (languageEl) {
+            languageEl.textContent = options.language;
+        }
+    }
+
+    if (options.title != null) {
+        block.dataset.title = options.title;
+        const titleEl = block.querySelector('.playbook-code__title');
+        if (titleEl) {
+            titleEl.textContent = options.title;
+        }
+    }
+
+    const code = block.querySelector('code');
+    if (!code) {
+        return;
+    }
+
+    originalCodeCache.set(code, rawCode);
+    highlightCodeBlock(block);
 }
 
 /**

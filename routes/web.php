@@ -26,6 +26,7 @@ use App\Http\Controllers\Tools\PiiUnreviewedGateGeneratorController;
 use App\Http\Controllers\Tools\PromptStudioConfigController;
 use App\Http\Controllers\Tools\PromptStudioController;
 use App\Http\Controllers\Tools\SchemaYmlEditorController;
+use App\Http\Controllers\Tools\MetaExportGeneratorController;
 use App\Http\Controllers\Tools\ToolsLandingController;
 use App\Http\Controllers\Tools\ToolsOverviewController;
 use Illuminate\Support\Facades\Route;
@@ -68,7 +69,11 @@ $registerRoutes = static function (bool $localized): void {
         Route::get('/account', [AuthController::class, 'profile'])->name($name('accounts.profile'));
         Route::put('/account', [AuthController::class, 'updateProfile'])->name($name('accounts.profile.update'));
         Route::get('/account/users', [UsersController::class, 'index'])->name($name('accounts.users'));
+        Route::get('/account/users/create', [UsersController::class, 'create'])->name($name('accounts.users.create'));
         Route::post('/account/users', [UsersController::class, 'store'])->name($name('accounts.users.store'));
+        Route::get('/account/users/{userId}/edit', [UsersController::class, 'edit'])
+            ->where('userId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.users.edit'));
         Route::put('/account/users/{userId}', [UsersController::class, 'update'])
             ->where('userId', '[a-zA-Z0-9_-]+')
             ->name($name('accounts.users.update'));
@@ -76,7 +81,11 @@ $registerRoutes = static function (bool $localized): void {
             ->where('userId', '[a-zA-Z0-9_-]+')
             ->name($name('accounts.users.destroy'));
         Route::get('/account/teams', [TeamsController::class, 'index'])->name($name('accounts.teams'));
+        Route::get('/account/teams/create', [TeamsController::class, 'create'])->name($name('accounts.teams.create'));
         Route::post('/account/teams', [TeamsController::class, 'store'])->name($name('accounts.teams.store'));
+        Route::get('/account/teams/{teamId}/edit', [TeamsController::class, 'edit'])
+            ->where('teamId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.teams.edit'));
         Route::put('/account/teams/{teamId}', [TeamsController::class, 'update'])
             ->where('teamId', '[a-zA-Z0-9_-]+')
             ->name($name('accounts.teams.update'));
@@ -84,6 +93,9 @@ $registerRoutes = static function (bool $localized): void {
             ->where('teamId', '[a-zA-Z0-9_-]+')
             ->name($name('accounts.teams.destroy'));
         Route::get('/account/story-access', [StoryAclController::class, 'index'])->name($name('accounts.story-acl'));
+        Route::get('/account/story-access/{slug}/edit', [StoryAclController::class, 'edit'])
+            ->where('slug', '[a-z0-9-]+')
+            ->name($name('accounts.story-acl.edit'));
         Route::put('/account/story-access/{slug}', [StoryAclController::class, 'update'])
             ->where('slug', '[a-z0-9-]+')
             ->name($name('accounts.story-acl.update'));
@@ -148,6 +160,8 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.pii-unreviewed-gate-generator'));
     Route::get('/tools/schema-yml-editor', [SchemaYmlEditorController::class, 'show'])
         ->name($name('tools.schema-yml-editor'));
+    Route::get('/tools/meta-export-generator', [MetaExportGeneratorController::class, 'show'])
+        ->name($name('tools.meta-export-generator'));
     Route::get('/tools/dbt-dq-macro-generator', [DbtDqMacroGeneratorController::class, 'show'])
         ->name($name('tools.dbt-dq-macro-generator'));
     Route::get('/tools/dbt-dq-rules-generator', [DbtDqRulesGeneratorController::class, 'show'])
