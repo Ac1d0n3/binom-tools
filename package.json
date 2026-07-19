@@ -3,9 +3,10 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "build": "npm run sync:images && npm run sync:avatar-icons && vite build && node scripts/rewrite-build-asset-urls.mjs",
+        "sync:avatar-icons": "node scripts/sync-avatar-icons.mjs",
         "sync:images": "node scripts/sync-playbook-images.mjs",
         "sync:images:force": "node scripts/sync-playbook-images.mjs --force",
-        "build": "npm run sync:images && vite build && node scripts/rewrite-build-asset-urls.mjs",
         "build:local": "npm run htaccess:local && npm run build",
         "build:production": "npm run build",
         "deploy:ftp": "node scripts/pack-ftp-deploy.mjs",

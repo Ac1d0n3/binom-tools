@@ -60,5 +60,44 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertContains('data-reporting-fq-fivetran-snowflake-qlik', $slugs);
         $this->assertContains('data-reporting-fq-fivetran-snowflake-powerbi', $slugs);
         $this->assertContains('data-reporting-fq-fabric-qlik-qvd', $slugs);
+        $this->assertContains('planning-month', $slugs);
+        $this->assertContains('planning-quarter-lite', $slugs);
+        $this->assertContains('database-model', $slugs);
+        $this->assertContains('report-kpi-analysis', $slugs);
+        $this->assertContains('change-tests', $slugs);
+    }
+
+    public function test_loads_new_lightweight_templates(): void
+    {
+        $repo = new SprintPlanRepository(
+            new SprintPlanFrontmatterParser,
+            new SprintFenceParser,
+            new SprintPlanValidator,
+        );
+        $repo->clearCache();
+
+        $cases = [
+            'planning-month' => 4,
+            'planning-quarter-lite' => 13,
+            'database-model' => 4,
+            'report-kpi-analysis' => 4,
+            'change-tests' => 3,
+        ];
+
+        foreach ($cases as $slug => $duration) {
+            $plan = $repo->find($slug);
+            $this->assertNotNull($plan, $slug);
+            $this->assertFalse(
+                $plan->hasErrors(),
+                $slug."\n".implode("\n", $plan->toClientArray()['errors'] ?? []),
+            );
+            $client = $plan->toClientArray();
+            $this->assertSame($slug, $client['slug']);
+            $this->assertSame($duration, $client['duration']);
+            $this->assertCount($duration, $client['sprints']);
+            $this->assertSame('week-01', $client['sprints'][0]['id']);
+            $this->assertNotEmpty($client['locales']['de']['sprints'][0]['title']);
+            $this->assertNotEmpty($client['locales']['en']['sprints'][0]['title']);
+        }
     }
 }

@@ -20,7 +20,7 @@ import {
     buildWorkspaceExport,
     validateImportPayload,
 } from './export-import.js';
-import { addCustomSprint, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate } from './instance-manager.js';
+import { addCustomSprint, addSprintFromTemplate, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate } from './instance-manager.js';
 import {
     createLinkAttachment,
     isAllowedAttachment,
@@ -567,6 +567,78 @@ describe('instance-manager', () => {
         expect(instance.customSprints).toHaveLength(1);
         expect(instance.customSprints[0].title.en).toBe('Extra');
         expect(template.locales.en.title).toBe('EN');
+    });
+
+    it('adds a sprint from another template with tasks and deliverables', () => {
+        const base = startInstanceFromTemplate({
+            slug: 'base-plan',
+            version: 1,
+            sprints: [{ id: 'week-01', number: 1, tasks: [], deliverables: [] }],
+            locales: {
+                de: { title: 'Basis', description: '', sprints: [] },
+                en: { title: 'Base', description: '', sprints: [] },
+            },
+        }, { startedAt: '2026-07-01' });
+        expect(base.ok).toBe(true);
+
+        const donor = {
+            slug: 'planning-month',
+            version: 1,
+            sprints: [
+                {
+                    id: 'week-02',
+                    number: 2,
+                    notes: true,
+                    stories: [{ slug: 'eight-pillars', required: false }],
+                    linkedStorySlugs: ['eight-pillars'],
+                    links: [],
+                    tasks: [
+                        { id: 't1', assigneeType: 'person', assigneeId: null, helpLinks: [], stories: [] },
+                    ],
+                    deliverables: [
+                        { id: 'd1', helpLinks: [], stories: [] },
+                    ],
+                },
+            ],
+            locales: {
+                de: {
+                    title: 'Monat',
+                    description: '',
+                    sprints: [{
+                        id: 'week-02',
+                        title: 'Umsetzung',
+                        goal: 'Liefern',
+                        tasks: [{ id: 't1', label: 'Aufgabe DE', helpText: 'Hilfe DE' }],
+                        deliverables: [{ id: 'd1', label: 'Ergebnis DE', helpText: '' }],
+                    }],
+                },
+                en: {
+                    title: 'Month',
+                    description: '',
+                    sprints: [{
+                        id: 'week-02',
+                        title: 'Execution',
+                        goal: 'Deliver',
+                        tasks: [{ id: 't1', label: 'Task EN', helpText: 'Help EN' }],
+                        deliverables: [{ id: 'd1', label: 'Outcome EN', helpText: '' }],
+                    }],
+                },
+            },
+        };
+
+        const added = addSprintFromTemplate(base.instance.id, donor, 'week-02');
+        expect(added.ok).toBe(true);
+        const instance = loadWorkspace().data.instances[base.instance.id];
+        expect(instance.customSprints).toHaveLength(1);
+        const sprint = instance.customSprints[0];
+        expect(sprint.title.de).toBe('Umsetzung');
+        expect(sprint.title.en).toBe('Execution');
+        expect(sprint.number).toBe(2);
+        expect(instance.customTasks[sprint.id]).toHaveLength(1);
+        expect(instance.customTasks[sprint.id][0].label.de).toBe('Aufgabe DE');
+        expect(instance.customTasks[sprint.id][0].label.en).toBe('Task EN');
+        expect(instance.customDeliverables[sprint.id]).toHaveLength(1);
+        expect(instance.customDeliverables[sprint.id][0].label.en).toBe('Outcome EN');
     });
 
     it('assigns template items to the active person on start', () => {

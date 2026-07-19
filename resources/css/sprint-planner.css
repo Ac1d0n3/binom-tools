@@ -255,6 +255,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
+    height: 100%;
     padding: 1rem;
     border: 1px solid var(--sp-border);
     border-radius: var(--sp-radius);
@@ -562,7 +563,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
 }
 
 .sp-templates-toolbar {
@@ -1610,13 +1612,43 @@
 }
 
 .sp-avatar--icon {
+    width: 1.85rem;
+    min-width: 1.85rem;
+    padding: 0;
+    border-radius: 999px;
     font-size: 0.78rem;
-    font-weight: 400;
     letter-spacing: 0;
+    overflow: hidden;
+}
+
+.sp-avatar--person {
+    border-radius: 999px;
 }
 
 .sp-avatar--icon i {
     line-height: 1;
+    font-family: "Font Awesome 7 Free", "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+}
+
+.sp-avatar-icon-svg {
+    display: block;
+    width: 1.05em;
+    height: 1.05em;
+}
+
+.sp-avatar-icon-mask {
+    display: block;
+    width: 1.05em;
+    height: 1.05em;
+    background-color: currentColor;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
 }
 
 .sp-avatar--accent-1 { background-color: #2563eb; }
@@ -1860,13 +1892,16 @@ html[data-color-scheme='dark'] .sp-app {
 .sp-icon-picker__option {
     cursor: pointer;
     border: 1px solid var(--sp-border, var(--base-border-color));
-    border-radius: 0.45rem;
+    border-radius: 999px;
     background: color-mix(in srgb, var(--bn-color-surface, #fff) 94%, transparent);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 2.35rem;
     height: 2.35rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .sp-icon-picker__option input {
@@ -1887,6 +1922,22 @@ html[data-color-scheme='dark'] .sp-app {
     font-size: 0.95rem;
     line-height: 1;
     color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sp-icon-picker__preview svg,
+.sp-icon-picker__preview .sp-avatar-icon-svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: block;
+}
+
+.sp-icon-picker__preview i {
+    font-family: "Font Awesome 7 Free", "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
 }
 
 .sp-icon-picker__preview--trigram {

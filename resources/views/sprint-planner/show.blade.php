@@ -266,6 +266,28 @@
             </form>
         </dialog>
 
+        <dialog id="sp-add-sprint-template-dialog" class="sp-dialog">
+            <form method="dialog" id="sp-add-sprint-template-form" class="sp-dialog__form">
+                <h2 class="sp-dialog__title" data-i18n="sp.dialog.addSprintTitle">Sprint from template</h2>
+                <p class="sp-password-note" data-i18n="sp.dialog.addSprintLead">
+                    Choose a template first, then the sprint to copy into this plan.
+                </p>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.pickTemplate">Template</span>
+                    <select id="sp-add-sprint-template" class="tools-input" required></select>
+                </label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.pickSprint">Sprint from template</span>
+                    <select id="sp-add-sprint-week" class="tools-input" required></select>
+                </label>
+                <p id="sp-add-sprint-template-error" class="sp-field-error" hidden></p>
+                <div class="sp-dialog__actions">
+                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.addSprint">Add sprint</button>
+                </div>
+            </form>
+        </dialog>
+
         <dialog id="sp-item-dialog" class="sp-dialog">
             <form method="dialog" id="sp-item-form" class="sp-dialog__form">
                 <h2 class="sp-dialog__title" id="sp-item-dialog-title" data-i18n="sp.dialog.itemTitle">Item</h2>

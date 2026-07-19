@@ -41,7 +41,7 @@
                     @php
                         $chip = $user['shortName'] ?: strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $user['displayName'] ?? '') ?: 'U', 0, 3));
                         $color = AccentColors::normalize($user['colorToken'] ?? null);
-                        $iconClass = \App\Support\AvatarIcons::cssClass($user['avatarIcon'] ?? '');
+                        $iconSvg = \App\Support\AvatarIcons::svgMarkup($user['avatarIcon'] ?? '');
                         $userTeams = array_values(array_filter(array_map(
                             static fn ($id) => $teamLabels[$id] ?? null,
                             $user['teamIds'] ?? []
@@ -50,12 +50,12 @@
                     <div class="sp-list__row">
                         <div class="sp-list__identity">
                             <span
-                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--person{{ $iconClass !== '' ? ' sp-avatar--icon' : '' }}"
+                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--person{{ $iconSvg !== '' ? ' sp-avatar--icon' : '' }}"
                                 style="{{ AccentColors::chipStyle($color) }}"
                                 aria-hidden="true"
                             >
-                                @if ($iconClass !== '')
-                                    <i class="{{ $iconClass }}"></i>
+                                @if ($iconSvg !== '')
+                                    {!! $iconSvg !!}
                                 @else
                                     {{ $chip }}
                                 @endif

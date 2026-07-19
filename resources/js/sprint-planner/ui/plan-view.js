@@ -32,6 +32,7 @@ import { filterSprints, hasActiveItemFilters, normalizePlanFilters } from '../fi
 import {
     addCustomItem,
     addCustomSprint,
+    addSprintFromTemplate,
     assignItem,
     backfillParticipantsFromAssignees,
     claimAllUnassigned,
@@ -138,8 +139,9 @@ export function initPlanShowPage() {
         bindClaimAll(instanceId);
         bindTemplateRecover(instanceId, render);
         document.getElementById('sp-add-sprint')?.addEventListener('click', () => {
-            openSprintDialog(null, false);
+            openAddSprintFromTemplateDialog();
         });
+        bindAddSprintFromTemplateDialog(instanceId, render);
         document.getElementById('sp-unlock-form')?.addEventListener('submit', async (event) => {
             event.preventDefault();
             const { data } = loadWorkspace();
@@ -1781,6 +1783,77 @@ function renderSprintActions(sprint, instance, template, locale) {
         row.appendChild(btn);
     }
     return row;
+}
+
+function openAddSprintFromTemplateDialog() {
+    closeHelpPanel();
+    const locale = getLocale();
+    const templates = readTemplatesFromDom().filter((t) => Array.isArray(t.sprints) && t.sprints.length > 0);
+    if (templates.length === 0) {
+        showToast(spT('sp.empty.templates'));
+        return;
+    }
+    const templateSelect = document.getElementById('sp-add-sprint-template');
+    const sprintSelect = document.getElementById('sp-add-sprint-week');
+    const errorEl = document.getElementById('sp-add-sprint-template-error');
+    const dialog = document.getElementById('sp-add-sprint-template-dialog');
+    if (!templateSelect || !sprintSelect || !dialog) {
+        return;
+    }
+    if (errorEl) {
+        errorEl.hidden = true;
+        errorEl.textContent = '';
+    }
+    fillSelect(
+        templateSelect,
+        templates.map((t) => ({
+            id: t.slug,
+            label: t.locales?.[locale]?.title || t.locales?.en?.title || t.slug,
+        })),
+        templates[0]?.slug || '',
+        false,
+    );
+    const fillWeeks = () => {
+        const template = templates.find((t) => t.slug === templateSelect.value);
+        const localePack = template?.locales?.[locale] || template?.locales?.en || {};
+        const textsById = Object.fromEntries((localePack.sprints || []).map((s) => [s.id, s]));
+        const options = (template?.sprints || []).map((s) => ({
+            id: s.id,
+            label: `${s.number}. ${textsById[s.id]?.title || s.id}`,
+        }));
+        fillSelect(sprintSelect, options, options[0]?.id || '', false);
+    };
+    templateSelect.onchange = fillWeeks;
+    fillWeeks();
+    dialog.showModal();
+}
+
+function bindAddSprintFromTemplateDialog(instanceId, render) {
+    const dialog = document.getElementById('sp-add-sprint-template-dialog');
+    dialog?.addEventListener('close', () => {
+        if (dialog.returnValue !== 'confirm') {
+            return;
+        }
+        const slug = document.getElementById('sp-add-sprint-template')?.value || '';
+        const sprintId = document.getElementById('sp-add-sprint-week')?.value || '';
+        const errorEl = document.getElementById('sp-add-sprint-template-error');
+        const template = readTemplatesFromDom().find((t) => t.slug === slug);
+        if (!template || !sprintId) {
+            if (errorEl) {
+                errorEl.hidden = false;
+                errorEl.textContent = spT('sp.error.pickTemplateRequired');
+            }
+            showToast(spT('sp.error.pickTemplateRequired'));
+            return;
+        }
+        const result = addSprintFromTemplate(instanceId, template, sprintId);
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.toast.sprintFromTemplate'));
+        render();
+    });
 }
 
 function bindDialogs(instanceId, render) {

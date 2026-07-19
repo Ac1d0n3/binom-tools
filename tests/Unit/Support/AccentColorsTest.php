@@ -33,5 +33,10 @@ class AccentColorsTest extends TestCase
         $this->assertSame('user-tie', AvatarIcons::normalize('fa-solid fa-user-tie'));
         $this->assertSame('', AvatarIcons::normalize('nope'));
         $this->assertSame('fa-solid fa-rocket', AvatarIcons::cssClass('rocket'));
+        $this->assertSame('icons/avatar/rocket.svg', AvatarIcons::svgPublicPath('rocket'));
+        $markup = AvatarIcons::svgMarkup('rocket');
+        $this->assertStringContainsString('<svg', $markup);
+        $this->assertStringContainsString('sp-avatar-icon-svg', $markup);
+        $this->assertStringContainsString('currentColor', $markup);
     }
 }

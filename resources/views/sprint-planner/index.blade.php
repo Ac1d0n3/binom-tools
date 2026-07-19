@@ -110,12 +110,7 @@
         <section class="sp-section" aria-labelledby="sp-active-heading">
             <h2 id="sp-active-heading" class="sp-section__title" data-i18n="sp.section.activePlans">Active plans</h2>
             <div id="sp-active-plans" class="sp-card-grid"></div>
-            <p id="sp-active-empty" class="sp-empty" hidden data-i18n="sp.empty.activePlans">No active plans yet. Start one from a template.</p>
-        </section>
-
-        <section class="sp-section" aria-labelledby="sp-templates-heading">
-            <h2 id="sp-templates-heading" class="sp-section__title" data-i18n="sp.section.templates">Templates</h2>
-            <div id="sp-template-cards" class="sp-card-grid"></div>
+            <p id="sp-active-empty" class="sp-empty" hidden data-i18n="sp.empty.activePlans">No active plans yet. Start one under Templates.</p>
         </section>
 
         <section class="sp-section" aria-labelledby="sp-archive-heading">
@@ -123,30 +118,6 @@
             <div id="sp-archived-plans" class="sp-card-grid"></div>
             <p id="sp-archive-empty" class="sp-empty" hidden data-i18n="sp.empty.archive">No archived plans.</p>
         </section>
-
-        <dialog id="sp-start-dialog" class="sp-dialog">
-            <form method="dialog" id="sp-start-form" class="sp-dialog__form">
-                <h2 class="sp-dialog__title" data-i18n="sp.dialog.startTitle">Start plan</h2>
-                <input type="hidden" id="sp-start-slug" name="slug">
-                <label class="sp-field">
-                    <span data-i18n="sp.field.startDate">Start date</span>
-                    <input type="date" id="sp-start-date" class="tools-input" required>
-                </label>
-                <fieldset class="sp-field">
-                    <legend data-i18n="sp.field.teams">Teams</legend>
-                    <div id="sp-start-teams" class="sp-checkbox-list"></div>
-                </fieldset>
-                <fieldset class="sp-field">
-                    <legend data-i18n="sp.field.participants">Participants</legend>
-                    <div id="sp-start-participants" class="sp-checkbox-list"></div>
-                </fieldset>
-                <div class="sp-dialog__actions">
-                    <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
-                    <button type="submit" value="demo" class="tools-btn tools-btn--secondary" id="sp-start-demo" data-i18n="sp.action.startDemo">Start demo (session only)</button>
-                    <button type="submit" value="confirm" class="tools-btn tools-btn--primary" id="sp-start-save" data-i18n="sp.action.start">Start</button>
-                </div>
-            </form>
-        </dialog>
 
         <div id="sp-toast" class="sp-toast" role="status" aria-live="polite" hidden></div>
     </div>

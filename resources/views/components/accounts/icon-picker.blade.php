@@ -21,10 +21,16 @@
             <span class="visually-hidden" data-i18n="accounts.avatarTrigram">Trigram</span>
         </label>
         @foreach (AvatarIcons::OPTIONS as $icon)
-            @php $css = AvatarIcons::cssClass($icon); @endphp
+            @php $svg = AvatarIcons::svgMarkup($icon); @endphp
             <label class="sp-icon-picker__option{{ $selected === $icon ? ' sp-icon-picker__option--active' : '' }}" title="{{ $icon }}">
                 <input type="radio" name="{{ $name }}" value="{{ $icon }}" @checked($selected === $icon)>
-                <span class="sp-icon-picker__preview" aria-hidden="true"><i class="{{ $css }}"></i></span>
+                <span class="sp-icon-picker__preview" aria-hidden="true">
+                    @if ($svg !== '')
+                        {!! $svg !!}
+                    @else
+                        <i class="{{ AvatarIcons::cssClass($icon) }}"></i>
+                    @endif
+                </span>
                 <span class="visually-hidden">{{ $icon }}</span>
             </label>
         @endforeach

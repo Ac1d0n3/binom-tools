@@ -11,6 +11,7 @@ import {
     normalizeTrigram,
     teamTrigram,
 } from '../trigram.js';
+import { withAppBasePath } from '../../locale.js';
 import { spT } from './helpers.js';
 
 /**
@@ -31,10 +32,13 @@ export function renderChip(colorToken, text, title, kind = 'person', options = {
     chip.setAttribute('aria-label', title || text || spT('sp.report.unassigned'));
 
     if (icon) {
-        const i = document.createElement('i');
-        i.className = `fa-solid fa-${icon}`;
-        i.setAttribute('aria-hidden', 'true');
-        chip.appendChild(i);
+        const glyph = document.createElement('span');
+        glyph.className = 'sp-avatar-icon-mask';
+        glyph.setAttribute('aria-hidden', 'true');
+        const url = `url("${withAppBasePath(`/icons/avatar/${icon}.svg`)}")`;
+        glyph.style.maskImage = url;
+        glyph.style.webkitMaskImage = url;
+        chip.appendChild(glyph);
     } else {
         chip.textContent = text || '—';
     }

@@ -322,6 +322,136 @@ export function addCustomSprint(instanceId, data) {
     });
 }
 
+/**
+ * Copy one sprint (with tasks/deliverables) from a plan template into the instance as a custom sprint.
+ *
+ * @param {string} instanceId
+ * @param {object} template
+ * @param {string} sprintId
+ */
+export function addSprintFromTemplate(instanceId, template, sprintId) {
+    const structural = (template?.sprints || []).find((s) => String(s.id) === String(sprintId));
+    if (!structural) {
+        return { ok: false, error: 'sprint-missing' };
+    }
+    const dePack = (template.locales?.de?.sprints || []).find((s) => String(s.id) === String(sprintId)) || {};
+    const enPack = (template.locales?.en?.sprints || []).find((s) => String(s.id) === String(sprintId)) || {};
+    const deTasks = Object.fromEntries((dePack.tasks || []).map((t) => [String(t.id), t]));
+    const enTasks = Object.fromEntries((enPack.tasks || []).map((t) => [String(t.id), t]));
+    const deDels = Object.fromEntries((dePack.deliverables || []).map((d) => [String(d.id), d]));
+    const enDels = Object.fromEntries((enPack.deliverables || []).map((d) => [String(d.id), d]));
+
+    return updateInstance(instanceId, (instance) => {
+        const id = createSprintId();
+        const maxNumber = Math.max(
+            0,
+            ...Object.values(instance.sprintOverrides || {}).map((s) => Number(s.number) || 0),
+            ...(instance.customSprints || []).map((s) => Number(s.number) || 0),
+        );
+        // Prefer resolved sprint count from template structure already on the plan.
+        const templateSprintCount = Array.isArray(template?.sprints) ? template.sprints.length : 0;
+        const nextNumber = Math.max(maxNumber, templateSprintCount) + 1;
+        const stories = Array.isArray(structural.stories) ? structuredClone(structural.stories) : [];
+        const links = Array.isArray(structural.links)
+            ? structuredClone(structural.links)
+            : (Array.isArray(enPack.links) ? structuredClone(enPack.links) : []);
+
+        instance.customSprints.push({
+            id,
+            number: nextNumber,
+            title: {
+                de: String(dePack.title || ''),
+                en: String(enPack.title || dePack.title || ''),
+            },
+            goal: {
+                de: String(dePack.goal || ''),
+                en: String(enPack.goal || dePack.goal || ''),
+            },
+            description: {
+                de: String(dePack.description || ''),
+                en: String(enPack.description || dePack.description || ''),
+            },
+            notes: structural.notes !== false,
+            teamId: null,
+            ownerPersonId: null,
+            stories,
+            linkedStorySlugs: Array.isArray(structural.linkedStorySlugs)
+                ? [...structural.linkedStorySlugs]
+                : stories.map((s) => String(s.slug || '')).filter(Boolean),
+            links,
+        });
+
+        instance.customTasks[id] = (structural.tasks || []).map((task) => {
+            const tid = String(task.id);
+            const de = deTasks[tid] || {};
+            const en = enTasks[tid] || {};
+            return {
+                id: createTaskId(),
+                label: {
+                    de: String(de.label || ''),
+                    en: String(en.label || de.label || ''),
+                },
+                status: 'open',
+                priority: 'normal',
+                assigneeType: task.assigneeType || 'person',
+                assigneeId: task.assigneeId || null,
+                dueDate: null,
+                note: '',
+                helpText: {
+                    de: String(de.helpText || ''),
+                    en: String(en.helpText || de.helpText || ''),
+                },
+                helpLinks: Array.isArray(task.helpLinks)
+                    ? structuredClone(task.helpLinks)
+                    : (Array.isArray(en.helpLinks) ? structuredClone(en.helpLinks) : []),
+                stories: Array.isArray(task.stories) ? structuredClone(task.stories) : [],
+                linkedStorySlugs: Array.isArray(task.linkedStorySlugs) ? [...task.linkedStorySlugs] : [],
+                demoCode: String(en.demoCode || de.demoCode || ''),
+                blockerReason: '',
+                blockerSince: null,
+                attachments: [],
+                table: task.table ? structuredClone(task.table) : null,
+            };
+        });
+
+        instance.customDeliverables[id] = (structural.deliverables || []).map((del) => {
+            const did = String(del.id);
+            const de = deDels[did] || {};
+            const en = enDels[did] || {};
+            return {
+                id: createDeliverableId(),
+                label: {
+                    de: String(de.label || ''),
+                    en: String(en.label || de.label || ''),
+                },
+                status: 'open',
+                priority: 'normal',
+                assigneeType: 'person',
+                assigneeId: null,
+                dueDate: null,
+                note: '',
+                helpText: {
+                    de: String(de.helpText || ''),
+                    en: String(en.helpText || de.helpText || ''),
+                },
+                helpLinks: Array.isArray(del.helpLinks)
+                    ? structuredClone(del.helpLinks)
+                    : (Array.isArray(en.helpLinks) ? structuredClone(en.helpLinks) : []),
+                stories: Array.isArray(del.stories) ? structuredClone(del.stories) : [],
+                linkedStorySlugs: Array.isArray(del.linkedStorySlugs) ? [...del.linkedStorySlugs] : [],
+                demoCode: String(en.demoCode || de.demoCode || ''),
+                blockerReason: '',
+                blockerSince: null,
+                attachments: [],
+                table: del.table ? structuredClone(del.table) : null,
+            };
+        });
+
+        resequenceCustomOnly(instance);
+        shiftNumbers(instance, id, nextNumber);
+    });
+}
+
 export function updateCustomOrOverrideSprint(instanceId, sprintId, data, isCustom) {
     return updateInstance(instanceId, (instance) => {
         if (isCustom) {

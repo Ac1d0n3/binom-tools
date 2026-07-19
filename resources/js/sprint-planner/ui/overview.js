@@ -97,8 +97,9 @@ export function initOverviewPage({ templatesOnly = false } = {}) {
             showToast(storageErrorMessage(error));
         }
 
-        renderTemplateCards(templates, locale, workspace);
-        if (!templatesOnly) {
+        if (templatesOnly) {
+            renderTemplateCards(templates, locale, workspace);
+        } else {
             renderPlanCards(workspace, templates, locale);
         }
     }
@@ -300,7 +301,9 @@ function createPlanCard({ instance, template, progress, current, locale, workspa
             <li data-fact="team"></li>
             <li data-fact="updated"></li>
         </ul>
-        <a class="tools-btn tools-btn--primary" data-open></a>
+        <div class="sp-card__actions">
+            <a class="tools-btn tools-btn--primary" data-open></a>
+        </div>
     `;
     card.querySelector('.sp-card__title').textContent = title;
     card.querySelector('.sp-card__desc').textContent = description;
