@@ -210,10 +210,27 @@ final class SprintPlanRepository
                 'number' => $sprint['number'],
                 'notes' => (bool) ($sprint['notes'] ?? false),
                 'estimated_effort' => $sprint['estimated_effort'] ?? null,
+                'linkedStorySlugs' => array_values(array_map(
+                    'strval',
+                    $sprint['linkedStories'] ?? $sprint['linkedStorySlugs'] ?? [],
+                )),
+                'links' => array_values(array_map(static fn (array $link): array => [
+                    'href' => (string) ($link['href'] ?? ''),
+                ], array_filter(
+                    $sprint['links'] ?? [],
+                    static fn ($link): bool => is_array($link) && ($link['href'] ?? '') !== '',
+                ))),
                 'tasks' => array_map(static fn (array $t): array => [
                     'id' => $t['id'],
                     'assigneeType' => $t['assigneeType'] ?? 'person',
                     'assigneeId' => $t['assigneeId'] ?? null,
+                    'linkedStorySlugs' => array_values(array_map('strval', $t['linkedStorySlugs'] ?? [])),
+                    'helpLinks' => array_values(array_map(static fn (array $link): array => [
+                        'href' => (string) ($link['href'] ?? ''),
+                    ], array_filter(
+                        $t['helpLinks'] ?? [],
+                        static fn ($link): bool => is_array($link) && ($link['href'] ?? '') !== '',
+                    ))),
                 ], $sprint['tasks'] ?? []),
                 'deliverables' => array_map(static fn (array $d): array => [
                     'id' => $d['id'],
@@ -234,15 +251,42 @@ final class SprintPlanRepository
     private function localizeSprintTexts(array $sprints): array
     {
         return array_map(static function (array $sprint): array {
+            $sprintLinks = [];
+            foreach ($sprint['links'] ?? [] as $link) {
+                if (! is_array($link) || ($link['href'] ?? '') === '') {
+                    continue;
+                }
+                $sprintLinks[] = [
+                    'label' => (string) ($link['label'] ?? ''),
+                    'href' => (string) $link['href'],
+                ];
+            }
+
             return [
                 'id' => $sprint['id'],
                 'title' => $sprint['title'] ?? '',
                 'goal' => $sprint['goal'] ?? '',
                 'description' => $sprint['description'] ?? null,
-                'tasks' => array_map(static fn (array $t): array => [
-                    'id' => $t['id'],
-                    'label' => $t['label'] ?? '',
-                ], $sprint['tasks'] ?? []),
+                'links' => $sprintLinks,
+                'tasks' => array_map(static function (array $t): array {
+                    $helpLinks = [];
+                    foreach ($t['helpLinks'] ?? [] as $link) {
+                        if (! is_array($link) || ($link['href'] ?? '') === '') {
+                            continue;
+                        }
+                        $helpLinks[] = [
+                            'label' => (string) ($link['label'] ?? ''),
+                            'href' => (string) $link['href'],
+                        ];
+                    }
+
+                    return [
+                        'id' => $t['id'],
+                        'label' => $t['label'] ?? '',
+                        'helpText' => $t['helpText'] ?? null,
+                        'helpLinks' => $helpLinks,
+                    ];
+                }, $sprint['tasks'] ?? []),
                 'deliverables' => array_map(static fn (array $d): array => [
                     'id' => $d['id'],
                     'label' => $d['label'] ?? '',

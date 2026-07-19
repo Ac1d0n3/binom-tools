@@ -1,6 +1,12 @@
 import { statusKey } from './ids.js';
 
 /**
+ * @typedef {Object} SpHelpLink
+ * @property {string} label
+ * @property {string} href
+ */
+
+/**
  * @typedef {Object} ResolvedItem
  * @property {string} id
  * @property {string} statusKey
@@ -16,6 +22,8 @@ import { statusKey } from './ids.js';
  * @property {boolean} custom
  * @property {string} sprintId
  * @property {string[]} linkedStorySlugs
+ * @property {string|null} helpText
+ * @property {SpHelpLink[]} helpLinks
  */
 
 /**
@@ -42,11 +50,16 @@ export function resolveSprints(template, instance, locale) {
                 id: sprint.id,
                 number: sprint.number,
                 notes: sprint.notes !== false,
+                linkedStorySlugs: Array.isArray(sprint.linkedStorySlugs) ? sprint.linkedStorySlugs : [],
+                links: Array.isArray(sprint.links) ? sprint.links : [],
                 tasks: [],
                 deliverables: [],
                 fields: [],
             },
-            texts,
+            {
+                ...texts,
+                links: Array.isArray(sprint.links) ? sprint.links : [],
+            },
             {},
             instance,
             template.slug,
@@ -78,11 +91,12 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         const key = statusKey(templateSlug, sprint.id, 'task', task.id);
         const itemOverride = instance.itemOverrides?.[key] || {};
         const completed = instance.completedTasks.includes(key) || itemOverride.status === 'completed';
+        const textTask = textTasks[task.id] || {};
         tasks.push({
             id: task.id,
             statusKey: key,
             kind: 'task',
-            label: textTasks[task.id]?.label || itemOverride.label?.[locale] || itemOverride.label?.en || task.id,
+            label: textTask.label || itemOverride.label?.[locale] || itemOverride.label?.en || task.id,
             completed,
             status: itemOverride.status || (completed ? 'completed' : 'open'),
             priority: itemOverride.priority || 'normal',
@@ -92,9 +106,16 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
             note: itemOverride.note || '',
             custom: false,
             sprintId: sprint.id,
-            linkedStorySlugs: Array.isArray(task.linkedStorySlugs)
-                ? task.linkedStorySlugs.map(String)
-                : (Array.isArray(task.linkedStories) ? task.linkedStories.map(String) : []),
+            linkedStorySlugs: mergeStorySlugs(
+                task.linkedStorySlugs || task.linkedStories,
+                itemOverride.linkedStorySlugs,
+            ),
+            helpText: pickHelpText(itemOverride, textTask, locale),
+            helpLinks: mergeHelpLinks(
+                textTask.helpLinks || task.helpLinks,
+                itemOverride.helpLinks,
+                locale,
+            ),
         });
     }
 
@@ -116,6 +137,8 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
             custom: true,
             sprintId: sprint.id,
             linkedStorySlugs: Array.isArray(task.linkedStorySlugs) ? task.linkedStorySlugs.map(String) : [],
+            helpText: pickLocalizedHelpText(task.helpText, locale),
+            helpLinks: normalizeHelpLinks(task.helpLinks, locale),
         });
     }
 
@@ -141,6 +164,8 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
             custom: false,
             sprintId: sprint.id,
             linkedStorySlugs: [],
+            helpText: null,
+            helpLinks: [],
         });
     }
 
@@ -162,6 +187,8 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
             custom: true,
             sprintId: sprint.id,
             linkedStorySlugs: Array.isArray(del.linkedStorySlugs) ? del.linkedStorySlugs.map(String) : [],
+            helpText: pickLocalizedHelpText(del.helpText, locale),
+            helpLinks: normalizeHelpLinks(del.helpLinks, locale),
         });
     }
 
@@ -182,6 +209,21 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
     const total = tasks.length + deliverables.length;
     const percent = total === 0 ? 0 : Math.round((done / total) * 100);
 
+    const templateStorySlugs = Array.isArray(sprint.linkedStories)
+        ? sprint.linkedStories.map(String)
+        : (Array.isArray(sprint.linkedStorySlugs) ? sprint.linkedStorySlugs.map(String) : []);
+    const overrideStorySlugs = Array.isArray(override.linkedStorySlugs)
+        ? override.linkedStorySlugs.map(String)
+        : null;
+    const linkedStorySlugs = overrideStorySlugs !== null
+        ? overrideStorySlugs
+        : templateStorySlugs;
+
+    const templateLinks = mergeSprintLinks(texts.links || sprint.links, locale);
+    const overrideLinks = Array.isArray(override.links)
+        ? normalizeHelpLinks(override.links, locale)
+        : null;
+
     return {
         id: sprint.id,
         number: Number(override.number ?? sprint.number ?? 0),
@@ -191,15 +233,117 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         notesEnabled,
         note: instance.sprintNotes?.[sprint.id] || '',
         custom,
-        linkedStorySlugs: Array.isArray(sprint.linkedStories)
-            ? sprint.linkedStories.map(String)
-            : (Array.isArray(sprint.linkedStorySlugs) ? sprint.linkedStorySlugs.map(String) : []),
+        linkedStorySlugs,
+        links: overrideLinks !== null ? overrideLinks : templateLinks,
         tasks,
         deliverables,
         fields,
         progress: { done, total, percent },
         completed: total > 0 && done === total,
     };
+}
+
+/**
+ * @param {unknown} base
+ * @param {unknown} override
+ * @returns {string[]}
+ */
+function mergeStorySlugs(base, override) {
+    if (Array.isArray(override)) {
+        return override.map(String).filter(Boolean);
+    }
+    if (Array.isArray(base)) {
+        return base.map(String).filter(Boolean);
+    }
+    return [];
+}
+
+/**
+ * @param {unknown} override
+ * @param {Record<string, unknown>} textTask
+ * @param {string} locale
+ * @returns {string|null}
+ */
+function pickHelpText(override, textTask, locale) {
+    const fromOverride = pickLocalizedHelpText(override?.helpText, locale);
+    if (fromOverride) {
+        return fromOverride;
+    }
+    const fromText = textTask?.helpText;
+    if (typeof fromText === 'string' && fromText.trim()) {
+        return fromText.trim();
+    }
+    return null;
+}
+
+/**
+ * @param {unknown} value
+ * @param {string} locale
+ * @returns {string|null}
+ */
+function pickLocalizedHelpText(value, locale) {
+    if (typeof value === 'string' && value.trim()) {
+        return value.trim();
+    }
+    if (value && typeof value === 'object') {
+        const pack = /** @type {Record<string, string>} */ (value);
+        const picked = pack[locale] || pack.en || pack.de || '';
+        return typeof picked === 'string' && picked.trim() ? picked.trim() : null;
+    }
+    return null;
+}
+
+/**
+ * @param {unknown} baseLinks
+ * @param {unknown} overrideLinks
+ * @param {string} locale
+ * @returns {SpHelpLink[]}
+ */
+function mergeHelpLinks(baseLinks, overrideLinks, locale) {
+    if (Array.isArray(overrideLinks)) {
+        return normalizeHelpLinks(overrideLinks, locale);
+    }
+    return normalizeHelpLinks(baseLinks, locale);
+}
+
+/**
+ * @param {unknown} links
+ * @param {string} locale
+ * @returns {SpHelpLink[]}
+ */
+function normalizeHelpLinks(links, locale) {
+    if (!Array.isArray(links)) {
+        return [];
+    }
+    /** @type {SpHelpLink[]} */
+    const out = [];
+    for (const link of links) {
+        if (!link || typeof link !== 'object') {
+            continue;
+        }
+        const href = String(/** @type {any} */ (link).href || '').trim();
+        if (!href) {
+            continue;
+        }
+        let label = /** @type {any} */ (link).label;
+        if (label && typeof label === 'object') {
+            label = label[locale] || label.en || label.de || '';
+        }
+        out.push({
+            label: String(label || href),
+            href,
+        });
+    }
+    return out;
+}
+
+/**
+ * @param {unknown} links
+ * @param {string} locale
+ * @returns {SpHelpLink[]}
+ */
+function mergeSprintLinks(links, locale) {
+    return normalizeHelpLinks(links, locale);
 }
 
 /**

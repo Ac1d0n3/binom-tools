@@ -30,6 +30,16 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertSame('week-01', $client['sprints'][0]['id']);
         $this->assertSame('Orientierung und Mandat', $client['locales']['de']['sprints'][0]['title']);
         $this->assertSame('Orientation and Mandate', $client['locales']['en']['sprints'][0]['title']);
+        $this->assertNotEmpty($client['sprints'][0]['linkedStorySlugs']);
+        $firstTask = $client['sprints'][0]['tasks'][0];
+        $this->assertSame('align-management-expectations', $firstTask['id']);
+        $this->assertNotEmpty($firstTask['linkedStorySlugs']);
+        $this->assertNotEmpty($firstTask['helpLinks']);
+        $deTask = $client['locales']['de']['sprints'][0]['tasks'][0];
+        $enTask = $client['locales']['en']['sprints'][0]['tasks'][0];
+        $this->assertNotEmpty($deTask['helpText']);
+        $this->assertNotEmpty($enTask['helpText']);
+        $this->assertSame($firstTask['helpLinks'][0]['href'], $deTask['helpLinks'][0]['href']);
     }
 
     public function test_index_includes_template(): void

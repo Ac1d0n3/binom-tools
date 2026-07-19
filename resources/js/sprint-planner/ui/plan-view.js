@@ -43,6 +43,7 @@ const noteTimers = {};
 let sprintDialogState = { sprint: null, isCustom: false };
 let itemDialogState = {};
 let bound = false;
+let helpPanelBound = false;
 
 export function initPlanShowPage() {
     const root = document.getElementById('sp-app');
@@ -63,6 +64,7 @@ export function initPlanShowPage() {
         });
         bindFilters(render);
         bindDialogs(instanceId, render);
+        bindHelpPanel();
         document.getElementById('sp-add-sprint')?.addEventListener('click', () => {
             openSprintDialog(null, false);
         });
@@ -325,6 +327,9 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
         if (uniqueSprintLinks.length > 0) {
             body.appendChild(renderLinkedStories(uniqueSprintLinks));
         }
+        if (Array.isArray(sprint.links) && sprint.links.length > 0) {
+            body.appendChild(renderGenericLinks(sprint.links, 'sp-sprint-links'));
+        }
         body.appendChild(renderItemSection('tasks', sprint, instance, locale, workspace));
         body.appendChild(renderItemSection('deliverables', sprint, instance, locale, workspace));
         body.appendChild(renderFields(sprint, instance));
@@ -408,6 +413,19 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         main.appendChild(renderLinkedStories(item.linkedStorySlugs));
     }
 
+    const actions = document.createElement('div');
+    actions.className = 'sp-item__actions';
+    if (itemHasHelp(item)) {
+        const help = document.createElement('button');
+        help.type = 'button';
+        help.className = 'tools-btn tools-btn--secondary tools-btn--small sp-help-btn';
+        help.textContent = '?';
+        help.title = spT('sp.help.open');
+        help.setAttribute('aria-label', spT('sp.help.open'));
+        help.addEventListener('click', () => openHelpPanel(item));
+        actions.appendChild(help);
+    }
+
     const edit = document.createElement('button');
     edit.type = 'button';
     edit.className = 'tools-btn tools-btn--secondary tools-btn--small';
@@ -418,8 +436,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         custom: item.custom,
         item,
     }));
-
-    li.append(check, main, edit);
+    actions.appendChild(edit);
 
     if (item.custom) {
         const del = document.createElement('button');
@@ -430,10 +447,23 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
             deleteCustomItem(instance.id, sprint.id, item.kind, item.id, item.statusKey);
             rerender();
         });
-        li.appendChild(del);
+        actions.appendChild(del);
     }
 
+    li.append(check, main, actions);
+
     return li;
+}
+
+/**
+ * @param {import('../progress.js').ResolvedItem} item
+ */
+function itemHasHelp(item) {
+    return Boolean(
+        (item.helpText && String(item.helpText).trim())
+        || (Array.isArray(item.helpLinks) && item.helpLinks.length > 0)
+        || (Array.isArray(item.linkedStorySlugs) && item.linkedStorySlugs.length > 0),
+    );
 }
 
 /**
@@ -450,6 +480,8 @@ function renderLinkedStories(slugs) {
         const link = document.createElement('a');
         link.className = 'sp-story-badge';
         link.href = withAppBasePath(`/playbooks/${encodeURIComponent(slug)}`);
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
         const read = isAccountsMode()
             ? readSet.has(slug) || isPlaybookRead(slug)
             : isPlaybookRead(slug);
@@ -460,8 +492,201 @@ function renderLinkedStories(slugs) {
     return wrap;
 }
 
+/**
+ * @param {Array<{label: string, href: string}>} links
+ * @param {string} className
+ */
+function renderGenericLinks(links, className) {
+    const wrap = document.createElement('div');
+    wrap.className = className;
+    for (const link of links) {
+        if (!link?.href) {
+            continue;
+        }
+        const a = document.createElement('a');
+        a.href = resolveHelpHref(link.href);
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = link.label || link.href;
+        wrap.appendChild(a);
+    }
+    return wrap;
+}
+
+/**
+ * @param {string} href
+ */
+function resolveHelpHref(href) {
+    const value = String(href || '').trim();
+    if (!value) {
+        return '#';
+    }
+    if (/^https?:\/\//i.test(value) || value.startsWith('mailto:')) {
+        return value;
+    }
+    if (value.startsWith('/')) {
+        return withAppBasePath(value);
+    }
+    // Bare playbook slug
+    if (/^[a-z0-9-]+$/i.test(value)) {
+        return withAppBasePath(`/playbooks/${encodeURIComponent(value)}`);
+    }
+    return value;
+}
+
+function bindHelpPanel() {
+    if (helpPanelBound) {
+        return;
+    }
+    helpPanelBound = true;
+    document.getElementById('sp-help-close')?.addEventListener('click', closeHelpPanel);
+    document.getElementById('sp-help-backdrop')?.addEventListener('click', closeHelpPanel);
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeHelpPanel();
+        }
+    });
+}
+
+/**
+ * @param {import('../progress.js').ResolvedItem} item
+ */
+function openHelpPanel(item) {
+    const panel = document.getElementById('sp-help-panel');
+    const backdrop = document.getElementById('sp-help-backdrop');
+    const title = document.getElementById('sp-help-panel-title');
+    const body = document.getElementById('sp-help-panel-body');
+    if (!panel || !body) {
+        return;
+    }
+    if (title) {
+        title.textContent = spT('sp.help.title');
+    }
+    body.replaceChildren();
+
+    const taskTitle = document.createElement('p');
+    taskTitle.className = 'sp-help-panel__task';
+    taskTitle.textContent = item.label;
+    body.appendChild(taskTitle);
+
+    if (item.helpText) {
+        const text = document.createElement('p');
+        text.className = 'sp-help-panel__text';
+        text.textContent = item.helpText;
+        body.appendChild(text);
+    }
+
+    const links = [];
+    for (const slug of item.linkedStorySlugs || []) {
+        links.push({
+            label: `${spT('sp.help.story')}: ${slug}`,
+            href: `/playbooks/${slug}`,
+        });
+    }
+    for (const link of item.helpLinks || []) {
+        links.push(link);
+    }
+
+    if (links.length > 0) {
+        const list = document.createElement('ul');
+        list.className = 'sp-help-panel__links';
+        for (const link of links) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = resolveHelpHref(link.href);
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = link.label || link.href;
+            li.appendChild(a);
+            list.appendChild(li);
+        }
+        body.appendChild(list);
+    } else if (!item.helpText) {
+        const empty = document.createElement('p');
+        empty.className = 'sp-help-panel__empty';
+        empty.textContent = spT('sp.help.empty');
+        body.appendChild(empty);
+    }
+
+    panel.hidden = false;
+    panel.setAttribute('aria-hidden', 'false');
+    if (backdrop) {
+        backdrop.hidden = false;
+    }
+}
+
+function closeHelpPanel() {
+    const panel = document.getElementById('sp-help-panel');
+    const backdrop = document.getElementById('sp-help-backdrop');
+    if (panel) {
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden', 'true');
+    }
+    if (backdrop) {
+        backdrop.hidden = true;
+    }
+}
+
 function statusKeyToLabel(status) {
     return status === 'in_progress' ? 'inProgress' : status;
+}
+
+/**
+ * Parse "Label | href" lines, or bare slugs / hrefs.
+ * @param {string} raw
+ * @returns {{links: Array<{label: string, href: string}>, storySlugs: string[]}}
+ */
+function parseLinksTextarea(raw) {
+    /** @type {Array<{label: string, href: string}>} */
+    const links = [];
+    /** @type {string[]} */
+    const storySlugs = [];
+    for (const line of String(raw || '').split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed) {
+            continue;
+        }
+        const pipe = trimmed.indexOf('|');
+        if (pipe >= 0) {
+            const label = trimmed.slice(0, pipe).trim();
+            const href = trimmed.slice(pipe + 1).trim();
+            if (href) {
+                links.push({ label: label || href, href });
+            }
+            continue;
+        }
+        if (/^[a-z0-9-]+$/i.test(trimmed) && !trimmed.includes('/')) {
+            storySlugs.push(trimmed);
+            continue;
+        }
+        links.push({ label: trimmed, href: trimmed });
+    }
+    return { links, storySlugs };
+}
+
+/**
+ * @param {Array<{label: string, href: string}>} links
+ * @param {string[]} [storySlugs]
+ */
+function formatLinksTextarea(links = [], storySlugs = []) {
+    const lines = [
+        ...storySlugs.map(String),
+        ...links.map((link) => (link.label && link.label !== link.href
+            ? `${link.label} | ${link.href}`
+            : link.href)),
+    ];
+    return lines.filter(Boolean).join('\n');
+}
+
+/**
+ * @param {string} raw
+ * @returns {string[]}
+ */
+function parseSlugLines(raw) {
+    return String(raw || '')
+        .split(/[\n,]+/)
+        .map((part) => part.trim())
+        .filter((slug) => /^[a-z0-9-]+$/i.test(slug));
 }
 
 function renderFields(sprint, instance) {
@@ -577,6 +802,8 @@ function bindDialogs(instanceId, render) {
         if (sprintDialog.returnValue !== 'confirm') {
             return;
         }
+        const stories = parseSlugLines(document.getElementById('sp-sprint-stories')?.value || '');
+        const parsedLinks = parseLinksTextarea(document.getElementById('sp-sprint-links')?.value || '');
         const data = {
             titleDe: document.getElementById('sp-sprint-title-de').value,
             titleEn: document.getElementById('sp-sprint-title-en').value,
@@ -584,6 +811,8 @@ function bindDialogs(instanceId, render) {
             goalEn: document.getElementById('sp-sprint-goal-en').value,
             number: Number(document.getElementById('sp-sprint-position').value) || undefined,
             notes: document.getElementById('sp-sprint-notes-enabled').checked,
+            linkedStorySlugs: stories,
+            links: parsedLinks.links,
         };
         const result = sprintDialogState.sprint
             ? updateCustomOrOverrideSprint(
@@ -605,6 +834,8 @@ function bindDialogs(instanceId, render) {
         if (itemDialog.returnValue !== 'confirm') {
             return;
         }
+        const stories = parseSlugLines(document.getElementById('sp-item-stories')?.value || '');
+        const parsedLinks = parseLinksTextarea(document.getElementById('sp-item-help-links')?.value || '');
         const data = {
             id: document.getElementById('sp-item-id').value,
             labelDe: document.getElementById('sp-item-label-de').value,
@@ -615,6 +846,10 @@ function bindDialogs(instanceId, render) {
             priority: document.getElementById('sp-item-priority').value,
             dueDate: document.getElementById('sp-item-due').value || null,
             note: document.getElementById('sp-item-note').value,
+            helpTextDe: document.getElementById('sp-item-help-de')?.value || '',
+            helpTextEn: document.getElementById('sp-item-help-en')?.value || '',
+            linkedStorySlugs: stories,
+            helpLinks: parsedLinks.links,
         };
         const kind = document.getElementById('sp-item-type').value;
         const sprintId = document.getElementById('sp-item-sprint-id').value;
@@ -649,6 +884,14 @@ function openSprintDialog(sprint, isCustom) {
     document.getElementById('sp-sprint-goal-en').value = sprint?.goal || '';
     document.getElementById('sp-sprint-position').value = sprint?.number || '';
     document.getElementById('sp-sprint-notes-enabled').checked = sprint?.notesEnabled !== false;
+    const storiesEl = document.getElementById('sp-sprint-stories');
+    if (storiesEl) {
+        storiesEl.value = (sprint?.linkedStorySlugs || []).join('\n');
+    }
+    const linksEl = document.getElementById('sp-sprint-links');
+    if (linksEl) {
+        linksEl.value = formatLinksTextarea(sprint?.links || []);
+    }
     document.getElementById('sp-sprint-dialog').showModal();
 }
 
@@ -664,6 +907,27 @@ function openItemDialog(state) {
     document.getElementById('sp-item-priority').value = state.item?.priority || 'normal';
     document.getElementById('sp-item-due').value = state.item?.dueDate || '';
     document.getElementById('sp-item-note').value = state.item?.note || '';
+    const helpDe = document.getElementById('sp-item-help-de');
+    const helpEn = document.getElementById('sp-item-help-en');
+    const helpText = state.item?.helpText || '';
+    if (helpDe) {
+        helpDe.value = typeof helpText === 'object'
+            ? (helpText.de || '')
+            : helpText;
+    }
+    if (helpEn) {
+        helpEn.value = typeof helpText === 'object'
+            ? (helpText.en || helpText.de || '')
+            : helpText;
+    }
+    const storiesEl = document.getElementById('sp-item-stories');
+    if (storiesEl) {
+        storiesEl.value = (state.item?.linkedStorySlugs || []).join('\n');
+    }
+    const linksEl = document.getElementById('sp-item-help-links');
+    if (linksEl) {
+        linksEl.value = formatLinksTextarea(state.item?.helpLinks || []);
+    }
     refreshAssigneeOptions(state.item?.assigneeId || '');
     document.getElementById('sp-item-dialog').showModal();
 }

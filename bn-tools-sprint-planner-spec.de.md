@@ -293,11 +293,24 @@ number: 1
 title: Orientierung und Mandat
 goal: Auftrag, Erwartungen und relevante Stakeholder verstehen.
 
+linkedStories:
+  - data-ownership-stewardship
+
+links:
+  - label: DQ Rules Generator
+    href: /tools/dbt-dq-rules-generator
+
 tasks:
   - id: align-management-expectations
     label: Erwartungen mit der Führung abstimmen
     assigneeType: person
     assigneeId: null
+    helpText: |
+      Kurze, handlungsorientierte Anleitung zur Aufgabe.
+    linkedStories: data-ownership-stewardship, eight-pillars
+    helpLinks:
+      - label: Data Ownership & Stewardship
+        href: /playbooks/data-ownership-stewardship
   - id: identify-stakeholders
     label: Relevante Stakeholder identifizieren
     assigneeType: team
@@ -341,7 +354,26 @@ deliverables
 fields
 notes
 estimated_effort
+linkedStories
+links
 ```
+
+Sprint-Links:
+
+```text
+linkedStories  = Playbook-Slugs (Liste)
+links          = freie Links [{ label, href }] (Playbooks, Tools, externe URLs)
+```
+
+Task-Hilfe (optional pro Aufgabe):
+
+```text
+helpText       = lokalisierter Hilfetext (einzeilig oder | Mehrzeiler)
+linkedStories  = Playbook-Slugs (CSV oder Liste)
+helpLinks      = freie Hilfe-Links [{ label, href }]
+```
+
+`helpText` und `helpLinks[].label` sind lokalisiert (DE/EN-Dateien). `href`-Werte und Story-Slugs sind strukturell und müssen zwischen Locales übereinstimmen.
 
 ### 7.3 Feldtypen
 
@@ -457,6 +489,8 @@ Funktionen:
 - Status setzen
 - Priorität setzen
 - Notiz ergänzen
+- Hilfetext und Hilfe-Links hinterlegen (Vorlage und eigene Aufgaben)
+- Hilfe-Panel öffnen (ohne Seitenwechsel)
 
 Tasks und Deliverables bleiben getrennt:
 
@@ -464,6 +498,21 @@ Tasks und Deliverables bleiben getrennt:
 Tasks        = Was ist zu tun?
 Deliverables = Welches belastbare Ergebnis muss vorliegen?
 ```
+
+### 10.1 Hilfe-Panel
+
+Aufgaben mit `helpText`, `helpLinks` oder `linkedStories` zeigen einen Hilfe-Button (`?`).
+
+Verhalten:
+
+```text
+Desktop  = rechte Drawer-Sidebar (~360px), Plan bleibt bedienbar
+Mobile   = Bottom-Sheet (~55–70vh)
+Links    = öffnen in neuem Tab (Plan-Kontext bleibt erhalten)
+Schließen = X, Backdrop oder Escape
+```
+
+Sprint-Links (`linkedStories` / `links`) werden im Sprint-Körper angezeigt und sind im Sprint-Dialog editierbar.
 
 Empfohlene Statuswerte:
 

@@ -129,6 +129,14 @@
                 <label class="sp-field"><span data-i18n="sp.field.goalEn">Goal (EN)</span><textarea id="sp-sprint-goal-en" class="tools-input" rows="2"></textarea></label>
                 <label class="sp-field"><span data-i18n="sp.field.position">Position</span><input type="number" id="sp-sprint-position" class="tools-input" min="1" step="1"></label>
                 <label class="sp-check"><input type="checkbox" id="sp-sprint-notes-enabled" checked> <span data-i18n="sp.field.enableNotes">Enable notes</span></label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.sprintStories">Playbook stories (slugs)</span>
+                    <textarea id="sp-sprint-stories" class="tools-input" rows="2" data-i18n-placeholder="sp.field.sprintStoriesHint" placeholder="one-slug-per-line"></textarea>
+                </label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.sprintLinks">Links</span>
+                    <textarea id="sp-sprint-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | /path-or-url"></textarea>
+                </label>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
@@ -169,12 +177,31 @@
                 </label>
                 <label class="sp-field"><span data-i18n="sp.field.dueDate">Due date</span><input type="date" id="sp-item-due" class="tools-input"></label>
                 <label class="sp-field"><span data-i18n="sp.field.note">Note</span><textarea id="sp-item-note" class="tools-input" rows="2" maxlength="4000"></textarea></label>
+                <label class="sp-field"><span data-i18n="sp.field.helpTextDe">Help text (DE)</span><textarea id="sp-item-help-de" class="tools-input" rows="3" maxlength="8000"></textarea></label>
+                <label class="sp-field"><span data-i18n="sp.field.helpTextEn">Help text (EN)</span><textarea id="sp-item-help-en" class="tools-input" rows="3" maxlength="8000"></textarea></label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.itemStories">Playbook stories (slugs)</span>
+                    <textarea id="sp-item-stories" class="tools-input" rows="2" data-i18n-placeholder="sp.field.sprintStoriesHint" placeholder="one-slug-per-line"></textarea>
+                </label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.helpLinks">Help links</span>
+                    <textarea id="sp-item-help-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | /path-or-url"></textarea>
+                </label>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
                 </div>
             </form>
         </dialog>
+
+        <div id="sp-help-backdrop" class="sp-help-backdrop" hidden></div>
+        <aside id="sp-help-panel" class="sp-help-panel" hidden aria-hidden="true">
+            <div class="sp-help-panel__header">
+                <h2 id="sp-help-panel-title" class="sp-help-panel__title" data-i18n="sp.help.title">Help</h2>
+                <button type="button" id="sp-help-close" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.help.close" aria-label="Close">Close</button>
+            </div>
+            <div id="sp-help-panel-body" class="sp-help-panel__body"></div>
+        </aside>
 
         <div id="sp-toast" class="sp-toast" role="status" aria-live="polite" hidden></div>
         <p id="sp-save-status" class="sp-save-status" aria-live="polite"></p>

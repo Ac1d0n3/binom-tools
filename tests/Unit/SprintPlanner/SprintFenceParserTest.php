@@ -85,6 +85,48 @@ MD;
         $this->assertSame(['secret-guide', 'ai-basics'], $sprint['tasks'][0]['linkedStorySlugs']);
     }
 
+    public function test_parses_help_text_help_links_and_sprint_links(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+links:
+  - label: DQ Rules
+    href: /tools/dbt-dq-rules-generator
+
+tasks:
+  - id: read-guide
+    label: Read guide
+    helpText: |
+      First line
+      Second line
+    helpLinks:
+      - label: KPI Definition
+        href: /playbooks/define-kpi
+      - label: DQ Tool
+        href: /tools/dbt-dq-macro-generator
+```
+MD;
+
+        $result = $parser->parse($body);
+        $this->assertSame([], $result['errors']);
+        $sprint = $result['sprints'][0];
+        $this->assertSame([
+            ['label' => 'DQ Rules', 'href' => '/tools/dbt-dq-rules-generator'],
+        ], $sprint['links']);
+        $task = $sprint['tasks'][0];
+        $this->assertSame("First line\nSecond line", $task['helpText']);
+        $this->assertSame([
+            ['label' => 'KPI Definition', 'href' => '/playbooks/define-kpi'],
+            ['label' => 'DQ Tool', 'href' => '/tools/dbt-dq-macro-generator'],
+        ], $task['helpLinks']);
+    }
+
     public function test_falls_back_unknown_field_type_to_text(): void
     {
         $parser = new SprintFenceParser;

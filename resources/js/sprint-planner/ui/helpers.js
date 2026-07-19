@@ -32,6 +32,17 @@ export function applySpI18n(root = document) {
         }
         el.textContent = text;
     });
+    root.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (!key || !key.startsWith('sp.')) {
+            return;
+        }
+        const text = t(key, locale);
+        if (text === key || !('placeholder' in el)) {
+            return;
+        }
+        el.placeholder = text;
+    });
 }
 
 /**

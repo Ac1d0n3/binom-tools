@@ -131,6 +131,8 @@ export function addCustomSprint(instanceId, data) {
             notes: data.notes !== false,
             teamId: data.teamId || null,
             ownerPersonId: data.ownerPersonId || null,
+            linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
+            links: Array.isArray(data.links) ? data.links : [],
         });
         resequenceCustomOnly(instance);
         shiftNumbers(instance, id, data.number);
@@ -154,6 +156,12 @@ export function updateCustomOrOverrideSprint(instanceId, sprintId, data, isCusto
             if (data.number) {
                 sprint.number = Number(data.number);
             }
+            if (Array.isArray(data.linkedStorySlugs)) {
+                sprint.linkedStorySlugs = data.linkedStorySlugs;
+            }
+            if (Array.isArray(data.links)) {
+                sprint.links = data.links;
+            }
             return;
         }
         instance.sprintOverrides[sprintId] = {
@@ -166,6 +174,8 @@ export function updateCustomOrOverrideSprint(instanceId, sprintId, data, isCusto
             },
             notes: data.notes !== false,
             number: data.number ? Number(data.number) : undefined,
+            linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : undefined,
+            links: Array.isArray(data.links) ? data.links : undefined,
         };
     });
 }
@@ -265,6 +275,12 @@ export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
             assigneeId: data.assigneeId || null,
             dueDate: data.dueDate || null,
             note: data.note || '',
+            helpText: {
+                de: data.helpTextDe || '',
+                en: data.helpTextEn || data.helpTextDe || '',
+            },
+            helpLinks: Array.isArray(data.helpLinks) ? data.helpLinks : [],
+            linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
         };
         const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
         if (!instance[bag][sprintId]) {
@@ -294,6 +310,12 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             item.assigneeId = data.assigneeId || null;
             item.dueDate = data.dueDate || null;
             item.note = data.note || '';
+            item.helpText = {
+                de: data.helpTextDe || '',
+                en: data.helpTextEn || data.helpTextDe || '',
+            };
+            item.helpLinks = Array.isArray(data.helpLinks) ? data.helpLinks : [];
+            item.linkedStorySlugs = Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [];
             syncCompletion(instance, kind, key, item.status === 'completed');
             return;
         }
@@ -306,6 +328,12 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             assigneeId: data.assigneeId || null,
             dueDate: data.dueDate || null,
             note: data.note || '',
+            helpText: {
+                de: data.helpTextDe || '',
+                en: data.helpTextEn || data.helpTextDe || '',
+            },
+            helpLinks: Array.isArray(data.helpLinks) ? data.helpLinks : [],
+            linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
         };
         syncCompletion(instance, kind, key, data.status === 'completed');
     });
