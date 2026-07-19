@@ -193,6 +193,70 @@ class StoryAclAndPlanStoreTest extends TestCase
         $this->assertSame('Change 6', $history[49]['summary']);
     }
 
+    public function test_empty_client_payload_does_not_wipe_progress_or_acl(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+
+        $store->save([
+            'id' => 'plan_20260719_keep',
+            'templateSlug' => 'demo',
+            'viewerUserIds' => ['user_viewer'],
+            'viewerTeamIds' => ['team_q'],
+            'completedTasks' => ['task_a'],
+            'itemOverrides' => [
+                'task_a' => ['status' => 'completed', 'actualMinutes' => 90],
+            ],
+        ], $owner);
+
+        $updated = $store->save([
+            'id' => 'plan_20260719_keep',
+            'templateSlug' => 'demo',
+            'viewerUserIds' => [],
+            'viewerTeamIds' => [],
+            'completedTasks' => [],
+            'itemOverrides' => [],
+        ], $owner, [
+            'action' => 'sync',
+            'summary' => 'Partial sync',
+        ]);
+
+        $this->assertSame(['task_a'], $updated['completedTasks']);
+        $this->assertSame(['user_viewer'], $updated['viewerUserIds']);
+        $this->assertSame(['team_q'], $updated['viewerTeamIds']);
+        $this->assertSame(90, $updated['itemOverrides']['task_a']['actualMinutes']);
+    }
+
+    public function test_restore_may_clear_progress_bags(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+
+        $store->save([
+            'id' => 'plan_20260719_restore_clear',
+            'templateSlug' => 'demo',
+            'completedTasks' => [],
+        ], $owner);
+
+        $store->save([
+            'id' => 'plan_20260719_restore_clear',
+            'templateSlug' => 'demo',
+            'completedTasks' => ['task_a'],
+        ], $owner, ['action' => 'completeItem', 'summary' => 'done']);
+
+        $history = $store->listHistory('plan_20260719_restore_clear', $owner);
+        $restored = $store->restoreRevision('plan_20260719_restore_clear', (string) $history[0]['id'], $owner);
+        $this->assertSame([], $restored['completedTasks']);
+    }
+
     /**
      * @param  list<string>  $teamIds
      */

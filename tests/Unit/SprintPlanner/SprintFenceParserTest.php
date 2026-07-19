@@ -398,4 +398,39 @@ MD;
         $this->assertSame('Name', $table['columns'][0]['label']);
         $this->assertSame([], $table['rows']);
     }
+
+    public function test_parses_planned_minutes_on_tasks_and_deliverables(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+tasks:
+  - id: align-management-expectations
+    label: Align expectations
+    assigneeType: person
+    assigneeId: null
+    plannedMinutes: 45
+  - id: identify-stakeholders
+    label: Identify stakeholders
+    planned_minutes: 30
+
+deliverables:
+  - id: stakeholder-list
+    label: Stakeholder list
+    plannedMinutes: 120
+```
+MD;
+
+        $result = $parser->parse($body);
+        $this->assertSame([], $result['errors']);
+        $sprint = $result['sprints'][0];
+        $this->assertSame(45, $sprint['tasks'][0]['plannedMinutes']);
+        $this->assertSame(30, $sprint['tasks'][1]['plannedMinutes']);
+        $this->assertSame(120, $sprint['deliverables'][0]['plannedMinutes']);
+    }
 }

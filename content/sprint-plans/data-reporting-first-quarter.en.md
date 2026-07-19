@@ -42,6 +42,7 @@ stories:
 tasks:
   - id: align-management-expectations
     label: Align expectations with leadership
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -56,6 +57,7 @@ tasks:
         href: /playbooks/eight-pillars
   - id: identify-stakeholders
     label: Identify relevant stakeholders
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     tableColumns: Name, Role, Influence, Interest, Owner
@@ -71,11 +73,13 @@ tasks:
 deliverables:
   - id: stakeholder-list
     label: Create stakeholder list
+    plannedMinutes: 30
     helpText: |
       Deliverable “Create stakeholder list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: initial-mandate
     label: Initial mandate documented
+    plannedMinutes: 120
     helpText: |
       Deliverable “Initial mandate documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -108,6 +112,7 @@ stories:
 tasks:
   - id: inventory-reports
     label: Inventory existing reports
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     tableColumns: Report, Owner, Tool, Cadence, Business question
@@ -123,6 +128,7 @@ tasks:
         href: /playbooks/one-app
   - id: map-report-consumers
     label: Map report consumers and usage frequency
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -137,11 +143,13 @@ tasks:
 deliverables:
   - id: report-inventory
     label: Report inventory documented
+    plannedMinutes: 120
     helpText: |
       Deliverable “Report inventory documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: gap-list
     label: Initial gap list created
+    plannedMinutes: 30
     helpText: |
       Deliverable “Initial gap list created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -170,6 +178,7 @@ stories:
 tasks:
   - id: list-source-systems
     label: Capture source systems and owners
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Access, Consumed by
@@ -187,6 +196,7 @@ tasks:
         href: /playbooks/sap-overview
   - id: document-interfaces
     label: Document interfaces and extraction paths
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -201,11 +211,13 @@ tasks:
 deliverables:
   - id: source-system-map
     label: Source system map created
+    plannedMinutes: 60
     helpText: |
       Deliverable “Source system map created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: owner-matrix
     label: Owner matrix created
+    plannedMinutes: 30
     helpText: |
       Deliverable “Owner matrix created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -234,6 +246,7 @@ stories:
 tasks:
   - id: trace-data-creation
     label: Trace data creation in core processes
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -248,6 +261,7 @@ tasks:
         href: /playbooks/before-building-the-first-table
   - id: capture-business-rules
     label: Document business rules and exceptions
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -262,11 +276,13 @@ tasks:
 deliverables:
   - id: creation-notes
     label: Data creation notes
+    plannedMinutes: 60
     helpText: |
       Deliverable “Data creation notes”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: rule-summary
     label: Business rule summary
+    plannedMinutes: 60
     helpText: |
       Deliverable “Business rule summary”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -305,6 +321,7 @@ stories:
 tasks:
   - id: map-lineage-paths
     label: Sketch central lineage paths
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -321,6 +338,7 @@ tasks:
         href: /playbooks/missing-pieces-metadata-catalog-lineage
   - id: identify-lineage-gaps
     label: Mark lineage gaps and blind spots
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -335,11 +353,13 @@ tasks:
 deliverables:
   - id: lineage-sketch
     label: Lineage sketch created
+    plannedMinutes: 60
     helpText: |
       Deliverable “Lineage sketch created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: lineage-gap-log
     label: Lineage gap log
+    plannedMinutes: 60
     helpText: |
       Deliverable “Lineage gap log”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -370,6 +390,7 @@ stories:
 tasks:
   - id: collect-kpis
     label: Collect KPIs from reports and stakeholder interviews
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -384,6 +405,7 @@ tasks:
         href: /playbooks/kpi-metric-governance
   - id: normalize-definitions
     label: Align definitions and calculation rules
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -398,11 +420,13 @@ tasks:
 deliverables:
   - id: kpi-inventory
     label: KPI inventory created
+    plannedMinutes: 120
     helpText: |
       Deliverable “KPI inventory created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: definition-backlog
     label: Definition backlog prioritized
+    plannedMinutes: 120
     helpText: |
       Deliverable “Definition backlog prioritized”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -439,6 +463,7 @@ links:
 tasks:
   - id: assess-dq-issues
     label: Assess known DQ issues
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -457,6 +482,7 @@ tasks:
         href: /tools/dbt-dq-macro-generator
   - id: rate-risks
     label: Rate business and compliance risks
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -475,11 +501,13 @@ tasks:
 deliverables:
   - id: dq-risk-register
     label: DQ and risk register
+    plannedMinutes: 60
     helpText: |
       Deliverable “DQ and risk register”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: hotspot-list
     label: Prioritized hotspot list
+    plannedMinutes: 30
     helpText: |
       Deliverable “Prioritized hotspot list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -519,6 +547,7 @@ stories:
 tasks:
   - id: review-architecture
     label: Review current architecture and tools
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -535,6 +564,7 @@ tasks:
         href: /playbooks/big-five
   - id: document-bottlenecks
     label: Document bottlenecks and technical debt
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -551,11 +581,13 @@ tasks:
 deliverables:
   - id: architecture-notes
     label: Architecture diagnosis notes
+    plannedMinutes: 180
     helpText: |
       Deliverable “Architecture diagnosis notes”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: bottleneck-list
     label: Bottleneck list
+    plannedMinutes: 30
     helpText: |
       Deliverable “Bottleneck list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -584,6 +616,7 @@ stories:
 tasks:
   - id: score-initiatives
     label: Score initiatives by impact and effort
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -598,6 +631,7 @@ tasks:
         href: /playbooks/choosing-the-simplest-viable-architecture
   - id: agree-priorities
     label: Agree priorities with stakeholders
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -612,11 +646,13 @@ tasks:
 deliverables:
   - id: priority-matrix
     label: Prioritization matrix
+    plannedMinutes: 120
     helpText: |
       Deliverable “Prioritization matrix”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: quarter-backlog
     label: Quarter backlog agreed
+    plannedMinutes: 180
     helpText: |
       Deliverable “Quarter backlog agreed”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -647,6 +683,7 @@ stories:
 tasks:
   - id: draft-target-picture
     label: Draft target picture and principles
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -663,6 +700,7 @@ tasks:
         href: /playbooks/self-hosted-data-platform
   - id: validate-target-picture
     label: Validate target picture with stakeholders
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -677,11 +715,13 @@ tasks:
 deliverables:
   - id: target-picture
     label: Target picture documented
+    plannedMinutes: 120
     helpText: |
       Deliverable “Target picture documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: guiding-principles
     label: Guiding principles defined
+    plannedMinutes: 60
     helpText: |
       Deliverable “Guiding principles defined”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -718,6 +758,7 @@ links:
 tasks:
   - id: build-pilot
     label: Build the pilot
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -738,6 +779,7 @@ tasks:
         href: /tools/dbt-dq-rules-generator
   - id: track-pilot-blockers
     label: Manage blockers and dependencies
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -752,11 +794,13 @@ tasks:
 deliverables:
   - id: pilot-increment
     label: Pilot increment ready
+    plannedMinutes: 30
     helpText: |
       Deliverable “Pilot increment ready”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: pilot-changelog
     label: Pilot change log
+    plannedMinutes: 60
     helpText: |
       Deliverable “Pilot change log”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -785,6 +829,7 @@ stories:
 tasks:
   - id: run-pilot-review
     label: Review pilot with users
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -799,6 +844,7 @@ tasks:
         href: /playbooks/bi-tools
   - id: measure-pilot-outcomes
     label: Measure outcomes and quality
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -815,11 +861,13 @@ tasks:
 deliverables:
   - id: validation-report
     label: Validation report
+    plannedMinutes: 120
     helpText: |
       Deliverable “Validation report”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: go-nogo-recommendation
     label: Go/No-Go recommendation
+    plannedMinutes: 60
     helpText: |
       Deliverable “Go/No-Go recommendation”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -848,6 +896,7 @@ stories:
 tasks:
   - id: summarize-quarter
     label: Summarize quarter results
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -862,6 +911,7 @@ tasks:
         href: /playbooks/dsdr-governance
   - id: plan-next-quarter
     label: Roughly plan the next quarter
+    plannedMinutes: 180
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -878,11 +928,13 @@ tasks:
 deliverables:
   - id: quarter-report
     label: Quarter report
+    plannedMinutes: 120
     helpText: |
       Deliverable “Quarter report”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: next-quarter-outline
     label: Outline for the next quarter
+    plannedMinutes: 180
     helpText: |
       Deliverable “Outline for the next quarter”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.

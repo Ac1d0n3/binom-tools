@@ -338,6 +338,25 @@
                     </select>
                 </label>
                 <label class="sp-field"><span data-i18n="sp.field.dueDate">Due date</span><input type="date" id="sp-item-due" class="tools-input"></label>
+                <div class="sp-time-fields">
+                    <label class="sp-field sp-field--compact">
+                        <span data-i18n="sp.field.plannedMinutes">Planned</span>
+                        <select id="sp-item-planned" class="tools-input"></select>
+                    </label>
+                    <label class="sp-field sp-field--compact" id="sp-item-planned-custom-wrap" hidden>
+                        <span data-i18n="sp.field.customMinutes">Custom (min)</span>
+                        <input type="number" id="sp-item-planned-custom" class="tools-input" min="0" step="5" inputmode="numeric">
+                    </label>
+                    <label class="sp-field sp-field--compact">
+                        <span data-i18n="sp.field.actualMinutes">Actual</span>
+                        <select id="sp-item-actual" class="tools-input"></select>
+                    </label>
+                    <label class="sp-field sp-field--compact" id="sp-item-actual-custom-wrap" hidden>
+                        <span data-i18n="sp.field.customMinutes">Custom (min)</span>
+                        <input type="number" id="sp-item-actual-custom" class="tools-input" min="0" step="5" inputmode="numeric">
+                    </label>
+                </div>
+                <p class="sp-field__hint" id="sp-item-last-time" hidden></p>
                 <label class="sp-field" id="sp-item-blocker-field" hidden>
                     <span data-i18n="sp.field.blockerReason">Blocker reason</span>
                     <textarea id="sp-item-blocker-reason" class="tools-input" rows="2" maxlength="2000"></textarea>
@@ -412,6 +431,7 @@
                 <div class="sp-status-report__modes" role="group" aria-label="Report mode">
                     <button type="button" id="sp-report-mode-executive" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="executive" data-i18n="sp.report.mode.executive">Executive (CEO)</button>
                     <button type="button" id="sp-report-mode-detailed" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="detailed" data-i18n="sp.report.mode.detailed">Detailed</button>
+                    <button type="button" id="sp-report-mode-time" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="time" data-i18n="sp.report.mode.time">Time</button>
                     <button type="button" id="sp-report-mode-documentation" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="documentation" data-i18n="sp.report.mode.documentation">Documentation</button>
                 </div>
                 <div class="sp-status-report__actions">

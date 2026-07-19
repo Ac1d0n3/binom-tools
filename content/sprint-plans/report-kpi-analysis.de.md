@@ -32,6 +32,7 @@ stories:
 tasks:
   - id: w1-questions
     label: Entscheidungsfragen formulieren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -45,6 +46,7 @@ tasks:
         href: /playbooks/kpi-metric-governance
   - id: w1-audience
     label: Konsumenten und Kadenz mappen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -53,6 +55,7 @@ tasks:
 deliverables:
   - id: w1-brief
     label: Analyse-Briefing
+    plannedMinutes: 120
     helpText: |
       Fragen, Zielgruppe, Kadenz, Erfolgskriterien.
 
@@ -68,6 +71,7 @@ goal: KPIs und Definitionen festlegen.
 tasks:
   - id: w2-kpis
     label: Kern-KPIs auswählen
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -79,6 +83,7 @@ tasks:
         href: /playbooks/define-kpi
   - id: w2-defs
     label: Metrik-Definitionen dokumentieren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -87,6 +92,7 @@ tasks:
 deliverables:
   - id: w2-kpi-catalog
     label: KPI-Katalog-Entwurf
+    plannedMinutes: 120
     helpText: |
       Tabelle mit Formeln und Ownern.
 
@@ -102,6 +108,7 @@ goal: Quellen anbinden und Report mocken.
 tasks:
   - id: w3-sources
     label: Quellfelder validieren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -114,6 +121,7 @@ tasks:
         href: /playbooks/bi-tools
   - id: w3-mock
     label: Mock / Pilot-View bauen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -122,6 +130,7 @@ tasks:
 deliverables:
   - id: w3-pilot
     label: Pilot-View oder Mock
+    plannedMinutes: 60
     helpText: |
       Link/Screenshot + Feedback-Notizen.
 
@@ -137,6 +146,7 @@ goal: Report abnehmen und übergeben.
 tasks:
   - id: w4-accept
     label: Abnahme-Checkliste durchgehen
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -147,6 +157,7 @@ tasks:
         href: /playbooks/bi-tools
   - id: w4-handoff
     label: Handoff-Runbook
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -155,6 +166,7 @@ tasks:
 deliverables:
   - id: w4-accepted
     label: Report abgenommen
+    plannedMinutes: 120
     helpText: |
       Checkliste + Runbook-Link.
 

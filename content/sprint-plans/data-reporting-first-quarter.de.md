@@ -42,6 +42,7 @@ stories:
 tasks:
   - id: align-management-expectations
     label: Erwartungen mit der Führung abstimmen
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -56,6 +57,7 @@ tasks:
         href: /playbooks/eight-pillars
   - id: identify-stakeholders
     label: Relevante Stakeholder identifizieren
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     tableColumns: Name, Rolle, Einfluss, Interesse, Owner
@@ -71,11 +73,13 @@ tasks:
 deliverables:
   - id: stakeholder-list
     label: Stakeholder-Liste erstellen
+    plannedMinutes: 30
     helpText: |
       Deliverable „Stakeholder-Liste erstellen“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: initial-mandate
     label: Initialen Auftrag dokumentiert
+    plannedMinutes: 60
     helpText: |
       Deliverable „Initialen Auftrag dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -108,6 +112,7 @@ stories:
 tasks:
   - id: inventory-reports
     label: Bestehende Reports inventarisieren
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     tableColumns: Report, Owner, Tool, Rhythmus, Geschäftsfrage
@@ -123,6 +128,7 @@ tasks:
         href: /playbooks/one-app
   - id: map-report-consumers
     label: Report-Nutzer und Nutzungshäufigkeit kartieren
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -137,11 +143,13 @@ tasks:
 deliverables:
   - id: report-inventory
     label: Report-Inventar dokumentiert
+    plannedMinutes: 120
     helpText: |
       Deliverable „Report-Inventar dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: gap-list
     label: Erste Lückenliste erstellt
+    plannedMinutes: 30
     helpText: |
       Deliverable „Erste Lückenliste erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -170,6 +178,7 @@ stories:
 tasks:
   - id: list-source-systems
     label: Quellsysteme und Owner erfassen
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Access, Consumed by
@@ -187,6 +196,7 @@ tasks:
         href: /playbooks/sap-overview
   - id: document-interfaces
     label: Schnittstellen und Extraktionswege dokumentieren
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -201,11 +211,13 @@ tasks:
 deliverables:
   - id: source-system-map
     label: Quellsystem-Landkarte erstellt
+    plannedMinutes: 60
     helpText: |
       Deliverable „Quellsystem-Landkarte erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: owner-matrix
     label: Owner-Matrix erstellt
+    plannedMinutes: 30
     helpText: |
       Deliverable „Owner-Matrix erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -234,6 +246,7 @@ stories:
 tasks:
   - id: trace-data-creation
     label: Datenerzeugung in Kernprozessen nachverfolgen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -248,6 +261,7 @@ tasks:
         href: /playbooks/before-building-the-first-table
   - id: capture-business-rules
     label: Geschäftsregeln und Ausnahmen dokumentieren
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -262,11 +276,13 @@ tasks:
 deliverables:
   - id: creation-notes
     label: Notizen zur Datenerzeugung
+    plannedMinutes: 60
     helpText: |
       Deliverable „Notizen zur Datenerzeugung“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: rule-summary
     label: Zusammenfassung der Geschäftsregeln
+    plannedMinutes: 60
     helpText: |
       Deliverable „Zusammenfassung der Geschäftsregeln“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -305,6 +321,7 @@ stories:
 tasks:
   - id: map-lineage-paths
     label: Zentrale Lineage-Pfade skizzieren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -321,6 +338,7 @@ tasks:
         href: /playbooks/missing-pieces-metadata-catalog-lineage
   - id: identify-lineage-gaps
     label: Lineage-Lücken und blinde Flecken markieren
+    plannedMinutes: 30
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -335,11 +353,13 @@ tasks:
 deliverables:
   - id: lineage-sketch
     label: Lineage-Skizze erstellt
+    plannedMinutes: 60
     helpText: |
       Deliverable „Lineage-Skizze erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: lineage-gap-log
     label: Lineage-Lückenprotokoll
+    plannedMinutes: 60
     helpText: |
       Deliverable „Lineage-Lückenprotokoll“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -370,6 +390,7 @@ stories:
 tasks:
   - id: collect-kpis
     label: KPIs aus Reports und Stakeholder-Interviews sammeln
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -384,6 +405,7 @@ tasks:
         href: /playbooks/kpi-metric-governance
   - id: normalize-definitions
     label: Definitionen und Berechnungsregeln angleichen
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -398,11 +420,13 @@ tasks:
 deliverables:
   - id: kpi-inventory
     label: KPI-Inventar erstellt
+    plannedMinutes: 120
     helpText: |
       Deliverable „KPI-Inventar erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: definition-backlog
     label: Definitions-Backlog priorisiert
+    plannedMinutes: 60
     helpText: |
       Deliverable „Definitions-Backlog priorisiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -439,6 +463,7 @@ links:
 tasks:
   - id: assess-dq-issues
     label: Bekannte DQ-Probleme bewerten
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -457,6 +482,7 @@ tasks:
         href: /tools/dbt-dq-macro-generator
   - id: rate-risks
     label: Business- und Compliance-Risiken bewerten
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -475,11 +501,13 @@ tasks:
 deliverables:
   - id: dq-risk-register
     label: DQ- und Risiko-Register
+    plannedMinutes: 60
     helpText: |
       Deliverable „DQ- und Risiko-Register“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: hotspot-list
     label: Priorisierte Hotspot-Liste
+    plannedMinutes: 30
     helpText: |
       Deliverable „Priorisierte Hotspot-Liste“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -519,6 +547,7 @@ stories:
 tasks:
   - id: review-architecture
     label: Aktuelle Architektur und Tools prüfen
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -535,6 +564,7 @@ tasks:
         href: /playbooks/big-five
   - id: document-bottlenecks
     label: Engpässe und technische Schulden dokumentieren
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -551,11 +581,13 @@ tasks:
 deliverables:
   - id: architecture-notes
     label: Notizen zur Architekturdiagnose
+    plannedMinutes: 180
     helpText: |
       Deliverable „Notizen zur Architekturdiagnose“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: bottleneck-list
     label: Engpass-Liste
+    plannedMinutes: 30
     helpText: |
       Deliverable „Engpass-Liste“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -584,6 +616,7 @@ stories:
 tasks:
   - id: score-initiatives
     label: Initiativen nach Impact und Aufwand bewerten
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -598,6 +631,7 @@ tasks:
         href: /playbooks/choosing-the-simplest-viable-architecture
   - id: agree-priorities
     label: Prioritäten mit Stakeholdern abstimmen
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -612,11 +646,13 @@ tasks:
 deliverables:
   - id: priority-matrix
     label: Priorisierungsmatrix
+    plannedMinutes: 120
     helpText: |
       Deliverable „Priorisierungsmatrix“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: quarter-backlog
     label: Quartals-Backlog vereinbart
+    plannedMinutes: 180
     helpText: |
       Deliverable „Quartals-Backlog vereinbart“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -647,6 +683,7 @@ stories:
 tasks:
   - id: draft-target-picture
     label: Zielbild und Prinzipien entwerfen
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -663,6 +700,7 @@ tasks:
         href: /playbooks/self-hosted-data-platform
   - id: validate-target-picture
     label: Zielbild mit Stakeholdern validieren
+    plannedMinutes: 120
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -677,11 +715,13 @@ tasks:
 deliverables:
   - id: target-picture
     label: Zielbild dokumentiert
+    plannedMinutes: 120
     helpText: |
       Deliverable „Zielbild dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: guiding-principles
     label: Leitprinzipien definiert
+    plannedMinutes: 60
     helpText: |
       Deliverable „Leitprinzipien definiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -718,6 +758,7 @@ links:
 tasks:
   - id: build-pilot
     label: Den Piloten bauen
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -738,6 +779,7 @@ tasks:
         href: /tools/dbt-dq-rules-generator
   - id: track-pilot-blockers
     label: Blocker und Abhängigkeiten managen
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -752,11 +794,13 @@ tasks:
 deliverables:
   - id: pilot-increment
     label: Pilot-Inkrement bereit
+    plannedMinutes: 60
     helpText: |
       Deliverable „Pilot-Inkrement bereit“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: pilot-changelog
     label: Pilot-Changelog
+    plannedMinutes: 60
     helpText: |
       Deliverable „Pilot-Changelog“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -785,6 +829,7 @@ stories:
 tasks:
   - id: run-pilot-review
     label: Piloten mit Nutzern reviewen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -799,6 +844,7 @@ tasks:
         href: /playbooks/bi-tools
   - id: measure-pilot-outcomes
     label: Ergebnisse und Qualität messen
+    plannedMinutes: 60
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -815,11 +861,13 @@ tasks:
 deliverables:
   - id: validation-report
     label: Validierungsbericht
+    plannedMinutes: 120
     helpText: |
       Deliverable „Validierungsbericht“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: go-nogo-recommendation
     label: Go/No-Go-Empfehlung
+    plannedMinutes: 60
     helpText: |
       Deliverable „Go/No-Go-Empfehlung“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
@@ -848,6 +896,7 @@ stories:
 tasks:
   - id: summarize-quarter
     label: Quartalsergebnisse zusammenfassen
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -862,6 +911,7 @@ tasks:
         href: /playbooks/dsdr-governance
   - id: plan-next-quarter
     label: Nächstes Quartal grob planen
+    plannedMinutes: 180
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -878,11 +928,13 @@ tasks:
 deliverables:
   - id: quarter-report
     label: Quartalsbericht
+    plannedMinutes: 120
     helpText: |
       Deliverable „Quartalsbericht“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
   - id: next-quarter-outline
     label: Skizze für das nächste Quartal
+    plannedMinutes: 180
     helpText: |
       Deliverable „Skizze für das nächste Quartal“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.

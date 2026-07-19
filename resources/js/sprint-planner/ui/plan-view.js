@@ -91,6 +91,16 @@ import { renderAssigneeChip, renderParticipantChips, renderTeamChips } from './a
 import { createIconButton } from './icons.js';
 import { isPlaybookRead } from '../../playbooks/read-state.js';
 import {
+    collectTimeRows,
+    findLastActualMinutes,
+    formatMinutesLabel,
+    formatMinutesShort,
+    normalizeMinutes,
+    TIME_PRESETS,
+    timeSelectOptions,
+    timeVariance,
+} from '../time.js';
+import {
     bindHelpPanelChrome,
     closeHelpPanel,
     fillHelpPanel,
@@ -107,7 +117,7 @@ let assignDialogState = null;
 /** @type {import('../attachments.js').SpAttachment[]} */
 let dialogAttachments = [];
 let bound = false;
-/** @type {'executive'|'detailed'|'documentation'} */
+/** @type {'executive'|'detailed'|'documentation'|'time'} */
 let reportMode = 'executive';
 /** @type {{instance: object, template: object|undefined, sprints: object[], workspace: object, locale: 'de'|'en'}|null} */
 let lastRenderContext = null;
@@ -1748,9 +1758,9 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
         body.appendChild(goal);
 
         if (sprint.flow) {
-            const flowEl = renderFlow(sprint.flow);
-            if (flowEl) {
-                body.appendChild(flowEl);
+            const flowBlock = renderCollapsibleSprintFlow(sprint.flow, instance.id, sprint.id);
+            if (flowBlock) {
+                body.appendChild(flowBlock);
             }
         }
 
@@ -1771,6 +1781,57 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
         details.appendChild(body);
         host.appendChild(details);
     }
+}
+
+/**
+ * Collapsible sprint flow diagram (prefs: expandedSprintFlows[planId][sprintId]).
+ *
+ * @param {import('../progress.js').SpFlow} flow
+ * @param {string} instanceId
+ * @param {string} sprintId
+ * @returns {HTMLElement|null}
+ */
+function renderCollapsibleSprintFlow(flow, instanceId, sprintId) {
+    const flowEl = renderFlow(flow);
+    if (!flowEl) {
+        return null;
+    }
+    const prefs = loadPreferences();
+    const map = prefs.expandedSprintFlows?.[instanceId] || {};
+    // Default collapsed; only open when the user explicitly expanded it.
+    const open = map[sprintId] === true;
+
+    const details = document.createElement('details');
+    details.className = 'sp-flow-fold';
+    details.open = open;
+
+    const summary = document.createElement('summary');
+    summary.className = 'sp-flow-fold__summary';
+    const label = document.createElement('span');
+    label.className = 'sp-flow-fold__label';
+    label.textContent = spT('sp.flow.title');
+    const hint = document.createElement('span');
+    hint.className = 'sp-flow-fold__hint';
+    hint.textContent = spT('sp.flow.steps', { count: flow.steps.length });
+    summary.append(label, hint);
+    details.appendChild(summary);
+
+    const body = document.createElement('div');
+    body.className = 'sp-flow-fold__body';
+    body.appendChild(flowEl);
+    details.appendChild(body);
+
+    details.addEventListener('toggle', () => {
+        const next = loadPreferences();
+        next.expandedSprintFlows = next.expandedSprintFlows || {};
+        next.expandedSprintFlows[instanceId] = {
+            ...(next.expandedSprintFlows[instanceId] || {}),
+            [sprintId]: details.open,
+        };
+        savePreferences(next);
+    });
+
+    return details;
 }
 
 /**
@@ -1882,7 +1943,23 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         weekLabel,
         explicitDue || plannedDue,
     ].filter(Boolean);
-    meta.textContent = metaParts.join(' · ');
+    meta.replaceChildren();
+    if (metaParts.length) {
+        const metaText = document.createElement('span');
+        metaText.textContent = metaParts.join(' · ');
+        meta.appendChild(metaText);
+    }
+    const timeChip = buildItemTimeChip(item);
+    if (timeChip) {
+        if (metaParts.length) {
+            const sep = document.createElement('span');
+            sep.className = 'sp-item__meta-sep';
+            sep.setAttribute('aria-hidden', 'true');
+            sep.textContent = '·';
+            meta.appendChild(sep);
+        }
+        meta.appendChild(timeChip);
+    }
     const srAssignee = document.createElement('span');
     srAssignee.className = 'visually-hidden';
     srAssignee.textContent = resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned');
@@ -2032,6 +2109,8 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
                             assigneeId: item.assigneeId,
                             dueDate: item.dueDate,
                             note: item.note,
+                            plannedMinutes: item.plannedMinutes,
+                            actualMinutes: item.actualMinutes,
                             blockerReason: item.dependencyBlocked
                                 && item.storedStatus !== 'blocked'
                                 ? ''
@@ -2484,6 +2563,8 @@ function bindDialogs(instanceId, render) {
             priority: document.getElementById('sp-item-priority').value,
             dueDate: document.getElementById('sp-item-due').value || null,
             note: document.getElementById('sp-item-note').value,
+            plannedMinutes: readTimeField('planned'),
+            actualMinutes: readTimeField('actual'),
             table,
             blockerReason,
             blockerSince,
@@ -2717,6 +2798,29 @@ function openItemDialog(state) {
     document.getElementById('sp-item-priority').value = state.item?.priority || 'normal';
     document.getElementById('sp-item-due').value = state.item?.dueDate || '';
     document.getElementById('sp-item-note').value = state.item?.note || '';
+    fillTimeSelect('planned', state.item?.plannedMinutes ?? null);
+    fillTimeSelect('actual', state.item?.actualMinutes ?? null);
+    const lastTimeEl = document.getElementById('sp-item-last-time');
+    if (lastTimeEl) {
+        const instanceId = String(document.getElementById('sp-app')?.dataset?.spInstanceId || '');
+        const plan = workspace.instances?.[instanceId];
+        const last = (!state.create && state.item?.id && plan)
+            ? findLastActualMinutes(workspace, {
+                templateSlug: String(plan.templateSlug || ''),
+                itemId: String(state.item.id),
+                excludeInstanceId: instanceId,
+            })
+            : null;
+        if (last !== null) {
+            lastTimeEl.hidden = false;
+            lastTimeEl.textContent = spT('sp.time.lastActual', {
+                time: formatMinutesLabel(last, spT),
+            });
+        } else {
+            lastTimeEl.hidden = true;
+            lastTimeEl.textContent = '';
+        }
+    }
     const blockerReasonEl = document.getElementById('sp-item-blocker-reason');
     if (blockerReasonEl) {
         const showManualReason = storedStatus === 'blocked'
@@ -2888,6 +2992,11 @@ function bindStatusReport() {
     });
     document.getElementById('sp-report-mode-detailed')?.addEventListener('click', () => {
         reportMode = 'detailed';
+        updateReportModeButtons();
+        refreshStatusReport();
+    });
+    document.getElementById('sp-report-mode-time')?.addEventListener('click', () => {
+        reportMode = 'time';
         updateReportModeButtons();
         refreshStatusReport();
     });
@@ -3257,6 +3366,11 @@ function renderStatusReport(instance, template, sprints, workspace, locale) {
         return;
     }
 
+    if (reportMode === 'time') {
+        renderTimeReport(body, { sprints });
+        return;
+    }
+
     renderDetailedReport(body, {
         progress,
         currentSprint,
@@ -3397,6 +3511,18 @@ function renderDetailedReport(body, ctx) {
             ]),
         ),
     ]));
+
+    const timeSummary = collectTimeRows(sprints);
+    body.appendChild(buildReportSection(spT('sp.report.time'), () => {
+        const p = document.createElement('p');
+        p.textContent = [
+            `${spT('sp.report.timePlanned')}: ${formatMinutesShort(timeSummary.planned)}`,
+            `${spT('sp.report.timeActual')}: ${formatMinutesShort(timeSummary.actual)}`,
+            `${spT('sp.report.timeOver')}: ${timeSummary.over}`,
+            `${spT('sp.report.timeUnder')}: ${timeSummary.under}`,
+        ].join(' · ');
+        return [p];
+    }));
 
     const requiredUnread = collectRequiredUnreadStories(sprints);
     body.appendChild(buildReportSection(spT('sp.report.requiredStories'), () => {
@@ -3682,6 +3808,186 @@ async function appendAttachmentReportNode(host, instanceId, att) {
     }
     a.textContent = att.name + (att.blobMissing ? ` (${spT('sp.attachments.missingBlob')})` : '');
     host.appendChild(a);
+}
+
+/**
+ * @param {object} item
+ * @returns {HTMLElement|null}
+ */
+function buildItemTimeChip(item) {
+    const planned = normalizeMinutes(item.plannedMinutes);
+    const actual = normalizeMinutes(item.actualMinutes);
+    if (planned === null && actual === null) {
+        return null;
+    }
+    const chip = document.createElement('span');
+    chip.className = 'sp-item__time';
+    const variance = timeVariance(planned, actual);
+    if (variance) {
+        chip.classList.add(`sp-item__time--${variance}`);
+    }
+    const plannedLabel = formatMinutesShort(planned);
+    const actualLabel = formatMinutesShort(actual);
+    chip.textContent = `${plannedLabel} / ${actualLabel}`;
+    if (variance === 'over') {
+        chip.title = spT('sp.time.varianceOver');
+    } else if (variance === 'under') {
+        chip.title = spT('sp.time.varianceUnder');
+    } else if (variance === 'on_track') {
+        chip.title = spT('sp.time.varianceOnTrack');
+    } else {
+        chip.title = spT('sp.time.chipTitle');
+    }
+    return chip;
+}
+
+/**
+ * @param {'planned'|'actual'} kind
+ * @param {number|null} current
+ */
+function fillTimeSelect(kind, current) {
+    const select = document.getElementById(`sp-item-${kind}`);
+    const customWrap = document.getElementById(`sp-item-${kind}-custom-wrap`);
+    const customInput = document.getElementById(`sp-item-${kind}-custom`);
+    if (!select) {
+        return;
+    }
+    const cur = normalizeMinutes(current);
+    select.replaceChildren();
+    for (const opt of timeSelectOptions(cur)) {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        if (opt.value === '') {
+            option.textContent = spT('sp.time.none');
+        } else if (opt.value === '__custom__') {
+            option.textContent = spT('sp.time.custom');
+        } else if (opt.custom) {
+            option.textContent = formatMinutesLabel(opt.minutes, spT);
+        } else {
+            option.textContent = formatMinutesLabel(opt.minutes, spT);
+        }
+        select.appendChild(option);
+    }
+    const isPreset = cur !== null && TIME_PRESETS.includes(cur);
+    if (cur === null) {
+        select.value = '';
+        if (customWrap) {
+            customWrap.hidden = true;
+        }
+        if (customInput) {
+            customInput.value = '';
+        }
+    } else if (isPreset) {
+        select.value = String(cur);
+        if (customWrap) {
+            customWrap.hidden = true;
+        }
+    } else {
+        select.value = String(cur);
+        if (customWrap) {
+            customWrap.hidden = false;
+        }
+        if (customInput) {
+            customInput.value = String(cur);
+        }
+    }
+    select.onchange = () => {
+        if (!customWrap) {
+            return;
+        }
+        if (select.value === '__custom__') {
+            customWrap.hidden = false;
+            if (customInput && !customInput.value) {
+                customInput.value = cur !== null ? String(cur) : '60';
+            }
+            customInput?.focus();
+            return;
+        }
+        customWrap.hidden = true;
+    };
+}
+
+/**
+ * @param {'planned'|'actual'} kind
+ * @returns {number|null}
+ */
+function readTimeField(kind) {
+    const select = document.getElementById(`sp-item-${kind}`);
+    const customInput = document.getElementById(`sp-item-${kind}-custom`);
+    if (!select) {
+        return null;
+    }
+    if (select.value === '__custom__') {
+        return normalizeMinutes(customInput?.value);
+    }
+    if (select.value === '') {
+        return null;
+    }
+    return normalizeMinutes(select.value);
+}
+
+/**
+ * @param {HTMLElement} body
+ * @param {{ sprints: object[] }} ctx
+ */
+function renderTimeReport(body, ctx) {
+    const summary = collectTimeRows(ctx.sprints || []);
+    const kpi = document.createElement('div');
+    kpi.className = 'sp-report-kpi';
+    kpi.append(
+        buildKpiCard(spT('sp.report.timePlanned'), formatMinutesShort(summary.planned), formatMinutesLabel(summary.planned, spT)),
+        buildKpiCard(spT('sp.report.timeActual'), formatMinutesShort(summary.actual), formatMinutesLabel(summary.actual, spT)),
+        buildKpiCard(spT('sp.report.timeOver'), String(summary.over), ''),
+        buildKpiCard(spT('sp.report.timeUnder'), String(summary.under), ''),
+    );
+    body.appendChild(kpi);
+
+    body.appendChild(buildReportSection(spT('sp.report.time'), () => {
+        if (!summary.rows.length) {
+            return [buildEmptyParagraph()];
+        }
+        return [buildReportTable(
+            [
+                spT('sp.report.colSprint'),
+                spT('sp.report.colItem'),
+                spT('sp.report.colPlanned'),
+                spT('sp.report.colActual'),
+                spT('sp.report.colDelta'),
+                spT('sp.report.colVariance'),
+            ],
+            summary.rows.map((row) => {
+                const delta = row.delta;
+                let deltaLabel = '—';
+                if (delta !== null) {
+                    const sign = delta > 0 ? '+' : '';
+                    deltaLabel = `${sign}${formatMinutesShort(Math.abs(delta))}`;
+                    if (delta < 0) {
+                        deltaLabel = `-${formatMinutesShort(Math.abs(delta))}`;
+                    } else if (delta > 0) {
+                        deltaLabel = `+${formatMinutesShort(delta)}`;
+                    } else {
+                        deltaLabel = formatMinutesShort(0);
+                    }
+                }
+                let varianceLabel = '—';
+                if (row.variance === 'over') {
+                    varianceLabel = spT('sp.time.varianceOver');
+                } else if (row.variance === 'under') {
+                    varianceLabel = spT('sp.time.varianceUnder');
+                } else if (row.variance === 'on_track') {
+                    varianceLabel = spT('sp.time.varianceOnTrack');
+                }
+                return [
+                    row.sprintNumber ? `#${row.sprintNumber}` : '—',
+                    row.item?.label || row.item?.id || '—',
+                    formatMinutesShort(row.planned),
+                    formatMinutesShort(row.actual),
+                    deltaLabel,
+                    varianceLabel,
+                ];
+            }),
+        )];
+    }));
 }
 
 /**

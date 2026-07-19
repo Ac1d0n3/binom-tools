@@ -557,6 +557,23 @@ final class SprintFenceParser
 
     /**
      * @param  array<string, mixed>  $item
+     */
+    private function normalizeItemMinutes(array $item): ?int
+    {
+        $raw = $item['plannedminutes'] ?? $item['plannedMinutes'] ?? $item['planned_minutes'] ?? null;
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+        if (! is_numeric($raw)) {
+            return null;
+        }
+        $minutes = (int) round((float) $raw);
+
+        return $minutes < 0 ? null : $minutes;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
      * @param  list<string>  $warnings
      * @return array<string, mixed>
      */
@@ -570,6 +587,7 @@ final class SprintFenceParser
                 'label' => (string) ($item['label'] ?? ''),
                 'assigneeType' => $item['assigneetype'] ?? $item['assigneeType'] ?? 'person',
                 'assigneeId' => $item['assigneeid'] ?? $item['assigneeId'] ?? null,
+                'plannedMinutes' => $this->normalizeItemMinutes($item),
                 'stories' => $stories,
                 'linkedStorySlugs' => array_values(array_map(static fn (array $s): string => $s['slug'], $stories)),
                 'helpText' => $this->normalizeItemMultilineText($item, 'helptext'),
@@ -585,6 +603,7 @@ final class SprintFenceParser
             return [
                 'id' => (string) ($item['id'] ?? ''),
                 'label' => (string) ($item['label'] ?? ''),
+                'plannedMinutes' => $this->normalizeItemMinutes($item),
                 'stories' => $stories,
                 'helpText' => $this->normalizeItemMultilineText($item, 'helptext'),
                 'helpLinks' => $this->normalizeItemHelpLinks($item),

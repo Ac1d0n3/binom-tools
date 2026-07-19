@@ -60,6 +60,18 @@ final class AccountsConfig
         return $this->plansDirectory().DIRECTORY_SEPARATOR.$safe.DIRECTORY_SEPARATOR.'history';
     }
 
+    public function planBackupsRoot(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'backups'.DIRECTORY_SEPARATOR.'plans';
+    }
+
+    public function planBackupsDirectory(string $dateYmd): string
+    {
+        $safe = preg_replace('/[^0-9\-]/', '', $dateYmd) ?: 'invalid';
+
+        return $this->planBackupsRoot().DIRECTORY_SEPARATOR.$safe;
+    }
+
     public function readStateDirectory(): string
     {
         return $this->basePath().DIRECTORY_SEPARATOR.'read-state';

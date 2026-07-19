@@ -30,6 +30,7 @@ stories:
 tasks:
   - id: w1-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -41,6 +42,7 @@ tasks:
         href: /playbooks/data-ownership-stewardship
   - id: w1-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -50,6 +52,7 @@ tasks:
 deliverables:
   - id: w1-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -65,6 +68,7 @@ goal: Shape a thin backlog for the next 2–3 weeks.
 tasks:
   - id: w2-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -72,6 +76,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w2-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -81,6 +86,7 @@ tasks:
 deliverables:
   - id: w2-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -96,6 +102,7 @@ goal: Establish weekly delivery rhythm.
 tasks:
   - id: w3-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -103,6 +110,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w3-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -112,6 +120,7 @@ tasks:
 deliverables:
   - id: w3-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -127,6 +136,7 @@ goal: Map critical dependencies and owners.
 tasks:
   - id: w4-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -134,6 +144,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w4-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -143,6 +154,7 @@ tasks:
 deliverables:
   - id: w4-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -162,6 +174,7 @@ stories:
 tasks:
   - id: w5-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -169,6 +182,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w5-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -178,6 +192,7 @@ tasks:
 deliverables:
   - id: w5-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -193,6 +208,7 @@ goal: Protect focus time for top outcomes.
 tasks:
   - id: w6-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -200,6 +216,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w6-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -209,6 +226,7 @@ tasks:
 deliverables:
   - id: w6-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -224,6 +242,7 @@ goal: Define quality gates for work in flight.
 tasks:
   - id: w7-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -231,6 +250,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w7-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -240,6 +260,7 @@ tasks:
 deliverables:
   - id: w7-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -255,6 +276,7 @@ goal: Sync decisions with stakeholders.
 tasks:
   - id: w8-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -262,6 +284,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w8-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -271,6 +294,7 @@ tasks:
 deliverables:
   - id: w8-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -286,6 +310,7 @@ goal: Burn down top risks with explicit owners.
 tasks:
   - id: w9-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -293,6 +318,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w9-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -302,6 +328,7 @@ tasks:
 deliverables:
   - id: w9-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -317,6 +344,7 @@ goal: Integrate and validate end-to-end paths.
 tasks:
   - id: w10-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -324,6 +352,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w10-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -333,6 +362,7 @@ tasks:
 deliverables:
   - id: w10-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -348,6 +378,7 @@ goal: Harden, document, and cut remaining scope.
 tasks:
   - id: w11-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -355,6 +386,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w11-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -364,6 +396,7 @@ tasks:
 deliverables:
   - id: w11-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -379,6 +412,7 @@ goal: Prepare demos and acceptance evidence.
 tasks:
   - id: w12-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -386,6 +420,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w12-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -395,6 +430,7 @@ tasks:
 deliverables:
   - id: w12-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 
@@ -410,6 +446,7 @@ goal: Close the quarter and seed the next one.
 tasks:
   - id: w13-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -417,6 +454,7 @@ tasks:
       Keep the list short enough to finish.
   - id: w13-run-week
     label: Run and update the board
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -426,6 +464,7 @@ tasks:
 deliverables:
   - id: w13-week-outcome
     label: Weekly outcome note
+    plannedMinutes: 60
     helpText: |
       Dated note: planned vs done, blockers, next focus.
 

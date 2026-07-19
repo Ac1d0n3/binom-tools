@@ -32,6 +32,7 @@ stories:
 tasks:
   - id: w1-impact
     label: Änderung und Impact dokumentieren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -43,6 +44,7 @@ tasks:
         href: /playbooks/data-quality-governance
   - id: w1-scope
     label: In/Out-of-Scope vereinbaren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -51,6 +53,7 @@ tasks:
 deliverables:
   - id: w1-impact-note
     label: Impact-Notiz
+    plannedMinutes: 60
     helpText: |
       Änderungszusammenfassung, Konsumenten, Rollback.
 
@@ -66,6 +69,7 @@ goal: Tests entwerfen und anlegen.
 tasks:
   - id: w2-tests
     label: Automatisierte Tests anlegen/erweitern
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -79,6 +83,7 @@ tasks:
         href: /playbooks/dq-test2
   - id: w2-fixtures
     label: Fixtures / erwartete Ergebnisse vorbereiten
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -87,6 +92,7 @@ tasks:
 deliverables:
   - id: w2-test-pack
     label: Test-Pack
+    plannedMinutes: 60
     helpText: |
       Liste neuer/aktualisierter Tests mit Ownern.
 
@@ -102,12 +108,14 @@ goal: Änderung verifizieren und releasen.
 tasks:
   - id: w3-verify
     label: Tests in Zielumgebung ausführen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
       Ergebnisse festhalten; bei kritischen Checks fail-closed.
   - id: w3-release
     label: Release Notes und Monitoring
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -116,6 +124,7 @@ tasks:
 deliverables:
   - id: w3-release
     label: Release-Nachweis
+    plannedMinutes: 60
     helpText: |
       Testergebnisse + Release Notes.
 

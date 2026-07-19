@@ -226,6 +226,7 @@ final class SprintPlanRepository
                         'id' => $t['id'],
                         'assigneeType' => $t['assigneeType'] ?? 'person',
                         'assigneeId' => $t['assigneeId'] ?? null,
+                        'plannedMinutes' => $this->normalizeStructuralMinutes($t['plannedMinutes'] ?? null),
                         'stories' => $taskStories,
                         'linkedStorySlugs' => array_values(array_map(static fn (array $s): string => $s['slug'], $taskStories)),
                         'helpLinks' => $this->normalizeStructuralHrefLinks($t['helpLinks'] ?? []),
@@ -235,6 +236,7 @@ final class SprintPlanRepository
                 'deliverables' => array_map(function (array $d): array {
                     return [
                         'id' => $d['id'],
+                        'plannedMinutes' => $this->normalizeStructuralMinutes($d['plannedMinutes'] ?? null),
                         'stories' => $this->normalizeStructuralStories($d['stories'] ?? []),
                         'helpLinks' => $this->normalizeStructuralHrefLinks($d['helpLinks'] ?? []),
                         'table' => $this->normalizeStructuralTable($d['table'] ?? null),
@@ -247,6 +249,19 @@ final class SprintPlanRepository
                 ], $sprint['fields'] ?? []),
             ];
         }, $base);
+    }
+
+    private function normalizeStructuralMinutes(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (! is_numeric($value)) {
+            return null;
+        }
+        $minutes = (int) round((float) $value);
+
+        return $minutes < 0 ? null : $minutes;
     }
 
     /**

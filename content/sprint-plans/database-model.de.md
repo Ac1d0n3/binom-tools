@@ -32,6 +32,7 @@ stories:
 tasks:
   - id: w1-scope
     label: Business-Fragen und Grain festhalten
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -43,6 +44,7 @@ tasks:
         href: /playbooks/before-building-the-first-table
   - id: w1-sources
     label: Kandidaten-Quellen inventarisieren
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -55,6 +57,7 @@ tasks:
 deliverables:
   - id: w1-scope-note
     label: Scope- & Grain-Notiz
+    plannedMinutes: 60
     helpText: |
       Fragen, Grain und Out-of-Scope.
 
@@ -70,6 +73,7 @@ goal: Entitäten, Keys und Beziehungen entwerfen.
 tasks:
   - id: w2-entities
     label: Entitätsliste und Keys entwerfen
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -81,6 +85,7 @@ tasks:
         href: /playbooks/beyond-bronze-silver-gold
   - id: w2-rels
     label: Beziehungen und Kardinalität mappen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -89,6 +94,7 @@ tasks:
 deliverables:
   - id: w2-model-draft
     label: ER-Entwurf
+    plannedMinutes: 120
     helpText: |
       Diagramm oder Tabellenliste mit Keys und Kardinalität.
 
@@ -104,12 +110,14 @@ goal: Naming, Typen und Konventionen anwenden.
 tasks:
   - id: w3-naming
     label: Naming-Konventionen anwenden
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
       Tabellen, Spalten, Boolean-/Datums-Muster an Plattformstandards ausrichten.
   - id: w3-types
     label: Typen und Nullability bestätigen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -118,6 +126,7 @@ tasks:
 deliverables:
   - id: w3-standards
     label: Naming- & Typstandards angewendet
+    plannedMinutes: 60
     helpText: |
       Checkliste oder PR-Notizen.
 
@@ -133,6 +142,7 @@ goal: Mit Ownern reviewen und v1 einfrieren.
 tasks:
   - id: w4-review
     label: Walkthrough mit Stakeholdern
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -143,6 +153,7 @@ tasks:
         href: /playbooks/data-ownership-stewardship
   - id: w4-freeze
     label: Modell v1 einfrieren und Next Steps
+    plannedMinutes: 120
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -151,6 +162,7 @@ tasks:
 deliverables:
   - id: w4-model-v1
     label: Modell v1 freigegeben
+    plannedMinutes: 120
     helpText: |
       Freigegebenes Artefakt + offene Follow-ups.
 

@@ -8,6 +8,7 @@ import {
 } from './dependencies.js';
 import { mergeItemTable, normalizeItemTable } from './item-table.js';
 import { t } from './labels.js';
+import { resolveActualMinutes, resolvePlannedMinutes } from './time.js';
 
 /**
  * @typedef {Object} SpHelpLink
@@ -348,6 +349,8 @@ function resolveTemplateItem({
         assigneeId,
         dueDate: itemOverride.dueDate || null,
         note: itemOverride.note || '',
+        plannedMinutes: resolvePlannedMinutes(itemOverride, item),
+        actualMinutes: resolveActualMinutes(itemOverride),
         custom: false,
         sprintId,
         stories,
@@ -389,6 +392,8 @@ function resolveCustomItem(item, key, kind, sprintId, completedList, locale, tem
         assigneeId: item.assigneeId || null,
         dueDate: item.dueDate || null,
         note: item.note || '',
+        plannedMinutes: resolvePlannedMinutes(item, null),
+        actualMinutes: resolveActualMinutes(item),
         custom: true,
         sprintId,
         stories,

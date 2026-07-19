@@ -30,6 +30,7 @@ stories:
 tasks:
   - id: w1-plan-week
     label: Plan this week’s outcomes
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -41,6 +42,7 @@ tasks:
         href: /playbooks/eight-pillars
   - id: w1-standup-board
     label: Update board and owners
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -50,6 +52,7 @@ tasks:
 deliverables:
   - id: w1-week-outcome
     label: Month priorities documented
+    plannedMinutes: 120
     helpText: |
       Short dated note with top goals and capacity assumptions.
 
@@ -65,12 +68,14 @@ goal: Deliver the highest-priority work packages.
 tasks:
   - id: w2-plan-week
     label: Break goals into weekly tasks
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
       Owners and done criteria for each package. Cut scope early if capacity is tight.
   - id: w2-standup-board
     label: Update board and owners
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -79,6 +84,7 @@ tasks:
 deliverables:
   - id: w2-week-outcome
     label: Weekly plan with owners
+    plannedMinutes: 30
     helpText: |
       Board snapshot or short list of packages with owners.
 
@@ -94,12 +100,14 @@ goal: Unblock and re-plan mid-month.
 tasks:
   - id: w3-plan-week
     label: List blockers and dependencies
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
       Decide cut scope vs push. Escalate only with a clear ask.
   - id: w3-standup-board
     label: Update board and owners
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -108,6 +116,7 @@ tasks:
 deliverables:
   - id: w3-week-outcome
     label: Risk and dependency list
+    plannedMinutes: 30
     helpText: |
       Named risks, owners, and decisions.
 
@@ -123,12 +132,14 @@ goal: Close the month and seed next month.
 tasks:
   - id: w4-plan-week
     label: Demo outcomes and archive notes
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
       Capture what shipped, what slipped, and why.
   - id: w4-standup-board
     label: Draft next-month backlog
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -137,6 +148,7 @@ tasks:
 deliverables:
   - id: w4-week-outcome
     label: Month close + next backlog
+    plannedMinutes: 60
     helpText: |
       One-pager: outcomes, learnings, next backlog.
 

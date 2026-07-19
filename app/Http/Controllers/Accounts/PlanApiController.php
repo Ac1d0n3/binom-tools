@@ -39,6 +39,8 @@ class PlanApiController extends Controller
     {
         $user = $this->auth->user();
         abort_if($user === null, 401);
+        // Prefer explicit route param — localized URLs also bind {locale} positionally.
+        $planId = (string) (request()->route('planId') ?: $planId);
         $plan = $this->plans->find($planId);
         abort_if($plan === null, 404);
         abort_unless($this->plans->canAccess($user, $plan), 403);
@@ -69,6 +71,7 @@ class PlanApiController extends Controller
     {
         $user = $this->auth->user();
         abort_if($user === null, 401);
+        $planId = (string) (request()->route('planId') ?: $planId);
 
         try {
             $revisions = $this->plans->listHistory($planId, $user);
@@ -83,6 +86,8 @@ class PlanApiController extends Controller
     {
         $user = $this->auth->user();
         abort_if($user === null, 401);
+        $planId = (string) (request()->route('planId') ?: $planId);
+        $revisionId = (string) (request()->route('revisionId') ?: $revisionId);
 
         try {
             $revision = $this->plans->findRevision($planId, $revisionId, $user);
@@ -98,6 +103,8 @@ class PlanApiController extends Controller
     {
         $user = $this->auth->user();
         abort_if($user === null, 401);
+        $planId = (string) (request()->route('planId') ?: $planId);
+        $revisionId = (string) (request()->route('revisionId') ?: $revisionId);
 
         try {
             $plan = $this->plans->restoreRevision($planId, $revisionId, $user);
@@ -112,6 +119,7 @@ class PlanApiController extends Controller
     {
         $user = $this->auth->user();
         abort_if($user === null, 401);
+        $planId = (string) (request()->route('planId') ?: $planId);
         $this->plans->delete($planId, $user);
 
         return response()->json(['ok' => true]);

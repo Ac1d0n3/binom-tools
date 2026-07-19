@@ -65,7 +65,7 @@ $registerRoutes = static function (bool $localized): void {
         Route::post('/logout', [AuthController::class, 'logout'])->name($name('accounts.logout'));
     });
 
-    Route::middleware(['accounts.enabled', 'accounts.auth'])->group(static function () use ($name): void {
+    Route::middleware(['accounts.enabled', 'accounts.auth'])->group(static function () use ($name, $localized): void {
         Route::get('/account', [AuthController::class, 'profile'])->name($name('accounts.profile'));
         Route::put('/account', [AuthController::class, 'updateProfile'])->name($name('accounts.profile.update'));
         Route::get('/account/users', [UsersController::class, 'index'])->name($name('accounts.users'));
@@ -103,45 +103,49 @@ $registerRoutes = static function (bool $localized): void {
             ->where('slug', '[a-z0-9-]+')
             ->name($name('accounts.playbooks.read'));
 
-        Route::get('/api/sprint-planner/plans', [PlanApiController::class, 'index'])->name($name('accounts.plans.index'));
-        Route::get('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'show'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.show'));
-        Route::post('/api/sprint-planner/plans', [PlanApiController::class, 'store'])->name($name('accounts.plans.store'));
-        Route::delete('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'destroy'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.destroy'));
-        Route::get('/api/sprint-planner/plans/{planId}/history', [PlanApiController::class, 'historyIndex'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.history.index'));
-        Route::get('/api/sprint-planner/plans/{planId}/history/{revisionId}', [PlanApiController::class, 'historyShow'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->where('revisionId', 'rev_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.history.show'));
-        Route::post('/api/sprint-planner/plans/{planId}/history/{revisionId}/restore', [PlanApiController::class, 'historyRestore'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->where('revisionId', 'rev_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.history.restore'));
-        Route::get('/api/sprint-planner/stories', [PlanApiController::class, 'storyMeta'])->name($name('accounts.plans.stories'));
-        Route::get('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'index'])->name($name('accounts.user-templates.index'));
-        Route::get('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'show'])
-            ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
-            ->name($name('accounts.user-templates.show'));
-        Route::post('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'store'])->name($name('accounts.user-templates.store'));
-        Route::delete('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'destroy'])
-            ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
-            ->name($name('accounts.user-templates.destroy'));
-        Route::post('/api/sprint-planner/plans/{planId}/attachments', [PlanAttachmentController::class, 'store'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.attachments.store'));
-        Route::get('/api/sprint-planner/plans/{planId}/attachments/{attachmentId}', [PlanAttachmentController::class, 'show'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->where('attachmentId', 'att_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.attachments.show'));
-        Route::delete('/api/sprint-planner/plans/{planId}/attachments/{attachmentId}', [PlanAttachmentController::class, 'destroy'])
-            ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->where('attachmentId', 'att_[a-zA-Z0-9_]+')
-            ->name($name('accounts.plans.attachments.destroy'));
+        // JSON APIs stay locale-free: {locale} would be injected as the first
+        // controller argument (Laravel spreads route params by position).
+        if (! $localized) {
+            Route::get('/api/sprint-planner/plans', [PlanApiController::class, 'index'])->name($name('accounts.plans.index'));
+            Route::get('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'show'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.show'));
+            Route::post('/api/sprint-planner/plans', [PlanApiController::class, 'store'])->name($name('accounts.plans.store'));
+            Route::delete('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'destroy'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.destroy'));
+            Route::get('/api/sprint-planner/plans/{planId}/history', [PlanApiController::class, 'historyIndex'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.history.index'));
+            Route::get('/api/sprint-planner/plans/{planId}/history/{revisionId}', [PlanApiController::class, 'historyShow'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->where('revisionId', 'rev_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.history.show'));
+            Route::post('/api/sprint-planner/plans/{planId}/history/{revisionId}/restore', [PlanApiController::class, 'historyRestore'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->where('revisionId', 'rev_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.history.restore'));
+            Route::get('/api/sprint-planner/stories', [PlanApiController::class, 'storyMeta'])->name($name('accounts.plans.stories'));
+            Route::get('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'index'])->name($name('accounts.user-templates.index'));
+            Route::get('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'show'])
+                ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
+                ->name($name('accounts.user-templates.show'));
+            Route::post('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'store'])->name($name('accounts.user-templates.store'));
+            Route::delete('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'destroy'])
+                ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
+                ->name($name('accounts.user-templates.destroy'));
+            Route::post('/api/sprint-planner/plans/{planId}/attachments', [PlanAttachmentController::class, 'store'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.attachments.store'));
+            Route::get('/api/sprint-planner/plans/{planId}/attachments/{attachmentId}', [PlanAttachmentController::class, 'show'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->where('attachmentId', 'att_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.attachments.show'));
+            Route::delete('/api/sprint-planner/plans/{planId}/attachments/{attachmentId}', [PlanAttachmentController::class, 'destroy'])
+                ->where('planId', 'plan_[a-zA-Z0-9_]+')
+                ->where('attachmentId', 'att_[a-zA-Z0-9_]+')
+                ->name($name('accounts.plans.attachments.destroy'));
+        }
     });
 
     Route::get('/sprint-planner', [SprintPlannerController::class, 'index'])->name($name('sprint-planner.index'));

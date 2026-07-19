@@ -761,6 +761,12 @@ export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
             assigneeId: data.assigneeId || null,
             dueDate: data.dueDate || null,
             note: data.note || '',
+            plannedMinutes: Object.prototype.hasOwnProperty.call(data, 'plannedMinutes')
+                ? data.plannedMinutes
+                : null,
+            actualMinutes: Object.prototype.hasOwnProperty.call(data, 'actualMinutes')
+                ? data.actualMinutes
+                : null,
             helpText: { de: '', en: '' },
             helpLinks: [],
             stories: [],
@@ -815,6 +821,12 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             ensureParticipant(plan, item.assigneeId);
             item.dueDate = data.dueDate || null;
             item.note = data.note || '';
+            if (Object.prototype.hasOwnProperty.call(data, 'plannedMinutes')) {
+                item.plannedMinutes = data.plannedMinutes;
+            }
+            if (Object.prototype.hasOwnProperty.call(data, 'actualMinutes')) {
+                item.actualMinutes = data.actualMinutes;
+            }
             item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
             item.blockerSince = item.status === 'blocked' ? (data.blockerSince || null) : null;
             if (dependsOn !== undefined) {
@@ -842,6 +854,12 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
         };
+        if (Object.prototype.hasOwnProperty.call(data, 'plannedMinutes')) {
+            next.plannedMinutes = data.plannedMinutes;
+        }
+        if (Object.prototype.hasOwnProperty.call(data, 'actualMinutes')) {
+            next.actualMinutes = data.actualMinutes;
+        }
         if (dependsOn !== undefined) {
             next.dependsOn = dependsOn;
         }

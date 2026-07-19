@@ -30,6 +30,7 @@ stories:
 tasks:
   - id: w1-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -41,6 +42,7 @@ tasks:
         href: /playbooks/eight-pillars
   - id: w1-standup-board
     label: Board und Owner aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -50,6 +52,7 @@ tasks:
 deliverables:
   - id: w1-week-outcome
     label: Monatsprioritäten dokumentiert
+    plannedMinutes: 120
     helpText: |
       Kurze datierte Notiz mit Top-Zielen und Kapazitätsannahmen.
 
@@ -65,12 +68,14 @@ goal: Höchstpriorisierte Arbeitspakete liefern.
 tasks:
   - id: w2-plan-week
     label: Ziele in Wochenaufgaben zerlegen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
       Owner und Done-Kriterien je Paket. Scope früh kürzen, wenn Kapazität eng ist.
   - id: w2-standup-board
     label: Board und Owner aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -79,6 +84,7 @@ tasks:
 deliverables:
   - id: w2-week-outcome
     label: Wochenplan mit Ownern
+    plannedMinutes: 30
     helpText: |
       Board-Snapshot oder kurze Liste mit Ownern.
 
@@ -94,12 +100,14 @@ goal: Entblocken und Mitte des Monats nachplanen.
 tasks:
   - id: w3-plan-week
     label: Blocker und Abhängigkeiten listen
+    plannedMinutes: 30
     assigneeType: person
     assigneeId: null
     helpText: |
       Scope kürzen vs. verschieben entscheiden. Eskalation nur mit klarer Bitte.
   - id: w3-standup-board
     label: Board und Owner aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -108,6 +116,7 @@ tasks:
 deliverables:
   - id: w3-week-outcome
     label: Risiko- und Abhängigkeitsliste
+    plannedMinutes: 30
     helpText: |
       Benannte Risiken, Owner und Entscheidungen.
 
@@ -123,12 +132,14 @@ goal: Monat abschließen und nächsten Monat vorbereiten.
 tasks:
   - id: w4-plan-week
     label: Ergebnisse demos und Notizen sichern
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
       Was geliefert wurde, was gerutscht ist und warum.
   - id: w4-standup-board
     label: Backlog für nächsten Monat skizzieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -137,6 +148,7 @@ tasks:
 deliverables:
   - id: w4-week-outcome
     label: Monatsabschluss + Next-Backlog
+    plannedMinutes: 60
     helpText: |
       One-Pager: Outcomes, Learnings, Next-Backlog.
 

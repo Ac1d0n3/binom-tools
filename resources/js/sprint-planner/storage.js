@@ -133,6 +133,7 @@ export function createDefaultPreferences() {
         planFiltersVersion: 7,
         expandedSprints: {},
         expandedItemTables: {},
+        expandedSprintFlows: {},
         planHeaderExpanded: {},
         planFilterSidebarCollapsed: {},
         manualCurrentSprint: {},

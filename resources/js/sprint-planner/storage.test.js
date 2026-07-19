@@ -25,7 +25,7 @@ import {
     buildWorkspaceExport,
     validateImportPayload,
 } from './export-import.js';
-import { addCustomSprint, addSprintFromTemplate, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate, toggleCompleted, canUndoInstance, undoLastInstanceChange } from './instance-manager.js';
+import { addCustomSprint, addSprintFromTemplate, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate, toggleCompleted, canUndoInstance, undoLastInstanceChange, updateItemMeta } from './instance-manager.js';
 import {
     createLinkAttachment,
     isAllowedAttachment,
@@ -34,6 +34,13 @@ import {
 } from './attachments.js';
 import { hashPassword, isPasswordProtected, verifyPassword } from './plan-password.js';
 import { ensureDefaultCatalog, DEFAULT_PEOPLE, DEFAULT_TEAMS } from './defaults.js';
+import {
+    collectTimeRows,
+    normalizeMinutes,
+    resolveActualMinutes,
+    resolvePlannedMinutes,
+    timeVariance,
+} from './time.js';
 
 function memoryStorage() {
     const map = new Map();
@@ -1149,5 +1156,99 @@ describe('lastOpenedPlanId preferences', () => {
         expect(loadPreferences().lastOpenedPlanId).toBeNull();
         savePreferences({ ...loadPreferences(), lastOpenedPlanId: 'plan_keep' });
         expect(loadPreferences().lastOpenedPlanId).toBe('plan_keep');
+    });
+});
+
+describe('task time tracking', () => {
+    it('normalizes minutes and computes variance', () => {
+        expect(normalizeMinutes('45')).toBe(45);
+        expect(normalizeMinutes(-1)).toBeNull();
+        expect(timeVariance(60, 90)).toBe('over');
+        expect(timeVariance(60, 30)).toBe('under');
+        expect(timeVariance(60, 60)).toBe('on_track');
+        expect(timeVariance(0, 30)).toBeNull();
+    });
+
+    it('resolves planned from override over template and actual only from plan', () => {
+        expect(resolvePlannedMinutes({ plannedMinutes: 15 }, { plannedMinutes: 120 })).toBe(15);
+        expect(resolvePlannedMinutes({}, { plannedMinutes: 120 })).toBe(120);
+        expect(resolvePlannedMinutes({ plannedMinutes: null }, { plannedMinutes: 120 })).toBeNull();
+        expect(resolveActualMinutes({ actualMinutes: 40 })).toBe(40);
+        expect(resolveActualMinutes({ plannedMinutes: 40 })).toBeNull();
+    });
+
+    it('merges planned/actual onto resolved items and persists via updateItemMeta', () => {
+        const template = {
+            slug: 'demo-time',
+            duration: 1,
+            unit: 'week',
+            sprints: [{
+                id: 'week-01',
+                number: 1,
+                notes: false,
+                tasks: [{ id: 't1', assigneeType: 'person', assigneeId: null, plannedMinutes: 60 }],
+                deliverables: [],
+                fields: [],
+            }],
+            locales: {
+                en: {
+                    title: 'Demo',
+                    description: '',
+                    sprints: [{
+                        id: 'week-01',
+                        title: 'W1',
+                        goal: '',
+                        tasks: [{ id: 't1', label: 'Task 1' }],
+                        deliverables: [],
+                        fields: [],
+                    }],
+                },
+                de: {
+                    title: 'Demo',
+                    description: '',
+                    sprints: [{
+                        id: 'week-01',
+                        title: 'W1',
+                        goal: '',
+                        tasks: [{ id: 't1', label: 'Aufgabe 1' }],
+                        deliverables: [],
+                        fields: [],
+                    }],
+                },
+            },
+        };
+        const started = startInstanceFromTemplate(template, {
+            locale: 'en',
+            startedAt: '2026-07-01',
+        });
+        expect(started.ok).toBe(true);
+        const planId = started.instance.id;
+        const key = statusKey('demo-time', 'week-01', 'task', 't1');
+
+        let sprints = resolveSprints(template, loadWorkspace().data.instances[planId], 'en');
+        expect(sprints[0].tasks[0].plannedMinutes).toBe(60);
+        expect(sprints[0].tasks[0].actualMinutes).toBeNull();
+
+        const updated = updateItemMeta(planId, 'task', key, {
+            status: 'in_progress',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: null,
+            dueDate: null,
+            note: '',
+            plannedMinutes: 90,
+            actualMinutes: 120,
+        }, false, 'week-01');
+        expect(updated.ok).toBe(true);
+
+        sprints = resolveSprints(template, loadWorkspace().data.instances[planId], 'en');
+        expect(sprints[0].tasks[0].plannedMinutes).toBe(90);
+        expect(sprints[0].tasks[0].actualMinutes).toBe(120);
+        expect(timeVariance(90, 120)).toBe('over');
+
+        const rows = collectTimeRows(sprints);
+        expect(rows.planned).toBe(90);
+        expect(rows.actual).toBe(120);
+        expect(rows.over).toBe(1);
     });
 });

@@ -30,6 +30,7 @@ stories:
 tasks:
   - id: w1-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -41,6 +42,7 @@ tasks:
         href: /playbooks/data-ownership-stewardship
   - id: w1-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -50,6 +52,7 @@ tasks:
 deliverables:
   - id: w1-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -65,6 +68,7 @@ goal: Dünnen Backlog für die nächsten 2–3 Wochen schärfen.
 tasks:
   - id: w2-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -72,6 +76,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w2-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -81,6 +86,7 @@ tasks:
 deliverables:
   - id: w2-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -96,6 +102,7 @@ goal: Wöchentlichen Lieferrhythmus etablieren.
 tasks:
   - id: w3-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -103,6 +110,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w3-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -112,6 +120,7 @@ tasks:
 deliverables:
   - id: w3-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -127,6 +136,7 @@ goal: Kritische Abhängigkeiten und Owner kartieren.
 tasks:
   - id: w4-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -134,6 +144,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w4-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -143,6 +154,7 @@ tasks:
 deliverables:
   - id: w4-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -162,6 +174,7 @@ stories:
 tasks:
   - id: w5-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -169,6 +182,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w5-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -178,6 +192,7 @@ tasks:
 deliverables:
   - id: w5-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -193,6 +208,7 @@ goal: Fokuszeit für Top-Outcomes schützen.
 tasks:
   - id: w6-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -200,6 +216,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w6-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -209,6 +226,7 @@ tasks:
 deliverables:
   - id: w6-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -224,6 +242,7 @@ goal: Quality Gates für laufende Arbeit definieren.
 tasks:
   - id: w7-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -231,6 +250,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w7-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -240,6 +260,7 @@ tasks:
 deliverables:
   - id: w7-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -255,6 +276,7 @@ goal: Entscheidungen mit Stakeholdern synchronisieren.
 tasks:
   - id: w8-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -262,6 +284,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w8-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -271,6 +294,7 @@ tasks:
 deliverables:
   - id: w8-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -286,6 +310,7 @@ goal: Top-Risiken mit klaren Ownern abbauen.
 tasks:
   - id: w9-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -293,6 +318,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w9-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -302,6 +328,7 @@ tasks:
 deliverables:
   - id: w9-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -317,6 +344,7 @@ goal: End-to-end-Pfade integrieren und validieren.
 tasks:
   - id: w10-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -324,6 +352,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w10-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -333,6 +362,7 @@ tasks:
 deliverables:
   - id: w10-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -348,6 +378,7 @@ goal: Härten, dokumentieren und Rest-Scope schneiden.
 tasks:
   - id: w11-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -355,6 +386,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w11-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -364,6 +396,7 @@ tasks:
 deliverables:
   - id: w11-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -379,6 +412,7 @@ goal: Demos und Abnahme-Nachweise vorbereiten.
 tasks:
   - id: w12-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -386,6 +420,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w12-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -395,6 +430,7 @@ tasks:
 deliverables:
   - id: w12-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
@@ -410,6 +446,7 @@ goal: Quartal abschließen und nächstes vorbereiten.
 tasks:
   - id: w13-plan-week
     label: Wochenziele planen
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -417,6 +454,7 @@ tasks:
       Liste kurz genug halten, um fertig zu werden.
   - id: w13-run-week
     label: Woche fahren und Board aktualisieren
+    plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -426,6 +464,7 @@ tasks:
 deliverables:
   - id: w13-week-outcome
     label: Wochen-Outcome-Notiz
+    plannedMinutes: 60
     helpText: |
       Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
 
