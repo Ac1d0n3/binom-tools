@@ -2003,6 +2003,7 @@ html[data-color-scheme='dark'] .tools-hero {
 .tools-series-card {
     display: flex;
     flex-direction: column;
+    height: 100%;
     overflow: hidden;
     border: 1px solid var(--tools-card-border);
     border-radius: 12px;
@@ -2010,9 +2011,32 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-series-card__hero {
+    position: relative;
     aspect-ratio: 16 / 7;
     overflow: hidden;
     background: color-mix(in srgb, var(--theme-color-primary) 8%, var(--surface-background-color));
+}
+
+.tools-series-card__hero--placeholder {
+    min-height: 0;
+}
+
+.tools-series-card__hero--placeholder .tools-card__icon-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    font-size: 1.65rem;
+}
+
+.tools-series-card__hero--placeholder .tools-card__icon {
+    display: block;
+    line-height: 1;
 }
 
 .tools-series-card__hero-image {
@@ -2025,7 +2049,9 @@ html[data-color-scheme='dark'] .tools-hero {
 .tools-series-card__body {
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
     gap: 0.75rem;
+    min-height: 0;
     padding: 1rem 1.1rem 1.1rem;
 }
 
@@ -2042,12 +2068,25 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-series-card__parts {
+    --series-part-row: 2.35rem;
+    --series-part-gap: 0.35rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    flex: 0 0 auto;
+    gap: var(--series-part-gap);
+    /* Fixed viewport for 6 parts → equal card height + aligned “Start series” */
+    height: calc((var(--series-part-row) * 6) + (var(--series-part-gap) * 5));
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
     list-style: none;
+}
+
+.tools-series-card__part {
+    flex: 0 0 auto;
 }
 
 .tools-series-card__part-link {
@@ -2055,6 +2094,8 @@ html[data-color-scheme='dark'] .tools-hero {
     grid-template-columns: auto 1fr auto;
     gap: 0.45rem;
     align-items: center;
+    box-sizing: border-box;
+    min-height: var(--series-part-row, 2.35rem);
     padding: 0.4rem 0.55rem;
     border: 1px solid var(--base-border-color);
     border-radius: 8px;
@@ -2087,6 +2128,7 @@ html[data-color-scheme='dark'] .tools-hero {
 
 .tools-series-card__start {
     align-self: flex-start;
+    margin-top: auto;
     padding: 0.45rem 0.75rem;
     border: 1px solid var(--base-border-color);
     border-radius: 8px;

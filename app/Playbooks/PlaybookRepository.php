@@ -479,8 +479,10 @@ final class PlaybookRepository
             $playbooks,
         ));
 
+        // Prefer editorial publishedAt (via sortDate) so series order matches story "newest" sorting
+        // instead of bouncing to the top whenever a content file is touched.
         $modifiedAt = max(array_map(
-            fn (Playbook $playbook): int => $playbook->modifiedAt->getTimestamp(),
+            fn (Playbook $playbook): int => $playbook->sortDate()->getTimestamp(),
             $playbooks,
         ));
 

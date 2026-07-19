@@ -29,6 +29,12 @@
                 decoding="async"
             />
         </div>
+    @else
+        <div class="tools-series-card__hero tools-series-card__hero--placeholder" aria-hidden="true">
+            <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
+                <i class="fa-solid fa-layer-group tools-card__icon"></i>
+            </div>
+        </div>
     @endif
 
     <div class="tools-series-card__body">

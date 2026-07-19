@@ -9,6 +9,9 @@ tags:
   - governance
 order: 0
 publishedAt: 2026-05-01
+series: governance-help-hub
+seriesPart: 1
+seriesTitle: Governance Help Hub
 ---
 
 ## Überblick
@@ -16,6 +19,8 @@ publishedAt: 2026-05-01
 Diese Seite beschreibt, wie **binom-tools** als **Governance Help Hub** funktioniert: Stories als Markdown-Playbooks, interaktive Referenz-Tools, zweisprachige Oberfläche und ein schlanker Laravel-Stack ohne CMS.
 
 Du kannst das Projekt klonen, eigene Stories unter `content/` ablegen und optional interaktive Tools ergänzen — ideal für Data-Governance- und BI-Teams, die Wissen versionierbar und nah am Code halten wollen.
+
+Diese Story ist **Teil 1** der Serie *Governance Help Hub*. Teil 2 behandelt optionale [Logins und Rechte](/playbooks/help-hub-accounts), Teil 3 den [Sprint Planner](/playbooks/help-hub-sprint-planner) (Vorlagen, Storage, Fence-Syntax).
 
 > Kein Gateway, kein CMS: Inhalte leben in Git, Reviews laufen wie bei Application Code.
 
@@ -38,15 +43,18 @@ Du kannst das Projekt klonen, eigene Stories unter `content/` ablegen und option
 ```text
 binom-tools/
 ├── app/
+│   ├── Accounts/             # Optionale Logins, ACL, Plan-Store (siehe Teil 2)
 │   ├── Catalog/              # Landing-Vorschau (neueste Tools & Stories)
-│   ├── Http/Controllers/     # Landing, Tools, Playbooks, Legal
-│   └── Playbooks/            # Parser, Renderer, Repository
+│   ├── Http/Controllers/     # Landing, Tools, Playbooks, Sprint Planner, Legal
+│   ├── Playbooks/            # Parser, Renderer, Repository
+│   └── SprintPlanner/        # Vorlagen-Parser, Seeds (siehe Teil 3)
 ├── config/tools.php          # Tool-Navigation, Hero, Ecosystem-Links
 ├── content/                  # Markdown-Stories (.de.md / .en.md)
+├── content/sprint-plans/     # Sprint-Planner-Vorlagen
 ├── public/images/            # Hero-Grafiken, Logos
 ├── resources/
 │   ├── css/                  # Shell, Playbooks, Themes
-│   ├── js/                   # Locale, TOC, Suche, Theme
+│   ├── js/                   # Locale, TOC, Suche, Theme, Sprint Planner
 │   └── views/                # Blade Layouts & Komponenten
 ├── routes/web.php
 └── tests/                    # Feature- & Unit-Tests
@@ -57,7 +65,7 @@ Wichtige UI-Komponenten:
 - `<x-tools.card>` — Karten für Tools und Landing
 - `<x-playbooks.card>` — Story-Karten in Übersicht & Landing
 - `<x-playbooks.toc>` — Inhaltsverzeichnis mit Scroll-Spy
-- `<x-tools.sidebar>` — Navigation (Startseite, Stories, Tools)
+- `<x-tools.sidebar>` — Navigation (Startseite, Stories, Tools, Sprint Planner)
 
 ## Story hinzufügen
 
@@ -211,6 +219,7 @@ Typische Erweiterungen ohne Architektur-Bruch:
 
 - PDF-Export einzelner Stories (z. B. über Browser Print CSS)
 - Volltextsuche serverseitig (statt Client-Filter auf Übersichtsseiten)
-- Authentifizierung für interne Playbooks (Laravel Middleware)
+- Optionale Authentifizierung und Story-ACL — siehe [Teil 2: Logins & Rechte](/playbooks/help-hub-accounts)
+- Ausführbare Arbeitspläne — siehe [Teil 3: Sprint Planner](/playbooks/help-hub-sprint-planner)
 
 Fragen oder Anpassungen: über das Repository-Issue-Tracking oder euren internen Governance-Owner.

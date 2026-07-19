@@ -9,6 +9,9 @@ tags:
   - governance
 order: 0
 publishedAt: 2026-05-01
+series: governance-help-hub
+seriesPart: 1
+seriesTitle: Governance Help Hub
 ---
 
 ## Overview
@@ -16,6 +19,8 @@ publishedAt: 2026-05-01
 This page explains how **binom-tools** works as a **governance help hub**: stories as Markdown playbooks, interactive reference tools, a bilingual UI, and a lean Laravel stack without a CMS.
 
 Clone the project, add your own stories under `content/`, and optionally extend interactive tools — ideal for data governance and BI teams who want knowledge versioned close to code.
+
+This story is **part 1** of the *Governance Help Hub* series. Part 2 covers optional [logins and permissions](/playbooks/help-hub-accounts); part 3 covers the [Sprint Planner](/playbooks/help-hub-sprint-planner) (templates, storage, fence syntax).
 
 > No gateway, no CMS: content lives in Git; reviews work like application code.
 
@@ -38,15 +43,18 @@ Clone the project, add your own stories under `content/`, and optionally extend 
 ```text
 binom-tools/
 ├── app/
+│   ├── Accounts/             # Optional logins, ACL, plan store (see part 2)
 │   ├── Catalog/              # Landing preview (latest tools & stories)
-│   ├── Http/Controllers/     # Landing, tools, playbooks, legal
-│   └── Playbooks/            # Parser, renderer, repository
+│   ├── Http/Controllers/     # Landing, tools, playbooks, sprint planner, legal
+│   ├── Playbooks/            # Parser, renderer, repository
+│   └── SprintPlanner/        # Template parser, seeds (see part 3)
 ├── config/tools.php          # Tool nav, hero, ecosystem links
 ├── content/                  # Markdown stories (.de.md / .en.md)
+├── content/sprint-plans/     # Sprint Planner templates
 ├── public/images/            # Hero artwork, logos
 ├── resources/
 │   ├── css/                  # Shell, playbooks, themes
-│   ├── js/                   # Locale, TOC, search, theme
+│   ├── js/                   # Locale, TOC, search, theme, sprint planner
 │   └── views/                # Blade layouts & components
 ├── routes/web.php
 └── tests/                    # Feature & unit tests
@@ -57,7 +65,7 @@ Key UI components:
 - `<x-tools.card>` — cards for tools and landing
 - `<x-playbooks.card>` — story cards on overview & landing
 - `<x-playbooks.toc>` — table of contents with scroll spy
-- `<x-tools.sidebar>` — navigation (home, stories, tools)
+- `<x-tools.sidebar>` — navigation (home, stories, tools, sprint planner)
 
 ## Add a story
 
@@ -211,6 +219,7 @@ Typical extensions without breaking the architecture:
 
 - PDF export for individual stories (e.g. browser print CSS)
 - Server-side full-text search (instead of client filters on overview pages)
-- Authentication for internal playbooks (Laravel middleware)
+- Optional authentication and story ACL — see [part 2: Logins & permissions](/playbooks/help-hub-accounts)
+- Executable work plans — see [part 3: Sprint Planner](/playbooks/help-hub-sprint-planner)
 
 Questions or customizations: use repository issue tracking or your internal governance owner.
