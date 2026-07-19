@@ -9,6 +9,7 @@ use App\Accounts\ReadStateStore;
 use App\Accounts\TeamRepository;
 use App\Accounts\UserRepository;
 use App\Http\Controllers\Controller;
+use App\Playbooks\PlaybookRepository;
 use App\SprintPlanner\SprintPlanRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class SprintPlannerController extends Controller
         private readonly TeamRepository $teams,
         private readonly PlanStore $planStore,
         private readonly ReadStateStore $readState,
+        private readonly PlaybookRepository $playbooks,
     ) {}
 
     public function index(): View
@@ -90,9 +92,16 @@ class SprintPlannerController extends Controller
             $readSlugs = array_keys($this->readState->forUser($user->id));
         }
 
+        $storiesJson = array_map(static fn (array $item): array => [
+            'slug' => $item['slug'] ?? '',
+            'titleDe' => $item['locales']['de']['title'] ?? null,
+            'titleEn' => $item['locales']['en']['title'] ?? null,
+        ], $this->playbooks->allForIndex());
+
         return [
             'templates' => $this->plans->allForIndex(),
             'templatesJson' => $this->plans->allForClient(),
+            'storiesJson' => $storiesJson,
             'accountsEnabled' => $accountsOn,
             'accountUser' => $user?->toPublicArray(),
             'demoMode' => $accountsOn && $user === null,

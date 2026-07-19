@@ -24,6 +24,9 @@ export function itemMatchesFilters(item, filters, ctx) {
             return false;
         }
     }
+    if (filters.unassigned && item.assigneeId) {
+        return false;
+    }
     if (filters.personId) {
         if (!(item.assigneeType === 'person' && item.assigneeId === filters.personId)) {
             return false;
@@ -62,6 +65,7 @@ export function filterSprints(sprints, filters, currentSprintNumber, ctx) {
                 || filters.openOnly
                 || filters.blocked
                 || filters.myTasks
+                || filters.unassigned
                 || filters.personId
                 || filters.teamId
                 || filters.status

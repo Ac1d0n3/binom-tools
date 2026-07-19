@@ -360,19 +360,29 @@ function openStartDialog(template, workspace) {
     );
 
     const participants = document.getElementById('sp-start-participants');
-    participants.innerHTML = '';
-    for (const person of listPeople()) {
-        const label = document.createElement('label');
-        label.className = 'sp-check';
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.value = person.id;
-        if (workspace.workspace.activePersonId === person.id) {
-            input.checked = true;
+    const renderParticipants = (preselectIds = []) => {
+        const selected = new Set(preselectIds.map(String));
+        if (workspace.workspace.activePersonId) {
+            selected.add(String(workspace.workspace.activePersonId));
         }
-        label.append(input, document.createTextNode(` ${person.displayName}`));
-        participants.appendChild(label);
-    }
+        participants.innerHTML = '';
+        for (const person of listPeople()) {
+            const label = document.createElement('label');
+            label.className = 'sp-check';
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = person.id;
+            input.checked = selected.has(person.id);
+            label.append(input, document.createTextNode(` ${person.displayName}`));
+            participants.appendChild(label);
+        }
+    };
+    const defaultTeam = listTeams().find((t) => t.id === (workspace.workspace.defaultTeamId || ''));
+    renderParticipants(defaultTeam?.memberIds || []);
+    teamSelect?.addEventListener('change', () => {
+        const team = listTeams().find((t) => t.id === teamSelect.value);
+        renderParticipants(team?.memberIds || []);
+    });
 
     const saveBtn = document.getElementById('sp-start-save');
     const demoBtn = document.getElementById('sp-start-demo');

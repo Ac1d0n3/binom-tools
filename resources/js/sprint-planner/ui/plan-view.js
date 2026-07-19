@@ -1,4 +1,4 @@
-import { getLocale, withAppBasePath } from '../../locale.js';
+import { getLocale } from '../../locale.js';
 import { isAccountsMode, readAccountsBootstrap } from '../accounts-bridge.js';
 import { filterSprints } from '../filters.js';
 import {
@@ -19,6 +19,8 @@ import { listPeople, listTeams, localizedText } from '../people-teams.js';
 import {
     calculateCurrentSprintNumber,
     calculateOverallProgress,
+    collectBlockers,
+    normalizeStories,
     resolveSprints,
 } from '../progress.js';
 import { loadPreferences, loadWorkspace, savePreferences } from '../storage.js';
@@ -38,12 +40,22 @@ import {
     storageErrorMessage,
 } from './helpers.js';
 import { isPlaybookRead } from '../../playbooks/read-state.js';
+import {
+    bindHelpPanelChrome,
+    closeHelpPanel,
+    fillHelpPanel,
+    readStoryTitlesFromDom,
+    renderFlow,
+    renderHelpButton,
+    resolveHelpHref,
+} from './help-panel.js';
 
 const noteTimers = {};
 let sprintDialogState = { sprint: null, isCustom: false };
 let itemDialogState = {};
 let bound = false;
-let helpPanelBound = false;
+/** @type {{instance: object, template: object|undefined, sprints: object[], workspace: object, locale: 'de'|'en'}|null} */
+let lastRenderContext = null;
 
 export function initPlanShowPage() {
     const root = document.getElementById('sp-app');
@@ -57,6 +69,7 @@ export function initPlanShowPage() {
 
     if (!bound) {
         bound = true;
+        readStoryTitlesFromDom(root);
         applySpI18n(root);
         window.addEventListener('binom-tools:locale', () => {
             applySpI18n(root);
@@ -64,7 +77,8 @@ export function initPlanShowPage() {
         });
         bindFilters(render);
         bindDialogs(instanceId, render);
-        bindHelpPanel();
+        bindHelpPanelChrome();
+        bindStatusReport();
         document.getElementById('sp-add-sprint')?.addEventListener('click', () => {
             openSprintDialog(null, false);
         });
@@ -96,6 +110,13 @@ export function initPlanShowPage() {
 
 function rerender() {
     document.getElementById('sp-app')?.__spRender?.();
+}
+
+function isStoryRead(slug) {
+    const readSet = new Set(readAccountsBootstrap().readSlugs || []);
+    return isAccountsMode()
+        ? readSet.has(slug) || isPlaybookRead(slug)
+        : isPlaybookRead(slug);
 }
 
 function renderPlan(instanceId) {
@@ -187,7 +208,10 @@ function renderPlan(instanceId) {
         activePersonId: workspace.workspace.activePersonId,
     });
 
+    renderBlockers(sprints, workspace, locale);
     renderSprints(filtered, currentNumber, instance, template, locale, workspace);
+
+    lastRenderContext = { instance, template, sprints, workspace, locale };
 }
 
 function bindFilters(render) {
@@ -199,6 +223,7 @@ function bindFilters(render) {
         'sp-filter-open-only': 'openOnly',
         'sp-filter-blocked': 'blocked',
         'sp-filter-my-tasks': 'myTasks',
+        'sp-filter-unassigned': 'unassigned',
     };
     for (const [id, key] of Object.entries(map)) {
         const el = document.getElementById(id);
@@ -249,6 +274,9 @@ function readFilters(prefs) {
         myTasks: document.getElementById('sp-filter-my-tasks')?.checked
             ?? prefs.planFilters?.myTasks
             ?? false,
+        unassigned: document.getElementById('sp-filter-unassigned')?.checked
+            ?? prefs.planFilters?.unassigned
+            ?? false,
         personId: document.getElementById('sp-filter-person')?.value || '',
         teamId: document.getElementById('sp-filter-team')?.value || '',
         status: document.getElementById('sp-filter-status')?.value || '',
@@ -277,6 +305,82 @@ function populateFilterPeopleTeams(locale) {
             true,
         );
     }
+}
+
+/**
+ * @param {import('../progress.js').ResolvedItem} item
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @param {'de'|'en'} locale
+ */
+function resolveAssigneeName(item, workspace, locale) {
+    if (item.assigneeType === 'person') {
+        return workspace.people[item.assigneeId]?.displayName || '';
+    }
+    if (item.assigneeType === 'team') {
+        return localizedText(workspace.teams[item.assigneeId]?.name, locale) || '';
+    }
+    return '';
+}
+
+function ensureBlockersHost() {
+    let host = document.getElementById('sp-blockers');
+    if (!host) {
+        host = document.createElement('div');
+        host.id = 'sp-blockers';
+        host.className = 'sp-blockers';
+        const sprintsHost = document.getElementById('sp-sprints');
+        sprintsHost?.parentNode?.insertBefore(host, sprintsHost);
+    }
+    return host;
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @param {'de'|'en'} locale
+ */
+function renderBlockers(sprints, workspace, locale) {
+    const host = ensureBlockersHost();
+    const blockers = collectBlockers(sprints);
+    host.innerHTML = '';
+    if (!blockers.length) {
+        host.hidden = true;
+        return;
+    }
+    host.hidden = false;
+
+    const heading = document.createElement('h2');
+    heading.className = 'sp-blockers__title';
+    heading.textContent = spT('sp.blockers.title');
+    host.appendChild(heading);
+
+    const list = document.createElement('ul');
+    list.className = 'sp-blockers__list';
+    for (const blocker of blockers) {
+        const li = document.createElement('li');
+        li.className = 'sp-blockers__item';
+
+        const main = document.createElement('div');
+        main.className = 'sp-blockers__main';
+        const title = document.createElement('strong');
+        title.textContent = `#${blocker.sprintNumber} · ${blocker.item.label}`;
+        const meta = document.createElement('span');
+        meta.className = 'sp-blockers__meta';
+        meta.textContent = [blocker.sprintTitle, resolveAssigneeName(blocker.item, workspace, locale)]
+            .filter(Boolean)
+            .join(' · ');
+        main.append(title, meta);
+        li.appendChild(main);
+
+        if (blocker.item.blockerReason) {
+            const reason = document.createElement('p');
+            reason.className = 'sp-blockers__reason';
+            reason.textContent = blocker.item.blockerReason;
+            li.appendChild(reason);
+        }
+        list.appendChild(li);
+    }
+    host.appendChild(list);
 }
 
 function renderSprints(sprints, currentNumber, instance, template, locale, workspace) {
@@ -319,14 +423,18 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
         goal.className = 'sp-sprint__goal';
         goal.textContent = sprint.goal;
         body.appendChild(goal);
-        const sprintLinks = [
-            ...(sprint.linkedStorySlugs || []),
-            ...(instance.linkedStorySlugs || []),
-        ];
-        const uniqueSprintLinks = [...new Set(sprintLinks)];
-        if (uniqueSprintLinks.length > 0) {
-            body.appendChild(renderLinkedStories(uniqueSprintLinks));
+
+        if (sprint.flow) {
+            const flowEl = renderFlow(sprint.flow);
+            if (flowEl) {
+                body.appendChild(flowEl);
+            }
         }
+
+        if (sprint.stories?.length) {
+            body.appendChild(renderSprintStoriesRow(sprint));
+        }
+
         if (Array.isArray(sprint.links) && sprint.links.length > 0) {
             body.appendChild(renderGenericLinks(sprint.links, 'sp-sprint-links'));
         }
@@ -340,6 +448,35 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
         details.appendChild(body);
         host.appendChild(details);
     }
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>[number]} sprint
+ */
+function renderSprintStoriesRow(sprint) {
+    const row = document.createElement('div');
+    row.className = 'sp-sprint__stories-btn';
+    const label = document.createElement('span');
+    label.textContent = spT('sp.sprint.storiesTitle');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tools-btn tools-btn--secondary tools-btn--small';
+    btn.textContent = spT('sp.action.readStories');
+    btn.addEventListener('click', () => openSprintHelp(sprint));
+    row.append(label, btn);
+    return row;
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>[number]} sprint
+ */
+function openSprintHelp(sprint) {
+    fillHelpPanel({
+        title: sprint.title,
+        stories: sprint.stories,
+        helpLinks: sprint.links,
+        flow: sprint.flow,
+    }, () => rerender());
 }
 
 function renderItemSection(kind, sprint, instance, locale, workspace) {
@@ -397,11 +534,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     label.textContent = item.label;
     const meta = document.createElement('span');
     meta.className = 'sp-item__meta';
-    const assignee = item.assigneeType === 'person'
-        ? workspace.people[item.assigneeId]?.displayName
-        : item.assigneeType === 'team'
-            ? localizedText(workspace.teams[item.assigneeId]?.name, locale)
-            : '';
+    const assignee = resolveAssigneeName(item, workspace, locale);
     meta.textContent = [
         spT(`sp.status.${statusKeyToLabel(item.status)}`),
         spT(`sp.priority.${item.priority}`),
@@ -409,21 +542,19 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         item.dueDate,
     ].filter(Boolean).join(' · ');
     main.append(label, meta);
-    if (Array.isArray(item.linkedStorySlugs) && item.linkedStorySlugs.length > 0) {
-        main.appendChild(renderLinkedStories(item.linkedStorySlugs));
+
+    if (item.status === 'blocked' && item.blockerReason) {
+        const reason = document.createElement('p');
+        reason.className = 'sp-item__blocker-reason';
+        reason.textContent = item.blockerReason;
+        main.appendChild(reason);
     }
 
     const actions = document.createElement('div');
     actions.className = 'sp-item__actions';
-    if (itemHasHelp(item)) {
-        const help = document.createElement('button');
-        help.type = 'button';
-        help.className = 'tools-btn tools-btn--secondary tools-btn--small sp-help-btn';
-        help.textContent = '?';
-        help.title = spT('sp.help.open');
-        help.setAttribute('aria-label', spT('sp.help.open'));
-        help.addEventListener('click', () => openHelpPanel(item));
-        actions.appendChild(help);
+    const helpBtn = renderHelpButton(item, (it) => openItemHelp(it));
+    if (helpBtn) {
+        actions.appendChild(helpBtn);
     }
 
     const edit = document.createElement('button');
@@ -458,38 +589,14 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
 /**
  * @param {import('../progress.js').ResolvedItem} item
  */
-function itemHasHelp(item) {
-    return Boolean(
-        (item.helpText && String(item.helpText).trim())
-        || (Array.isArray(item.helpLinks) && item.helpLinks.length > 0)
-        || (Array.isArray(item.linkedStorySlugs) && item.linkedStorySlugs.length > 0),
-    );
-}
-
-/**
- * @param {string[]} slugs
- */
-function renderLinkedStories(slugs) {
-    const wrap = document.createElement('div');
-    wrap.className = 'sp-linked-stories';
-    const readSet = new Set(readAccountsBootstrap().readSlugs || []);
-    for (const slug of slugs) {
-        if (!slug) {
-            continue;
-        }
-        const link = document.createElement('a');
-        link.className = 'sp-story-badge';
-        link.href = withAppBasePath(`/playbooks/${encodeURIComponent(slug)}`);
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        const read = isAccountsMode()
-            ? readSet.has(slug) || isPlaybookRead(slug)
-            : isPlaybookRead(slug);
-        link.dataset.read = read ? '1' : '0';
-        link.textContent = `${slug}${read ? ` · ${spT('sp.story.read')}` : ` · ${spT('sp.story.unread')}`}`;
-        wrap.appendChild(link);
-    }
-    return wrap;
+function openItemHelp(item) {
+    fillHelpPanel({
+        title: item.label,
+        helpText: item.helpText,
+        stories: item.stories,
+        helpLinks: item.helpLinks,
+        demoCode: item.demoCode,
+    }, () => rerender());
 }
 
 /**
@@ -511,120 +618,6 @@ function renderGenericLinks(links, className) {
         wrap.appendChild(a);
     }
     return wrap;
-}
-
-/**
- * @param {string} href
- */
-function resolveHelpHref(href) {
-    const value = String(href || '').trim();
-    if (!value) {
-        return '#';
-    }
-    if (/^https?:\/\//i.test(value) || value.startsWith('mailto:')) {
-        return value;
-    }
-    if (value.startsWith('/')) {
-        return withAppBasePath(value);
-    }
-    // Bare playbook slug
-    if (/^[a-z0-9-]+$/i.test(value)) {
-        return withAppBasePath(`/playbooks/${encodeURIComponent(value)}`);
-    }
-    return value;
-}
-
-function bindHelpPanel() {
-    if (helpPanelBound) {
-        return;
-    }
-    helpPanelBound = true;
-    document.getElementById('sp-help-close')?.addEventListener('click', closeHelpPanel);
-    document.getElementById('sp-help-backdrop')?.addEventListener('click', closeHelpPanel);
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            closeHelpPanel();
-        }
-    });
-}
-
-/**
- * @param {import('../progress.js').ResolvedItem} item
- */
-function openHelpPanel(item) {
-    const panel = document.getElementById('sp-help-panel');
-    const backdrop = document.getElementById('sp-help-backdrop');
-    const title = document.getElementById('sp-help-panel-title');
-    const body = document.getElementById('sp-help-panel-body');
-    if (!panel || !body) {
-        return;
-    }
-    if (title) {
-        title.textContent = spT('sp.help.title');
-    }
-    body.replaceChildren();
-
-    const taskTitle = document.createElement('p');
-    taskTitle.className = 'sp-help-panel__task';
-    taskTitle.textContent = item.label;
-    body.appendChild(taskTitle);
-
-    if (item.helpText) {
-        const text = document.createElement('p');
-        text.className = 'sp-help-panel__text';
-        text.textContent = item.helpText;
-        body.appendChild(text);
-    }
-
-    const links = [];
-    for (const slug of item.linkedStorySlugs || []) {
-        links.push({
-            label: `${spT('sp.help.story')}: ${slug}`,
-            href: `/playbooks/${slug}`,
-        });
-    }
-    for (const link of item.helpLinks || []) {
-        links.push(link);
-    }
-
-    if (links.length > 0) {
-        const list = document.createElement('ul');
-        list.className = 'sp-help-panel__links';
-        for (const link of links) {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = resolveHelpHref(link.href);
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            a.textContent = link.label || link.href;
-            li.appendChild(a);
-            list.appendChild(li);
-        }
-        body.appendChild(list);
-    } else if (!item.helpText) {
-        const empty = document.createElement('p');
-        empty.className = 'sp-help-panel__empty';
-        empty.textContent = spT('sp.help.empty');
-        body.appendChild(empty);
-    }
-
-    panel.hidden = false;
-    panel.setAttribute('aria-hidden', 'false');
-    if (backdrop) {
-        backdrop.hidden = false;
-    }
-}
-
-function closeHelpPanel() {
-    const panel = document.getElementById('sp-help-panel');
-    const backdrop = document.getElementById('sp-help-backdrop');
-    if (panel) {
-        panel.hidden = true;
-        panel.setAttribute('aria-hidden', 'true');
-    }
-    if (backdrop) {
-        backdrop.hidden = true;
-    }
 }
 
 function statusKeyToLabel(status) {
@@ -679,14 +672,41 @@ function formatLinksTextarea(links = [], storySlugs = []) {
 }
 
 /**
+ * Parse story lines: `slug | required`, `slug | optional`, or a bare slug (= required).
  * @param {string} raw
- * @returns {string[]}
+ * @returns {import('../progress.js').SpStoryRef[]}
  */
-function parseSlugLines(raw) {
-    return String(raw || '')
-        .split(/[\n,]+/)
-        .map((part) => part.trim())
-        .filter((slug) => /^[a-z0-9-]+$/i.test(slug));
+function parseStoriesTextarea(raw) {
+    /** @type {Array<{slug: string, required: boolean}>} */
+    const entries = [];
+    for (const line of String(raw || '').split(/[\n,]+/)) {
+        const trimmed = line.trim();
+        if (!trimmed) {
+            continue;
+        }
+        const pipe = trimmed.indexOf('|');
+        if (pipe >= 0) {
+            const slug = trimmed.slice(0, pipe).trim();
+            const flag = trimmed.slice(pipe + 1).trim().toLowerCase();
+            entries.push({ slug, required: flag !== 'optional' });
+            continue;
+        }
+        entries.push({ slug: trimmed, required: true });
+    }
+    return normalizeStories(entries);
+}
+
+/**
+ * @param {import('../progress.js').SpStoryRef[]} stories
+ */
+function formatStoriesTextarea(stories = []) {
+    return stories
+        .map((story) => (story.required === false ? `${story.slug} | optional` : story.slug))
+        .join('\n');
+}
+
+function todayIso() {
+    return new Date().toISOString().slice(0, 10);
 }
 
 function renderFields(sprint, instance) {
@@ -802,7 +822,7 @@ function bindDialogs(instanceId, render) {
         if (sprintDialog.returnValue !== 'confirm') {
             return;
         }
-        const stories = parseSlugLines(document.getElementById('sp-sprint-stories')?.value || '');
+        const stories = parseStoriesTextarea(document.getElementById('sp-sprint-stories')?.value || '');
         const parsedLinks = parseLinksTextarea(document.getElementById('sp-sprint-links')?.value || '');
         const data = {
             titleDe: document.getElementById('sp-sprint-title-de').value,
@@ -811,7 +831,8 @@ function bindDialogs(instanceId, render) {
             goalEn: document.getElementById('sp-sprint-goal-en').value,
             number: Number(document.getElementById('sp-sprint-position').value) || undefined,
             notes: document.getElementById('sp-sprint-notes-enabled').checked,
-            linkedStorySlugs: stories,
+            stories,
+            linkedStorySlugs: stories.map((story) => story.slug),
             links: parsedLinks.links,
         };
         const result = sprintDialogState.sprint
@@ -834,22 +855,32 @@ function bindDialogs(instanceId, render) {
         if (itemDialog.returnValue !== 'confirm') {
             return;
         }
-        const stories = parseSlugLines(document.getElementById('sp-item-stories')?.value || '');
+        const stories = parseStoriesTextarea(document.getElementById('sp-item-stories')?.value || '');
         const parsedLinks = parseLinksTextarea(document.getElementById('sp-item-help-links')?.value || '');
+        const status = document.getElementById('sp-item-status').value;
+        const previousStatus = itemDialogState.item?.status;
+        const blockerReason = document.getElementById('sp-item-blocker-reason')?.value || '';
+        const blockerSince = status === 'blocked'
+            ? (previousStatus === 'blocked' ? (itemDialogState.item?.blockerSince || todayIso()) : todayIso())
+            : null;
         const data = {
             id: document.getElementById('sp-item-id').value,
             labelDe: document.getElementById('sp-item-label-de').value,
             labelEn: document.getElementById('sp-item-label-en').value,
             assigneeType: document.getElementById('sp-item-assignee-type').value,
             assigneeId: document.getElementById('sp-item-assignee-id').value || null,
-            status: document.getElementById('sp-item-status').value,
+            status,
             priority: document.getElementById('sp-item-priority').value,
             dueDate: document.getElementById('sp-item-due').value || null,
             note: document.getElementById('sp-item-note').value,
             helpTextDe: document.getElementById('sp-item-help-de')?.value || '',
             helpTextEn: document.getElementById('sp-item-help-en')?.value || '',
-            linkedStorySlugs: stories,
+            stories,
+            linkedStorySlugs: stories.map((story) => story.slug),
             helpLinks: parsedLinks.links,
+            demoCode: document.getElementById('sp-item-demo-code')?.value || '',
+            blockerReason,
+            blockerSince,
         };
         const kind = document.getElementById('sp-item-type').value;
         const sprintId = document.getElementById('sp-item-sprint-id').value;
@@ -873,9 +904,11 @@ function bindDialogs(instanceId, render) {
     });
 
     document.getElementById('sp-item-assignee-type')?.addEventListener('change', () => refreshAssigneeOptions());
+    document.getElementById('sp-item-status')?.addEventListener('change', () => updateBlockerFieldVisibility());
 }
 
 function openSprintDialog(sprint, isCustom) {
+    closeHelpPanel();
     sprintDialogState = { sprint, isCustom: Boolean(isCustom) };
     document.getElementById('sp-sprint-edit-id').value = sprint?.id || '';
     document.getElementById('sp-sprint-title-de').value = sprint?.title || '';
@@ -886,7 +919,7 @@ function openSprintDialog(sprint, isCustom) {
     document.getElementById('sp-sprint-notes-enabled').checked = sprint?.notesEnabled !== false;
     const storiesEl = document.getElementById('sp-sprint-stories');
     if (storiesEl) {
-        storiesEl.value = (sprint?.linkedStorySlugs || []).join('\n');
+        storiesEl.value = formatStoriesTextarea(sprint?.stories || []);
     }
     const linksEl = document.getElementById('sp-sprint-links');
     if (linksEl) {
@@ -895,7 +928,16 @@ function openSprintDialog(sprint, isCustom) {
     document.getElementById('sp-sprint-dialog').showModal();
 }
 
+function updateBlockerFieldVisibility() {
+    const status = document.getElementById('sp-item-status')?.value;
+    const field = document.getElementById('sp-item-blocker-field');
+    if (field) {
+        field.hidden = status !== 'blocked';
+    }
+}
+
 function openItemDialog(state) {
+    closeHelpPanel();
     itemDialogState = state;
     document.getElementById('sp-item-sprint-id').value = state.sprintId;
     document.getElementById('sp-item-type').value = state.kind;
@@ -922,13 +964,25 @@ function openItemDialog(state) {
     }
     const storiesEl = document.getElementById('sp-item-stories');
     if (storiesEl) {
-        storiesEl.value = (state.item?.linkedStorySlugs || []).join('\n');
+        storiesEl.value = formatStoriesTextarea(state.item?.stories || []);
     }
     const linksEl = document.getElementById('sp-item-help-links');
     if (linksEl) {
         linksEl.value = formatLinksTextarea(state.item?.helpLinks || []);
     }
+    const demoCodeEl = document.getElementById('sp-item-demo-code');
+    if (demoCodeEl) {
+        const demoCode = state.item?.demoCode || '';
+        demoCodeEl.value = typeof demoCode === 'object'
+            ? (demoCode.de || demoCode.en || '')
+            : demoCode;
+    }
+    const blockerReasonEl = document.getElementById('sp-item-blocker-reason');
+    if (blockerReasonEl) {
+        blockerReasonEl.value = state.item?.blockerReason || '';
+    }
     refreshAssigneeOptions(state.item?.assigneeId || '');
+    updateBlockerFieldVisibility();
     document.getElementById('sp-item-dialog').showModal();
 }
 
@@ -964,4 +1018,252 @@ function setSaveStatus(state) {
         : state === 'saved'
             ? spT('sp.save.saved')
             : spT('sp.save.error');
+}
+
+function bindStatusReport() {
+    document.getElementById('sp-status-report-btn')?.addEventListener('click', () => {
+        if (!lastRenderContext) {
+            return;
+        }
+        const { instance, template, sprints, workspace, locale } = lastRenderContext;
+        renderStatusReport(instance, template, sprints, workspace, locale);
+        showStatusReport();
+    });
+    document.getElementById('sp-status-report-close')?.addEventListener('click', closeStatusReport);
+    document.getElementById('sp-status-report-print')?.addEventListener('click', () => window.print());
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeStatusReport();
+        }
+    });
+}
+
+function showStatusReport() {
+    const el = document.getElementById('sp-status-report');
+    if (el) {
+        el.hidden = false;
+        el.setAttribute('aria-hidden', 'false');
+    }
+}
+
+function closeStatusReport() {
+    const el = document.getElementById('sp-status-report');
+    if (el) {
+        el.hidden = true;
+        el.setAttribute('aria-hidden', 'true');
+    }
+}
+
+/**
+ * @param {import('../storage.js').SpPlanInstance} instance
+ * @param {object|undefined} template
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @param {'de'|'en'} locale
+ */
+function renderStatusReport(instance, template, sprints, workspace, locale) {
+    const body = document.getElementById('sp-status-report-body');
+    if (!body) {
+        return;
+    }
+    body.replaceChildren();
+
+    const progress = calculateOverallProgress(sprints);
+    const currentNumber = calculateCurrentSprintNumber(
+        instance.startedAt,
+        sprints.length || template?.duration || 1,
+        template?.unit || 'week',
+    );
+    const currentSprint = sprints.find((sprint) => sprint.number === currentNumber);
+
+    const title = document.createElement('h1');
+    title.className = 'tools-page-title';
+    title.textContent = instance.translations?.[locale]?.title
+        || template?.locales?.[locale]?.title
+        || instance.templateSlug;
+    body.appendChild(title);
+
+    body.appendChild(buildReportSection(spT('sp.report.progress'), () => {
+        const p = document.createElement('p');
+        p.textContent = `${progress.percent}% (${progress.done}/${progress.total})`;
+        return [p];
+    }));
+
+    body.appendChild(buildReportSection(spT('sp.report.currentSprint'), () => {
+        const p = document.createElement('p');
+        p.textContent = currentSprint
+            ? `#${currentSprint.number} — ${currentSprint.title} (${currentSprint.progress.percent}%)`
+            : '—';
+        return [p];
+    }));
+
+    const blockers = collectBlockers(sprints);
+    body.appendChild(buildReportSection(spT('sp.report.blockers'), () => {
+        if (!blockers.length) {
+            return [buildEmptyParagraph()];
+        }
+        return [buildReportTable(
+            [spT('sp.report.colSprint'), spT('sp.report.colItem'), spT('sp.report.colAssignee'), spT('sp.report.colReason')],
+            blockers.map((blocker) => [
+                `#${blocker.sprintNumber}`,
+                blocker.item.label,
+                resolveAssigneeName(blocker.item, workspace, locale) || spT('sp.report.unassigned'),
+                blocker.item.blockerReason || '',
+            ]),
+        )];
+    }));
+
+    body.appendChild(buildReportSection(spT('sp.report.sprintProgress'), () => [
+        buildReportTable(
+            [spT('sp.report.colSprint'), spT('sp.field.status'), spT('sp.report.colTotal')],
+            sprints.map((sprint) => [
+                `#${sprint.number} ${sprint.title}`,
+                `${sprint.progress.percent}%`,
+                `${sprint.progress.done}/${sprint.progress.total}`,
+            ]),
+        ),
+    ]));
+
+    const requiredUnread = collectRequiredUnreadStories(sprints);
+    body.appendChild(buildReportSection(spT('sp.report.requiredStories'), () => {
+        if (!requiredUnread.length) {
+            return [buildEmptyParagraph()];
+        }
+        return [buildReportTable(
+            [spT('sp.report.colSprint'), spT('sp.report.colItem'), spT('sp.report.colStory')],
+            requiredUnread.map((entry) => [`#${entry.sprintNumber}`, entry.itemLabel, entry.slug]),
+        )];
+    }));
+
+    const tasksByPerson = collectTasksByPerson(sprints, workspace);
+    body.appendChild(buildReportSection(spT('sp.report.tasksByPerson'), () => {
+        if (!tasksByPerson.length) {
+            return [buildEmptyParagraph()];
+        }
+        return [buildReportTable(
+            [
+                spT('sp.report.colPerson'),
+                spT('sp.report.colOpen'),
+                spT('sp.report.colBlocked'),
+                spT('sp.report.colCompleted'),
+                spT('sp.report.colTotal'),
+            ],
+            tasksByPerson.map((row) => [
+                row.name,
+                String(row.open),
+                String(row.blocked),
+                String(row.completed),
+                String(row.total),
+            ]),
+        )];
+    }));
+}
+
+/**
+ * @param {string} titleText
+ * @param {() => HTMLElement[]} buildContent
+ */
+function buildReportSection(titleText, buildContent) {
+    const section = document.createElement('section');
+    section.className = 'sp-report-section';
+    const heading = document.createElement('h3');
+    heading.textContent = titleText;
+    section.appendChild(heading);
+    for (const node of buildContent()) {
+        section.appendChild(node);
+    }
+    return section;
+}
+
+/**
+ * @param {string[]} headers
+ * @param {string[][]} rows
+ */
+function buildReportTable(headers, rows) {
+    const table = document.createElement('table');
+    table.className = 'sp-report-table';
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    for (const header of headers) {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headRow.appendChild(th);
+    }
+    thead.appendChild(headRow);
+    const tbody = document.createElement('tbody');
+    for (const row of rows) {
+        const tr = document.createElement('tr');
+        for (const cell of row) {
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    }
+    table.append(thead, tbody);
+    return table;
+}
+
+function buildEmptyParagraph() {
+    const p = document.createElement('p');
+    p.textContent = spT('sp.report.empty');
+    return p;
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ */
+function collectRequiredUnreadStories(sprints) {
+    const out = [];
+    for (const sprint of sprints) {
+        for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+            for (const story of item.stories || []) {
+                if (story.required && !isStoryRead(story.slug)) {
+                    out.push({
+                        sprintNumber: sprint.number,
+                        itemLabel: item.label,
+                        slug: story.slug,
+                    });
+                }
+            }
+        }
+    }
+    return out;
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ */
+function collectTasksByPerson(sprints, workspace) {
+    /** @type {Record<string, {open: number, blocked: number, completed: number, total: number}>} */
+    const counts = {};
+    const ensure = (id) => {
+        if (!counts[id]) {
+            counts[id] = { open: 0, blocked: 0, completed: 0, total: 0 };
+        }
+        return counts[id];
+    };
+    for (const sprint of sprints) {
+        for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+            if (item.assigneeType !== 'person' || !item.assigneeId) {
+                continue;
+            }
+            const bucket = ensure(item.assigneeId);
+            bucket.total += 1;
+            if (item.status === 'blocked') {
+                bucket.blocked += 1;
+            } else if (item.completed || item.status === 'completed') {
+                bucket.completed += 1;
+            } else {
+                bucket.open += 1;
+            }
+        }
+    }
+    return Object.entries(counts)
+        .map(([personId, bucket]) => ({
+            name: workspace.people[personId]?.displayName || personId,
+            ...bucket,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
 }

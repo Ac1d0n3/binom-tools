@@ -1,5 +1,6 @@
 @extends('layouts.tools', [
     'viteEntries' => [
+        'resources/css/playbooks.css',
         'resources/css/sprint-planner.css',
         'resources/js/sprint-planner/show.js',
     ],
@@ -14,6 +15,7 @@
         data-sp-page="show"
         data-sp-instance-id="{{ $instanceId }}"
         data-sp-templates='@json($templatesJson)'
+        data-sp-stories='@json($storiesJson ?? [])'
         data-sp-index-url="{{ locale_route('sprint-planner.index') }}"
         data-sp-settings-url="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}"
         @include('components.sprint-planner.accounts-attrs')
@@ -75,6 +77,7 @@
                     </div>
                 </div>
                 <div class="sp-plan-header__actions">
+                    <button type="button" class="tools-btn tools-btn--secondary" id="sp-status-report-btn" data-i18n="sp.action.statusReport">Status report</button>
                     <a href="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.settings">Settings</a>
                     <button type="button" class="tools-btn tools-btn--primary" id="sp-add-sprint" data-i18n="sp.action.addSprint">Add sprint</button>
                 </div>
@@ -86,6 +89,7 @@
                 <label class="sp-check"><input type="checkbox" id="sp-filter-open-only"> <span data-i18n="sp.filter.openOnly">Open items only</span></label>
                 <label class="sp-check"><input type="checkbox" id="sp-filter-blocked"> <span data-i18n="sp.filter.blocked">Blocked items</span></label>
                 <label class="sp-check"><input type="checkbox" id="sp-filter-my-tasks"> <span data-i18n="sp.filter.myTasks">My tasks</span></label>
+                <label class="sp-check"><input type="checkbox" id="sp-filter-unassigned"> <span data-i18n="sp.filter.unassigned">Unassigned</span></label>
                 <label class="sp-field sp-field--compact">
                     <span data-i18n="sp.filter.person">Person</span>
                     <select id="sp-filter-person" class="tools-input"></select>
@@ -115,6 +119,8 @@
                     </select>
                 </label>
             </div>
+
+            <div id="sp-blockers" class="sp-blockers" hidden></div>
 
             <div id="sp-sprints" class="sp-sprints"></div>
         </div>
@@ -176,6 +182,10 @@
                     </select>
                 </label>
                 <label class="sp-field"><span data-i18n="sp.field.dueDate">Due date</span><input type="date" id="sp-item-due" class="tools-input"></label>
+                <label class="sp-field" id="sp-item-blocker-field" hidden>
+                    <span data-i18n="sp.field.blockerReason">Blocker reason</span>
+                    <textarea id="sp-item-blocker-reason" class="tools-input" rows="2" maxlength="2000"></textarea>
+                </label>
                 <label class="sp-field"><span data-i18n="sp.field.note">Note</span><textarea id="sp-item-note" class="tools-input" rows="2" maxlength="4000"></textarea></label>
                 <label class="sp-field"><span data-i18n="sp.field.helpTextDe">Help text (DE)</span><textarea id="sp-item-help-de" class="tools-input" rows="3" maxlength="8000"></textarea></label>
                 <label class="sp-field"><span data-i18n="sp.field.helpTextEn">Help text (EN)</span><textarea id="sp-item-help-en" class="tools-input" rows="3" maxlength="8000"></textarea></label>
@@ -186,6 +196,10 @@
                 <label class="sp-field">
                     <span data-i18n="sp.field.helpLinks">Help links</span>
                     <textarea id="sp-item-help-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | /path-or-url"></textarea>
+                </label>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.demoCode">Demo code</span>
+                    <textarea id="sp-item-demo-code" class="tools-input" rows="3" maxlength="8000"></textarea>
                 </label>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
@@ -202,6 +216,17 @@
             </div>
             <div id="sp-help-panel-body" class="sp-help-panel__body"></div>
         </aside>
+
+        <div id="sp-status-report" class="sp-status-report" hidden aria-hidden="true">
+            <div class="sp-status-report__header">
+                <h2 class="sp-dialog__title" data-i18n="sp.report.title">Status report</h2>
+                <div class="sp-status-report__actions">
+                    <button type="button" id="sp-status-report-print" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.action.printReport">Print</button>
+                    <button type="button" id="sp-status-report-close" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.help.close" aria-label="Close">Close</button>
+                </div>
+            </div>
+            <div id="sp-status-report-body" class="sp-status-report__body"></div>
+        </div>
 
         <div id="sp-toast" class="sp-toast" role="status" aria-live="polite" hidden></div>
         <p id="sp-save-status" class="sp-save-status" aria-live="polite"></p>

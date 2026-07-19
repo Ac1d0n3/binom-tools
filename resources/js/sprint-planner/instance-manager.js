@@ -131,6 +131,7 @@ export function addCustomSprint(instanceId, data) {
             notes: data.notes !== false,
             teamId: data.teamId || null,
             ownerPersonId: data.ownerPersonId || null,
+            stories: Array.isArray(data.stories) ? data.stories : [],
             linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
             links: Array.isArray(data.links) ? data.links : [],
         });
@@ -156,6 +157,9 @@ export function updateCustomOrOverrideSprint(instanceId, sprintId, data, isCusto
             if (data.number) {
                 sprint.number = Number(data.number);
             }
+            if (Array.isArray(data.stories)) {
+                sprint.stories = data.stories;
+            }
             if (Array.isArray(data.linkedStorySlugs)) {
                 sprint.linkedStorySlugs = data.linkedStorySlugs;
             }
@@ -174,6 +178,7 @@ export function updateCustomOrOverrideSprint(instanceId, sprintId, data, isCusto
             },
             notes: data.notes !== false,
             number: data.number ? Number(data.number) : undefined,
+            stories: Array.isArray(data.stories) ? data.stories : undefined,
             linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : undefined,
             links: Array.isArray(data.links) ? data.links : undefined,
         };
@@ -280,7 +285,11 @@ export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
                 en: data.helpTextEn || data.helpTextDe || '',
             },
             helpLinks: Array.isArray(data.helpLinks) ? data.helpLinks : [],
+            stories: Array.isArray(data.stories) ? data.stories : [],
             linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
+            demoCode: data.demoCode || '',
+            blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
+            blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
         };
         const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
         if (!instance[bag][sprintId]) {
@@ -315,7 +324,11 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
                 en: data.helpTextEn || data.helpTextDe || '',
             };
             item.helpLinks = Array.isArray(data.helpLinks) ? data.helpLinks : [];
+            item.stories = Array.isArray(data.stories) ? data.stories : [];
             item.linkedStorySlugs = Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [];
+            item.demoCode = data.demoCode || '';
+            item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
+            item.blockerSince = item.status === 'blocked' ? (data.blockerSince || null) : null;
             syncCompletion(instance, kind, key, item.status === 'completed');
             return;
         }
@@ -333,7 +346,11 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
                 en: data.helpTextEn || data.helpTextDe || '',
             },
             helpLinks: Array.isArray(data.helpLinks) ? data.helpLinks : [],
+            stories: Array.isArray(data.stories) ? data.stories : [],
             linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
+            demoCode: data.demoCode || '',
+            blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
+            blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
         };
         syncCompletion(instance, kind, key, data.status === 'completed');
     });
@@ -440,6 +457,123 @@ export function clearPlanPassword(instanceId) {
     return updateInstance(instanceId, (instance) => {
         instance.passwordHash = null;
         instance.passwordSalt = null;
+    });
+}
+
+/**
+ * Structural compatibility: same sprint/task/deliverable/field IDs.
+ * @param {object} fromTemplate
+ * @param {object} toTemplate
+ */
+export function templatesAreCompatible(fromTemplate, toTemplate) {
+    if (!fromTemplate?.sprints || !toTemplate?.sprints) {
+        return false;
+    }
+    if (fromTemplate.sprints.length !== toTemplate.sprints.length) {
+        return false;
+    }
+    for (let i = 0; i < fromTemplate.sprints.length; i += 1) {
+        const a = fromTemplate.sprints[i];
+        const b = toTemplate.sprints[i];
+        if (a.id !== b.id) {
+            return false;
+        }
+        const taskA = (a.tasks || []).map((t) => t.id).join(',');
+        const taskB = (b.tasks || []).map((t) => t.id).join(',');
+        const delA = (a.deliverables || []).map((d) => d.id).join(',');
+        const delB = (b.deliverables || []).map((d) => d.id).join(',');
+        const fieldA = (a.fields || []).map((f) => f.id).join(',');
+        const fieldB = (b.fields || []).map((f) => f.id).join(',');
+        if (taskA !== taskB || delA !== delB || fieldA !== fieldB) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Remap status-key prefixes when switching between compatible templates.
+ * @param {string} key
+ * @param {string} fromSlug
+ * @param {string} toSlug
+ */
+function remapStatusKey(key, fromSlug, toSlug) {
+    const prefix = `${fromSlug}:`;
+    if (!String(key).startsWith(prefix)) {
+        return key;
+    }
+    return `${toSlug}:${String(key).slice(prefix.length)}`;
+}
+
+/**
+ * @param {Record<string, unknown>} map
+ * @param {string} fromSlug
+ * @param {string} toSlug
+ */
+function remapKeyedMap(map, fromSlug, toSlug) {
+    /** @type {Record<string, unknown>} */
+    const out = {};
+    for (const [key, value] of Object.entries(map || {})) {
+        out[remapStatusKey(key, fromSlug, toSlug)] = value;
+    }
+    return out;
+}
+
+/**
+ * Switch a plan instance to another structurally compatible template (keeps progress).
+ * @param {string} instanceId
+ * @param {object} newTemplate
+ * @param {object[]} templates
+ */
+export function switchPlanTemplate(instanceId, newTemplate, templates = []) {
+    if (!newTemplate?.slug) {
+        return { ok: false, error: 'template-missing' };
+    }
+    const loaded = loadWorkspace();
+    const current = loaded.data.instances[instanceId];
+    if (!current) {
+        return { ok: false, error: 'plan-missing' };
+    }
+    const fromSlug = current.templateSlug;
+    const toSlug = newTemplate.slug;
+    if (fromSlug === toSlug) {
+        return { ok: true, instance: current };
+    }
+    const fromTemplate = (templates || []).find((t) => t.slug === fromSlug);
+    if (fromTemplate && !templatesAreCompatible(fromTemplate, newTemplate)) {
+        return { ok: false, error: 'template-incompatible' };
+    }
+
+    return updateInstance(instanceId, (instance) => {
+        instance.completedTasks = (instance.completedTasks || []).map((key) => remapStatusKey(key, fromSlug, toSlug));
+        instance.completedDeliverables = (instance.completedDeliverables || []).map((key) => remapStatusKey(key, fromSlug, toSlug));
+        instance.fieldValues = remapKeyedMap(instance.fieldValues || {}, fromSlug, toSlug);
+        instance.itemOverrides = remapKeyedMap(instance.itemOverrides || {}, fromSlug, toSlug);
+
+        for (const bag of ['customTasks', 'customDeliverables']) {
+            const groups = instance[bag] || {};
+            for (const sprintId of Object.keys(groups)) {
+                groups[sprintId] = (groups[sprintId] || []).map((item) => ({
+                    ...item,
+                    statusKey: item.statusKey
+                        ? remapStatusKey(item.statusKey, fromSlug, toSlug)
+                        : item.statusKey,
+                }));
+            }
+        }
+
+        instance.templateSlug = toSlug;
+        instance.templateVersion = Number(newTemplate.version) || instance.templateVersion || 1;
+        instance.translations = {
+            de: {
+                title: newTemplate.locales?.de?.title || toSlug,
+                description: newTemplate.locales?.de?.description || '',
+            },
+            en: {
+                title: newTemplate.locales?.en?.title || toSlug,
+                description: newTemplate.locales?.en?.description || '',
+            },
+        };
     });
 }
 

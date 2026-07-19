@@ -1,8 +1,8 @@
 ---
 type: sprint-plan
-title: Data & Reporting – First Quarter
-slug: data-reporting-first-quarter
-description: Understand the data and reporting landscape and deliver the first sustainable improvement.
+title: First Quarter — Fabric? → Qlik Script / QVDs (Chaos)
+slug: data-reporting-fq-fabric-qlik-qvd
+description: Chaotic landscape: unclear sources, possible Fabric, many QVD generators with SUBs, DELTAs and SCD — partner and in-house mixed.
 duration: 13
 unit: week
 category: Data Platform
@@ -10,9 +10,11 @@ author: Thomas Lindackers
 version: 1
 locale: en
 tags:
-  - Data Platform
-  - Reporting
-  - Governance
+  - Fabric
+  - Qlik
+  - QVD
+  - SCD
+  - Chaos
 ---
 
 Thirteen weeks to understand reporting and the data platform, clarify risks, and deliver a first pilot.
@@ -22,15 +24,15 @@ id: week-01
 number: 1
 title: Orientation and Mandate
 goal: Understand the assignment, expectations, and relevant stakeholders.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Mandate & stakeholders
-  - Reporting landscape
-  - Sources & creation
-  - Lineage & KPIs
-  - Pilot & close
+  - Sources (?)
+  - Fabric / exports (?)
+  - QVD generators (SUBs/DELTAs/SCD)
+  - QVD layers
+  - Qlik script apps
+
 
 
 stories:
@@ -97,6 +99,7 @@ id: week-02
 number: 2
 title: Reporting Landscape
 goal: Capture existing reports, users, and critical gaps.
+description: Focus: generator inventory, SUB libraries, delta logic, SCD patterns, owner per generator, what should be source of truth.
 
 stories:
   - slug: bi-tools
@@ -491,14 +494,15 @@ id: week-08
 number: 8
 title: Architecture Diagnosis
 goal: Assess the current architecture and name bottlenecks.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Sources
-  - Integration / platform
-  - Transformation
-  - Consumption / BI
+  - Sources (?)
+  - Fabric / exports (?)
+  - QVD generators (SUBs/DELTAs/SCD)
+  - QVD layers
+  - Qlik script apps
+
 
 
 stories:
@@ -709,6 +713,12 @@ links:
 tasks:
   - id: build-pilot
     label: Build the pilot
+    demoCode: |
+      // QVD generator checklist
+      // 1) Who owns the SUB?
+      // 2) Incremental key / delta source?
+      // 3) SCD type (1/2/?) and history?
+      // 4) Which apps read which QVD layer?
     assigneeType: person
     assigneeId: null
     helpText: |

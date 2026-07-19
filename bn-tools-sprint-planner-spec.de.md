@@ -355,22 +355,50 @@ fields
 notes
 estimated_effort
 linkedStories
+stories
 links
+flowVariant
+flowLayout
+flowSteps
 ```
 
-Sprint-Links:
+Sprint-Stories und Links:
 
 ```text
-linkedStories  = Playbook-Slugs (Liste)
-links          = freie Links [{ label, href }] (Playbooks, Tools, externe URLs)
+stories        = [{ slug, required }]  (Pflichtlektüre vs. optional)
+linkedStories  = Playbook-Slugs (Legacy → required: true)
+links          = freie Links [{ label, href }]
+flowSteps      = Schritte für Playbook-FLOW-Darstellung (mind. 2)
 ```
 
-Task-Hilfe (optional pro Aufgabe):
+Task-/Deliverable-Hilfe:
 
 ```text
-helpText       = lokalisierter Hilfetext (einzeilig oder | Mehrzeiler)
-linkedStories  = Playbook-Slugs (CSV oder Liste)
-helpLinks      = freie Hilfe-Links [{ label, href }]
+helpText       = lokalisierter Hilfetext
+stories        = [{ slug, required }]
+linkedStories  = Legacy-CSV/Liste → required: true
+helpLinks      = [{ label, href }]
+demoCode       = optionaler Demo-/Checklisten-Block
+```
+
+Hilfe-Panel (UI): Story-Karten mit Titel, Pflicht/Optional, gelesen/ungelesen, Öffnen, Als gelesen markieren. Item-Zeile zeigt `?` mit Lese-Fortschritt, keine Slug-Badges.
+
+Blocker (Instanz-Overrides / Custom-Items):
+
+```text
+status: blocked
+blockerReason: "…"
+blockerSince: YYYY-MM-DD
+```
+
+Statusbericht: druckbare HTML-Ansicht (Browser „Als PDF speichern“) mit Fortschritt, Blockern, Zuweisungen.
+
+Stack-Vorlagen (neben dem generischen First Quarter):
+
+```text
+data-reporting-fq-fivetran-snowflake-qlik
+data-reporting-fq-fivetran-snowflake-powerbi
+data-reporting-fq-fabric-qlik-qvd
 ```
 
 `helpText` und `helpLinks[].label` sind lokalisiert (DE/EN-Dateien). `href`-Werte und Story-Slugs sind strukturell und müssen zwischen Locales übereinstimmen.

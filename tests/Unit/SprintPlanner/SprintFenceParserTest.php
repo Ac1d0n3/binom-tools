@@ -166,4 +166,207 @@ MD;
         $this->assertNotEmpty($result['errors']);
         $this->assertSame([], $result['sprints']);
     }
+
+    public function test_parses_sprint_level_stories_and_merges_linked_stories(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+linkedStories:
+  - ai-basics
+  - bi-tools
+
+stories:
+  - slug: define-kpi
+    required: true
+  - slug: bi-tools
+    required: false
+```
+MD;
+
+        $result = $parser->parse($body);
+
+        $this->assertSame([], $result['errors']);
+        $sprint = $result['sprints'][0];
+        $this->assertSame(['ai-basics', 'bi-tools'], $sprint['linkedStories']);
+        $this->assertSame([
+            ['slug' => 'define-kpi', 'required' => true],
+            ['slug' => 'bi-tools', 'required' => false],
+            ['slug' => 'ai-basics', 'required' => true],
+        ], $sprint['stories']);
+    }
+
+    public function test_parses_sprint_level_flow_configuration(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+flowVariant: linear
+flowLayout: vertical
+flowSteps:
+  - Source
+  - Fivetran
+```
+MD;
+
+        $result = $parser->parse($body);
+
+        $this->assertSame([], $result['errors']);
+        $sprint = $result['sprints'][0];
+        $this->assertSame('linear', $sprint['flowVariant']);
+        $this->assertSame('vertical', $sprint['flowLayout']);
+        $this->assertSame(['Source', 'Fivetran'], $sprint['flowSteps']);
+    }
+
+    public function test_flow_configuration_defaults_when_absent(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+```
+MD;
+
+        $result = $parser->parse($body);
+
+        $sprint = $result['sprints'][0];
+        $this->assertSame('linear', $sprint['flowVariant']);
+        $this->assertSame('vertical', $sprint['flowLayout']);
+        $this->assertSame([], $sprint['flowSteps']);
+    }
+
+    public function test_parses_nested_stories_and_demo_code_on_tasks_and_deliverables(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+tasks:
+  - id: read-guide
+    label: Read guide
+    linkedStories: secret-guide
+    stories:
+      - slug: define-kpi
+        required: true
+      - slug: bi-tools
+        required: false
+    demoCode: |
+      SELECT 1;
+      SELECT 2;
+
+deliverables:
+  - id: kpi-sheet
+    label: KPI sheet
+    stories:
+      - slug: define-kpi
+        required: true
+    demoCode: |
+      echo "done"
+```
+MD;
+
+        $result = $parser->parse($body);
+
+        $this->assertSame([], $result['errors']);
+        $sprint = $result['sprints'][0];
+
+        $task = $sprint['tasks'][0];
+        $this->assertSame([
+            ['slug' => 'define-kpi', 'required' => true],
+            ['slug' => 'bi-tools', 'required' => false],
+            ['slug' => 'secret-guide', 'required' => true],
+        ], $task['stories']);
+        $this->assertSame("SELECT 1;\nSELECT 2;", $task['demoCode']);
+
+        $deliverable = $sprint['deliverables'][0];
+        $this->assertSame('kpi-sheet', $deliverable['id']);
+        $this->assertSame('KPI sheet', $deliverable['label']);
+        $this->assertSame([
+            ['slug' => 'define-kpi', 'required' => true],
+        ], $deliverable['stories']);
+        $this->assertSame('echo "done"', $deliverable['demoCode']);
+    }
+
+    public function test_normalizes_tasks_and_deliverables_with_help_and_story_fields(): void
+    {
+        $parser = new SprintFenceParser;
+        $body = <<<'MD'
+```sprint
+id: week-01
+number: 1
+title: Orientation
+goal: Understand the mandate.
+
+tasks:
+  - id: read-guide
+    label: Read guide
+    helpText: |
+      First line
+    helpLinks:
+      - label: KPI Definition
+        href: /playbooks/define-kpi
+    stories:
+      - slug: define-kpi
+        required: true
+
+deliverables:
+  - id: kpi-sheet
+    label: KPI sheet
+    helpText: |
+      Deliverable help
+    helpLinks:
+      - label: KPI Sheet Template
+        href: /tools/kpi-sheet
+    stories:
+      - slug: define-kpi
+        required: false
+```
+MD;
+
+        $result = $parser->parse($body);
+
+        $this->assertSame([], $result['errors']);
+        $sprint = $result['sprints'][0];
+
+        $task = $sprint['tasks'][0];
+        $this->assertSame('read-guide', $task['id']);
+        $this->assertSame('Read guide', $task['label']);
+        $this->assertSame('First line', $task['helpText']);
+        $this->assertSame([
+            ['label' => 'KPI Definition', 'href' => '/playbooks/define-kpi'],
+        ], $task['helpLinks']);
+        $this->assertSame([
+            ['slug' => 'define-kpi', 'required' => true],
+        ], $task['stories']);
+        $this->assertNull($task['demoCode']);
+
+        $deliverable = $sprint['deliverables'][0];
+        $this->assertSame('kpi-sheet', $deliverable['id']);
+        $this->assertSame('KPI sheet', $deliverable['label']);
+        $this->assertSame('Deliverable help', $deliverable['helpText']);
+        $this->assertSame([
+            ['label' => 'KPI Sheet Template', 'href' => '/tools/kpi-sheet'],
+        ], $deliverable['helpLinks']);
+        $this->assertSame([
+            ['slug' => 'define-kpi', 'required' => false],
+        ], $deliverable['stories']);
+        $this->assertNull($deliverable['demoCode']);
+    }
 }

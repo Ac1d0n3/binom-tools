@@ -1,8 +1,8 @@
 ---
 type: sprint-plan
-title: Data & Reporting – First Quarter
-slug: data-reporting-first-quarter
-description: Understand the data and reporting landscape and deliver the first sustainable improvement.
+title: First Quarter — Fivetran → Snowflake → dbt → Qlik
+slug: data-reporting-fq-fivetran-snowflake-qlik
+description: Standard path: sources via Fivetran into Snowflake, transform with dbt, consume in Qlik.
 duration: 13
 unit: week
 category: Data Platform
@@ -10,9 +10,10 @@ author: Thomas Lindackers
 version: 1
 locale: en
 tags:
-  - Data Platform
-  - Reporting
-  - Governance
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Qlik
 ---
 
 Thirteen weeks to understand reporting and the data platform, clarify risks, and deliver a first pilot.
@@ -22,15 +23,15 @@ id: week-01
 number: 1
 title: Orientation and Mandate
 goal: Understand the assignment, expectations, and relevant stakeholders.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Mandate & stakeholders
-  - Reporting landscape
-  - Sources & creation
-  - Lineage & KPIs
-  - Pilot & close
+  - Source
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Qlik
+
 
 
 stories:
@@ -97,6 +98,7 @@ id: week-02
 number: 2
 title: Reporting Landscape
 goal: Capture existing reports, users, and critical gaps.
+description: Focus: connector inventory, Snowflake roles/layers, dbt tests/docs, Qlik as consumer — not as KPI owner.
 
 stories:
   - slug: bi-tools
@@ -491,14 +493,15 @@ id: week-08
 number: 8
 title: Architecture Diagnosis
 goal: Assess the current architecture and name bottlenecks.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Sources
-  - Integration / platform
-  - Transformation
-  - Consumption / BI
+  - Source
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Qlik
+
 
 
 stories:

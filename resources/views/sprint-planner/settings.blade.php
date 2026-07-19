@@ -90,6 +90,18 @@
             </section>
 
             <section class="sp-section">
+                <h2 class="sp-section__title" data-i18n="sp.section.template">Template</h2>
+                <p class="sp-password-note" data-i18n="sp.template.switchNote">Switch to a compatible stack variant (same sprint structure). Progress is kept.</p>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.templateVariant">Template variant</span>
+                    <select id="sp-switch-template" class="tools-input"></select>
+                </label>
+                <div class="sp-action-row">
+                    <button type="button" class="tools-btn tools-btn--primary" id="sp-switch-template-save" data-i18n="sp.action.switchTemplate">Switch template</button>
+                </div>
+            </section>
+
+            <section class="sp-section">
                 <h2 class="sp-section__title" data-i18n="sp.section.planActions">Plan actions</h2>
                 <div class="sp-action-row">
                     <button type="button" class="tools-btn tools-btn--secondary" id="sp-export-instance" data-i18n="sp.action.exportPlan">Export plan</button>

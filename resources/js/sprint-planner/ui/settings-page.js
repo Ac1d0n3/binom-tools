@@ -5,6 +5,8 @@ import {
     duplicateInstance,
     resetInstanceProgress,
     setPlanPassword,
+    switchPlanTemplate,
+    templatesAreCompatible,
     updateInstance,
 } from '../instance-manager.js';
 import { getLocale } from '../../locale.js';
@@ -20,6 +22,8 @@ import { loadWorkspace } from '../storage.js';
 import { listPeople, listTeams, localizedText } from '../people-teams.js';
 import {
     applySpI18n,
+    fillSelect,
+    readTemplatesFromDom,
     showToast,
     spT,
     storageErrorMessage,
@@ -90,7 +94,32 @@ export function initSettingsPage() {
             : spT('sp.password.set');
 
         renderSharing(instance, locale);
+        renderTemplateSwitch(instance, locale);
     };
+
+    document.getElementById('sp-switch-template-save')?.addEventListener('click', () => {
+        const slug = document.getElementById('sp-switch-template')?.value;
+        const templates = readTemplatesFromDom();
+        const target = templates.find((t) => t.slug === slug);
+        if (!target) {
+            showToast(spT('sp.error.templateMissing'));
+            return;
+        }
+        if (!window.confirm(spT('sp.confirm.switchTemplate'))) {
+            return;
+        }
+        const result = switchPlanTemplate(instanceId, target, templates);
+        if (!result.ok) {
+            showToast(
+                result.error === 'template-incompatible'
+                    ? spT('sp.error.templateIncompatible')
+                    : storageErrorMessage(result.error),
+            );
+            return;
+        }
+        showToast(spT('sp.toast.templateSwitched'));
+        render();
+    });
 
     document.getElementById('sp-sharing-save')?.addEventListener('click', () => {
         const viewerUserIds = [...document.querySelectorAll('#sp-share-users input:checked')].map((el) => el.value);
@@ -364,5 +393,25 @@ function renderSharing(instance, locale) {
         label.append(input, document.createTextNode(` ${localizedText(team.name, locale)}`));
         teamsHost.appendChild(label);
     }
+}
+
+/**
+ * @param {import('../storage.js').SpPlanInstance} instance
+ * @param {'de'|'en'} locale
+ */
+function renderTemplateSwitch(instance, locale) {
+    const select = document.getElementById('sp-switch-template');
+    if (!select) {
+        return;
+    }
+    const templates = readTemplatesFromDom();
+    const current = templates.find((t) => t.slug === instance.templateSlug);
+    const options = templates
+        .filter((t) => t.slug === instance.templateSlug || !current || templatesAreCompatible(current, t))
+        .map((t) => ({
+            id: t.slug,
+            label: t.locales?.[locale]?.title || t.locales?.en?.title || t.slug,
+        }));
+    fillSelect(select, options, instance.templateSlug, false);
 }
 

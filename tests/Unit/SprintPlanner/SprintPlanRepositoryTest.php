@@ -40,9 +40,11 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertNotEmpty($deTask['helpText']);
         $this->assertNotEmpty($enTask['helpText']);
         $this->assertSame($firstTask['helpLinks'][0]['href'], $deTask['helpLinks'][0]['href']);
+        $this->assertNotEmpty($client['sprints'][0]['flowSteps'] ?? []);
+        $this->assertNotEmpty($client['sprints'][0]['stories'] ?? $client['sprints'][0]['linkedStorySlugs'] ?? []);
     }
 
-    public function test_index_includes_template(): void
+    public function test_index_includes_stack_templates(): void
     {
         $repo = new SprintPlanRepository(
             new SprintPlanFrontmatterParser,
@@ -55,5 +57,8 @@ class SprintPlanRepositoryTest extends TestCase
         $slugs = array_column($index, 'slug');
 
         $this->assertContains('data-reporting-first-quarter', $slugs);
+        $this->assertContains('data-reporting-fq-fivetran-snowflake-qlik', $slugs);
+        $this->assertContains('data-reporting-fq-fivetran-snowflake-powerbi', $slugs);
+        $this->assertContains('data-reporting-fq-fabric-qlik-qvd', $slugs);
     }
 }

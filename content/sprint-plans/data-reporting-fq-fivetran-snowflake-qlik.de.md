@@ -1,8 +1,8 @@
 ---
 type: sprint-plan
-title: Data & Reporting – Erstes Quartal
-slug: data-reporting-first-quarter
-description: Die Daten- und Reporting-Landschaft verstehen und die erste nachhaltige Verbesserung umsetzen.
+title: First Quarter — Fivetran → Snowflake → dbt → Qlik
+slug: data-reporting-fq-fivetran-snowflake-qlik
+description: Standardpfad: Quellen via Fivetran nach Snowflake, Transformation mit dbt, Consumption in Qlik.
 duration: 13
 unit: week
 category: Data Platform
@@ -10,9 +10,10 @@ author: Thomas Lindackers
 version: 1
 locale: de
 tags:
-  - Data Platform
-  - Reporting
-  - Governance
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Qlik
 ---
 
 Dreizehn Wochen, um Reporting und Datenplattform zu verstehen, Risiken zu klären und einen ersten Piloten umzusetzen.
@@ -22,15 +23,15 @@ id: week-01
 number: 1
 title: Orientierung und Mandat
 goal: Auftrag, Erwartungen und relevante Stakeholder verstehen.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Mandat & Stakeholder
-  - Reporting-Landschaft
-  - Quellen & Entstehung
-  - Lineage & KPIs
-  - Pilot & Abschluss
+  - Quelle
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Qlik
+
 
 
 stories:
@@ -97,6 +98,7 @@ id: week-02
 number: 2
 title: Reporting-Landschaft
 goal: Bestehende Reports, Nutzer und kritische Lücken erfassen.
+description: Fokus: Connector-Inventar, Snowflake-Rollen/Layers, dbt Tests/Docs, Qlik als Consumer — nicht als KPI-Owner.
 
 stories:
   - slug: bi-tools
@@ -491,14 +493,15 @@ id: week-08
 number: 8
 title: Architekturdiagnose
 goal: Die aktuelle Architektur bewerten und Engpässe benennen.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Quellen
-  - Integration / Plattform
-  - Transformation
-  - Consumption / BI
+  - Quelle
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Qlik
+
 
 
 stories:

@@ -1,8 +1,8 @@
 ---
 type: sprint-plan
-title: Data & Reporting – Erstes Quartal
-slug: data-reporting-first-quarter
-description: Die Daten- und Reporting-Landschaft verstehen und die erste nachhaltige Verbesserung umsetzen.
+title: First Quarter — Fivetran → Snowflake → dbt → Power BI
+slug: data-reporting-fq-fivetran-snowflake-powerbi
+description: Standardpfad wie Snowflake/dbt, Consumption über Power BI (Semantic Model / Dataset).
 duration: 13
 unit: week
 category: Data Platform
@@ -10,9 +10,10 @@ author: Thomas Lindackers
 version: 1
 locale: de
 tags:
-  - Data Platform
-  - Reporting
-  - Governance
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Power BI
 ---
 
 Dreizehn Wochen, um Reporting und Datenplattform zu verstehen, Risiken zu klären und einen ersten Piloten umzusetzen.
@@ -22,15 +23,15 @@ id: week-01
 number: 1
 title: Orientierung und Mandat
 goal: Auftrag, Erwartungen und relevante Stakeholder verstehen.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Mandat & Stakeholder
-  - Reporting-Landschaft
-  - Quellen & Entstehung
-  - Lineage & KPIs
-  - Pilot & Abschluss
+  - Quelle
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Power BI
+
 
 
 stories:
@@ -97,6 +98,7 @@ id: week-02
 number: 2
 title: Reporting-Landschaft
 goal: Bestehende Reports, Nutzer und kritische Lücken erfassen.
+description: Fokus: Dataset/Semantic Model Ownership, Measures vs. Warehouse-Definitionen, Refresh und Workspace-Rechte.
 
 stories:
   - slug: bi-tools
@@ -491,14 +493,15 @@ id: week-08
 number: 8
 title: Architekturdiagnose
 goal: Die aktuelle Architektur bewerten und Engpässe benennen.
-
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
-  - Quellen
-  - Integration / Plattform
-  - Transformation
-  - Consumption / BI
+  - Quelle
+  - Fivetran
+  - Snowflake
+  - dbt
+  - Power BI
+
 
 
 stories:

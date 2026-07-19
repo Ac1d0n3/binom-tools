@@ -108,6 +108,7 @@ export function createDefaultPreferences() {
             openOnly: false,
             blocked: false,
             myTasks: false,
+            unassigned: false,
             personId: '',
             teamId: '',
             status: '',
