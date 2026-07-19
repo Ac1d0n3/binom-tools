@@ -28,7 +28,7 @@ import {
     parseExternalLinksTextarea,
     resolveExternalHelpHref,
 } from '../external-links.js';
-import { filterSprints, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
+import { filterSprints, filtersToRevealAssignee, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
 import {
     addCustomItem,
     addCustomSprint,
@@ -464,8 +464,10 @@ function renderFilterEmpty(filtered, allSprints, filters) {
     const normalized = normalizePlanFilters(filters);
     const show = hasItems && filtered.length === 0 && hasActiveItemFilters(filters);
     empty.hidden = !show;
-    if (show && normalized.myTasks && normalized.unassigned) {
+    if (show && normalized.myTasks && normalized.unassigned && normalized.filterLogic === 'and') {
         empty.textContent = spT('sp.filter.emptyMyAndUnassigned');
+    } else if (show && normalized.myTasks && normalized.unassigned && normalized.filterLogic === 'or') {
+        empty.textContent = spT('sp.filter.emptyMyOrUnassigned');
     } else if (show) {
         empty.textContent = spT('sp.filter.empty');
     }
@@ -617,24 +619,17 @@ function bindClaimAll(instanceId) {
             return;
         }
         ensureClaimPersonRecord(personId, ctx.workspace);
-        const items = [];
-        for (const sprint of ctx.sprints) {
-            for (const item of [...sprint.tasks, ...sprint.deliverables]) {
-                items.push({
-                    kind: item.kind,
-                    statusKey: item.statusKey,
-                    custom: item.custom,
-                    sprintId: item.sprintId,
-                    assigneeId: item.assigneeId,
-                });
-            }
-        }
-        const result = claimAllUnassigned(instanceId, items, personId);
+        const result = claimAllUnassigned(instanceId, null, personId, ctx.template || ctx.instance.templateSnapshot);
         if (!result.ok) {
             showToast(storageErrorMessage(result.error));
             return;
         }
-        showToast(spT('sp.toast.claimedAll'));
+        const claimed = Number(result.claimed) || 0;
+        if (claimed === 0) {
+            showToast(spT('sp.toast.claimedAllNone'));
+        } else {
+            showToast(spT('sp.toast.claimedAllCount', { count: claimed }));
+        }
         rerender();
     });
 }
@@ -678,8 +673,73 @@ function bindFilters(render) {
         prefs.planFiltersVersion = 5;
         savePreferences(prefs);
     }
+    // Soften assignee filters: myTasks+unassigned OR hid assignments to other people.
+    if (Number(prefs.planFiltersVersion) < 6) {
+        prefs.planFilters = normalizePlanFilters({
+            ...(prefs.planFilters || {}),
+            myTasks: false,
+            unassigned: false,
+            personId: '',
+            teamId: '',
+        });
+        prefs.planFiltersVersion = 6;
+        savePreferences(prefs);
+    }
     const planFilters = normalizePlanFilters(prefs.planFilters || {});
 
+    applyPlanFilterControls(planFilters);
+
+    const checkboxMap = {
+        'sp-filter-current-week': 'currentWeek',
+        'sp-filter-hide-done': 'hideDone',
+        'sp-filter-open-only': 'openOnly',
+        'sp-filter-blocked': 'blocked',
+        'sp-filter-my-tasks': 'myTasks',
+        'sp-filter-unassigned': 'unassigned',
+    };
+    for (const id of Object.keys(checkboxMap)) {
+        const el = document.getElementById(id);
+        el?.addEventListener('change', () => {
+            persistFilters();
+            render();
+        });
+    }
+
+    const logicAnd = document.getElementById('sp-filter-logic-and');
+    const logicOr = document.getElementById('sp-filter-logic-or');
+    for (const el of [logicAnd, logicOr]) {
+        el?.addEventListener('change', () => {
+            persistFilters();
+            render();
+        });
+    }
+
+    for (const id of ['sp-filter-person', 'sp-filter-team', 'sp-filter-status', 'sp-filter-priority']) {
+        const el = document.getElementById(id);
+        el?.addEventListener('change', () => {
+            persistFilters();
+            render();
+        });
+    }
+
+    const search = document.getElementById('sp-plan-search');
+    if (search) {
+        let searchTimer = 0;
+        search.addEventListener('input', () => {
+            window.clearTimeout(searchTimer);
+            searchTimer = window.setTimeout(() => {
+                persistFilters();
+                render();
+            }, 180);
+        });
+    }
+}
+
+/**
+ * Sync filter form controls from prefs (without rebinding listeners).
+ * @param {ReturnType<typeof normalizePlanFilters>} planFilters
+ */
+function applyPlanFilterControls(planFilters) {
     const checkboxMap = {
         'sp-filter-current-week': 'currentWeek',
         'sp-filter-hide-done': 'hideDone',
@@ -690,14 +750,9 @@ function bindFilters(render) {
     };
     for (const [id, key] of Object.entries(checkboxMap)) {
         const el = document.getElementById(id);
-        if (!el) {
-            continue;
+        if (el) {
+            el.checked = Boolean(planFilters[key]);
         }
-        el.checked = Boolean(planFilters[key]);
-        el.addEventListener('change', () => {
-            persistFilters();
-            render();
-        });
     }
 
     const logicAnd = document.getElementById('sp-filter-logic-and');
@@ -706,12 +761,6 @@ function bindFilters(render) {
         const logic = planFilters.filterLogic === 'or' ? 'or' : 'and';
         logicAnd.checked = logic === 'and';
         logicOr.checked = logic === 'or';
-        for (const el of [logicAnd, logicOr]) {
-            el.addEventListener('change', () => {
-                persistFilters();
-                render();
-            });
-        }
     }
 
     for (const id of ['sp-filter-person', 'sp-filter-team', 'sp-filter-status', 'sp-filter-priority']) {
@@ -722,24 +771,34 @@ function bindFilters(render) {
         const key = id.replace('sp-filter-', '');
         const prefKey = key === 'person' ? 'personId' : key === 'team' ? 'teamId' : key;
         el.value = planFilters[prefKey] || '';
-        el.addEventListener('change', () => {
-            persistFilters();
-            render();
-        });
     }
 
     const search = document.getElementById('sp-plan-search');
     if (search) {
         search.value = planFilters.search || '';
-        let searchTimer = 0;
-        search.addEventListener('input', () => {
-            window.clearTimeout(searchTimer);
-            searchTimer = window.setTimeout(() => {
-                persistFilters();
-                render();
-            }, 180);
-        });
     }
+}
+
+/**
+ * Keep assignee filters from hiding a task right after assigning it.
+ * @param {{assigneeType?: string|null, assigneeId?: string|null}} assignment
+ * @returns {boolean} true when filters were changed
+ */
+function revealAssignedItemInFilters(assignment) {
+    const prefs = loadPreferences();
+    const workspace = loadWorkspace().data;
+    const { filters, changed } = filtersToRevealAssignee(
+        prefs.planFilters || {},
+        assignment,
+        { activePersonId: workspace.workspace.activePersonId || null },
+    );
+    if (!changed) {
+        return false;
+    }
+    prefs.planFilters = filters;
+    savePreferences(prefs);
+    applyPlanFilterControls(filters);
+    return true;
 }
 
 /**
@@ -1990,6 +2049,10 @@ function bindDialogs(instanceId, render) {
             showToast(storageErrorMessage(result.error));
             return;
         }
+        revealAssignedItemInFilters({
+            assigneeType: data.assigneeType,
+            assigneeId: data.assigneeId,
+        });
         render();
     });
 
@@ -2015,7 +2078,12 @@ function bindDialogs(instanceId, render) {
             showToast(storageErrorMessage(result.error));
             return;
         }
-        showToast(spT('sp.toast.assigned'));
+        const assignment = {
+            assigneeType: document.getElementById('sp-assign-assignee-type')?.value || 'person',
+            assigneeId: document.getElementById('sp-assign-assignee-id')?.value || null,
+        };
+        const filtersAdjusted = revealAssignedItemInFilters(assignment);
+        showToast(filtersAdjusted ? spT('sp.toast.assignedFilterAdjusted') : spT('sp.toast.assigned'));
         render();
     });
     document.getElementById('sp-assign-assignee-type')?.addEventListener('change', () => {

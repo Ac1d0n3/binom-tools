@@ -1,18 +1,24 @@
 @props([
     'name' => 'avatarIcon',
     'selected' => '',
+    'hintKey' => 'accounts.avatarIconHint',
 ])
 
 @php
     use App\Support\AvatarIcons;
 
     $selected = AvatarIcons::normalize($selected);
+    $hintDefaults = [
+        'accounts.avatarIconHint' => 'Optional. When set, the icon replaces the trigram on chips.',
+        'accounts.teamAvatarIconHint' => 'Optional. Icon alone, or icon plus a 2–3 letter trigram. Team chips stay squared.',
+    ];
+    $hintFallback = $hintDefaults[$hintKey] ?? $hintDefaults['accounts.avatarIconHint'];
 @endphp
 
 <fieldset class="sp-field" data-accounts-icon-picker>
     <legend data-i18n="accounts.avatarIcon">Avatar icon</legend>
-    <p class="sp-field-hint" data-i18n="accounts.avatarIconHint">
-        Optional. When set, the icon replaces the trigram on chips.
+    <p class="sp-field-hint" data-i18n="{{ $hintKey }}">
+        {{ $hintFallback }}
     </p>
     <div class="sp-icon-picker" role="radiogroup">
         <label class="sp-icon-picker__option{{ $selected === '' ? ' sp-icon-picker__option--active' : '' }}">

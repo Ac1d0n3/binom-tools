@@ -3,6 +3,7 @@
 namespace App\Accounts;
 
 use App\Support\AccentColors;
+use App\Support\AvatarIcons;
 use App\Support\ShortName;
 
 final class AccountTeam
@@ -36,6 +37,7 @@ final class AccountTeam
         public readonly bool $archived = false,
         public readonly string $shortName = '',
         public readonly string $colorToken = 'accent-1',
+        public readonly string $avatarIcon = '',
         public readonly array $memberRoles = [],
     ) {}
 
@@ -86,6 +88,7 @@ final class AccountTeam
             archived: (bool) ($data['archived'] ?? false),
             shortName: ShortName::normalize($data['shortName'] ?? ''),
             colorToken: AccentColors::normalize($data['colorToken'] ?? null),
+            avatarIcon: AvatarIcons::normalize($data['avatarIcon'] ?? null),
             memberRoles: self::normalizeMemberRoles($rawRoles, $memberIds),
         );
     }
@@ -140,6 +143,7 @@ final class AccountTeam
             'archived' => $this->archived,
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,
+            'avatarIcon' => $this->avatarIcon,
         ];
     }
 }

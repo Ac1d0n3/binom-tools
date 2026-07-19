@@ -9,9 +9,11 @@ use App\Accounts\TeamRepository;
 use App\Accounts\UserRepository;
 use App\Http\Controllers\Controller;
 use App\Support\AccentColors;
+use App\Support\AvatarIcons;
 use App\Support\ShortName;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class TeamsController extends Controller
@@ -81,6 +83,7 @@ class TeamsController extends Controller
             'memberRoles' => $memberRoles,
             'shortName' => $data['shortName'] ?? '',
             'colorToken' => $data['colorToken'] ?? $this->nextColorToken(),
+            'avatarIcon' => AvatarIcons::normalize($data['avatarIcon'] ?? ''),
             'archived' => false,
         ]);
 
@@ -118,6 +121,7 @@ class TeamsController extends Controller
             'memberRoles' => $memberRoles,
             'shortName' => $data['shortName'] ?? '',
             'colorToken' => $data['colorToken'] ?? 'accent-1',
+            'avatarIcon' => AvatarIcons::normalize($data['avatarIcon'] ?? ''),
             'archived' => $request->boolean('archived'),
         ]);
 
@@ -173,6 +177,7 @@ class TeamsController extends Controller
             'memberRoles.*' => ['string', 'in:'.implode(',', AccountTeam::ROLES)],
             'shortName' => ShortName::rules(),
             'colorToken' => ['nullable', 'string', 'in:'.implode(',', AccentColors::TEAM_TOKENS)],
+            'avatarIcon' => ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))],
         ];
 
         if ($forUpdate) {

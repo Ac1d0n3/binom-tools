@@ -268,8 +268,12 @@ function resolveTemplateItem({
     const stories = normalizeStories(
         item.stories || item.linkedStorySlugs || item.linkedStories,
     );
-    const assigneeType = itemOverride.assigneeType ?? item.assigneeType ?? defaultAssigneeType;
-    const rawAssigneeId = itemOverride.assigneeId ?? item.assigneeId ?? null;
+    const assigneeType = Object.prototype.hasOwnProperty.call(itemOverride, 'assigneeType')
+        ? itemOverride.assigneeType
+        : (item.assigneeType ?? defaultAssigneeType);
+    const rawAssigneeId = Object.prototype.hasOwnProperty.call(itemOverride, 'assigneeId')
+        ? itemOverride.assigneeId
+        : (item.assigneeId ?? null);
     const assigneeId = rawAssigneeId === null || rawAssigneeId === undefined
         || String(rawAssigneeId).trim() === ''
         || String(rawAssigneeId) === 'null'

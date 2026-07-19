@@ -305,14 +305,16 @@ export function catalogFromAccounts(users, teams) {
         const nameObj = { de: name.de || name.en || id, en: name.en || name.de || id };
         const persistedShort = String(team.shortName || '').trim();
         const persistedColor = String(team.colorToken || '').trim();
+        const persistedIcon = String(team.avatarIcon || '').trim();
         teamMap[id] = {
             id,
             name: nameObj,
             description: { de: description.de || '', en: description.en || '' },
-            shortName: persistedShort || teamTrigram({ name: nameObj }, 'en'),
+            shortName: persistedShort || (persistedIcon ? '' : teamTrigram({ name: nameObj }, 'en')),
             colorToken: /^accent-(?:[1-9]|1[0-2])$|^(?:outline|dotted|dashed)-[1-6]$/.test(persistedColor)
                 ? persistedColor
                 : `accent-${((Object.keys(teamMap).length % 6) + 1)}`,
+            avatarIcon: persistedIcon,
             memberIds: Array.isArray(team.memberIds) ? team.memberIds.map(String) : [],
             memberRoles: team.memberRoles && typeof team.memberRoles === 'object' && !Array.isArray(team.memberRoles)
                 ? Object.fromEntries(

@@ -13,7 +13,7 @@ import {
     calculateOverallProgress,
     resolveSprints,
 } from './progress.js';
-import { filterSprints, itemMatchesFilters, normalizePlanFilters } from './filters.js';
+import { filterSprints, filtersToRevealAssignee, itemMatchesFilters, normalizePlanFilters } from './filters.js';
 import {
     EXPORT_TYPE_WORKSPACE,
     applyImport,
@@ -390,7 +390,8 @@ describe('trigram', () => {
     it('normalizes short names to three characters', async () => {
         const { normalizeTrigram, trigramFromName, normalizeTeamIds } = await import('./trigram.js');
         expect(trigramFromName('Thomas Lindackers')).toMatch(/^[A-ZÀ-ÿ0-9]{3}$/);
-        expect(normalizeTrigram('TL', 'Thomas Lindackers')).toHaveLength(3);
+        expect(normalizeTrigram('TL', 'Thomas Lindackers')).toBe('TL');
+        expect(normalizeTrigram('TL', 'Thomas Lindackers')).toMatch(/^[A-Z]{2,3}$/);
         expect(normalizeTrigram('ABCD', 'X')).toBe('ABC');
         expect(normalizeTeamIds({ teamId: 'team_q' })).toEqual(['team_q']);
         expect(normalizeTeamIds({ teamIds: ['a', 'b'], teamId: 'c' })).toEqual(['a', 'b']);
@@ -457,6 +458,25 @@ describe('filters', () => {
         expect(itemMatchesFilters(mine, filters, { activePersonId: 'person_01' })).toBe(true);
         expect(itemMatchesFilters(open, filters, { activePersonId: 'person_01' })).toBe(true);
         expect(itemMatchesFilters(other, filters, { activePersonId: 'person_01' })).toBe(false);
+    });
+
+    it('widens myTasks+unassigned OR filters after assigning to someone else', () => {
+        const filters = { myTasks: true, unassigned: true, filterLogic: 'or' };
+        const revealed = filtersToRevealAssignee(
+            filters,
+            { assigneeType: 'person', assigneeId: 'person_02' },
+            { activePersonId: 'person_01' },
+        );
+        expect(revealed.changed).toBe(true);
+        expect(revealed.filters.myTasks).toBe(false);
+        expect(revealed.filters.unassigned).toBe(false);
+        expect(itemMatchesFilters({
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_02',
+        }, revealed.filters, { activePersonId: 'person_01' })).toBe(true);
     });
 
     it('keeps structural status filter as AND even in OR mode', () => {
@@ -641,7 +661,7 @@ describe('instance-manager', () => {
         expect(instance.customDeliverables[sprint.id][0].label.en).toBe('Outcome EN');
     });
 
-    it('assigns template items to the active person on start', () => {
+    it('leaves template items unassigned on start', () => {
         const template = {
             slug: 'demo-assign',
             version: 1,
@@ -662,10 +682,72 @@ describe('instance-manager', () => {
         expect(started.ok).toBe(true);
         const taskKey = statusKey('demo-assign', 'sprint_1', 'task', 'task_a');
         const delKey = statusKey('demo-assign', 'sprint_1', 'deliverable', 'del_a');
-        expect(started.instance.itemOverrides[taskKey].assigneeId).toBe('person_thomas_a');
-        expect(started.instance.itemOverrides[delKey].assigneeId).toBe('person_thomas_a');
+        expect(started.instance.itemOverrides[taskKey]).toBeUndefined();
+        expect(started.instance.itemOverrides[delKey]).toBeUndefined();
         expect(started.instance.templateSnapshot?.slug).toBe('demo-assign');
         expect(started.instance.templateSnapshot?.sprints).toHaveLength(1);
+    });
+
+    it('claim all only takes unassigned items and never steals assignees', () => {
+        const template = {
+            slug: 'demo-claim-all',
+            version: 1,
+            sprints: [
+                {
+                    id: 'sprint_1',
+                    number: 1,
+                    tasks: [{ id: 'task_open' }, { id: 'task_taken' }],
+                    deliverables: [],
+                },
+            ],
+            locales: {
+                de: {
+                    title: 'DE',
+                    description: '',
+                    sprints: [{
+                        id: 'sprint_1',
+                        title: 'S1',
+                        goal: 'G',
+                        tasks: [
+                            { id: 'task_open', label: 'Open' },
+                            { id: 'task_taken', label: 'Taken' },
+                        ],
+                    }],
+                },
+                en: {
+                    title: 'EN',
+                    description: '',
+                    sprints: [{
+                        id: 'sprint_1',
+                        title: 'S1',
+                        goal: 'G',
+                        tasks: [
+                            { id: 'task_open', label: 'Open' },
+                            { id: 'task_taken', label: 'Taken' },
+                        ],
+                    }],
+                },
+            },
+        };
+        const started = startInstanceFromTemplate(template, { startedAt: '2026-07-01' });
+        const openKey = statusKey('demo-claim-all', 'sprint_1', 'task', 'task_open');
+        const takenKey = statusKey('demo-claim-all', 'sprint_1', 'task', 'task_taken');
+
+        const assigned = claimItem(started.instance.id, 'task', takenKey, false, 'sprint_1', 'person_matthias');
+        expect(assigned.ok).toBe(true);
+        expect(assigned.claimed).toBe(true);
+
+        const all = claimAllUnassigned(
+            started.instance.id,
+            null,
+            'person_thomas_a',
+            template,
+        );
+        expect(all.ok).toBe(true);
+        expect(all.claimed).toBe(1);
+        const instance = loadWorkspace().data.instances[started.instance.id];
+        expect(instance.itemOverrides[openKey].assigneeId).toBe('person_thomas_a');
+        expect(instance.itemOverrides[takenKey].assigneeId).toBe('person_matthias');
     });
 
     it('keeps templateSlug when claim mutates overrides', () => {
@@ -707,14 +789,17 @@ describe('instance-manager', () => {
         };
         const started = startInstanceFromTemplate(template, { startedAt: '2026-07-01' });
         const key = statusKey('demo-claim', 'sprint_1', 'task', 'task_b');
-        expect(started.instance.itemOverrides[key].assigneeId).toBe('person_thomas_a');
-
-        const ws = loadWorkspace().data;
-        ws.instances[started.instance.id].itemOverrides[key].assigneeId = null;
-        saveWorkspace(ws);
+        expect(started.instance.itemOverrides[key]).toBeUndefined();
 
         const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_matthias');
         expect(claimed.ok).toBe(true);
+        expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
+            .toBe('person_matthias');
+
+        // Second claim must not steal an existing assignee.
+        const stolen = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_thomas_a');
+        expect(stolen.ok).toBe(true);
+        expect(stolen.claimed).toBe(false);
         expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
             .toBe('person_matthias');
 
@@ -724,10 +809,12 @@ describe('instance-manager', () => {
 
         const all = claimAllUnassigned(
             started.instance.id,
-            [{ kind: 'task', statusKey: key, custom: false, sprintId: 'sprint_1', assigneeId: null }],
+            null,
             'person_thomas_a',
+            template,
         );
         expect(all.ok).toBe(true);
+        expect(all.claimed).toBe(1);
         expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
             .toBe('person_thomas_a');
     });

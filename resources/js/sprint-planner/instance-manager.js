@@ -6,6 +6,7 @@ import {
 } from './accounts-bridge.js';
 import { normalizeAttachments } from './attachments.js';
 import { createDeliverableId, createPlanId, createSprintId, createTaskId, statusKey } from './ids.js';
+import { resolveSprints } from './progress.js';
 import { loadWorkspace, saveWorkspace } from './storage.js';
 
 /**
@@ -68,9 +69,8 @@ export function startInstanceFromTemplate(template, options) {
         customDeliverables: {},
         customSprints: [],
         sprintOverrides: {},
-        itemOverrides: activePersonId
-            ? buildDefaultAssigneeOverrides(template, activePersonId)
-            : {},
+        // Leave template items unassigned so "Claim all" / assign can own them explicitly.
+        itemOverrides: {},
         removedItemKeys: [],
         // Always keep a snapshot so the plan stays renderable if the slug is lost or the template catalog fails to load.
         templateSnapshot: structuredCloneSafe(template),
@@ -125,7 +125,7 @@ export function buildDefaultAssigneeOverrides(template, personId) {
 }
 
 /**
- * Claim a single item for a person.
+ * Claim a single item for a person (only if currently unassigned).
  * @param {string} instanceId
  * @param {'task'|'deliverable'} kind
  * @param {string} key
@@ -137,36 +137,91 @@ export function claimItem(instanceId, kind, key, isCustom, sprintId, personId) {
     if (!personId) {
         return { ok: false, error: 'active-person-missing' };
     }
-    return updateInstance(instanceId, (instance) => {
-        assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId);
+    let claimed = false;
+    const result = updateInstance(instanceId, (instance) => {
+        claimed = assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId, {
+            onlyUnassigned: true,
+        });
     });
+    return result.ok ? { ...result, claimed } : result;
 }
 
 /**
- * Claim every currently unassigned resolved item.
+ * Claim every currently unassigned item on the plan.
+ * Re-resolves assignees from live plan data so already-assigned tasks are never stolen.
+ *
  * @param {string} instanceId
- * @param {Array<{kind: 'task'|'deliverable', statusKey: string, custom: boolean, sprintId: string, assigneeId: string|null}>} items
+ * @param {Array<{kind: 'task'|'deliverable', statusKey: string, custom: boolean, sprintId: string, assigneeId?: string|null}>|null|undefined} _itemsIgnored
  * @param {string} personId
+ * @param {object|null|undefined} [template]
  */
-export function claimAllUnassigned(instanceId, items, personId) {
+export function claimAllUnassigned(instanceId, _itemsIgnored, personId, template = null) {
     if (!personId) {
         return { ok: false, error: 'active-person-missing' };
     }
-    return updateInstance(instanceId, (instance) => {
-        for (const item of items) {
-            if (item.assigneeId) {
-                continue;
+    let claimed = 0;
+    const result = updateInstance(instanceId, (instance) => {
+        const tpl = template || instance.templateSnapshot;
+        if (!tpl) {
+            return;
+        }
+        const sprints = resolveSprints(tpl, instance, 'en');
+        for (const sprint of sprints) {
+            for (const item of [...(sprint.tasks || []), ...(sprint.deliverables || [])]) {
+                if (hasAssigneeId(item.assigneeId)) {
+                    continue;
+                }
+                if (itemAlreadyAssignedOnInstance(instance, item)) {
+                    continue;
+                }
+                const did = assignPersonOnItem(
+                    instance,
+                    /** @type {'task'|'deliverable'} */ (item.kind),
+                    item.statusKey,
+                    Boolean(item.custom),
+                    item.sprintId,
+                    personId,
+                    { onlyUnassigned: true },
+                );
+                if (did) {
+                    claimed += 1;
+                }
             }
-            assignPersonOnItem(
-                instance,
-                item.kind,
-                item.statusKey,
-                item.custom,
-                item.sprintId,
-                personId,
-            );
         }
     });
+    return result.ok ? { ...result, claimed } : result;
+}
+
+/**
+ * @param {string|null|undefined} value
+ */
+function hasAssigneeId(value) {
+    if (value === null || value === undefined) {
+        return false;
+    }
+    const id = String(value).trim();
+    return id !== '' && id !== 'null' && id !== 'undefined';
+}
+
+/**
+ * Live check against persisted plan data (not a possibly stale UI snapshot).
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {{kind: string, statusKey: string, custom?: boolean, sprintId: string}} item
+ */
+function itemAlreadyAssignedOnInstance(instance, item) {
+    if (item.custom) {
+        const bag = item.kind === 'task' ? 'customTasks' : 'customDeliverables';
+        const list = instance[bag]?.[item.sprintId] || [];
+        const found = list.find(
+            (entry) => entry.statusKey === item.statusKey || entry.id === item.statusKey.split(':').pop(),
+        );
+        return hasAssigneeId(found?.assigneeId);
+    }
+    const override = instance.itemOverrides?.[item.statusKey];
+    if (override && Object.prototype.hasOwnProperty.call(override, 'assigneeId')) {
+        return hasAssigneeId(override.assigneeId);
+    }
+    return false;
 }
 
 /**
@@ -176,26 +231,40 @@ export function claimAllUnassigned(instanceId, items, personId) {
  * @param {boolean} isCustom
  * @param {string} sprintId
  * @param {string} personId
+ * @param {{onlyUnassigned?: boolean}} [options]
+ * @returns {boolean} true when assignment was written
  */
-function assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId) {
+function assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId, options = {}) {
+    const onlyUnassigned = Boolean(options.onlyUnassigned);
     if (isCustom) {
         const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
         const list = instance[bag][sprintId] || [];
         const item = list.find((entry) => entry.statusKey === key || entry.id === key.split(':').pop());
         if (!item) {
-            return;
+            return false;
+        }
+        if (onlyUnassigned && hasAssigneeId(item.assigneeId)) {
+            return false;
         }
         item.assigneeType = 'person';
         item.assigneeId = personId;
         ensureParticipant(instance, personId);
-        return;
+        return true;
     }
     if (!instance.itemOverrides[key]) {
         instance.itemOverrides[key] = {};
     }
+    if (
+        onlyUnassigned
+        && Object.prototype.hasOwnProperty.call(instance.itemOverrides[key], 'assigneeId')
+        && hasAssigneeId(instance.itemOverrides[key].assigneeId)
+    ) {
+        return false;
+    }
     instance.itemOverrides[key].assigneeType = 'person';
     instance.itemOverrides[key].assigneeId = personId;
     ensureParticipant(instance, personId);
+    return true;
 }
 
 /**

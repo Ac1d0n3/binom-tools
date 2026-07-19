@@ -58,9 +58,10 @@ export function upsertTeam(input) {
         return { ok: false, error: 'validation' };
     }
     const name = { de: nameDe || nameEn, en: nameEn || nameDe };
+    const icon = normalizeAvatarIcon(input.avatarIcon);
     const shortName = input.shortName
         ? normalizeTrigram(String(input.shortName), '')
-        : teamTrigram({ name }, 'en');
+        : (icon ? '' : teamTrigram({ name }, 'en'));
     workspace.teams[id] = {
         id,
         name,
@@ -70,6 +71,7 @@ export function upsertTeam(input) {
         },
         shortName,
         colorToken: normalizeColorToken(input.colorToken || 'accent-1'),
+        avatarIcon: icon,
         memberIds: Array.isArray(input.memberIds) ? input.memberIds.map(String) : [],
         archived: Boolean(input.archived),
     };

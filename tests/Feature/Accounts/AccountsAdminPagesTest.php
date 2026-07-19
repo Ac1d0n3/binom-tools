@@ -53,15 +53,38 @@ class AccountsAdminPagesTest extends TestCase
             'memberIds' => ['user_admin'],
             'shortName' => 'ANA',
             'colorToken' => 'accent-3',
+            'avatarIcon' => 'yin-yang',
         ])->assertRedirect('/account/teams');
 
         $team = collect(app(TeamRepository::class)->all(true))->first();
         $this->assertNotNull($team);
         $this->assertSame(['user_admin'], $team->memberIds);
         $this->assertSame('ANA', $team->shortName);
+        $this->assertSame('yin-yang', $team->avatarIcon);
         $this->assertContains($team->id, app(UserRepository::class)->findById('user_admin')?->teamIds ?? []);
 
         $this->get('/account/teams/'.$team->id.'/edit')->assertOk()->assertSee('Analytics');
+    }
+
+    public function test_team_icon_only_without_trigram(): void
+    {
+        $this->loginAdmin();
+
+        $this->post('/account/teams', [
+            'name_de' => 'Icon Team',
+            'name_en' => 'Icon Team',
+            'memberIds' => [],
+            'shortName' => '',
+            'colorToken' => 'accent-2',
+            'avatarIcon' => 'rocket',
+        ])->assertRedirect('/account/teams');
+
+        $team = collect(app(TeamRepository::class)->all(true))->first(
+            static fn ($t) => ($t->name['en'] ?? '') === 'Icon Team',
+        );
+        $this->assertNotNull($team);
+        $this->assertSame('', $team->shortName);
+        $this->assertSame('rocket', $team->avatarIcon);
     }
 
     public function test_team_member_roles_persist(): void

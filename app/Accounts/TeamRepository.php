@@ -55,6 +55,9 @@ final class TeamRepository
             'archived' => $input['archived'] ?? $current?->archived ?? false,
             'shortName' => $input['shortName'] ?? $current?->shortName ?? '',
             'colorToken' => $input['colorToken'] ?? $current?->colorToken ?? 'accent-1',
+            'avatarIcon' => array_key_exists('avatarIcon', $input)
+                ? $input['avatarIcon']
+                : ($current?->avatarIcon ?? ''),
         ]);
 
         $teams[$id] = $team;

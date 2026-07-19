@@ -200,3 +200,63 @@ export function hasActiveItemFilters(filters) {
         || normalized.search,
     );
 }
+
+/**
+ * If current filters would hide a freshly assigned item, widen assignee filters
+ * so the assignment stays visible (common with default myTasks+unassigned OR).
+ *
+ * @param {Record<string, unknown>} filters
+ * @param {{assigneeType?: string|null, assigneeId?: string|null}} assignment
+ * @param {{activePersonId: string|null}} ctx
+ * @returns {{ filters: ReturnType<typeof normalizePlanFilters>, changed: boolean }}
+ */
+export function filtersToRevealAssignee(filters, assignment, ctx) {
+    const current = normalizePlanFilters(filters);
+    const assigneeType = assignment.assigneeType || 'person';
+    const rawId = assignment.assigneeId;
+    const assigneeId = rawId === null || rawId === undefined || String(rawId).trim() === ''
+        ? null
+        : String(rawId);
+
+    const probe = {
+        completed: false,
+        status: 'open',
+        priority: 'normal',
+        label: '',
+        assigneeType: assigneeId ? assigneeType : null,
+        assigneeId,
+    };
+
+    if (itemMatchesFilters(probe, current, ctx)) {
+        return { filters: current, changed: false };
+    }
+
+    // Drop assignee-scope filters that hide other people's / team work.
+    const next = normalizePlanFilters({
+        ...current,
+        myTasks: false,
+        unassigned: false,
+        personId: '',
+        teamId: '',
+    });
+
+    if (itemMatchesFilters(probe, next, ctx)) {
+        return { filters: next, changed: true };
+    }
+
+    // Still hidden (e.g. status/priority) — focus the person/team filter on the assignee.
+    if (assigneeId && assigneeType === 'person') {
+        return {
+            filters: normalizePlanFilters({ ...next, personId: assigneeId }),
+            changed: true,
+        };
+    }
+    if (assigneeId && assigneeType === 'team') {
+        return {
+            filters: normalizePlanFilters({ ...next, teamId: assigneeId }),
+            changed: true,
+        };
+    }
+
+    return { filters: next, changed: true };
+}

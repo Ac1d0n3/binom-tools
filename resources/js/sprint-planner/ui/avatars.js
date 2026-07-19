@@ -24,20 +24,28 @@ import { spT } from './helpers.js';
  */
 export function renderChip(colorToken, text, title, kind = 'person', options = {}) {
     const token = normalizeColorToken(colorToken);
-    const icon = kind === 'person' ? normalizeAvatarIcon(options.icon) : '';
+    const icon = normalizeAvatarIcon(options.icon);
     const label = String(text || '');
+    // Person: icon replaces trigram. Team: icon alone or icon + up to 3 letters.
+    const showIcon = Boolean(icon);
+    const showLabel = Boolean(label) && (kind === 'team' || !showIcon);
+    const iconOnly = showIcon && !showLabel;
+    const iconLabel = showIcon && showLabel;
+    const trigram3 = showLabel && !showIcon && label.length >= 3;
+
     const chip = document.createElement('span');
-    const trigram3 = !icon && label.length >= 3;
     chip.className = [
         `sp-avatar sp-avatar--${token} sp-avatar--${kind}`,
-        icon ? 'sp-avatar--icon' : '',
+        showIcon ? 'sp-avatar--icon' : '',
+        iconOnly ? 'sp-avatar--icon-only' : '',
+        iconLabel ? 'sp-avatar--icon-label' : '',
         trigram3 ? 'sp-avatar--trigram-3' : '',
     ].filter(Boolean).join(' ');
     applyAvatarColor(chip, token, kind);
     chip.title = title || text || '';
     chip.setAttribute('aria-label', title || text || spT('sp.report.unassigned'));
 
-    if (icon) {
+    if (showIcon) {
         const glyph = document.createElement('span');
         glyph.className = 'sp-avatar-icon-mask';
         glyph.setAttribute('aria-hidden', 'true');
@@ -45,9 +53,21 @@ export function renderChip(colorToken, text, title, kind = 'person', options = {
         glyph.style.maskImage = url;
         glyph.style.webkitMaskImage = url;
         chip.appendChild(glyph);
-    } else {
-        chip.textContent = text || '—';
     }
+
+    if (showLabel) {
+        if (showIcon) {
+            const tri = document.createElement('span');
+            tri.className = 'sp-avatar__label';
+            tri.textContent = label;
+            chip.appendChild(tri);
+        } else {
+            chip.textContent = label;
+        }
+    } else if (!showIcon) {
+        chip.textContent = '—';
+    }
+
     return chip;
 }
 
@@ -75,10 +95,14 @@ export function renderTeamChip(team, locale = 'en') {
         return renderChip('accent-1', '—', '—', 'empty');
     }
     const name = localizedText(team.name, locale);
-    const tri = team.shortName
-        ? normalizeTrigram(team.shortName, name)
-        : teamTrigram(team, locale);
-    return renderChip(team.colorToken || 'accent-1', tri, name, 'team');
+    const icon = normalizeAvatarIcon(team.avatarIcon);
+    let tri = '';
+    if (team.shortName) {
+        tri = normalizeTrigram(team.shortName, name);
+    } else if (!icon) {
+        tri = teamTrigram(team, locale);
+    }
+    return renderChip(team.colorToken || 'accent-1', tri, name, 'team', { icon });
 }
 
 /**

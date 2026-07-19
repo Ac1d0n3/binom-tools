@@ -42,6 +42,7 @@ export const WORKSPACE_EVENT = 'bn-tools:sprint-planner:workspace';
  * @property {{de: string, en: string}} description
  * @property {string} shortName
  * @property {string} colorToken
+ * @property {string} [avatarIcon]
  * @property {string[]} memberIds
  * @property {Record<string, string>} [memberRoles]
  * @property {boolean} archived
@@ -120,8 +121,8 @@ export function createDefaultPreferences() {
             hideDone: false,
             openOnly: false,
             blocked: false,
-            myTasks: true,
-            unassigned: true,
+            myTasks: false,
+            unassigned: false,
             personId: '',
             teamId: '',
             status: '',
@@ -129,7 +130,7 @@ export function createDefaultPreferences() {
             filterLogic: 'or',
             search: '',
         },
-        planFiltersVersion: 5,
+        planFiltersVersion: 6,
         expandedSprints: {},
         expandedItemTables: {},
         planHeaderExpanded: {},
@@ -222,9 +223,10 @@ function normalizeTeams(teams) {
                 en: String(/** @type {any} */ (item.name).en || ''),
             }
             : { de: String(item.name || ''), en: String(item.name || '') };
+        const icon = normalizeAvatarIcon(item.avatarIcon);
         const shortName = item.shortName
             ? normalizeTrigram(String(item.shortName), '')
-            : teamTrigram({ name }, 'en');
+            : (icon ? '' : teamTrigram({ name }, 'en'));
         out[id] = {
             id: String(item.id || id),
             name,
@@ -236,6 +238,7 @@ function normalizeTeams(teams) {
                 : { de: '', en: '' },
             shortName,
             colorToken: normalizeColorToken(String(item.colorToken || '')),
+            avatarIcon: icon,
             memberIds: Array.isArray(item.memberIds) ? item.memberIds.map(String) : [],
             memberRoles: isPlainObject(item.memberRoles)
                 ? Object.fromEntries(

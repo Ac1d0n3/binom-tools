@@ -1621,6 +1621,43 @@
     overflow: hidden;
 }
 
+/* Teams stay squared even with icon-only / icon+trigram. */
+.sp-avatar--team.sp-avatar--icon {
+    border-radius: 0.35rem;
+    width: auto;
+    min-width: 1.85rem;
+}
+
+.sp-avatar--team.sp-avatar--icon-only {
+    width: 1.85rem;
+    min-width: 1.85rem;
+    padding: 0;
+    font-size: 1.05rem;
+}
+
+.sp-avatar--team.sp-avatar--icon-label {
+    gap: 0.22rem;
+    padding: 0 0.38rem 0 0.28rem;
+    font-size: 0.62rem;
+}
+
+.sp-avatar--team.sp-avatar--icon-only .sp-avatar-icon-mask {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.sp-avatar--team.sp-avatar--icon-label .sp-avatar-icon-mask {
+    width: 0.95rem;
+    height: 0.95rem;
+    flex-shrink: 0;
+}
+
+.sp-avatar__label {
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
 .sp-avatar--person {
     border-radius: 999px;
 }

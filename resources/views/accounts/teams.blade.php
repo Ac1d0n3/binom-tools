@@ -33,23 +33,55 @@
                 @forelse ($teams as $team)
                     @php
                         $label = $team['name']['en'] ?? $team['name']['de'] ?? $team['id'];
-                        $memberCount = count($team['memberIds'] ?? []);
-                        $chip = $team['shortName'] ?: strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $label) ?: 'TM', 0, 3));
-                        if (strlen($chip) === 1) {
-                            $chip = str_pad($chip, 2, 'X');
+                        $icon = \App\Support\AvatarIcons::normalize($team['avatarIcon'] ?? '');
+                        $short = trim((string) ($team['shortName'] ?? ''));
+                        if ($short === '' && $icon === '') {
+                            $short = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $label) ?: 'TM', 0, 3));
+                            if (strlen($short) === 1) {
+                                $short = str_pad($short, 2, 'X');
+                            }
                         }
+                        $showLabel = $short !== '';
+                        $iconOnly = $icon !== '' && ! $showLabel;
+                        $iconLabel = $icon !== '' && $showLabel;
                         $color = AccentColors::normalize($team['colorToken'] ?? null);
                         $roles = is_array($team['memberRoles'] ?? null) ? $team['memberRoles'] : [];
                         $managerCount = count(array_filter($roles, static fn ($r) => $r === 'manager'));
                         $ceoCount = count(array_filter($roles, static fn ($r) => $r === 'ceo'));
+                        $memberCount = count($team['memberIds'] ?? []);
+                        $avatarClasses = [
+                            'sp-avatar',
+                            'sp-avatar--'.$color,
+                            'sp-avatar--team',
+                        ];
+                        if ($icon !== '') {
+                            $avatarClasses[] = 'sp-avatar--icon';
+                            $avatarClasses[] = $iconOnly ? 'sp-avatar--icon-only' : 'sp-avatar--icon-label';
+                        } elseif (strlen($short) >= 3) {
+                            $avatarClasses[] = 'sp-avatar--trigram-3';
+                        }
                     @endphp
                     <div class="sp-list__row">
                         <div class="sp-list__identity">
                             <span
-                                class="sp-avatar sp-avatar--{{ $color }} sp-avatar--team{{ strlen($chip) >= 3 ? ' sp-avatar--trigram-3' : '' }}"
+                                class="{{ implode(' ', $avatarClasses) }}"
                                 style="{{ AccentColors::chipStyle($color) }}"
                                 aria-hidden="true"
-                            >{{ $chip }}</span>
+                            >
+                                @if ($icon !== '')
+                                    <span
+                                        class="sp-avatar-icon-mask"
+                                        style="mask-image:url('{{ asset('icons/avatar/'.$icon.'.svg') }}');-webkit-mask-image:url('{{ asset('icons/avatar/'.$icon.'.svg') }}')"
+                                    ></span>
+                                @endif
+                                @if ($showLabel)
+                                    @if ($icon !== '')
+                                        <span class="sp-avatar__label">{{ $short }}</span>
+                                    @else
+                                        {{ $short }}
+                                    @endif
+                                @endif
+                            </span>
                             <div>
                                 <strong>{{ $label }}</strong>
                                 <span class="sp-list__meta">

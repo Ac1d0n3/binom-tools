@@ -77,6 +77,11 @@
                 :tokens="\App\Support\AccentColors::TEAM_TOKENS"
             />
 
+            <x-accounts.icon-picker
+                :selected="old('avatarIcon', $team['avatarIcon'] ?? '')"
+                hint-key="accounts.teamAvatarIconHint"
+            />
+
             <fieldset class="sp-field" data-accounts-checkbox-filter>
                 <legend data-i18n="accounts.members">Members</legend>
                 <p class="sp-field-hint" data-i18n="accounts.roleHint">
