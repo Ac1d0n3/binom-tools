@@ -1,6 +1,14 @@
 /**
- * Plan item filters — structural filters always AND; assignee scope is XOR-ish:
- * person/team dropdowns override "My tasks"/"Unassigned"; those two are OR'd as one focus facet.
+ * Plan item filters — structural filters always AND.
+ *
+ * Ownership model:
+ * - Plan → team(s)
+ * - Task/deliverable → person or unassigned (not a team)
+ *
+ * Assignee scope:
+ * - Person dropdown → that person only
+ * - Team dropdown → tasks assigned to members of that team (plus legacy team assignees)
+ * - Otherwise "My tasks" + "Unassigned" are one focus facet (always OR'd)
  */
 
 /**
@@ -17,6 +25,7 @@
  *   status: string,
  *   priority: string,
  *   filterLogic: 'and'|'or',
+ *   search: string,
  * }}
  */
 export function normalizePlanFilters(raw = {}) {
@@ -75,19 +84,37 @@ export function normalizePlanFilters(raw = {}) {
 function matchesMyTasks(item, activePersonId) {
     return Boolean(
         activePersonId
-        && item.assigneeType === 'person'
+        && (!item.assigneeType || item.assigneeType === 'person')
         && String(item.assigneeId) === String(activePersonId),
     );
 }
 
 /**
  * @param {object} item
+ * @param {string} teamId
+ * @param {Record<string, {memberIds?: string[]}>|undefined} teams
+ */
+function matchesTeamMembers(item, teamId, teams) {
+    // Legacy: item was assigned to the team itself.
+    if (item.assigneeType === 'team' && String(item.assigneeId) === String(teamId)) {
+        return true;
+    }
+    if (!item.assigneeId || (item.assigneeType && item.assigneeType !== 'person')) {
+        return false;
+    }
+    const members = teams?.[teamId]?.memberIds || [];
+    return members.map(String).includes(String(item.assigneeId));
+}
+
+/**
+ * @param {object} item
  * @param {ReturnType<typeof normalizePlanFilters>} filters
- * @param {{activePersonId: string|null}} ctx
+ * @param {{activePersonId: string|null, teams?: Record<string, {memberIds?: string[]}>}} ctx
  */
 export function itemMatchesFilters(item, filters, ctx) {
     const normalized = normalizePlanFilters(filters);
     const activePersonId = ctx.activePersonId || null;
+    const teams = ctx.teams || {};
 
     // Structural filters — always AND (including "blocked only").
     if (normalized.hideDone && item.completed) {
@@ -114,24 +141,18 @@ export function itemMatchesFilters(item, filters, ctx) {
         }
     }
 
-    // Assignee scope (XOR-ish):
-    // - Person / Team dropdowns take precedence over "My tasks" / "Unassigned"
-    // - Otherwise "My tasks" + "Unassigned" are one focus facet (always OR'd)
-    // - Person + Team together use filterLogic (AND/OR)
+    // Person / team-member dropdowns override the my/unassigned focus facet.
     /** @type {Array<() => boolean>} */
     const groupChecks = [];
     if (normalized.personId || normalized.teamId) {
         if (normalized.personId) {
             groupChecks.push(() => (
                 String(item.assigneeId) === normalized.personId
-                && (item.assigneeType === 'person' || !item.assigneeType)
+                && (!item.assigneeType || item.assigneeType === 'person')
             ));
         }
         if (normalized.teamId) {
-            groupChecks.push(() => (
-                item.assigneeType === 'team'
-                && String(item.assigneeId) === normalized.teamId
-            ));
+            groupChecks.push(() => matchesTeamMembers(item, normalized.teamId, teams));
         }
     } else if (normalized.myTasks || normalized.unassigned) {
         groupChecks.push(() => {
@@ -158,12 +179,13 @@ export function itemMatchesFilters(item, filters, ctx) {
  * @param {Array<object>} sprints
  * @param {object} filters
  * @param {number} currentSprintNumber
- * @param {{activePersonId: string|null}} ctx
+ * @param {{activePersonId: string|null, teams?: Record<string, {memberIds?: string[]}>}} ctx
  */
 export function filterSprints(sprints, filters, currentSprintNumber, ctx) {
     const normalized = normalizePlanFilters(filters);
     const context = {
         activePersonId: ctx.activePersonId || null,
+        teams: ctx.teams || {},
     };
 
     return sprints
@@ -204,7 +226,8 @@ export function filterSprints(sprints, filters, currentSprintNumber, ctx) {
 export function hasActiveItemFilters(filters) {
     const normalized = normalizePlanFilters(filters);
     return Boolean(
-        normalized.hideDone
+        normalized.currentWeek
+        || normalized.hideDone
         || normalized.openOnly
         || normalized.blocked
         || normalized.myTasks
@@ -218,17 +241,39 @@ export function hasActiveItemFilters(filters) {
 }
 
 /**
+ * Empty plan filters (show all items). Keeps OR as the default combine mode.
+ * @returns {ReturnType<typeof normalizePlanFilters>}
+ */
+export function emptyPlanFilters() {
+    return normalizePlanFilters({
+        currentWeek: false,
+        hideDone: false,
+        openOnly: false,
+        blocked: false,
+        myTasks: false,
+        unassigned: false,
+        personId: '',
+        teamId: '',
+        status: '',
+        priority: '',
+        filterLogic: 'or',
+        search: '',
+    });
+}
+
+/**
  * If current filters would hide a freshly assigned item, widen assignee filters
  * so the assignment stays visible (common with default myTasks+unassigned OR).
  *
  * @param {Record<string, unknown>} filters
  * @param {{assigneeType?: string|null, assigneeId?: string|null}} assignment
- * @param {{activePersonId: string|null}} ctx
+ * @param {{activePersonId: string|null, teams?: Record<string, {memberIds?: string[]}>}} ctx
  * @returns {{ filters: ReturnType<typeof normalizePlanFilters>, changed: boolean }}
  */
 export function filtersToRevealAssignee(filters, assignment, ctx) {
     const current = normalizePlanFilters(filters);
-    const assigneeType = assignment.assigneeType || 'person';
+    // Tasks are person-scoped; ignore legacy team assignment type.
+    const assigneeType = 'person';
     const rawId = assignment.assigneeId;
     const assigneeId = rawId === null || rawId === undefined || String(rawId).trim() === ''
         ? null
@@ -247,7 +292,7 @@ export function filtersToRevealAssignee(filters, assignment, ctx) {
         return { filters: current, changed: false };
     }
 
-    // Drop assignee-scope filters that hide other people's / team work.
+    // Drop assignee-scope filters that hide other people's work.
     const next = normalizePlanFilters({
         ...current,
         myTasks: false,
@@ -260,16 +305,9 @@ export function filtersToRevealAssignee(filters, assignment, ctx) {
         return { filters: next, changed: true };
     }
 
-    // Still hidden (e.g. status/priority) — focus the person/team filter on the assignee.
-    if (assigneeId && assigneeType === 'person') {
+    if (assigneeId) {
         return {
             filters: normalizePlanFilters({ ...next, personId: assigneeId }),
-            changed: true,
-        };
-    }
-    if (assigneeId && assigneeType === 'team') {
-        return {
-            filters: normalizePlanFilters({ ...next, teamId: assigneeId }),
             changed: true,
         };
     }

@@ -1111,7 +1111,7 @@ Die Umsetzung ist abgeschlossen, wenn:
 18. Unzugewiesene Tasks können per Übernehmen/Zuweisen/Alle übernehmen der aktiven Person zugeordnet werden.
 19. Berichte Executive, Detailed und Documentation sind druckbar; Detailed zeigt Notizen, Hilfetext, Links, Tabellen und Anhänge; Documentation ohne Progress-KPIs.
 20. Anhänge (Links immer; Dateien lokal via IndexedDB bzw. Accounts via Upload-API) funktionieren.
-21. Assignee-Filter sind XOR (All / My tasks / Unassigned / Person / Team) — nicht UND.
+21. Aufgaben werden Personen zugeordnet (oder bleiben unzugewiesen); Teams gehören zum Plan. Filter: Person oder Teammitglieder.
 22. Hilfe-Links sind nur externe URLs; Stories bleiben im Stories-Feld.
 23. Eingeloggte Nutzer können User-Templates erstellen, bearbeiten und löschen (Plan Creator).
 24. Task-Tabellen mit vorgebbaren Spalten und editierbaren Zeilen funktionieren.
@@ -1155,4 +1155,11 @@ User-Templates liegen unter `storage/app/bn-tools/user-templates/` (nicht in Git
 
 ### Plan-Filter (Assignee)
 
-Eine Dimension `assigneeFilter`: `all` | `myTasks` | `unassigned` | `person` | `team` (nicht unabhängige UND-Checkboxen). Person/Team-Selects nutzen „Beliebig“ als Leerwert. Leere Treffer zeigen einen Hinweis statt weißer Fläche.
+Aufgaben gehören **Personen** (oder sind unzugewiesen). Teams hängen am **Plan** (`teamIds`), nicht am Task.
+
+Filter:
+- `myTasks` / `unassigned` (Fokus-Facet, untereinander ODER)
+- `personId` — Aufgaben dieser Person
+- `teamId` — Aufgaben von Mitgliedern dieses Teams (plus Legacy-Team-Assignees)
+
+Person-/Team-Selects nutzen „Beliebig“ als Leerwert. Leere Treffer zeigen einen Hinweis statt weißer Fläche.

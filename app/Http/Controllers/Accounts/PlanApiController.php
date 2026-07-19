@@ -73,7 +73,7 @@ class PlanApiController extends Controller
         try {
             $revisions = $this->plans->listHistory($planId, $user);
         } catch (\InvalidArgumentException $e) {
-            abort(403, $e->getMessage());
+            $this->abortFromPlanException($e);
         }
 
         return response()->json(['revisions' => $revisions]);
@@ -87,7 +87,7 @@ class PlanApiController extends Controller
         try {
             $revision = $this->plans->findRevision($planId, $revisionId, $user);
         } catch (\InvalidArgumentException $e) {
-            abort(403, $e->getMessage());
+            $this->abortFromPlanException($e);
         }
         abort_if($revision === null, 404);
 
@@ -102,11 +102,7 @@ class PlanApiController extends Controller
         try {
             $plan = $this->plans->restoreRevision($planId, $revisionId, $user);
         } catch (\InvalidArgumentException $e) {
-            $message = $e->getMessage();
-            if (str_contains($message, 'not found') || str_contains($message, 'missing')) {
-                abort(404, $message);
-            }
-            abort(403, $message);
+            $this->abortFromPlanException($e);
         }
 
         return response()->json(['plan' => $plan]);
@@ -141,5 +137,13 @@ class PlanApiController extends Controller
         }
 
         return response()->json(['stories' => $items]);
+    }
+
+    private function abortFromPlanException(\InvalidArgumentException $e): never
+    {
+        $message = $e->getMessage();
+        $notFound = str_contains(strtolower($message), 'not found')
+            || str_contains(strtolower($message), 'missing');
+        abort($notFound ? 404 : 403, $message);
     }
 }

@@ -31,7 +31,7 @@ import {
     parseExternalLinksTextarea,
     resolveExternalHelpHref,
 } from '../external-links.js';
-import { filterSprints, filtersToRevealAssignee, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
+import { emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
 import {
     addCustomItem,
     addCustomSprint,
@@ -456,8 +456,10 @@ function renderPlan(instanceId) {
 
     const prefs = loadPreferences();
     const filters = readFilters(prefs);
+    syncFilterActiveChrome(filters);
     const filtered = filterSprints(sprints, filters, currentNumber, {
         activePersonId: resolveClaimPersonId(workspace),
+        teams: workspace.teams || {},
     });
 
     renderStatusBanner(sprints, workspace, locale, instance);
@@ -774,6 +776,10 @@ function bindFilters(render) {
             }, 180);
         });
     }
+
+    document.getElementById('sp-filter-reset')?.addEventListener('click', () => {
+        resetPlanFilters(render);
+    });
 }
 
 /**
@@ -831,7 +837,10 @@ function revealAssignedItemInFilters(assignment) {
     const { filters, changed } = filtersToRevealAssignee(
         prefs.planFilters || {},
         assignment,
-        { activePersonId: resolveClaimPersonId(workspace) },
+        {
+            activePersonId: resolveClaimPersonId(workspace),
+            teams: workspace.teams || {},
+        },
     );
     if (!changed) {
         return false;
@@ -978,6 +987,42 @@ function applyFilterSidebarState(instanceId) {
                 : 'fa-solid fa-filter-circle-xmark';
         }
     }
+    syncFilterActiveChrome(normalizePlanFilters(prefs.planFilters || {}));
+}
+
+/**
+ * Highlight filter toggle + enable reset when any plan filter is active.
+ * @param {ReturnType<typeof normalizePlanFilters>} filters
+ */
+function syncFilterActiveChrome(filters) {
+    const active = hasActiveItemFilters(filters);
+    const toggle = document.getElementById('sp-filter-sidebar-toggle');
+    if (toggle) {
+        toggle.classList.toggle('sp-filter-toggle--active', active);
+        const baseLabel = toggle.getAttribute('aria-expanded') === 'false'
+            ? spT('sp.action.showFilters')
+            : spT('sp.action.hideFilters');
+        const title = active ? `${baseLabel} — ${spT('sp.filter.activeHint')}` : baseLabel;
+        toggle.setAttribute('title', title);
+        toggle.setAttribute('aria-label', title);
+    }
+    const reset = document.getElementById('sp-filter-reset');
+    if (reset) {
+        reset.disabled = !active;
+    }
+}
+
+/**
+ * Clear all plan filters and re-render.
+ * @param {() => void} render
+ */
+function resetPlanFilters(render) {
+    const prefs = loadPreferences();
+    prefs.planFilters = emptyPlanFilters();
+    savePreferences(prefs);
+    applyPlanFilterControls(prefs.planFilters);
+    syncFilterActiveChrome(prefs.planFilters);
+    render();
 }
 
 /**
@@ -1809,8 +1854,11 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     });
 
     const chip = renderAssigneeChip(item, workspace, locale);
+    const assigneeSlot = document.createElement('div');
+    assigneeSlot.className = 'sp-item__assignee-slot';
     if (chip) {
         chip.classList.add('sp-item__assignee');
+        assigneeSlot.appendChild(chip);
     }
 
     const main = document.createElement('div');
@@ -2014,11 +2062,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         }
     }
 
-    row.append(check, main, tableSlot);
-    if (chip) {
-        row.appendChild(chip);
-    }
-    row.appendChild(actions);
+    row.append(check, main, tableSlot, assigneeSlot, actions);
     li.appendChild(row);
     if (tablePanel) {
         li.appendChild(tablePanel);
@@ -2434,7 +2478,7 @@ function bindDialogs(instanceId, render) {
             labelEn: allowLabels
                 ? (document.getElementById('sp-item-label-en').value || '')
                 : (itemDialogState.item?.label || ''),
-            assigneeType: document.getElementById('sp-item-assignee-type').value,
+            assigneeType: 'person',
             assigneeId: document.getElementById('sp-item-assignee-id').value || null,
             status,
             priority: document.getElementById('sp-item-priority').value,
@@ -2489,7 +2533,7 @@ function bindDialogs(instanceId, render) {
             assignDialogState.custom,
             assignDialogState.sprintId,
             {
-                assigneeType: document.getElementById('sp-assign-assignee-type')?.value || 'person',
+                assigneeType: 'person',
                 assigneeId: document.getElementById('sp-assign-assignee-id')?.value || null,
             },
         );
@@ -2499,18 +2543,14 @@ function bindDialogs(instanceId, render) {
             return;
         }
         const assignment = {
-            assigneeType: document.getElementById('sp-assign-assignee-type')?.value || 'person',
+            assigneeType: 'person',
             assigneeId: document.getElementById('sp-assign-assignee-id')?.value || null,
         };
         const filtersAdjusted = revealAssignedItemInFilters(assignment);
         showToast(filtersAdjusted ? spT('sp.toast.assignedFilterAdjusted') : spT('sp.toast.assigned'));
         render();
     });
-    document.getElementById('sp-assign-assignee-type')?.addEventListener('change', () => {
-        refreshAssignAssigneeOptions();
-    });
 
-    document.getElementById('sp-item-assignee-type')?.addEventListener('change', () => refreshAssigneeOptions());
     document.getElementById('sp-item-status')?.addEventListener('change', () => updateBlockerFieldVisibility());
     document.getElementById('sp-item-att-add-link')?.addEventListener('click', () => {
         const label = document.getElementById('sp-item-att-label')?.value || '';
@@ -2663,11 +2703,13 @@ function openItemDialog(state) {
     document.getElementById('sp-item-sprint-id').value = state.sprintId;
     document.getElementById('sp-item-type').value = state.kind;
     document.getElementById('sp-item-id').value = state.item?.id || '';
-    const defaultAssigneeType = state.create ? 'person' : (state.item?.assigneeType || 'person');
     const defaultAssigneeId = state.create
         ? activePersonId
-        : (state.item?.assigneeId || '');
-    document.getElementById('sp-item-assignee-type').value = defaultAssigneeType || 'person';
+        : (state.item?.assigneeType === 'team' ? '' : (state.item?.assigneeId || ''));
+    const typeEl = document.getElementById('sp-item-assignee-type');
+    if (typeEl) {
+        typeEl.value = 'person';
+    }
     const storedStatus = state.item?.dependencyBlocked
         ? (state.item?.storedStatus || 'open')
         : (state.item?.status || 'open');
@@ -2733,9 +2775,12 @@ function openAssignDialog(state) {
     if (labelEl) {
         labelEl.textContent = state.item.label || '';
     }
-    const type = state.item.assigneeType || 'person';
-    document.getElementById('sp-assign-assignee-type').value = type;
-    refreshAssignAssigneeOptions(state.item.assigneeId || '');
+    const typeEl = document.getElementById('sp-assign-assignee-type');
+    if (typeEl) {
+        typeEl.value = 'person';
+    }
+    const selectedId = state.item.assigneeType === 'team' ? '' : (state.item.assigneeId || '');
+    refreshAssignAssigneeOptions(selectedId);
     document.getElementById('sp-assign-dialog')?.showModal();
     document.getElementById('sp-assign-assignee-id')?.focus();
 }
@@ -2745,23 +2790,8 @@ function openAssignDialog(state) {
  */
 function refreshAssignAssigneeOptions(selectedId) {
     const workspace = loadWorkspace().data;
-    const type = document.getElementById('sp-assign-assignee-type')?.value || 'person';
     const select = document.getElementById('sp-assign-assignee-id');
     if (!select) {
-        return;
-    }
-    const locale = getLocale();
-    if (type === 'team') {
-        fillSelect(
-            select,
-            listTeams().map((team) => ({
-                id: team.id,
-                label: localizedText(team.name, locale) || team.id,
-            })),
-            selectedId || '',
-            true,
-            spT('sp.field.none'),
-        );
         return;
     }
     fillSelect(
@@ -2811,25 +2841,22 @@ function renderDialogAttachments(instanceId) {
 }
 
 function refreshAssigneeOptions(selected) {
-    const type = document.getElementById('sp-item-assignee-type')?.value || 'person';
     const select = document.getElementById('sp-item-assignee-id');
-    const locale = getLocale();
-    const selectedValue = typeof selected === 'string' ? selected : select.value;
-    if (type === 'team') {
-        fillSelect(
-            select,
-            listTeams().map((team) => ({ id: team.id, label: localizedText(team.name, locale) })),
-            selectedValue,
-            true,
-        );
-    } else {
-        fillSelect(
-            select,
-            listPeople().map((p) => ({ id: p.id, label: p.displayName })),
-            selectedValue,
-            true,
-        );
+    if (!select) {
+        return;
     }
+    const selectedValue = typeof selected === 'string' ? selected : select.value;
+    const typeEl = document.getElementById('sp-item-assignee-type');
+    if (typeEl) {
+        typeEl.value = 'person';
+    }
+    fillSelect(
+        select,
+        listPeople().map((p) => ({ id: p.id, label: p.displayName })),
+        selectedValue,
+        true,
+        spT('sp.field.none'),
+    );
 }
 
 function setSaveStatus(state) {
@@ -2983,8 +3010,16 @@ async function openHistoryDialog(instanceId) {
             ul.appendChild(li);
         }
         list.appendChild(ul);
-    } catch {
-        list.innerHTML = `<p class="sp-password-note">${spT('sp.history.loadFailed')}</p>`;
+    } catch (error) {
+        if (error instanceof Error && error.message === 'plans-history-forbidden') {
+            list.innerHTML = `<p class="sp-password-note">${spT('sp.history.forbidden')}</p>`;
+        } else if (error instanceof Error && error.message === 'plans-history-unauthorized') {
+            list.innerHTML = `<p class="sp-password-note">${spT('sp.history.accountsOnly')}</p>`;
+        } else if (error instanceof Error && error.message === 'plans-history-not-found') {
+            list.innerHTML = `<p class="sp-password-note">${spT('sp.history.notFound')}</p>`;
+        } else {
+            list.innerHTML = `<p class="sp-password-note">${spT('sp.history.loadFailed')}</p>`;
+        }
     }
 }
 

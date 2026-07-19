@@ -144,7 +144,8 @@ export function startInstanceFromTemplate(template, options) {
             ? (readAccountsBootstrap().accountUser?.id || null)
             : null,
         viewerUserIds: [],
-        viewerTeamIds: [],
+        // Plan team members can access by default (server also checks plan.teamIds).
+        viewerTeamIds: [...teamIds],
         linkedStorySlugs: [],
         ephemeral,
         archived: false,
@@ -809,11 +810,9 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             item.label = { de: data.labelDe || '', en: data.labelEn || data.labelDe || '' };
             item.status = data.status || item.status;
             item.priority = data.priority || item.priority;
-            item.assigneeType = data.assigneeType;
+            item.assigneeType = 'person';
             item.assigneeId = data.assigneeId || null;
-            if (item.assigneeType === 'person') {
-                ensureParticipant(plan, item.assigneeId);
-            }
+            ensureParticipant(plan, item.assigneeId);
             item.dueDate = data.dueDate || null;
             item.note = data.note || '';
             item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
@@ -836,7 +835,7 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             ...previous,
             status: data.status,
             priority: data.priority,
-            assigneeType: data.assigneeType,
+            assigneeType: 'person',
             assigneeId: data.assigneeId || null,
             dueDate: data.dueDate || null,
             note: data.note || '',
@@ -991,8 +990,12 @@ function sanitizeDependsOnForItem(instance, sprintId, itemKey, rawDependsOn) {
  */
 export function assignItem(instanceId, kind, key, isCustom, sprintId, assignment) {
     return updateInstance(instanceId, (instance) => {
-        const assigneeType = assignment.assigneeType || 'person';
-        const assigneeId = assignment.assigneeId || null;
+        // Tasks belong to people (or nobody). Team ownership lives on the plan.
+        const assigneeType = 'person';
+        const rawId = assignment?.assigneeId;
+        const assigneeId = rawId === null || rawId === undefined || String(rawId).trim() === ''
+            ? null
+            : String(rawId);
         if (isCustom) {
             const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
             const list = instance[bag][sprintId] || [];
@@ -1002,9 +1005,7 @@ export function assignItem(instanceId, kind, key, isCustom, sprintId, assignment
             }
             item.assigneeType = assigneeType;
             item.assigneeId = assigneeId;
-            if (assigneeType === 'person') {
-                ensureParticipant(instance, assigneeId);
-            }
+            ensureParticipant(instance, assigneeId);
             return;
         }
         if (!instance.itemOverrides[key]) {
@@ -1012,9 +1013,7 @@ export function assignItem(instanceId, kind, key, isCustom, sprintId, assignment
         }
         instance.itemOverrides[key].assigneeType = assigneeType;
         instance.itemOverrides[key].assigneeId = assigneeId;
-        if (assigneeType === 'person') {
-            ensureParticipant(instance, assigneeId);
-        }
+        ensureParticipant(instance, assigneeId);
         // Clear polluted template fields if present from older editors.
         delete instance.itemOverrides[key].helpText;
         delete instance.itemOverrides[key].helpLinks;

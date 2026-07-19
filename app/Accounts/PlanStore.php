@@ -71,11 +71,11 @@ final class PlanStore
             $plan['createdAt'] = $plan['createdAt'] ?? now()->toIso8601String();
         } else {
             $plan['ownerUserId'] = $existing['ownerUserId'] ?? $actor->id;
-            if (($existing['ownerUserId'] ?? null) !== $actor->id && ! $this->isViewer($actor, $existing)) {
+            if (($existing['ownerUserId'] ?? null) !== $actor->id && ! $this->canAccess($actor, $existing)) {
                 throw new InvalidArgumentException('Only owner or viewers can update.');
             }
-            // Never let a partial client payload wipe structural identity.
-            $plan = $this->mergePreservedFields($existing, $plan);
+            // Never let a partial client payload wipe structural identity / ACL / progress.
+            $plan = $this->mergePreservedFields($existing, $plan, $historyMeta);
             $this->recordRevision($existing, $actor, $historyMeta);
         }
 
@@ -276,7 +276,12 @@ final class PlanStore
             return true;
         }
 
-        return $this->isViewer($user, $plan);
+        $participantIds = array_map('strval', $plan['participantIds'] ?? []);
+        if (in_array($user->id, $participantIds, true)) {
+            return true;
+        }
+
+        return $this->isViewer($user, $plan) || $this->isPlanTeamMember($user, $plan);
     }
 
     /**
@@ -289,16 +294,38 @@ final class PlanStore
             return true;
         }
 
-        $viewerTeams = array_map('strval', $plan['viewerTeamIds'] ?? []);
+        return $this->userBelongsToAnyTeam($user, array_map('strval', $plan['viewerTeamIds'] ?? []));
+    }
+
+    /**
+     * Members of the plan's working team(s) can open/edit the plan (not only explicit share list).
+     *
+     * @param  array<string, mixed>  $plan
+     */
+    private function isPlanTeamMember(AccountUser $user, array $plan): bool
+    {
+        $plan = $this->normalizePlanTeams($plan);
+
+        return $this->userBelongsToAnyTeam($user, array_map('strval', $plan['teamIds'] ?? []));
+    }
+
+    /**
+     * @param  list<string>  $teamIds
+     */
+    private function userBelongsToAnyTeam(AccountUser $user, array $teamIds): bool
+    {
+        if ($teamIds === []) {
+            return false;
+        }
+
         foreach ($user->teamIds as $teamId) {
-            if (in_array($teamId, $viewerTeams, true)) {
+            if (in_array($teamId, $teamIds, true)) {
                 return true;
             }
         }
 
-        // Also allow membership via team file
         foreach ($this->teams->all(true) as $team) {
-            if (in_array($team->id, $viewerTeams, true) && in_array($user->id, $team->memberIds, true)) {
+            if (in_array($team->id, $teamIds, true) && in_array($user->id, $team->memberIds, true)) {
                 return true;
             }
         }
@@ -314,20 +341,51 @@ final class PlanStore
     }
 
     /**
-     * Keep plan identity when a partial client payload left them empty.
-     * Progress/override bags are intentionally not merged (empty can be legitimate).
+     * Keep plan identity / ACL / progress when a partial client payload left them empty.
      *
      * @param  array<string, mixed>  $existing
      * @param  array<string, mixed>  $incoming
+     * @param  array{action?: string, summary?: string}|array<string, mixed>  $historyMeta
      * @return array<string, mixed>
      */
-    private function mergePreservedFields(array $existing, array $incoming): array
+    private function mergePreservedFields(array $existing, array $incoming, array $historyMeta = []): array
     {
-        foreach (['templateSlug', 'startedAt', 'createdAt'] as $key) {
+        foreach (['templateSlug', 'startedAt', 'createdAt', 'ownerUserId'] as $key) {
             $next = $incoming[$key] ?? null;
             $prev = $existing[$key] ?? null;
             if (($next === null || $next === '') && $prev !== null && $prev !== '') {
                 $incoming[$key] = $prev;
+            }
+        }
+
+        foreach (['viewerUserIds', 'viewerTeamIds', 'participantIds', 'linkedStorySlugs'] as $key) {
+            $next = $incoming[$key] ?? null;
+            $prev = $existing[$key] ?? null;
+            if ($this->isEmptyStructure($next) && ! $this->isEmptyStructure($prev)) {
+                $incoming[$key] = $prev;
+            }
+        }
+
+        // Restores must be allowed to clear progress bags from an older snapshot.
+        $isRestore = ($historyMeta['action'] ?? '') === 'restore';
+        if (! $isRestore) {
+            foreach ([
+                'completedTasks',
+                'completedDeliverables',
+                'fieldValues',
+                'sprintNotes',
+                'customTasks',
+                'customDeliverables',
+                'customSprints',
+                'sprintOverrides',
+                'itemOverrides',
+                'removedItemKeys',
+            ] as $key) {
+                $next = $incoming[$key] ?? null;
+                $prev = $existing[$key] ?? null;
+                if ($this->isEmptyStructure($next) && ! $this->isEmptyStructure($prev)) {
+                    $incoming[$key] = $prev;
+                }
             }
         }
 

@@ -198,6 +198,13 @@
                 <aside class="sp-filter-sidebar" id="sp-filter-sidebar" aria-label="Plan filters">
                     <div class="sp-filter-sidebar__head">
                         <h2 class="sp-filter-sidebar__title" data-i18n="sp.filter.sidebarTitle">Filters</h2>
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--secondary tools-btn--small"
+                            id="sp-filter-reset"
+                            data-i18n="sp.filter.reset"
+                            disabled
+                        >Reset filters</button>
                     </div>
                     <div class="sp-filters sp-filters--plan" role="group" aria-label="Plan item filters">
                         <div class="sp-filter-logic" role="group" aria-label="Filter logic">
@@ -222,7 +229,7 @@
                             <select id="sp-filter-person" class="tools-input"></select>
                         </label>
                         <label class="sp-field sp-field--compact">
-                            <span data-i18n="sp.filter.teamSelect">Team</span>
+                            <span data-i18n="sp.filter.teamMembers">Team members</span>
                             <select id="sp-filter-team" class="tools-input"></select>
                         </label>
                         <label class="sp-field sp-field--compact">
@@ -311,12 +318,7 @@
                     <label class="sp-field"><span data-i18n="sp.field.labelDe">Label (DE)</span><input type="text" id="sp-item-label-de" class="tools-input"></label>
                     <label class="sp-field"><span data-i18n="sp.field.labelEn">Label (EN)</span><input type="text" id="sp-item-label-en" class="tools-input"></label>
                 </div>
-                <label class="sp-field"><span data-i18n="sp.field.assigneeType">Assignee type</span>
-                    <select id="sp-item-assignee-type" class="tools-input">
-                        <option value="person" data-i18n="sp.assignee.person">Person</option>
-                        <option value="team" data-i18n="sp.assignee.team">Team</option>
-                    </select>
-                </label>
+                <input type="hidden" id="sp-item-assignee-type" value="person">
                 <label class="sp-field"><span data-i18n="sp.field.assignee">Assignee</span><select id="sp-item-assignee-id" class="tools-input"></select></label>
                 <label class="sp-field"><span data-i18n="sp.field.status">Status</span>
                     <select id="sp-item-status" class="tools-input">
@@ -385,13 +387,9 @@
                 <input type="hidden" id="sp-assign-kind">
                 <input type="hidden" id="sp-assign-key">
                 <input type="hidden" id="sp-assign-custom" value="0">
-                <label class="sp-field"><span data-i18n="sp.field.assigneeType">Assignee type</span>
-                    <select id="sp-assign-assignee-type" class="tools-input">
-                        <option value="person" data-i18n="sp.assignee.person">Person</option>
-                        <option value="team" data-i18n="sp.assignee.team">Team</option>
-                    </select>
-                </label>
-                <label class="sp-field"><span data-i18n="sp.field.assignee">Assignee</span><select id="sp-assign-assignee-id" class="tools-input"></select></label>
+                <input type="hidden" id="sp-assign-assignee-type" value="person">
+                <label class="sp-field"><span data-i18n="sp.field.assignee">Person</span><select id="sp-assign-assignee-id" class="tools-input"></select></label>
+                <p class="sp-field__hint" data-i18n="sp.assign.personOnlyHint">Tasks are assigned to people. Teams belong on the plan.</p>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" formnovalidate class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.assign">Assign</button>

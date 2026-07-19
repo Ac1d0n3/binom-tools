@@ -18,7 +18,7 @@ import {
     calculateOverallProgress,
     resolveSprints,
 } from './progress.js';
-import { filterSprints, filtersToRevealAssignee, itemMatchesFilters, normalizePlanFilters } from './filters.js';
+import { emptyPlanFilters, filterSprints, filtersToRevealAssignee, hasActiveItemFilters, itemMatchesFilters, normalizePlanFilters } from './filters.js';
 import {
     EXPORT_TYPE_WORKSPACE,
     applyImport,
@@ -416,6 +416,22 @@ describe('filters', () => {
         expect(itemMatchesFilters(item, { myTasks: true }, { activePersonId: 'person_02' })).toBe(false);
     });
 
+    it('treats currentWeek as an active filter', () => {
+        expect(hasActiveItemFilters({ currentWeek: true })).toBe(true);
+        expect(hasActiveItemFilters({})).toBe(false);
+        expect(hasActiveItemFilters({ myTasks: true })).toBe(true);
+    });
+
+    it('emptyPlanFilters clears all facets', () => {
+        const empty = emptyPlanFilters();
+        expect(empty.myTasks).toBe(false);
+        expect(empty.unassigned).toBe(false);
+        expect(empty.personId).toBe('');
+        expect(empty.teamId).toBe('');
+        expect(empty.filterLogic).toBe('or');
+        expect(hasActiveItemFilters(empty)).toBe(false);
+    });
+
     it('ORs myTasks with unassigned as one focus facet (even when filterLogic is and)', () => {
         const mine = {
             completed: false,
@@ -501,23 +517,35 @@ describe('filters', () => {
         expect(itemMatchesFilters(open, filters, { activePersonId: 'person_01' })).toBe(false);
     });
 
-    it('team dropdown matches team assignees', () => {
-        const teamItem = {
+    it('team filter matches tasks of team members (not team-as-assignee)', () => {
+        const teams = {
+            team_q: { memberIds: ['person_01', 'person_02'] },
+        };
+        const memberTask = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_02',
+        };
+        const outsider = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_99',
+        };
+        const legacyTeamAssignee = {
             completed: false,
             status: 'open',
             priority: 'normal',
             assigneeType: 'team',
             assigneeId: 'team_q',
         };
-        const personItem = {
-            completed: false,
-            status: 'open',
-            priority: 'normal',
-            assigneeType: 'person',
-            assigneeId: 'person_01',
-        };
-        expect(itemMatchesFilters(teamItem, { teamId: 'team_q', myTasks: true }, { activePersonId: 'person_01' })).toBe(true);
-        expect(itemMatchesFilters(personItem, { teamId: 'team_q', myTasks: true }, { activePersonId: 'person_01' })).toBe(false);
+        const filters = { teamId: 'team_q', myTasks: true };
+        expect(itemMatchesFilters(memberTask, filters, { activePersonId: 'person_01', teams })).toBe(true);
+        expect(itemMatchesFilters(outsider, filters, { activePersonId: 'person_01', teams })).toBe(false);
+        expect(itemMatchesFilters(legacyTeamAssignee, filters, { activePersonId: 'person_01', teams })).toBe(true);
     });
 
     it('ORs myTasks with unassigned when filterLogic is or', () => {

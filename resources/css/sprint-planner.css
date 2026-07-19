@@ -351,6 +351,18 @@
     gap: 0.4rem;
 }
 
+.sp-filter-toggle--active {
+    border-color: var(--bn-color-accent, #2563eb);
+    background: color-mix(in srgb, var(--bn-color-accent, #2563eb) 16%, var(--bn-color-surface, #fff));
+    color: var(--bn-color-accent, #2563eb);
+    font-weight: 650;
+}
+
+.sp-filter-toggle--active:hover {
+    border-color: var(--bn-color-accent, #2563eb);
+    background: color-mix(in srgb, var(--bn-color-accent, #2563eb) 24%, var(--bn-color-surface, #fff));
+}
+
 .sp-filter-toggle i,
 .sp-chrome-icon-btn i {
     width: 0.9rem;
@@ -435,6 +447,10 @@
 }
 
 .sp-filter-sidebar__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
     margin-bottom: 0.65rem;
 }
 
@@ -995,8 +1011,8 @@
 
 .sp-item {
     display: grid;
-    /* check | main | list-slot | actions — list-slot stays reserved so icons never jump */
-    grid-template-columns: auto 1fr 2rem auto;
+    /* check | main | list-slot | assignee-slot | actions */
+    grid-template-columns: auto 1fr 2rem 2rem auto;
     gap: 0.6rem;
     align-items: center;
     padding: 0.55rem 0.65rem;
@@ -1004,11 +1020,8 @@
     border-radius: var(--sp-radius);
 }
 
-.sp-item:has(.sp-item__assignee) {
-    grid-template-columns: auto 1fr 2rem auto auto;
-}
-
-.sp-item__table-slot {
+.sp-item__table-slot,
+.sp-item__assignee-slot {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1408,11 +1421,7 @@
 
 @media (max-width: 640px) {
     .sp-item {
-        grid-template-columns: auto 1fr 2rem;
-    }
-
-    .sp-item:has(.sp-item__assignee) {
-        grid-template-columns: auto 1fr 2rem auto;
+        grid-template-columns: auto 1fr 2rem 2rem;
     }
 
     .sp-item__actions {
