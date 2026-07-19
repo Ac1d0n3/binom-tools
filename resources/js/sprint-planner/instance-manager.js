@@ -400,14 +400,11 @@ export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
             assigneeId: data.assigneeId || null,
             dueDate: data.dueDate || null,
             note: data.note || '',
-            helpText: {
-                de: data.helpTextDe || '',
-                en: data.helpTextEn || data.helpTextDe || '',
-            },
-            helpLinks: Array.isArray(data.helpLinks) ? data.helpLinks : [],
-            stories: Array.isArray(data.stories) ? data.stories : [],
-            linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
-            demoCode: data.demoCode || '',
+            helpText: { de: '', en: '' },
+            helpLinks: [],
+            stories: [],
+            linkedStorySlugs: [],
+            demoCode: '',
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
             attachments: normalizeAttachments(data.attachments),
@@ -441,14 +438,6 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             item.assigneeId = data.assigneeId || null;
             item.dueDate = data.dueDate || null;
             item.note = data.note || '';
-            item.helpText = {
-                de: data.helpTextDe || '',
-                en: data.helpTextEn || data.helpTextDe || '',
-            };
-            item.helpLinks = Array.isArray(data.helpLinks) ? data.helpLinks : [];
-            item.stories = Array.isArray(data.stories) ? data.stories : [];
-            item.linkedStorySlugs = Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [];
-            item.demoCode = data.demoCode || '';
             item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
             item.blockerSince = item.status === 'blocked' ? (data.blockerSince || null) : null;
             if (Array.isArray(data.attachments) || data.attachments === null) {
@@ -460,33 +449,73 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             syncCompletion(instance, kind, key, item.status === 'completed');
             return;
         }
-        instance.itemOverrides[key] = {
-            ...(instance.itemOverrides[key] || {}),
-            label: { de: data.labelDe || '', en: data.labelEn || data.labelDe || '' },
+        const previous = instance.itemOverrides[key] || {};
+        /** @type {Record<string, unknown>} */
+        const next = {
+            ...previous,
             status: data.status,
             priority: data.priority,
             assigneeType: data.assigneeType,
             assigneeId: data.assigneeId || null,
             dueDate: data.dueDate || null,
             note: data.note || '',
-            helpText: {
-                de: data.helpTextDe || '',
-                en: data.helpTextEn || data.helpTextDe || '',
-            },
-            helpLinks: Array.isArray(data.helpLinks) ? data.helpLinks : [],
-            stories: Array.isArray(data.stories) ? data.stories : [],
-            linkedStorySlugs: Array.isArray(data.linkedStorySlugs) ? data.linkedStorySlugs : [],
-            demoCode: data.demoCode || '',
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
         };
+        // Plan overrides must not store template content (help/stories/labels) — that broke DE/EN help.
+        delete next.label;
+        delete next.helpText;
+        delete next.helpLinks;
+        delete next.demoCode;
+        delete next.stories;
+        delete next.linkedStorySlugs;
         if (Array.isArray(data.attachments) || data.attachments === null) {
-            instance.itemOverrides[key].attachments = normalizeAttachments(data.attachments || []);
+            next.attachments = normalizeAttachments(data.attachments || []);
         }
         if (data.table !== undefined) {
-            instance.itemOverrides[key].table = data.table;
+            next.table = data.table;
         }
+        instance.itemOverrides[key] = next;
         syncCompletion(instance, kind, key, data.status === 'completed');
+    });
+}
+
+/**
+ * Quick-assign only (person/team) without touching other plan fields.
+ * @param {string} instanceId
+ * @param {'task'|'deliverable'} kind
+ * @param {string} key
+ * @param {boolean} isCustom
+ * @param {string} sprintId
+ * @param {{assigneeType: string, assigneeId: string|null}} assignment
+ */
+export function assignItem(instanceId, kind, key, isCustom, sprintId, assignment) {
+    return updateInstance(instanceId, (instance) => {
+        const assigneeType = assignment.assigneeType || 'person';
+        const assigneeId = assignment.assigneeId || null;
+        if (isCustom) {
+            const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
+            const list = instance[bag][sprintId] || [];
+            const item = list.find((entry) => entry.statusKey === key || entry.id === key.split(':').pop());
+            if (!item) {
+                return;
+            }
+            item.assigneeType = assigneeType;
+            item.assigneeId = assigneeId;
+            return;
+        }
+        if (!instance.itemOverrides[key]) {
+            instance.itemOverrides[key] = {};
+        }
+        instance.itemOverrides[key].assigneeType = assigneeType;
+        instance.itemOverrides[key].assigneeId = assigneeId;
+        // Clear polluted template fields if present from older editors.
+        delete instance.itemOverrides[key].helpText;
+        delete instance.itemOverrides[key].helpLinks;
+        delete instance.itemOverrides[key].demoCode;
+        delete instance.itemOverrides[key].stories;
+        delete instance.itemOverrides[key].linkedStorySlugs;
+        delete instance.itemOverrides[key].label;
     });
 }
 

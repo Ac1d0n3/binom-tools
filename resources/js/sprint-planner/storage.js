@@ -303,15 +303,25 @@ function loadAccountsWorkspace() {
         ),
     );
 
-    // Recover identity fields wiped on the server from the local cache (same plan id).
+    // Prefer the local cache when it is as new or newer than the page bootstrap.
+    // Otherwise claim/assign updates vanish on the next render (bootstrap stays stale until reload).
     for (const [id, local] of Object.entries(localWorkspace.instances || {})) {
         if (local.ephemeral) {
             continue;
         }
         const server = serverInstances[id];
         if (!server) {
+            // Plan created this session and not yet in the HTML bootstrap.
+            serverInstances[id] = local;
             continue;
         }
+        const localUpdated = String(local.updatedAt || '');
+        const serverUpdated = String(server.updatedAt || '');
+        if (localUpdated && localUpdated >= serverUpdated) {
+            serverInstances[id] = local;
+            continue;
+        }
+        // Server newer: still heal hollow identity from local.
         if (!server.templateSlug && local.templateSlug) {
             server.templateSlug = local.templateSlug;
         }

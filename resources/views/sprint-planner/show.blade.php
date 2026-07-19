@@ -177,11 +177,16 @@
         <dialog id="sp-item-dialog" class="sp-dialog">
             <form method="dialog" id="sp-item-form" class="sp-dialog__form">
                 <h2 class="sp-dialog__title" id="sp-item-dialog-title" data-i18n="sp.dialog.itemTitle">Item</h2>
+                <p class="sp-password-note" id="sp-item-plan-only-note" data-i18n="sp.dialog.planOnlyNote" hidden>
+                    Plan fields only — help text and stories are edited in the template.
+                </p>
                 <input type="hidden" id="sp-item-sprint-id">
                 <input type="hidden" id="sp-item-type">
                 <input type="hidden" id="sp-item-id">
-                <label class="sp-field"><span data-i18n="sp.field.labelDe">Label (DE)</span><input type="text" id="sp-item-label-de" class="tools-input" required></label>
-                <label class="sp-field"><span data-i18n="sp.field.labelEn">Label (EN)</span><input type="text" id="sp-item-label-en" class="tools-input"></label>
+                <div id="sp-item-label-fields">
+                    <label class="sp-field"><span data-i18n="sp.field.labelDe">Label (DE)</span><input type="text" id="sp-item-label-de" class="tools-input"></label>
+                    <label class="sp-field"><span data-i18n="sp.field.labelEn">Label (EN)</span><input type="text" id="sp-item-label-en" class="tools-input"></label>
+                </div>
                 <label class="sp-field"><span data-i18n="sp.field.assigneeType">Assignee type</span>
                     <select id="sp-item-assignee-type" class="tools-input">
                         <option value="person" data-i18n="sp.assignee.person">Person</option>
@@ -211,24 +216,10 @@
                     <textarea id="sp-item-blocker-reason" class="tools-input" rows="2" maxlength="2000"></textarea>
                 </label>
                 <label class="sp-field"><span data-i18n="sp.field.note">Note</span><textarea id="sp-item-note" class="tools-input" rows="2" maxlength="4000"></textarea></label>
-                <label class="sp-field"><span data-i18n="sp.field.helpTextDe">Help text (DE)</span><textarea id="sp-item-help-de" class="tools-input" rows="3" maxlength="8000"></textarea></label>
-                <label class="sp-field"><span data-i18n="sp.field.helpTextEn">Help text (EN)</span><textarea id="sp-item-help-en" class="tools-input" rows="3" maxlength="8000"></textarea></label>
-                <label class="sp-field">
-                    <span data-i18n="sp.field.itemStories">Playbook stories (slugs)</span>
-                    <textarea id="sp-item-stories" class="tools-input" rows="2" data-i18n-placeholder="sp.field.sprintStoriesHint" placeholder="one-slug-per-line"></textarea>
-                </label>
-                <label class="sp-field">
-                    <span data-i18n="sp.field.helpLinks">Help links</span>
-                    <textarea id="sp-item-help-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | https://…"></textarea>
-                </label>
                 <fieldset class="sp-field" id="sp-item-table-field">
                     <legend data-i18n="sp.field.table">Data table</legend>
                     <div id="sp-item-table-editor"></div>
                 </fieldset>
-                <label class="sp-field">
-                    <span data-i18n="sp.field.demoCode">Demo code</span>
-                    <textarea id="sp-item-demo-code" class="tools-input" rows="3" maxlength="8000"></textarea>
-                </label>
                 <fieldset class="sp-field sp-attachments-field">
                     <legend data-i18n="sp.field.attachments">Attachments</legend>
                     <ul id="sp-item-attachments-list" class="sp-attachments-list"></ul>
@@ -251,6 +242,28 @@
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
+                </div>
+            </form>
+        </dialog>
+
+        <dialog id="sp-assign-dialog" class="sp-dialog">
+            <form method="dialog" id="sp-assign-form" class="sp-dialog__form">
+                <h2 class="sp-dialog__title" data-i18n="sp.dialog.assignTitle">Quick assign</h2>
+                <p class="sp-password-note" id="sp-assign-item-label"></p>
+                <input type="hidden" id="sp-assign-sprint-id">
+                <input type="hidden" id="sp-assign-kind">
+                <input type="hidden" id="sp-assign-key">
+                <input type="hidden" id="sp-assign-custom" value="0">
+                <label class="sp-field"><span data-i18n="sp.field.assigneeType">Assignee type</span>
+                    <select id="sp-assign-assignee-type" class="tools-input">
+                        <option value="person" data-i18n="sp.assignee.person">Person</option>
+                        <option value="team" data-i18n="sp.assignee.team">Team</option>
+                    </select>
+                </label>
+                <label class="sp-field"><span data-i18n="sp.field.assignee">Assignee</span><select id="sp-assign-assignee-id" class="tools-input"></select></label>
+                <div class="sp-dialog__actions">
+                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.assign">Assign</button>
                 </div>
             </form>
         </dialog>

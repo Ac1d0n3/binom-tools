@@ -30,6 +30,7 @@ import { filterSprints, hasActiveItemFilters, normalizePlanFilters } from '../fi
 import {
     addCustomItem,
     addCustomSprint,
+    assignItem,
     claimAllUnassigned,
     claimItem,
     deleteCustomItem,
@@ -81,6 +82,8 @@ import {
 const noteTimers = {};
 let sprintDialogState = { sprint: null, isCustom: false };
 let itemDialogState = {};
+/** @type {{sprintId: string, kind: string, statusKey: string, custom: boolean}|null} */
+let assignDialogState = null;
 /** @type {import('../attachments.js').SpAttachment[]} */
 let dialogAttachments = [];
 let bound = false;
@@ -90,6 +93,8 @@ let reportMode = 'executive';
 let lastRenderContext = null;
 /** @type {Set<string>} */
 const healedIdentityPlanIds = new Set();
+/** @type {Set<string>} */
+const strippedTemplateOverridePlanIds = new Set();
 
 export function initPlanShowPage() {
     const root = document.getElementById('sp-app');
@@ -216,6 +221,40 @@ function renderPlan(instanceId) {
                 plan.startedAt = instance.startedAt;
             }
         });
+    }
+
+    // Older plan edits stored help/labels in overrides and forced DE=EN — strip once.
+    if (!strippedTemplateOverridePlanIds.has(String(instanceId))) {
+        strippedTemplateOverridePlanIds.add(String(instanceId));
+        const overrides = instance.itemOverrides || {};
+        const dirtyKeys = Object.keys(overrides).filter((key) => {
+            const row = overrides[key];
+            return row && (
+                row.helpText !== undefined
+                || row.helpLinks !== undefined
+                || row.demoCode !== undefined
+                || row.stories !== undefined
+                || row.linkedStorySlugs !== undefined
+                || row.label !== undefined
+            );
+        });
+        if (dirtyKeys.length > 0) {
+            updateInstance(instanceId, (plan) => {
+                for (const key of dirtyKeys) {
+                    const row = plan.itemOverrides?.[key];
+                    if (!row) {
+                        continue;
+                    }
+                    delete row.helpText;
+                    delete row.helpLinks;
+                    delete row.demoCode;
+                    delete row.stories;
+                    delete row.linkedStorySlugs;
+                    delete row.label;
+                }
+            });
+            Object.assign(instance, loadWorkspace().data.instances[instanceId] || instance);
+        }
     }
 
     const repairedSlug = repairTemplateSlug(instance, templates);
@@ -353,6 +392,7 @@ function renderFilterEmpty(filtered, allSprints, filters) {
 function renderUnassignedBanner(sprints, workspace) {
     const banner = document.getElementById('sp-unassigned-banner');
     const text = document.getElementById('sp-unassigned-banner-text');
+    const claimBtn = document.getElementById('sp-claim-all-btn');
     if (!banner) {
         return;
     }
@@ -366,13 +406,57 @@ function renderUnassignedBanner(sprints, workspace) {
             }
         }
     }
-    const show = total > 0 && unassigned === total;
+    const personId = resolveClaimPersonId(workspace);
+    const show = total > 0 && unassigned > 0;
     banner.hidden = !show;
     if (show && text) {
-        text.textContent = workspace.workspace.activePersonId
-            ? spT('sp.unassigned.banner')
+        text.textContent = personId
+            ? spT('sp.unassigned.bannerCount', { count: unassigned, total })
             : spT('sp.unassigned.needActivePerson');
     }
+    if (claimBtn) {
+        claimBtn.disabled = !personId || unassigned === 0;
+        claimBtn.hidden = !show;
+    }
+}
+
+/**
+ * Person to assign when claiming (active person, else signed-in account).
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @returns {string|null}
+ */
+function resolveClaimPersonId(workspace) {
+    const active = workspace?.workspace?.activePersonId
+        ? String(workspace.workspace.activePersonId)
+        : '';
+    if (active) {
+        return active;
+    }
+    const accountId = readAccountsBootstrap().accountUser?.id;
+    return accountId ? String(accountId) : null;
+}
+
+/**
+ * @param {string} instanceId
+ * @param {'task'|'deliverable'} kind
+ * @param {string} statusKey
+ * @param {boolean} custom
+ * @param {string} sprintId
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @returns {boolean}
+ */
+function claimForActivePerson(instanceId, kind, statusKey, custom, sprintId, workspace) {
+    const personId = resolveClaimPersonId(workspace);
+    if (!personId) {
+        showToast(spT('sp.error.activePersonMissing'));
+        return false;
+    }
+    const result = claimItem(instanceId, kind, statusKey, custom, sprintId, personId);
+    if (!result.ok) {
+        showToast(storageErrorMessage(result.error));
+        return false;
+    }
+    return true;
 }
 
 function bindClaimAll(instanceId) {
@@ -381,7 +465,7 @@ function bindClaimAll(instanceId) {
         if (!ctx || ctx.instance.id !== instanceId) {
             return;
         }
-        const personId = ctx.workspace.workspace.activePersonId;
+        const personId = resolveClaimPersonId(ctx.workspace);
         if (!personId) {
             showToast(spT('sp.error.activePersonMissing'));
             return;
@@ -880,7 +964,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     meta.textContent = [
         spT(`sp.status.${statusKeyToLabel(item.status)}`),
         spT(`sp.priority.${item.priority}`),
-        assignee,
+        assignee || spT('sp.report.unassigned'),
         item.dueDate,
     ].filter(Boolean).join(' · ');
     main.append(label, meta);
@@ -902,24 +986,20 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     if (!item.assigneeId) {
         const pick = document.createElement('button');
         pick.type = 'button';
-        pick.className = 'tools-btn tools-btn--secondary tools-btn--small';
+        pick.className = 'tools-btn tools-btn--primary tools-btn--small sp-item__pick';
         pick.textContent = spT('sp.action.pick');
-        pick.addEventListener('click', () => {
-            const personId = workspace.workspace.activePersonId;
-            if (!personId) {
-                showToast(spT('sp.error.activePersonMissing'));
-                return;
-            }
-            const result = claimItem(
+        pick.title = spT('sp.action.pickHint');
+        pick.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (!claimForActivePerson(
                 instance.id,
                 item.kind,
                 item.statusKey,
                 item.custom,
                 sprint.id,
-                personId,
-            );
-            if (!result.ok) {
-                showToast(storageErrorMessage(result.error));
+                workspace,
+            )) {
                 return;
             }
             showToast(spT('sp.toast.claimed'));
@@ -931,14 +1011,25 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         assign.type = 'button';
         assign.className = 'tools-btn tools-btn--secondary tools-btn--small';
         assign.textContent = spT('sp.action.assign');
-        assign.addEventListener('click', () => openItemDialog({
+        assign.addEventListener('click', () => openAssignDialog({
             sprintId: sprint.id,
             kind: item.kind,
             custom: item.custom,
             item,
-            focusAssignee: true,
         }));
         actions.appendChild(assign);
+    } else {
+        const reassign = document.createElement('button');
+        reassign.type = 'button';
+        reassign.className = 'tools-btn tools-btn--secondary tools-btn--small';
+        reassign.textContent = spT('sp.action.assign');
+        reassign.addEventListener('click', () => openAssignDialog({
+            sprintId: sprint.id,
+            kind: item.kind,
+            custom: item.custom,
+            item,
+        }));
+        actions.appendChild(reassign);
     }
 
     const edit = document.createElement('button');
@@ -1232,44 +1323,43 @@ function bindDialogs(instanceId, render) {
         if (itemDialog.returnValue !== 'confirm') {
             return;
         }
-        const stories = parseStoriesTextarea(document.getElementById('sp-item-stories')?.value || '');
-        const parsedLinks = parseLinksTextarea(document.getElementById('sp-item-help-links')?.value || '');
-        if (parsedLinks.rejected?.length) {
-            showToast(spT('sp.toast.linksRejected'));
-        }
         const status = document.getElementById('sp-item-status').value;
         const previousStatus = itemDialogState.item?.status;
         const blockerReason = document.getElementById('sp-item-blocker-reason')?.value || '';
         const blockerSince = status === 'blocked'
             ? (previousStatus === 'blocked' ? (itemDialogState.item?.blockerSince || todayIso()) : todayIso())
             : null;
+        const allowLabels = Boolean(itemDialogState.create || itemDialogState.custom);
         const data = {
             id: document.getElementById('sp-item-id').value,
-            labelDe: document.getElementById('sp-item-label-de').value,
-            labelEn: document.getElementById('sp-item-label-en').value,
+            labelDe: allowLabels
+                ? (document.getElementById('sp-item-label-de').value || '')
+                : (itemDialogState.item?.label || ''),
+            labelEn: allowLabels
+                ? (document.getElementById('sp-item-label-en').value || '')
+                : (itemDialogState.item?.label || ''),
             assigneeType: document.getElementById('sp-item-assignee-type').value,
             assigneeId: document.getElementById('sp-item-assignee-id').value || null,
             status,
             priority: document.getElementById('sp-item-priority').value,
             dueDate: document.getElementById('sp-item-due').value || null,
             note: document.getElementById('sp-item-note').value,
-            helpTextDe: document.getElementById('sp-item-help-de')?.value || '',
-            helpTextEn: document.getElementById('sp-item-help-en')?.value || '',
-            stories,
-            linkedStorySlugs: stories.map((story) => story.slug),
-            helpLinks: parsedLinks.links,
-            demoCode: document.getElementById('sp-item-demo-code')?.value || '',
             table: readTableEditor(document.getElementById('sp-item-table-editor')),
             blockerReason,
             blockerSince,
             attachments: normalizeAttachments(dialogAttachments),
         };
+        if (allowLabels && !String(data.labelDe || data.labelEn || '').trim()) {
+            showToast(spT('sp.error.labelRequired'));
+            return;
+        }
         const kind = document.getElementById('sp-item-type').value;
         const sprintId = document.getElementById('sp-item-sprint-id').value;
         const inst = loadWorkspace().data.instances[instanceId];
-        const template = readTemplatesFromDom().find((t) => t.slug === inst?.templateSlug);
+        const template = readTemplatesFromDom().find((t) => t.slug === inst?.templateSlug)
+            || inst?.templateSnapshot;
         const result = itemDialogState.create
-            ? addCustomItem(instanceId, sprintId, kind, data, template?.slug || 'custom')
+            ? addCustomItem(instanceId, sprintId, kind, data, template?.slug || inst?.templateSlug || 'custom')
             : updateItemMeta(
                 instanceId,
                 kind,
@@ -1283,6 +1373,35 @@ function bindDialogs(instanceId, render) {
             return;
         }
         render();
+    });
+
+    const assignDialog = document.getElementById('sp-assign-dialog');
+    assignDialog?.addEventListener('close', () => {
+        if (assignDialog.returnValue !== 'confirm' || !assignDialogState) {
+            assignDialogState = null;
+            return;
+        }
+        const result = assignItem(
+            instanceId,
+            /** @type {'task'|'deliverable'} */ (assignDialogState.kind),
+            assignDialogState.statusKey,
+            assignDialogState.custom,
+            assignDialogState.sprintId,
+            {
+                assigneeType: document.getElementById('sp-assign-assignee-type')?.value || 'person',
+                assigneeId: document.getElementById('sp-assign-assignee-id')?.value || null,
+            },
+        );
+        assignDialogState = null;
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.toast.assigned'));
+        render();
+    });
+    document.getElementById('sp-assign-assignee-type')?.addEventListener('change', () => {
+        refreshAssignAssigneeOptions();
     });
 
     document.getElementById('sp-item-assignee-type')?.addEventListener('change', () => refreshAssigneeOptions());
@@ -1373,13 +1492,30 @@ function updateBlockerFieldVisibility() {
 function openItemDialog(state) {
     closeHelpPanel();
     const workspace = loadWorkspace().data;
-    const activePersonId = workspace.workspace.activePersonId || null;
+    const activePersonId = resolveClaimPersonId(workspace);
     itemDialogState = state;
+    const isTemplateItem = Boolean(state.item && !state.custom && !state.create);
+    const showLabels = Boolean(state.create || state.custom);
+    const labelFields = document.getElementById('sp-item-label-fields');
+    if (labelFields) {
+        labelFields.hidden = !showLabels;
+    }
+    const planOnlyNote = document.getElementById('sp-item-plan-only-note');
+    if (planOnlyNote) {
+        planOnlyNote.hidden = !isTemplateItem;
+    }
+    const labelDe = document.getElementById('sp-item-label-de');
+    const labelEn = document.getElementById('sp-item-label-en');
+    if (labelDe) {
+        labelDe.required = showLabels;
+        labelDe.value = showLabels ? (state.item?.label || '') : '';
+    }
+    if (labelEn) {
+        labelEn.value = showLabels ? (state.item?.label || '') : '';
+    }
     document.getElementById('sp-item-sprint-id').value = state.sprintId;
     document.getElementById('sp-item-type').value = state.kind;
     document.getElementById('sp-item-id').value = state.item?.id || '';
-    document.getElementById('sp-item-label-de').value = state.item?.label || '';
-    document.getElementById('sp-item-label-en').value = state.item?.label || '';
     const defaultAssigneeType = state.create ? 'person' : (state.item?.assigneeType || 'person');
     const defaultAssigneeId = state.create
         ? activePersonId
@@ -1389,34 +1525,6 @@ function openItemDialog(state) {
     document.getElementById('sp-item-priority').value = state.item?.priority || 'normal';
     document.getElementById('sp-item-due').value = state.item?.dueDate || '';
     document.getElementById('sp-item-note').value = state.item?.note || '';
-    const helpDe = document.getElementById('sp-item-help-de');
-    const helpEn = document.getElementById('sp-item-help-en');
-    const helpText = state.item?.helpText || '';
-    if (helpDe) {
-        helpDe.value = typeof helpText === 'object'
-            ? (helpText.de || '')
-            : helpText;
-    }
-    if (helpEn) {
-        helpEn.value = typeof helpText === 'object'
-            ? (helpText.en || helpText.de || '')
-            : helpText;
-    }
-    const storiesEl = document.getElementById('sp-item-stories');
-    if (storiesEl) {
-        storiesEl.value = formatStoriesTextarea(state.item?.stories || []);
-    }
-    const linksEl = document.getElementById('sp-item-help-links');
-    if (linksEl) {
-        linksEl.value = formatLinksTextarea(state.item?.helpLinks || []);
-    }
-    const demoCodeEl = document.getElementById('sp-item-demo-code');
-    if (demoCodeEl) {
-        const demoCode = state.item?.demoCode || '';
-        demoCodeEl.value = typeof demoCode === 'object'
-            ? (demoCode.de || demoCode.en || '')
-            : demoCode;
-    }
     const blockerReasonEl = document.getElementById('sp-item-blocker-reason');
     if (blockerReasonEl) {
         blockerReasonEl.value = state.item?.blockerReason || '';
@@ -1430,10 +1538,75 @@ function openItemDialog(state) {
     }
     refreshAssigneeOptions(defaultAssigneeId || '');
     updateBlockerFieldVisibility();
-    document.getElementById('sp-item-dialog').showModal();
-    if (state.focusAssignee) {
-        document.getElementById('sp-item-assignee-id')?.focus();
+    const title = document.getElementById('sp-item-dialog-title');
+    if (title) {
+        title.textContent = state.create
+            ? spT('sp.dialog.itemCreateTitle')
+            : spT('sp.dialog.itemTitle');
     }
+    document.getElementById('sp-item-dialog').showModal();
+}
+
+/**
+ * @param {{sprintId: string, kind: string, custom: boolean, item: object}} state
+ */
+function openAssignDialog(state) {
+    closeHelpPanel();
+    assignDialogState = {
+        sprintId: state.sprintId,
+        kind: state.kind,
+        statusKey: state.item.statusKey,
+        custom: Boolean(state.custom),
+    };
+    document.getElementById('sp-assign-sprint-id').value = state.sprintId;
+    document.getElementById('sp-assign-kind').value = state.kind;
+    document.getElementById('sp-assign-key').value = state.item.statusKey;
+    document.getElementById('sp-assign-custom').value = state.custom ? '1' : '0';
+    const labelEl = document.getElementById('sp-assign-item-label');
+    if (labelEl) {
+        labelEl.textContent = state.item.label || '';
+    }
+    const type = state.item.assigneeType || 'person';
+    document.getElementById('sp-assign-assignee-type').value = type;
+    refreshAssignAssigneeOptions(state.item.assigneeId || '');
+    document.getElementById('sp-assign-dialog')?.showModal();
+    document.getElementById('sp-assign-assignee-id')?.focus();
+}
+
+/**
+ * @param {string} [selectedId]
+ */
+function refreshAssignAssigneeOptions(selectedId) {
+    const workspace = loadWorkspace().data;
+    const type = document.getElementById('sp-assign-assignee-type')?.value || 'person';
+    const select = document.getElementById('sp-assign-assignee-id');
+    if (!select) {
+        return;
+    }
+    const locale = getLocale();
+    if (type === 'team') {
+        fillSelect(
+            select,
+            listTeams().map((team) => ({
+                id: team.id,
+                label: localizedText(team.name, locale) || team.id,
+            })),
+            selectedId || '',
+            true,
+            spT('sp.field.none'),
+        );
+        return;
+    }
+    fillSelect(
+        select,
+        listPeople().map((person) => ({
+            id: person.id,
+            label: person.displayName || person.id,
+        })),
+        selectedId || resolveClaimPersonId(workspace) || '',
+        true,
+        spT('sp.field.none'),
+    );
 }
 
 /**

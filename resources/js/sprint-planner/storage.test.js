@@ -505,6 +505,90 @@ describe('instance-manager', () => {
             .toBe('person_thomas_a');
     });
 
+    it('keeps claim overrides across reload in accounts mode (local newer than bootstrap)', () => {
+        const accountUser = { id: 'user_acidone', displayName: 'Acidone', email: 'a@x.test' };
+        const planId = 'plan_claim_persist_1';
+        const stalePlan = {
+            id: planId,
+            templateSlug: 'demo-claim-persist',
+            templateVersion: 1,
+            translations: { en: { title: 'T', description: '' }, de: { title: 'T', description: '' } },
+            startedAt: '2026-07-01',
+            status: 'active',
+            teamId: null,
+            participantIds: [],
+            completedTasks: [],
+            completedDeliverables: [],
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            itemOverrides: {},
+            templateSnapshot: null,
+            ownerUserId: 'user_acidone',
+            viewerUserIds: [],
+            viewerTeamIds: [],
+            linkedStorySlugs: [],
+            ephemeral: false,
+            archived: false,
+            createdAt: '2026-07-01T00:00:00.000Z',
+            updatedAt: '2026-07-01T00:00:00.000Z',
+        };
+
+        const root = {
+            dataset: {
+                accountsEnabled: '1',
+                accountUser: JSON.stringify(accountUser),
+                plansApiUrl: '/api/plans',
+                storiesApiUrl: '',
+                loginUrl: '/login',
+                accountPeople: '[]',
+                accountTeams: '[]',
+                serverPlans: JSON.stringify([stalePlan]),
+                readSlugs: '[]',
+            },
+        };
+        vi.stubGlobal('document', {
+            getElementById: (id) => (id === 'sp-app' ? root : null),
+            querySelector: () => null,
+        });
+        vi.stubGlobal('fetch', vi.fn(async () => ({
+            ok: true,
+            json: async () => ({ plan: stalePlan }),
+        })));
+
+        // Seed local cache as the accounts workspace would after a claim.
+        const claimedKey = statusKey('demo-claim-persist', 'sprint_1', 'task', 'task_a');
+        const claimedPlan = {
+            ...stalePlan,
+            updatedAt: '2026-07-19T12:00:00.000Z',
+            itemOverrides: {
+                [claimedKey]: { assigneeType: 'person', assigneeId: 'user_acidone' },
+            },
+        };
+        localStorage.setItem(WORKSPACE_KEY, JSON.stringify(normalizeWorkspace({
+            schemaVersion: 1,
+            workspace: {
+                id: 'workspace_default',
+                name: 'Shared',
+                locale: 'en',
+                activePersonId: 'user_acidone',
+                defaultTeamId: null,
+            },
+            people: {},
+            teams: {},
+            instances: { [planId]: claimedPlan },
+        })));
+
+        const loaded = loadWorkspace();
+        expect(loaded.ok).toBe(true);
+        expect(loaded.data.instances[planId].itemOverrides[claimedKey].assigneeId)
+            .toBe('user_acidone');
+        expect(loaded.data.workspace.activePersonId).toBe('user_acidone');
+    });
+
     it('stores a password hash and verifies it', async () => {
         const template = {
             slug: 'demo',

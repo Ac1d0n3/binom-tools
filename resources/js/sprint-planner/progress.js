@@ -259,15 +259,13 @@ function resolveTemplateItem({
     const completed = completedList.includes(key) || itemOverride.status === 'completed';
     const status = itemOverride.status || (completed ? 'completed' : 'open');
     const stories = normalizeStories(
-        Array.isArray(itemOverride.stories) ? itemOverride.stories : (item.stories || item.linkedStorySlugs || item.linkedStories),
+        item.stories || item.linkedStorySlugs || item.linkedStories,
     );
     return {
         id: item.id,
         statusKey: key,
         kind,
         label: textItem.label
-            || itemOverride.label?.[locale]
-            || itemOverride.label?.en
             || localizeField(item.label, locale)
             || item.id,
         completed,
@@ -281,10 +279,11 @@ function resolveTemplateItem({
         sprintId,
         stories,
         linkedStorySlugs: stories.map((s) => s.slug),
-        helpText: pickHelpText(itemOverride, textItem, locale)
+        // Help content always comes from the template locale pack — never from plan overrides.
+        helpText: pickHelpText(textItem, locale)
             || pickLocalizedHelpText(item.helpText, locale),
-        helpLinks: mergeHelpLinks(textItem.helpLinks || item.helpLinks, itemOverride.helpLinks, locale),
-        demoCode: pickDemoCode(itemOverride, textItem, locale),
+        helpLinks: mergeHelpLinks(textItem.helpLinks || item.helpLinks, locale),
+        demoCode: pickDemoCode(textItem, locale),
         blockerReason: status === 'blocked' ? String(itemOverride.blockerReason || '') : '',
         blockerSince: status === 'blocked' ? (itemOverride.blockerSince || null) : null,
         attachments: normalizeAttachments(itemOverride.attachments),
@@ -414,28 +413,20 @@ function mergeStorySlugs(base, override) {
     return [];
 }
 
-function pickHelpText(override, textTask, locale) {
-    const fromOverride = pickLocalizedHelpText(override?.helpText, locale);
-    if (fromOverride) {
-        return fromOverride;
-    }
+function pickHelpText(textTask, locale) {
     const fromText = textTask?.helpText;
     if (typeof fromText === 'string' && fromText.trim()) {
         return fromText.trim();
     }
-    return null;
+    return pickLocalizedHelpText(fromText, locale);
 }
 
-function pickDemoCode(override, textTask, locale) {
-    const fromOverride = pickLocalizedHelpText(override?.demoCode, locale);
-    if (fromOverride) {
-        return fromOverride;
-    }
+function pickDemoCode(textTask, locale) {
     const fromText = textTask?.demoCode;
     if (typeof fromText === 'string' && fromText.trim()) {
         return fromText.trim();
     }
-    return null;
+    return pickLocalizedHelpText(fromText, locale);
 }
 
 function pickLocalizedHelpText(value, locale) {
@@ -450,10 +441,7 @@ function pickLocalizedHelpText(value, locale) {
     return null;
 }
 
-function mergeHelpLinks(baseLinks, overrideLinks, locale) {
-    if (Array.isArray(overrideLinks)) {
-        return normalizeHelpLinks(overrideLinks, locale);
-    }
+function mergeHelpLinks(baseLinks, locale) {
     return normalizeHelpLinks(baseLinks, locale);
 }
 

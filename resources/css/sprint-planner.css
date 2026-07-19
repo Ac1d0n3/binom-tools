@@ -942,6 +942,10 @@
     margin: 0;
 }
 
+.sp-item__pick {
+    min-width: 6.5rem;
+}
+
 .sp-item__att-count {
     display: inline-block;
     margin-top: 0.25rem;
