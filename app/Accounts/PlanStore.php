@@ -51,9 +51,10 @@ final class PlanStore
 
     /**
      * @param  array<string, mixed>  $plan
+     * @param  array{action?: string, summary?: string}|array<string, mixed>  $historyMeta
      * @return array<string, mixed>
      */
-    public function save(array $plan, AccountUser $actor): array
+    public function save(array $plan, AccountUser $actor, array $historyMeta = []): array
     {
         $id = (string) ($plan['id'] ?? '');
         if ($id === '' || ! preg_match('/^plan_[a-zA-Z0-9_]+$/', $id)) {
@@ -75,6 +76,7 @@ final class PlanStore
             }
             // Never let a partial client payload wipe structural identity.
             $plan = $this->mergePreservedFields($existing, $plan);
+            $this->recordRevision($existing, $actor, $historyMeta);
         }
 
         $plan['id'] = $id;
@@ -83,6 +85,7 @@ final class PlanStore
         $plan['linkedStorySlugs'] = array_values(array_map('strval', $plan['linkedStorySlugs'] ?? $existing['linkedStorySlugs'] ?? []));
         $plan = $this->normalizePlanTeams($plan);
         $plan['updatedAt'] = now()->toIso8601String();
+        $plan['updatedBy'] = $actor->id;
 
         // Never accept plaintext plan password; only hash fields from client soft-lock.
         unset($plan['password'], $plan['plainPassword'], $plan['password_plaintext']);
@@ -103,6 +106,165 @@ final class PlanStore
             throw new InvalidArgumentException('Only the owner can delete this plan.');
         }
         @unlink($this->pathFor($planId));
+        $this->removeHistoryDirectory($planId);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function listHistory(string $planId, AccountUser $actor): array
+    {
+        $plan = $this->find($planId);
+        if ($plan === null) {
+            throw new InvalidArgumentException('Plan not found.');
+        }
+        if (! $this->canAccess($actor, $plan)) {
+            throw new InvalidArgumentException('Not allowed to view history.');
+        }
+
+        return $this->readHistoryIndex($planId);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function findRevision(string $planId, string $revisionId, AccountUser $actor): ?array
+    {
+        $plan = $this->find($planId);
+        if ($plan === null || ! $this->canAccess($actor, $plan)) {
+            throw new InvalidArgumentException('Not allowed to view history.');
+        }
+
+        $path = $this->revisionPath($planId, $revisionId);
+        if (! is_file($path)) {
+            return null;
+        }
+        $revision = $this->store->read($path, []);
+
+        return isset($revision['id']) ? $revision : null;
+    }
+
+    /**
+     * Restore plan to the snapshot stored in a revision (state before that change).
+     *
+     * @return array<string, mixed>
+     */
+    public function restoreRevision(string $planId, string $revisionId, AccountUser $actor): array
+    {
+        $revision = $this->findRevision($planId, $revisionId, $actor);
+        if ($revision === null) {
+            throw new InvalidArgumentException('Revision not found.');
+        }
+        $snapshot = $revision['snapshot'] ?? null;
+        if (! is_array($snapshot) || ! isset($snapshot['id'])) {
+            throw new InvalidArgumentException('Revision snapshot missing.');
+        }
+
+        $snapshot['id'] = $planId;
+
+        return $this->save($snapshot, $actor, [
+            'action' => 'restore',
+            'summary' => 'Restored from '.$revisionId,
+        ]);
+    }
+
+    private const HISTORY_RETENTION = 50;
+
+    /**
+     * @param  array<string, mixed>  $existing
+     * @param  array{action?: string, summary?: string}|array<string, mixed>  $historyMeta
+     */
+    private function recordRevision(array $existing, AccountUser $actor, array $historyMeta): void
+    {
+        $planId = (string) ($existing['id'] ?? '');
+        if ($planId === '') {
+            return;
+        }
+
+        $revisionId = 'rev_'.bin2hex(random_bytes(8));
+        $entry = [
+            'id' => $revisionId,
+            'planId' => $planId,
+            'createdAt' => now()->toIso8601String(),
+            'actorUserId' => $actor->id,
+            'actorLabel' => $actor->displayName !== '' ? $actor->displayName : $actor->email,
+            'action' => (string) ($historyMeta['action'] ?? 'update'),
+            'summary' => (string) ($historyMeta['summary'] ?? 'Plan updated'),
+            'snapshot' => $existing,
+        ];
+
+        $dir = $this->config->planHistoryDirectory($planId);
+        $this->store->ensureDirectory($dir);
+        $this->store->write($this->revisionPath($planId, $revisionId), $entry);
+
+        $index = $this->readHistoryIndex($planId);
+        array_unshift($index, [
+            'id' => $revisionId,
+            'planId' => $planId,
+            'createdAt' => $entry['createdAt'],
+            'actorUserId' => $entry['actorUserId'],
+            'actorLabel' => $entry['actorLabel'],
+            'action' => $entry['action'],
+            'summary' => $entry['summary'],
+        ]);
+
+        while (count($index) > self::HISTORY_RETENTION) {
+            $dropped = array_pop($index);
+            if (is_array($dropped) && isset($dropped['id'])) {
+                @unlink($this->revisionPath($planId, (string) $dropped['id']));
+            }
+        }
+
+        $this->store->write($this->historyIndexPath($planId), ['revisions' => array_values($index)]);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function readHistoryIndex(string $planId): array
+    {
+        $path = $this->historyIndexPath($planId);
+        if (! is_file($path)) {
+            return [];
+        }
+        $data = $this->store->read($path, []);
+        $revisions = $data['revisions'] ?? [];
+
+        return is_array($revisions) ? array_values($revisions) : [];
+    }
+
+    private function historyIndexPath(string $planId): string
+    {
+        return $this->config->planHistoryDirectory($planId).DIRECTORY_SEPARATOR.'index.json';
+    }
+
+    private function revisionPath(string $planId, string $revisionId): string
+    {
+        $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $revisionId) ?: 'invalid';
+
+        return $this->config->planHistoryDirectory($planId).DIRECTORY_SEPARATOR.$safe.'.json';
+    }
+
+    private function removeHistoryDirectory(string $planId): void
+    {
+        $dir = $this->config->planHistoryDirectory($planId);
+        if (! is_dir($dir)) {
+            return;
+        }
+        foreach (scandir($dir) ?: [] as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+            @unlink($dir.DIRECTORY_SEPARATOR.$item);
+        }
+        @rmdir($dir);
+        $parent = dirname($dir);
+        if (is_dir($parent)) {
+            $remaining = array_diff(scandir($parent) ?: [], ['.', '..']);
+            if ($remaining === []) {
+                @rmdir($parent);
+            }
+        }
     }
 
     /**

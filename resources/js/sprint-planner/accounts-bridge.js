@@ -146,12 +146,21 @@ export function csrfToken() {
  * @param {Record<string, unknown>} plan
  * @param {string} plansApiUrl
  */
-export async function upsertPlanOnServer(plan, plansApiUrl) {
+export async function upsertPlanOnServer(plan, plansApiUrl, historyMeta = {}) {
     if (!plansApiUrl) {
         throw new Error('plans-api-missing');
     }
     if (plan.ephemeral) {
         return { plan };
+    }
+
+    /** @type {Record<string, unknown>} */
+    const body = { plan };
+    if (historyMeta && (historyMeta.action || historyMeta.summary)) {
+        body.history = {
+            action: String(historyMeta.action || 'update'),
+            summary: String(historyMeta.summary || 'Plan updated'),
+        };
     }
 
     const response = await fetch(plansApiUrl, {
@@ -163,7 +172,7 @@ export async function upsertPlanOnServer(plan, plansApiUrl) {
             'X-Requested-With': 'XMLHttpRequest',
         },
         credentials: 'same-origin',
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify(body),
     });
 
     if (!response.ok) {
@@ -254,6 +263,84 @@ export async function deleteAttachmentOnServer(planId, attachmentId) {
         },
         credentials: 'same-origin',
     });
+}
+
+/**
+ * @param {string} planId
+ * @returns {Promise<{revisions: Array<Record<string, unknown>>}>}
+ */
+export async function fetchPlanHistory(planId) {
+    const plansApiUrl = readAccountsBootstrap().plansApiUrl;
+    if (!plansApiUrl) {
+        throw new Error('plans-api-missing');
+    }
+    const base = plansApiUrl.replace(/\/$/, '');
+    const url = `${base}/${encodeURIComponent(planId)}/history`;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+    });
+    if (!response.ok) {
+        throw new Error(`plans-history-${response.status}`);
+    }
+    return response.json();
+}
+
+/**
+ * @param {string} planId
+ * @param {string} revisionId
+ * @returns {Promise<{revision: Record<string, unknown>}>}
+ */
+export async function fetchPlanRevision(planId, revisionId) {
+    const plansApiUrl = readAccountsBootstrap().plansApiUrl;
+    if (!plansApiUrl) {
+        throw new Error('plans-api-missing');
+    }
+    const base = plansApiUrl.replace(/\/$/, '');
+    const url = `${base}/${encodeURIComponent(planId)}/history/${encodeURIComponent(revisionId)}`;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+    });
+    if (!response.ok) {
+        throw new Error(`plans-revision-${response.status}`);
+    }
+    return response.json();
+}
+
+/**
+ * @param {string} planId
+ * @param {string} revisionId
+ * @returns {Promise<{plan: Record<string, unknown>}>}
+ */
+export async function restorePlanRevision(planId, revisionId) {
+    const plansApiUrl = readAccountsBootstrap().plansApiUrl;
+    if (!plansApiUrl) {
+        throw new Error('plans-api-missing');
+    }
+    const base = plansApiUrl.replace(/\/$/, '');
+    const url = `${base}/${encodeURIComponent(planId)}/history/${encodeURIComponent(revisionId)}/restore`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': csrfToken(),
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+    });
+    if (!response.ok) {
+        throw new Error(`plans-restore-${response.status}`);
+    }
+    return response.json();
 }
 
 /**

@@ -604,6 +604,12 @@ blocked
 completed
 ```
 
+Darstellung:
+
+- Jedes Item zeigt einen **Status-Chip** (nicht nur Meta-Text).
+- `blocked` → amber Rahmen; `in_progress` → blauer Rahmen.
+- Zugeklappte Sprint-Summary zeigt Counts **Blockiert (n)** / **In Arbeit (n)**, zusätzlich zum Schedule-Badge.
+
 Empfohlene Prioritäten:
 
 ```text
@@ -1094,6 +1100,9 @@ Die Umsetzung ist abgeschlossen, wenn:
 22. Hilfe-Links sind nur externe URLs; Stories bleiben im Stories-Feld.
 23. Eingeloggte Nutzer können User-Templates erstellen, bearbeiten und löschen (Plan Creator).
 24. Task-Tabellen mit vorgebbaren Spalten und editierbaren Zeilen funktionieren.
+25. Status-Chips an Items und Blocked/In-Arbeit-Counts in zugeklappten Sprint-Summaries.
+26. „My Plans“ öffnet den zuletzt geöffneten Plan; Liste über Back/`?list=1`.
+27. Plan History (Accounts): Actor, Diff, Restore; Session-Undo lokal und Accounts.
 
 ---
 
@@ -1110,6 +1119,14 @@ Nicht implementieren:
 - Drag-and-drop, falls es zusätzliche große Dependencies erfordert
 
 **Hinweis:** Accounts-Modus (Login, geteilte Pläne, Datei-Upload für Anhänge, User-Templates) existiert als optionale Server-Erweiterung. Der lokale Modus ohne Login bleibt vollständig nutzbar; Dateianhänge liegen dann in IndexedDB. Der Plan Creator kann lokal einen Plan mit `templateSnapshot` starten; Speichern als wiederverwendbare Vorlage erfordert Login.
+
+### Zuletzt geöffneter Plan
+
+Preferences speichern `lastOpenedPlanId`. Navigation zu „My Plans“ (`/sprint-planner` ohne `?list=1`) stellt den zuletzt geöffneten Plan wieder her, sofern er noch existiert. „Zurück zu den Plänen“ und explizites Listen-Browsing nutzen `?list=1`.
+
+### Plan History (Accounts)
+
+Bei jedem Server-Save einer bestehenden Planinstanz wird eine Revision unter `storage/app/bn-tools/plans/{planId}/history/` geschrieben (Snapshot vor der Änderung, Actor, Action/Summary). Retention: max. 50 Revisionen. API: list / detail / restore. Zusätzlich gibt es einen Session-Undo-Stack im Browser-Tab (auch lokal).
 
 ### User-Templates und Plan Creator
 

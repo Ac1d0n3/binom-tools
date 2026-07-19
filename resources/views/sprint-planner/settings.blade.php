@@ -23,7 +23,7 @@
 
         <div id="sp-plan-missing" class="sp-empty" hidden>
             <p data-i18n="sp.error.planMissing">This plan was not found in local storage.</p>
-            <a href="{{ locale_route('sprint-planner.index') }}" class="tools-btn tools-btn--primary" data-i18n="sp.action.backToPlans">Back to plans</a>
+            <a href="{{ locale_route('sprint-planner.index') }}?list=1" class="tools-btn tools-btn--primary" data-i18n="sp.action.backToPlans">Back to plans</a>
         </div>
 
         <div id="sp-plan-locked" class="sp-empty sp-lock-panel" hidden>
@@ -37,7 +37,7 @@
                 </label>
                 <p id="sp-unlock-error" class="sp-field-error" hidden></p>
                 <div class="sp-action-row">
-                    <a href="{{ locale_route('sprint-planner.index') }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.backToPlans">Back to plans</a>
+                    <a href="{{ locale_route('sprint-planner.index') }}?list=1" class="tools-btn tools-btn--secondary" data-i18n="sp.action.backToPlans">Back to plans</a>
                     <button type="submit" class="tools-btn tools-btn--primary" data-i18n="sp.password.unlock">Unlock</button>
                 </div>
             </form>

@@ -3,9 +3,14 @@ import {
     WORKSPACE_KEY,
     DEMO_WORKSPACE_KEY,
     createDefaultWorkspace,
+    createDefaultPreferences,
     loadWorkspace,
+    loadPreferences,
     normalizeWorkspace,
     saveWorkspace,
+    savePreferences,
+    setLastOpenedPlanId,
+    clearLastOpenedPlanIdIf,
 } from './storage.js';
 import { createPlanId, createPersonId, statusKey } from './ids.js';
 import {
@@ -20,7 +25,7 @@ import {
     buildWorkspaceExport,
     validateImportPayload,
 } from './export-import.js';
-import { addCustomSprint, addSprintFromTemplate, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate } from './instance-manager.js';
+import { addCustomSprint, addSprintFromTemplate, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate, toggleCompleted, canUndoInstance, undoLastInstanceChange } from './instance-manager.js';
 import {
     createLinkAttachment,
     isAllowedAttachment,
@@ -979,5 +984,59 @@ describe('plan-password', () => {
         const b = await hashPassword('demo', 'salt');
         expect(a).toBe(b);
         expect(a).not.toBe(await hashPassword('demo', 'other'));
+    });
+});
+
+describe('session undo', () => {
+    it('undoes the last plan mutation in the tab', () => {
+        const workspace = createDefaultWorkspace();
+        const planId = 'plan_undo_1';
+        workspace.instances[planId] = {
+            id: planId,
+            templateSlug: 'demo',
+            startedAt: '2026-01-01',
+            completedTasks: [],
+            completedDeliverables: [],
+            itemOverrides: {},
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            removedItemKeys: [],
+            translations: { de: {}, en: {} },
+            status: 'active',
+            archived: false,
+            ephemeral: true,
+            updatedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+        };
+        saveWorkspace(workspace);
+
+        expect(canUndoInstance(planId)).toBe(false);
+        const toggled = toggleCompleted(planId, 'task', 'task_a', true);
+        expect(toggled.ok).toBe(true);
+        expect(canUndoInstance(planId)).toBe(true);
+        expect(loadWorkspace().data.instances[planId].completedTasks).toContain('task_a');
+
+        const undone = undoLastInstanceChange(planId);
+        expect(undone.ok).toBe(true);
+        expect(loadWorkspace().data.instances[planId].completedTasks).toEqual([]);
+        expect(canUndoInstance(planId)).toBe(false);
+    });
+});
+
+describe('lastOpenedPlanId preferences', () => {
+    it('stores and clears the last opened plan id', () => {
+        expect(createDefaultPreferences().lastOpenedPlanId).toBeNull();
+        setLastOpenedPlanId('plan_abc');
+        expect(loadPreferences().lastOpenedPlanId).toBe('plan_abc');
+        clearLastOpenedPlanIdIf('plan_other');
+        expect(loadPreferences().lastOpenedPlanId).toBe('plan_abc');
+        clearLastOpenedPlanIdIf('plan_abc');
+        expect(loadPreferences().lastOpenedPlanId).toBeNull();
+        savePreferences({ ...loadPreferences(), lastOpenedPlanId: 'plan_keep' });
+        expect(loadPreferences().lastOpenedPlanId).toBe('plan_keep');
     });
 });

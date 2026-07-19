@@ -107,6 +107,19 @@
                         </div>
 
                         <div class="playbook-detail__toolbar">
+                            @if (count($variant->toc) > 0)
+                                <button
+                                    type="button"
+                                    class="playbook-toc-rail-toggle tools-btn tools-btn--ghost"
+                                    data-playbook-toc-rail-button
+                                    aria-pressed="false"
+                                    data-i18n-aria="playbooks.tocShow"
+                                    title="Show table of contents"
+                                >
+                                    <i class="fa-solid fa-list" aria-hidden="true"></i>
+                                    <span class="sr-only" data-playbook-toc-rail-label data-i18n="playbooks.tocShow">Show table of contents</span>
+                                </button>
+                            @endif
                             <button
                                 type="button"
                                 class="playbook-focus-toggle tools-btn tools-btn--ghost"

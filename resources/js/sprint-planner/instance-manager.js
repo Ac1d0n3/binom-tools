@@ -7,7 +7,66 @@ import {
 import { normalizeAttachments } from './attachments.js';
 import { createDeliverableId, createPlanId, createSprintId, createTaskId, statusKey } from './ids.js';
 import { resolveSprints } from './progress.js';
-import { loadWorkspace, saveWorkspace } from './storage.js';
+import { loadWorkspace, saveWorkspace, clearLastOpenedPlanIdIf } from './storage.js';
+
+/** @type {Map<string, Array<Record<string, unknown>>>} */
+const undoStacks = new Map();
+const MAX_UNDO = 20;
+
+/**
+ * @param {string} instanceId
+ * @param {Record<string, unknown>} snapshot
+ */
+function pushUndoSnapshot(instanceId, snapshot) {
+    const stack = undoStacks.get(instanceId) || [];
+    stack.push(snapshot);
+    while (stack.length > MAX_UNDO) {
+        stack.shift();
+    }
+    undoStacks.set(instanceId, stack);
+}
+
+/**
+ * @param {string} instanceId
+ */
+export function canUndoInstance(instanceId) {
+    return (undoStacks.get(instanceId) || []).length > 0;
+}
+
+/**
+ * Restore the previous in-tab plan snapshot (session undo).
+ * @param {string} instanceId
+ */
+export function undoLastInstanceChange(instanceId) {
+    const stack = undoStacks.get(instanceId) || [];
+    const previous = stack.pop();
+    undoStacks.set(instanceId, stack);
+    if (!previous) {
+        return { ok: false, error: 'nothing-to-undo' };
+    }
+    const loaded = loadWorkspace();
+    const workspace = loaded.data;
+    const instance = workspace.instances[instanceId];
+    if (!instance) {
+        return { ok: false, error: 'plan-missing' };
+    }
+    const keys = new Set([...Object.keys(instance), ...Object.keys(previous)]);
+    for (const key of keys) {
+        if (!(key in previous)) {
+            delete instance[key];
+        } else {
+            instance[key] = previous[key];
+        }
+    }
+    instance.updatedAt = new Date().toISOString();
+    const saved = saveWorkspace(workspace, {
+        dirtyPlanIds: [instanceId],
+        historyByPlanId: {
+            [instanceId]: { action: 'undo', summary: 'Session undo' },
+        },
+    });
+    return saved.ok ? { ok: true, instance, workspace } : { ok: false, error: saved.error };
+}
 
 /**
  * @param {object} template
@@ -305,8 +364,9 @@ export function backfillParticipantsFromAssignees(instance, sprints) {
 /**
  * @param {string} instanceId
  * @param {(instance: import('./storage.js').SpPlanInstance) => void} mutator
+ * @param {{ action?: string, summary?: string }} [meta]
  */
-export function updateInstance(instanceId, mutator) {
+export function updateInstance(instanceId, mutator, meta = {}) {
     const loaded = loadWorkspace();
     const workspace = loaded.data;
     const instance = workspace.instances[instanceId];
@@ -316,6 +376,12 @@ export function updateInstance(instanceId, mutator) {
     const previousSlug = String(instance.templateSlug || '');
     const previousStartedAt = String(instance.startedAt || '');
     const previousTranslations = instance.translations;
+    let before = null;
+    try {
+        before = JSON.parse(JSON.stringify(instance));
+    } catch {
+        before = null;
+    }
     mutator(instance);
     // Never allow assign/edit paths to wipe structural identity fields.
     if (!instance.templateSlug && previousSlug) {
@@ -328,7 +394,17 @@ export function updateInstance(instanceId, mutator) {
         instance.translations = previousTranslations;
     }
     instance.updatedAt = new Date().toISOString();
-    const saved = saveWorkspace(workspace, { dirtyPlanIds: [instanceId] });
+    if (before) {
+        pushUndoSnapshot(instanceId, before);
+    }
+    const historyMeta = {
+        action: String(meta.action || 'update'),
+        summary: String(meta.summary || 'Plan updated'),
+    };
+    const saved = saveWorkspace(workspace, {
+        dirtyPlanIds: [instanceId],
+        historyByPlanId: { [instanceId]: historyMeta },
+    });
     return saved.ok ? { ok: true, instance, workspace } : { ok: false, error: saved.error };
 }
 
@@ -346,6 +422,9 @@ export function toggleCompleted(instanceId, kind, key, completed) {
             instance.itemOverrides[key] = {};
         }
         instance.itemOverrides[key].status = completed ? 'completed' : 'open';
+    }, {
+        action: completed ? 'completeItem' : 'reopenItem',
+        summary: completed ? 'Marked item completed' : 'Reopened item',
     });
 }
 
@@ -849,10 +928,14 @@ export function duplicateInstance(instanceId) {
 }
 
 export function archiveInstance(instanceId, archived = true) {
-    return updateInstance(instanceId, (instance) => {
+    const result = updateInstance(instanceId, (instance) => {
         instance.archived = archived;
         instance.status = archived ? 'archived' : 'active';
     });
+    if (result.ok && archived) {
+        clearLastOpenedPlanIdIf(instanceId);
+    }
+    return result;
 }
 
 export function resetInstanceProgress(instanceId) {
@@ -885,6 +968,7 @@ export function deleteInstance(instanceId) {
     if (!saved.ok) {
         return { ok: false, error: saved.error };
     }
+    clearLastOpenedPlanIdIf(instanceId);
 
     if (usesServerPlans() && ! wasEphemeral) {
         const { plansApiUrl } = readAccountsBootstrap();

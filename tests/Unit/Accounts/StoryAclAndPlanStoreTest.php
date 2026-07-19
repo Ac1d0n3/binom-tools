@@ -113,6 +113,86 @@ class StoryAclAndPlanStoreTest extends TestCase
         $this->assertSame('plan_20260817_acid1', $visible[0]['id']);
     }
 
+    public function test_plan_history_is_recorded_and_can_be_restored(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+
+        $store->save([
+            'id' => 'plan_20260719_hist',
+            'templateSlug' => 'demo',
+            'completedTasks' => [],
+            'status' => 'active',
+        ], $owner);
+
+        $updated = $store->save([
+            'id' => 'plan_20260719_hist',
+            'templateSlug' => 'demo',
+            'completedTasks' => ['task_a'],
+            'status' => 'active',
+        ], $owner, [
+            'action' => 'completeItem',
+            'summary' => 'Marked item completed',
+        ]);
+
+        $this->assertSame(['task_a'], $updated['completedTasks']);
+        $this->assertSame('user_owner', $updated['updatedBy']);
+
+        $history = $store->listHistory('plan_20260719_hist', $owner);
+        $this->assertCount(1, $history);
+        $this->assertSame('completeItem', $history[0]['action']);
+        $this->assertSame('Marked item completed', $history[0]['summary']);
+        $this->assertSame('user_owner', $history[0]['actorUserId']);
+
+        $revisionId = (string) $history[0]['id'];
+        $detail = $store->findRevision('plan_20260719_hist', $revisionId, $owner);
+        $this->assertNotNull($detail);
+        $this->assertSame([], $detail['snapshot']['completedTasks'] ?? null);
+
+        $restored = $store->restoreRevision('plan_20260719_hist', $revisionId, $owner);
+        $this->assertSame([], $restored['completedTasks']);
+
+        $historyAfterRestore = $store->listHistory('plan_20260719_hist', $owner);
+        $this->assertCount(2, $historyAfterRestore);
+        $this->assertSame('restore', $historyAfterRestore[0]['action']);
+    }
+
+    public function test_plan_history_retention_keeps_fifty_revisions(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+
+        $store->save([
+            'id' => 'plan_20260719_cap',
+            'templateSlug' => 'demo',
+            'completedTasks' => [],
+        ], $owner);
+
+        for ($i = 1; $i <= 55; $i++) {
+            $store->save([
+                'id' => 'plan_20260719_cap',
+                'templateSlug' => 'demo',
+                'completedTasks' => ["task_{$i}"],
+            ], $owner, [
+                'action' => 'update',
+                'summary' => "Change {$i}",
+            ]);
+        }
+
+        $history = $store->listHistory('plan_20260719_cap', $owner);
+        $this->assertCount(50, $history);
+        $this->assertSame('Change 55', $history[0]['summary']);
+        $this->assertSame('Change 6', $history[49]['summary']);
+    }
+
     /**
      * @param  list<string>  $teamIds
      */

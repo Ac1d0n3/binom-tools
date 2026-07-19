@@ -1,6 +1,7 @@
 import { getLocale } from '../../locale.js';
 import { isAccountsMode } from '../accounts-bridge.js';
 import { t } from '../labels.js';
+import { setLastOpenedPlanId as persistLastOpenedPlanId, clearLastOpenedPlanIdIf } from '../storage.js';
 
 /**
  * Apply data-i18n attributes inside a root for sprint-planner keys.
@@ -205,3 +206,27 @@ export function planUrl(instanceId) {
     const normalized = path.replace(/\/$/, '') || '/sprint-planner';
     return `${normalized}/${instanceId}`;
 }
+
+/**
+ * Index URL that always shows the plan list (skips last-opened restore).
+ */
+export function plansListUrl() {
+    const root = document.getElementById('sp-app');
+    const raw = root?.dataset.spIndexUrl || '/sprint-planner';
+    let path = raw;
+    try {
+        if (/^https?:\/\//i.test(raw)) {
+            path = new URL(raw).pathname;
+        }
+    } catch {
+        path = raw;
+    }
+    const normalized = path.replace(/\/$/, '') || '/sprint-planner';
+    return `${normalized}?list=1`;
+}
+
+export function setLastOpenedPlanId(planId) {
+    persistLastOpenedPlanId(planId);
+}
+
+export { clearLastOpenedPlanIdIf };

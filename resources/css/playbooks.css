@@ -93,6 +93,8 @@
     z-index: 30;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
     width: auto;
     height: auto;
     margin: 0;
@@ -100,9 +102,9 @@
     pointer-events: none;
 }
 
-.playbook-focus-toggle {
+.playbook-focus-toggle,
+.playbook-toc-rail-toggle {
     pointer-events: auto;
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0;
@@ -120,19 +122,34 @@
     -webkit-backdrop-filter: blur(10px);
 }
 
-.playbook-focus-toggle i {
+.playbook-focus-toggle {
+    display: inline-flex;
+}
+
+.playbook-toc-rail-toggle {
+    display: inline-flex;
+}
+
+.playbook-focus-toggle i,
+.playbook-toc-rail-toggle i {
     width: auto;
     margin: 0;
 }
 
-.playbook-focus-toggle--active {
+.playbook-focus-toggle--active,
+.playbook-toc-rail-toggle--active {
     border-color: color-mix(in srgb, var(--theme-color-primary) 45%, var(--base-border-color));
     color: var(--theme-color-primary);
     background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--content-background-color));
 }
 
-html[data-playbook-focus='true'] .playbook-detail__toc-rail {
+/* TOC rail visibility is controlled by playbook-detail--toc-open (independent of left nav). */
+.playbook-detail:not(.playbook-detail--toc-open) .playbook-detail__toc-rail {
     display: none !important;
+}
+
+.playbook-detail.playbook-detail--toc-open .playbook-detail__toc-rail {
+    display: flex !important;
 }
 
 .playbook-detail__actions {
@@ -1495,12 +1512,12 @@ a.playbook-series__option:hover {
 
 @media (min-width: 1100px) {
     .playbook-detail__layout {
-        grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+        grid-template-columns: minmax(0, 1fr);
         align-items: stretch;
     }
 
-    html[data-playbook-focus='true'] .playbook-detail__layout {
-        grid-template-columns: minmax(0, 1fr);
+    .playbook-detail.playbook-detail--toc-open .playbook-detail__layout {
+        grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
     }
 
     .playbook-detail__toc-rail {

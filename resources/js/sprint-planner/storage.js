@@ -136,6 +136,8 @@ export function createDefaultPreferences() {
         planHeaderExpanded: {},
         planFilterSidebarCollapsed: {},
         manualCurrentSprint: {},
+        lastOpenedPlanId: null,
+        blockersExpanded: {},
     };
 }
 
@@ -545,7 +547,7 @@ let accountsSyncQueue = Promise.resolve();
 
 /**
  * @param {SpWorkspaceRoot} workspace
- * @param {{ dirtyPlanIds?: string[] }} [options]
+ * @param {{ dirtyPlanIds?: string[], historyByPlanId?: Record<string, {action?: string, summary?: string}> }} [options]
  *   When set, only those non-ephemeral plans are POSTed (avoids overwriting siblings from a stale page bootstrap).
  */
 export function saveWorkspace(workspace, options = {}) {
@@ -567,6 +569,9 @@ export function saveWorkspace(workspace, options = {}) {
             const dirtyIds = Array.isArray(options.dirtyPlanIds)
                 ? new Set(options.dirtyPlanIds.map(String))
                 : null;
+            const historyByPlanId = options.historyByPlanId && typeof options.historyByPlanId === 'object'
+                ? options.historyByPlanId
+                : {};
             accountsSyncQueue = accountsSyncQueue
                 .then(async () => {
                     for (const plan of Object.values(payload.instances)) {
@@ -576,7 +581,11 @@ export function saveWorkspace(workspace, options = {}) {
                         if (dirtyIds && !dirtyIds.has(String(plan.id))) {
                             continue;
                         }
-                        await upsertPlanOnServer(plan, bootstrap.plansApiUrl);
+                        await upsertPlanOnServer(
+                            plan,
+                            bootstrap.plansApiUrl,
+                            historyByPlanId[String(plan.id)] || {},
+                        );
                     }
                 })
                 .catch(() => {
@@ -639,6 +648,30 @@ export function savePreferences(prefs) {
     } catch {
         return false;
     }
+}
+
+/**
+ * @param {string|null|undefined} planId
+ */
+export function setLastOpenedPlanId(planId) {
+    const prefs = loadPreferences();
+    const next = planId ? String(planId) : null;
+    if (prefs.lastOpenedPlanId === next) {
+        return;
+    }
+    savePreferences({ ...prefs, lastOpenedPlanId: next });
+}
+
+/**
+ * Clear remembered plan when it was deleted/archived.
+ * @param {string} planId
+ */
+export function clearLastOpenedPlanIdIf(planId) {
+    const prefs = loadPreferences();
+    if (String(prefs.lastOpenedPlanId || '') !== String(planId || '')) {
+        return;
+    }
+    savePreferences({ ...prefs, lastOpenedPlanId: null });
 }
 
 export function clearWorkspaceStorage() {

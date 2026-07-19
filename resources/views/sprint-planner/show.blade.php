@@ -39,7 +39,7 @@
 
         <div id="sp-plan-missing" class="sp-empty" hidden>
             <p data-i18n="sp.error.planMissing">This plan was not found in local storage.</p>
-            <a href="{{ locale_route('sprint-planner.index') }}" class="tools-btn tools-btn--primary" data-i18n="sp.action.backToPlans">Back to plans</a>
+            <a href="{{ locale_route('sprint-planner.index') }}?list=1" class="tools-btn tools-btn--primary" data-i18n="sp.action.backToPlans">Back to plans</a>
         </div>
 
         <div id="sp-plan-locked" class="sp-empty sp-lock-panel" hidden>
@@ -53,7 +53,7 @@
                 </label>
                 <p id="sp-unlock-error" class="sp-field-error" hidden></p>
                 <div class="sp-action-row">
-                    <a href="{{ locale_route('sprint-planner.index') }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.backToPlans">Back to plans</a>
+                    <a href="{{ locale_route('sprint-planner.index') }}?list=1" class="tools-btn tools-btn--secondary" data-i18n="sp.action.backToPlans">Back to plans</a>
                     <button type="submit" class="tools-btn tools-btn--primary" data-i18n="sp.password.unlock">Unlock</button>
                 </div>
             </form>
@@ -119,6 +119,8 @@
                             <i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i>
                             <span class="sr-only" data-playbook-focus-label data-i18n="playbooks.focusExpand">Hide sidebars</span>
                         </button>
+                        <button type="button" class="tools-btn tools-btn--secondary tools-btn--small" id="sp-undo-btn" data-i18n="sp.action.undo" hidden>Undo</button>
+                        <button type="button" class="tools-btn tools-btn--secondary tools-btn--small" id="sp-history-btn" data-i18n="sp.action.history" hidden>History</button>
                         <button type="button" class="tools-btn tools-btn--secondary tools-btn--small" id="sp-status-report-btn" data-i18n="sp.action.statusReport">Report</button>
                         <a href="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.action.settings">Settings</a>
                         <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-add-sprint" data-i18n="sp.action.addSprint">Add sprint</button>
@@ -150,6 +152,13 @@
                             <div><dt data-i18n="sp.field.team">Team</dt><dd id="sp-plan-team"></dd></div>
                             <div><dt data-i18n="sp.field.participants">Participants</dt><dd id="sp-plan-participants"></dd></div>
                         </dl>
+                        <div
+                            id="sp-plan-status-overview"
+                            class="sp-status-overview"
+                            role="group"
+                            aria-label="Item status overview"
+                            hidden
+                        ></div>
                         <div class="sp-progress" id="sp-plan-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                             <div class="sp-progress__bar" id="sp-plan-progress-bar"></div>
                             <span class="sp-progress__label" id="sp-plan-progress-label">0%</span>
@@ -407,6 +416,18 @@
             </div>
             <div id="sp-status-report-body" class="sp-status-report__body"></div>
         </div>
+
+        <dialog id="sp-history-dialog" class="sp-dialog sp-history-dialog">
+            <div class="sp-dialog__form">
+                <div class="sp-history-dialog__header">
+                    <h2 class="sp-dialog__title" data-i18n="sp.history.title">Plan history</h2>
+                    <button type="button" id="sp-history-close" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.help.close">Close</button>
+                </div>
+                <p class="sp-password-note" data-i18n="sp.history.lead">Recent changes with actor. Restore replaces the current plan with the state before that change.</p>
+                <div id="sp-history-list" class="sp-history-list"></div>
+                <div id="sp-history-detail" class="sp-history-detail" hidden></div>
+            </div>
+        </dialog>
 
         <div id="sp-toast" class="sp-toast" role="status" aria-live="polite" hidden></div>
         <p id="sp-save-status" class="sp-save-status" aria-live="polite"></p>

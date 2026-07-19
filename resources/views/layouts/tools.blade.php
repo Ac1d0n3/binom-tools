@@ -51,6 +51,15 @@
                 && !/\/settings\/?$/.test(relative);
             document.documentElement.dataset.playbookFocus =
                 (isPlaybookStory || isSprintPlan) && localStorage.getItem(playbookFocusKey) === 'true' ? 'true' : 'false';
+            // Default TOC open unless user previously closed it (or focus mode closed it).
+            var tocStored = localStorage.getItem('binom-tools-playbook-toc-open');
+            var tocOpen = tocStored === null ? true : tocStored === 'true';
+            document.documentElement.dataset.playbookTocOpen = tocOpen ? 'true' : 'false';
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-playbook-root]').forEach(function (root) {
+                    root.classList.toggle('playbook-detail--toc-open', tocOpen);
+                });
+            });
         })();
     </script>
     @vite(array_merge(['resources/css/app.css', 'resources/js/app.js'], $viteEntries ?? []))

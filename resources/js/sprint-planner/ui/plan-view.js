@@ -3,6 +3,9 @@ import { applyPlaybookFocus, getPlaybookFocus } from '../../shell-layout.js';
 import {
     isAccountsMode,
     readAccountsBootstrap,
+    fetchPlanHistory,
+    fetchPlanRevision,
+    restorePlanRevision,
     uploadAttachmentToServer,
     usesServerPlans,
 } from '../accounts-bridge.js';
@@ -48,6 +51,8 @@ import {
     updateCustomOrOverrideSprint,
     updateInstance,
     updateItemMeta,
+    canUndoInstance,
+    undoLastInstanceChange,
 } from '../instance-manager.js';
 import { listPeople, listTeams, localizedText, upsertPerson } from '../people-teams.js';
 import { normalizeTeamIds, normalizeTrigram } from '../trigram.js';
@@ -64,7 +69,7 @@ import {
     resolveSprints,
     sprintDateRange,
 } from '../progress.js';
-import { loadPreferences, loadWorkspace, savePreferences } from '../storage.js';
+import { loadPreferences, loadWorkspace, savePreferences, saveWorkspace } from '../storage.js';
 import {
     isPasswordProtected,
     isPlanUnlocked,
@@ -76,6 +81,7 @@ import {
     fillSelect,
     planOwnershipLabel,
     readTemplatesFromDom,
+    setLastOpenedPlanId,
     showToast,
     spT,
     storageErrorMessage,
@@ -120,6 +126,9 @@ export function initPlanShowPage() {
     }
 
     const instanceId = root.dataset.spInstanceId;
+    if (instanceId) {
+        setLastOpenedPlanId(instanceId);
+    }
 
     const render = () => renderPlan(instanceId);
 
@@ -136,6 +145,7 @@ export function initPlanShowPage() {
         bindDialogs(instanceId, render);
         bindHelpPanelChrome();
         bindStatusReport();
+        bindUndoAndHistory(instanceId);
         bindClaimAll(instanceId);
         bindTemplateRecover(instanceId, render);
         document.getElementById('sp-add-sprint')?.addEventListener('click', () => {
@@ -417,6 +427,8 @@ function renderPlan(instanceId) {
         participantsHost.replaceChildren(renderParticipantChips(instance.participantIds || [], workspace));
     }
 
+    renderPlanStatusOverview(sprints);
+
     const progressEl = document.getElementById('sp-plan-progress');
     const bar = document.getElementById('sp-plan-progress-bar');
     const label = document.getElementById('sp-plan-progress-label');
@@ -442,10 +454,11 @@ function renderPlan(instanceId) {
         activePersonId: resolveClaimPersonId(workspace),
     });
 
-    renderBlockers(sprints, workspace, locale);
+    renderBlockers(sprints, workspace, locale, instance);
     renderUnassignedBanner(sprints, workspace);
     renderSprints(filtered, currentNumber, instance, template, locale, workspace);
     renderFilterEmpty(filtered, sprints, filters);
+    syncUndoHistoryChrome(instanceId);
 
     lastRenderContext = { instance, template, sprints, workspace, locale };
 }
@@ -1167,6 +1180,86 @@ function resolveAssigneeName(item, workspace, locale) {
     return '';
 }
 
+/**
+ * Status counts for the expanded plan header.
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ */
+function renderPlanStatusOverview(sprints) {
+    const host = document.getElementById('sp-plan-status-overview');
+    if (!host) {
+        return;
+    }
+
+    /** @type {Record<string, number>} */
+    const counts = {
+        open: 0,
+        in_progress: 0,
+        blocked: 0,
+        completed: 0,
+    };
+    for (const sprint of sprints) {
+        for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+            const key = String(item.status || 'open');
+            if (key in counts) {
+                counts[key] += 1;
+            } else {
+                counts.open += 1;
+            }
+        }
+    }
+
+    const total = counts.open + counts.in_progress + counts.blocked + counts.completed;
+    host.innerHTML = '';
+    if (total === 0) {
+        host.hidden = true;
+        return;
+    }
+    host.hidden = false;
+
+    const title = document.createElement('p');
+    title.className = 'sp-status-overview__title';
+    title.textContent = spT('sp.overview.statusTitle');
+    host.appendChild(title);
+
+    const row = document.createElement('div');
+    row.className = 'sp-status-overview__row';
+
+    /** @type {Array<{key: string, icon: string, count: number}>} */
+    const entries = [
+        { key: 'open', icon: 'fa-solid fa-circle', count: counts.open },
+        { key: 'in_progress', icon: 'fa-solid fa-play', count: counts.in_progress },
+        { key: 'blocked', icon: 'fa-solid fa-ban', count: counts.blocked },
+        { key: 'completed', icon: 'fa-solid fa-check', count: counts.completed },
+    ];
+
+    for (const entry of entries) {
+        const cell = document.createElement('div');
+        cell.className = `sp-status-overview__item sp-status-overview__item--${entry.key}`;
+        cell.title = spT(`sp.status.${statusKeyToLabel(entry.key)}`);
+        cell.setAttribute(
+            'aria-label',
+            `${spT(`sp.status.${statusKeyToLabel(entry.key)}`)}: ${entry.count}`,
+        );
+
+        const icon = document.createElement('i');
+        icon.className = entry.icon;
+        icon.setAttribute('aria-hidden', 'true');
+
+        const countEl = document.createElement('span');
+        countEl.className = 'sp-status-overview__count';
+        countEl.textContent = String(entry.count);
+
+        const label = document.createElement('span');
+        label.className = 'sp-status-overview__label';
+        label.textContent = spT(`sp.status.${statusKeyToLabel(entry.key)}`);
+
+        cell.append(icon, countEl, label);
+        row.appendChild(cell);
+    }
+
+    host.appendChild(row);
+}
+
 function ensureBlockersHost() {
     let host = document.getElementById('sp-blockers');
     if (!host) {
@@ -1183,8 +1276,9 @@ function ensureBlockersHost() {
  * @param {ReturnType<typeof resolveSprints>} sprints
  * @param {import('../storage.js').SpWorkspaceRoot} workspace
  * @param {'de'|'en'} locale
+ * @param {import('../storage.js').SpPlanInstance} [instance]
  */
-function renderBlockers(sprints, workspace, locale) {
+function renderBlockers(sprints, workspace, locale, instance) {
     const host = ensureBlockersHost();
     const blockers = collectBlockers(sprints);
     host.innerHTML = '';
@@ -1194,10 +1288,39 @@ function renderBlockers(sprints, workspace, locale) {
     }
     host.hidden = false;
 
-    const heading = document.createElement('h2');
-    heading.className = 'sp-blockers__title';
-    heading.textContent = spT('sp.blockers.title');
-    host.appendChild(heading);
+    const planId = instance?.id || document.getElementById('sp-app')?.dataset?.spInstanceId || '';
+    const prefs = loadPreferences();
+    const expandedMap = prefs.blockersExpanded && typeof prefs.blockersExpanded === 'object'
+        ? prefs.blockersExpanded
+        : {};
+    const wasExpanded = planId ? expandedMap[planId] === true : false;
+
+    const details = document.createElement('details');
+    details.className = 'sp-blockers__details';
+    details.open = wasExpanded;
+    details.addEventListener('toggle', () => {
+        if (!planId) {
+            return;
+        }
+        const next = loadPreferences();
+        next.blockersExpanded = next.blockersExpanded || {};
+        next.blockersExpanded[planId] = details.open;
+        savePreferences(next);
+    });
+
+    const summary = document.createElement('summary');
+    summary.className = 'sp-blockers__summary';
+    const summaryIcon = document.createElement('i');
+    summaryIcon.className = 'fa-solid fa-ban';
+    summaryIcon.setAttribute('aria-hidden', 'true');
+    const summaryText = document.createElement('span');
+    summaryText.className = 'sp-blockers__summary-text';
+    summaryText.textContent = spT('sp.blockers.titleCount', { count: blockers.length });
+    const chevron = document.createElement('i');
+    chevron.className = 'fa-solid fa-chevron-down sp-blockers__chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+    summary.append(summaryIcon, summaryText, chevron);
+    details.appendChild(summary);
 
     const list = document.createElement('ul');
     list.className = 'sp-blockers__list';
@@ -1211,21 +1334,47 @@ function renderBlockers(sprints, workspace, locale) {
         title.textContent = `#${blocker.sprintNumber} · ${blocker.item.label}`;
         const meta = document.createElement('span');
         meta.className = 'sp-blockers__meta';
-        meta.textContent = [blocker.sprintTitle, resolveAssigneeName(blocker.item, workspace, locale)]
-            .filter(Boolean)
-            .join(' · ');
+        meta.textContent = [
+            blocker.sprintTitle,
+            resolveAssigneeName(blocker.item, workspace, locale) || spT('sp.report.unassigned'),
+        ].filter(Boolean).join(' · ');
         main.append(title, meta);
-        li.appendChild(main);
 
-        if (blocker.item.blockerReason) {
-            const reason = document.createElement('p');
-            reason.className = 'sp-blockers__reason';
-            reason.textContent = blocker.item.blockerReason;
-            li.appendChild(reason);
+        const reason = document.createElement('p');
+        reason.className = 'sp-blockers__reason';
+        const reasonText = String(blocker.item.blockerReason || '').trim();
+        if (reasonText) {
+            reason.textContent = reasonText;
+        } else {
+            reason.classList.add('sp-blockers__reason--empty');
+            reason.textContent = spT('sp.blockers.noReason');
         }
+
+        const actions = document.createElement('div');
+        actions.className = 'sp-blockers__actions';
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
+        editBtn.textContent = reasonText
+            ? spT('sp.blockers.editReason')
+            : spT('sp.blockers.addReason');
+        editBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            openItemDialog({
+                sprintId: blocker.sprintId,
+                kind: blocker.item.kind,
+                custom: blocker.item.custom,
+                item: blocker.item,
+            });
+        });
+        actions.appendChild(editBtn);
+
+        li.append(main, reason, actions);
         list.appendChild(li);
     }
-    host.appendChild(list);
+    details.appendChild(list);
+    host.appendChild(details);
 }
 
 function renderSprints(sprints, currentNumber, instance, template, locale, workspace) {
@@ -1300,20 +1449,31 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
             }
         }
         const statusHost = summary.querySelector('.sp-sprint__status');
-        if (statusHost && (isCurrent || isUpcoming || isOverdue)) {
-            const badge = document.createElement('span');
-            badge.className = 'sp-sprint__badge';
-            if (isOverdue) {
-                badge.classList.add('sp-sprint__badge--overdue');
-                badge.textContent = spT('sp.sprint.overdueBadge');
-            } else if (isUpcoming) {
-                badge.classList.add('sp-sprint__badge--upcoming');
-                badge.textContent = spT('sp.sprint.upcomingBadge');
-            } else {
-                badge.classList.add('sp-sprint__badge--current');
-                badge.textContent = spT('sp.sprint.currentBadge');
+        if (statusHost) {
+            if (isCurrent || isUpcoming || isOverdue) {
+                const badge = document.createElement('span');
+                badge.className = 'sp-sprint__badge';
+                if (isOverdue) {
+                    badge.classList.add('sp-sprint__badge--overdue');
+                    badge.textContent = spT('sp.sprint.overdueBadge');
+                } else if (isUpcoming) {
+                    badge.classList.add('sp-sprint__badge--upcoming');
+                    badge.textContent = spT('sp.sprint.upcomingBadge');
+                } else {
+                    badge.classList.add('sp-sprint__badge--current');
+                    badge.textContent = spT('sp.sprint.currentBadge');
+                }
+                statusHost.appendChild(badge);
             }
-            statusHost.appendChild(badge);
+            const items = [...sprint.tasks, ...sprint.deliverables];
+            const blockedCount = items.filter((item) => item.status === 'blocked').length;
+            const inProgressCount = items.filter((item) => item.status === 'in_progress').length;
+            if (blockedCount > 0) {
+                statusHost.appendChild(renderSprintStatusCountChip('blocked', blockedCount));
+            }
+            if (inProgressCount > 0) {
+                statusHost.appendChild(renderSprintStatusCountChip('in_progress', inProgressCount));
+            }
         }
         details.appendChild(summary);
 
@@ -1681,6 +1841,33 @@ function renderGenericLinks(links, className) {
 
 function statusKeyToLabel(status) {
     return status === 'in_progress' ? 'inProgress' : status;
+}
+
+/**
+ * Compact sprint-summary marker: colored icon + count badge.
+ * @param {'blocked'|'in_progress'} status
+ * @param {number} count
+ * @returns {HTMLSpanElement}
+ */
+function renderSprintStatusCountChip(status, count) {
+    const chip = document.createElement('span');
+    chip.className = `sp-status-mark sp-status-mark--${status}`;
+    const labelKey = status === 'blocked' ? 'sp.sprint.blockedCount' : 'sp.sprint.inProgressCount';
+    chip.title = spT(labelKey, { count });
+    chip.setAttribute('aria-label', spT(labelKey, { count }));
+
+    const icon = document.createElement('i');
+    icon.className = status === 'blocked'
+        ? 'fa-solid fa-ban'
+        : 'fa-solid fa-play';
+    icon.setAttribute('aria-hidden', 'true');
+
+    const badge = document.createElement('span');
+    badge.className = 'sp-status-mark__badge';
+    badge.textContent = String(count);
+
+    chip.append(icon, badge);
+    return chip;
 }
 
 /**
@@ -2410,8 +2597,249 @@ function bindStatusReport() {
         if (report && !report.hidden) {
             closeStatusReport();
         }
+        const historyDialog = document.getElementById('sp-history-dialog');
+        if (historyDialog?.open) {
+            historyDialog.close();
+        }
     });
     updateReportModeButtons();
+}
+
+/**
+ * @param {string} instanceId
+ */
+function syncUndoHistoryChrome(instanceId) {
+    const undoBtn = document.getElementById('sp-undo-btn');
+    if (undoBtn) {
+        undoBtn.hidden = false;
+        undoBtn.disabled = !canUndoInstance(instanceId);
+    }
+    const historyBtn = document.getElementById('sp-history-btn');
+    if (historyBtn) {
+        historyBtn.hidden = !usesServerPlans();
+    }
+}
+
+/**
+ * @param {string} instanceId
+ */
+function bindUndoAndHistory(instanceId) {
+    document.getElementById('sp-undo-btn')?.addEventListener('click', () => {
+        const result = undoLastInstanceChange(instanceId);
+        if (!result.ok) {
+            showToast(result.error === 'nothing-to-undo'
+                ? spT('sp.history.nothingToUndo')
+                : storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.toast.undone'));
+        rerender();
+    });
+
+    document.getElementById('sp-history-btn')?.addEventListener('click', () => {
+        openHistoryDialog(instanceId);
+    });
+    document.getElementById('sp-history-close')?.addEventListener('click', () => {
+        document.getElementById('sp-history-dialog')?.close();
+    });
+}
+
+/**
+ * @param {string} instanceId
+ */
+async function openHistoryDialog(instanceId) {
+    const dialog = document.getElementById('sp-history-dialog');
+    const list = document.getElementById('sp-history-list');
+    const detail = document.getElementById('sp-history-detail');
+    if (!dialog || !list || !detail) {
+        return;
+    }
+    detail.hidden = true;
+    detail.innerHTML = '';
+    list.innerHTML = `<p class="sp-password-note">${spT('sp.history.loading')}</p>`;
+    dialog.showModal();
+
+    if (!usesServerPlans()) {
+        list.innerHTML = `<p class="sp-password-note">${spT('sp.history.accountsOnly')}</p>`;
+        return;
+    }
+
+    try {
+        const data = await fetchPlanHistory(instanceId);
+        const revisions = Array.isArray(data.revisions) ? data.revisions : [];
+        if (!revisions.length) {
+            list.innerHTML = `<p class="sp-password-note">${spT('sp.history.empty')}</p>`;
+            return;
+        }
+        list.innerHTML = '';
+        const ul = document.createElement('ul');
+        ul.className = 'sp-history-entries';
+        for (const rev of revisions) {
+            const li = document.createElement('li');
+            li.className = 'sp-history-entry';
+            const when = String(rev.createdAt || '');
+            const actor = String(rev.actorLabel || rev.actorUserId || '—');
+            const summary = String(rev.summary || rev.action || '');
+            const meta = document.createElement('div');
+            meta.className = 'sp-history-entry__meta';
+            meta.textContent = `${formatHistoryWhen(when)} · ${actor}`;
+            const summaryEl = document.createElement('div');
+            summaryEl.className = 'sp-history-entry__summary';
+            summaryEl.textContent = summary;
+            const actions = document.createElement('div');
+            actions.className = 'sp-history-entry__actions';
+            const detailBtn = document.createElement('button');
+            detailBtn.type = 'button';
+            detailBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
+            detailBtn.textContent = spT('sp.history.showDiff');
+            detailBtn.addEventListener('click', () => showHistoryDetail(instanceId, String(rev.id)));
+            const restoreBtn = document.createElement('button');
+            restoreBtn.type = 'button';
+            restoreBtn.className = 'tools-btn tools-btn--primary tools-btn--small';
+            restoreBtn.textContent = spT('sp.history.restore');
+            restoreBtn.addEventListener('click', () => restoreHistoryRevision(instanceId, String(rev.id)));
+            actions.append(detailBtn, restoreBtn);
+            li.append(meta, summaryEl, actions);
+            ul.appendChild(li);
+        }
+        list.appendChild(ul);
+    } catch {
+        list.innerHTML = `<p class="sp-password-note">${spT('sp.history.loadFailed')}</p>`;
+    }
+}
+
+/**
+ * @param {string} when
+ */
+function formatHistoryWhen(when) {
+    if (!when) {
+        return '—';
+    }
+    try {
+        return new Date(when).toLocaleString(getLocale() === 'de' ? 'de-DE' : 'en-GB');
+    } catch {
+        return when;
+    }
+}
+
+/**
+ * @param {string} instanceId
+ * @param {string} revisionId
+ */
+async function showHistoryDetail(instanceId, revisionId) {
+    const detail = document.getElementById('sp-history-detail');
+    if (!detail) {
+        return;
+    }
+    detail.hidden = false;
+    detail.textContent = spT('sp.history.loading');
+    try {
+        const data = await fetchPlanRevision(instanceId, revisionId);
+        const revision = data.revision || {};
+        const snapshot = revision.snapshot && typeof revision.snapshot === 'object' ? revision.snapshot : {};
+        const current = loadWorkspace().data.instances[instanceId] || {};
+        const lines = buildHistoryDiffLines(current, snapshot);
+        detail.innerHTML = '';
+        const title = document.createElement('h3');
+        title.className = 'sp-history-detail__title';
+        title.textContent = spT('sp.history.diffTitle');
+        detail.appendChild(title);
+        if (!lines.length) {
+            const empty = document.createElement('p');
+            empty.className = 'sp-password-note';
+            empty.textContent = spT('sp.history.diffEmpty');
+            detail.appendChild(empty);
+            return;
+        }
+        const ul = document.createElement('ul');
+        ul.className = 'sp-history-diff';
+        for (const line of lines) {
+            const li = document.createElement('li');
+            li.textContent = line;
+            ul.appendChild(li);
+        }
+        detail.appendChild(ul);
+    } catch {
+        detail.textContent = spT('sp.history.loadFailed');
+    }
+}
+
+/**
+ * @param {Record<string, unknown>} current
+ * @param {Record<string, unknown>} snapshot
+ * @returns {string[]}
+ */
+function buildHistoryDiffLines(current, snapshot) {
+    /** @type {string[]} */
+    const lines = [];
+    const keys = [
+        'completedTasks',
+        'completedDeliverables',
+        'customTasks',
+        'customDeliverables',
+        'customSprints',
+        'itemOverrides',
+        'sprintOverrides',
+        'removedItemKeys',
+        'fieldValues',
+        'sprintNotes',
+        'participantIds',
+        'teamIds',
+        'status',
+        'archived',
+    ];
+    for (const key of keys) {
+        const a = JSON.stringify(current[key] ?? null);
+        const b = JSON.stringify(snapshot[key] ?? null);
+        if (a !== b) {
+            lines.push(`${key}: ${summarizeJsonChange(snapshot[key], current[key])}`);
+        }
+    }
+    return lines;
+}
+
+/**
+ * @param {unknown} before
+ * @param {unknown} after
+ */
+function summarizeJsonChange(before, after) {
+    const beforeLen = Array.isArray(before)
+        ? before.length
+        : (before && typeof before === 'object' ? Object.keys(before).length : (before == null ? 0 : 1));
+    const afterLen = Array.isArray(after)
+        ? after.length
+        : (after && typeof after === 'object' ? Object.keys(after).length : (after == null ? 0 : 1));
+    return spT('sp.history.diffSummary', { before: beforeLen, after: afterLen });
+}
+
+/**
+ * @param {string} instanceId
+ * @param {string} revisionId
+ */
+async function restoreHistoryRevision(instanceId, revisionId) {
+    if (!window.confirm(spT('sp.confirm.restoreRevision'))) {
+        return;
+    }
+    try {
+        const data = await restorePlanRevision(instanceId, revisionId);
+        const plan = data.plan;
+        if (!plan || typeof plan !== 'object') {
+            showToast(spT('sp.history.restoreFailed'));
+            return;
+        }
+        const loaded = loadWorkspace();
+        loaded.data.instances[instanceId] = /** @type {any} */ (plan);
+        const saved = saveWorkspace(loaded.data, { dirtyPlanIds: [] });
+        if (!saved.ok) {
+            showToast(storageErrorMessage(saved.error));
+            return;
+        }
+        document.getElementById('sp-history-dialog')?.close();
+        showToast(spT('sp.toast.restored'));
+        rerender();
+    } catch {
+        showToast(spT('sp.history.restoreFailed'));
+    }
 }
 
 function updateReportModeButtons() {

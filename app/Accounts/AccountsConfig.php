@@ -53,6 +53,13 @@ final class AccountsConfig
         return $this->plansDirectory().DIRECTORY_SEPARATOR.$safe.DIRECTORY_SEPARATOR.'attachments';
     }
 
+    public function planHistoryDirectory(string $planId): string
+    {
+        $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $planId) ?: 'invalid';
+
+        return $this->plansDirectory().DIRECTORY_SEPARATOR.$safe.DIRECTORY_SEPARATOR.'history';
+    }
+
     public function readStateDirectory(): string
     {
         return $this->basePath().DIRECTORY_SEPARATOR.'read-state';

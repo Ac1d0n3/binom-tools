@@ -2,6 +2,7 @@ import { getLocale } from './locale.js';
 
 const FULL_WIDTH_STORAGE_KEY = 'binom-tools-shell-full-width';
 const PLAYBOOK_FOCUS_STORAGE_KEY = 'binom-tools-playbook-focus';
+const PLAYBOOK_TOC_OPEN_STORAGE_KEY = 'binom-tools-playbook-toc-open';
 
 /** @returns {boolean} */
 export function getShellFullWidth() {
@@ -14,12 +15,22 @@ export function getPlaybookFocus() {
 }
 
 /** @returns {boolean} */
+export function getPlaybookTocOpen() {
+    return localStorage.getItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY) === 'true';
+}
+
+/** @returns {boolean} */
 function isPlaybookPage() {
     return Boolean(
         document.querySelector('.tools-shell__main--playbook')
         || document.querySelector('.tools-shell__main--sprint-planner')
         || document.querySelector('.sp-app[data-sp-page="show"]'),
     );
+}
+
+/** @returns {boolean} */
+function isPlaybookStoryPage() {
+    return Boolean(document.querySelector('.tools-shell__main--playbook'));
 }
 
 /** @param {boolean} enabled */
@@ -83,6 +94,45 @@ export function applyPlaybookFocus(enabled, options = {}) {
             el.hidden = !isPlaybookPage();
         }
     });
+
+    applyPlaybookTocOpen(getPlaybookTocOpen(), { syncControls });
+}
+
+/**
+ * @param {boolean} enabled
+ * @param {{ syncControls?: boolean }} [options]
+ */
+export function applyPlaybookTocOpen(enabled, options = {}) {
+    const { syncControls = true } = options;
+    const open = Boolean(enabled);
+    document.documentElement.dataset.playbookTocOpen = open ? 'true' : 'false';
+
+    document.querySelectorAll('[data-playbook-root]').forEach((root) => {
+        if (root instanceof HTMLElement) {
+            root.classList.toggle('playbook-detail--toc-open', open);
+        }
+    });
+
+    if (!syncControls) {
+        return;
+    }
+
+    document.querySelectorAll('[data-playbook-toc-rail-button]').forEach((button) => {
+        if (!(button instanceof HTMLElement)) {
+            return;
+        }
+        button.setAttribute('aria-pressed', open ? 'true' : 'false');
+        button.classList.toggle('playbook-toc-rail-toggle--active', open);
+        button.setAttribute(
+            'data-i18n-aria',
+            open ? 'playbooks.tocHide' : 'playbooks.tocShow',
+        );
+        button.setAttribute('title', open ? 'Hide table of contents' : 'Show table of contents');
+        const label = button.querySelector('[data-playbook-toc-rail-label]');
+        if (label) {
+            label.setAttribute('data-i18n', open ? 'playbooks.tocHide' : 'playbooks.tocShow');
+        }
+    });
 }
 
 /** @param {boolean} enabled */
@@ -95,8 +145,24 @@ export function setShellFullWidth(enabled) {
 /** @param {boolean} enabled */
 export function setPlaybookFocus(enabled) {
     localStorage.setItem(PLAYBOOK_FOCUS_STORAGE_KEY, enabled ? 'true' : 'false');
+    // Entering focus: collapse TOC so reading starts clean; list button can reopen it.
+    // Leaving focus: restore TOC visible by default.
+    if (enabled) {
+        localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'false');
+    } else {
+        localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'true');
+    }
     applyPlaybookFocus(enabled);
     window.dispatchEvent(new CustomEvent('binom-tools:playbook-focus', { detail: { focus: enabled } }));
+    const locale = getLocale();
+    window.dispatchEvent(new CustomEvent('binom-tools:locale', { detail: { locale } }));
+}
+
+/** @param {boolean} enabled */
+export function setPlaybookTocOpen(enabled) {
+    localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, enabled ? 'true' : 'false');
+    applyPlaybookTocOpen(enabled);
+    window.dispatchEvent(new CustomEvent('binom-tools:playbook-toc-open', { detail: { open: enabled } }));
     const locale = getLocale();
     window.dispatchEvent(new CustomEvent('binom-tools:locale', { detail: { locale } }));
 }
@@ -138,6 +204,10 @@ function toggleSettingsMenu() {
 
 export function initShellLayoutControls() {
     applyShellFullWidth(getShellFullWidth());
+    // First visit: TOC open by default when preference was never stored.
+    if (localStorage.getItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY) === null) {
+        localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'true');
+    }
     applyPlaybookFocus(getPlaybookFocus());
 
     document.querySelector('[data-header-settings-toggle]')?.addEventListener('click', (event) => {
@@ -169,6 +239,20 @@ export function initShellLayoutControls() {
         button.addEventListener('click', () => {
             setPlaybookFocus(!getPlaybookFocus());
         });
+    });
+
+    // Event delegation: locale panels remount content; keep TOC toggle reliable.
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+        const button = target.closest('[data-playbook-toc-rail-button]');
+        if (!(button instanceof HTMLElement)) {
+            return;
+        }
+        event.preventDefault();
+        setPlaybookTocOpen(!getPlaybookTocOpen());
     });
 
     window.addEventListener('binom-tools:locale', () => {

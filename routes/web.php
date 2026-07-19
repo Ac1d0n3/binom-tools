@@ -111,6 +111,17 @@ $registerRoutes = static function (bool $localized): void {
         Route::delete('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'destroy'])
             ->where('planId', 'plan_[a-zA-Z0-9_]+')
             ->name($name('accounts.plans.destroy'));
+        Route::get('/api/sprint-planner/plans/{planId}/history', [PlanApiController::class, 'historyIndex'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.history.index'));
+        Route::get('/api/sprint-planner/plans/{planId}/history/{revisionId}', [PlanApiController::class, 'historyShow'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->where('revisionId', 'rev_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.history.show'));
+        Route::post('/api/sprint-planner/plans/{planId}/history/{revisionId}/restore', [PlanApiController::class, 'historyRestore'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->where('revisionId', 'rev_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.history.restore'));
         Route::get('/api/sprint-planner/stories', [PlanApiController::class, 'storyMeta'])->name($name('accounts.plans.stories'));
         Route::get('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'index'])->name($name('accounts.user-templates.index'));
         Route::get('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'show'])

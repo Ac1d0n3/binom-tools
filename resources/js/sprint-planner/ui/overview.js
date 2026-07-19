@@ -30,6 +30,22 @@ export function initOverviewPage({ templatesOnly = false } = {}) {
         return;
     }
 
+    if (!templatesOnly) {
+        const params = new URLSearchParams(window.location.search);
+        if (!params.has('list')) {
+            const prefs = loadPreferences();
+            const lastId = String(prefs.lastOpenedPlanId || '');
+            if (lastId) {
+                const { data } = loadWorkspace();
+                if (data.instances[lastId]) {
+                    window.location.replace(planUrl(lastId));
+                    return;
+                }
+                savePreferences({ ...prefs, lastOpenedPlanId: null });
+            }
+        }
+    }
+
     applySpI18n(root);
     window.addEventListener('binom-tools:locale', () => {
         applySpI18n(root);

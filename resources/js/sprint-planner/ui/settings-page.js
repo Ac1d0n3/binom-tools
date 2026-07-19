@@ -24,6 +24,7 @@ import { listPeople, listTeams, localizedText } from '../people-teams.js';
 import {
     applySpI18n,
     fillSelect,
+    plansListUrl,
     readTemplatesFromDom,
     showToast,
     spT,
@@ -287,7 +288,7 @@ export function initSettingsPage() {
     document.getElementById('sp-archive-plan')?.addEventListener('click', () => {
         archiveInstance(instanceId, true);
         showToast(spT('sp.toast.saved'));
-        window.location.href = root.dataset.spIndexUrl;
+        window.location.href = plansListUrl();
     });
 
     document.getElementById('sp-reset-plan')?.addEventListener('click', () => {
@@ -304,7 +305,7 @@ export function initSettingsPage() {
         }
         deleteInstance(instanceId);
         showToast(spT('sp.toast.deleted'));
-        window.location.href = root.dataset.spIndexUrl;
+        window.location.href = plansListUrl();
     });
 
     document.getElementById('sp-export-workspace')?.addEventListener('click', () => {
@@ -353,7 +354,7 @@ export function initSettingsPage() {
         }
         resetToEmptyWorkspace();
         showToast(spT('sp.toast.deleted'));
-        window.location.href = root.dataset.spIndexUrl;
+        window.location.href = plansListUrl();
     });
 
     render();

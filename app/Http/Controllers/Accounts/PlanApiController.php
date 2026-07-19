@@ -54,9 +54,60 @@ class PlanApiController extends Controller
         $data = $request->validate([
             'plan' => ['required', 'array'],
             'plan.id' => ['required', 'string'],
+            'history' => ['sometimes', 'array'],
+            'history.action' => ['sometimes', 'string', 'max:80'],
+            'history.summary' => ['sometimes', 'string', 'max:500'],
         ]);
 
-        $plan = $this->plans->save($data['plan'], $user);
+        $historyMeta = is_array($data['history'] ?? null) ? $data['history'] : [];
+        $plan = $this->plans->save($data['plan'], $user, $historyMeta);
+
+        return response()->json(['plan' => $plan]);
+    }
+
+    public function historyIndex(string $planId): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        try {
+            $revisions = $this->plans->listHistory($planId, $user);
+        } catch (\InvalidArgumentException $e) {
+            abort(403, $e->getMessage());
+        }
+
+        return response()->json(['revisions' => $revisions]);
+    }
+
+    public function historyShow(string $planId, string $revisionId): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        try {
+            $revision = $this->plans->findRevision($planId, $revisionId, $user);
+        } catch (\InvalidArgumentException $e) {
+            abort(403, $e->getMessage());
+        }
+        abort_if($revision === null, 404);
+
+        return response()->json(['revision' => $revision]);
+    }
+
+    public function historyRestore(string $planId, string $revisionId): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        try {
+            $plan = $this->plans->restoreRevision($planId, $revisionId, $user);
+        } catch (\InvalidArgumentException $e) {
+            $message = $e->getMessage();
+            if (str_contains($message, 'not found') || str_contains($message, 'missing')) {
+                abort(404, $message);
+            }
+            abort(403, $message);
+        }
 
         return response()->json(['plan' => $plan]);
     }
