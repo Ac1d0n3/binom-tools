@@ -60,6 +60,7 @@ import {
     calculateCurrentSprintNumber,
     calculateOverallProgress,
     collectBlockers,
+    collectItemsByStatus,
     computeScheduleHealth,
     formatDateRangeShort,
     formatDateShort,
@@ -110,6 +111,9 @@ let bound = false;
 let reportMode = 'executive';
 /** @type {{instance: object, template: object|undefined, sprints: object[], workspace: object, locale: 'de'|'en'}|null} */
 let lastRenderContext = null;
+/** Session UI state for the status banner (prefs are synced, but memory wins within the tab). */
+/** @type {Map<string, {status: string|null, expanded: boolean}>} */
+const statusBannerSession = new Map();
 /** @type {Set<string>} */
 const healedIdentityPlanIds = new Set();
 /** @type {Set<string>} */
@@ -427,7 +431,9 @@ function renderPlan(instanceId) {
         participantsHost.replaceChildren(renderParticipantChips(instance.participantIds || [], workspace));
     }
 
-    renderPlanStatusOverview(sprints);
+    lastRenderContext = { instance, template, sprints, workspace, locale };
+
+    renderPlanStatusOverview(sprints, instance);
 
     const progressEl = document.getElementById('sp-plan-progress');
     const bar = document.getElementById('sp-plan-progress-bar');
@@ -454,13 +460,11 @@ function renderPlan(instanceId) {
         activePersonId: resolveClaimPersonId(workspace),
     });
 
-    renderBlockers(sprints, workspace, locale, instance);
+    renderStatusBanner(sprints, workspace, locale, instance);
     renderUnassignedBanner(sprints, workspace);
     renderSprints(filtered, currentNumber, instance, template, locale, workspace);
     renderFilterEmpty(filtered, sprints, filters);
     syncUndoHistoryChrome(instanceId);
-
-    lastRenderContext = { instance, template, sprints, workspace, locale };
 }
 
 /**
@@ -845,10 +849,16 @@ function bindPlanChrome(instanceId, render) {
             if (action === 'header-toggle') {
                 const prefs = loadPreferences();
                 const map = { ...(prefs.planHeaderExpanded || {}) };
-                map[instanceId] = !Boolean(map[instanceId]);
+                const nextExpanded = !Boolean(map[instanceId]);
+                map[instanceId] = nextExpanded;
                 prefs.planHeaderExpanded = map;
                 savePreferences(prefs);
                 applyPlanHeaderState(instanceId);
+                // Collapsed plan header → banner falls back to blocked summary (or hidden).
+                if (!nextExpanded) {
+                    setStatusBannerState(instanceId, null, false);
+                    refreshStatusBannerUi();
+                }
                 return;
             }
 
@@ -1181,10 +1191,16 @@ function resolveAssigneeName(item, workspace, locale) {
 }
 
 /**
- * Status counts for the expanded plan header.
+ * Status counts for the expanded plan header (clickable → status banner).
  * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {import('../storage.js').SpPlanInstance} [instance]
  */
-function renderPlanStatusOverview(sprints) {
+/**
+ * Status counts for the expanded plan header (clickable → status banner).
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {import('../storage.js').SpPlanInstance} [instance]
+ */
+function renderPlanStatusOverview(sprints, instance) {
     const host = document.getElementById('sp-plan-status-overview');
     if (!host) {
         return;
@@ -1217,6 +1233,10 @@ function renderPlanStatusOverview(sprints) {
     }
     host.hidden = false;
 
+    const planId = instance?.id || document.getElementById('sp-app')?.dataset?.spInstanceId || '';
+    const view = resolveStatusBannerView(sprints, planId);
+    const activeStatus = view.expanded ? view.status : null;
+
     const title = document.createElement('p');
     title.className = 'sp-status-overview__title';
     title.textContent = spT('sp.overview.statusTitle');
@@ -1224,6 +1244,8 @@ function renderPlanStatusOverview(sprints) {
 
     const row = document.createElement('div');
     row.className = 'sp-status-overview__row';
+    row.setAttribute('role', 'toolbar');
+    row.setAttribute('aria-label', spT('sp.overview.statusTitle'));
 
     /** @type {Array<{key: string, icon: string, count: number}>} */
     const entries = [
@@ -1235,13 +1257,19 @@ function renderPlanStatusOverview(sprints) {
     ];
 
     for (const entry of entries) {
-        const cell = document.createElement('div');
+        const cell = document.createElement('button');
+        cell.type = 'button';
         cell.className = `sp-status-overview__item sp-status-overview__item--${entry.key}`;
-        cell.title = spT(`sp.status.${statusKeyToLabel(entry.key)}`);
+        if (activeStatus === entry.key) {
+            cell.classList.add('sp-status-overview__item--active');
+        }
+        const statusLabel = spT(`sp.status.${statusKeyToLabel(entry.key)}`);
+        cell.title = spT('sp.banner.showStatus', { status: statusLabel });
         cell.setAttribute(
             'aria-label',
-            `${spT(`sp.status.${statusKeyToLabel(entry.key)}`)}: ${entry.count}`,
+            `${statusLabel}: ${entry.count}. ${spT('sp.banner.showStatus', { status: statusLabel })}`,
         );
+        cell.setAttribute('aria-pressed', activeStatus === entry.key ? 'true' : 'false');
 
         const icon = document.createElement('i');
         icon.className = entry.icon;
@@ -1253,21 +1281,41 @@ function renderPlanStatusOverview(sprints) {
 
         const label = document.createElement('span');
         label.className = 'sp-status-overview__label';
-        label.textContent = spT(`sp.status.${statusKeyToLabel(entry.key)}`);
+        label.textContent = statusLabel;
 
         cell.append(icon, countEl, label);
+        cell.addEventListener('click', () => {
+            if (!planId) {
+                return;
+            }
+            const current = getStatusBannerState(planId);
+            if (current.expanded && current.status === entry.key) {
+                setStatusBannerState(planId, null, false);
+            } else {
+                setStatusBannerState(planId, entry.key, true);
+            }
+            refreshStatusBannerUi();
+        });
         row.appendChild(cell);
     }
 
     host.appendChild(row);
 }
 
-function ensureBlockersHost() {
+function refreshStatusBannerUi() {
+    const ctx = lastRenderContext;
+    if (!ctx) {
+        return;
+    }
+    renderPlanStatusOverview(ctx.sprints, ctx.instance);
+    renderStatusBanner(ctx.sprints, ctx.workspace, ctx.locale, ctx.instance);
+}
+
+function ensureStatusBannerHost() {
     let host = document.getElementById('sp-blockers');
     if (!host) {
         host = document.createElement('div');
         host.id = 'sp-blockers';
-        host.className = 'sp-blockers';
         const sprintsHost = document.getElementById('sp-sprints');
         sprintsHost?.parentNode?.insertBefore(host, sprintsHost);
     }
@@ -1275,108 +1323,246 @@ function ensureBlockersHost() {
 }
 
 /**
+ * @param {string} planId
+ * @returns {{status: string|null, expanded: boolean}}
+ */
+function getStatusBannerState(planId) {
+    if (!planId) {
+        return { status: null, expanded: false };
+    }
+    if (statusBannerSession.has(planId)) {
+        return /** @type {{status: string|null, expanded: boolean}} */ (statusBannerSession.get(planId));
+    }
+    const fromPref = readStatusBannerPref(planId);
+    statusBannerSession.set(planId, fromPref);
+    return fromPref;
+}
+
+/**
+ * @param {string} planId
+ * @param {string|null} status
+ * @param {boolean} expanded
+ */
+function setStatusBannerState(planId, status, expanded) {
+    if (!planId) {
+        return;
+    }
+    const next = { status: status || null, expanded: Boolean(expanded) };
+    statusBannerSession.set(planId, next);
+    writeStatusBannerPref(planId, next.status, next.expanded);
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {string} planId
+ * @returns {{status: string|null, expanded: boolean}}
+ */
+function resolveStatusBannerView(sprints, planId) {
+    const state = getStatusBannerState(planId);
+    if (state.expanded && state.status) {
+        return { status: state.status, expanded: true };
+    }
+    if (collectItemsByStatus(sprints, 'blocked').length > 0) {
+        return { status: 'blocked', expanded: false };
+    }
+    return { status: null, expanded: false };
+}
+
+/**
+ * @param {string} planId
+ * @returns {{status: string|null, expanded: boolean}}
+ */
+function readStatusBannerPref(planId) {
+    if (!planId) {
+        return { status: null, expanded: false };
+    }
+    const prefs = loadPreferences();
+    const map = prefs.statusBanner && typeof prefs.statusBanner === 'object'
+        ? prefs.statusBanner
+        : {};
+    const entry = map[planId];
+    if (entry && typeof entry === 'object') {
+        const status = typeof entry.status === 'string' && entry.status ? entry.status : null;
+        return { status, expanded: Boolean(entry.expanded) };
+    }
+    return { status: null, expanded: false };
+}
+
+/**
+ * @param {string} planId
+ * @param {string|null} status
+ * @param {boolean} expanded
+ */
+function writeStatusBannerPref(planId, status, expanded) {
+    if (!planId) {
+        return;
+    }
+    const next = loadPreferences();
+    next.statusBanner = next.statusBanner && typeof next.statusBanner === 'object'
+        ? { ...next.statusBanner }
+        : {};
+    next.statusBanner[planId] = {
+        status: status || null,
+        expanded: Boolean(expanded),
+    };
+    next.blockersExpanded = next.blockersExpanded && typeof next.blockersExpanded === 'object'
+        ? { ...next.blockersExpanded }
+        : {};
+    next.blockersExpanded[planId] = Boolean(expanded && status === 'blocked');
+    savePreferences(next);
+}
+
+/**
+ * Banner under the status overview — controlled by status buttons (no <details> toggle).
  * @param {ReturnType<typeof resolveSprints>} sprints
  * @param {import('../storage.js').SpWorkspaceRoot} workspace
  * @param {'de'|'en'} locale
  * @param {import('../storage.js').SpPlanInstance} [instance]
  */
-function renderBlockers(sprints, workspace, locale, instance) {
-    const host = ensureBlockersHost();
-    const blockers = collectBlockers(sprints);
+function renderStatusBanner(sprints, workspace, locale, instance) {
+    const host = ensureStatusBannerHost();
+    const planId = instance?.id || document.getElementById('sp-app')?.dataset?.spInstanceId || '';
+    const view = resolveStatusBannerView(sprints, planId);
+
     host.innerHTML = '';
-    if (!blockers.length) {
+    if (!view.status) {
         host.hidden = true;
+        host.className = 'sp-blockers sp-status-banner';
         return;
     }
     host.hidden = false;
+    host.className = `sp-blockers sp-status-banner sp-status-banner--${view.status}`
+        + (view.expanded ? ' sp-status-banner--open' : '');
 
-    const planId = instance?.id || document.getElementById('sp-app')?.dataset?.spInstanceId || '';
-    const prefs = loadPreferences();
-    const expandedMap = prefs.blockersExpanded && typeof prefs.blockersExpanded === 'object'
-        ? prefs.blockersExpanded
-        : {};
-    const wasExpanded = planId ? expandedMap[planId] === true : false;
+    const items = collectItemsByStatus(sprints, view.status);
+    const statusLabel = spT(`sp.status.${statusKeyToLabel(view.status)}`);
+    const titleKey = view.status === 'open'
+        ? 'sp.banner.openCount'
+        : (view.status === 'in_progress'
+            ? 'sp.banner.inProgressCount'
+            : (view.status === 'on_hold'
+                ? 'sp.banner.onHoldCount'
+                : (view.status === 'completed'
+                    ? 'sp.banner.completedCount'
+                    : 'sp.banner.blockedCount')));
 
-    const details = document.createElement('details');
-    details.className = 'sp-blockers__details';
-    details.open = wasExpanded;
-    details.addEventListener('toggle', () => {
-        if (!planId) {
-            return;
-        }
-        const next = loadPreferences();
-        next.blockersExpanded = next.blockersExpanded || {};
-        next.blockersExpanded[planId] = details.open;
-        savePreferences(next);
-    });
-
-    const summary = document.createElement('summary');
-    summary.className = 'sp-blockers__summary';
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.className = 'sp-blockers__summary';
+    header.setAttribute('aria-expanded', view.expanded ? 'true' : 'false');
     const summaryIcon = document.createElement('i');
-    summaryIcon.className = 'fa-solid fa-ban';
+    summaryIcon.className = statusBannerIcon(view.status);
     summaryIcon.setAttribute('aria-hidden', 'true');
     const summaryText = document.createElement('span');
     summaryText.className = 'sp-blockers__summary-text';
-    summaryText.textContent = spT('sp.blockers.titleCount', { count: blockers.length });
+    summaryText.textContent = spT(titleKey, { count: items.length });
     const chevron = document.createElement('i');
     chevron.className = 'fa-solid fa-chevron-down sp-blockers__chevron';
     chevron.setAttribute('aria-hidden', 'true');
-    summary.append(summaryIcon, summaryText, chevron);
-    details.appendChild(summary);
+    header.append(summaryIcon, summaryText, chevron);
+    header.addEventListener('click', () => {
+        if (!planId) {
+            return;
+        }
+        if (view.expanded) {
+            setStatusBannerState(planId, null, false);
+        } else {
+            setStatusBannerState(planId, view.status, true);
+        }
+        refreshStatusBannerUi();
+    });
+    host.appendChild(header);
+
+    if (!view.expanded) {
+        return;
+    }
 
     const list = document.createElement('ul');
     list.className = 'sp-blockers__list';
-    for (const blocker of blockers) {
-        const li = document.createElement('li');
-        li.className = 'sp-blockers__item';
+    if (!items.length) {
+        const empty = document.createElement('li');
+        empty.className = 'sp-blockers__item sp-blockers__item--empty';
+        empty.textContent = spT('sp.banner.empty');
+        list.appendChild(empty);
+    } else {
+        for (const row of items) {
+            const li = document.createElement('li');
+            li.className = 'sp-blockers__item';
 
-        const main = document.createElement('div');
-        main.className = 'sp-blockers__main';
-        const title = document.createElement('strong');
-        title.textContent = `#${blocker.sprintNumber} · ${blocker.item.label}`;
-        const meta = document.createElement('span');
-        meta.className = 'sp-blockers__meta';
-        meta.textContent = [
-            blocker.sprintTitle,
-            resolveAssigneeName(blocker.item, workspace, locale) || spT('sp.report.unassigned'),
-        ].filter(Boolean).join(' · ');
-        main.append(title, meta);
+            const main = document.createElement('div');
+            main.className = 'sp-blockers__main';
+            const titleEl = document.createElement('strong');
+            titleEl.textContent = `#${row.sprintNumber} · ${row.item.label}`;
+            const meta = document.createElement('span');
+            meta.className = 'sp-blockers__meta';
+            meta.textContent = [
+                row.sprintTitle,
+                resolveAssigneeName(row.item, workspace, locale) || spT('sp.report.unassigned'),
+                statusLabel,
+            ].filter(Boolean).join(' · ');
+            main.append(titleEl, meta);
+            li.appendChild(main);
 
-        const reason = document.createElement('p');
-        reason.className = 'sp-blockers__reason';
-        const reasonText = String(blocker.item.blockerReason || '').trim();
-        if (reasonText) {
-            reason.textContent = reasonText;
-        } else {
-            reason.classList.add('sp-blockers__reason--empty');
-            reason.textContent = spT('sp.blockers.noReason');
-        }
+            const actions = document.createElement('div');
+            actions.className = 'sp-blockers__actions';
+            const editBtn = document.createElement('button');
+            editBtn.type = 'button';
+            editBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
 
-        const actions = document.createElement('div');
-        actions.className = 'sp-blockers__actions';
-        const editBtn = document.createElement('button');
-        editBtn.type = 'button';
-        editBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
-        editBtn.textContent = reasonText
-            ? spT('sp.blockers.editReason')
-            : spT('sp.blockers.addReason');
-        editBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            openItemDialog({
-                sprintId: blocker.sprintId,
-                kind: blocker.item.kind,
-                custom: blocker.item.custom,
-                item: blocker.item,
+            if (view.status === 'blocked') {
+                const reason = document.createElement('p');
+                reason.className = 'sp-blockers__reason';
+                const reasonText = String(row.item.blockerReason || '').trim();
+                if (reasonText) {
+                    reason.textContent = reasonText;
+                } else {
+                    reason.classList.add('sp-blockers__reason--empty');
+                    reason.textContent = spT('sp.blockers.noReason');
+                }
+                li.appendChild(reason);
+                editBtn.textContent = reasonText
+                    ? spT('sp.blockers.editReason')
+                    : spT('sp.blockers.addReason');
+            } else {
+                editBtn.textContent = spT('sp.action.edit');
+            }
+
+            editBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                openItemDialog({
+                    sprintId: row.sprintId,
+                    kind: row.item.kind,
+                    custom: row.item.custom,
+                    item: row.item,
+                });
             });
-        });
-        actions.appendChild(editBtn);
-
-        li.append(main, reason, actions);
-        list.appendChild(li);
+            actions.appendChild(editBtn);
+            li.appendChild(actions);
+            list.appendChild(li);
+        }
     }
-    details.appendChild(list);
-    host.appendChild(details);
+    host.appendChild(list);
+}
+
+/**
+ * @param {string} status
+ * @returns {string}
+ */
+function statusBannerIcon(status) {
+    if (status === 'in_progress') {
+        return 'fa-solid fa-play';
+    }
+    if (status === 'on_hold') {
+        return 'fa-solid fa-pause';
+    }
+    if (status === 'completed') {
+        return 'fa-solid fa-check';
+    }
+    if (status === 'open') {
+        return 'fa-solid fa-circle';
+    }
+    return 'fa-solid fa-ban';
 }
 
 function renderSprints(sprints, currentNumber, instance, template, locale, workspace) {

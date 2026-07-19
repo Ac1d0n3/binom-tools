@@ -138,6 +138,7 @@ export function createDefaultPreferences() {
         manualCurrentSprint: {},
         lastOpenedPlanId: null,
         blockersExpanded: {},
+        statusBanner: {},
     };
 }
 

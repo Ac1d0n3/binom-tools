@@ -470,11 +470,22 @@ export function requiredStoryProgress(stories, isRead) {
  * @param {ReturnType<typeof resolveSprints>} sprints
  */
 export function collectBlockers(sprints) {
+    return collectItemsByStatus(sprints, 'blocked');
+}
+
+/**
+ * Collect items with a given status across resolved sprints.
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {string} status
+ * @returns {Array<{sprintId: string, sprintNumber: number, sprintTitle: string, item: ResolvedItem}>}
+ */
+export function collectItemsByStatus(sprints, status) {
     /** @type {Array<{sprintId: string, sprintNumber: number, sprintTitle: string, item: ResolvedItem}>} */
     const out = [];
+    const want = String(status || '');
     for (const sprint of sprints) {
         for (const item of [...sprint.tasks, ...sprint.deliverables]) {
-            if (item.status === 'blocked') {
+            if (String(item.status || 'open') === want) {
                 out.push({
                     sprintId: sprint.id,
                     sprintNumber: sprint.number,
