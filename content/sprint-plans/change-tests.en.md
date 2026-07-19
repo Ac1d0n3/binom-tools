@@ -49,8 +49,10 @@ tasks:
     helpLinks:
       - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: GitHub Docs - Continuous integration
         href: https://docs.github.com/en/actions/get-started/continuous-integration
+        description: Use the docs as a reference for setting up or reviewing continuous integration checks for changes.
   - id: w1-scope
     label: Agree in/out of scope
     plannedMinutes: 60
@@ -64,6 +66,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Acceptance criteria
         href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+        description: Use the examples to write clear acceptance criteria for reports, data, or changes.
 
 deliverables:
   - id: w1-impact-note
@@ -113,10 +116,13 @@ tasks:
     helpLinks:
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+        description: Use the tool to turn observed data issues into testable quality checks.
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
+        description: Use the tool to prepare reusable dbt macros for data quality checks.
       - label: dbt Labs - Data quality testing
         href: https://www.getdbt.com/blog/data-quality-testing
+        description: Use the article to translate test types and DQ thinking into concrete checks.
   - id: w2-fixtures
     label: Prepare fixtures / expected results
     plannedMinutes: 60
@@ -130,6 +136,7 @@ tasks:
     helpLinks:
       - label: GitHub Docs - Status checks
         href: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
+        description: Use the docs as a reference for automated checks, review signals, and release quality.
 
 deliverables:
   - id: w2-test-pack
@@ -170,8 +177,10 @@ tasks:
     helpLinks:
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
+        description: Use the tool to make DQ results traceable over time and support validation evidence.
       - label: Microsoft Learn - Power BI enterprise content publishing
         href: https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-usage-scenario-enterprise-content-publishing
+        description: Use the guidance to plan publishing, review, and approval for enterprise reports.
   - id: w3-release
     label: Release notes and monitoring
     plannedMinutes: 60
@@ -185,6 +194,7 @@ tasks:
     helpLinks:
       - label: Microsoft Fabric - Automate deployment pipelines
         href: https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/pipeline-automation
+        description: Use the docs as a reference for deployment pipelines and automated releases in Fabric.
 
 deliverables:
   - id: w3-release

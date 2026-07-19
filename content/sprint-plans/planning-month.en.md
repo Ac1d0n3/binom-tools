@@ -45,10 +45,13 @@ tasks:
     helpLinks:
       - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: Scrum Guide - Sprint Planning
         href: https://scrumguides.org/scrum-guide.html#sprint-planning
+        description: Use the official Scrum Guide as a short reference for sprint goal, scope, and planning logic.
       - label: Atlassian - Sprint planning
         href: https://www.atlassian.com/agile/scrum/sprint-planning
+        description: Use the guide as a reference for sprint goal, scope, and commitment.
   - id: w1-standup-board
     label: Update board and owners
     plannedMinutes: 15
@@ -61,6 +64,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Product backlog
         href: https://www.atlassian.com/en/agile/scrum/backlogs
+        description: Use the explanation to slice and prioritize backlog items cleanly.
 
 deliverables:
   - id: w1-week-outcome
@@ -104,6 +108,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Sprint backlog vs. product backlog
         href: https://www.atlassian.com/agile/project-management/sprint-backlog-product-backlog
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w2-standup-board
     label: Update board and owners
     plannedMinutes: 15
@@ -116,8 +121,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Scrum.org - Introduction to the Sprint
         href: https://www.scrum.org/resources/introduction-sprint
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
 
 deliverables:
   - id: w2-week-outcome
@@ -157,8 +164,10 @@ tasks:
     helpLinks:
       - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: Atlassian - Sprint planning
         href: https://www.atlassian.com/agile/scrum/sprint-planning
+        description: Use the guide as a reference for sprint goal, scope, and commitment.
   - id: w3-standup-board
     label: Update board and owners
     plannedMinutes: 15
@@ -207,6 +216,7 @@ tasks:
     helpLinks:
       - label: Scrum Guide - Sprint Review
         href: https://scrumguides.org/scrum-guide.html#sprint-review
+        description: Use the official Scrum Guide as a reference for review, feedback, and backlog adaptation.
   - id: w4-standup-board
     label: Draft next-month backlog
     plannedMinutes: 15
@@ -220,6 +230,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Retrospective play
         href: https://www.atlassian.com/team-playbook/plays/retrospective
+        description: Use the retro structure to collect learnings and improvements for the next sprint or quarter.
 
 deliverables:
   - id: w4-week-outcome
@@ -232,6 +243,7 @@ deliverables:
     helpLinks:
       - label: Scrum Guide - Sprint Retrospective
         href: https://scrumguides.org/scrum-guide.html#sprint-retrospective
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
 
 fields:
   - id: month-review

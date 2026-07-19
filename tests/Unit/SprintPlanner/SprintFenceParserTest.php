@@ -16,6 +16,7 @@ id: week-01
 number: 1
 title: Orientation
 goal: Understand the mandate.
+dependsOn: week-00
 
 tasks:
   - id: align-management-expectations
@@ -50,6 +51,7 @@ MD;
         $this->assertSame('week-01', $sprint['id']);
         $this->assertSame(1, $sprint['number']);
         $this->assertTrue($sprint['notes']);
+        $this->assertSame(['week-00'], $sprint['dependsOn']);
         $this->assertCount(2, $sprint['tasks']);
         $this->assertSame('align-management-expectations', $sprint['tasks'][0]['id']);
         $this->assertSame('person', $sprint['tasks'][0]['assigneeType']);
@@ -100,6 +102,7 @@ goal: Understand the mandate.
 links:
   - label: DQ Rules
     href: /tools/dbt-dq-rules-generator
+    description: Build data quality rules
 
 tasks:
   - id: read-guide
@@ -110,8 +113,12 @@ tasks:
     helpLinks:
       - label: KPI Definition
         href: /playbooks/define-kpi
+        description: Read KPI background
+        description: Read KPI background
+        description: Read KPI background
       - label: DQ Tool
         href: /tools/dbt-dq-macro-generator
+        description: Generate a macro
 ```
 MD;
 
@@ -119,13 +126,13 @@ MD;
         $this->assertSame([], $result['errors']);
         $sprint = $result['sprints'][0];
         $this->assertSame([
-            ['label' => 'DQ Rules', 'href' => '/tools/dbt-dq-rules-generator'],
+            ['label' => 'DQ Rules', 'href' => '/tools/dbt-dq-rules-generator', 'description' => 'Build data quality rules'],
         ], $sprint['links']);
         $task = $sprint['tasks'][0];
         $this->assertSame("First line\nSecond line", $task['helpText']);
         $this->assertSame([
-            ['label' => 'KPI Definition', 'href' => '/playbooks/define-kpi'],
-            ['label' => 'DQ Tool', 'href' => '/tools/dbt-dq-macro-generator'],
+            ['label' => 'KPI Definition', 'href' => '/playbooks/define-kpi', 'description' => 'Read KPI background'],
+            ['label' => 'DQ Tool', 'href' => '/tools/dbt-dq-macro-generator', 'description' => 'Generate a macro'],
         ], $task['helpLinks']);
     }
 
@@ -324,6 +331,7 @@ tasks:
     helpLinks:
       - label: KPI Definition
         href: /playbooks/define-kpi
+        description: Read KPI background
     stories:
       - slug: define-kpi
         required: true
@@ -336,6 +344,7 @@ deliverables:
     helpLinks:
       - label: KPI Sheet Template
         href: /tools/kpi-sheet
+        description: Create KPI sheet
     stories:
       - slug: define-kpi
         required: false
@@ -352,7 +361,7 @@ MD;
         $this->assertSame('Read guide', $task['label']);
         $this->assertSame('First line', $task['helpText']);
         $this->assertSame([
-            ['label' => 'KPI Definition', 'href' => '/playbooks/define-kpi'],
+            ['label' => 'KPI Definition', 'href' => '/playbooks/define-kpi', 'description' => 'Read KPI background'],
         ], $task['helpLinks']);
         $this->assertSame([
             ['slug' => 'define-kpi', 'required' => true],
@@ -364,7 +373,7 @@ MD;
         $this->assertSame('KPI sheet', $deliverable['label']);
         $this->assertSame('Deliverable help', $deliverable['helpText']);
         $this->assertSame([
-            ['label' => 'KPI Sheet Template', 'href' => '/tools/kpi-sheet'],
+            ['label' => 'KPI Sheet Template', 'href' => '/tools/kpi-sheet', 'description' => 'Create KPI sheet'],
         ], $deliverable['helpLinks']);
         $this->assertSame([
             ['slug' => 'define-kpi', 'required' => false],

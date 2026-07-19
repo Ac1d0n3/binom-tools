@@ -49,12 +49,16 @@ tasks:
     helpLinks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
+        description: Nutze das Tool, um Reports mit Owner, Tool, Rhythmus und Geschäftsfrage einheitlich zu inventarisieren.
       - label: KPI Definition Card
         href: /tools/kpi-definition
+        description: Nutze das Tool, um KPI-Name, Formel, Grain, Filter, Owner und offene Definitionen sauber festzuhalten.
       - label: Tableau - Best Practices for Effective Dashboards
         href: https://help.tableau.com/current/pro/desktop/en-us/dashboards_best_practices.htm
+        description: Nutze die Best Practices, um Dashboard-Struktur, Lesbarkeit und Nutzerführung zu prüfen.
       - label: Power BI - Report and dashboard creation
         href: https://learn.microsoft.com/en-us/power-bi/create-reports/
+        description: Nutze die Doku als Referenz für Report-Aufbau, Seitenstruktur und Power-BI-Umsetzung.
   - id: w1-audience
     label: Konsumenten und Kadenz mappen
     plannedMinutes: 60
@@ -113,8 +117,10 @@ tasks:
     helpLinks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
+        description: Nutze das Tool, um KPI-Name, Formel, Grain, Filter, Owner und offene Definitionen sauber festzuhalten.
       - label: Tableau - Visualize Key Progress Indicators
         href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
+        description: Nutze die Beispiele, um KPI-Darstellung und Schwellenwerte verständlich zu gestalten.
   - id: w2-defs
     label: Metrik-Definitionen dokumentieren
     plannedMinutes: 120
@@ -138,6 +144,7 @@ deliverables:
     helpLinks:
       - label: Atlassian - Acceptance criteria
         href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+        description: Nutze die Beispiele, um klare Akzeptanzkriterien für Reports, Daten oder Änderungen zu formulieren.
 
 fields:
   - id: kpi-scope
@@ -172,8 +179,10 @@ tasks:
     helpLinks:
       - label: Meta-Export Generator
         href: /tools/meta-export-generator
+        description: Nutze das Tool, um Metadaten aus Quellen, Feldern und Ownern als wiederverwendbaren Export vorzubereiten.
       - label: Power BI - Report and dashboard creation
         href: https://learn.microsoft.com/en-us/power-bi/create-reports/
+        description: Nutze die Doku als Referenz für Report-Aufbau, Seitenstruktur und Power-BI-Umsetzung.
   - id: w3-mock
     label: Mock / Pilot-View bauen
     plannedMinutes: 240
@@ -187,6 +196,7 @@ tasks:
     helpLinks:
       - label: Tableau - Best Practices for Effective Dashboards
         href: https://help.tableau.com/current/pro/desktop/en-us/dashboards_best_practices.htm
+        description: Nutze die Best Practices, um Dashboard-Struktur, Lesbarkeit und Nutzerführung zu prüfen.
 
 deliverables:
   - id: w3-pilot
@@ -233,6 +243,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Acceptance criteria
         href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+        description: Nutze die Beispiele, um klare Akzeptanzkriterien für Reports, Daten oder Änderungen zu formulieren.
   - id: w4-handoff
     label: Handoff-Runbook
     plannedMinutes: 60
@@ -246,6 +257,7 @@ tasks:
     helpLinks:
       - label: Power BI - Report and dashboard creation
         href: https://learn.microsoft.com/en-us/power-bi/create-reports/
+        description: Nutze die Doku als Referenz für Report-Aufbau, Seitenstruktur und Power-BI-Umsetzung.
 
 deliverables:
   - id: w4-accepted

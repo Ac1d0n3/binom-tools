@@ -49,8 +49,10 @@ tasks:
     helpLinks:
       - label: Microsoft Learn - Star schema guidance
         href: https://learn.microsoft.com/en-ie/power-bi/guidance/star-schema
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
       - label: Snowflake - Data modeling guide
         href: https://www.snowflake.com/en/fundamentals/data-modeling/
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w1-sources
     label: Inventory candidate sources
     plannedMinutes: 60
@@ -65,10 +67,13 @@ tasks:
     helpLinks:
       - label: Meta export generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
+        description: Use the tool to assess current architecture, bottlenecks, and target shape against pragmatic criteria.
       - label: Snowflake - Databases, tables, and views
         href: https://docs.snowflake.com/en/en/guides-overview-db
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
 
 deliverables:
   - id: w1-scope-note
@@ -120,8 +125,10 @@ tasks:
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
+        description: Use the tool to assess current architecture, bottlenecks, and target shape against pragmatic criteria.
       - label: Microsoft Learn - Star schema guidance
         href: https://learn.microsoft.com/en-ie/power-bi/guidance/star-schema
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w2-rels
     label: Map relationships and cardinality
     plannedMinutes: 120
@@ -136,6 +143,7 @@ tasks:
     helpLinks:
       - label: PostgreSQL - Primary and foreign keys
         href: https://www.postgresql.org/docs/current/ddl-constraints.html
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
 
 deliverables:
   - id: w2-model-draft
@@ -176,6 +184,7 @@ tasks:
     helpLinks:
       - label: Snowflake - dbt projects best practices
         href: https://docs.snowflake.com/en/user-guide/data-engineering/dbt-projects-on-snowflake-best-practices
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w3-types
     label: Confirm types and nullability
     plannedMinutes: 60
@@ -190,10 +199,13 @@ tasks:
     helpLinks:
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
+        description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
+        description: Use the tool to structure PII classes, masking, and access rules as a policy draft.
       - label: PostgreSQL - Constraints
         href: https://www.postgresql.org/docs/current/ddl-constraints.html
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
 
 deliverables:
   - id: w3-standards
@@ -237,8 +249,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Atlassian - Acceptance criteria
         href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+        description: Use the examples to write clear acceptance criteria for reports, data, or changes.
   - id: w4-freeze
     label: Freeze model v1 and next steps
     plannedMinutes: 120
@@ -253,6 +267,7 @@ tasks:
     helpLinks:
       - label: Snowflake - Data modeling guide
         href: https://www.snowflake.com/en/fundamentals/data-modeling/
+        description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
 
 deliverables:
   - id: w4-model-v1

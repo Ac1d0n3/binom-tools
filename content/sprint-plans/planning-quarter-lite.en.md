@@ -45,10 +45,13 @@ tasks:
     helpLinks:
       - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: Scrum Guide - Sprint Planning
         href: https://scrumguides.org/scrum-guide.html#sprint-planning
+        description: Use the official Scrum Guide as a short reference for sprint goal, scope, and planning logic.
       - label: Atlassian - Sprint planning
         href: https://www.atlassian.com/agile/scrum/sprint-planning
+        description: Use the guide as a reference for sprint goal, scope, and commitment.
   - id: w1-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -61,6 +64,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Product backlog
         href: https://www.atlassian.com/en/agile/scrum/backlogs
+        description: Use the explanation to slice and prioritize backlog items cleanly.
 
 deliverables:
   - id: w1-week-outcome
@@ -172,8 +176,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Atlassian - Dependency mapping
         href: https://www.atlassian.com/team-playbook/plays/dependency-mapping
+        description: Use the method to make dependencies, owners, and risks visible.
   - id: w4-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -218,8 +224,10 @@ tasks:
     helpLinks:
       - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: Atlassian - Health monitor
         href: https://www.atlassian.com/team-playbook/health-monitor
+        description: Use the questions to check whether team, scope, risks, and decisions are healthy enough.
   - id: w5-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -368,6 +376,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Risk assessment matrix
         href: https://www.atlassian.com/work-management/project-management/risk-assessment-matrix
+        description: Use the matrix to classify risks by likelihood and impact.
   - id: w9-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -516,8 +525,10 @@ tasks:
     helpLinks:
       - label: Scrum Guide - Sprint Review
         href: https://scrumguides.org/scrum-guide.html#sprint-review
+        description: Use the official Scrum Guide as a reference for review, feedback, and backlog adaptation.
       - label: Atlassian - Retrospective play
         href: https://www.atlassian.com/team-playbook/plays/retrospective
+        description: Use the retro structure to collect learnings and improvements for the next sprint or quarter.
   - id: w13-run-week
     label: Run and update the board
     plannedMinutes: 15

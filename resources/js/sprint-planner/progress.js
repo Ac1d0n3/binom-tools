@@ -15,6 +15,7 @@ import { resolveActualMinutes, resolvePlannedMinutes } from './time.js';
  * @typedef {Object} SpHelpLink
  * @property {string} label
  * @property {string} href
+ * @property {string} description
  */
 
 /**
@@ -28,6 +29,17 @@ import { resolveActualMinutes, resolvePlannedMinutes } from './time.js';
  * @property {'linear'|'chevron'} variant
  * @property {'horizontal'|'vertical'} layout
  * @property {string[]} steps
+ */
+
+/**
+ * @typedef {Object} ResolvedSprint
+ * @property {string} id
+ * @property {number} number
+ * @property {string} title
+ * @property {string[]} dependsOn
+ * @property {boolean} dependencyWaiting
+ * @property {string} dependencyReason
+ * @property {boolean} completed
  */
 
 /**
@@ -105,7 +117,10 @@ export function resolveSprints(template, instance, locale) {
         );
     });
 
-    return [...templateSprints, ...customSprints].sort((a, b) => a.number - b.number);
+    const sprints = [...templateSprints, ...customSprints].sort((a, b) => a.number - b.number);
+    applySprintLevelDependencies(sprints, locale);
+
+    return sprints;
 }
 
 function pickLocalized(sprint, locale) {
@@ -129,6 +144,13 @@ function localizeField(value, locale) {
         return String(pack[locale] || pack.en || pack.de || '');
     }
     return '';
+}
+
+function hasAssigneeValue(value) {
+    return value !== null
+        && value !== undefined
+        && String(value).trim() !== ''
+        && String(value) !== 'null';
 }
 
 function mergeSprint(sprint, texts, override, instance, templateSlug, locale, custom) {
@@ -162,6 +184,9 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
     const tasks = [];
     const removedKeys = new Set(instance.removedItemKeys || []);
     const textTasks = Object.fromEntries((texts.tasks || []).map((entry) => [entry.id, entry]));
+    const snapshotSprint = (instance.templateSnapshot?.sprints || []).find((entry) => entry.id === sprint.id) || null;
+    const snapshotTasks = Object.fromEntries((snapshotSprint?.tasks || []).map((entry) => [entry.id, entry]));
+    const snapshotDeliverables = Object.fromEntries((snapshotSprint?.deliverables || []).map((entry) => [entry.id, entry]));
     for (const task of sprint.tasks || []) {
         const key = statusKey(templateSlug, sprint.id, 'task', task.id);
         if (removedKeys.has(key)) {
@@ -171,6 +196,7 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         const textTask = textTasks[task.id] || {};
         tasks.push(resolveTemplateItem({
             item: task,
+            snapshotItem: snapshotTasks[task.id] || null,
             textItem: textTask,
             itemOverride,
             kind: 'task',
@@ -209,6 +235,7 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         const textDel = textDels[del.id] || {};
         deliverables.push(resolveTemplateItem({
             item: del,
+            snapshotItem: snapshotDeliverables[del.id] || null,
             textItem: textDel,
             itemOverride,
             kind: 'deliverable',
@@ -292,6 +319,9 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         stories,
         linkedStorySlugs,
         links: overrideLinks !== null ? overrideLinks : templateLinks,
+        dependsOn: normalizeSprintDependsOn(override.dependsOn ?? sprint.dependsOn),
+        dependencyWaiting: false,
+        dependencyReason: '',
         flow,
         tasks,
         deliverables,
@@ -301,8 +331,59 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
     };
 }
 
+function normalizeSprintDependsOn(raw) {
+    if (typeof raw === 'string') {
+        raw = raw.split(',');
+    }
+    if (!Array.isArray(raw)) {
+        return [];
+    }
+    const out = [];
+    const seen = new Set();
+    for (const entry of raw) {
+        const value = String(entry || '').trim();
+        if (!value || seen.has(value)) {
+            continue;
+        }
+        seen.add(value);
+        out.push(value);
+    }
+    return out;
+}
+
+/**
+ * @param {Array<ResolvedSprint & Record<string, unknown>>} sprints
+ * @param {'de'|'en'} locale
+ */
+function applySprintLevelDependencies(sprints, locale) {
+    const byId = new Map(sprints.map((sprint) => [sprint.id, sprint]));
+    for (const sprint of sprints) {
+        sprint.dependsOn = normalizeSprintDependsOn(sprint.dependsOn)
+            .filter((depId) => depId !== sprint.id && byId.has(depId));
+        sprint.dependencyWaiting = false;
+        sprint.dependencyReason = '';
+
+        if (sprint.completed || !sprint.dependsOn.length) {
+            continue;
+        }
+
+        const openPreds = sprint.dependsOn
+            .map((depId) => byId.get(depId))
+            .filter((dep) => dep && !dep.completed);
+        if (!openPreds.length) {
+            continue;
+        }
+
+        sprint.dependencyWaiting = true;
+        sprint.dependencyReason = t('sp.deps.sprintWaitingOn', locale, {
+            labels: openPreds.map((dep) => dep.title || dep.id).join(', '),
+        });
+    }
+}
+
 function resolveTemplateItem({
     item,
+    snapshotItem = null,
     textItem,
     itemOverride,
     kind,
@@ -319,12 +400,15 @@ function resolveTemplateItem({
     const stories = normalizeStories(
         item.stories || item.linkedStorySlugs || item.linkedStories,
     );
+    const fallbackAssigneeSource = snapshotItem && hasAssigneeValue(snapshotItem.assigneeId)
+        ? snapshotItem
+        : item;
     const assigneeType = Object.prototype.hasOwnProperty.call(itemOverride, 'assigneeType')
         ? itemOverride.assigneeType
-        : (item.assigneeType ?? defaultAssigneeType);
+        : (fallbackAssigneeSource.assigneeType ?? defaultAssigneeType);
     const rawAssigneeId = Object.prototype.hasOwnProperty.call(itemOverride, 'assigneeId')
         ? itemOverride.assigneeId
-        : (item.assigneeId ?? null);
+        : (fallbackAssigneeSource.assigneeId ?? null);
     const assigneeId = rawAssigneeId === null || rawAssigneeId === undefined
         || String(rawAssigneeId).trim() === ''
         || String(rawAssigneeId) === 'null'
@@ -568,9 +652,14 @@ function normalizeHelpLinks(links, locale) {
         if (label && typeof label === 'object') {
             label = label[locale] || label.en || label.de || '';
         }
+        let description = /** @type {any} */ (link).description;
+        if (description && typeof description === 'object') {
+            description = description[locale] || description.en || description.de || '';
+        }
         out.push({
             label: String(label || href),
             href,
+            description: String(description || ''),
         });
     }
     return out;

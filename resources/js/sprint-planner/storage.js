@@ -447,6 +447,7 @@ function loadAccountsWorkspace() {
             server.teamIds = localTeams;
             server.teamId = null;
         }
+        mergeMissingAssignmentsFromLocal(server, local);
     }
 
     // Keep local-only demo (ephemeral) plans alongside server plans.
@@ -511,6 +512,79 @@ function loadAccountsWorkspace() {
         teams: catalog.teams,
         instances: { ...serverInstances, ...ephemeralLocal },
     };
+}
+
+function hasStoredAssignee(value) {
+    return value !== null
+        && value !== undefined
+        && String(value).trim() !== ''
+        && String(value) !== 'null';
+}
+
+function mergeMissingAssignmentsFromLocal(server, local) {
+    const localParticipants = Array.isArray(local.participantIds) ? local.participantIds.map(String) : [];
+    if (localParticipants.length) {
+        const participants = new Set(Array.isArray(server.participantIds) ? server.participantIds.map(String) : []);
+        for (const id of localParticipants) {
+            participants.add(id);
+        }
+        server.participantIds = [...participants];
+    }
+
+    const localOverrides = isPlainObject(local.itemOverrides) ? local.itemOverrides : {};
+    if (!isPlainObject(server.itemOverrides)) {
+        server.itemOverrides = {};
+    }
+    for (const [key, localOverride] of Object.entries(localOverrides)) {
+        if (!isPlainObject(localOverride) || !hasStoredAssignee(localOverride.assigneeId)) {
+            continue;
+        }
+        const serverOverride = isPlainObject(server.itemOverrides[key])
+            ? server.itemOverrides[key]
+            : {};
+        if (hasStoredAssignee(serverOverride.assigneeId)) {
+            continue;
+        }
+        server.itemOverrides[key] = {
+            ...serverOverride,
+            assigneeType: localOverride.assigneeType || 'person',
+            assigneeId: localOverride.assigneeId,
+        };
+    }
+
+    mergeCustomItemAssignments(server.customTasks, local.customTasks);
+    mergeCustomItemAssignments(server.customDeliverables, local.customDeliverables);
+}
+
+function mergeCustomItemAssignments(serverGroups, localGroups) {
+    if (!isPlainObject(localGroups)) {
+        return;
+    }
+    if (!isPlainObject(serverGroups)) {
+        return;
+    }
+    for (const [sprintId, localItems] of Object.entries(localGroups)) {
+        if (!Array.isArray(localItems) || !Array.isArray(serverGroups[sprintId])) {
+            continue;
+        }
+        const serverItems = serverGroups[sprintId];
+        const byKey = new Map(serverItems.map((item) => [
+            String(item.statusKey || item.id || ''),
+            item,
+        ]));
+        for (const localItem of localItems) {
+            if (!isPlainObject(localItem) || !hasStoredAssignee(localItem.assigneeId)) {
+                continue;
+            }
+            const key = String(localItem.statusKey || localItem.id || '');
+            const serverItem = byKey.get(key);
+            if (!serverItem || hasStoredAssignee(serverItem.assigneeId)) {
+                continue;
+            }
+            serverItem.assigneeType = localItem.assigneeType || 'person';
+            serverItem.assigneeId = localItem.assigneeId;
+        }
+    }
 }
 
 /**

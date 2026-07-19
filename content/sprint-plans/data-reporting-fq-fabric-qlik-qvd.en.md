@@ -54,8 +54,10 @@ tasks:
     helpLinks:
       - label: Data Ownership & Stewardship
         href: /playbooks/data-ownership-stewardship
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: The 8 Pillars of Data Governance
         href: /playbooks/eight-pillars
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: identify-stakeholders
     label: Identify relevant stakeholders
     assigneeType: team
@@ -69,8 +71,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Missing Pieces – Ownership & Stewardship
         href: /playbooks/missing-pieces-ownership-stewardship
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: stakeholder-list
@@ -124,10 +128,13 @@ tasks:
     helpLinks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
+        description: Use the tool to inventory reports consistently with owner, tool, cadence, and business question.
       - label: One Business Question, Different BI Engines
         href: /playbooks/bi-tools
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: One App Cannot Answer Every Question
         href: /playbooks/one-app
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: map-report-consumers
     label: Map report consumers and usage frequency
     assigneeType: team
@@ -140,6 +147,7 @@ tasks:
     helpLinks:
       - label: BI tools overview
         href: /playbooks/bi-tools
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: report-inventory
@@ -188,10 +196,13 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
       - label: Before Building the First Table
         href: /playbooks/before-building-the-first-table
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: SAP Data & Analytics Stack
         href: /playbooks/sap-overview
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: document-interfaces
     label: Document interfaces and extraction paths
     assigneeType: team
@@ -204,8 +215,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Building a Warehouse from Scratch
         href: /playbooks/building-from-scratch
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: source-system-map
@@ -253,8 +266,10 @@ tasks:
     helpLinks:
       - label: Trash In, Trash Out
         href: /playbooks/trash-iinout
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Before Building the First Table
         href: /playbooks/before-building-the-first-table
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: capture-business-rules
     label: Document business rules and exceptions
     assigneeType: team
@@ -267,6 +282,7 @@ tasks:
     helpLinks:
       - label: KPI Definition, Ownership and Versioning
         href: /playbooks/define-kpi
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: creation-notes
@@ -324,10 +340,13 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Missing Pieces – Metadata, Catalog & Lineage
         href: /playbooks/missing-pieces-metadata-catalog-lineage
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: identify-lineage-gaps
     label: Mark lineage gaps and blind spots
     assigneeType: team
@@ -340,6 +359,7 @@ tasks:
     helpLinks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: lineage-sketch
@@ -389,10 +409,13 @@ tasks:
     helpLinks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
+        description: Use the tool to capture KPI name, formula, grain, filters, owner, and open definition questions.
       - label: KPI Definition, Ownership and Versioning
         href: /playbooks/define-kpi
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: KPI & Metric Governance
         href: /playbooks/kpi-metric-governance
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: normalize-definitions
     label: Align definitions and calculation rules
     assigneeType: team
@@ -405,6 +428,7 @@ tasks:
     helpLinks:
       - label: Trusted Metrics (Missing Pieces)
         href: /playbooks/missing-pieces-trusted-metrics
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: kpi-inventory
@@ -444,8 +468,10 @@ stories:
 links:
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
+    description: Use the tool to turn observed data issues into testable quality checks.
   - label: DQ Macro Generator
     href: /tools/dbt-dq-macro-generator
+    description: Use the tool to prepare reusable dbt macros for data quality checks.
 
 tasks:
   - id: assess-dq-issues
@@ -460,12 +486,16 @@ tasks:
     helpLinks:
       - label: Data Quality Governance
         href: /playbooks/data-quality-governance
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: From Tests to Measurable Data Quality
         href: /playbooks/dq-test-kpis
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+        description: Use the tool to turn observed data issues into testable quality checks.
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
+        description: Use the tool to prepare reusable dbt macros for data quality checks.
   - id: rate-risks
     label: Rate business and compliance risks
     assigneeType: team
@@ -478,10 +508,13 @@ tasks:
     helpLinks:
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Access & Security Governance
         href: /playbooks/access-security-governance
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
+        description: Use the tool to structure PII classes, masking, and access rules as a policy draft.
 
 deliverables:
   - id: dq-risk-register
@@ -543,14 +576,19 @@ tasks:
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
+        description: Use the tool to assess current architecture, bottlenecks, and target shape against pragmatic criteria.
       - label: Choosing the Simplest Viable Architecture
         href: /playbooks/choosing-the-simplest-viable-architecture
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Beyond Bronze, Silver and Gold
         href: /playbooks/beyond-bronze-silver-gold
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: BIG 5 Stacks Overview
         href: /playbooks/big-five
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: One Architecture – Multiple Platforms
         href: /playbooks/platform-examples
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: document-bottlenecks
     label: Document bottlenecks and technical debt
     assigneeType: team
@@ -563,8 +601,10 @@ tasks:
     helpLinks:
       - label: Modernizing an Existing Warehouse
         href: /playbooks/modernizing-an-existing-warehouse
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Cloud vs. Self-Hosted
         href: /playbooks/host-vs-cloud
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: architecture-notes
@@ -612,10 +652,13 @@ tasks:
     helpLinks:
       - label: Impact–Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Simplest Viable Architecture
         href: /playbooks/choosing-the-simplest-viable-architecture
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: agree-priorities
     label: Agree priorities with stakeholders
     assigneeType: team
@@ -628,6 +671,7 @@ tasks:
     helpLinks:
       - label: The 8 Pillars of Data Governance
         href: /playbooks/eight-pillars
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: priority-matrix
@@ -679,12 +723,16 @@ tasks:
     helpLinks:
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: The Role of dbt
         href: /playbooks/dbt-role
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Self-Hosted Data Platforms
         href: /playbooks/self-hosted-data-platform
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Transformation Options
         href: /playbooks/transformation-options
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: validate-target-picture
     label: Validate target picture with stakeholders
     assigneeType: team
@@ -697,6 +745,7 @@ tasks:
     helpLinks:
       - label: Data Ownership & Stewardship
         href: /playbooks/data-ownership-stewardship
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: target-picture
@@ -734,10 +783,13 @@ stories:
 links:
   - label: Schema YML Editor
     href: /tools/schema-yml-editor
+    description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
   - label: Meta Export Generator
     href: /tools/meta-export-generator
+    description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
+    description: Use the tool to turn observed data issues into testable quality checks.
 
 tasks:
   - id: build-pilot
@@ -758,14 +810,19 @@ tasks:
     helpLinks:
       - label: Building a Warehouse from Scratch
         href: /playbooks/building-from-scratch
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: The Role of dbt
         href: /playbooks/dbt-role
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
+        description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
       - label: Meta Export Generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+        description: Use the tool to turn observed data issues into testable quality checks.
   - id: track-pilot-blockers
     label: Manage blockers and dependencies
     assigneeType: team
@@ -778,6 +835,7 @@ tasks:
     helpLinks:
       - label: Access & Security Governance
         href: /playbooks/access-security-governance
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: pilot-increment
@@ -825,8 +883,10 @@ tasks:
     helpLinks:
       - label: KPI Definition, Ownership and Versioning
         href: /playbooks/define-kpi
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: BI tools overview
         href: /playbooks/bi-tools
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: measure-pilot-outcomes
     label: Measure outcomes and quality
     assigneeType: team
@@ -839,8 +899,10 @@ tasks:
     helpLinks:
       - label: From Tests to Measurable Data Quality
         href: /playbooks/dq-test-kpis
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
+        description: Use the tool to make DQ results traceable over time and support validation evidence.
 
 deliverables:
   - id: validation-report
@@ -890,8 +952,10 @@ tasks:
     helpLinks:
       - label: The 8 Pillars of Data Governance
         href: /playbooks/eight-pillars
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: DSDR Governance
         href: /playbooks/dsdr-governance
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: plan-next-quarter
     label: Roughly plan the next quarter
     assigneeType: team
@@ -904,10 +968,13 @@ tasks:
     helpLinks:
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Modernizing an Existing Warehouse
         href: /playbooks/modernizing-an-existing-warehouse
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Operating and Governing the Platform
         href: /playbooks/operating-and-governing-the-platform
+        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: quarter-report

@@ -45,7 +45,7 @@ describe('sprint-planner external / tool help links', () => {
             'Report Inventory | /tools/report-inventory\nStory | /playbooks/bi-tools',
         );
         expect(links).toEqual([
-            { label: 'Report Inventory', href: '/tools/report-inventory' },
+            { label: 'Report Inventory', href: '/tools/report-inventory', description: '' },
         ]);
         expect(rejected).toEqual(['Story | /playbooks/bi-tools']);
     });

@@ -49,8 +49,10 @@ tasks:
     helpLinks:
       - label: Microsoft Learn - Star schema guidance
         href: https://learn.microsoft.com/en-ie/power-bi/guidance/star-schema
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
       - label: Snowflake - Data modeling guide
         href: https://www.snowflake.com/en/fundamentals/data-modeling/
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
   - id: w1-sources
     label: Kandidaten-Quellen inventarisieren
     plannedMinutes: 60
@@ -65,10 +67,13 @@ tasks:
     helpLinks:
       - label: Meta-Export Generator
         href: /tools/meta-export-generator
+        description: Nutze das Tool, um Metadaten aus Quellen, Feldern und Ownern als wiederverwendbaren Export vorzubereiten.
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
+        description: Nutze das Tool, um aktuelle Architektur, Engpässe und Zielbild gegen pragmatische Kriterien zu bewerten.
       - label: Snowflake - Databases, tables, and views
         href: https://docs.snowflake.com/en/en/guides-overview-db
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
 
 deliverables:
   - id: w1-scope-note
@@ -120,8 +125,10 @@ tasks:
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
+        description: Nutze das Tool, um aktuelle Architektur, Engpässe und Zielbild gegen pragmatische Kriterien zu bewerten.
       - label: Microsoft Learn - Star schema guidance
         href: https://learn.microsoft.com/en-ie/power-bi/guidance/star-schema
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
   - id: w2-rels
     label: Beziehungen und Kardinalität mappen
     plannedMinutes: 120
@@ -136,6 +143,7 @@ tasks:
     helpLinks:
       - label: PostgreSQL - Primary and foreign keys
         href: https://www.postgresql.org/docs/current/ddl-constraints.html
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
 
 deliverables:
   - id: w2-model-draft
@@ -176,6 +184,7 @@ tasks:
     helpLinks:
       - label: Snowflake - dbt projects best practices
         href: https://docs.snowflake.com/en/user-guide/data-engineering/dbt-projects-on-snowflake-best-practices
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
   - id: w3-types
     label: Typen und Nullability bestätigen
     plannedMinutes: 60
@@ -190,10 +199,13 @@ tasks:
     helpLinks:
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
+        description: Nutze das Tool, um dbt-Schema-YAML, Spaltenbeschreibungen und Tests für den Pilot-Umfang zu pflegen.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
+        description: Nutze das Tool, um PII-Klassen, Maskierung und Zugriffsregeln als Policy-Entwurf zu strukturieren.
       - label: PostgreSQL - Constraints
         href: https://www.postgresql.org/docs/current/ddl-constraints.html
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
 
 deliverables:
   - id: w3-standards
@@ -237,8 +249,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Nutze das Tool, um Personen, Rollen, Einfluss, Interesse und Owner direkt als Stakeholder-Tabelle zu strukturieren.
       - label: Atlassian - Acceptance criteria
         href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+        description: Nutze die Beispiele, um klare Akzeptanzkriterien für Reports, Daten oder Änderungen zu formulieren.
   - id: w4-freeze
     label: Modell v1 einfrieren und Next Steps
     plannedMinutes: 120
@@ -253,6 +267,7 @@ tasks:
     helpLinks:
       - label: Snowflake - Data modeling guide
         href: https://www.snowflake.com/en/fundamentals/data-modeling/
+        description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
 
 deliverables:
   - id: w4-model-v1

@@ -76,6 +76,9 @@ final class PlanStore
             }
             // Never let a partial client payload wipe structural identity / ACL / progress.
             $plan = $this->mergePreservedFields($existing, $plan, $historyMeta);
+            if (! $this->hasMeaningfulChange($existing, $plan)) {
+                return $existing;
+            }
             $this->recordRevision($existing, $actor, $historyMeta);
         }
 
@@ -387,6 +390,8 @@ final class PlanStore
                     $incoming[$key] = $prev;
                 }
             }
+
+            $incoming = $this->mergeMissingAssignees($existing, $incoming);
         }
 
         $prevTranslations = $existing['translations'] ?? null;
@@ -414,6 +419,112 @@ final class PlanStore
         }
 
         return $incoming;
+    }
+
+    /**
+     * Preserve existing task owners when a client sends partial/null assignment metadata.
+     *
+     * @param  array<string, mixed>  $existing
+     * @param  array<string, mixed>  $incoming
+     * @return array<string, mixed>
+     */
+    private function mergeMissingAssignees(array $existing, array $incoming): array
+    {
+        $existingOverrides = $existing['itemOverrides'] ?? [];
+        if (! is_array($existingOverrides)) {
+            return $incoming;
+        }
+
+        $incomingOverrides = $incoming['itemOverrides'] ?? [];
+        if (! is_array($incomingOverrides)) {
+            $incomingOverrides = [];
+        }
+
+        $participants = $incoming['participantIds'] ?? [];
+        $participants = is_array($participants) ? array_values(array_map('strval', $participants)) : [];
+
+        foreach ($existingOverrides as $key => $existingOverride) {
+            if (! is_array($existingOverride) || ! $this->hasAssignee($existingOverride['assigneeId'] ?? null)) {
+                continue;
+            }
+
+            $incomingOverride = $incomingOverrides[$key] ?? [];
+            if (! is_array($incomingOverride)) {
+                $incomingOverride = [];
+            }
+            if ($this->hasAssignee($incomingOverride['assigneeId'] ?? null)) {
+                continue;
+            }
+
+            $incomingOverrides[$key] = array_merge($incomingOverride, [
+                'assigneeType' => $incomingOverride['assigneeType']
+                    ?? $existingOverride['assigneeType']
+                    ?? 'person',
+                'assigneeId' => (string) $existingOverride['assigneeId'],
+            ]);
+
+            if (! in_array((string) $existingOverride['assigneeId'], $participants, true)) {
+                $participants[] = (string) $existingOverride['assigneeId'];
+            }
+        }
+
+        $incoming['itemOverrides'] = $incomingOverrides;
+        if ($participants !== []) {
+            $incoming['participantIds'] = $participants;
+        }
+
+        return $incoming;
+    }
+
+    private function hasAssignee(mixed $value): bool
+    {
+        return $value !== null
+            && $value !== ''
+            && trim((string) $value) !== ''
+            && (string) $value !== 'null';
+    }
+
+    /**
+     * Technical sync metadata should not create history entries by itself.
+     *
+     * @param  array<string, mixed>  $existing
+     * @param  array<string, mixed>  $incoming
+     */
+    private function hasMeaningfulChange(array $existing, array $incoming): bool
+    {
+        return $this->canonicalPlanForComparison($existing) !== $this->canonicalPlanForComparison($incoming);
+    }
+
+    /**
+     * @param  array<string, mixed>  $plan
+     * @return array<string, mixed>
+     */
+    private function canonicalPlanForComparison(array $plan): array
+    {
+        unset($plan['updatedAt'], $plan['updatedBy']);
+        ksort($plan);
+
+        return $this->sortRecursive($plan);
+    }
+
+    /**
+     * @param  mixed  $value
+     * @return mixed
+     */
+    private function sortRecursive(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        foreach ($value as $key => $item) {
+            $value[$key] = $this->sortRecursive($item);
+        }
+        if (! array_is_list($value)) {
+            ksort($value);
+        }
+
+        return $value;
     }
 
     /**

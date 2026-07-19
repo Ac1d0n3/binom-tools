@@ -92,6 +92,7 @@ final class SprintFenceParser
             'description' => null,
             'estimated_effort' => null,
             'notes' => false,
+            'dependsOn' => [],
             'linkedStories' => [],
             'stories' => [],
             'flowVariant' => 'linear',
@@ -128,6 +129,7 @@ final class SprintFenceParser
             $normalized = [
                 'label' => (string) ($currentLink['label'] ?? ''),
                 'href' => (string) ($currentLink['href'] ?? ''),
+                'description' => (string) ($currentLink['description'] ?? ''),
             ];
             if ($normalized['href'] !== '') {
                 if ($itemSubSection === 'helplinks' && $currentItem !== null) {
@@ -253,6 +255,12 @@ final class SprintFenceParser
                 continue;
             }
 
+            if ($section === 'links' && $currentLink !== null && preg_match('/^\s+description:\s*(.*)$/i', $line, $m)) {
+                $currentLink['description'] = $this->stripQuotes(trim($m[1]));
+
+                continue;
+            }
+
             // Stories list item start ("- slug: ..."), sprint-level or nested under an item.
             if (($section === 'stories' || ($currentItem !== null && $itemSubSection === 'stories'))
                 && preg_match('/^\s*-\s+slug:\s*(.*)$/i', $line, $m)
@@ -323,6 +331,12 @@ final class SprintFenceParser
                 continue;
             }
 
+            if ($currentItem !== null && $itemSubSection === 'helplinks' && $currentLink !== null && preg_match('/^\s+description:\s*(.*)$/i', $line, $m)) {
+                $currentLink['description'] = $this->stripQuotes(trim($m[1]));
+
+                continue;
+            }
+
             // Task/item scalar properties (2+ spaces)
             if ($currentItem !== null && preg_match('/^\s{2,}([a-zA-Z_]+):\s*(.*)$/', $line, $m)) {
                 $flushLink();
@@ -371,6 +385,12 @@ final class SprintFenceParser
 
                 if ($key === 'flowlayout') {
                     $data['flowLayout'] = $value === '' ? 'vertical' : $value;
+
+                    continue;
+                }
+
+                if ($key === 'dependson') {
+                    $data['dependsOn'] = $this->normalizeDependsOnValue($value);
 
                     continue;
                 }
@@ -514,7 +534,7 @@ final class SprintFenceParser
 
     /**
      * @param  array<string, mixed>  $item
-     * @return list<array{label: string, href: string}>
+     * @return list<array{label: string, href: string, description: string}>
      */
     private function normalizeItemHelpLinks(array $item): array
     {
@@ -535,6 +555,7 @@ final class SprintFenceParser
             $normalized[] = [
                 'label' => (string) ($link['label'] ?? ''),
                 'href' => $href,
+                'description' => (string) ($link['description'] ?? ''),
             ];
         }
 
@@ -580,6 +601,15 @@ final class SprintFenceParser
     private function normalizeItemDependsOn(array $item): array
     {
         $raw = $item['dependson'] ?? $item['dependsOn'] ?? $item['depends_on'] ?? [];
+
+        return $this->normalizeDependsOnValue($raw);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizeDependsOnValue(mixed $raw): array
+    {
         if (is_string($raw)) {
             $value = trim($raw);
             if (str_starts_with($value, '[') && str_ends_with($value, ']')) {

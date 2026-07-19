@@ -2,6 +2,7 @@ import { getLocale, withAppBasePath } from '../../locale.js';
 import { isAccountsMode, readAccountsBootstrap } from '../accounts-bridge.js';
 import {
     buildPlanToolHref,
+    isExternalHelpHref,
     isAppToolHref,
     resolveHelpHref as resolveAllowedHelpHref,
 } from '../external-links.js';
@@ -160,6 +161,60 @@ export function renderStoryCard(story, onChanged) {
 }
 
 /**
+ * @param {import('../progress.js').SpHelpLink} link
+ * @param {import('../external-links.js').PlanToolContext|null|undefined} planContext
+ */
+function renderHelpLinkCard(link, planContext) {
+    const locale = getLocale();
+    const isTool = isAppToolHref(link.href);
+    const isExternal = isExternalHelpHref(link.href);
+    let href = resolveAllowedHelpHref(link.href, locale);
+    if (href === '#') {
+        return null;
+    }
+    if (isTool && planContext) {
+        href = buildPlanToolHref(link.href, planContext, locale);
+    }
+
+    const card = document.createElement('article');
+    card.className = 'sp-help-link-card';
+    card.dataset.kind = isTool ? 'internal' : (isExternal ? 'external' : 'link');
+
+    const head = document.createElement('div');
+    head.className = 'sp-help-link-card__head';
+
+    const title = document.createElement('a');
+    title.className = 'sp-help-link-card__title';
+    title.href = href;
+    title.textContent = link.label || link.href;
+    title.target = '_blank';
+    title.rel = 'noopener noreferrer';
+
+    const badge = document.createElement('span');
+    badge.className = 'sp-help-link-card__badge';
+    badge.textContent = isTool ? spT('sp.help.internalLink') : spT('sp.help.externalLink');
+
+    head.append(title, badge);
+
+    const description = document.createElement('p');
+    description.className = 'sp-help-link-card__description';
+    description.textContent = link.description
+        ? String(link.description)
+        : (isTool ? spT('sp.help.internalLinkFallback') : spT('sp.help.externalLinkFallback'));
+
+    const actions = document.createElement('div');
+    actions.className = 'sp-help-link-card__actions';
+    actions.appendChild(createIconButton({
+        icon: 'open',
+        label: spT('sp.action.open'),
+        href,
+    }));
+
+    card.append(head, description, actions);
+    return card;
+}
+
+/**
  * @param {import('../progress.js').SpFlow} flow
  */
 export function renderFlow(flow) {
@@ -311,30 +366,14 @@ export function fillHelpPanel(payload, onChanged) {
         const head = document.createElement('h3');
         head.className = 'sp-help-panel__section';
         head.textContent = spT('sp.help.links');
-        const list = document.createElement('ul');
+        const list = document.createElement('div');
         list.className = 'sp-help-panel__links';
-        const locale = getLocale();
         for (const link of payload.helpLinks) {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            const isTool = isAppToolHref(link.href);
-            let href = resolveAllowedHelpHref(link.href, locale);
-            if (href === '#') {
+            const card = renderHelpLinkCard(link, payload.planContext);
+            if (!card) {
                 continue;
             }
-            if (isTool && payload.planContext) {
-                href = buildPlanToolHref(link.href, payload.planContext, locale);
-            }
-            a.href = href;
-            if (isTool && payload.planContext) {
-                a.rel = 'noopener';
-            } else {
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-            }
-            a.textContent = link.label || link.href;
-            li.appendChild(a);
-            list.appendChild(li);
+            list.appendChild(card);
         }
         if (list.childNodes.length) {
             body.append(head, list);

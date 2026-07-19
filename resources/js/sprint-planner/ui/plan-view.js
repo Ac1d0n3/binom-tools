@@ -1743,6 +1743,10 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
             <span class="sp-sprint__progress">${sprint.progress.percent}% (${sprint.progress.done}/${sprint.progress.total})</span>
         `;
         summary.querySelector('.sp-sprint__title').textContent = sprint.title;
+        const mainHost = summary.querySelector('.sp-sprint__main');
+        if (mainHost) {
+            mainHost.appendChild(renderSprintDependencyMarker(sprint, sprints));
+        }
         const kwEl = summary.querySelector('.sp-sprint__kw');
         const datesEl = summary.querySelector('.sp-sprint__dates');
         if (range && kwEl && datesEl) {
@@ -1940,9 +1944,12 @@ function renderItemSection(kind, sprint, instance, locale, workspace) {
 function renderItemRow(item, sprint, instance, locale, workspace) {
     const li = document.createElement('li');
     li.className = `sp-item-wrap sp-item-wrap--${item.status}`;
+    li.dataset.itemKey = item.statusKey;
+    li.dataset.sprintId = sprint.id;
 
     const row = document.createElement('div');
     row.className = `sp-item sp-item--${item.status}`;
+    row.dataset.itemKey = item.statusKey;
 
     const check = document.createElement('input');
     check.type = 'checkbox';
@@ -2022,14 +2029,6 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     srAssignee.className = 'visually-hidden';
     srAssignee.textContent = resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned');
     main.append(label, meta, srAssignee);
-
-    if (item.dependencyBlocked && item.dependencyReason) {
-        const reason = document.createElement('p');
-        reason.className = 'sp-item__dependency-reason';
-        reason.id = `${item.statusKey}-dependency`;
-        reason.textContent = item.dependencyReason;
-        main.appendChild(reason);
-    }
 
     if (item.status === 'blocked' && item.blockerReason) {
         const reason = document.createElement('p');
@@ -2216,22 +2215,205 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     return li;
 }
 
+function renderSprintDependencyMarker(sprint, sprints) {
+    const deps = Array.isArray(sprint.dependsOn) ? sprint.dependsOn : [];
+    const byId = new Map((sprints || []).map((entry) => [entry.id, entry]));
+    const dependents = (sprints || []).filter((candidate) => (
+        Array.isArray(candidate.dependsOn) && candidate.dependsOn.includes(sprint.id)
+    ));
+    const isChain = deps.length > 0 || dependents.length > 0;
+    const marker = document.createElement('span');
+    marker.className = `sp-sprint__dependency sp-sprint__dependency--${isChain ? 'chain' : 'parallel'}`;
+    marker.innerHTML = iconSvg(isChain ? 'chain' : 'parallel');
+    const dependencyLabels = deps
+        .map((depId) => byId.get(depId)?.title || depId)
+        .filter(Boolean);
+    const dependentLabels = dependents
+        .map((entry) => entry.title || entry.id)
+        .filter(Boolean);
+    const tooltip = dependencyTooltip({
+        dependencies: dependencyLabels,
+        dependents: dependentLabels,
+        waitingReason: sprint.dependencyWaiting ? sprint.dependencyReason : '',
+        parallelLabel: spT('sp.deps.sprintParallel'),
+        waitingLabel: 'sp.deps.sprintTooltipWaiting',
+        predecessorLabel: 'sp.deps.sprintTooltipPredecessor',
+        chainLabel: 'sp.deps.sprintTooltipChain',
+    });
+    marker.dataset.dependencyTooltip = tooltip;
+    marker.setAttribute('aria-label', tooltip);
+    marker.setAttribute('role', 'img');
+    marker.tabIndex = 0;
+    marker.dataset.dependencyType = 'sprint';
+    marker.dataset.dependencySelf = sprint.id;
+    marker.dataset.dependencyDeps = deps.join('|');
+    marker.dataset.dependencyDependents = dependents.map((entry) => entry.id).join('|');
+    bindDependencyHighlight(marker);
+    return marker;
+}
+
 function renderDependencyMarker(item, sprint) {
     const deps = Array.isArray(item.dependsOn) ? item.dependsOn : [];
     const items = [...(sprint.tasks || []), ...(sprint.deliverables || [])];
-    const hasDependents = items.some((candidate) => (
+    const byKey = new Map(items.map((entry) => [entry.statusKey, entry]));
+    const dependents = items.filter((candidate) => (
         Array.isArray(candidate.dependsOn) && candidate.dependsOn.includes(item.statusKey)
     ));
-    const isChain = deps.length > 0 || hasDependents;
+    const isChain = deps.length > 0 || dependents.length > 0;
     const marker = document.createElement('span');
     marker.className = `sp-item__dependency sp-item__dependency--${isChain ? 'chain' : 'parallel'}`;
     marker.innerHTML = iconSvg(isChain ? 'chain' : 'parallel');
-    marker.title = isChain
-        ? spT(deps.length > 0 ? 'sp.deps.chainWaiting' : 'sp.deps.chainPredecessor')
-        : spT('sp.deps.parallel');
-    marker.setAttribute('aria-label', marker.title);
+    const dependencyLabels = deps
+        .map((depKey) => byKey.get(depKey)?.label || depKey)
+        .filter(Boolean);
+    const dependentLabels = dependents
+        .map((entry) => entry.label || entry.id)
+        .filter(Boolean);
+    const tooltip = dependencyTooltip({
+        dependencies: dependencyLabels,
+        dependents: dependentLabels,
+        waitingReason: item.dependencyBlocked ? item.dependencyReason : '',
+        parallelLabel: spT('sp.deps.parallel'),
+        waitingLabel: 'sp.deps.tooltipWaiting',
+        predecessorLabel: 'sp.deps.tooltipPredecessor',
+        chainLabel: 'sp.deps.tooltipChain',
+    });
+    marker.dataset.dependencyTooltip = tooltip;
+    marker.setAttribute('aria-label', tooltip);
     marker.setAttribute('role', 'img');
+    marker.tabIndex = 0;
+    marker.dataset.dependencyType = 'item';
+    marker.dataset.dependencySelf = item.statusKey;
+    marker.dataset.dependencyDeps = deps.join('|');
+    marker.dataset.dependencyDependents = dependents.map((entry) => entry.statusKey).join('|');
+    bindDependencyHighlight(marker);
     return marker;
+}
+
+function bindDependencyHighlight(marker) {
+    marker.addEventListener('mouseenter', () => highlightDependencyTargets(marker));
+    marker.addEventListener('mouseleave', clearDependencyHighlights);
+    marker.addEventListener('focus', () => highlightDependencyTargets(marker));
+    marker.addEventListener('blur', clearDependencyHighlights);
+}
+
+function highlightDependencyTargets(marker) {
+    clearDependencyHighlights();
+    const type = marker.dataset.dependencyType || 'item';
+    const self = marker.dataset.dependencySelf || '';
+    const deps = splitDependencyDataset(marker.dataset.dependencyDeps)
+        .filter((key) => key !== self);
+    const dependents = splitDependencyDataset(marker.dataset.dependencyDependents)
+        .filter((key) => key !== self);
+
+    marker.classList.add('sp-dependency-trigger--active');
+    showDependencyTooltip(marker);
+    const directDependency = deps[deps.length - 1] || '';
+    const directDependent = dependents[0] || '';
+    if (directDependency) {
+        markDependencyNode(type, directDependency, 'dependency');
+    }
+    if (directDependent) {
+        markDependencyNode(type, directDependent, 'dependent');
+    }
+}
+
+function clearDependencyHighlights() {
+    document.querySelectorAll('.sp-dependency-trigger--active')
+        .forEach((node) => node.classList.remove('sp-dependency-trigger--active'));
+    document.querySelectorAll('[data-dependency-highlight]')
+        .forEach((node) => {
+            node.removeAttribute('data-dependency-highlight');
+        });
+    document.getElementById('sp-dependency-tooltip')?.remove();
+}
+
+function showDependencyTooltip(marker) {
+    const text = String(marker.dataset.dependencyTooltip || '').trim();
+    if (!text) {
+        return;
+    }
+
+    const tooltip = document.createElement('div');
+    tooltip.id = 'sp-dependency-tooltip';
+    tooltip.className = 'sp-dependency-tooltip';
+    tooltip.setAttribute('role', 'tooltip');
+    tooltip.textContent = text;
+    document.body.appendChild(tooltip);
+
+    const markerRect = marker.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const margin = 10;
+    const gap = 8;
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+
+    let top = markerRect.top - tooltipRect.height - gap;
+    let placement = 'top';
+    if (top < margin) {
+        top = markerRect.bottom + gap;
+        placement = 'bottom';
+    }
+    if (top + tooltipRect.height > viewportHeight - margin) {
+        top = Math.max(margin, viewportHeight - tooltipRect.height - margin);
+    }
+
+    let left = markerRect.left + (markerRect.width / 2) - (tooltipRect.width / 2);
+    left = Math.max(margin, Math.min(left, viewportWidth - tooltipRect.width - margin));
+
+    const arrowLeft = markerRect.left + (markerRect.width / 2) - left;
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+    tooltip.style.setProperty('--sp-tooltip-arrow-left', `${Math.max(12, Math.min(tooltipRect.width - 12, arrowLeft))}px`);
+    tooltip.dataset.placement = placement;
+}
+
+function splitDependencyDataset(value) {
+    return String(value || '')
+        .split('|')
+        .map((entry) => entry.trim())
+        .filter(Boolean);
+}
+
+function markDependencyNode(type, key, role) {
+    if (!key) {
+        return;
+    }
+    const selector = type === 'sprint'
+        ? `details.sp-sprint[data-sprint-id="${cssAttr(key)}"]`
+        : `.sp-item-wrap[data-item-key="${cssAttr(key)}"]`;
+    document.querySelectorAll(selector)
+        .forEach((node) => {
+            node.setAttribute('data-dependency-highlight', role);
+        });
+}
+
+function cssAttr(value) {
+    if (window.CSS?.escape) {
+        return window.CSS.escape(String(value));
+    }
+    return String(value).replace(/["\\]/g, '\\$&');
+}
+
+function dependencyTooltip(opts) {
+    if (opts.waitingReason) {
+        return opts.waitingReason;
+    }
+    const deps = opts.dependencies || [];
+    const dependents = opts.dependents || [];
+    if (deps.length && dependents.length) {
+        return spT(opts.chainLabel, {
+            dependencies: deps.join(', '),
+            dependents: dependents.join(', '),
+        });
+    }
+    if (deps.length) {
+        return spT(opts.waitingLabel, { labels: deps.join(', ') });
+    }
+    if (dependents.length) {
+        return spT(opts.predecessorLabel, { labels: dependents.join(', ') });
+    }
+    return opts.parallelLabel;
 }
 
 /**

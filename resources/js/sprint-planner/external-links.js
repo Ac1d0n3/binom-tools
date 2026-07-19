@@ -116,10 +116,10 @@ export function buildPlanToolHref(href, context, locale = 'en') {
 /**
  * Parse "Label | https://…" lines. Allows external URLs and /tools/ paths.
  * @param {string} raw
- * @returns {{links: Array<{label: string, href: string}>, rejected: string[]}}
+ * @returns {{links: Array<{label: string, href: string, description: string}>, rejected: string[]}}
  */
 export function parseExternalLinksTextarea(raw) {
-    /** @type {Array<{label: string, href: string}>} */
+    /** @type {Array<{label: string, href: string, description: string}>} */
     const links = [];
     /** @type {string[]} */
     const rejected = [];
@@ -145,13 +145,13 @@ export function parseExternalLinksTextarea(raw) {
             rejected.push(trimmed);
             continue;
         }
-        links.push({ label: label || href, href });
+        links.push({ label: label || href, href, description: '' });
     }
     return { links, rejected };
 }
 
 /**
- * @param {Array<{label: string, href: string}>} links
+ * @param {Array<{label: string, href: string, description?: string}>} links
  */
 export function formatExternalLinksTextarea(links = []) {
     return (links || [])
@@ -166,13 +166,13 @@ export function formatExternalLinksTextarea(links = []) {
  * Drop non-allowed links when normalizing stored help links.
  * @param {unknown} links
  * @param {string} [locale]
- * @returns {Array<{label: string, href: string}>}
+ * @returns {Array<{label: string, href: string, description: string}>}
  */
 export function filterExternalHelpLinks(links, locale = 'en') {
     if (!Array.isArray(links)) {
         return [];
     }
-    /** @type {Array<{label: string, href: string}>} */
+    /** @type {Array<{label: string, href: string, description: string}>} */
     const out = [];
     for (const link of links) {
         if (!link || typeof link !== 'object') {
@@ -186,9 +186,14 @@ export function filterExternalHelpLinks(links, locale = 'en') {
         if (label && typeof label === 'object') {
             label = label[locale] || label.en || label.de || '';
         }
+        let description = /** @type {any} */ (link).description;
+        if (description && typeof description === 'object') {
+            description = description[locale] || description.en || description.de || '';
+        }
         out.push({
             label: String(label || href),
             href,
+            description: String(description || ''),
         });
     }
     return out;

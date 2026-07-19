@@ -231,6 +231,72 @@ class StoryAclAndPlanStoreTest extends TestCase
         $this->assertSame(90, $updated['itemOverrides']['task_a']['actualMinutes']);
     }
 
+    public function test_null_assignment_payload_does_not_wipe_existing_assignee(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+
+        $store->save([
+            'id' => 'plan_20260719_keep_assignee',
+            'templateSlug' => 'demo',
+            'participantIds' => ['person_matthias'],
+            'itemOverrides' => [
+                'task_a' => ['assigneeType' => 'person', 'assigneeId' => 'person_matthias'],
+            ],
+        ], $owner);
+
+        $updated = $store->save([
+            'id' => 'plan_20260719_keep_assignee',
+            'templateSlug' => 'demo',
+            'participantIds' => [],
+            'itemOverrides' => [
+                'task_a' => ['assigneeType' => 'person', 'assigneeId' => null, 'status' => 'open'],
+            ],
+        ], $owner, [
+            'action' => 'sync',
+            'summary' => 'Partial sync',
+        ]);
+
+        $this->assertSame('person_matthias', $updated['itemOverrides']['task_a']['assigneeId']);
+        $this->assertContains('person_matthias', $updated['participantIds']);
+        $this->assertSame('open', $updated['itemOverrides']['task_a']['status']);
+    }
+
+    public function test_noop_save_does_not_record_history_revision(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+
+        $created = $store->save([
+            'id' => 'plan_20260719_noop',
+            'templateSlug' => 'demo',
+            'completedTasks' => ['task_a'],
+            'itemOverrides' => [
+                'task_a' => ['status' => 'completed'],
+            ],
+        ], $owner);
+
+        $updated = $store->save([
+            ...$created,
+            'updatedAt' => '2099-01-01T00:00:00+00:00',
+            'updatedBy' => 'somebody_else',
+        ], $owner, [
+            'action' => 'sync',
+            'summary' => 'No-op sync',
+        ]);
+
+        $this->assertSame($created['updatedAt'], $updated['updatedAt']);
+        $this->assertSame([], $store->listHistory('plan_20260719_noop', $owner));
+    }
+
     public function test_restore_may_clear_progress_bags(): void
     {
         $store = new PlanStore(

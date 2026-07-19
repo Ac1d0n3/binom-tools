@@ -53,6 +53,7 @@ tasks:
     helpLinks:
       - label: Atlassian - Project poster
         href: https://www.atlassian.com/team-playbook/plays/project-poster
+        description: Read this as a thinking frame for mandate, problem, goal, stakeholders, and open decisions; nothing to install.
   - id: identify-stakeholders
     label: Identify relevant stakeholders
     plannedMinutes: 30
@@ -67,8 +68,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Atlassian - DACI decision framework
         href: https://www.atlassian.com/team-playbook/plays/daci
+        description: Use it to separate decision makers, contributors, and informed people for decisions.
 
 deliverables:
   - id: stakeholder-list
@@ -105,6 +108,7 @@ id: week-02
 number: 2
 title: Reporting Landscape
 goal: Capture existing reports, users, and critical gaps.
+dependsOn: week-01
 
 stories:
   - slug: bi-tools
@@ -127,8 +131,10 @@ tasks:
     helpLinks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
+        description: Use the tool to inventory reports consistently with owner, tool, cadence, and business question.
       - label: Microsoft Learn - Power BI implementation planning
         href: https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-introduction
+        description: Use the guidance as a checklist for Power BI roles, workspaces, governance, and rollout questions.
   - id: map-report-consumers
     label: Map report consumers and usage frequency
     plannedMinutes: 120
@@ -169,6 +175,7 @@ id: week-03
 number: 3
 title: Source Systems
 goal: Understand relevant source systems, owners, and interfaces.
+dependsOn: week-02
 
 stories:
   - slug: before-building-the-first-table
@@ -191,6 +198,7 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
   - id: document-interfaces
     label: Document interfaces and extraction paths
     plannedMinutes: 120
@@ -205,8 +213,10 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+        description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
       - label: Atlassian - DACI decision framework
         href: https://www.atlassian.com/team-playbook/plays/daci
+        description: Use it to separate decision makers, contributors, and informed people for decisions.
 
 deliverables:
   - id: source-system-map
@@ -238,6 +248,7 @@ id: week-04
 number: 4
 title: Data Creation
 goal: How operational data is created and which rules apply.
+dependsOn: week-03
 
 stories:
   - slug: before-building-the-first-table
@@ -297,6 +308,7 @@ id: week-05
 number: 5
 title: End-to-End Lineage
 goal: Make the path from source to report traceable.
+dependsOn: week-03, week-04
 
 flowVariant: linear
 flowLayout: vertical
@@ -328,6 +340,7 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
   - id: identify-lineage-gaps
     label: Mark lineage gaps and blind spots
     plannedMinutes: 30
@@ -369,6 +382,7 @@ id: week-06
 number: 6
 title: KPI Inventory
 goal: Clarify key KPIs, definitions, and ownership.
+dependsOn: week-02, week-04
 
 stories:
   - slug: define-kpi
@@ -392,8 +406,10 @@ tasks:
     helpLinks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
+        description: Use the tool to capture KPI name, formula, grain, filters, owner, and open definition questions.
       - label: Tableau - Visualize Key Progress Indicators
         href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
+        description: Use the examples to design understandable KPI display and thresholds.
   - id: normalize-definitions
     label: Align definitions and calculation rules
     plannedMinutes: 30
@@ -435,6 +451,7 @@ id: week-07
 number: 7
 title: Data Quality and Risks
 goal: Prioritize quality issues and risks.
+dependsOn: week-05, week-06
 
 stories:
   - slug: data-quality-governance
@@ -447,8 +464,10 @@ stories:
 links:
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
+    description: Use the tool to turn observed data issues into testable quality checks.
   - label: DQ Macro Generator
     href: /tools/dbt-dq-macro-generator
+    description: Use the tool to prepare reusable dbt macros for data quality checks.
 
 tasks:
   - id: assess-dq-issues
@@ -464,10 +483,13 @@ tasks:
     helpLinks:
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+        description: Use the tool to turn observed data issues into testable quality checks.
       - label: dbt Docs - Data tests
         href: https://docs.getdbt.com/docs/build/data-tests
+        description: Use the docs to turn quality assumptions into implementable dbt tests.
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
+        description: Use the tool to prepare reusable dbt macros for data quality checks.
   - id: rate-risks
     label: Rate business and compliance risks
     plannedMinutes: 60
@@ -482,8 +504,10 @@ tasks:
     helpLinks:
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
+        description: Use the tool to structure PII classes, masking, and access rules as a policy draft.
       - label: Microsoft Purview - Data classification
         href: https://learn.microsoft.com/en-us/purview/data-classification
+        description: Use the docs to classify PII/sensitivity levels and data categories cleanly.
 
 deliverables:
   - id: dq-risk-register
@@ -515,6 +539,7 @@ id: week-08
 number: 8
 title: Architecture Diagnosis
 goal: Assess the current architecture and name bottlenecks.
+dependsOn: week-03
 
 flowVariant: linear
 flowLayout: vertical
@@ -549,8 +574,10 @@ tasks:
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
+        description: Use the tool to assess current architecture, bottlenecks, and target shape against pragmatic criteria.
       - label: Microsoft Learn - Medallion architecture
         href: https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion
+        description: Use the explanation as a reference for Bronze/Silver/Gold zones and check whether they are really needed here.
   - id: document-bottlenecks
     label: Document bottlenecks and technical debt
     plannedMinutes: 120
@@ -592,6 +619,7 @@ id: week-09
 number: 9
 title: Prioritization
 goal: Prioritize actions by impact and feasibility.
+dependsOn: week-07, week-08
 
 stories:
   - slug: eight-pillars
@@ -613,8 +641,10 @@ tasks:
     helpLinks:
       - label: Impact–Effort Prioritizer
         href: /tools/impact-effort
+        description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
       - label: Atlassian - Prioritization matrix
         href: https://www.atlassian.com/work-management/project-management/prioritization-matrix
+        description: Use the examples to align impact-vs-effort scoring with stakeholders.
   - id: agree-priorities
     label: Agree priorities with stakeholders
     plannedMinutes: 120
@@ -656,6 +686,7 @@ id: week-10
 number: 10
 title: Target Picture
 goal: Sketch a clear target picture for reporting and the data platform.
+dependsOn: week-09
 
 stories:
   - slug: bridge-solution
@@ -719,6 +750,7 @@ id: week-11
 number: 11
 title: Implement Pilot
 goal: Implement the prioritized pilot within a limited scope.
+dependsOn: week-10
 
 stories:
   - slug: building-from-scratch
@@ -729,10 +761,13 @@ stories:
 links:
   - label: Schema YML Editor
     href: /tools/schema-yml-editor
+    description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
   - label: Meta Export Generator
     href: /tools/meta-export-generator
+    description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
+    description: Use the tool to turn observed data issues into testable quality checks.
 
 tasks:
   - id: build-pilot
@@ -748,12 +783,16 @@ tasks:
     helpLinks:
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
+        description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
       - label: Meta Export Generator
         href: /tools/meta-export-generator
+        description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+        description: Use the tool to turn observed data issues into testable quality checks.
       - label: dbt Docs - Data tests
         href: https://docs.getdbt.com/docs/build/data-tests
+        description: Use the docs to turn quality assumptions into implementable dbt tests.
   - id: track-pilot-blockers
     label: Manage blockers and dependencies
     plannedMinutes: 60
@@ -794,6 +833,7 @@ id: week-12
 number: 12
 title: Validate Pilot
 goal: Verify the pilot's value, quality, and acceptance.
+dependsOn: week-11
 
 stories:
   - slug: dq-test-kpis
@@ -826,8 +866,10 @@ tasks:
     helpLinks:
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
+        description: Use the tool to make DQ results traceable over time and support validation evidence.
       - label: GitHub Docs - Status checks
         href: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
+        description: Use the docs as a reference for automated checks, review signals, and release quality.
 
 deliverables:
   - id: validation-report
@@ -859,6 +901,7 @@ id: week-13
 number: 13
 title: Quarter Close
 goal: Secure results, capture lessons, and prepare the next quarter.
+dependsOn: week-12
 
 stories:
   - slug: eight-pillars

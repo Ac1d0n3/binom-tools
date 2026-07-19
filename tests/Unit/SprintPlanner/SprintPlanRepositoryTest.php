@@ -28,6 +28,7 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertSame(13, $client['duration']);
         $this->assertCount(13, $client['sprints']);
         $this->assertSame('week-01', $client['sprints'][0]['id']);
+        $this->assertSame(['week-01'], $client['sprints'][1]['dependsOn']);
         $this->assertSame('Orientierung und Mandat', $client['locales']['de']['sprints'][0]['title']);
         $this->assertSame('Orientation and Mandate', $client['locales']['en']['sprints'][0]['title']);
         $this->assertNotEmpty($client['sprints'][0]['linkedStorySlugs']);

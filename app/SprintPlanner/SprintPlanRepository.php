@@ -212,6 +212,7 @@ final class SprintPlanRepository
                 'number' => $sprint['number'],
                 'notes' => (bool) ($sprint['notes'] ?? false),
                 'estimated_effort' => $sprint['estimated_effort'] ?? null,
+                'dependsOn' => $this->normalizeStructuralStringList($sprint['dependsOn'] ?? []),
                 'stories' => $stories,
                 // Derived from `stories` for backward compat with older clients/content.
                 'linkedStorySlugs' => array_values(array_map(static fn (array $s): string => $s['slug'], $stories)),
@@ -343,7 +344,7 @@ final class SprintPlanRepository
     }
 
     /**
-     * @return list<array{href: string}>
+     * @return list<array{href: string, description: string}>
      */
     private function normalizeStructuralHrefLinks(mixed $links): array
     {
@@ -353,6 +354,7 @@ final class SprintPlanRepository
 
         return array_values(array_map(static fn (array $link): array => [
             'href' => (string) ($link['href'] ?? ''),
+            'description' => (string) ($link['description'] ?? ''),
         ], array_filter(
             $links,
             static fn ($link): bool => is_array($link) && ($link['href'] ?? '') !== '',
@@ -371,10 +373,11 @@ final class SprintPlanRepository
                 if (! is_array($link) || ($link['href'] ?? '') === '') {
                     continue;
                 }
-                $sprintLinks[] = [
-                    'label' => (string) ($link['label'] ?? ''),
-                    'href' => (string) $link['href'],
-                ];
+                    $sprintLinks[] = [
+                        'label' => (string) ($link['label'] ?? ''),
+                        'href' => (string) $link['href'],
+                        'description' => (string) ($link['description'] ?? ''),
+                    ];
             }
 
             return [
@@ -392,6 +395,7 @@ final class SprintPlanRepository
                         $helpLinks[] = [
                             'label' => (string) ($link['label'] ?? ''),
                             'href' => (string) $link['href'],
+                            'description' => (string) ($link['description'] ?? ''),
                         ];
                     }
 
@@ -412,6 +416,7 @@ final class SprintPlanRepository
                         $helpLinks[] = [
                             'label' => (string) ($link['label'] ?? ''),
                             'href' => (string) $link['href'],
+                            'description' => (string) ($link['description'] ?? ''),
                         ];
                     }
 

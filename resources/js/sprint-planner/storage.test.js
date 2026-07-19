@@ -300,6 +300,41 @@ describe('progress', () => {
         expect(de[0].tasks[0].label).toBe('Aufgabe 1');
     });
 
+    it('keeps snapshot assignees when live template metadata changes', () => {
+        const liveTemplate = structuredClone(template);
+        liveTemplate.sprints[0].tasks[0].assigneeId = null;
+        const instance = {
+            id: 'plan_x',
+            templateSlug: 'demo',
+            templateVersion: 1,
+            translations: {},
+            startedAt: '2026-01-01',
+            status: 'active',
+            teamIds: [],
+            participantIds: [],
+            completedTasks: [],
+            completedDeliverables: [],
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            itemOverrides: {},
+            templateSnapshot: structuredClone(template),
+            archived: false,
+            createdAt: '',
+            updatedAt: '',
+        };
+        instance.templateSnapshot.sprints[0].tasks[0].assigneeType = 'person';
+        instance.templateSnapshot.sprints[0].tasks[0].assigneeId = 'person_01';
+
+        const sprints = resolveSprints(liveTemplate, instance, 'en');
+
+        expect(sprints[0].tasks[0].assigneeType).toBe('person');
+        expect(sprints[0].tasks[0].assigneeId).toBe('person_01');
+    });
+
     it('calculates current sprint by week', () => {
         expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2026, 0, 1))).toBe(1);
         expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2026, 0, 8))).toBe(2);
@@ -1025,6 +1060,92 @@ describe('instance-manager', () => {
         expect(loaded.data.instances[planId].itemOverrides[claimedKey].assigneeId)
             .toBe('user_acidone');
         expect(loaded.data.workspace.activePersonId).toBe('user_acidone');
+    });
+
+    it('keeps local assignees when a newer server plan has empty assignment metadata', () => {
+        const accountUser = { id: 'user_acidone', displayName: 'Acidone', email: 'a@x.test' };
+        const planId = 'plan_claim_merge_1';
+        const serverKey = statusKey('demo-claim-persist', 'sprint_1', 'task', 'task_a');
+        const localKey = statusKey('demo-claim-persist', 'sprint_1', 'task', 'task_b');
+        const serverPlan = {
+            id: planId,
+            templateSlug: 'demo-claim-persist',
+            templateVersion: 1,
+            translations: { en: { title: 'T', description: '' }, de: { title: 'T', description: '' } },
+            startedAt: '2026-07-01',
+            status: 'active',
+            teamIds: [],
+            participantIds: [],
+            completedTasks: [],
+            completedDeliverables: [],
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            itemOverrides: {
+                [serverKey]: { assigneeType: 'person', assigneeId: null },
+            },
+            templateSnapshot: null,
+            ownerUserId: 'user_acidone',
+            viewerUserIds: [],
+            viewerTeamIds: [],
+            linkedStorySlugs: [],
+            ephemeral: false,
+            archived: false,
+            createdAt: '2026-07-01T00:00:00.000Z',
+            updatedAt: '2026-07-20T12:00:00.000Z',
+        };
+
+        const root = {
+            dataset: {
+                accountsEnabled: '1',
+                accountUser: JSON.stringify(accountUser),
+                plansApiUrl: '/api/plans',
+                storiesApiUrl: '',
+                loginUrl: '/login',
+                accountPeople: '[]',
+                accountTeams: '[]',
+                serverPlans: JSON.stringify([serverPlan]),
+                readSlugs: '[]',
+            },
+        };
+        vi.stubGlobal('document', {
+            getElementById: (id) => (id === 'sp-app' ? root : null),
+            querySelector: () => null,
+        });
+
+        localStorage.setItem(WORKSPACE_KEY, JSON.stringify(normalizeWorkspace({
+            schemaVersion: 1,
+            workspace: {
+                id: 'workspace_default',
+                name: 'Shared',
+                locale: 'en',
+                activePersonId: 'user_acidone',
+                defaultTeamId: null,
+            },
+            people: {},
+            teams: {},
+            instances: {
+                [planId]: {
+                    ...serverPlan,
+                    updatedAt: '2026-07-19T12:00:00.000Z',
+                    participantIds: ['person_thomas', 'person_matthias'],
+                    itemOverrides: {
+                        [serverKey]: { assigneeType: 'person', assigneeId: 'person_thomas' },
+                        [localKey]: { assigneeType: 'person', assigneeId: 'person_matthias' },
+                    },
+                },
+            },
+        })));
+
+        const loaded = loadWorkspace();
+
+        expect(loaded.ok).toBe(true);
+        expect(loaded.data.instances[planId].itemOverrides[serverKey].assigneeId).toBe('person_thomas');
+        expect(loaded.data.instances[planId].itemOverrides[localKey].assigneeId).toBe('person_matthias');
+        expect(loaded.data.instances[planId].participantIds).toContain('person_matthias');
     });
 
     it('stores a password hash and verifies it', async () => {
