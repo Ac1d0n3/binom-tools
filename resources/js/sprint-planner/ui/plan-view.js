@@ -481,9 +481,7 @@ function renderFilterEmpty(filtered, allSprints, filters) {
     const normalized = normalizePlanFilters(filters);
     const show = hasItems && filtered.length === 0 && hasActiveItemFilters(filters);
     empty.hidden = !show;
-    if (show && normalized.myTasks && normalized.unassigned && normalized.filterLogic === 'and') {
-        empty.textContent = spT('sp.filter.emptyMyAndUnassigned');
-    } else if (show && normalized.myTasks && normalized.unassigned && normalized.filterLogic === 'or') {
+    if (show && (normalized.myTasks || normalized.unassigned) && !normalized.personId && !normalized.teamId) {
         empty.textContent = spT('sp.filter.emptyMyOrUnassigned');
     } else if (show) {
         empty.textContent = spT('sp.filter.empty');
@@ -702,6 +700,19 @@ function bindFilters(render) {
         prefs.planFiltersVersion = 6;
         savePreferences(prefs);
     }
+    // Restore default focus view: my tasks + unassigned combined with OR.
+    if (Number(prefs.planFiltersVersion) < 7) {
+        prefs.planFilters = normalizePlanFilters({
+            ...(prefs.planFilters || {}),
+            myTasks: true,
+            unassigned: true,
+            personId: '',
+            teamId: '',
+            filterLogic: 'or',
+        });
+        prefs.planFiltersVersion = 7;
+        savePreferences(prefs);
+    }
     const planFilters = normalizePlanFilters(prefs.planFilters || {});
 
     applyPlanFilterControls(planFilters);
@@ -734,6 +745,19 @@ function bindFilters(render) {
     for (const id of ['sp-filter-person', 'sp-filter-team', 'sp-filter-status', 'sp-filter-priority']) {
         const el = document.getElementById(id);
         el?.addEventListener('change', () => {
+            // Person and team are mutually exclusive picks (dropdown "Any" clears).
+            if (id === 'sp-filter-person' && el.value) {
+                const team = document.getElementById('sp-filter-team');
+                if (team) {
+                    team.value = '';
+                }
+            }
+            if (id === 'sp-filter-team' && el.value) {
+                const person = document.getElementById('sp-filter-person');
+                if (person) {
+                    person.value = '';
+                }
+            }
             persistFilters();
             render();
         });
@@ -807,7 +831,7 @@ function revealAssignedItemInFilters(assignment) {
     const { filters, changed } = filtersToRevealAssignee(
         prefs.planFilters || {},
         assignment,
-        { activePersonId: workspace.workspace.activePersonId || null },
+        { activePersonId: resolveClaimPersonId(workspace) },
     );
     if (!changed) {
         return false;
@@ -1153,8 +1177,10 @@ function populateFilterPeopleTeams(locale) {
     const personSelect = document.getElementById('sp-filter-person');
     const teamSelect = document.getElementById('sp-filter-team');
     const anyLabel = spT('sp.filter.any');
+    // Prefer prefs: select options are empty until this runs, so DOM value is unreliable.
+    const prefs = normalizePlanFilters(loadPreferences().planFilters || {});
     if (personSelect) {
-        const current = personSelect.value;
+        const current = prefs.personId || personSelect.value || '';
         fillSelect(
             personSelect,
             listPeople().map((p) => ({ id: p.id, label: p.displayName })),
@@ -1164,7 +1190,7 @@ function populateFilterPeopleTeams(locale) {
         );
     }
     if (teamSelect) {
-        const current = teamSelect.value;
+        const current = prefs.teamId || teamSelect.value || '';
         fillSelect(
             teamSelect,
             listTeams().map((team) => ({ id: team.id, label: localizedText(team.name, locale) })),

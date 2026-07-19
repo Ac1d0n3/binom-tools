@@ -416,7 +416,7 @@ describe('filters', () => {
         expect(itemMatchesFilters(item, { myTasks: true }, { activePersonId: 'person_02' })).toBe(false);
     });
 
-    it('ANDs myTasks with unassigned (both on → no match for assigned items)', () => {
+    it('ORs myTasks with unassigned as one focus facet (even when filterLogic is and)', () => {
         const mine = {
             completed: false,
             status: 'open',
@@ -431,10 +431,93 @@ describe('filters', () => {
             assigneeType: 'person',
             assigneeId: null,
         };
-        expect(itemMatchesFilters(mine, { myTasks: true, unassigned: true }, { activePersonId: 'person_01' })).toBe(false);
-        expect(itemMatchesFilters(open, { myTasks: true, unassigned: true }, { activePersonId: 'person_01' })).toBe(false);
-        expect(itemMatchesFilters(open, { unassigned: true }, { activePersonId: 'person_01' })).toBe(true);
-        expect(itemMatchesFilters(mine, { myTasks: true }, { activePersonId: 'person_01' })).toBe(true);
+        const other = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_02',
+        };
+        const filters = { myTasks: true, unassigned: true, filterLogic: 'and' };
+        expect(itemMatchesFilters(mine, filters, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(open, filters, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(other, filters, { activePersonId: 'person_01' })).toBe(false);
+    });
+
+    it('treats blocked checkbox as structural AND (not assignee OR)', () => {
+        const blockedOther = {
+            completed: false,
+            status: 'blocked',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_02',
+        };
+        const openMine = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        const filters = { blocked: true, myTasks: true, filterLogic: 'or' };
+        expect(itemMatchesFilters(blockedOther, filters, { activePersonId: 'person_01' })).toBe(false);
+        expect(itemMatchesFilters(openMine, filters, { activePersonId: 'person_01' })).toBe(false);
+        expect(itemMatchesFilters({
+            ...openMine,
+            status: 'blocked',
+        }, filters, { activePersonId: 'person_01' })).toBe(true);
+    });
+
+    it('person dropdown overrides myTasks+unassigned focus', () => {
+        const other = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_02',
+        };
+        const mine = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        const open = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: null,
+        };
+        const filters = {
+            myTasks: true,
+            unassigned: true,
+            personId: 'person_02',
+            filterLogic: 'and',
+        };
+        expect(itemMatchesFilters(other, filters, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(mine, filters, { activePersonId: 'person_01' })).toBe(false);
+        expect(itemMatchesFilters(open, filters, { activePersonId: 'person_01' })).toBe(false);
+    });
+
+    it('team dropdown matches team assignees', () => {
+        const teamItem = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'team',
+            assigneeId: 'team_q',
+        };
+        const personItem = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        expect(itemMatchesFilters(teamItem, { teamId: 'team_q', myTasks: true }, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(personItem, { teamId: 'team_q', myTasks: true }, { activePersonId: 'person_01' })).toBe(false);
     });
 
     it('ORs myTasks with unassigned when filterLogic is or', () => {

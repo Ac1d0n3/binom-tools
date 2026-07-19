@@ -1,5 +1,6 @@
 /**
- * Plan item filters — structural filters always AND; assignee/blocked group uses AND or OR.
+ * Plan item filters — structural filters always AND; assignee scope is XOR-ish:
+ * person/team dropdowns override "My tasks"/"Unassigned"; those two are OR'd as one focus facet.
  */
 
 /**
@@ -88,11 +89,14 @@ export function itemMatchesFilters(item, filters, ctx) {
     const normalized = normalizePlanFilters(filters);
     const activePersonId = ctx.activePersonId || null;
 
-    // Structural filters — always AND.
+    // Structural filters — always AND (including "blocked only").
     if (normalized.hideDone && item.completed) {
         return false;
     }
     if (normalized.openOnly && (item.completed || item.status === 'completed')) {
+        return false;
+    }
+    if (normalized.blocked && item.status !== 'blocked') {
         return false;
     }
     if (normalized.status && item.status !== normalized.status) {
@@ -110,22 +114,34 @@ export function itemMatchesFilters(item, filters, ctx) {
         }
     }
 
+    // Assignee scope (XOR-ish):
+    // - Person / Team dropdowns take precedence over "My tasks" / "Unassigned"
+    // - Otherwise "My tasks" + "Unassigned" are one focus facet (always OR'd)
+    // - Person + Team together use filterLogic (AND/OR)
     /** @type {Array<() => boolean>} */
     const groupChecks = [];
-    if (normalized.blocked) {
-        groupChecks.push(() => item.status === 'blocked');
-    }
-    if (normalized.myTasks) {
-        groupChecks.push(() => matchesMyTasks(item, activePersonId));
-    }
-    if (normalized.unassigned) {
-        groupChecks.push(() => !item.assigneeId);
-    }
-    if (normalized.personId) {
-        groupChecks.push(() => item.assigneeType === 'person' && String(item.assigneeId) === normalized.personId);
-    }
-    if (normalized.teamId) {
-        groupChecks.push(() => item.assigneeType === 'team' && String(item.assigneeId) === normalized.teamId);
+    if (normalized.personId || normalized.teamId) {
+        if (normalized.personId) {
+            groupChecks.push(() => (
+                String(item.assigneeId) === normalized.personId
+                && (item.assigneeType === 'person' || !item.assigneeType)
+            ));
+        }
+        if (normalized.teamId) {
+            groupChecks.push(() => (
+                item.assigneeType === 'team'
+                && String(item.assigneeId) === normalized.teamId
+            ));
+        }
+    } else if (normalized.myTasks || normalized.unassigned) {
+        groupChecks.push(() => {
+            const mine = normalized.myTasks && matchesMyTasks(item, activePersonId);
+            const open = normalized.unassigned && !item.assigneeId;
+            if (normalized.myTasks && normalized.unassigned) {
+                return Boolean(mine || open);
+            }
+            return normalized.myTasks ? Boolean(mine) : Boolean(open);
+        });
     }
 
     if (!groupChecks.length) {
