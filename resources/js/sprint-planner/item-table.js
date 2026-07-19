@@ -1,4 +1,9 @@
 import { createLocalId } from './ids.js';
+import {
+    csvToItemTableRows,
+    downloadCsvFile,
+    itemTableToCsv,
+} from './item-table-csv.js';
 
 /**
  * @typedef {{ id: string, label: string }} SpTableColumn
@@ -281,7 +286,7 @@ export function renderInlineTableEditor(host, table, opts) {
     };
 
     const actions = document.createElement('div');
-    actions.className = 'sp-action-row';
+    actions.className = 'sp-action-row sp-item-table__toolbar';
     const addRow = document.createElement('button');
     addRow.type = 'button';
     addRow.className = 'tools-btn tools-btn--secondary tools-btn--small';
@@ -295,7 +300,51 @@ export function renderInlineTableEditor(host, table, opts) {
         draw(rows);
         persist();
     });
-    actions.appendChild(addRow);
+
+    const exportBtn = document.createElement('button');
+    exportBtn.type = 'button';
+    exportBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
+    exportBtn.textContent = spT('sp.action.exportTableCsv');
+    exportBtn.addEventListener('click', () => {
+        const rows = readRowsFromDom(wrap, columns);
+        downloadCsvFile('plan-table.csv', itemTableToCsv({ columns, rows }));
+    });
+
+    const importInput = document.createElement('input');
+    importInput.type = 'file';
+    importInput.accept = '.csv,text/csv';
+    importInput.hidden = true;
+    importInput.addEventListener('change', async () => {
+        const file = importInput.files?.[0];
+        importInput.value = '';
+        if (!file) {
+            return;
+        }
+        const existing = readRowsFromDom(wrap, columns);
+        if (existing.length && !window.confirm(spT('sp.table.csvImportReplaceConfirm'))) {
+            return;
+        }
+        try {
+            const text = await file.text();
+            const result = csvToItemTableRows(text, columns);
+            if (!result.ok) {
+                window.alert(spT(`sp.table.csvError.${result.error}`));
+                return;
+            }
+            draw(result.rows);
+            persist();
+        } catch {
+            window.alert(spT('sp.table.csvError.read'));
+        }
+    });
+
+    const importBtn = document.createElement('button');
+    importBtn.type = 'button';
+    importBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
+    importBtn.textContent = spT('sp.action.importTableCsv');
+    importBtn.addEventListener('click', () => importInput.click());
+
+    actions.append(addRow, exportBtn, importBtn, importInput);
     host.appendChild(actions);
 
     draw(table.rows || []);
@@ -324,7 +373,7 @@ function renderRows(wrap, columns, rows, spT, opts = {}) {
     }
     const thAction = document.createElement('th');
     thAction.className = 'sp-item-table__actions';
-    thAction.textContent = '';
+    thAction.textContent = spT('sp.field.tableActions');
     headRow.appendChild(thAction);
     thead.appendChild(headRow);
     table.appendChild(thead);

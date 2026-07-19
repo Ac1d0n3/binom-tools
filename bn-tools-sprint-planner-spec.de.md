@@ -607,6 +607,22 @@ Schließen = X, Backdrop oder Escape
 
 Sprint-Links (`linkedStories` / `links`) werden im Sprint-Körper angezeigt und sind im Sprint-Dialog editierbar.
 
+### 10.2 Notiz-Panel
+
+Jede Task/Deliverable hat einen Notiz-Button. Das Notiz-Panel ist ein **eigener** Drawer (nicht das Hilfe-Panel) und bearbeitet dasselbe Feld `note` wie der Item-Dialog.
+
+Verhalten:
+
+```text
+Desktop  = rechte Drawer-Sidebar (~360px)
+Mobile   = Bottom-Sheet (~55–70vh)
+Speichern = Debounce ~400 ms, sichtbarer Speicherstatus
+Schließen = X, Backdrop oder Escape (flush pending save)
+Ausschluss = Hilfe und Notiz öffnen sich nicht gleichzeitig
+```
+
+Badge am Notiz-Button, wenn die Notiz nicht leer ist.
+
 Empfohlene Statuswerte:
 
 ```text
@@ -867,6 +883,19 @@ Pro Sprint und optional pro Aufgabe:
 - Zeilenumbrüche erhalten
 - sinnvolle Maximallänge
 - verständliche Fehlermeldung
+
+Aufgaben-Notizen (`note`) sind im Item-Dialog und im **Notiz-Panel** (rechte Sidebar, §10.2) editierbar — gleiche Datenquelle.
+
+### 16.1 Item-Tabellen CSV
+
+Aufgaben mit `tableColumns` können die Zeilen als **CSV** exportieren und wieder importieren (Excel-Roundtrip):
+
+```text
+Export = Spaltenköpfe = aktuelle Tabellenlabels, UTF-8 mit BOM
+Import = Header auf Spalten mappen, Zeilen ersetzen (nach Bestätigung)
+```
+
+Unbekannte CSV-Spalten werden ignoriert; fehlende Plan-Spalten bleiben leer.
 
 ---
 

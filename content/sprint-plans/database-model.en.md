@@ -28,6 +28,8 @@ stories:
     required: true
   - slug: choosing-the-simplest-viable-architecture
     required: false
+  - slug: platform-examples
+    required: false
 
 tasks:
   - id: w1-scope
@@ -81,12 +83,14 @@ tasks:
     helpText: |
       Natural vs surrogate keys, uniqueness, and SCD needs.
       Prefer the simplest viable structure.
-    linkedStories: beyond-bronze-silver-gold, choosing-the-simplest-viable-architecture
+    linkedStories: beyond-bronze-silver-gold, choosing-the-simplest-viable-architecture, platform-examples
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
       - label: Beyond Bronze/Silver/Gold
         href: /playbooks/beyond-bronze-silver-gold
+      - label: One Architecture – Multiple Platforms
+        href: /playbooks/platform-examples
   - id: w2-rels
     label: Map relationships and cardinality
     plannedMinutes: 240

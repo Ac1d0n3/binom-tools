@@ -380,6 +380,14 @@ export function closeHelpPanel() {
     }
 }
 
+/**
+ * @returns {boolean}
+ */
+export function isHelpPanelOpen() {
+    const panel = document.getElementById('sp-help-panel');
+    return Boolean(panel && !panel.hidden);
+}
+
 let helpBound = false;
 export function bindHelpPanelChrome() {
     if (helpBound) {
@@ -389,7 +397,7 @@ export function bindHelpPanelChrome() {
     document.getElementById('sp-help-close')?.addEventListener('click', closeHelpPanel);
     document.getElementById('sp-help-backdrop')?.addEventListener('click', closeHelpPanel);
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && isHelpPanelOpen()) {
             closeHelpPanel();
         }
     });

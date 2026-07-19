@@ -28,6 +28,8 @@ stories:
     required: true
   - slug: choosing-the-simplest-viable-architecture
     required: false
+  - slug: platform-examples
+    required: false
 
 tasks:
   - id: w1-scope
@@ -81,12 +83,14 @@ tasks:
     helpText: |
       Natural vs. Surrogate Keys, Uniqueness, SCD-Bedarf.
       Einfachst-sinnvolle Struktur bevorzugen.
-    linkedStories: beyond-bronze-silver-gold, choosing-the-simplest-viable-architecture
+    linkedStories: beyond-bronze-silver-gold, choosing-the-simplest-viable-architecture, platform-examples
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
       - label: Beyond Bronze/Silver/Gold
         href: /playbooks/beyond-bronze-silver-gold
+      - label: Eine Architektur – mehrere Plattformen
+        href: /playbooks/platform-examples
   - id: w2-rels
     label: Beziehungen und Kardinalität mappen
     plannedMinutes: 60

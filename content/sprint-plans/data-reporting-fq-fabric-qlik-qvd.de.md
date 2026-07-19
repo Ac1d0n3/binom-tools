@@ -527,6 +527,8 @@ stories:
     required: false
   - slug: big-five
     required: false
+  - slug: platform-examples
+    required: false
 
 tasks:
   - id: review-architecture
@@ -537,7 +539,7 @@ tasks:
       Beschreibe den Weg von Quellen zur Nutzung: Warehouse/Lakehouse, Transforms, Semantic Layer, BI, Orchestrierung.
       Trenne bewusste Architektur von historisch gewachsenem Zufall. Vergleiche mit der einfachsten tragfähigen Form.
       Achte auf: Bronze/Silver/Gold neu erfinden, ohne Geschäftsfragen zu beantworten.
-    linkedStories: choosing-the-simplest-viable-architecture, beyond-bronze-silver-gold, big-five
+    linkedStories: choosing-the-simplest-viable-architecture, beyond-bronze-silver-gold, big-five, platform-examples
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
@@ -547,6 +549,8 @@ tasks:
         href: /playbooks/beyond-bronze-silver-gold
       - label: BIG 5 Stacks im Überblick
         href: /playbooks/big-five
+      - label: Eine Architektur – mehrere Plattformen
+        href: /playbooks/platform-examples
   - id: document-bottlenecks
     label: Engpässe und technische Schulden dokumentieren
     assigneeType: team
@@ -659,6 +663,8 @@ stories:
     required: false
   - slug: self-hosted-data-platform
     required: false
+  - slug: transformation-options
+    required: false
 
 tasks:
   - id: draft-target-picture
@@ -669,7 +675,7 @@ tasks:
       Beschreibe den gewünschten Endzustand für diese Domäne: Ownership, KPI-Vertrauen, Lineage-Sichtbarkeit, Quality Gates und Delivery-Muster.
       Halte Prinzipien kurz und prüfbar. Zeige, was ihr stoppen werdet.
       Achte auf: futuristische Architektur-Folien ohne nahen Pfad.
-    linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role
+    linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role, transformation-options
     helpLinks:
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
@@ -677,6 +683,8 @@ tasks:
         href: /playbooks/dbt-role
       - label: Self-Hosted Data Platforms
         href: /playbooks/self-hosted-data-platform
+      - label: Optionen für Datentransformationen
+        href: /playbooks/transformation-options
   - id: validate-target-picture
     label: Zielbild mit Stakeholdern validieren
     assigneeType: team
@@ -866,6 +874,8 @@ stories:
     required: true
   - slug: dsdr-governance
     required: false
+  - slug: operating-and-governing-the-platform
+    required: false
 
 tasks:
   - id: summarize-quarter
@@ -890,12 +900,14 @@ tasks:
       Schlage die nächsten 1–3 Initiativen auf Basis verbleibender Hotspots und des validierten Zielbilds vor.
       Bestätige Owner, Kapazität und was gestoppt werden muss, um Platz zu schaffen.
       Achte auf: Discovery von null neu zu starten statt bewährte Muster zu erweitern.
-    linkedStories: bridge-solution, modernizing-an-existing-warehouse
+    linkedStories: bridge-solution, modernizing-an-existing-warehouse, operating-and-governing-the-platform
     helpLinks:
       - label: Bridge Solutions
         href: /playbooks/bridge-solution
       - label: Ein bestehendes Warehouse modernisieren
         href: /playbooks/modernizing-an-existing-warehouse
+      - label: Die Datenplattform betreiben und steuern
+        href: /playbooks/operating-and-governing-the-platform
 
 deliverables:
   - id: quarter-report

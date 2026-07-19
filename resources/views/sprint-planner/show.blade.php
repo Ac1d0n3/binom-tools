@@ -74,6 +74,12 @@
                         >
                     </label>
                     <div class="sp-plan-header__toolbar-actions">
+                        <a
+                            href="{{ locale_route('sprint-planner.index') }}?list=1"
+                            class="tools-btn tools-btn--secondary tools-btn--small"
+                            id="sp-leave-plan"
+                            data-i18n="sp.action.leavePlan"
+                        >Leave plan</a>
                         <button
                             type="button"
                             class="tools-btn tools-btn--secondary tools-btn--small sp-chrome-icon-btn"
@@ -424,6 +430,15 @@
                 <button type="button" id="sp-help-close" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.help.close" aria-label="Close">Close</button>
             </div>
             <div id="sp-help-panel-body" class="sp-help-panel__body"></div>
+        </aside>
+
+        <div id="sp-notes-backdrop" class="sp-notes-backdrop" hidden></div>
+        <aside id="sp-notes-panel" class="sp-notes-panel" hidden aria-hidden="true">
+            <div class="sp-notes-panel__header">
+                <h2 id="sp-notes-panel-title" class="sp-notes-panel__title" data-i18n="sp.notes.title">Notes</h2>
+                <button type="button" id="sp-notes-close" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.notes.close" aria-label="Close">Close</button>
+            </div>
+            <div id="sp-notes-panel-body" class="sp-notes-panel__body"></div>
         </aside>
 
         <div id="sp-status-report" class="sp-status-report" hidden aria-hidden="true">

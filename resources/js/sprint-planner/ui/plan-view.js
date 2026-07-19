@@ -115,6 +115,12 @@ import {
     renderFlow,
     renderHelpButton,
 } from './help-panel.js';
+import {
+    bindNotesPanelChrome,
+    closeNotesPanel,
+    openNotesPanel,
+    renderNotesButton,
+} from './notes-panel.js';
 
 const noteTimers = {};
 let sprintDialogState = { sprint: null, isCustom: false };
@@ -167,6 +173,7 @@ export function initPlanShowPage() {
         bindPlanChrome(instanceId, render);
         bindDialogs(instanceId, render);
         bindHelpPanelChrome();
+        bindNotesPanelChrome();
         bindStatusReport();
         bindUndoAndHistory(instanceId);
         bindClaimAll(instanceId);
@@ -1530,7 +1537,7 @@ function renderStatusBanner(sprints, workspace, locale, instance) {
     }
     host.hidden = false;
     host.className = `sp-blockers sp-status-banner sp-status-banner--${view.status}`
-        + (view.expanded ? ' sp-status-banner--open' : '');
+        + (view.expanded ? ' sp-status-banner--expanded' : '');
 
     const items = collectItemsByStatus(sprints, view.status);
     const statusLabel = spT(`sp.status.${statusKeyToLabel(view.status)}`);
@@ -1618,9 +1625,31 @@ function renderStatusBanner(sprints, workspace, locale, instance) {
                     reason.textContent = spT('sp.blockers.noReason');
                 }
                 li.appendChild(reason);
+
+                const noteText = String(row.item.note || '').trim();
+                if (noteText) {
+                    const noteEl = document.createElement('p');
+                    noteEl.className = 'sp-blockers__note';
+                    noteEl.textContent = noteText;
+                    li.appendChild(noteEl);
+                }
+
                 editBtn.textContent = reasonText
                     ? spT('sp.blockers.editReason')
                     : spT('sp.blockers.addReason');
+
+                const notesBtn = document.createElement('button');
+                notesBtn.type = 'button';
+                notesBtn.className = 'tools-btn tools-btn--secondary tools-btn--small';
+                notesBtn.textContent = noteText
+                    ? spT('sp.notes.open')
+                    : spT('sp.blockers.addNote');
+                notesBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openItemNotes(row.item);
+                });
+                actions.appendChild(notesBtn);
             } else {
                 editBtn.textContent = spT('sp.action.edit');
             }
@@ -1995,6 +2024,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     if (helpBtn) {
         actions.appendChild(helpBtn);
     }
+    actions.appendChild(renderNotesButton(item, (it) => openItemNotes(it)));
 
     actions.appendChild(createIconButton({
         icon: 'owner',
@@ -2170,6 +2200,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
  * @param {import('../progress.js').ResolvedItem} item
  */
 function openItemHelp(item) {
+    closeNotesPanel();
     const root = document.getElementById('sp-app');
     const instanceId = root?.dataset?.spInstanceId || '';
     fillHelpPanel({
@@ -2189,6 +2220,60 @@ function openItemHelp(item) {
             }
             : null,
     }, () => rerender());
+}
+
+/**
+ * @param {import('../progress.js').ResolvedItem} item
+ */
+function openItemNotes(item) {
+    closeHelpPanel();
+    const root = document.getElementById('sp-app');
+    const instanceId = root?.dataset?.spInstanceId || '';
+    if (!instanceId) {
+        return;
+    }
+    openNotesPanel({
+        title: item.label,
+        note: item.note || '',
+        onNoteSave: (note) => {
+            const result = updateItemMeta(
+                instanceId,
+                item.kind,
+                item.statusKey,
+                {
+                    status: item.dependencyBlocked
+                        ? (item.storedStatus || 'open')
+                        : item.status,
+                    priority: item.priority,
+                    assigneeType: item.assigneeType,
+                    assigneeId: item.assigneeId,
+                    dueDate: item.dueDate,
+                    note,
+                    plannedMinutes: item.plannedMinutes,
+                    actualMinutes: item.actualMinutes,
+                    blockerReason: item.dependencyBlocked && item.storedStatus !== 'blocked'
+                        ? ''
+                        : item.blockerReason,
+                    blockerSince: item.blockerSince,
+                    dependsOn: item.dependsOn || [],
+                    attachments: item.attachments,
+                    table: item.table,
+                    labelDe: item.label,
+                    labelEn: item.label,
+                },
+                item.custom,
+                item.sprintId,
+            );
+            if (!result.ok) {
+                showToast(storageErrorMessage(result.error));
+                setSaveStatus('error');
+                return;
+            }
+            item.note = note;
+            setSaveStatus('saved');
+            refreshStatusBannerUi();
+        },
+    });
 }
 
 /**
