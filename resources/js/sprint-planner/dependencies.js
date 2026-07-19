@@ -179,7 +179,8 @@ export function validateDependsOn(itemKey, rawDependsOn, opts) {
 }
 
 /**
- * Apply effective dependency blocking on resolved sprint items (mutates in place).
+ * Apply effective dependency waiting state on resolved sprint items (mutates in place).
+ * Dependencies are sequence hints, not manual blockers: status/blockerReason stay unchanged.
  * @param {Array<{
  *   statusKey: string,
  *   completed: boolean,
@@ -189,6 +190,7 @@ export function validateDependsOn(itemKey, rawDependsOn, opts) {
  *   blockerReason?: string,
  *   blockerSince?: string|null,
  *   dependencyBlocked?: boolean,
+ *   dependencyReason?: string,
  *   storedStatus?: string,
  * }>} items
  * @param {(labels: string[]) => string} formatWaitingOn
@@ -200,6 +202,7 @@ export function applySprintDependencyBlocks(items, formatWaitingOn) {
         const deps = Array.isArray(item.dependsOn) ? item.dependsOn : [];
         item.dependsOn = deps;
         item.dependencyBlocked = false;
+        item.dependencyReason = '';
         item.storedStatus = item.status;
 
         if (item.completed || item.status === 'completed' || !deps.length) {
@@ -220,11 +223,7 @@ export function applySprintDependencyBlocks(items, formatWaitingOn) {
         }
 
         item.dependencyBlocked = true;
-        item.status = 'blocked';
-        const manualReason = String(item.blockerReason || '').trim();
-        if (!manualReason) {
-            item.blockerReason = formatWaitingOn(openPreds.map((p) => p.label));
-        }
+        item.dependencyReason = formatWaitingOn(openPreds.map((p) => p.label));
     }
 }
 

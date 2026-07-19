@@ -54,6 +54,7 @@ import { resolveActualMinutes, resolvePlannedMinutes } from './time.js';
  * @property {string|null} blockerSince
  * @property {string[]} dependsOn
  * @property {boolean} dependencyBlocked
+ * @property {string} dependencyReason
  * @property {string} storedStatus
  * @property {import('./attachments.js').SpAttachment[]} attachments
  */
@@ -365,6 +366,7 @@ function resolveTemplateItem({
         blockerSince: status === 'blocked' ? (itemOverride.blockerSince || null) : null,
         dependsOn,
         dependencyBlocked: false,
+        dependencyReason: '',
         attachments: normalizeAttachments(itemOverride.attachments),
         table: mergeItemTable(item.table, itemOverride.table),
     };
@@ -406,6 +408,7 @@ function resolveCustomItem(item, key, kind, sprintId, completedList, locale, tem
         blockerSince: status === 'blocked' ? (item.blockerSince || null) : null,
         dependsOn,
         dependencyBlocked: false,
+        dependencyReason: '',
         attachments: normalizeAttachments(item.attachments),
         table: normalizeItemTable(item.table),
     };

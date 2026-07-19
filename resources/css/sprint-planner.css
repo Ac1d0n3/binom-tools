@@ -1185,6 +1185,11 @@ html.bn-theme-blue-water-dark .sp-status-overview__item--completed {
     outline-offset: 2px;
 }
 
+.sp-item__check:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
 .sp-item__check:checked {
     background: var(--sp-accent);
     border-color: var(--sp-accent);
@@ -1245,6 +1250,38 @@ html.bn-theme-blue-water-dark .sp-status-overview__item--completed {
     margin-top: 0;
     opacity: 1;
     font-size: 0.72rem;
+}
+
+.sp-item__dependency {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+    opacity: 0.95;
+}
+
+.sp-item__dependency svg {
+    width: 0.78rem;
+    height: 0.78rem;
+}
+
+.sp-item__dependency--chain {
+    color: color-mix(in srgb, #2563eb 78%, var(--sp-text));
+    background: color-mix(in srgb, #dbeafe 68%, var(--sp-surface));
+}
+
+.sp-item__dependency--parallel {
+    color: color-mix(in srgb, #047857 78%, var(--sp-text));
+    background: color-mix(in srgb, #d1fae5 62%, var(--sp-surface));
+}
+
+.sp-item__dependency-reason {
+    margin: 0;
+    font-size: 0.78rem;
+    color: color-mix(in srgb, #2563eb 78%, var(--sp-text));
 }
 
 .sp-item__time {
@@ -2768,4 +2805,3 @@ html.bn-theme-blue-water-dark .sp-status-mark--on_hold {
     font-weight: 700;
     letter-spacing: 0.02em;
 }
-

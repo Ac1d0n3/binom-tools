@@ -28,6 +28,7 @@ final class SprintFenceParser
         'label',
         'assigneetype',
         'assigneeid',
+        'dependson',
         'linkedstories',
         'helplinks',
         'helptext',
@@ -574,6 +575,30 @@ final class SprintFenceParser
 
     /**
      * @param  array<string, mixed>  $item
+     * @return list<string>
+     */
+    private function normalizeItemDependsOn(array $item): array
+    {
+        $raw = $item['dependson'] ?? $item['dependsOn'] ?? $item['depends_on'] ?? [];
+        if (is_string($raw)) {
+            $value = trim($raw);
+            if (str_starts_with($value, '[') && str_ends_with($value, ']')) {
+                $value = trim(substr($value, 1, -1));
+            }
+            $raw = $value === '' ? [] : array_map('trim', explode(',', $value));
+        }
+        if (! is_array($raw)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(
+            array_map(static fn (mixed $dependency): string => trim((string) $dependency), $raw),
+            static fn (string $dependency): bool => $dependency !== '',
+        )));
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
      * @param  list<string>  $warnings
      * @return array<string, mixed>
      */
@@ -588,6 +613,7 @@ final class SprintFenceParser
                 'assigneeType' => $item['assigneetype'] ?? $item['assigneeType'] ?? 'person',
                 'assigneeId' => $item['assigneeid'] ?? $item['assigneeId'] ?? null,
                 'plannedMinutes' => $this->normalizeItemMinutes($item),
+                'dependsOn' => $this->normalizeItemDependsOn($item),
                 'stories' => $stories,
                 'linkedStorySlugs' => array_values(array_map(static fn (array $s): string => $s['slug'], $stories)),
                 'helpText' => $this->normalizeItemMultilineText($item, 'helptext'),
@@ -604,6 +630,7 @@ final class SprintFenceParser
                 'id' => (string) ($item['id'] ?? ''),
                 'label' => (string) ($item['label'] ?? ''),
                 'plannedMinutes' => $this->normalizeItemMinutes($item),
+                'dependsOn' => $this->normalizeItemDependsOn($item),
                 'stories' => $stories,
                 'helpText' => $this->normalizeItemMultilineText($item, 'helptext'),
                 'helpLinks' => $this->normalizeItemHelpLinks($item),

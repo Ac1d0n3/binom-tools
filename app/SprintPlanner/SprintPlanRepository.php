@@ -227,6 +227,7 @@ final class SprintPlanRepository
                         'assigneeType' => $t['assigneeType'] ?? 'person',
                         'assigneeId' => $t['assigneeId'] ?? null,
                         'plannedMinutes' => $this->normalizeStructuralMinutes($t['plannedMinutes'] ?? null),
+                        'dependsOn' => $this->normalizeStructuralStringList($t['dependsOn'] ?? []),
                         'stories' => $taskStories,
                         'linkedStorySlugs' => array_values(array_map(static fn (array $s): string => $s['slug'], $taskStories)),
                         'helpLinks' => $this->normalizeStructuralHrefLinks($t['helpLinks'] ?? []),
@@ -237,6 +238,7 @@ final class SprintPlanRepository
                     return [
                         'id' => $d['id'],
                         'plannedMinutes' => $this->normalizeStructuralMinutes($d['plannedMinutes'] ?? null),
+                        'dependsOn' => $this->normalizeStructuralStringList($d['dependsOn'] ?? []),
                         'stories' => $this->normalizeStructuralStories($d['stories'] ?? []),
                         'helpLinks' => $this->normalizeStructuralHrefLinks($d['helpLinks'] ?? []),
                         'table' => $this->normalizeStructuralTable($d['table'] ?? null),
@@ -262,6 +264,24 @@ final class SprintPlanRepository
         $minutes = (int) round((float) $value);
 
         return $minutes < 0 ? null : $minutes;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizeStructuralStringList(mixed $value): array
+    {
+        if (is_string($value)) {
+            $value = array_map('trim', explode(',', $value));
+        }
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(
+            array_map(static fn (mixed $item): string => trim((string) $item), $value),
+            static fn (string $item): bool => $item !== '',
+        )));
     }
 
     /**

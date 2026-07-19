@@ -82,17 +82,19 @@ describe('dependencies', () => {
         ];
         applySprintDependencyBlocks(items, (labels) => `Waiting on: ${labels.join(', ')}`);
         expect(items[1].dependencyBlocked).toBe(true);
-        expect(items[1].status).toBe('blocked');
+        expect(items[1].status).toBe('in_progress');
         expect(items[1].storedStatus).toBe('in_progress');
-        expect(items[1].blockerReason).toBe('Waiting on: A');
+        expect(items[1].blockerReason).toBe('');
+        expect(items[1].dependencyReason).toBe('Waiting on: A');
 
         items[0].completed = true;
         items[0].status = 'completed';
         items[1].status = 'in_progress';
-        items[1].blockerReason = '';
+        items[1].dependencyReason = '';
         applySprintDependencyBlocks(items, (labels) => `Waiting on: ${labels.join(', ')}`);
         expect(items[1].dependencyBlocked).toBe(false);
         expect(items[1].status).toBe('in_progress');
+        expect(items[1].dependencyReason).toBe('');
     });
 
     it('collectSprintItemKeys includes template and custom items', () => {

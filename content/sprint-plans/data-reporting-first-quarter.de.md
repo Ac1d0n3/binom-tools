@@ -51,10 +51,8 @@ tasks:
       Achte auf: vage Ziele („besseres Reporting“), versteckten Compliance-Druck und widersprüchliche Sponsoren.
     linkedStories: data-ownership-stewardship, eight-pillars
     helpLinks:
-      - label: Data Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
-      - label: Die 8 Säulen der Data Governance
-        href: /playbooks/eight-pillars
+      - label: Atlassian - Project poster
+        href: https://www.atlassian.com/team-playbook/plays/project-poster
   - id: identify-stakeholders
     label: Relevante Stakeholder identifizieren
     plannedMinutes: 30
@@ -69,22 +67,25 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
-      - label: Fehlende Bausteine – Ownership & Stewardship
-        href: /playbooks/missing-pieces-ownership-stewardship
+      - label: Atlassian - DACI decision framework
+        href: https://www.atlassian.com/team-playbook/plays/daci
 
 deliverables:
   - id: stakeholder-list
     label: Stakeholder-Liste erstellen
     plannedMinutes: 30
+    dependsOn: identify-stakeholders
     helpText: |
-      Deliverable „Stakeholder-Liste erstellen“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Nutze die Tabelle aus der Aufgabe „Relevante Stakeholder identifizieren“ als Arbeitsbasis.
+      Das Deliverable ist fertig, wenn Name, Rolle, Einfluss, Interesse und Owner für die relevanten Stakeholder gepflegt sind.
+      Ergänze offene Zugänge, blockierende Personen oder fehlende operative Owner als Hinweise, statt sie in Rohnotizen zu verstecken.
   - id: initial-mandate
     label: Initialen Auftrag dokumentiert
     plannedMinutes: 60
+    dependsOn: align-management-expectations, identify-stakeholders
     helpText: |
-      Deliverable „Initialen Auftrag dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Initialen Auftrag dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: management-expectations
@@ -126,10 +127,8 @@ tasks:
     helpLinks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
-      - label: Eine Geschäftsfrage, verschiedene BI-Engines
-        href: /playbooks/bi-tools
-      - label: Eine App kann nicht jede Frage beantworten
-        href: /playbooks/one-app
+      - label: Microsoft Learn - Power BI implementation planning
+        href: https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-introduction
   - id: map-report-consumers
     label: Report-Nutzer und Nutzungshäufigkeit kartieren
     plannedMinutes: 120
@@ -140,23 +139,21 @@ tasks:
       Trenne „nice to have“ von „blockiert Betrieb oder Board-Reporting“.
       Achte auf: Nutzer, die den Report nie öffnen aber Änderungen blockieren, und unbekannte Verteilerlisten.
     linkedStories: bi-tools, one-app
-    helpLinks:
-      - label: BI-Tools im Überblick
-        href: /playbooks/bi-tools
-
 deliverables:
   - id: report-inventory
     label: Report-Inventar dokumentiert
     plannedMinutes: 120
+    dependsOn: inventory-reports
     helpText: |
-      Deliverable „Report-Inventar dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Report-Inventar dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: gap-list
     label: Erste Lückenliste erstellt
     plannedMinutes: 30
+    dependsOn: inventory-reports, map-report-consumers
     helpText: |
-      Deliverable „Erste Lückenliste erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Erste Lückenliste erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: critical-reports
@@ -194,13 +191,10 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
-      - label: Bevor die erste Tabelle entsteht
-        href: /playbooks/before-building-the-first-table
-      - label: SAP Data & Analytics Stack
-        href: /playbooks/sap-overview
   - id: document-interfaces
     label: Schnittstellen und Extraktionswege dokumentieren
     plannedMinutes: 120
+    dependsOn: list-source-systems
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -211,22 +205,24 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
-      - label: Ein Warehouse von Grund auf aufbauen
-        href: /playbooks/building-from-scratch
+      - label: Atlassian - DACI decision framework
+        href: https://www.atlassian.com/team-playbook/plays/daci
 
 deliverables:
   - id: source-system-map
     label: Quellsystem-Landkarte erstellt
     plannedMinutes: 60
+    dependsOn: list-source-systems
     helpText: |
-      Deliverable „Quellsystem-Landkarte erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Quellsystem-Landkarte erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: owner-matrix
     label: Owner-Matrix erstellt
     plannedMinutes: 30
+    dependsOn: list-source-systems, document-interfaces
     helpText: |
-      Deliverable „Owner-Matrix erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Owner-Matrix erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: system-risks
@@ -260,14 +256,10 @@ tasks:
       Skizziere Prozess → Systemfelder → Reportfelder für 1–3 kritische Flows.
       Achte auf: späte Excel-Korrekturen, optionale Felder die KPIs treiben, und Prozess-Ausnahmen die nie im Warehouse landen.
     linkedStories: before-building-the-first-table, trash-iinout
-    helpLinks:
-      - label: Trash In, Trash Out
-        href: /playbooks/trash-iinout
-      - label: Bevor die erste Tabelle entsteht
-        href: /playbooks/before-building-the-first-table
   - id: capture-business-rules
     label: Geschäftsregeln und Ausnahmen dokumentieren
     plannedMinutes: 30
+    dependsOn: trace-data-creation
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -275,23 +267,21 @@ tasks:
       Lieber Beispiele mit echten Randfällen als abstrakte Definitionen.
       Achte auf: „das weiß doch jeder“-Regeln, die nur in Köpfen existieren.
     linkedStories: define-kpi, missing-pieces-trusted-metrics
-    helpLinks:
-      - label: KPI-Definition, Ownership und Versionierung
-        href: /playbooks/define-kpi
-
 deliverables:
   - id: creation-notes
     label: Notizen zur Datenerzeugung
     plannedMinutes: 60
+    dependsOn: trace-data-creation
     helpText: |
-      Deliverable „Notizen zur Datenerzeugung“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Notizen zur Datenerzeugung“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: rule-summary
     label: Zusammenfassung der Geschäftsregeln
     plannedMinutes: 60
+    dependsOn: capture-business-rules
     helpText: |
-      Deliverable „Zusammenfassung der Geschäftsregeln“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Zusammenfassung der Geschäftsregeln“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: key-processes
@@ -338,13 +328,10 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
-      - label: Metadata, Catalog & Lineage
-        href: /playbooks/metadata-catalog-lineage
-      - label: Fehlende Bausteine – Metadaten, Katalog & Lineage
-        href: /playbooks/missing-pieces-metadata-catalog-lineage
   - id: identify-lineage-gaps
     label: Lineage-Lücken und blinde Flecken markieren
     plannedMinutes: 30
+    dependsOn: map-lineage-paths
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -352,23 +339,21 @@ tasks:
       Priorisiere Lücken, die Vertrauen in kritische KPIs oder compliance-relevante Daten treffen.
       Achte auf: „temporäre“ Transforms, die seit Jahren existieren.
     linkedStories: metadata-catalog-lineage, missing-pieces-metadata-catalog-lineage
-    helpLinks:
-      - label: Metadata, Catalog & Lineage
-        href: /playbooks/metadata-catalog-lineage
-
 deliverables:
   - id: lineage-sketch
     label: Lineage-Skizze erstellt
     plannedMinutes: 60
+    dependsOn: map-lineage-paths
     helpText: |
-      Deliverable „Lineage-Skizze erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Lineage-Skizze erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: lineage-gap-log
     label: Lineage-Lückenprotokoll
     plannedMinutes: 60
+    dependsOn: identify-lineage-gaps
     helpText: |
-      Deliverable „Lineage-Lückenprotokoll“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Lineage-Lückenprotokoll“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: priority-flows
@@ -407,13 +392,12 @@ tasks:
     helpLinks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
-      - label: KPI-Definition, Ownership und Versionierung
-        href: /playbooks/define-kpi
-      - label: KPI & Metric Governance
-        href: /playbooks/kpi-metric-governance
+      - label: Tableau - Visualize Key Progress Indicators
+        href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
   - id: normalize-definitions
     label: Definitionen und Berechnungsregeln angleichen
     plannedMinutes: 60
+    dependsOn: collect-kpis
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -421,23 +405,21 @@ tasks:
       Versioniere die Definition, wenn die alte Variante vorübergehend weiter gebraucht wird.
       Achte auf: „Mittelwert aus allen Zahlen“ als Kompromiss.
     linkedStories: define-kpi, missing-pieces-trusted-metrics
-    helpLinks:
-      - label: Vertrauenswürdige Kennzahlen (Fehlende Bausteine)
-        href: /playbooks/missing-pieces-trusted-metrics
-
 deliverables:
   - id: kpi-inventory
     label: KPI-Inventar erstellt
     plannedMinutes: 120
+    dependsOn: collect-kpis
     helpText: |
-      Deliverable „KPI-Inventar erstellt“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „KPI-Inventar erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: definition-backlog
     label: Definitions-Backlog priorisiert
     plannedMinutes: 60
+    dependsOn: normalize-definitions
     helpText: |
-      Deliverable „Definitions-Backlog priorisiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Definitions-Backlog priorisiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: top-kpis
@@ -480,17 +462,16 @@ tasks:
       Achte auf: Kosmetik fixen, während Schlüssel und Daten weiter unzuverlässig bleiben.
     linkedStories: data-quality-governance, dq-test-kpis, missing-pieces-data-quality
     helpLinks:
-      - label: Data Quality Governance
-        href: /playbooks/data-quality-governance
-      - label: Von Tests zu messbarer Datenqualität
-        href: /playbooks/dq-test-kpis
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+      - label: dbt Docs - Data tests
+        href: https://docs.getdbt.com/docs/build/data-tests
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
   - id: rate-risks
     label: Business- und Compliance-Risiken bewerten
     plannedMinutes: 60
+    dependsOn: assess-dq-issues
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -499,26 +480,26 @@ tasks:
       Achte auf: jeden Datenfehler mit gleicher Dringlichkeit zu behandeln.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: PII & Privacy Governance
-        href: /playbooks/pii-privacy-governance
-      - label: Access & Security Governance
-        href: /playbooks/access-security-governance
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
+      - label: Microsoft Purview - Data classification
+        href: https://learn.microsoft.com/en-us/purview/data-classification
 
 deliverables:
   - id: dq-risk-register
     label: DQ- und Risiko-Register
     plannedMinutes: 60
+    dependsOn: assess-dq-issues, rate-risks
     helpText: |
-      Deliverable „DQ- und Risiko-Register“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „DQ- und Risiko-Register“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: hotspot-list
     label: Priorisierte Hotspot-Liste
     plannedMinutes: 30
+    dependsOn: rate-risks
     helpText: |
-      Deliverable „Priorisierte Hotspot-Liste“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Priorisierte Hotspot-Liste“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: top-risks
@@ -568,17 +549,12 @@ tasks:
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
-      - label: Die einfachste tragfähige Architektur
-        href: /playbooks/choosing-the-simplest-viable-architecture
-      - label: Mehr als Bronze, Silver und Gold
-        href: /playbooks/beyond-bronze-silver-gold
-      - label: BIG 5 Stacks im Überblick
-        href: /playbooks/big-five
-      - label: Eine Architektur – mehrere Plattformen
-        href: /playbooks/platform-examples
+      - label: Microsoft Learn - Medallion architecture
+        href: https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion
   - id: document-bottlenecks
     label: Engpässe und technische Schulden dokumentieren
     plannedMinutes: 120
+    dependsOn: review-architecture
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -586,25 +562,21 @@ tasks:
       Trenne „trifft den Piloten dieses Quartals“ von „strategische Schuld“.
       Achte auf: alles neu schreiben statt einen verbesserbaren Pfad zu isolieren.
     linkedStories: modernizing-an-existing-warehouse, host-vs-cloud, bridge-solution
-    helpLinks:
-      - label: Ein bestehendes Warehouse modernisieren
-        href: /playbooks/modernizing-an-existing-warehouse
-      - label: Cloud vs. Self-Hosted
-        href: /playbooks/host-vs-cloud
-
 deliverables:
   - id: architecture-notes
     label: Notizen zur Architekturdiagnose
     plannedMinutes: 180
+    dependsOn: review-architecture
     helpText: |
-      Deliverable „Notizen zur Architekturdiagnose“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Notizen zur Architekturdiagnose“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: bottleneck-list
     label: Engpass-Liste
     plannedMinutes: 30
+    dependsOn: document-bottlenecks
     helpText: |
-      Deliverable „Engpass-Liste“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Engpass-Liste“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: architecture-findings
@@ -641,13 +613,12 @@ tasks:
     helpLinks:
       - label: Impact–Effort Prioritizer
         href: /tools/impact-effort
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-      - label: Einfachste tragfähige Architektur
-        href: /playbooks/choosing-the-simplest-viable-architecture
+      - label: Atlassian - Prioritization matrix
+        href: https://www.atlassian.com/work-management/project-management/prioritization-matrix
   - id: agree-priorities
     label: Prioritäten mit Stakeholdern abstimmen
     plannedMinutes: 120
+    dependsOn: score-initiatives
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -655,23 +626,21 @@ tasks:
       Kläre, wer Menschen und Systeme in den Pilotwochen freischalten kann.
       Achte auf: stillen Widerspruch, der nach Baustart wieder auftaucht.
     linkedStories: eight-pillars, data-ownership-stewardship
-    helpLinks:
-      - label: Die 8 Säulen der Data Governance
-        href: /playbooks/eight-pillars
-
 deliverables:
   - id: priority-matrix
     label: Priorisierungsmatrix
     plannedMinutes: 120
+    dependsOn: score-initiatives
     helpText: |
-      Deliverable „Priorisierungsmatrix“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Priorisierungsmatrix“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: quarter-backlog
     label: Quartals-Backlog vereinbart
     plannedMinutes: 180
+    dependsOn: agree-priorities, priority-matrix
     helpText: |
-      Deliverable „Quartals-Backlog vereinbart“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Quartals-Backlog vereinbart“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: pilot-candidate
@@ -709,18 +678,10 @@ tasks:
       Halte Prinzipien kurz und prüfbar. Zeige, was ihr stoppen werdet.
       Achte auf: futuristische Architektur-Folien ohne nahen Pfad.
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role, transformation-options
-    helpLinks:
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-      - label: Welche Rolle dbt spielt
-        href: /playbooks/dbt-role
-      - label: Self-Hosted Data Platforms
-        href: /playbooks/self-hosted-data-platform
-      - label: Optionen für Datentransformationen
-        href: /playbooks/transformation-options
   - id: validate-target-picture
     label: Zielbild mit Stakeholdern validieren
     plannedMinutes: 120
+    dependsOn: draft-target-picture
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -728,23 +689,21 @@ tasks:
       Halte Einwände als Backlog fest, nicht als Freeze-Grund.
       Achte auf: Approval-Theater ohne benannte Owner für den Zielzustand.
     linkedStories: eight-pillars, data-ownership-stewardship
-    helpLinks:
-      - label: Data Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
-
 deliverables:
   - id: target-picture
     label: Zielbild dokumentiert
     plannedMinutes: 120
+    dependsOn: draft-target-picture, validate-target-picture
     helpText: |
-      Deliverable „Zielbild dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Zielbild dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: guiding-principles
     label: Leitprinzipien definiert
     plannedMinutes: 60
+    dependsOn: draft-target-picture
     helpText: |
-      Deliverable „Leitprinzipien definiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Leitprinzipien definiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: target-summary
@@ -787,16 +746,14 @@ tasks:
       Achte auf: Scope-Ausweitung während des Baus und Tests „auf später“ zu schieben.
     linkedStories: building-from-scratch, dbt-role, dq-test-kpis
     helpLinks:
-      - label: Ein Warehouse von Grund auf aufbauen
-        href: /playbooks/building-from-scratch
-      - label: Welche Rolle dbt spielt
-        href: /playbooks/dbt-role
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
       - label: Meta Export Generator
         href: /tools/meta-export-generator
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+      - label: dbt Docs - Data tests
+        href: https://docs.getdbt.com/docs/build/data-tests
   - id: track-pilot-blockers
     label: Blocker und Abhängigkeiten managen
     plannedMinutes: 60
@@ -807,23 +764,21 @@ tasks:
       Schütze den Piloten vor unrelated „Quick Wins“.
       Achte auf: stilles Warten auf ungelöste Access-Tickets.
     linkedStories: access-security-governance, data-ownership-stewardship
-    helpLinks:
-      - label: Access & Security Governance
-        href: /playbooks/access-security-governance
-
 deliverables:
   - id: pilot-increment
     label: Pilot-Inkrement bereit
     plannedMinutes: 60
+    dependsOn: build-pilot
     helpText: |
-      Deliverable „Pilot-Inkrement bereit“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Pilot-Inkrement bereit“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: pilot-changelog
     label: Pilot-Changelog
     plannedMinutes: 60
+    dependsOn: build-pilot, track-pilot-blockers
     helpText: |
-      Deliverable „Pilot-Changelog“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Pilot-Changelog“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: pilot-scope
@@ -857,14 +812,10 @@ tasks:
       Erfasse konkrete Änderungswünsche vs. Nice-to-haves.
       Achte auf: nur Sponsoren zu demos und Endnutzer zu überspringen.
     linkedStories: bi-tools, define-kpi
-    helpLinks:
-      - label: KPI-Definition, Ownership und Versionierung
-        href: /playbooks/define-kpi
-      - label: BI-Tools im Überblick
-        href: /playbooks/bi-tools
   - id: measure-pilot-outcomes
     label: Ergebnisse und Qualität messen
     plannedMinutes: 60
+    dependsOn: run-pilot-review
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -873,24 +824,26 @@ tasks:
       Achte auf: Erfolg zu erklären, weil „die Pipeline läuft“.
     linkedStories: dq-test-kpis, data-quality-governance
     helpLinks:
-      - label: Von Tests zu messbarer Datenqualität
-        href: /playbooks/dq-test-kpis
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
+      - label: GitHub Docs - Status checks
+        href: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
 
 deliverables:
   - id: validation-report
     label: Validierungsbericht
     plannedMinutes: 120
+    dependsOn: run-pilot-review, measure-pilot-outcomes
     helpText: |
-      Deliverable „Validierungsbericht“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Validierungsbericht“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: go-nogo-recommendation
     label: Go/No-Go-Empfehlung
     plannedMinutes: 60
+    dependsOn: validation-report
     helpText: |
-      Deliverable „Go/No-Go-Empfehlung“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Go/No-Go-Empfehlung“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: validation-notes
@@ -926,14 +879,10 @@ tasks:
       Hänge Artefakte (Inventar, KPI-Defs, Lineage-Skizze, Risiko-Register) als bleibende Assets an.
       Achte auf: schlechte Nachrichten oder offene Ownership in Anhängen zu verstecken.
     linkedStories: eight-pillars, dsdr-governance
-    helpLinks:
-      - label: Die 8 Säulen der Data Governance
-        href: /playbooks/eight-pillars
-      - label: DSDR Governance
-        href: /playbooks/dsdr-governance
   - id: plan-next-quarter
     label: Nächstes Quartal grob planen
     plannedMinutes: 180
+    dependsOn: summarize-quarter
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -941,27 +890,21 @@ tasks:
       Bestätige Owner, Kapazität und was gestoppt werden muss, um Platz zu schaffen.
       Achte auf: Discovery von null neu zu starten statt bewährte Muster zu erweitern.
     linkedStories: bridge-solution, modernizing-an-existing-warehouse, operating-and-governing-the-platform
-    helpLinks:
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-      - label: Ein bestehendes Warehouse modernisieren
-        href: /playbooks/modernizing-an-existing-warehouse
-      - label: Die Datenplattform betreiben und steuern
-        href: /playbooks/operating-and-governing-the-platform
-
 deliverables:
   - id: quarter-report
     label: Quartalsbericht
     plannedMinutes: 120
+    dependsOn: summarize-quarter
     helpText: |
-      Deliverable „Quartalsbericht“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Quartalsbericht“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: next-quarter-outline
     label: Skizze für das nächste Quartal
     plannedMinutes: 180
+    dependsOn: plan-next-quarter, quarter-report
     helpText: |
-      Deliverable „Skizze für das nächste Quartal“: halte es kurz, nachvollziehbar und mit Owner/Datum.
-      Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
+      Erstelle das Artefakt „Skizze für das nächste Quartal“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
+      Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
 
 fields:
   - id: lessons-learned

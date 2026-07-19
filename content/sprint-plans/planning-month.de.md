@@ -33,30 +33,53 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Priority, Outcome, Owner, Effort, Decision
     helpText: |
-      Festhalten, was diesen Monat geliefert werden muss und was auf der Warteliste bleibt.
-      Erfolgskriterien schriftlich vereinbaren.
-    linkedStories: eight-pillars
+      Formuliere ein Monatsziel und maximal drei messbare Wochenziele. Trenne Pflichtarbeit von Warteliste, damit der Monat nicht schon in Woche 1 ueberlaeuft.
+      Schaetze Kapazitaet grob in Tagen oder Stunden und ziehe feste Termine, Urlaub und Betriebsaufgaben ab.
+      Halte Erfolgskriterien schriftlich fest: Was muss sichtbar, entschieden oder uebergeben sein?
+      Nutze bei Bedarf den Impact-Effort Prioritizer, aber uebernimm nur Arbeit, fuer die es Owner und ein realistisches Done-Kriterium gibt.
+    stories:
+      - slug: eight-pillars
+        required: false
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
-      - label: 8 Säulen
-        href: /playbooks/eight-pillars
+      - label: Scrum Guide - Sprint Planning
+        href: https://scrumguides.org/scrum-guide.html#sprint-planning
+      - label: Atlassian - Sprint planning
+        href: https://www.atlassian.com/agile/scrum/sprint-planning
   - id: w1-standup-board
     label: Board und Owner aktualisieren
     plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
-      Ein Board als Wahrheit. Owner, Termine und Status müssen sichtbar sein.
-      Achtung: Geister-Tasks ohne Owner.
+      Fuehre ein Board als Wahrheit fuer den Monat. Jede aktive Aufgabe braucht Owner, naechsten Schritt, Termin oder eine bewusste Entscheidung, sie zu parken.
+      Raeume doppelte Listen und private Nebenboards auf, sonst wird Statusarbeit zur Sucharbeit.
+      Achte besonders auf Aufgaben ohne Owner, veraltete Faelligkeiten und Arbeit, die laenger als eine Woche ohne Bewegung bleibt.
+    helpLinks:
+      - label: Atlassian - Product backlog
+        href: https://www.atlassian.com/en/agile/scrum/backlogs
 
 deliverables:
   - id: w1-week-outcome
     label: Monatsprioritäten dokumentiert
     plannedMinutes: 120
     helpText: |
-      Kurze datierte Notiz mit Top-Zielen und Kapazitätsannahmen.
+      Erstelle eine datierte Notiz mit Monatsziel, Top-Prioritaeten, Kapazitaetsannahmen und expliziten Nicht-Zielen.
+      Das Deliverable ist fertig, wenn Sponsor, Team oder du selbst daraus lesen koennen, worauf der Monat fokussiert ist und was bewusst spaeter kommt.
+      Verlinke Board, offene Entscheidungen und die wichtigsten Abhaengigkeiten.
+
+fields:
+  - id: month-focus
+    label: Monatsfokus
+    type: textarea
+    placeholder: Wichtigstes Ergebnis, Nicht-Ziele und Erfolgskriterien
+  - id: capacity-assumptions
+    label: Kapazitätsannahmen
+    type: textarea
+    placeholder: Verfuegbare Tage, fixe Termine, Urlaub, Betrieb, Puffer
 
 notes: true
 ```
@@ -73,25 +96,43 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Work package, Owner, Done criteria, Risk, Next step
     helpText: |
-      Owner und Done-Kriterien je Paket. Scope früh kürzen, wenn Kapazität eng ist.
+      Zerlege jedes Wochenziel in kleine Arbeitspakete, die innerhalb weniger Tage pruefbar sind. Schreibe pro Paket Owner, Done-Kriterium und naechsten Schritt auf.
+      Schneide Scope frueh, wenn Kapazitaet eng wird: lieber ein kleineres Ergebnis abschliessen als mehrere halb offene Linien erzeugen.
+      Pruefe vor dem Start, ob Abhaengigkeiten, Zugriffe oder Review-Personen fehlen.
+    helpLinks:
+      - label: Atlassian - Sprint backlog vs. product backlog
+        href: https://www.atlassian.com/agile/project-management/sprint-backlog-product-backlog
   - id: w2-standup-board
     label: Board und Owner aktualisieren
     plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
-      Board nach Standup oder Midweek-Check aktuell halten.
+      Aktualisiere das Board nach Standup oder Midweek-Check, nicht erst am Ende der Woche.
+      Status soll die naechste Entscheidung erleichtern: weiterarbeiten, entblocken, schneiden oder bewusst verschieben.
+      Wenn eine Aufgabe haengt, notiere den konkreten Blocker und wer ihn loesen kann.
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+      - label: Scrum.org - Introduction to the Sprint
+        href: https://www.scrum.org/resources/introduction-sprint
 
 deliverables:
   - id: w2-week-outcome
     label: Wochenplan mit Ownern
     plannedMinutes: 30
     helpText: |
-      Board-Snapshot oder kurze Liste mit Ownern.
+      Sichere einen Board-Snapshot oder eine kurze Liste der aktiven Arbeitspakete mit Owner, Done-Kriterium und naechstem Schritt.
+      Das Deliverable ist fertig, wenn eine andere Person den Wochenstand ohne weiteres Meeting nachvollziehen kann.
+      Markiere Arbeit, die bewusst gestrichen oder verschoben wurde.
+
+fields:
+  - id: delivery-risks
+    label: Liefer-Risiken
+    type: textarea
+    placeholder: Blocker, knappe Kapazitaet, fehlende Reviews oder offene Zugriffe
 
 notes: true
 ```
@@ -108,25 +149,40 @@ tasks:
     plannedMinutes: 30
     assigneeType: person
     assigneeId: null
+    tableColumns: Blocker, Dependency, Owner, Decision, Due date
     helpText: |
-      Scope kürzen vs. verschieben entscheiden. Eskalation nur mit klarer Bitte.
+      Liste Blocker, Abhaengigkeiten und offene Entscheidungen getrennt. Ein Blocker braucht immer Owner, naechste Aktion und einen Zeitpunkt fuer die Wiedervorlage.
+      Entscheide bewusst zwischen entblocken, Scope kuerzen, verschieben oder stoppen.
+      Eskaliere nur mit klarer Bitte: Welche Entscheidung wird gebraucht, von wem, bis wann und mit welcher Auswirkung?
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+      - label: Atlassian - Sprint planning
+        href: https://www.atlassian.com/agile/scrum/sprint-planning
   - id: w3-standup-board
     label: Board und Owner aktualisieren
     plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
-      Umplanungen am selben Tag am Board spiegeln.
+      Spiegele Umplanungen am selben Tag im Board. Entferne alte Prioritaeten sichtbar oder verschiebe sie sauber in den naechsten Monat.
+      Markiere blockierte Aufgaben nicht nur als rot, sondern schreibe den Grund und den naechsten Entblockungsschritt dazu.
+      Nutze die Mitte des Monats, um Fokus zu retten, nicht um alles gleichzeitig weiterzuschieben.
 
 deliverables:
   - id: w3-week-outcome
     label: Risiko- und Abhängigkeitsliste
     plannedMinutes: 30
     helpText: |
-      Benannte Risiken, Owner und Entscheidungen.
+      Erstelle eine kurze Liste mit Risiken, Abhaengigkeiten, Ownern, Entscheidungen und Termin.
+      Das Deliverable ist fertig, wenn fuer jedes Risiko klar ist, ob es akzeptiert, reduziert, eskaliert oder in Scope umgewandelt wird.
+      Offene Punkte ohne Owner gehoeren nicht in die Liste, sondern zurueck in die Klaerung.
+
+fields:
+  - id: replanning-decision
+    label: Nachplanungsentscheidung
+    type: textarea
+    placeholder: Was bleibt, was wird gekuerzt, was wird verschoben?
 
 notes: true
 ```
@@ -143,22 +199,45 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Status, Evidence, Learning, Follow-up
     helpText: |
-      Was geliefert wurde, was gerutscht ist und warum.
+      Sammle, was geliefert wurde, was gerutscht ist und warum. Belege Ergebnisse mit Links, Screenshots, kurzen Notizen oder Entscheidungen.
+      Trenne Ergebnis, Lernen und offene Nacharbeit, damit der Monatsabschluss nicht zum diffusen Rueckblick wird.
+      Besprich nur die wichtigsten Punkte live; Details gehoeren in die Notiz oder ins Board.
+    helpLinks:
+      - label: Scrum Guide - Sprint Review
+        href: https://scrumguides.org/scrum-guide.html#sprint-review
   - id: w4-standup-board
     label: Backlog für nächsten Monat skizzieren
     plannedMinutes: 15
     assigneeType: person
     assigneeId: null
+    tableColumns: Backlog item, Owner, Reason, Target week, Next step
     helpText: |
-      Überträge und neue Prioritäten für den Folgemonat.
+      Uebertrage nur Arbeit in den naechsten Monat, die noch relevant ist. Alles andere wird geschlossen, archiviert oder bewusst verworfen.
+      Formuliere neue Backlog-Eintraege als Ergebnis plus Grund, nicht nur als lose Idee.
+      Gib jedem Carry-over einen Owner und eine Zielwoche, sonst wird er zum stillen Dauerrest.
+    helpLinks:
+      - label: Atlassian - Retrospective play
+        href: https://www.atlassian.com/team-playbook/plays/retrospective
 
 deliverables:
   - id: w4-week-outcome
     label: Monatsabschluss + Next-Backlog
     plannedMinutes: 60
     helpText: |
-      One-Pager: Outcomes, Learnings, Next-Backlog.
+      Schreibe einen One-Pager mit Outcomes, Learnings, offenen Risiken und dem groben Next-Backlog.
+      Das Deliverable ist fertig, wenn klar ist, welche Arbeit abgeschlossen ist, welche bewusst weitergeht und welche Entscheidung fuer den naechsten Monat offen bleibt.
+      Fuege Retro-Aktionen mit Owner und Termin hinzu, statt nur Beobachtungen zu sammeln.
+    helpLinks:
+      - label: Scrum Guide - Sprint Retrospective
+        href: https://scrumguides.org/scrum-guide.html#sprint-retrospective
+
+fields:
+  - id: month-review
+    label: Monatsreview
+    type: textarea
+    placeholder: Outcomes, Learnings, offene Risiken, naechste Entscheidungen
 
 notes: true
 ```

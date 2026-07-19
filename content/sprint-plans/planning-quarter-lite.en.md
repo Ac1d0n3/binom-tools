@@ -30,33 +30,56 @@ stories:
 tasks:
   - id: w1-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Owner, Success signal, Non-goal, Risk
     helpText: |
-      Define 1–3 outcomes for the week tied to quarter goals.
-      Keep the list short enough to finish.
-    linkedStories: data-ownership-stewardship
+      Derive 1-3 weekly outcomes from the quarter goals that can be visibly delivered or decided.
+      Write owner, success signal, and non-goal for each outcome. That keeps the list short enough to actually finish.
+      Clarify who decides functionally and who only needs to be informed.
+      Use the Impact-Effort Prioritizer when outcomes compete, but start only work with a realistic done criterion.
+    stories:
+      - slug: data-ownership-stewardship
+        required: false
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
-      - label: Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
+      - label: Scrum Guide - Sprint Planning
+        href: https://scrumguides.org/scrum-guide.html#sprint-planning
+      - label: Atlassian - Sprint planning
+        href: https://www.atlassian.com/agile/scrum/sprint-planning
   - id: w1-run-week
     label: Run and update the board
     plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
-      Daily/stand-up updates. Move blocked work visibly.
-      End the week with a short written status.
+      Keep the board current and move blocked work visibly, not only mentally.
+      Status should make the next decision easier every day: continue, unblock, cut, or defer.
+      End the week with a short written note so the quarter remains traceable later.
+    helpLinks:
+      - label: Atlassian - Product backlog
+        href: https://www.atlassian.com/en/agile/scrum/backlogs
 
 deliverables:
   - id: w1-week-outcome
     label: Weekly outcome note
     plannedMinutes: 60
     helpText: |
-      Dated note: planned vs done, blockers, next focus.
+      Create a dated note with planned vs. done, blockers, decisions, and next focus.
+      The deliverable is done when someone can understand the week status without another meeting.
+      Mark deliberately what will not continue.
+
+fields:
+  - id: quarter-outcomes
+    label: Quarter outcomes
+    type: textarea
+    placeholder: 3-5 outcomes, success signals, non-goals
+  - id: kickoff-decisions
+    label: Kickoff decisions
+    type: textarea
+    placeholder: Owners, scope boundaries, open decisions
 
 notes: true
 ```
@@ -70,7 +93,7 @@ goal: Shape a thin backlog for the next 2–3 weeks.
 tasks:
   - id: w2-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -104,7 +127,7 @@ goal: Establish weekly delivery rhythm.
 tasks:
   - id: w3-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -138,15 +161,19 @@ goal: Map critical dependencies and owners.
 tasks:
   - id: w4-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Dependency, Owner, Needed by, Risk, Ask
     helpText: |
-      Define 1–3 outcomes for the week tied to quarter goals.
-      Keep the list short enough to finish.
+      Use this week to make critical dependencies visible before they block the mid-quarter check.
+      For each dependency, write owner, needed-by date, risk, and concrete ask.
+      Plan only outcomes that are realistic despite the dependencies.
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+      - label: Atlassian - Dependency mapping
+        href: https://www.atlassian.com/team-playbook/plays/dependency-mapping
   - id: w4-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -161,7 +188,8 @@ deliverables:
     label: Weekly outcome note
     plannedMinutes: 60
     helpText: |
-      Dated note: planned vs done, blockers, next focus.
+      Capture planned vs. done outcomes, dependencies, owners, and open decisions.
+      The deliverable is done when every critical dependency has a next action and owner.
 
 notes: true
 ```
@@ -179,15 +207,19 @@ stories:
 tasks:
   - id: w5-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Status, Evidence, Decision, Adjustment
     helpText: |
-      Define 1–3 outcomes for the week tied to quarter goals.
-      Keep the list short enough to finish.
+      Compare quarter outcomes with real progress: what is done, what has only started, and what creates no value yet?
+      Decide deliberately what stays, what gets cut, and what moves into a later quarter.
+      Use this week for a better remaining plan, not for more scope.
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+      - label: Atlassian - Health monitor
+        href: https://www.atlassian.com/team-playbook/health-monitor
   - id: w5-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -202,7 +234,14 @@ deliverables:
     label: Weekly outcome note
     plannedMinutes: 60
     helpText: |
-      Dated note: planned vs done, blockers, next focus.
+      Document progress, evidence, cut scope, new risks, and focus for the next weeks.
+      The deliverable is done when the rest of the quarter has become smaller and clearer.
+
+fields:
+  - id: midquarter-adjustment
+    label: Mid-quarter adjustment
+    type: textarea
+    placeholder: What stays, what gets cut, what moves?
 
 notes: true
 ```
@@ -216,7 +255,7 @@ goal: Protect focus time for top outcomes.
 tasks:
   - id: w6-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -250,7 +289,7 @@ goal: Define quality gates for work in flight.
 tasks:
   - id: w7-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -284,7 +323,7 @@ goal: Sync decisions with stakeholders.
 tasks:
   - id: w8-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -318,12 +357,17 @@ goal: Burn down top risks with explicit owners.
 tasks:
   - id: w9-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Risk, Impact, Owner, Mitigation, Decision
     helpText: |
-      Define 1–3 outcomes for the week tied to quarter goals.
-      Keep the list short enough to finish.
+      Focus the week on the largest remaining risks. Every risk needs impact, owner, decision, and next step.
+      Reduce risk actively: test, simplify, get a decision, or cut scope.
+      Do not simply push risks into next week when they threaten the quarter outcome.
+    helpLinks:
+      - label: Atlassian - Risk assessment matrix
+        href: https://www.atlassian.com/work-management/project-management/risk-assessment-matrix
   - id: w9-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -338,7 +382,14 @@ deliverables:
     label: Weekly outcome note
     plannedMinutes: 60
     helpText: |
-      Dated note: planned vs done, blockers, next focus.
+      Capture which risks were reduced, accepted, or escalated.
+      The deliverable is done when every top risk has an owner and clear decision.
+
+fields:
+  - id: risk-burndown
+    label: Risk burn-down
+    type: textarea
+    placeholder: Top risks, decisions, owners, residual risk
 
 notes: true
 ```
@@ -352,7 +403,7 @@ goal: Integrate and validate end-to-end paths.
 tasks:
   - id: w10-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -386,7 +437,7 @@ goal: Harden, document, and cut remaining scope.
 tasks:
   - id: w11-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -420,7 +471,7 @@ goal: Prepare demos and acceptance evidence.
 tasks:
   - id: w12-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -454,12 +505,19 @@ goal: Close the quarter and seed the next one.
 tasks:
   - id: w13-plan-week
     label: Plan this week’s outcomes
-    plannedMinutes: 30
+    plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Result, Evidence, Learning, Next quarter
     helpText: |
-      Define 1–3 outcomes for the week tied to quarter goals.
-      Keep the list short enough to finish.
+      Close the quarter through outcomes, not activity. What was delivered, decided, learned, or deliberately stopped?
+      Collect evidence: links, screenshots, acceptances, metrics, or short decision notes.
+      Sketch next quarter's backlog only roughly and separate carry-over from new ideas.
+    helpLinks:
+      - label: Scrum Guide - Sprint Review
+        href: https://scrumguides.org/scrum-guide.html#sprint-review
+      - label: Atlassian - Retrospective play
+        href: https://www.atlassian.com/team-playbook/plays/retrospective
   - id: w13-run-week
     label: Run and update the board
     plannedMinutes: 15
@@ -474,7 +532,14 @@ deliverables:
     label: Weekly outcome note
     plannedMinutes: 60
     helpText: |
-      Dated note: planned vs done, blockers, next focus.
+      Document quarter outcomes, learnings, open risks, and rough focus for the next quarter.
+      The deliverable is done when it is clear what is complete, what deliberately continues, and which decision remains open.
+
+fields:
+  - id: quarter-close
+    label: Quarter close
+    type: textarea
+    placeholder: Outcomes, learnings, open risks, next-quarter ideas
 
 notes: true
 ```

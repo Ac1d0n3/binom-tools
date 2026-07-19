@@ -5,7 +5,7 @@
 import { spT } from './helpers.js';
 
 /**
- * @param {'help'|'owner'|'edit'|'delete'|'open'|'check'|'close'|'required'|'list'|'note'} name
+ * @param {'help'|'owner'|'edit'|'delete'|'open'|'check'|'close'|'required'|'list'|'note'|'chain'|'parallel'} name
  * @returns {string}
  */
 export function iconSvg(name) {
@@ -31,6 +31,10 @@ export function iconSvg(name) {
             return `<svg ${common}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
         case 'required':
             return `<svg ${common}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+        case 'chain':
+            return `<svg ${common}><path d="M10 13a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 0 0-7.07-7.07L11 4.93"/><path d="M14 11a5 5 0 0 0-7.07 0L4.81 13.12a5 5 0 0 0 7.07 7.07L13 19.07"/></svg>`;
+        case 'parallel':
+            return `<svg ${common}><path d="M6 3v7a4 4 0 0 0 4 4h8"/><path d="M6 21v-7a4 4 0 0 1 4-4h8"/><path d="m15 7 3 3-3 3"/><path d="m15 11 3 3-3 3"/></svg>`;
         default:
             return '';
     }

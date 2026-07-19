@@ -33,30 +33,53 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Owner, Success signal, Non-goal, Risk
     helpText: |
-      1–3 Outcomes für die Woche an Quartalszielen ausrichten.
-      Liste kurz genug halten, um fertig zu werden.
-    linkedStories: data-ownership-stewardship
+      Leite aus den Quartalszielen 1-3 Wochen-Outcomes ab, die sichtbar geliefert oder entschieden werden koennen.
+      Schreibe pro Outcome Owner, Erfolgssignal und Nicht-Ziel auf. So bleibt die Liste klein genug, um wirklich fertig zu werden.
+      Klaere direkt, wer fachlich entscheidet und wer nur informiert werden muss.
+      Nutze den Impact-Effort Prioritizer, wenn mehrere Outcomes konkurrieren, aber starte nur Arbeit mit realistischem Done-Kriterium.
+    stories:
+      - slug: data-ownership-stewardship
+        required: false
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
-      - label: Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
+      - label: Scrum Guide - Sprint Planning
+        href: https://scrumguides.org/scrum-guide.html#sprint-planning
+      - label: Atlassian - Sprint planning
+        href: https://www.atlassian.com/agile/scrum/sprint-planning
   - id: w1-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15
     assigneeType: person
     assigneeId: null
     helpText: |
-      Standup-Updates. Blockierte Arbeit sichtbar halten.
-      Woche mit kurzem schriftlichem Status beenden.
+      Halte das Board aktuell und fuehre blockierte Arbeit sichtbar, nicht nur mental.
+      Status soll jeden Tag die naechste Entscheidung erleichtern: weiterarbeiten, entblocken, schneiden oder verschieben.
+      Beende die Woche mit einer kurzen schriftlichen Notiz, damit der Quartalsverlauf spaeter nachvollziehbar bleibt.
+    helpLinks:
+      - label: Atlassian - Product backlog
+        href: https://www.atlassian.com/en/agile/scrum/backlogs
 
 deliverables:
   - id: w1-week-outcome
     label: Wochen-Outcome-Notiz
     plannedMinutes: 60
     helpText: |
-      Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
+      Erstelle eine datierte Notiz mit geplant vs. erledigt, Blockern, Entscheidungen und naechstem Fokus.
+      Das Deliverable ist fertig, wenn jemand den Wochenstand ohne zusaetzliches Meeting nachvollziehen kann.
+      Markiere bewusst, was nicht weiterverfolgt wird.
+
+fields:
+  - id: quarter-outcomes
+    label: Quartals-Outcomes
+    type: textarea
+    placeholder: 3-5 Outcomes, Erfolgssignale, Non-Goals
+  - id: kickoff-decisions
+    label: Kickoff-Entscheidungen
+    type: textarea
+    placeholder: Owner, Scope-Grenzen, offene Entscheidungen
 
 notes: true
 ```
@@ -141,12 +164,16 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Dependency, Owner, Needed by, Risk, Ask
     helpText: |
-      1–3 Outcomes für die Woche an Quartalszielen ausrichten.
-      Liste kurz genug halten, um fertig zu werden.
+      Nutze diese Woche, um kritische Abhaengigkeiten sichtbar zu machen, bevor sie den Mid-Quarter-Check blockieren.
+      Formuliere pro Abhaengigkeit Owner, benoetigten Termin, Risiko und konkrete Bitte.
+      Plane nur Outcomes ein, die trotz der Abhaengigkeiten realistisch lieferbar sind.
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
+      - label: Atlassian - Dependency mapping
+        href: https://www.atlassian.com/team-playbook/plays/dependency-mapping
   - id: w4-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15
@@ -161,7 +188,8 @@ deliverables:
     label: Wochen-Outcome-Notiz
     plannedMinutes: 60
     helpText: |
-      Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
+      Halte geplante vs. erledigte Outcomes, Abhaengigkeiten, Owner und offene Entscheidungen fest.
+      Das Deliverable ist fertig, wenn jede kritische Abhaengigkeit eine naechste Aktion und einen Owner hat.
 
 notes: true
 ```
@@ -182,12 +210,16 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Status, Evidence, Decision, Adjustment
     helpText: |
-      1–3 Outcomes für die Woche an Quartalszielen ausrichten.
-      Liste kurz genug halten, um fertig zu werden.
+      Vergleiche Quartals-Outcomes mit echtem Fortschritt: Was ist fertig, was ist nur begonnen, und was erzeugt noch keinen Nutzen?
+      Entscheide bewusst, was bleibt, was geschnitten wird und was in ein spaeteres Quartal wandert.
+      Nutze diese Woche nicht fuer mehr Scope, sondern fuer einen besseren Restplan.
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
+      - label: Atlassian - Health monitor
+        href: https://www.atlassian.com/team-playbook/health-monitor
   - id: w5-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15
@@ -202,7 +234,14 @@ deliverables:
     label: Wochen-Outcome-Notiz
     plannedMinutes: 60
     helpText: |
-      Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
+      Dokumentiere Fortschritt, Evidenz, gestrichenen Scope, neue Risiken und den Fokus fuer die naechsten Wochen.
+      Das Deliverable ist fertig, wenn der Rest des Quartals kleiner und klarer geworden ist.
+
+fields:
+  - id: midquarter-adjustment
+    label: Mid-Quarter-Anpassung
+    type: textarea
+    placeholder: Was bleibt, was wird geschnitten, was wird verschoben?
 
 notes: true
 ```
@@ -321,9 +360,14 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Risk, Impact, Owner, Mitigation, Decision
     helpText: |
-      1–3 Outcomes für die Woche an Quartalszielen ausrichten.
-      Liste kurz genug halten, um fertig zu werden.
+      Fokussiere die Woche auf die groessten Rest-Risiken. Jedes Risiko braucht Impact, Owner, Entscheidung und naechsten Schritt.
+      Reduziere Risiko aktiv: testen, vereinfachen, entscheiden lassen oder Scope schneiden.
+      Verschiebe Risiken nicht nur in die naechste Woche, wenn sie das Quartalsziel gefaehrden.
+    helpLinks:
+      - label: Atlassian - Risk assessment matrix
+        href: https://www.atlassian.com/work-management/project-management/risk-assessment-matrix
   - id: w9-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15
@@ -338,7 +382,14 @@ deliverables:
     label: Wochen-Outcome-Notiz
     plannedMinutes: 60
     helpText: |
-      Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
+      Halte fest, welche Risiken reduziert, akzeptiert oder eskaliert wurden.
+      Das Deliverable ist fertig, wenn jedes Top-Risiko einen Owner und eine klare Entscheidung hat.
+
+fields:
+  - id: risk-burndown
+    label: Risiko-Burn-down
+    type: textarea
+    placeholder: Top-Risiken, Entscheidungen, Owner, Rest-Risiko
 
 notes: true
 ```
@@ -457,9 +508,16 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Outcome, Result, Evidence, Learning, Next quarter
     helpText: |
-      1–3 Outcomes für die Woche an Quartalszielen ausrichten.
-      Liste kurz genug halten, um fertig zu werden.
+      Schliesse das Quartal ueber Outcomes ab, nicht ueber Aktivitaeten. Was wurde geliefert, entschieden, gelernt oder bewusst gestoppt?
+      Sammle Evidenz: Links, Screenshots, Abnahmen, Metriken oder kurze Entscheidungsnotizen.
+      Skizziere den naechsten Quartals-Backlog nur grob und trenne Carry-over von neuen Ideen.
+    helpLinks:
+      - label: Scrum Guide - Sprint Review
+        href: https://scrumguides.org/scrum-guide.html#sprint-review
+      - label: Atlassian - Retrospective play
+        href: https://www.atlassian.com/team-playbook/plays/retrospective
   - id: w13-run-week
     label: Woche fahren und Board aktualisieren
     plannedMinutes: 15
@@ -474,7 +532,14 @@ deliverables:
     label: Wochen-Outcome-Notiz
     plannedMinutes: 60
     helpText: |
-      Datiert: geplant vs. erledigt, Blocker, nächster Fokus.
+      Dokumentiere Quartals-Outcomes, Learnings, offene Risiken und den groben Fokus fuer das naechste Quartal.
+      Das Deliverable ist fertig, wenn klar ist, was abgeschlossen ist, was bewusst weitergeht und welche Entscheidung offen bleibt.
+
+fields:
+  - id: quarter-close
+    label: Quartalsabschluss
+    type: textarea
+    placeholder: Outcomes, Learnings, offene Risiken, naechste Quartalsideen
 
 notes: true
 ```

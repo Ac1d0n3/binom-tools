@@ -42,6 +42,7 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertSame($firstTask['helpLinks'][0]['href'], $deTask['helpLinks'][0]['href']);
         $this->assertNotEmpty($client['sprints'][0]['flowSteps'] ?? []);
         $this->assertNotEmpty($client['sprints'][0]['stories'] ?? $client['sprints'][0]['linkedStorySlugs'] ?? []);
+        $this->assertSame(['identify-stakeholders'], $client['sprints'][0]['deliverables'][0]['dependsOn']);
     }
 
     public function test_index_includes_stack_templates(): void

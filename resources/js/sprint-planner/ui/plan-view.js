@@ -95,7 +95,7 @@ import {
     storageErrorMessage,
 } from './helpers.js';
 import { renderAssigneeChip, renderParticipantChips, renderTeamChips } from './avatars.js';
-import { createIconButton } from './icons.js';
+import { createIconButton, iconSvg } from './icons.js';
 import { isPlaybookRead } from '../../playbooks/read-state.js';
 import {
     collectTimeRows,
@@ -1948,8 +1948,19 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     check.type = 'checkbox';
     check.className = 'sp-item__check';
     check.checked = item.completed;
+    check.disabled = Boolean(item.dependencyBlocked && !item.completed);
     check.setAttribute('aria-label', item.label);
+    if (check.disabled) {
+        const dependencyHint = item.dependencyReason || spT('sp.deps.completePrereqs');
+        check.title = dependencyHint;
+        check.setAttribute('aria-describedby', `${item.statusKey}-dependency`);
+    }
     check.addEventListener('change', () => {
+        if (item.dependencyBlocked && !item.completed && check.checked) {
+            showToast(item.dependencyReason || spT('sp.deps.completePrereqs'));
+            check.checked = false;
+            return;
+        }
         const result = toggleCompleted(instance.id, item.kind, item.statusKey, check.checked);
         if (!result.ok) {
             showToast(storageErrorMessage(result.error));
@@ -1995,6 +2006,7 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         metaText.textContent = metaParts.join(' · ');
         meta.appendChild(metaText);
     }
+    meta.appendChild(renderDependencyMarker(item, sprint));
     const timeChip = buildItemTimeChip(item);
     if (timeChip) {
         if (metaParts.length) {
@@ -2010,6 +2022,14 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     srAssignee.className = 'visually-hidden';
     srAssignee.textContent = resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned');
     main.append(label, meta, srAssignee);
+
+    if (item.dependencyBlocked && item.dependencyReason) {
+        const reason = document.createElement('p');
+        reason.className = 'sp-item__dependency-reason';
+        reason.id = `${item.statusKey}-dependency`;
+        reason.textContent = item.dependencyReason;
+        main.appendChild(reason);
+    }
 
     if (item.status === 'blocked' && item.blockerReason) {
         const reason = document.createElement('p');
@@ -2194,6 +2214,24 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         li.appendChild(tablePanel);
     }
     return li;
+}
+
+function renderDependencyMarker(item, sprint) {
+    const deps = Array.isArray(item.dependsOn) ? item.dependsOn : [];
+    const items = [...(sprint.tasks || []), ...(sprint.deliverables || [])];
+    const hasDependents = items.some((candidate) => (
+        Array.isArray(candidate.dependsOn) && candidate.dependsOn.includes(item.statusKey)
+    ));
+    const isChain = deps.length > 0 || hasDependents;
+    const marker = document.createElement('span');
+    marker.className = `sp-item__dependency sp-item__dependency--${isChain ? 'chain' : 'parallel'}`;
+    marker.innerHTML = iconSvg(isChain ? 'chain' : 'parallel');
+    marker.title = isChain
+        ? spT(deps.length > 0 ? 'sp.deps.chainWaiting' : 'sp.deps.chainPredecessor')
+        : spT('sp.deps.parallel');
+    marker.setAttribute('aria-label', marker.title);
+    marker.setAttribute('role', 'img');
+    return marker;
 }
 
 /**

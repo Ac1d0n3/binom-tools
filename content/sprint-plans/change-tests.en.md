@@ -35,29 +35,54 @@ tasks:
     plannedMinutes: 120
     assigneeType: person
     assigneeId: null
+    tableColumns: Object, Change, Consumer, Risk, Rollback
     helpText: |
-      Tables/reports touched, consumers, rollback path.
-      Keep the change description testable.
-    linkedStories: data-quality-governance, missing-pieces-data-quality
+      Describe the change in a testable way: what changes, where it becomes visible, and which behavior must not change?
+      List affected tables, reports, downstream jobs, consumers, and known SLAs.
+      Document rollback or fallback before implementation starts.
+      Use the Impact-Effort Prioritizer for scope and risk, but keep the technical impact list directly on the task.
+    stories:
+      - slug: data-quality-governance
+        required: true
+      - slug: missing-pieces-data-quality
+        required: false
     helpLinks:
-      - label: Impact–Effort Prioritizer
+      - label: Impact-Effort Prioritizer
         href: /tools/impact-effort
-      - label: Data quality governance
-        href: /playbooks/data-quality-governance
+      - label: GitHub Docs - Continuous integration
+        href: https://docs.github.com/en/actions/get-started/continuous-integration
   - id: w1-scope
     label: Agree in/out of scope
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Scope item, In/Out, Reason, Owner, Decision
     helpText: |
-      What is explicitly not changing this round.
+      Agree explicitly what changes this round and what does not. Metric definitions, filters, historical values, permissions, and layout are especially important.
+      Write non-goals as concretely as goals so later discussions do not return as "just one small extra requirement".
+      Every scope decision needs an owner or acceptance; otherwise it is only an assumption.
+    helpLinks:
+      - label: Atlassian - Acceptance criteria
+        href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
 
 deliverables:
   - id: w1-impact-note
     label: Impact note
     plannedMinutes: 60
     helpText: |
-      Change summary, consumers, rollback.
+      Create an impact note with change summary, affected objects, consumers, scope boundaries, and rollback.
+      The deliverable is done when reviewers can see which tests are required and which risks are deliberately accepted.
+      Link tickets, PRs, reports, or example queries that prove the impact.
+
+fields:
+  - id: change-summary
+    label: Change summary
+    type: textarea
+    placeholder: What changes, why, where does it become visible?
+  - id: rollback-plan
+    label: Rollback plan
+    type: textarea
+    placeholder: Fallback option, accountable people, rollback trigger
 
 notes: true
 ```
@@ -74,33 +99,52 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Risk, Test type, Assertion, Severity, Owner
     helpText: |
-      Freshness, uniqueness, referential, KPI sanity — pick what fits.
-      Prefer existing DQ patterns.
-    linkedStories: dq-test-kpis, dq-test2
+      Choose tests from risk, not habit: freshness, uniqueness, not-null, referential integrity, accepted values, KPI sanity, or custom SQL.
+      Reuse existing DQ patterns and generators so test names, severity, and failure handling stay consistent.
+      Critical tests should fail closed; informative checks may warn, but still need an owner.
+      Document which assumption each test protects and what to do when it fails.
+    stories:
+      - slug: dq-test-kpis
+        required: false
+      - slug: dq-test2
+        required: false
     helpLinks:
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
-      - label: DQ test KPIs
-        href: /playbooks/dq-test-kpis
-      - label: DQ tests
-        href: /playbooks/dq-test2
+      - label: dbt Labs - Data quality testing
+        href: https://www.getdbt.com/blog/data-quality-testing
   - id: w2-fixtures
     label: Prepare fixtures / expected results
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Scenario, Input, Expected result, Edge case, Evidence
     helpText: |
-      Known-good rows or expected KPI snapshots.
+      Prepare known-good rows, example KPIs, screenshots, or small queries that prove expected behavior.
+      Cover at least the normal case and one relevant edge case, such as nulls, cancellations, empty dimensions, or late-arriving data.
+      Fixtures must be small enough to understand in review but concrete enough to prevent misinterpretation.
+    helpLinks:
+      - label: GitHub Docs - Status checks
+        href: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
 
 deliverables:
   - id: w2-test-pack
     label: Test pack
     plannedMinutes: 60
     helpText: |
-      List of tests added/updated with owners.
+      Create a list of new or changed tests with assertion, severity, owner, target environment, and expected behavior.
+      The deliverable is done when a reviewer can map every test to an impact risk.
+      Add notes for warnings, allowed exceptions, and manual checks.
+
+fields:
+  - id: test-strategy
+    label: Test strategy
+    type: textarea
+    placeholder: Critical checks, warnings, manual verification, open test gaps
 
 notes: true
 ```
@@ -117,25 +161,49 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Check, Environment, Result, Evidence, Follow-up
     helpText: |
-      Record results; fail closed on critical checks.
+      Run tests in the target environment and save result, timestamp, version, and relevant artifacts.
+      Critical checks must fail closed: no release while data integrity, access, or central KPI sanity is broken.
+      Compare test results with the fixtures and clarify deviations before marking them as "known".
+      Use the DQ History Generator when test results should become a timeline or release evidence.
     helpLinks:
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
+      - label: Microsoft Learn - Power BI enterprise content publishing
+        href: https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-usage-scenario-enterprise-content-publishing
   - id: w3-release
     label: Release notes and monitoring
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Change, Watch signal, Owner, Escalation, Time window
     helpText: |
-      What changed, how to watch it, who to call.
+      Write release notes that business and operations can understand: what changed, why, which behavior is new, and what should be watched?
+      Define monitoring signals for the first days, such as refresh, error rate, row count, KPI deviation, or user feedback.
+      Name escalation path and observation window so problems do not wait until the next regular meeting.
+    helpLinks:
+      - label: Microsoft Fabric - Automate deployment pipelines
+        href: https://learn.microsoft.com/en-us/fabric/cicd/deployment-pipelines/pipeline-automation
 
 deliverables:
   - id: w3-release
     label: Release evidence
     plannedMinutes: 60
     helpText: |
-      Test results + release notes.
+      Collect test results, release notes, monitoring plan, known residual risks, and rollback decision.
+      The deliverable is done when it is clear which version was released and why it is acceptable.
+      Open follow-ups need owner and target date, otherwise they are not release-ready.
+
+fields:
+  - id: verification-summary
+    label: Verification summary
+    type: textarea
+    placeholder: Test results, deviations, release decision, monitoring
+  - id: release-watch
+    label: Release monitoring
+    type: textarea
+    placeholder: Signals, owner, escalation path, observation window
 
 notes: true
 ```

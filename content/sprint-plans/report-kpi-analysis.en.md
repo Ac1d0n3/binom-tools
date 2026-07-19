@@ -35,33 +35,56 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Decision question, Audience, Action, KPI candidate, Success signal
     helpText: |
-      What decision changes with this report? Who acts on it?
-      Avoid vanity metrics.
-    linkedStories: define-kpi, kpi-metric-governance
+      Do not start with visuals; start with decisions. What question should the report answer, who acts on it, and what would be a better decision?
+      Write each question so it can trigger an action. A metric without a possible action is usually decoration.
+      Collect KPI candidates, but mark immediately which ones only create attention and which ones can actually steer behavior.
+      Use the KPI Definition Card to sharpen the business question, owner, and success signal.
+    stories:
+      - slug: define-kpi
+        required: true
+      - slug: kpi-metric-governance
+        required: false
     helpLinks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
       - label: KPI Definition Card
         href: /tools/kpi-definition
-      - label: Define KPI
-        href: /playbooks/define-kpi
-      - label: KPI governance
-        href: /playbooks/kpi-metric-governance
+      - label: Tableau - Best Practices for Effective Dashboards
+        href: https://help.tableau.com/current/pro/desktop/en-us/dashboards_best_practices.htm
+      - label: Power BI - Report and dashboard creation
+        href: https://learn.microsoft.com/en-us/power-bi/create-reports/
   - id: w1-audience
     label: Map consumers and cadence
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Consumer group, Decision, Cadence, Tool, Access need
     helpText: |
-      Who needs it, how often, and in which tool.
+      Map audiences by name or clear role: decision makers, operational users, analysts, controllers, and external recipients.
+      Capture cadence, preferred tool, detail level, and whether each group only reads or actively works with the result.
+      Check whether the report supports a recurring decision or a one-off analysis.
+      Watch for audiences who are not in the meeting but can later block access, layout, or definitions.
 
 deliverables:
   - id: w1-brief
     label: Analysis brief
     plannedMinutes: 120
     helpText: |
-      Questions, audience, cadence, success criteria.
+      Create a short brief with decision questions, audiences, cadence, success criteria, and explicit non-goals.
+      The deliverable is done when sponsor and implementer can give the same answer to "Why are we building this?"
+      Keep assumptions and open decisions visible so they do not return later as hidden requirements.
+
+fields:
+  - id: decision-questions
+    label: Decision questions
+    type: textarea
+    placeholder: Which decisions should the report improve?
+  - id: audience-cadence
+    label: Audience & cadence
+    type: textarea
+    placeholder: User groups, usage frequency, tool, access
 
 notes: true
 ```
@@ -78,29 +101,49 @@ tasks:
     plannedMinutes: 120
     assigneeType: person
     assigneeId: null
+    tableColumns: KPI, Formula, Grain, Owner, Refresh, Decision use
     helpText: |
-      Name, formula, grain, owner, and refresh.
-      Keep the set small.
-    linkedStories: define-kpi
+      Select a small set of core KPIs that directly support the decision questions. Every metric needs a name, formula, grain, owner, refresh, and explained use.
+      Define thresholds or comparison values only where they are defensible.
+      Keep the set small: three trustworthy metrics beat ten values without ownership.
+      Use the KPI Definition Card for each core metric before it enters the report.
+    stories:
+      - slug: define-kpi
+        required: true
     helpLinks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
-      - label: Define KPI
-        href: /playbooks/define-kpi
+      - label: Tableau - Visualize Key Progress Indicators
+        href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
   - id: w2-defs
     label: Document metric definitions
     plannedMinutes: 120
     assigneeType: person
     assigneeId: null
+    tableColumns: Metric, Numerator, Denominator, Filters, Exclusions, Owner
     helpText: |
-      Shared language for numerator/denominator and filters.
+      Document numerator, denominator, filters, exclusions, time zone, rounding, and validity scope.
+      Write definitions so business and data teams can reproduce the same value.
+      Name known gray areas instead of hiding them, for example cancellations, test data, backdating, or manual corrections.
+      A definition is good enough only when someone can test and accept it.
 
 deliverables:
   - id: w2-kpi-catalog
     label: KPI catalog draft
     plannedMinutes: 120
     helpText: |
-      Table of KPIs with formulas and owners.
+      Create a KPI catalog with formula, grain, owner, source, refresh, business acceptance, and open questions.
+      The deliverable is done when every core metric has an accountable person and a testable definition.
+      Mark metrics that are not production-ready yet instead of silently presenting them as done.
+    helpLinks:
+      - label: Atlassian - Acceptance criteria
+        href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
+
+fields:
+  - id: kpi-scope
+    label: KPI scope
+    type: textarea
+    placeholder: Core KPIs, excluded metrics, open definition questions
 
 notes: true
 ```
@@ -117,28 +160,52 @@ tasks:
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Source field, Business meaning, Quality check, Owner, Issue
     helpText: |
-      Confirm availability and quality of inputs.
-      Meta export can help inventory columns.
+      Validate the source fields needed for each KPI: availability, freshness, business meaning, and known quality issues.
+      Use the Meta Export Generator for a quick column inventory, but confirm critical fields with owners or sample values.
+      Check early whether filters, joins, or historical logic change the KPI value.
+      If a field is unclear, document the uncertainty in the mock instead of discovering it during acceptance.
+    stories:
+      - slug: bi-tools
+        required: false
     helpLinks:
-      - label: Meta export generator
+      - label: Meta Export Generator
         href: /tools/meta-export-generator
-      - label: BI tools
-        href: /playbooks/bi-tools
+      - label: Power BI - Report and dashboard creation
+        href: https://learn.microsoft.com/en-us/power-bi/create-reports/
   - id: w3-mock
     label: Build mock / pilot view
     plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     helpText: |
-      Wireframe or thin pilot for stakeholder feedback.
+      Build a wireframe or thin pilot with real sample values where possible.
+      Show only the most important decisions and interactions; detail can grow later.
+      Ask for feedback on "Which decision would you make with this?", not only on color or layout.
+      Mark placeholders, data gaps, and assumptions visibly so the mock is not mistaken for a finished report.
+    helpLinks:
+      - label: Tableau - Best Practices for Effective Dashboards
+        href: https://help.tableau.com/current/pro/desktop/en-us/dashboards_best_practices.htm
 
 deliverables:
   - id: w3-pilot
     label: Pilot view or mock
     plannedMinutes: 60
     helpText: |
-      Link or screenshot of pilot + feedback notes.
+      Store a link or screenshot of the pilot together with feedback notes, open data questions, and design decisions.
+      The deliverable is done when the audience can say whether the direction, metrics, and detail level fit.
+      Document deliberately what is not production-ready yet.
+
+fields:
+  - id: source-risks
+    label: Source risks
+    type: textarea
+    placeholder: Missing fields, quality issues, open owners, assumptions
+  - id: pilot-feedback
+    label: Pilot feedback
+    type: textarea
+    placeholder: What works, what is missing, which decision remains open?
 
 notes: true
 ```
@@ -155,26 +222,45 @@ tasks:
     plannedMinutes: 30
     assigneeType: person
     assigneeId: null
+    tableColumns: Check, Result, Evidence, Owner, Follow-up
     helpText: |
-      Correctness, performance, access, and ownership.
-    linkedStories: bi-tools
+      Check correctness, performance, access, ownership, refresh, and business readability.
+      Every deviation needs a decision: fix, accept, document, or remove from scope.
+      Acceptance does not mean "looks good"; it means "reliable enough for the agreed decision."
+    stories:
+      - slug: bi-tools
+        required: false
     helpLinks:
-      - label: BI tools
-        href: /playbooks/bi-tools
+      - label: Atlassian - Acceptance criteria
+        href: https://www.atlassian.com/work-management/project-management/acceptance-criteria
   - id: w4-handoff
     label: Handoff runbook
     plannedMinutes: 60
     assigneeType: person
     assigneeId: null
+    tableColumns: Topic, Owner, Procedure, Frequency, Escalation
     helpText: |
-      How to refresh, who owns incidents, known limits.
+      Write down how the report is refreshed, who owns it functionally and technically, and how issues are reported.
+      Document known limits openly: data latency, exclusions, filter logic, permissions, and manual steps.
+      Handoff is done when someone else can operate the report or at least escalate it sensibly.
+    helpLinks:
+      - label: Power BI - Report and dashboard creation
+        href: https://learn.microsoft.com/en-us/power-bi/create-reports/
 
 deliverables:
   - id: w4-accepted
     label: Report accepted
     plannedMinutes: 120
     helpText: |
-      Signed checklist + runbook link.
+      Keep the acceptance checklist, runbook link, known limits, and follow-up work in one place.
+      The deliverable is done when business acceptance, operating responsibility, and next review date are documented.
+      Avoid silent handoffs: every open question needs an owner or a deliberate decision to stop tracking it.
+
+fields:
+  - id: acceptance-summary
+    label: Acceptance summary
+    type: textarea
+    placeholder: Accepted by, known limits, open follow-ups, next review
 
 notes: true
 ```

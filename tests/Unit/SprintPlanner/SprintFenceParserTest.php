@@ -30,6 +30,7 @@ tasks:
 deliverables:
   - id: stakeholder-list
     label: Stakeholder list
+    dependsOn: identify-stakeholders
 
 fields:
   - id: management-expectations
@@ -53,6 +54,7 @@ MD;
         $this->assertSame('align-management-expectations', $sprint['tasks'][0]['id']);
         $this->assertSame('person', $sprint['tasks'][0]['assigneeType']);
         $this->assertCount(1, $sprint['deliverables']);
+        $this->assertSame(['identify-stakeholders'], $sprint['deliverables'][0]['dependsOn']);
         $this->assertCount(1, $sprint['fields']);
         $this->assertSame('textarea', $sprint['fields'][0]['type']);
     }

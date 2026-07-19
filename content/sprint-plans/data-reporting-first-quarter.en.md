@@ -51,10 +51,8 @@ tasks:
       Watch for: vague goals (“better reporting”), hidden compliance pressure, and conflicting sponsors.
     linkedStories: data-ownership-stewardship, eight-pillars
     helpLinks:
-      - label: Data Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
-      - label: The 8 Pillars of Data Governance
-        href: /playbooks/eight-pillars
+      - label: Atlassian - Project poster
+        href: https://www.atlassian.com/team-playbook/plays/project-poster
   - id: identify-stakeholders
     label: Identify relevant stakeholders
     plannedMinutes: 30
@@ -69,22 +67,25 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
-      - label: Missing Pieces – Ownership & Stewardship
-        href: /playbooks/missing-pieces-ownership-stewardship
+      - label: Atlassian - DACI decision framework
+        href: https://www.atlassian.com/team-playbook/plays/daci
 
 deliverables:
   - id: stakeholder-list
     label: Create stakeholder list
     plannedMinutes: 30
+    dependsOn: identify-stakeholders
     helpText: |
-      Deliverable “Create stakeholder list”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Use the table from “Identify relevant stakeholders” as the working base.
+      The deliverable is done when name, role, influence, interest, and owner are captured for the relevant stakeholders.
+      Add open access needs, blocking people, or missing operational owners as notes instead of hiding them in raw notes.
   - id: initial-mandate
     label: Initial mandate documented
     plannedMinutes: 120
+    dependsOn: align-management-expectations, identify-stakeholders
     helpText: |
-      Deliverable “Initial mandate documented”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Initial mandate documented” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: management-expectations
@@ -126,10 +127,8 @@ tasks:
     helpLinks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
-      - label: One Business Question, Different BI Engines
-        href: /playbooks/bi-tools
-      - label: One App Cannot Answer Every Question
-        href: /playbooks/one-app
+      - label: Microsoft Learn - Power BI implementation planning
+        href: https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-introduction
   - id: map-report-consumers
     label: Map report consumers and usage frequency
     plannedMinutes: 120
@@ -140,23 +139,21 @@ tasks:
       Separate “nice to have” from “blocks operations or board reporting”.
       Watch for: consumers who never open the report but block changes, and unknown distribution lists.
     linkedStories: bi-tools, one-app
-    helpLinks:
-      - label: BI tools overview
-        href: /playbooks/bi-tools
-
 deliverables:
   - id: report-inventory
     label: Report inventory documented
     plannedMinutes: 120
+    dependsOn: inventory-reports
     helpText: |
-      Deliverable “Report inventory documented”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Report inventory documented” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: gap-list
     label: Initial gap list created
     plannedMinutes: 30
+    dependsOn: inventory-reports, map-report-consumers
     helpText: |
-      Deliverable “Initial gap list created”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Initial gap list created” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: critical-reports
@@ -194,13 +191,10 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
-      - label: Before Building the First Table
-        href: /playbooks/before-building-the-first-table
-      - label: SAP Data & Analytics Stack
-        href: /playbooks/sap-overview
   - id: document-interfaces
     label: Document interfaces and extraction paths
     plannedMinutes: 120
+    dependsOn: list-source-systems
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -211,22 +205,24 @@ tasks:
     helpLinks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
-      - label: Building a Warehouse from Scratch
-        href: /playbooks/building-from-scratch
+      - label: Atlassian - DACI decision framework
+        href: https://www.atlassian.com/team-playbook/plays/daci
 
 deliverables:
   - id: source-system-map
     label: Source system map created
     plannedMinutes: 60
+    dependsOn: list-source-systems
     helpText: |
-      Deliverable “Source system map created”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Source system map created” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: owner-matrix
     label: Owner matrix created
     plannedMinutes: 30
+    dependsOn: list-source-systems, document-interfaces
     helpText: |
-      Deliverable “Owner matrix created”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Owner matrix created” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: system-risks
@@ -260,14 +256,10 @@ tasks:
       Sketch process → system fields → report fields for 1–3 critical flows.
       Watch for: late corrections in Excel, optional fields that drive KPIs, and process exceptions that never reach the warehouse.
     linkedStories: before-building-the-first-table, trash-iinout
-    helpLinks:
-      - label: Trash In, Trash Out
-        href: /playbooks/trash-iinout
-      - label: Before Building the First Table
-        href: /playbooks/before-building-the-first-table
   - id: capture-business-rules
     label: Document business rules and exceptions
     plannedMinutes: 30
+    dependsOn: trace-data-creation
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -275,23 +267,21 @@ tasks:
       Prefer examples with real edge cases over abstract definitions.
       Watch for: “everybody knows” rules that exist only in people’s heads.
     linkedStories: define-kpi, missing-pieces-trusted-metrics
-    helpLinks:
-      - label: KPI Definition, Ownership and Versioning
-        href: /playbooks/define-kpi
-
 deliverables:
   - id: creation-notes
     label: Data creation notes
     plannedMinutes: 60
+    dependsOn: trace-data-creation
     helpText: |
-      Deliverable “Data creation notes”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Data creation notes” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: rule-summary
     label: Business rule summary
     plannedMinutes: 60
+    dependsOn: capture-business-rules
     helpText: |
-      Deliverable “Business rule summary”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Business rule summary” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: key-processes
@@ -338,13 +328,10 @@ tasks:
     helpLinks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
-      - label: Metadata, Catalog & Lineage
-        href: /playbooks/metadata-catalog-lineage
-      - label: Missing Pieces – Metadata, Catalog & Lineage
-        href: /playbooks/missing-pieces-metadata-catalog-lineage
   - id: identify-lineage-gaps
     label: Mark lineage gaps and blind spots
     plannedMinutes: 30
+    dependsOn: map-lineage-paths
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -352,23 +339,21 @@ tasks:
       Prioritize gaps that affect trust in critical KPIs or compliance-sensitive data.
       Watch for: ignoring “temporary” transforms that have existed for years.
     linkedStories: metadata-catalog-lineage, missing-pieces-metadata-catalog-lineage
-    helpLinks:
-      - label: Metadata, Catalog & Lineage
-        href: /playbooks/metadata-catalog-lineage
-
 deliverables:
   - id: lineage-sketch
     label: Lineage sketch created
     plannedMinutes: 60
+    dependsOn: map-lineage-paths
     helpText: |
-      Deliverable “Lineage sketch created”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Lineage sketch created” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: lineage-gap-log
     label: Lineage gap log
     plannedMinutes: 60
+    dependsOn: identify-lineage-gaps
     helpText: |
-      Deliverable “Lineage gap log”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Lineage gap log” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: priority-flows
@@ -407,13 +392,12 @@ tasks:
     helpLinks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
-      - label: KPI Definition, Ownership and Versioning
-        href: /playbooks/define-kpi
-      - label: KPI & Metric Governance
-        href: /playbooks/kpi-metric-governance
+      - label: Tableau - Visualize Key Progress Indicators
+        href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
   - id: normalize-definitions
     label: Align definitions and calculation rules
     plannedMinutes: 30
+    dependsOn: collect-kpis
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -421,23 +405,21 @@ tasks:
       Version the definition if the business still needs the old variant temporarily.
       Watch for: “average of everyone’s number” as a compromise.
     linkedStories: define-kpi, missing-pieces-trusted-metrics
-    helpLinks:
-      - label: Trusted Metrics (Missing Pieces)
-        href: /playbooks/missing-pieces-trusted-metrics
-
 deliverables:
   - id: kpi-inventory
     label: KPI inventory created
     plannedMinutes: 120
+    dependsOn: collect-kpis
     helpText: |
-      Deliverable “KPI inventory created”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “KPI inventory created” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: definition-backlog
     label: Definition backlog prioritized
     plannedMinutes: 120
+    dependsOn: normalize-definitions
     helpText: |
-      Deliverable “Definition backlog prioritized”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Definition backlog prioritized” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: top-kpis
@@ -480,17 +462,16 @@ tasks:
       Watch for: fixing cosmetics while core keys and dates remain unreliable.
     linkedStories: data-quality-governance, dq-test-kpis, missing-pieces-data-quality
     helpLinks:
-      - label: Data Quality Governance
-        href: /playbooks/data-quality-governance
-      - label: From Tests to Measurable Data Quality
-        href: /playbooks/dq-test-kpis
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+      - label: dbt Docs - Data tests
+        href: https://docs.getdbt.com/docs/build/data-tests
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
   - id: rate-risks
     label: Rate business and compliance risks
     plannedMinutes: 60
+    dependsOn: assess-dq-issues
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -499,26 +480,26 @@ tasks:
       Watch for: treating every data bug as equal urgency.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: PII & Privacy Governance
-        href: /playbooks/pii-privacy-governance
-      - label: Access & Security Governance
-        href: /playbooks/access-security-governance
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
+      - label: Microsoft Purview - Data classification
+        href: https://learn.microsoft.com/en-us/purview/data-classification
 
 deliverables:
   - id: dq-risk-register
     label: DQ and risk register
     plannedMinutes: 60
+    dependsOn: assess-dq-issues, rate-risks
     helpText: |
-      Deliverable “DQ and risk register”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “DQ and risk register” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: hotspot-list
     label: Prioritized hotspot list
     plannedMinutes: 30
+    dependsOn: rate-risks
     helpText: |
-      Deliverable “Prioritized hotspot list”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Prioritized hotspot list” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: top-risks
@@ -568,17 +549,12 @@ tasks:
     helpLinks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
-      - label: Choosing the Simplest Viable Architecture
-        href: /playbooks/choosing-the-simplest-viable-architecture
-      - label: Beyond Bronze, Silver and Gold
-        href: /playbooks/beyond-bronze-silver-gold
-      - label: BIG 5 Stacks Overview
-        href: /playbooks/big-five
-      - label: One Architecture – Multiple Platforms
-        href: /playbooks/platform-examples
+      - label: Microsoft Learn - Medallion architecture
+        href: https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion
   - id: document-bottlenecks
     label: Document bottlenecks and technical debt
     plannedMinutes: 120
+    dependsOn: review-architecture
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -586,25 +562,21 @@ tasks:
       Separate “hurts this quarter’s pilot” from “strategic debt”.
       Watch for: rewriting everything instead of isolating one improv able path.
     linkedStories: modernizing-an-existing-warehouse, host-vs-cloud, bridge-solution
-    helpLinks:
-      - label: Modernizing an Existing Warehouse
-        href: /playbooks/modernizing-an-existing-warehouse
-      - label: Cloud vs. Self-Hosted
-        href: /playbooks/host-vs-cloud
-
 deliverables:
   - id: architecture-notes
     label: Architecture diagnosis notes
     plannedMinutes: 180
+    dependsOn: review-architecture
     helpText: |
-      Deliverable “Architecture diagnosis notes”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Architecture diagnosis notes” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: bottleneck-list
     label: Bottleneck list
     plannedMinutes: 30
+    dependsOn: document-bottlenecks
     helpText: |
-      Deliverable “Bottleneck list”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Bottleneck list” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: architecture-findings
@@ -641,13 +613,12 @@ tasks:
     helpLinks:
       - label: Impact–Effort Prioritizer
         href: /tools/impact-effort
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-      - label: Simplest Viable Architecture
-        href: /playbooks/choosing-the-simplest-viable-architecture
+      - label: Atlassian - Prioritization matrix
+        href: https://www.atlassian.com/work-management/project-management/prioritization-matrix
   - id: agree-priorities
     label: Agree priorities with stakeholders
     plannedMinutes: 120
+    dependsOn: score-initiatives
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -655,23 +626,21 @@ tasks:
       Confirm who can unblock people and systems during the pilot weeks.
       Watch for: silent disagreement that resurfaces after build starts.
     linkedStories: eight-pillars, data-ownership-stewardship
-    helpLinks:
-      - label: The 8 Pillars of Data Governance
-        href: /playbooks/eight-pillars
-
 deliverables:
   - id: priority-matrix
     label: Prioritization matrix
     plannedMinutes: 120
+    dependsOn: score-initiatives
     helpText: |
-      Deliverable “Prioritization matrix”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Prioritization matrix” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: quarter-backlog
     label: Quarter backlog agreed
     plannedMinutes: 180
+    dependsOn: agree-priorities, priority-matrix
     helpText: |
-      Deliverable “Quarter backlog agreed”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Quarter backlog agreed” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: pilot-candidate
@@ -709,18 +678,10 @@ tasks:
       Keep principles short and testable. Show what you will stop doing.
       Watch for: futuristic architecture slides with no near-term path.
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role, transformation-options
-    helpLinks:
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-      - label: The Role of dbt
-        href: /playbooks/dbt-role
-      - label: Self-Hosted Data Platforms
-        href: /playbooks/self-hosted-data-platform
-      - label: Transformation Options
-        href: /playbooks/transformation-options
   - id: validate-target-picture
     label: Validate target picture with stakeholders
     plannedMinutes: 60
+    dependsOn: draft-target-picture
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -728,23 +689,21 @@ tasks:
       Capture objections as backlog items, not as reasons to freeze.
       Watch for: approval theater without named owners for the target state.
     linkedStories: eight-pillars, data-ownership-stewardship
-    helpLinks:
-      - label: Data Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
-
 deliverables:
   - id: target-picture
     label: Target picture documented
     plannedMinutes: 120
+    dependsOn: draft-target-picture, validate-target-picture
     helpText: |
-      Deliverable “Target picture documented”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Target picture documented” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: guiding-principles
     label: Guiding principles defined
     plannedMinutes: 60
+    dependsOn: draft-target-picture
     helpText: |
-      Deliverable “Guiding principles defined”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Guiding principles defined” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: target-summary
@@ -787,16 +746,14 @@ tasks:
       Watch for: expanding scope mid-build and skipping tests “until later”.
     linkedStories: building-from-scratch, dbt-role, dq-test-kpis
     helpLinks:
-      - label: Building a Warehouse from Scratch
-        href: /playbooks/building-from-scratch
-      - label: The Role of dbt
-        href: /playbooks/dbt-role
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
       - label: Meta Export Generator
         href: /tools/meta-export-generator
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
+      - label: dbt Docs - Data tests
+        href: https://docs.getdbt.com/docs/build/data-tests
   - id: track-pilot-blockers
     label: Manage blockers and dependencies
     plannedMinutes: 60
@@ -807,23 +764,21 @@ tasks:
       Protect the pilot from unrelated “quick wins”.
       Watch for: silent waiting on unresolved access tickets.
     linkedStories: access-security-governance, data-ownership-stewardship
-    helpLinks:
-      - label: Access & Security Governance
-        href: /playbooks/access-security-governance
-
 deliverables:
   - id: pilot-increment
     label: Pilot increment ready
     plannedMinutes: 30
+    dependsOn: build-pilot
     helpText: |
-      Deliverable “Pilot increment ready”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Pilot increment ready” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: pilot-changelog
     label: Pilot change log
     plannedMinutes: 60
+    dependsOn: build-pilot, track-pilot-blockers
     helpText: |
-      Deliverable “Pilot change log”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Pilot change log” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: pilot-scope
@@ -857,14 +812,10 @@ tasks:
       Capture concrete change requests vs. nice-to-haves.
       Watch for: demoing to sponsors only and skipping end users.
     linkedStories: bi-tools, define-kpi
-    helpLinks:
-      - label: KPI Definition, Ownership and Versioning
-        href: /playbooks/define-kpi
-      - label: BI tools overview
-        href: /playbooks/bi-tools
   - id: measure-pilot-outcomes
     label: Measure outcomes and quality
     plannedMinutes: 60
+    dependsOn: run-pilot-review
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -873,24 +824,26 @@ tasks:
       Watch for: declaring success because “the pipeline runs”.
     linkedStories: dq-test-kpis, data-quality-governance
     helpLinks:
-      - label: From Tests to Measurable Data Quality
-        href: /playbooks/dq-test-kpis
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
+      - label: GitHub Docs - Status checks
+        href: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
 
 deliverables:
   - id: validation-report
     label: Validation report
     plannedMinutes: 120
+    dependsOn: run-pilot-review, measure-pilot-outcomes
     helpText: |
-      Deliverable “Validation report”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Validation report” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: go-nogo-recommendation
     label: Go/No-Go recommendation
     plannedMinutes: 60
+    dependsOn: validation-report
     helpText: |
-      Deliverable “Go/No-Go recommendation”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Go/No-Go recommendation” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: validation-notes
@@ -926,14 +879,10 @@ tasks:
       Attach the artifacts (inventory, KPI defs, lineage sketch, risk register) as lasting assets.
       Watch for: burying bad news or unfinished ownership in appendices.
     linkedStories: eight-pillars, dsdr-governance
-    helpLinks:
-      - label: The 8 Pillars of Data Governance
-        href: /playbooks/eight-pillars
-      - label: DSDR Governance
-        href: /playbooks/dsdr-governance
   - id: plan-next-quarter
     label: Roughly plan the next quarter
     plannedMinutes: 180
+    dependsOn: summarize-quarter
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -941,27 +890,21 @@ tasks:
       Reconfirm owners, capacity, and what must stop to make room.
       Watch for: restarting discovery from zero instead of extending proven patterns.
     linkedStories: bridge-solution, modernizing-an-existing-warehouse, operating-and-governing-the-platform
-    helpLinks:
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-      - label: Modernizing an Existing Warehouse
-        href: /playbooks/modernizing-an-existing-warehouse
-      - label: Operating and Governing the Platform
-        href: /playbooks/operating-and-governing-the-platform
-
 deliverables:
   - id: quarter-report
     label: Quarter report
     plannedMinutes: 120
+    dependsOn: summarize-quarter
     helpText: |
-      Deliverable “Quarter report”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Quarter report” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: next-quarter-outline
     label: Outline for the next quarter
     plannedMinutes: 180
+    dependsOn: plan-next-quarter, quarter-report
     helpText: |
-      Deliverable “Outline for the next quarter”: keep it short, traceable, and with owner/date.
-      Use it as evidence for decisions — not as a dump of raw notes.
+      Create the artifact “Outline for the next quarter” with purpose, owner, date, source, and open decision.
+      The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
 
 fields:
   - id: lessons-learned
