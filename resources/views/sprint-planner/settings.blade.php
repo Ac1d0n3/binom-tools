@@ -48,6 +48,15 @@
             <p class="tools-page-lead" id="sp-settings-plan-title"></p>
 
             <section class="sp-section">
+                <h2 class="sp-section__title" data-i18n="sp.field.teams">Teams</h2>
+                <fieldset class="sp-field">
+                    <legend class="visually-hidden" data-i18n="sp.field.teams">Teams</legend>
+                    <div id="sp-plan-teams" class="sp-checkbox-list"></div>
+                </fieldset>
+                <button type="button" class="tools-btn tools-btn--primary" id="sp-plan-teams-save" data-i18n="sp.action.save">Save</button>
+            </section>
+
+            <section class="sp-section">
                 <h2 class="sp-section__title" data-i18n="sp.section.sharing">Sharing</h2>
                 <p class="sp-password-note" data-i18n="sp.sharing.note">Share this plan with users or teams on this instance (accounts mode).</p>
                 <div id="sp-sharing-panel" class="sp-lock-form" hidden>

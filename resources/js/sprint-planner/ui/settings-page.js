@@ -19,6 +19,7 @@ import {
     verifyPassword,
 } from '../plan-password.js';
 import { loadWorkspace } from '../storage.js';
+import { normalizeTeamIds } from '../trigram.js';
 import { listPeople, listTeams, localizedText } from '../people-teams.js';
 import {
     applySpI18n,
@@ -93,9 +94,31 @@ export function initSettingsPage() {
             ? spT('sp.password.change')
             : spT('sp.password.set');
 
+        renderPlanTeams(instance, locale);
         renderSharing(instance, locale);
         renderTemplateSwitch(instance, locale);
     };
+
+    document.getElementById('sp-plan-teams-save')?.addEventListener('click', () => {
+        const teamIds = [...document.querySelectorAll('#sp-plan-teams input:checked')].map((el) => el.value);
+        const result = updateInstance(instanceId, (instance) => {
+            instance.teamIds = teamIds;
+            instance.teamId = null;
+            const memberSet = new Set(instance.participantIds || []);
+            for (const tid of teamIds) {
+                for (const mid of listTeams().find((t) => t.id === tid)?.memberIds || []) {
+                    memberSet.add(String(mid));
+                }
+            }
+            instance.participantIds = [...memberSet];
+        });
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.toast.saved'));
+        render();
+    });
 
     document.getElementById('sp-switch-template-save')?.addEventListener('click', () => {
         const slug = document.getElementById('sp-switch-template')?.value;
@@ -334,6 +357,29 @@ export function initSettingsPage() {
     });
 
     render();
+}
+
+/**
+ * @param {import('../storage.js').SpPlanInstance} instance
+ * @param {'de'|'en'} locale
+ */
+function renderPlanTeams(instance, locale) {
+    const host = document.getElementById('sp-plan-teams');
+    if (!host) {
+        return;
+    }
+    const selected = new Set(normalizeTeamIds(instance));
+    host.innerHTML = '';
+    for (const team of listTeams()) {
+        const label = document.createElement('label');
+        label.className = 'sp-check';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = team.id;
+        input.checked = selected.has(team.id);
+        label.append(input, document.createTextNode(` ${localizedText(team.name, locale)}`));
+        host.appendChild(label);
+    }
 }
 
 /**

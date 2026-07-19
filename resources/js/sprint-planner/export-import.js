@@ -6,6 +6,7 @@ import {
     normalizeWorkspace,
     saveWorkspace,
 } from './storage.js';
+import { normalizeTeamIds } from './trigram.js';
 
 export const EXPORT_TYPE_WORKSPACE = 'bn-tools-sprint-workspace';
 export const EXPORT_TYPE_INSTANCE = 'bn-tools-sprint-instance';
@@ -56,8 +57,10 @@ function pickRelatedPeople(data, instance) {
 function pickRelatedTeams(data, instance) {
     /** @type {Record<string, unknown>} */
     const out = {};
-    if (instance.teamId && data.teams[instance.teamId]) {
-        out[instance.teamId] = data.teams[instance.teamId];
+    for (const tid of normalizeTeamIds(instance)) {
+        if (data.teams[tid]) {
+            out[tid] = data.teams[tid];
+        }
     }
     return out;
 }
@@ -158,7 +161,8 @@ export function applyImport(mode, payload, current) {
             instances[newId] = {
                 ...instance,
                 id: newId,
-                teamId: instance.teamId ? teamMap[instance.teamId] || instance.teamId : null,
+                teamIds: normalizeTeamIds(instance).map((tid) => teamMap[tid] || tid),
+                teamId: null,
                 participantIds: (instance.participantIds || []).map((pid) => personMap[pid] || pid),
             };
         }

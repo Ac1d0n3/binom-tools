@@ -625,13 +625,15 @@ Eine Person besitzt:
 {
   "id": "person_01",
   "displayName": "Thomas Lindackers",
-  "shortName": "TL",
+  "shortName": "TLI",
   "email": "",
   "role": "BI Platform Architect",
   "colorToken": "accent-1",
   "archived": false
 }
 ```
+
+`shortName` ist ein **Trigramm** (genau 3 Zeichen) und erscheint in der Planansicht als farbiger Avatar-Chip.
 
 E-Mail ist optional und wird nicht verwendet, um jemanden anzumelden.
 
@@ -650,6 +652,8 @@ Ein Team besitzt:
     "de": "Verantwortlich für Datenplattform und Reporting.",
     "en": "Responsible for the data platform and reporting."
   },
+  "shortName": "BIP",
+  "colorToken": "accent-2",
   "memberIds": [
     "person_01",
     "person_02"
@@ -658,6 +662,7 @@ Ein Team besitzt:
 }
 ```
 
+Teams haben `colorToken` und optionales `shortName`. Planinstanzen nutzen `teamIds: string[]` (Legacy-`teamId` wird migriert).
 ### 11.3 Aktive Person
 
 Da es keinen Login gibt, wird eine aktive lokale Person ausgewählt:
@@ -736,7 +741,7 @@ Beispiel einer Planinstanz:
   },
   "startedAt": "2026-09-01",
   "status": "active",
-  "teamId": "team_bi",
+  "teamIds": ["team_bi"],
   "participantIds": [
     "person_01",
     "person_02"
@@ -781,7 +786,7 @@ Ein Sprint gilt als abgeschlossen, wenn:
 
 ---
 
-## 14. Aktueller Sprint
+## 14. Aktueller Sprint und Planwochen
 
 Bei `unit: week`:
 
@@ -791,9 +796,22 @@ currentSprintNumber = floor((today - startedAt) / 7 Tage) + 1
 
 Grenzen:
 
-- vor dem Startdatum: Sprint 1
+- vor dem Startdatum: **kein** aktueller Sprint (Anzeige „Noch nicht gestartet · ab …“); Sprint 1 trägt Badge „Startet bald“
 - nach dem letzten Sprint: letzter Sprint
 - manuelle Auswahl bleibt möglich
+
+Jeder Sprint N erhält ab `startedAt` einen Datumsrange und eine ISO-Kalenderwoche:
+
+```text
+rangeStart = startedAt + (N - 1) × 7 Tage
+rangeEnd   = rangeStart + 6 Tage
+```
+
+Anzeige z. B. `#1 · KW 34 · 17.–23. Aug`. Tasks zeigen geplante Fälligkeit = Wochenende des Sprints (oder explizites `dueDate`).
+
+**Verzögerung:** Offene Items in Sprints vor der aktuellen Planwoche zählen als Rückstand. Die UI zeigt Wochen hinter Plan und die verursachenden Sprints.
+
+Personen, die einem Task zugewiesen werden, landen automatisch in `participantIds` (inkl. Backfill beim Öffnen).
 
 ---
 
@@ -802,7 +820,7 @@ Grenzen:
 Mindestens:
 
 ```text
-Nur aktuelle Woche
+Nur aktuelle Planwoche
 Erledigte ausblenden
 Nur offene Elemente
 Blockierte Elemente

@@ -287,6 +287,30 @@
     border-radius: var(--sp-radius);
 }
 
+.sp-filter-logic {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 1rem;
+    flex: 1 1 100%;
+    width: 100%;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.15rem;
+    border-bottom: 1px solid var(--sp-border);
+}
+
+.sp-filter-logic__label {
+    font-size: 0.85rem;
+    font-weight: 650;
+}
+
+.sp-check--inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+}
+
 .sp-filter-assignee {
     display: contents;
     border: 0;
@@ -419,9 +443,9 @@
 }
 
 .sp-sprint__summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 8.5rem minmax(4.5rem, 7rem) minmax(7.5rem, 9.5rem) 5.75rem;
+    gap: 0.65rem 1rem;
     align-items: center;
     cursor: pointer;
     padding: 0.85rem 1rem;
@@ -432,24 +456,116 @@
     display: none;
 }
 
+.sp-sprint__main {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
 .sp-sprint__number {
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .sp-sprint__title {
-    flex: 1 1 12rem;
     font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sp-sprint__status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 1.5rem;
+}
+
+.sp-sprint__assignees {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 1.5rem;
+}
+
+.sp-sprint__schedule {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.1rem;
+    text-align: right;
+    line-height: 1.2;
+}
+
+.sp-sprint__kw {
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sp-sprint__dates {
+    font-size: 0.75rem;
+    opacity: 0.72;
+    white-space: nowrap;
 }
 
 .sp-sprint__progress {
+    justify-self: end;
+    text-align: right;
     font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .sp-sprint__badge {
-    font-size: 0.75rem;
-    padding: 0.15rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    font-size: 0.7rem;
+    font-weight: 650;
+    padding: 0.2rem 0.55rem;
     border-radius: 999px;
     border: 1px solid var(--bn-color-accent, #2563eb);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sp-sprint__badge--current {
+    border-color: var(--bn-color-accent, #2563eb);
+    background: color-mix(in srgb, var(--bn-color-accent, #2563eb) 12%, transparent);
+}
+
+.sp-sprint__badge--upcoming {
+    border-color: color-mix(in srgb, #b45309 70%, var(--sp-border));
+    background: color-mix(in srgb, #b45309 12%, transparent);
+}
+
+.sp-sprint__badge--overdue {
+    border-color: color-mix(in srgb, #b91c1c 70%, var(--sp-border));
+    background: color-mix(in srgb, #b91c1c 12%, transparent);
+    color: #b91c1c;
+}
+
+@media (max-width: 720px) {
+    .sp-sprint__summary {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            'main progress'
+            'status assignees'
+            'schedule schedule';
+    }
+
+    .sp-sprint__main { grid-area: main; }
+    .sp-sprint__status { grid-area: status; justify-content: flex-start; }
+    .sp-sprint__assignees { grid-area: assignees; justify-content: flex-end; }
+    .sp-sprint__schedule { grid-area: schedule; align-items: flex-start; }
+    .sp-sprint__progress { grid-area: progress; }
 }
 
 .sp-sprint__body {
@@ -488,7 +604,7 @@
 
 .sp-item {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
     gap: 0.6rem;
     align-items: start;
     padding: 0.55rem 0.65rem;
@@ -1102,3 +1218,220 @@
     }
 }
 
+
+/* Avatars / trigrams */
+.sp-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.85rem;
+    height: 1.85rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.sp-avatar--team {
+    border-radius: 0.35rem;
+}
+
+.sp-avatar--empty {
+    background: color-mix(in srgb, currentColor 18%, transparent);
+    color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+.sp-avatar--accent-1 { background: #2563eb; }
+.sp-avatar--accent-2 { background: #0d9488; }
+.sp-avatar--accent-3 { background: #c2410c; }
+.sp-avatar--accent-4 { background: #7c3aed; }
+.sp-avatar--accent-5 { background: #be185d; }
+.sp-avatar--accent-6 { background: #475569; }
+
+.sp-avatar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.sp-item__label-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sp-item__assignee {
+    align-self: center;
+    margin-top: 0.1rem;
+}
+
+.sp-list__identity {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+}
+
+/* Icon action buttons */
+.sp-icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--sp-border);
+    background: color-mix(in srgb, var(--bn-color-surface, #fff) 92%, transparent);
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.sp-icon-btn:hover {
+    border-color: var(--bn-color-accent, #2563eb);
+    background: color-mix(in srgb, var(--bn-color-accent, #2563eb) 12%, transparent);
+}
+
+.sp-icon-btn--primary {
+    background: var(--bn-color-accent, #2563eb);
+    border-color: var(--bn-color-accent, #2563eb);
+    color: #fff;
+}
+
+.sp-icon-btn--danger:hover {
+    border-color: #b91c1c;
+    color: #b91c1c;
+}
+
+.sp-icon-btn__badge {
+    position: absolute;
+    top: -0.35rem;
+    right: -0.35rem;
+    min-width: 1.1rem;
+    padding: 0.05rem 0.25rem;
+    border-radius: 999px;
+    background: var(--bn-color-accent, #2563eb);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.sp-help-btn[data-pending='1']::after {
+    content: '';
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--sp-required, #c62828);
+}
+
+.sp-item__actions {
+    align-items: center;
+}
+
+/* Required / story cards */
+.sp-app {
+    --sp-required: #c62828;
+}
+
+[data-theme='dark'] .sp-app,
+.theme-dark .sp-app,
+html[data-color-scheme='dark'] .sp-app {
+    --sp-required: #ff8a80;
+}
+
+.sp-required-icon {
+    display: inline-flex;
+    color: var(--sp-required);
+    flex-shrink: 0;
+}
+
+.sp-story-card {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0 0 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius);
+    background: color-mix(in srgb, var(--bn-color-surface, #fff) 94%, transparent);
+}
+
+.sp-story-card[data-read='1'] {
+    opacity: 0.78;
+}
+
+.sp-story-card__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.sp-story-card__title {
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.sp-story-card__meta {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.sp-story-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+/* Schedule */
+.sp-schedule-banner {
+    margin: 0.75rem 0 0;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--sp-radius);
+    border: 1px solid var(--sp-border);
+    font-size: 0.9rem;
+}
+
+.sp-schedule-banner--behind {
+    border-color: color-mix(in srgb, #b45309 55%, var(--sp-border));
+    background: color-mix(in srgb, #b45309 12%, transparent);
+}
+
+.sp-color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sp-color-swatch {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sp-color-swatch input {
+    appearance: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+.sp-color-swatch:has(input:checked) {
+    border-color: currentColor;
+    outline: 2px solid var(--bn-color-accent, #2563eb);
+    outline-offset: 2px;
+}

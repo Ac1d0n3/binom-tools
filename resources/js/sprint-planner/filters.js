@@ -1,5 +1,5 @@
 /**
- * Plan item filters — all active constraints are AND-combined.
+ * Plan item filters — structural filters always AND; assignee/blocked group uses AND or OR.
  */
 
 /**
@@ -15,12 +15,13 @@
  *   teamId: string,
  *   status: string,
  *   priority: string,
+ *   filterLogic: 'and'|'or',
  * }}
  */
 export function normalizePlanFilters(raw = {}) {
     const source = raw && typeof raw === 'object' ? raw : {};
 
-    // Migrate away from XOR assigneeFilter radios back to independent AND flags.
+    // Migrate away from XOR assigneeFilter radios back to independent flags.
     let myTasks = Boolean(source.myTasks);
     let unassigned = Boolean(source.unassigned);
     let personId = String(source.personId || '');
@@ -48,6 +49,8 @@ export function normalizePlanFilters(raw = {}) {
         }
     }
 
+    const filterLogic = source.filterLogic === 'or' ? 'or' : 'and';
+
     return {
         currentWeek: Boolean(source.currentWeek),
         hideDone: Boolean(source.hideDone),
@@ -59,7 +62,20 @@ export function normalizePlanFilters(raw = {}) {
         teamId,
         status: String(source.status || ''),
         priority: String(source.priority || ''),
+        filterLogic,
     };
+}
+
+/**
+ * @param {object} item
+ * @param {string|null} activePersonId
+ */
+function matchesMyTasks(item, activePersonId) {
+    return Boolean(
+        activePersonId
+        && item.assigneeType === 'person'
+        && String(item.assigneeId) === String(activePersonId),
+    );
 }
 
 /**
@@ -69,14 +85,13 @@ export function normalizePlanFilters(raw = {}) {
  */
 export function itemMatchesFilters(item, filters, ctx) {
     const normalized = normalizePlanFilters(filters);
+    const activePersonId = ctx.activePersonId || null;
 
+    // Structural filters — always AND.
     if (normalized.hideDone && item.completed) {
         return false;
     }
     if (normalized.openOnly && (item.completed || item.status === 'completed')) {
-        return false;
-    }
-    if (normalized.blocked && item.status !== 'blocked') {
         return false;
     }
     if (normalized.status && item.status !== normalized.status) {
@@ -86,29 +101,32 @@ export function itemMatchesFilters(item, filters, ctx) {
         return false;
     }
 
-    // AND: each checked assignee constraint must hold.
+    /** @type {Array<() => boolean>} */
+    const groupChecks = [];
+    if (normalized.blocked) {
+        groupChecks.push(() => item.status === 'blocked');
+    }
     if (normalized.myTasks) {
-        if (!ctx.activePersonId || item.assigneeType !== 'person' || item.assigneeId !== ctx.activePersonId) {
-            return false;
-        }
+        groupChecks.push(() => matchesMyTasks(item, activePersonId));
     }
     if (normalized.unassigned) {
-        if (item.assigneeId) {
-            return false;
-        }
+        groupChecks.push(() => !item.assigneeId);
     }
     if (normalized.personId) {
-        if (!(item.assigneeType === 'person' && item.assigneeId === normalized.personId)) {
-            return false;
-        }
+        groupChecks.push(() => item.assigneeType === 'person' && String(item.assigneeId) === normalized.personId);
     }
     if (normalized.teamId) {
-        if (!(item.assigneeType === 'team' && item.assigneeId === normalized.teamId)) {
-            return false;
-        }
+        groupChecks.push(() => item.assigneeType === 'team' && String(item.assigneeId) === normalized.teamId);
     }
 
-    return true;
+    if (!groupChecks.length) {
+        return true;
+    }
+
+    if (normalized.filterLogic === 'or') {
+        return groupChecks.some((check) => check());
+    }
+    return groupChecks.every((check) => check());
 }
 
 /**
@@ -125,8 +143,12 @@ export function filterSprints(sprints, filters, currentSprintNumber, ctx) {
 
     return sprints
         .filter((sprint) => {
-            if (normalized.currentWeek && sprint.number !== currentSprintNumber) {
-                return false;
+            if (normalized.currentWeek) {
+                // Before plan start there is no current week — show the first upcoming plan week.
+                const targetWeek = currentSprintNumber > 0 ? currentSprintNumber : 1;
+                if (sprint.number !== targetWeek) {
+                    return false;
+                }
             }
             return true;
         })
@@ -164,7 +186,6 @@ export function hasActiveItemFilters(filters) {
         || normalized.personId
         || normalized.teamId
         || normalized.status
-        || normalized.priority
-        || normalized.currentWeek,
+        || normalized.priority,
     );
 }

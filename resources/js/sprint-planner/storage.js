@@ -6,6 +6,12 @@ import {
     usesSessionDemoStore,
 } from './accounts-bridge.js';
 import { ensureDefaultCatalog } from './defaults.js';
+import {
+    normalizeColorToken,
+    normalizeTeamIds,
+    normalizeTrigram,
+    teamTrigram,
+} from './trigram.js';
 
 /** @typedef {'de'|'en'} SpLocale */
 
@@ -32,6 +38,8 @@ export const WORKSPACE_EVENT = 'bn-tools:sprint-planner:workspace';
  * @property {string} id
  * @property {{de: string, en: string}} name
  * @property {{de: string, en: string}} description
+ * @property {string} shortName
+ * @property {string} colorToken
  * @property {string[]} memberIds
  * @property {boolean} archived
  */
@@ -44,7 +52,8 @@ export const WORKSPACE_EVENT = 'bn-tools:sprint-planner:workspace';
  * @property {{de?: {title?: string, description?: string}, en?: {title?: string, description?: string}}} translations
  * @property {string} startedAt
  * @property {'active'|'completed'|'archived'} status
- * @property {string|null} teamId
+ * @property {string[]} teamIds
+ * @property {string|null} [teamId] legacy single team (migrated into teamIds)
  * @property {string[]} participantIds
  * @property {string[]} completedTasks
  * @property {string[]} completedDeliverables
@@ -113,8 +122,9 @@ export function createDefaultPreferences() {
             teamId: '',
             status: '',
             priority: '',
+            filterLogic: 'and',
         },
-        planFiltersVersion: 3,
+        planFiltersVersion: 4,
         expandedSprints: {},
         manualCurrentSprint: {},
     };
@@ -147,12 +157,81 @@ export function normalizeWorkspace(raw) {
             activePersonId: workspace.activePersonId ? String(workspace.activePersonId) : null,
             defaultTeamId: workspace.defaultTeamId ? String(workspace.defaultTeamId) : null,
         },
-        people: isPlainObject(migrated.people) ? /** @type {Record<string, SpPerson>} */ (migrated.people) : {},
-        teams: isPlainObject(migrated.teams) ? /** @type {Record<string, SpTeam>} */ (migrated.teams) : {},
+        people: isPlainObject(migrated.people)
+            ? normalizePeople(/** @type {Record<string, unknown>} */ (migrated.people))
+            : {},
+        teams: isPlainObject(migrated.teams)
+            ? normalizeTeams(/** @type {Record<string, unknown>} */ (migrated.teams))
+            : {},
         instances: isPlainObject(migrated.instances)
             ? normalizeInstances(/** @type {Record<string, unknown>} */ (migrated.instances))
             : {},
     };
+}
+
+/**
+ * @param {Record<string, unknown>} people
+ * @returns {Record<string, SpPerson>}
+ */
+function normalizePeople(people) {
+    /** @type {Record<string, SpPerson>} */
+    const out = {};
+    for (const [id, value] of Object.entries(people)) {
+        if (!value || typeof value !== 'object') {
+            continue;
+        }
+        const item = /** @type {Record<string, unknown>} */ (value);
+        const displayName = String(item.displayName || '').trim();
+        out[id] = {
+            id: String(item.id || id),
+            displayName,
+            shortName: normalizeTrigram(String(item.shortName || ''), displayName),
+            email: String(item.email || ''),
+            role: String(item.role || ''),
+            colorToken: normalizeColorToken(String(item.colorToken || '')),
+            archived: Boolean(item.archived),
+        };
+    }
+    return out;
+}
+
+/**
+ * @param {Record<string, unknown>} teams
+ * @returns {Record<string, SpTeam>}
+ */
+function normalizeTeams(teams) {
+    /** @type {Record<string, SpTeam>} */
+    const out = {};
+    for (const [id, value] of Object.entries(teams)) {
+        if (!value || typeof value !== 'object') {
+            continue;
+        }
+        const item = /** @type {Record<string, unknown>} */ (value);
+        const name = isPlainObject(item.name)
+            ? {
+                de: String(/** @type {any} */ (item.name).de || ''),
+                en: String(/** @type {any} */ (item.name).en || ''),
+            }
+            : { de: String(item.name || ''), en: String(item.name || '') };
+        const shortName = item.shortName
+            ? normalizeTrigram(String(item.shortName), '')
+            : teamTrigram({ name }, 'en');
+        out[id] = {
+            id: String(item.id || id),
+            name,
+            description: isPlainObject(item.description)
+                ? {
+                    de: String(/** @type {any} */ (item.description).de || ''),
+                    en: String(/** @type {any} */ (item.description).en || ''),
+                }
+                : { de: '', en: '' },
+            shortName,
+            colorToken: normalizeColorToken(String(item.colorToken || '')),
+            memberIds: Array.isArray(item.memberIds) ? item.memberIds.map(String) : [],
+            archived: Boolean(item.archived),
+        };
+    }
+    return out;
 }
 
 /**
@@ -176,7 +255,8 @@ function normalizeInstances(instances) {
             status: /** @type {any} */ (['active', 'completed', 'archived'].includes(String(item.status))
                 ? item.status
                 : 'active'),
-            teamId: item.teamId ? String(item.teamId) : null,
+            teamIds: normalizeTeamIds(item),
+            teamId: null,
             participantIds: Array.isArray(item.participantIds) ? item.participantIds.map(String) : [],
             completedTasks: Array.isArray(item.completedTasks) ? item.completedTasks.map(String) : [],
             completedDeliverables: Array.isArray(item.completedDeliverables)
@@ -338,6 +418,12 @@ function loadAccountsWorkspace() {
         ) {
             server.translations = local.translations;
         }
+        const serverTeams = normalizeTeamIds(server);
+        const localTeams = normalizeTeamIds(local);
+        if (!serverTeams.length && localTeams.length) {
+            server.teamIds = localTeams;
+            server.teamId = null;
+        }
     }
 
     // Keep local-only demo (ephemeral) plans alongside server plans.
@@ -359,12 +445,33 @@ function loadAccountsWorkspace() {
         catalog.people[id] = {
             id,
             displayName,
-            shortName: displayName.slice(0, 2).toUpperCase(),
+            shortName: normalizeTrigram('', displayName),
             email: String(accountUser.email || ''),
             role: '',
             colorToken: 'accent-1',
             archived: false,
         };
+    }
+
+    const defaultTeamId = resolveAccountsDefaultTeamId(
+        localWorkspace.workspace.defaultTeamId,
+        catalog.teams,
+    );
+
+    // Empty plan teams fall back to the workspace default (usually Team Q).
+    if (defaultTeamId) {
+        for (const instance of Object.values(serverInstances)) {
+            if (!normalizeTeamIds(instance).length) {
+                instance.teamIds = [defaultTeamId];
+                instance.teamId = null;
+            }
+        }
+        for (const instance of Object.values(ephemeralLocal)) {
+            if (!normalizeTeamIds(instance).length) {
+                instance.teamIds = [defaultTeamId];
+                instance.teamId = null;
+            }
+        }
     }
 
     return {
@@ -374,15 +481,39 @@ function loadAccountsWorkspace() {
             ...localWorkspace.workspace,
             name: 'Shared Workspace',
             activePersonId,
-            defaultTeamId: localWorkspace.workspace.defaultTeamId
-                && catalog.teams[localWorkspace.workspace.defaultTeamId]
-                ? localWorkspace.workspace.defaultTeamId
-                : null,
+            defaultTeamId,
         },
         people: catalog.people,
         teams: catalog.teams,
         instances: { ...serverInstances, ...ephemeralLocal },
     };
+}
+
+/**
+ * Prefer local default when present in the accounts catalog, else Team Q, else first team.
+ * @param {string|null|undefined} localDefault
+ * @param {Record<string, unknown>} teams
+ * @returns {string|null}
+ */
+function resolveAccountsDefaultTeamId(localDefault, teams) {
+    const local = localDefault ? String(localDefault) : '';
+    if (local && teams[local]) {
+        return local;
+    }
+    if (teams.team_q) {
+        return 'team_q';
+    }
+    for (const [id, team] of Object.entries(teams)) {
+        const name = team && typeof team === 'object' && team.name && typeof team.name === 'object'
+            ? team.name
+            : null;
+        const label = String(name?.en || name?.de || '').trim().toLowerCase();
+        if (label === 'team q') {
+            return id;
+        }
+    }
+    const first = Object.keys(teams)[0];
+    return first || null;
 }
 
 /**

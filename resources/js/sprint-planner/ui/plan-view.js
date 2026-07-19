@@ -31,6 +31,7 @@ import {
     addCustomItem,
     addCustomSprint,
     assignItem,
+    backfillParticipantsFromAssignees,
     claimAllUnassigned,
     claimItem,
     deleteCustomItem,
@@ -45,13 +46,20 @@ import {
     updateInstance,
     updateItemMeta,
 } from '../instance-manager.js';
-import { listPeople, listTeams, localizedText } from '../people-teams.js';
+import { listPeople, listTeams, localizedText, upsertPerson } from '../people-teams.js';
+import { normalizeTeamIds, normalizeTrigram } from '../trigram.js';
 import {
     calculateCurrentSprintNumber,
     calculateOverallProgress,
     collectBlockers,
+    computeScheduleHealth,
+    formatDateRangeShort,
+    formatDateShort,
+    formatIsoWeekLabel,
+    isPlanStarted,
     normalizeStories,
     resolveSprints,
+    sprintDateRange,
 } from '../progress.js';
 import { loadPreferences, loadWorkspace, savePreferences } from '../storage.js';
 import {
@@ -69,6 +77,8 @@ import {
     spT,
     storageErrorMessage,
 } from './helpers.js';
+import { renderAssigneeChip, renderParticipantChips, renderTeamChips } from './avatars.js';
+import { createIconButton } from './icons.js';
 import { isPlaybookRead } from '../../playbooks/read-state.js';
 import {
     bindHelpPanelChrome,
@@ -95,6 +105,10 @@ let lastRenderContext = null;
 const healedIdentityPlanIds = new Set();
 /** @type {Set<string>} */
 const strippedTemplateOverridePlanIds = new Set();
+/** @type {Set<string>} */
+const backfilledParticipantsPlanIds = new Set();
+/** @type {Set<string>} */
+const healedTeamPlanIds = new Set();
 
 export function initPlanShowPage() {
     const root = document.getElementById('sp-app');
@@ -308,12 +322,51 @@ function renderPlan(instanceId) {
     }
 
     const sprints = template ? resolveSprints(template, instance, locale) : [];
+    if (
+        !healedTeamPlanIds.has(String(instance.id))
+        && !normalizeTeamIds(instance).length
+    ) {
+        healedTeamPlanIds.add(String(instance.id));
+        const fallbackTeamId = workspace.workspace.defaultTeamId
+            && workspace.teams?.[workspace.workspace.defaultTeamId]
+            ? String(workspace.workspace.defaultTeamId)
+            : (workspace.teams?.team_q ? 'team_q' : null);
+        if (fallbackTeamId) {
+            updateInstance(instance.id, (plan) => {
+                plan.teamIds = [fallbackTeamId];
+                plan.teamId = null;
+            });
+            instance.teamIds = [fallbackTeamId];
+            instance.teamId = null;
+        }
+    } else {
+        healedTeamPlanIds.add(String(instance.id));
+    }
+    if (
+        template
+        && !backfilledParticipantsPlanIds.has(String(instance.id))
+        && backfillParticipantsFromAssignees(instance, sprints)
+    ) {
+        backfilledParticipantsPlanIds.add(String(instance.id));
+        updateInstance(instance.id, (plan) => {
+            plan.participantIds = [...(instance.participantIds || [])];
+        });
+    } else if (template) {
+        backfilledParticipantsPlanIds.add(String(instance.id));
+    }
     const progress = calculateOverallProgress(sprints);
+    const unit = template?.unit || 'week';
     const currentNumber = calculateCurrentSprintNumber(
         instance.startedAt,
         sprints.length || template?.duration || 1,
-        template?.unit || 'week',
+        unit,
     );
+    const planStarted = isPlanStarted(instance.startedAt);
+    const displaySprintNumber = currentNumber > 0 ? currentNumber : 1;
+    const currentRange = sprintDateRange(instance.startedAt, displaySprintNumber, unit);
+    const schedule = currentNumber > 0
+        ? computeScheduleHealth(sprints, currentNumber)
+        : { weeksBehind: 0, openCount: 0, onTrack: true, sources: [] };
 
     document.getElementById('sp-plan-title').textContent =
         instance.translations?.[locale]?.title
@@ -328,17 +381,36 @@ function renderPlan(instanceId) {
     if (ownerEl) {
         ownerEl.textContent = planOwnershipLabel(instance, workspace);
     }
-    document.getElementById('sp-plan-current-sprint').textContent = String(currentNumber);
+    const currentSprintEl = document.getElementById('sp-plan-current-sprint');
+    if (currentSprintEl) {
+        if (currentRange && !planStarted) {
+            currentSprintEl.textContent = spT('sp.schedule.notStarted', {
+                week: formatIsoWeekLabel(currentRange.isoWeek, locale),
+                range: formatDateRangeShort(currentRange.start, currentRange.end, locale),
+                date: instance.startedAt,
+            });
+        } else if (currentRange && currentNumber > 0) {
+            currentSprintEl.textContent = spT('sp.schedule.currentSprint', {
+                number: currentNumber,
+                week: formatIsoWeekLabel(currentRange.isoWeek, locale),
+                range: formatDateRangeShort(currentRange.start, currentRange.end, locale),
+            });
+        } else {
+            currentSprintEl.textContent = String(displaySprintNumber);
+        }
+    }
     document.getElementById('sp-plan-status').textContent = spT(
         instance.archived ? 'sp.status.archived' : 'sp.status.active',
     );
-    const team = instance.teamId ? workspace.teams[instance.teamId] : null;
-    document.getElementById('sp-plan-team').textContent = team
-        ? localizedText(team.name, locale)
-        : '—';
-    document.getElementById('sp-plan-participants').textContent = (instance.participantIds || [])
-        .map((id) => workspace.people[id]?.displayName || id)
-        .join(', ') || '—';
+
+    const teamHost = document.getElementById('sp-plan-team');
+    if (teamHost) {
+        teamHost.replaceChildren(renderTeamChips(normalizeTeamIds(instance), workspace, locale));
+    }
+    const participantsHost = document.getElementById('sp-plan-participants');
+    if (participantsHost) {
+        participantsHost.replaceChildren(renderParticipantChips(instance.participantIds || [], workspace));
+    }
 
     const progressEl = document.getElementById('sp-plan-progress');
     const bar = document.getElementById('sp-plan-progress-bar');
@@ -348,12 +420,14 @@ function renderPlan(instanceId) {
     bar.style.width = `${progress.percent}%`;
     label.textContent = `${progress.percent}% (${progress.done}/${progress.total})`;
 
+    renderScheduleBanner(schedule);
+
     populateFilterPeopleTeams(locale);
 
     const prefs = loadPreferences();
     const filters = readFilters(prefs);
     const filtered = filterSprints(sprints, filters, currentNumber, {
-        activePersonId: workspace.workspace.activePersonId,
+        activePersonId: resolveClaimPersonId(workspace),
     });
 
     renderBlockers(sprints, workspace, locale);
@@ -383,6 +457,40 @@ function renderFilterEmpty(filtered, allSprints, filters) {
     } else if (show) {
         empty.textContent = spT('sp.filter.empty');
     }
+}
+
+/**
+ * @param {ReturnType<typeof computeScheduleHealth>} schedule
+ */
+function renderScheduleBanner(schedule) {
+    let banner = document.getElementById('sp-schedule-banner');
+    if (!banner) {
+        const progressWrap = document.getElementById('sp-plan-progress')?.parentElement
+            || document.querySelector('.sp-plan-header');
+        if (!progressWrap) {
+            return;
+        }
+        banner = document.createElement('div');
+        banner.id = 'sp-schedule-banner';
+        banner.className = 'sp-schedule-banner';
+        progressWrap.insertAdjacentElement('afterend', banner);
+    }
+    if (!schedule || schedule.onTrack) {
+        banner.hidden = true;
+        banner.textContent = '';
+        banner.classList.remove('sp-schedule-banner--behind');
+        return;
+    }
+    banner.hidden = false;
+    banner.classList.add('sp-schedule-banner--behind');
+    const sources = schedule.sources
+        .map((s) => spT('sp.schedule.sourceSprint', { number: s.sprintNumber, count: s.openCount }))
+        .join(', ');
+    banner.textContent = spT('sp.schedule.behind', {
+        weeks: schedule.weeksBehind,
+        count: schedule.openCount,
+        sources,
+    });
 }
 
 /**
@@ -437,6 +545,31 @@ function resolveClaimPersonId(workspace) {
 }
 
 /**
+ * Ensure the claim person exists in the local people catalog (trigram chips need it).
+ * @param {string} personId
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ */
+function ensureClaimPersonRecord(personId, workspace) {
+    if (!personId || workspace.people?.[personId]) {
+        return;
+    }
+    const account = readAccountsBootstrap().accountUser;
+    const displayName = account && String(account.id) === String(personId)
+        ? String(account.displayName || account.email || personId)
+        : String(personId);
+    upsertPerson({
+        id: personId,
+        displayName,
+        shortName: normalizeTrigram('', displayName),
+        email: account && String(account.id) === String(personId)
+            ? String(account.email || '')
+            : '',
+        role: '',
+        colorToken: 'accent-1',
+    });
+}
+
+/**
  * @param {string} instanceId
  * @param {'task'|'deliverable'} kind
  * @param {string} statusKey
@@ -451,6 +584,7 @@ function claimForActivePerson(instanceId, kind, statusKey, custom, sprintId, wor
         showToast(spT('sp.error.activePersonMissing'));
         return false;
     }
+    ensureClaimPersonRecord(personId, workspace);
     const result = claimItem(instanceId, kind, statusKey, custom, sprintId, personId);
     if (!result.ok) {
         showToast(storageErrorMessage(result.error));
@@ -470,6 +604,7 @@ function bindClaimAll(instanceId) {
             showToast(spT('sp.error.activePersonMissing'));
             return;
         }
+        ensureClaimPersonRecord(personId, ctx.workspace);
         const items = [];
         for (const sprint of ctx.sprints) {
             for (const item of [...sprint.tasks, ...sprint.deliverables]) {
@@ -507,8 +642,17 @@ function bindFilters(render) {
             teamId: '',
             status: prefs.planFilters?.status || '',
             priority: prefs.planFilters?.priority || '',
+            filterLogic: 'and',
         });
         prefs.planFiltersVersion = 3;
+        savePreferences(prefs);
+    }
+    if (Number(prefs.planFiltersVersion) < 4) {
+        prefs.planFilters = normalizePlanFilters({
+            ...(prefs.planFilters || {}),
+            filterLogic: prefs.planFilters?.filterLogic === 'or' ? 'or' : 'and',
+        });
+        prefs.planFiltersVersion = 4;
         savePreferences(prefs);
     }
     const planFilters = normalizePlanFilters(prefs.planFilters || {});
@@ -531,6 +675,20 @@ function bindFilters(render) {
             persistFilters();
             render();
         });
+    }
+
+    const logicAnd = document.getElementById('sp-filter-logic-and');
+    const logicOr = document.getElementById('sp-filter-logic-or');
+    if (logicAnd && logicOr) {
+        const logic = planFilters.filterLogic === 'or' ? 'or' : 'and';
+        logicAnd.checked = logic === 'and';
+        logicOr.checked = logic === 'or';
+        for (const el of [logicAnd, logicOr]) {
+            el.addEventListener('change', () => {
+                persistFilters();
+                render();
+            });
+        }
     }
 
     for (const id of ['sp-filter-person', 'sp-filter-team', 'sp-filter-status', 'sp-filter-priority']) {
@@ -681,6 +839,7 @@ function persistFilters() {
 }
 
 function readFilters(prefs) {
+    const logicOr = document.getElementById('sp-filter-logic-or')?.checked;
     return normalizePlanFilters({
         currentWeek: document.getElementById('sp-filter-current-week')?.checked
             ?? prefs.planFilters?.currentWeek
@@ -704,6 +863,11 @@ function readFilters(prefs) {
         teamId: document.getElementById('sp-filter-team')?.value || '',
         status: document.getElementById('sp-filter-status')?.value || '',
         priority: document.getElementById('sp-filter-priority')?.value || '',
+        filterLogic: logicOr
+            ? 'or'
+            : (document.getElementById('sp-filter-logic-and')
+                ? 'and'
+                : (prefs.planFilters?.filterLogic === 'or' ? 'or' : 'and')),
     });
 }
 
@@ -818,8 +982,22 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
     for (const sprint of sprints) {
         const details = document.createElement('details');
         details.className = 'sp-sprint';
+        const isCurrent = currentNumber > 0 && sprint.number === currentNumber;
+        const isUpcoming = currentNumber === 0 && sprint.number === 1;
+        const isOverdue = currentNumber > 0
+            && sprint.number < currentNumber
+            && !sprint.completed;
+        if (isCurrent) {
+            details.classList.add('sp-sprint--current');
+        } else if (isUpcoming) {
+            details.classList.add('sp-sprint--upcoming');
+        } else if (isOverdue) {
+            details.classList.add('sp-sprint--overdue');
+        }
         details.open = expanded[sprint.id] !== false
-            && (expanded[sprint.id] === true || sprint.number === currentNumber);
+            && (expanded[sprint.id] === true
+                || (currentNumber > 0 && sprint.number === currentNumber)
+                || (currentNumber === 0 && sprint.number === 1));
         details.addEventListener('toggle', () => {
             const next = loadPreferences();
             next.expandedSprints = next.expandedSprints || {};
@@ -830,16 +1008,60 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
 
         const summary = document.createElement('summary');
         summary.className = 'sp-sprint__summary';
+        const range = sprintDateRange(instance.startedAt, sprint.number, template?.unit || 'week');
         summary.innerHTML = `
-            <span class="sp-sprint__number">#${sprint.number}</span>
-            <span class="sp-sprint__title"></span>
+            <span class="sp-sprint__main">
+                <span class="sp-sprint__number">#${sprint.number}</span>
+                <span class="sp-sprint__title"></span>
+            </span>
+            <span class="sp-sprint__status"></span>
+            <span class="sp-sprint__assignees"></span>
+            <span class="sp-sprint__schedule">
+                <span class="sp-sprint__kw"></span>
+                <span class="sp-sprint__dates"></span>
+            </span>
             <span class="sp-sprint__progress">${sprint.progress.percent}% (${sprint.progress.done}/${sprint.progress.total})</span>
-            ${sprint.number === currentNumber ? '<span class="sp-sprint__badge"></span>' : ''}
         `;
         summary.querySelector('.sp-sprint__title').textContent = sprint.title;
-        const badge = summary.querySelector('.sp-sprint__badge');
-        if (badge) {
-            badge.textContent = spT('sp.sprint.currentBadge');
+        const kwEl = summary.querySelector('.sp-sprint__kw');
+        const datesEl = summary.querySelector('.sp-sprint__dates');
+        if (range && kwEl && datesEl) {
+            kwEl.textContent = formatIsoWeekLabel(range.isoWeek, locale);
+            datesEl.textContent = formatDateRangeShort(range.start, range.end, locale);
+        }
+        const assigneesHost = summary.querySelector('.sp-sprint__assignees');
+        if (assigneesHost) {
+            const seen = new Set();
+            for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+                if (!item.assigneeId || seen.has(String(item.assigneeId))) {
+                    continue;
+                }
+                seen.add(String(item.assigneeId));
+                assigneesHost.appendChild(renderAssigneeChip(item, workspace, locale));
+            }
+            if (!seen.size) {
+                assigneesHost.appendChild(renderAssigneeChip(
+                    { assigneeType: null, assigneeId: null },
+                    workspace,
+                    locale,
+                ));
+            }
+        }
+        const statusHost = summary.querySelector('.sp-sprint__status');
+        if (statusHost && (isCurrent || isUpcoming || isOverdue)) {
+            const badge = document.createElement('span');
+            badge.className = 'sp-sprint__badge';
+            if (isOverdue) {
+                badge.classList.add('sp-sprint__badge--overdue');
+                badge.textContent = spT('sp.sprint.overdueBadge');
+            } else if (isUpcoming) {
+                badge.classList.add('sp-sprint__badge--upcoming');
+                badge.textContent = spT('sp.sprint.upcomingBadge');
+            } else {
+                badge.classList.add('sp-sprint__badge--current');
+                badge.textContent = spT('sp.sprint.currentBadge');
+            }
+            statusHost.appendChild(badge);
         }
         details.appendChild(summary);
 
@@ -953,6 +1175,9 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         rerender();
     });
 
+    const chip = renderAssigneeChip(item, workspace, locale);
+    chip.classList.add('sp-item__assignee');
+
     const main = document.createElement('div');
     main.className = 'sp-item__main';
     const label = document.createElement('span');
@@ -960,14 +1185,25 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     label.textContent = item.label;
     const meta = document.createElement('span');
     meta.className = 'sp-item__meta';
-    const assignee = resolveAssigneeName(item, workspace, locale);
-    meta.textContent = [
+    const range = sprintDateRange(instance.startedAt, sprint.number, 'week');
+    const weekLabel = range ? formatIsoWeekLabel(range.isoWeek, locale) : '';
+    const plannedDue = range
+        ? spT('sp.schedule.dueBy', { date: formatDateShort(range.end, locale) })
+        : '';
+    const explicitDue = item.dueDate
+        ? spT('sp.schedule.dueBy', { date: item.dueDate })
+        : '';
+    const metaParts = [
         spT(`sp.status.${statusKeyToLabel(item.status)}`),
         spT(`sp.priority.${item.priority}`),
-        assignee || spT('sp.report.unassigned'),
-        item.dueDate,
-    ].filter(Boolean).join(' · ');
-    main.append(label, meta);
+        weekLabel,
+        explicitDue || plannedDue,
+    ].filter(Boolean);
+    meta.textContent = metaParts.join(' · ');
+    const srAssignee = document.createElement('span');
+    srAssignee.className = 'visually-hidden';
+    srAssignee.textContent = resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned');
+    main.append(label, meta, srAssignee);
 
     if (item.status === 'blocked' && item.blockerReason) {
         const reason = document.createElement('p');
@@ -983,66 +1219,29 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         actions.appendChild(helpBtn);
     }
 
-    if (!item.assigneeId) {
-        const pick = document.createElement('button');
-        pick.type = 'button';
-        pick.className = 'tools-btn tools-btn--primary tools-btn--small sp-item__pick';
-        pick.textContent = spT('sp.action.pick');
-        pick.title = spT('sp.action.pickHint');
-        pick.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            if (!claimForActivePerson(
-                instance.id,
-                item.kind,
-                item.statusKey,
-                item.custom,
-                sprint.id,
-                workspace,
-            )) {
-                return;
-            }
-            showToast(spT('sp.toast.claimed'));
-            rerender();
-        });
-        actions.appendChild(pick);
-
-        const assign = document.createElement('button');
-        assign.type = 'button';
-        assign.className = 'tools-btn tools-btn--secondary tools-btn--small';
-        assign.textContent = spT('sp.action.assign');
-        assign.addEventListener('click', () => openAssignDialog({
+    actions.appendChild(createIconButton({
+        icon: 'owner',
+        label: spT('sp.action.owner'),
+        title: spT('sp.action.ownerHint'),
+        className: 'sp-item__owner',
+        onClick: () => openAssignDialog({
             sprintId: sprint.id,
             kind: item.kind,
             custom: item.custom,
             item,
-        }));
-        actions.appendChild(assign);
-    } else {
-        const reassign = document.createElement('button');
-        reassign.type = 'button';
-        reassign.className = 'tools-btn tools-btn--secondary tools-btn--small';
-        reassign.textContent = spT('sp.action.assign');
-        reassign.addEventListener('click', () => openAssignDialog({
-            sprintId: sprint.id,
-            kind: item.kind,
-            custom: item.custom,
-            item,
-        }));
-        actions.appendChild(reassign);
-    }
-
-    const edit = document.createElement('button');
-    edit.type = 'button';
-    edit.className = 'tools-btn tools-btn--secondary tools-btn--small';
-    edit.textContent = spT('sp.action.edit');
-    edit.addEventListener('click', () => openItemDialog({
-        sprintId: sprint.id,
-        kind: item.kind,
-        custom: item.custom,
-        item,
+        }),
     }));
-    actions.appendChild(edit);
+
+    actions.appendChild(createIconButton({
+        icon: 'edit',
+        label: spT('sp.action.edit'),
+        onClick: () => openItemDialog({
+            sprintId: sprint.id,
+            kind: item.kind,
+            custom: item.custom,
+            item,
+        }),
+    }));
 
     if (Array.isArray(item.attachments) && item.attachments.length > 0) {
         const attBadge = document.createElement('span');
@@ -1055,18 +1254,18 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     }
 
     if (item.custom) {
-        const del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'tools-btn tools-btn--secondary tools-btn--small';
-        del.textContent = spT('sp.action.delete');
-        del.addEventListener('click', () => {
-            deleteCustomItem(instance.id, sprint.id, item.kind, item.id, item.statusKey);
-            rerender();
-        });
-        actions.appendChild(del);
+        actions.appendChild(createIconButton({
+            icon: 'delete',
+            label: spT('sp.action.delete'),
+            className: 'sp-icon-btn--danger',
+            onClick: () => {
+                deleteCustomItem(instance.id, sprint.id, item.kind, item.id, item.statusKey);
+                rerender();
+            },
+        }));
     }
 
-    li.append(check, main, actions);
+    li.append(check, main, chip, actions);
 
     const tableEl = renderItemTableReadonly(item.table);
     if (tableEl) {

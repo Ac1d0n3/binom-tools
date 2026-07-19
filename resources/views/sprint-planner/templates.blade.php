@@ -43,10 +43,10 @@
                     <span data-i18n="sp.field.startDate">Start date</span>
                     <input type="date" id="sp-start-date" class="tools-input" required>
                 </label>
-                <label class="sp-field">
-                    <span data-i18n="sp.field.team">Team</span>
-                    <select id="sp-start-team" class="tools-input"></select>
-                </label>
+                <fieldset class="sp-field">
+                    <legend data-i18n="sp.field.teams">Teams</legend>
+                    <div id="sp-start-teams" class="sp-checkbox-list"></div>
+                </fieldset>
                 <fieldset class="sp-field">
                     <legend data-i18n="sp.field.participants">Participants</legend>
                     <div id="sp-start-participants" class="sp-checkbox-list"></div>

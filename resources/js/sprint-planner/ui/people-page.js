@@ -18,6 +18,7 @@ import {
     upsertTeam,
 } from '../people-teams.js';
 import { loadWorkspace } from '../storage.js';
+import { renderPersonChip, renderTeamChip } from './avatars.js';
 import {
     applySpI18n,
     fillSelect,
@@ -25,6 +26,38 @@ import {
     spT,
     storageErrorMessage,
 } from './helpers.js';
+
+const COLOR_TOKENS = ['accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5', 'accent-6'];
+
+/**
+ * @param {string} hostId
+ * @param {string} [selected]
+ */
+function renderColorSwatches(hostId, selected = 'accent-1') {
+    const host = document.getElementById(hostId);
+    if (!host) {
+        return;
+    }
+    host.innerHTML = '';
+    for (const token of COLOR_TOKENS) {
+        const label = document.createElement('label');
+        label.className = `sp-color-swatch sp-avatar--${token}`;
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = hostId;
+        input.value = token;
+        input.checked = token === selected;
+        label.appendChild(input);
+        host.appendChild(label);
+    }
+}
+
+/**
+ * @param {string} hostId
+ */
+function selectedColorToken(hostId) {
+    return document.querySelector(`#${hostId} input:checked`)?.value || 'accent-1';
+}
 
 export function initPeoplePage() {
     const root = document.getElementById('sp-app');
@@ -67,6 +100,7 @@ export function initPeoplePage() {
             shortName: document.getElementById('sp-person-short-name').value,
             email: document.getElementById('sp-person-email').value,
             role: document.getElementById('sp-person-role').value,
+            colorToken: selectedColorToken('sp-person-color'),
         });
         if (!result.ok) {
             showToast(storageErrorMessage(result.error));
@@ -86,8 +120,10 @@ export function initPeoplePage() {
             id: document.getElementById('sp-team-id').value || undefined,
             nameDe: document.getElementById('sp-team-name-de').value,
             nameEn: document.getElementById('sp-team-name-en').value,
+            shortName: document.getElementById('sp-team-short-name').value,
             descriptionDe: document.getElementById('sp-team-desc-de').value,
             descriptionEn: document.getElementById('sp-team-desc-en').value,
+            colorToken: selectedColorToken('sp-team-color'),
             memberIds,
         });
         if (!result.ok) {
@@ -168,20 +204,23 @@ function render() {
     for (const person of people) {
         const row = document.createElement('div');
         row.className = 'sp-list__row';
-        row.innerHTML = `
-            <div>
-                <strong></strong>
-                <span class="sp-list__meta"></span>
-            </div>
-            <div class="sp-action-row"></div>
-        `;
-        row.querySelector('strong').textContent = person.displayName;
-        row.querySelector('.sp-list__meta').textContent = [
+        const left = document.createElement('div');
+        left.className = 'sp-list__identity';
+        left.appendChild(renderPersonChip(person));
+        const text = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = person.displayName;
+        const meta = document.createElement('span');
+        meta.className = 'sp-list__meta';
+        meta.textContent = [
             person.shortName,
             person.role,
             person.archived ? spT('sp.status.archived') : '',
         ].filter(Boolean).join(' · ');
-        const actions = row.querySelector('.sp-action-row');
+        text.append(strong, meta);
+        left.appendChild(text);
+        const actions = document.createElement('div');
+        actions.className = 'sp-action-row';
         if (!isAccountsMode()) {
             const edit = button(spT('sp.action.edit'), () => openPersonDialog(person));
             const archive = button(
@@ -193,6 +232,7 @@ function render() {
             );
             actions.append(edit, archive);
         }
+        row.append(left, actions);
         peopleList.appendChild(row);
     }
 
@@ -201,19 +241,23 @@ function render() {
     for (const team of teams) {
         const row = document.createElement('div');
         row.className = 'sp-list__row';
-        row.innerHTML = `
-            <div>
-                <strong></strong>
-                <span class="sp-list__meta"></span>
-            </div>
-            <div class="sp-action-row"></div>
-        `;
-        row.querySelector('strong').textContent = localizedText(team.name, locale);
-        row.querySelector('.sp-list__meta').textContent = [
+        const left = document.createElement('div');
+        left.className = 'sp-list__identity';
+        left.appendChild(renderTeamChip(team, locale));
+        const text = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = localizedText(team.name, locale);
+        const meta = document.createElement('span');
+        meta.className = 'sp-list__meta';
+        meta.textContent = [
+            team.shortName,
             `${team.memberIds.length} ${spT('sp.field.members').toLowerCase()}`,
             team.archived ? spT('sp.status.archived') : '',
         ].filter(Boolean).join(' · ');
-        const actions = row.querySelector('.sp-action-row');
+        text.append(strong, meta);
+        left.appendChild(text);
+        const actions = document.createElement('div');
+        actions.className = 'sp-action-row';
         if (!isAccountsMode()) {
             actions.append(
                 button(spT('sp.action.edit'), () => openTeamDialog(team)),
@@ -226,6 +270,7 @@ function render() {
                 ),
             );
         }
+        row.append(left, actions);
         teamsList.appendChild(row);
     }
 }
@@ -245,6 +290,7 @@ function openPersonDialog(person) {
     document.getElementById('sp-person-short-name').value = person?.shortName || '';
     document.getElementById('sp-person-email').value = person?.email || '';
     document.getElementById('sp-person-role').value = person?.role || '';
+    renderColorSwatches('sp-person-color', person?.colorToken || 'accent-1');
     document.getElementById('sp-person-dialog').showModal();
 }
 
@@ -252,8 +298,13 @@ function openTeamDialog(team) {
     document.getElementById('sp-team-id').value = team?.id || '';
     document.getElementById('sp-team-name-de').value = team?.name?.de || '';
     document.getElementById('sp-team-name-en').value = team?.name?.en || '';
+    const shortEl = document.getElementById('sp-team-short-name');
+    if (shortEl) {
+        shortEl.value = team?.shortName || '';
+    }
     document.getElementById('sp-team-desc-de').value = team?.description?.de || '';
     document.getElementById('sp-team-desc-en').value = team?.description?.en || '';
+    renderColorSwatches('sp-team-color', team?.colorToken || 'accent-1');
     const host = document.getElementById('sp-team-members');
     host.innerHTML = '';
     const selected = new Set(team?.memberIds || []);

@@ -261,6 +261,13 @@ function resolveTemplateItem({
     const stories = normalizeStories(
         item.stories || item.linkedStorySlugs || item.linkedStories,
     );
+    const assigneeType = itemOverride.assigneeType ?? item.assigneeType ?? defaultAssigneeType;
+    const rawAssigneeId = itemOverride.assigneeId ?? item.assigneeId ?? null;
+    const assigneeId = rawAssigneeId === null || rawAssigneeId === undefined
+        || String(rawAssigneeId).trim() === ''
+        || String(rawAssigneeId) === 'null'
+        ? null
+        : String(rawAssigneeId);
     return {
         id: item.id,
         statusKey: key,
@@ -271,8 +278,8 @@ function resolveTemplateItem({
         completed,
         status,
         priority: itemOverride.priority || 'normal',
-        assigneeType: itemOverride.assigneeType ?? item.assigneeType ?? defaultAssigneeType,
-        assigneeId: itemOverride.assigneeId ?? item.assigneeId ?? null,
+        assigneeType: assigneeId ? (assigneeType || 'person') : (assigneeType || null),
+        assigneeId,
         dueDate: itemOverride.dueDate || null,
         note: itemOverride.note || '',
         custom: false,
@@ -498,6 +505,7 @@ export function calculateOverallProgress(sprints) {
  * @param {number} sprintCount
  * @param {string} [unit]
  * @param {Date} [today]
+ * @returns {number} 1-based sprint number, or 0 if the plan has not started yet
  */
 export function calculateCurrentSprintNumber(startedAt, sprintCount, unit = 'week', today = new Date()) {
     if (!startedAt || sprintCount < 1) {
@@ -509,13 +517,158 @@ export function calculateCurrentSprintNumber(startedAt, sprintCount, unit = 'wee
     }
     const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     if (now < start) {
-        return 1;
+        // Plan has not started — no "current" plan week yet.
+        return 0;
     }
     const msPerDay = 24 * 60 * 60 * 1000;
     const days = Math.floor((now.getTime() - start.getTime()) / msPerDay);
     const length = unit === 'week' ? 7 : 7;
     const number = Math.floor(days / length) + 1;
     return Math.min(Math.max(number, 1), sprintCount);
+}
+
+/**
+ * @param {string} startedAt
+ * @param {Date} [today]
+ */
+export function isPlanStarted(startedAt, today = new Date()) {
+    const start = parseDateOnly(startedAt);
+    if (!start) {
+        return true;
+    }
+    const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return now >= start;
+}
+
+/**
+ * Format a Date as locale short day (e.g. 23.08.2026 / 23 Aug 2026).
+ * @param {Date} date
+ * @param {'de'|'en'} locale
+ */
+export function formatDateShort(date, locale = 'en') {
+    if (!date) {
+        return '';
+    }
+    const loc = locale === 'de' ? 'de-DE' : 'en-GB';
+    return date.toLocaleDateString(loc, { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+/**
+ * Planned calendar range for sprint number N (1-based) from plan start.
+ * @param {string} startedAt
+ * @param {number} sprintNumber
+ * @param {string} [unit]
+ * @returns {{start: Date, end: Date, isoWeek: number, isoYear: number}|null}
+ */
+export function sprintDateRange(startedAt, sprintNumber, unit = 'week') {
+    const start = parseDateOnly(startedAt);
+    if (!start || !sprintNumber || sprintNumber < 1) {
+        return null;
+    }
+    const length = unit === 'week' ? 7 : 7;
+    const rangeStart = new Date(start);
+    rangeStart.setDate(rangeStart.getDate() + (sprintNumber - 1) * length);
+    const rangeEnd = new Date(rangeStart);
+    rangeEnd.setDate(rangeEnd.getDate() + length - 1);
+    const iso = isoWeekYear(rangeStart);
+    return {
+        start: rangeStart,
+        end: rangeEnd,
+        isoWeek: iso.week,
+        isoYear: iso.year,
+    };
+}
+
+/**
+ * ISO week number (1–53) and ISO week-year for a date.
+ * @param {Date} date
+ * @returns {{week: number, year: number}}
+ */
+export function isoWeekYear(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const week = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    return { week, year: d.getUTCFullYear() };
+}
+
+/**
+ * Format ISO week label for locale.
+ * @param {number} week
+ * @param {'de'|'en'} locale
+ */
+export function formatIsoWeekLabel(week, locale = 'en') {
+    if (!week) {
+        return '';
+    }
+    return locale === 'de' ? `KW ${week}` : `W${week}`;
+}
+
+/**
+ * Short date range label, e.g. "6.–12. Jul".
+ * @param {Date} start
+ * @param {Date} end
+ * @param {'de'|'en'} locale
+ */
+export function formatDateRangeShort(start, end, locale = 'en') {
+    if (!start || !end) {
+        return '';
+    }
+    const loc = locale === 'de' ? 'de-DE' : 'en-GB';
+    const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+    if (sameMonth) {
+        const dayStart = start.getDate();
+        const dayEnd = end.getDate();
+        const month = start.toLocaleDateString(loc, { month: 'short' });
+        return locale === 'de'
+            ? `${dayStart}.–${dayEnd}. ${month}`
+            : `${dayStart}–${dayEnd} ${month}`;
+    }
+    const a = start.toLocaleDateString(loc, { day: 'numeric', month: 'short' });
+    const b = end.toLocaleDateString(loc, { day: 'numeric', month: 'short' });
+    return `${a} – ${b}`;
+}
+
+/**
+ * Schedule health: open items in sprints before the current plan week.
+ * @param {Array<{number: number, title?: string, tasks?: Array<{completed?: boolean, status?: string}>, deliverables?: Array<{completed?: boolean, status?: string}>}>} sprints
+ * @param {number} currentSprintNumber
+ * @returns {{weeksBehind: number, openCount: number, onTrack: boolean, sources: Array<{sprintNumber: number, title: string, openCount: number}>}}
+ */
+export function computeScheduleHealth(sprints, currentSprintNumber) {
+    /** @type {Array<{sprintNumber: number, title: string, openCount: number}>} */
+    const sources = [];
+    let openCount = 0;
+    let earliestBehind = null;
+    for (const sprint of sprints || []) {
+        const num = Number(sprint.number) || 0;
+        if (num >= currentSprintNumber || num < 1) {
+            continue;
+        }
+        const items = [...(sprint.tasks || []), ...(sprint.deliverables || [])];
+        const open = items.filter((item) => !item.completed && item.status !== 'completed').length;
+        if (open > 0) {
+            openCount += open;
+            sources.push({
+                sprintNumber: num,
+                title: sprint.title || `#${num}`,
+                openCount: open,
+            });
+            if (earliestBehind === null || num < earliestBehind) {
+                earliestBehind = num;
+            }
+        }
+    }
+    const weeksBehind = earliestBehind === null
+        ? 0
+        : Math.max(0, currentSprintNumber - earliestBehind);
+    return {
+        weeksBehind,
+        openCount,
+        onTrack: openCount === 0,
+        sources,
+    };
 }
 
 /**

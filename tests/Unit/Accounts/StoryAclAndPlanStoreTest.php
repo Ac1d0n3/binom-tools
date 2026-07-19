@@ -106,6 +106,8 @@ class StoryAclAndPlanStoreTest extends TestCase
         $this->assertTrue($store->canAccess($owner, $plan));
         $this->assertSame('2026-08-17', $plan['startedAt']);
         $this->assertSame('user_acidone', $plan['ownerUserId']);
+        $this->assertSame(['team_q'], $plan['teamIds']);
+        $this->assertNull($plan['teamId']);
         $visible = $store->listVisibleTo($owner);
         $this->assertCount(1, $visible);
         $this->assertSame('plan_20260817_acid1', $visible[0]['id']);

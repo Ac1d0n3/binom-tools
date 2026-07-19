@@ -10,7 +10,7 @@ import { loadWorkspace, saveWorkspace } from './storage.js';
 
 /**
  * @param {object} template
- * @param {{startedAt: string, teamId?: string|null, participantIds?: string[], ephemeral?: boolean}} options
+ * @param {{startedAt: string, teamId?: string|null, teamIds?: string[], participantIds?: string[], ephemeral?: boolean}} options
  */
 export function startInstanceFromTemplate(template, options) {
     const loaded = loadWorkspace();
@@ -20,6 +20,25 @@ export function startInstanceFromTemplate(template, options) {
     const ephemeral = Boolean(options.ephemeral)
         || (isAccountsMode() && ! usesServerPlans());
     const activePersonId = workspace.workspace.activePersonId || null;
+    const teamIds = Array.isArray(options.teamIds) && options.teamIds.length
+        ? [...new Set(options.teamIds.map(String).filter(Boolean))]
+        : (options.teamId || workspace.workspace.defaultTeamId
+            ? [String(options.teamId || workspace.workspace.defaultTeamId)]
+            : []);
+
+    let participantIds = Array.isArray(options.participantIds) ? [...options.participantIds] : [];
+    if (!participantIds.length) {
+        const memberSet = new Set();
+        for (const tid of teamIds) {
+            for (const mid of workspace.teams[tid]?.memberIds || []) {
+                memberSet.add(String(mid));
+            }
+        }
+        if (activePersonId) {
+            memberSet.add(activePersonId);
+        }
+        participantIds = [...memberSet];
+    }
 
     /** @type {import('./storage.js').SpPlanInstance} */
     const instance = {
@@ -38,8 +57,9 @@ export function startInstanceFromTemplate(template, options) {
         },
         startedAt: options.startedAt,
         status: 'active',
-        teamId: options.teamId || workspace.workspace.defaultTeamId || null,
-        participantIds: options.participantIds || [],
+        teamIds,
+        teamId: null,
+        participantIds,
         completedTasks: [],
         completedDeliverables: [],
         fieldValues: {},
@@ -64,6 +84,10 @@ export function startInstanceFromTemplate(template, options) {
         createdAt: now,
         updatedAt: now,
     };
+
+    if (activePersonId && !instance.participantIds.includes(activePersonId)) {
+        instance.participantIds.push(activePersonId);
+    }
 
     workspace.instances[id] = instance;
     const saved = saveWorkspace(workspace, { dirtyPlanIds: [id] });
@@ -162,6 +186,7 @@ function assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId) {
         }
         item.assigneeType = 'person';
         item.assigneeId = personId;
+        ensureParticipant(instance, personId);
         return;
     }
     if (!instance.itemOverrides[key]) {
@@ -169,6 +194,42 @@ function assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId) {
     }
     instance.itemOverrides[key].assigneeType = 'person';
     instance.itemOverrides[key].assigneeId = personId;
+    ensureParticipant(instance, personId);
+}
+
+/**
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {string|null|undefined} personId
+ */
+export function ensureParticipant(instance, personId) {
+    if (!personId) {
+        return;
+    }
+    const id = String(personId);
+    if (!Array.isArray(instance.participantIds)) {
+        instance.participantIds = [];
+    }
+    if (!instance.participantIds.includes(id)) {
+        instance.participantIds.push(id);
+    }
+}
+
+/**
+ * Merge person assignees from resolved sprints into participantIds.
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {Array<{tasks?: Array<{assigneeType?: string|null, assigneeId?: string|null}>, deliverables?: Array<{assigneeType?: string|null, assigneeId?: string|null}>}>} sprints
+ * @returns {boolean} whether participantIds changed
+ */
+export function backfillParticipantsFromAssignees(instance, sprints) {
+    const before = (instance.participantIds || []).join(',');
+    for (const sprint of sprints || []) {
+        for (const item of [...(sprint.tasks || []), ...(sprint.deliverables || [])]) {
+            if (item.assigneeType === 'person' && item.assigneeId) {
+                ensureParticipant(instance, item.assigneeId);
+            }
+        }
+    }
+    return (instance.participantIds || []).join(',') !== before;
 }
 
 /**
@@ -436,6 +497,9 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             item.priority = data.priority || item.priority;
             item.assigneeType = data.assigneeType;
             item.assigneeId = data.assigneeId || null;
+            if (item.assigneeType === 'person') {
+                ensureParticipant(instance, item.assigneeId);
+            }
             item.dueDate = data.dueDate || null;
             item.note = data.note || '';
             item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
@@ -476,6 +540,9 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             next.table = data.table;
         }
         instance.itemOverrides[key] = next;
+        if (next.assigneeType === 'person') {
+            ensureParticipant(instance, /** @type {string|null} */ (next.assigneeId));
+        }
         syncCompletion(instance, kind, key, data.status === 'completed');
     });
 }
@@ -502,6 +569,9 @@ export function assignItem(instanceId, kind, key, isCustom, sprintId, assignment
             }
             item.assigneeType = assigneeType;
             item.assigneeId = assigneeId;
+            if (assigneeType === 'person') {
+                ensureParticipant(instance, assigneeId);
+            }
             return;
         }
         if (!instance.itemOverrides[key]) {
@@ -509,6 +579,9 @@ export function assignItem(instanceId, kind, key, isCustom, sprintId, assignment
         }
         instance.itemOverrides[key].assigneeType = assigneeType;
         instance.itemOverrides[key].assigneeId = assigneeId;
+        if (assigneeType === 'person') {
+            ensureParticipant(instance, assigneeId);
+        }
         // Clear polluted template fields if present from older editors.
         delete instance.itemOverrides[key].helpText;
         delete instance.itemOverrides[key].helpLinks;

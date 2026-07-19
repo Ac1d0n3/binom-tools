@@ -81,6 +81,7 @@ final class PlanStore
         $plan['viewerUserIds'] = array_values(array_map('strval', $plan['viewerUserIds'] ?? $existing['viewerUserIds'] ?? []));
         $plan['viewerTeamIds'] = array_values(array_map('strval', $plan['viewerTeamIds'] ?? $existing['viewerTeamIds'] ?? []));
         $plan['linkedStorySlugs'] = array_values(array_map('strval', $plan['linkedStorySlugs'] ?? $existing['linkedStorySlugs'] ?? []));
+        $plan = $this->normalizePlanTeams($plan);
         $plan['updatedAt'] = now()->toIso8601String();
 
         // Never accept plaintext plan password; only hash fields from client soft-lock.
@@ -180,7 +181,45 @@ final class PlanStore
             $incoming['templateSnapshot'] = $prevSnapshot;
         }
 
+        $incoming = $this->normalizePlanTeams($incoming);
+        $existingTeams = $this->normalizePlanTeams($existing);
+        $nextTeams = $incoming['teamIds'] ?? [];
+        if (
+            (! is_array($nextTeams) || $nextTeams === [])
+            && is_array($existingTeams['teamIds'] ?? null)
+            && $existingTeams['teamIds'] !== []
+        ) {
+            $incoming['teamIds'] = $existingTeams['teamIds'];
+            $incoming['teamId'] = null;
+        }
+
         return $incoming;
+    }
+
+    /**
+     * Migrate legacy teamId into teamIds.
+     *
+     * @param  array<string, mixed>  $plan
+     * @return array<string, mixed>
+     */
+    private function normalizePlanTeams(array $plan): array
+    {
+        $teamIds = [];
+        if (isset($plan['teamIds']) && is_array($plan['teamIds'])) {
+            foreach ($plan['teamIds'] as $teamId) {
+                $value = trim((string) $teamId);
+                if ($value !== '') {
+                    $teamIds[] = $value;
+                }
+            }
+        }
+        if ($teamIds === [] && isset($plan['teamId']) && $plan['teamId'] !== null && $plan['teamId'] !== '') {
+            $teamIds[] = (string) $plan['teamId'];
+        }
+        $plan['teamIds'] = array_values(array_unique($teamIds));
+        $plan['teamId'] = null;
+
+        return $plan;
     }
 
     private function isEmptyStructure(mixed $value): bool

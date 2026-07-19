@@ -2,6 +2,8 @@
  * Accounts-mode bridge for sprint planner (server JSON plans + shared catalog).
  */
 
+import { normalizeTrigram, teamTrigram } from './trigram.js';
+
 /** @returns {boolean} */
 export function isAccountsMode() {
     const root = document.getElementById('sp-app');
@@ -272,7 +274,7 @@ export function catalogFromAccounts(users, teams) {
         people[id] = {
             id,
             displayName,
-            shortName: displayName.slice(0, 2).toUpperCase(),
+            shortName: normalizeTrigram('', displayName),
             email: String(user.email || ''),
             role: '',
             colorToken: `accent-${((accent - 1) % 6) + 1}`,
@@ -294,10 +296,13 @@ export function catalogFromAccounts(users, teams) {
         const description = team.description && typeof team.description === 'object'
             ? /** @type {{de?: string, en?: string}} */ (team.description)
             : { de: '', en: '' };
+        const nameObj = { de: name.de || name.en || id, en: name.en || name.de || id };
         teamMap[id] = {
             id,
-            name: { de: name.de || name.en || id, en: name.en || name.de || id },
+            name: nameObj,
             description: { de: description.de || '', en: description.en || '' },
+            shortName: teamTrigram({ name: nameObj }, 'en'),
+            colorToken: `accent-${((Object.keys(teamMap).length % 6) + 1)}`,
             memberIds: Array.isArray(team.memberIds) ? team.memberIds.map(String) : [],
             archived: Boolean(team.archived),
         };

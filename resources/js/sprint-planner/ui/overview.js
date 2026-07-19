@@ -9,9 +9,9 @@ import { isAccountsMode, isLoggedIn, readAccountsBootstrap, usesServerPlans } fr
 import { listPeople, listTeams, localizedText } from '../people-teams.js';
 import { calculateCurrentSprintNumber, calculateOverallProgress, resolveSprints } from '../progress.js';
 import { loadPreferences, loadWorkspace, savePreferences } from '../storage.js';
+import { normalizeTeamIds } from '../trigram.js';
 import {
     applySpI18n,
-    fillSelect,
     planOwnershipLabel,
     planUrl,
     readTemplatesFromDom,
@@ -238,7 +238,7 @@ function renderPlanCards(workspace, templates, locale) {
             }
         }
         if (filter === 'team') {
-            if (!instance.teamId) {
+            if (!normalizeTeamIds(instance).length) {
                 continue;
             }
         }
@@ -278,8 +278,13 @@ function createPlanCard({ instance, template, progress, current, locale, workspa
     const description = instance.translations?.[locale]?.description
         || template?.locales?.[locale]?.description
         || '';
-    const team = instance.teamId ? workspace.teams[instance.teamId] : null;
-    const teamName = team ? localizedText(team.name, locale) : '—';
+    const teamIds = normalizeTeamIds(instance);
+    const teamName = teamIds.length
+        ? teamIds.map((id) => {
+            const team = workspace.teams[id];
+            return team ? localizedText(team.name, locale) : id;
+        }).join(', ')
+        : '—';
 
     const card = document.createElement('article');
     card.className = 'sp-card';
@@ -351,7 +356,7 @@ function setupStartDialog(onStarted) {
         }
         const slug = document.getElementById('sp-start-slug')?.value;
         const startedAt = document.getElementById('sp-start-date')?.value;
-        const teamId = document.getElementById('sp-start-team')?.value || null;
+        const teamIds = [...document.querySelectorAll('#sp-start-teams input:checked')].map((el) => el.value);
         const participants = [...document.querySelectorAll('#sp-start-participants input:checked')].map(
             (el) => el.value,
         );
@@ -371,7 +376,7 @@ function setupStartDialog(onStarted) {
 
         const result = startInstanceFromTemplate(template, {
             startedAt,
-            teamId,
+            teamIds,
             participantIds: participants,
             ephemeral: ! wantSave,
         });
@@ -394,13 +399,9 @@ function openStartDialog(template, workspace) {
     document.getElementById('sp-start-slug').value = template.slug;
     document.getElementById('sp-start-date').value = new Date().toISOString().slice(0, 10);
 
-    const teamSelect = document.getElementById('sp-start-team');
-    fillSelect(
-        teamSelect,
-        listTeams().map((team) => ({ id: team.id, label: localizedText(team.name, locale) })),
-        workspace.workspace.defaultTeamId || '',
-        true,
-    );
+    const teamsHost = document.getElementById('sp-start-teams');
+    const defaultTeamId = workspace.workspace.defaultTeamId || '';
+    const selectedTeams = () => [...document.querySelectorAll('#sp-start-teams input:checked')].map((el) => el.value);
 
     const participants = document.getElementById('sp-start-participants');
     const renderParticipants = (preselectIds = []) => {
@@ -420,12 +421,33 @@ function openStartDialog(template, workspace) {
             participants.appendChild(label);
         }
     };
-    const defaultTeam = listTeams().find((t) => t.id === (workspace.workspace.defaultTeamId || ''));
-    renderParticipants(defaultTeam?.memberIds || []);
-    teamSelect?.addEventListener('change', () => {
-        const team = listTeams().find((t) => t.id === teamSelect.value);
-        renderParticipants(team?.memberIds || []);
-    });
+
+    const syncParticipantsFromTeams = () => {
+        const memberSet = new Set();
+        for (const tid of selectedTeams()) {
+            for (const mid of listTeams().find((t) => t.id === tid)?.memberIds || []) {
+                memberSet.add(String(mid));
+            }
+        }
+        renderParticipants([...memberSet]);
+    };
+
+    if (teamsHost) {
+        teamsHost.innerHTML = '';
+        for (const team of listTeams()) {
+            const label = document.createElement('label');
+            label.className = 'sp-check';
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = team.id;
+            input.checked = team.id === defaultTeamId;
+            input.addEventListener('change', syncParticipantsFromTeams);
+            label.append(input, document.createTextNode(` ${localizedText(team.name, locale)}`));
+            teamsHost.appendChild(label);
+        }
+    }
+
+    syncParticipantsFromTeams();
 
     const saveBtn = document.getElementById('sp-start-save');
     const demoBtn = document.getElementById('sp-start-demo');

@@ -127,7 +127,7 @@ describe('storage', () => {
             translations: { de: { title: 'Demo' }, en: { title: 'Demo' } },
             startedAt: '2026-08-17',
             status: 'active',
-            teamId: null,
+            teamIds: [],
             participantIds: [],
             completedTasks: [],
             completedDeliverables: [],
@@ -238,7 +238,7 @@ describe('progress', () => {
             translations: {},
             startedAt: '2026-01-01',
             status: 'active',
-            teamId: null,
+            teamIds: [],
             participantIds: [],
             completedTasks: [statusKey('demo', 'week-01', 'task', 't1')],
             completedDeliverables: [],
@@ -265,7 +265,7 @@ describe('progress', () => {
             translations: {},
             startedAt: '2026-01-01',
             status: 'active',
-            teamId: null,
+            teamIds: [],
             participantIds: [],
             completedTasks: [statusKey('demo', 'week-01', 'task', 't1')],
             completedDeliverables: [],
@@ -291,8 +291,109 @@ describe('progress', () => {
     it('calculates current sprint by week', () => {
         expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2026, 0, 1))).toBe(1);
         expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2026, 0, 8))).toBe(2);
-        expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2025, 11, 31))).toBe(1);
+        expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2025, 11, 31))).toBe(0);
+        expect(calculateCurrentSprintNumber('2026-08-17', 13, 'week', new Date(2026, 6, 19))).toBe(0);
         expect(calculateCurrentSprintNumber('2026-01-01', 13, 'week', new Date(2026, 11, 31))).toBe(13);
+    });
+
+    it('migrates legacy teamId into teamIds', () => {
+        const ws = normalizeWorkspace({
+            schemaVersion: 1,
+            workspace: {},
+            people: {},
+            teams: {},
+            instances: {
+                plan_legacy: {
+                    id: 'plan_legacy',
+                    templateSlug: 'x',
+                    startedAt: '2026-01-01',
+                    teamId: 'team_q',
+                    participantIds: [],
+                },
+            },
+        });
+        expect(ws.instances.plan_legacy.teamIds).toEqual(['team_q']);
+        expect(ws.instances.plan_legacy.teamId).toBeNull();
+    });
+
+    it('backfills empty teamIds to Team Q via ensureDefaultCatalog', () => {
+        const base = createDefaultWorkspace();
+        base.instances.plan_empty = {
+            id: 'plan_empty',
+            templateSlug: 'x',
+            templateVersion: 1,
+            translations: {},
+            startedAt: '2026-01-01',
+            status: 'active',
+            teamIds: [],
+            teamId: null,
+            participantIds: [],
+            completedTasks: [],
+            completedDeliverables: [],
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            itemOverrides: {},
+            templateSnapshot: null,
+            passwordHash: null,
+            passwordSalt: null,
+            ownerUserId: null,
+            viewerUserIds: [],
+            viewerTeamIds: [],
+            linkedStorySlugs: [],
+            ephemeral: false,
+            archived: false,
+            createdAt: '2026-01-01T00:00:00.000Z',
+            updatedAt: '2026-01-01T00:00:00.000Z',
+        };
+        const { workspace, changed } = ensureDefaultCatalog(base);
+        expect(changed).toBe(true);
+        expect(workspace.workspace.defaultTeamId).toBe('team_q');
+        expect(workspace.instances.plan_empty.teamIds).toEqual(['team_q']);
+    });
+});
+
+describe('schedule helpers', () => {
+    it('resolves sprint date range and ISO week from start', async () => {
+        const { sprintDateRange, formatIsoWeekLabel, computeScheduleHealth } = await import('./progress.js');
+        const range = sprintDateRange('2026-06-29', 1, 'week');
+        expect(range).not.toBeNull();
+        expect(range.isoWeek).toBeGreaterThan(0);
+        expect(formatIsoWeekLabel(28, 'de')).toBe('KW 28');
+        expect(formatIsoWeekLabel(28, 'en')).toBe('W28');
+
+        const health = computeScheduleHealth([
+            {
+                number: 1,
+                title: 'One',
+                tasks: [{ completed: false, status: 'open' }],
+                deliverables: [],
+            },
+            {
+                number: 2,
+                title: 'Two',
+                tasks: [{ completed: true, status: 'completed' }],
+                deliverables: [],
+            },
+        ], 3);
+        expect(health.onTrack).toBe(false);
+        expect(health.openCount).toBe(1);
+        expect(health.weeksBehind).toBe(2);
+        expect(health.sources[0].sprintNumber).toBe(1);
+    });
+});
+
+describe('trigram', () => {
+    it('normalizes short names to three characters', async () => {
+        const { normalizeTrigram, trigramFromName, normalizeTeamIds } = await import('./trigram.js');
+        expect(trigramFromName('Thomas Lindackers')).toMatch(/^[A-ZÀ-ÿ0-9]{3}$/);
+        expect(normalizeTrigram('TL', 'Thomas Lindackers')).toHaveLength(3);
+        expect(normalizeTrigram('ABCD', 'X')).toBe('ABC');
+        expect(normalizeTeamIds({ teamId: 'team_q' })).toEqual(['team_q']);
+        expect(normalizeTeamIds({ teamIds: ['a', 'b'], teamId: 'c' })).toEqual(['a', 'b']);
     });
 });
 
@@ -328,6 +429,60 @@ describe('filters', () => {
         expect(itemMatchesFilters(open, { myTasks: true, unassigned: true }, { activePersonId: 'person_01' })).toBe(false);
         expect(itemMatchesFilters(open, { unassigned: true }, { activePersonId: 'person_01' })).toBe(true);
         expect(itemMatchesFilters(mine, { myTasks: true }, { activePersonId: 'person_01' })).toBe(true);
+    });
+
+    it('ORs myTasks with unassigned when filterLogic is or', () => {
+        const mine = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        const open = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: null,
+        };
+        const other = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_02',
+        };
+        const filters = { myTasks: true, unassigned: true, filterLogic: 'or' };
+        expect(itemMatchesFilters(mine, filters, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(open, filters, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(other, filters, { activePersonId: 'person_01' })).toBe(false);
+    });
+
+    it('keeps structural status filter as AND even in OR mode', () => {
+        const blockedMine = {
+            completed: false,
+            status: 'blocked',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        const openMine = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        const filters = { myTasks: true, status: 'blocked', filterLogic: 'or' };
+        expect(itemMatchesFilters(blockedMine, filters, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(openMine, filters, { activePersonId: 'person_01' })).toBe(false);
+    });
+
+    it('normalizes filterLogic to and by default', () => {
+        expect(normalizePlanFilters({}).filterLogic).toBe('and');
+        expect(normalizePlanFilters({ filterLogic: 'or' }).filterLogic).toBe('or');
+        expect(normalizePlanFilters({ filterLogic: 'xor' }).filterLogic).toBe('and');
     });
 
     it('ANDs person filter with status', () => {
@@ -515,7 +670,7 @@ describe('instance-manager', () => {
             translations: { en: { title: 'T', description: '' }, de: { title: 'T', description: '' } },
             startedAt: '2026-07-01',
             status: 'active',
-            teamId: null,
+            teamIds: [],
             participantIds: [],
             completedTasks: [],
             completedDeliverables: [],

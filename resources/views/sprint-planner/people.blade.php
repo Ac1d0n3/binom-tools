@@ -79,9 +79,13 @@
                 <h2 class="sp-dialog__title" id="sp-person-dialog-title" data-i18n="sp.dialog.personTitle">Person</h2>
                 <input type="hidden" id="sp-person-id">
                 <label class="sp-field"><span data-i18n="sp.field.displayName">Display name</span><input type="text" id="sp-person-display-name" class="tools-input" required></label>
-                <label class="sp-field"><span data-i18n="sp.field.shortName">Short name</span><input type="text" id="sp-person-short-name" class="tools-input" maxlength="8"></label>
+                <label class="sp-field"><span data-i18n="sp.field.shortName">Trigram</span><input type="text" id="sp-person-short-name" class="tools-input" maxlength="3"></label>
                 <label class="sp-field"><span data-i18n="sp.field.emailOptional">Email (optional)</span><input type="email" id="sp-person-email" class="tools-input"></label>
                 <label class="sp-field"><span data-i18n="sp.field.role">Role</span><input type="text" id="sp-person-role" class="tools-input"></label>
+                <fieldset class="sp-field">
+                    <legend data-i18n="sp.field.color">Color</legend>
+                    <div id="sp-person-color" class="sp-color-swatches" role="radiogroup"></div>
+                </fieldset>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
@@ -95,8 +99,13 @@
                 <input type="hidden" id="sp-team-id">
                 <label class="sp-field"><span data-i18n="sp.field.teamNameDe">Name (DE)</span><input type="text" id="sp-team-name-de" class="tools-input" required></label>
                 <label class="sp-field"><span data-i18n="sp.field.teamNameEn">Name (EN)</span><input type="text" id="sp-team-name-en" class="tools-input"></label>
+                <label class="sp-field"><span data-i18n="sp.field.shortName">Trigram</span><input type="text" id="sp-team-short-name" class="tools-input" maxlength="3"></label>
                 <label class="sp-field"><span data-i18n="sp.field.teamDescDe">Description (DE)</span><textarea id="sp-team-desc-de" class="tools-input" rows="2"></textarea></label>
                 <label class="sp-field"><span data-i18n="sp.field.teamDescEn">Description (EN)</span><textarea id="sp-team-desc-en" class="tools-input" rows="2"></textarea></label>
+                <fieldset class="sp-field">
+                    <legend data-i18n="sp.field.color">Color</legend>
+                    <div id="sp-team-color" class="sp-color-swatches" role="radiogroup"></div>
+                </fieldset>
                 <fieldset class="sp-field">
                     <legend data-i18n="sp.field.members">Members</legend>
                     <div id="sp-team-members" class="sp-checkbox-list"></div>

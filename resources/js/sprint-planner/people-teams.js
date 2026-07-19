@@ -1,5 +1,6 @@
 import { createPersonId, createTeamId } from './ids.js';
 import { loadWorkspace, saveWorkspace } from './storage.js';
+import { normalizeColorToken, normalizeTrigram, teamTrigram } from './trigram.js';
 
 export function listPeople(includeArchived = false) {
     const { data } = loadWorkspace();
@@ -15,13 +16,14 @@ export function upsertPerson(input) {
     const loaded = loadWorkspace();
     const workspace = loaded.data;
     const id = input.id || createPersonId();
+    const displayName = String(input.displayName || '').trim();
     workspace.people[id] = {
         id,
-        displayName: String(input.displayName || '').trim(),
-        shortName: String(input.shortName || '').trim(),
+        displayName,
+        shortName: normalizeTrigram(String(input.shortName || ''), displayName),
         email: String(input.email || '').trim(),
         role: String(input.role || '').trim(),
-        colorToken: input.colorToken || 'accent-1',
+        colorToken: normalizeColorToken(input.colorToken || 'accent-1'),
         archived: Boolean(input.archived),
     };
     if (!workspace.people[id].displayName) {
@@ -54,13 +56,19 @@ export function upsertTeam(input) {
     if (!nameDe && !nameEn) {
         return { ok: false, error: 'validation' };
     }
+    const name = { de: nameDe || nameEn, en: nameEn || nameDe };
+    const shortName = input.shortName
+        ? normalizeTrigram(String(input.shortName), '')
+        : teamTrigram({ name }, 'en');
     workspace.teams[id] = {
         id,
-        name: { de: nameDe || nameEn, en: nameEn || nameDe },
+        name,
         description: {
             de: String(input.descriptionDe || ''),
             en: String(input.descriptionEn || input.descriptionDe || ''),
         },
+        shortName,
+        colorToken: normalizeColorToken(input.colorToken || 'accent-1'),
         memberIds: Array.isArray(input.memberIds) ? input.memberIds.map(String) : [],
         archived: Boolean(input.archived),
     };

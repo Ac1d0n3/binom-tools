@@ -86,7 +86,7 @@
 
             <div id="sp-unassigned-banner" class="sp-unassigned-banner" role="status" hidden>
                 <p id="sp-unassigned-banner-text" data-i18n="sp.unassigned.banner">All tasks are unassigned.</p>
-                <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-claim-all-btn" data-i18n="sp.action.claimAll">Claim all</button>
+                <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-claim-all-btn" data-i18n="sp.action.claimAll">Claim all as me</button>
             </div>
 
             <div id="sp-template-missing" class="sp-empty sp-template-recover" hidden>
@@ -106,7 +106,18 @@
             </div>
 
             <div class="sp-filters sp-filters--plan" role="group" aria-label="Plan item filters">
-                <label class="sp-check"><input type="checkbox" id="sp-filter-current-week"> <span data-i18n="sp.filter.currentWeek">Current week only</span></label>
+                <div class="sp-filter-logic" role="group" aria-label="Filter logic">
+                    <span class="sp-filter-logic__label" data-i18n="sp.filter.logicLabel">Combine filters</span>
+                    <label class="sp-check sp-check--inline">
+                        <input type="radio" name="sp-filter-logic" id="sp-filter-logic-and" value="and" checked>
+                        <span data-i18n="sp.filter.logicAnd">AND</span>
+                    </label>
+                    <label class="sp-check sp-check--inline">
+                        <input type="radio" name="sp-filter-logic" id="sp-filter-logic-or" value="or">
+                        <span data-i18n="sp.filter.logicOr">OR</span>
+                    </label>
+                </div>
+                <label class="sp-check"><input type="checkbox" id="sp-filter-current-week"> <span data-i18n="sp.filter.currentWeek">Current plan week only</span></label>
                 <label class="sp-check"><input type="checkbox" id="sp-filter-hide-done"> <span data-i18n="sp.filter.hideDone">Hide completed</span></label>
                 <label class="sp-check"><input type="checkbox" id="sp-filter-open-only"> <span data-i18n="sp.filter.openOnly">Open items only</span></label>
                 <label class="sp-check"><input type="checkbox" id="sp-filter-blocked"> <span data-i18n="sp.filter.blocked">Blocked items</span></label>

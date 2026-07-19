@@ -3,6 +3,7 @@ import { isAccountsMode, readAccountsBootstrap } from '../accounts-bridge.js';
 import { resolveExternalHelpHref } from '../external-links.js';
 import { isPlaybookRead, markPlaybookRead } from '../../playbooks/read-state.js';
 import { itemHasHelp, requiredStoryProgress } from '../progress.js';
+import { createIconButton, createRequiredIcon } from './icons.js';
 import { spT } from './helpers.js';
 
 /** @type {Record<string, {titleDe?: string|null, titleEn?: string|null, title?: string}>} */
@@ -105,13 +106,13 @@ export function renderStoryCard(story, onChanged) {
 
     const head = document.createElement('div');
     head.className = 'sp-story-card__head';
-    const badge = document.createElement('span');
-    badge.className = 'sp-story-card__badge';
-    badge.textContent = story.required ? spT('sp.help.required') : spT('sp.help.optional');
+    if (story.required) {
+        head.appendChild(createRequiredIcon());
+    }
     const title = document.createElement('strong');
     title.className = 'sp-story-card__title';
     title.textContent = storyTitle(story.slug);
-    head.append(badge, title);
+    head.appendChild(title);
 
     const meta = document.createElement('p');
     meta.className = 'sp-story-card__meta';
@@ -119,28 +120,26 @@ export function renderStoryCard(story, onChanged) {
 
     const actions = document.createElement('div');
     actions.className = 'sp-story-card__actions';
-    const open = document.createElement('a');
-    open.className = 'tools-btn tools-btn--secondary tools-btn--small';
-    open.href = resolveHelpHref(`/playbooks/${story.slug}`);
-    open.target = '_blank';
-    open.rel = 'noopener noreferrer';
-    open.textContent = spT('sp.help.openStory');
-    actions.appendChild(open);
+    actions.appendChild(createIconButton({
+        icon: 'open',
+        label: spT('sp.help.openStory'),
+        href: resolveHelpHref(`/playbooks/${story.slug}`),
+    }));
 
     if (!read) {
-        const mark = document.createElement('button');
-        mark.type = 'button';
-        mark.className = 'tools-btn tools-btn--primary tools-btn--small';
-        mark.textContent = spT('sp.help.markRead');
-        mark.addEventListener('click', () => {
-            markPlaybookRead(story.slug);
-            const bootstrap = readAccountsBootstrap();
-            if (Array.isArray(bootstrap.readSlugs) && !bootstrap.readSlugs.includes(story.slug)) {
-                bootstrap.readSlugs = [...bootstrap.readSlugs, story.slug];
-            }
-            onChanged?.();
-        });
-        actions.appendChild(mark);
+        actions.appendChild(createIconButton({
+            icon: 'check',
+            label: spT('sp.help.markRead'),
+            primary: true,
+            onClick: () => {
+                markPlaybookRead(story.slug);
+                const bootstrap = readAccountsBootstrap();
+                if (Array.isArray(bootstrap.readSlugs) && !bootstrap.readSlugs.includes(story.slug)) {
+                    bootstrap.readSlugs = [...bootstrap.readSlugs, story.slug];
+                }
+                onChanged?.();
+            },
+        }));
     }
 
     card.append(head, meta, actions);
@@ -195,21 +194,24 @@ export function renderHelpButton(item, openHelp) {
     if (!itemHasHelp(item)) {
         return null;
     }
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'tools-btn tools-btn--secondary tools-btn--small sp-help-btn';
     const progress = requiredStoryProgress(item.stories || [], isStoryRead);
+    const pending = progress.total > 0 && progress.done < progress.total;
+    const label = progress.total > 0
+        ? `${spT('sp.help.open')} (${progress.done}/${progress.total})`
+        : spT('sp.help.open');
+    const btn = createIconButton({
+        icon: 'help',
+        label,
+        className: 'sp-help-btn',
+        pending,
+        onClick: () => openHelp(item),
+    });
     if (progress.total > 0) {
-        btn.textContent = `? ${progress.done}/${progress.total}`;
-        if (progress.done < progress.total) {
-            btn.dataset.pending = '1';
-        }
-    } else {
-        btn.textContent = '?';
+        const badge = document.createElement('span');
+        badge.className = 'sp-icon-btn__badge';
+        badge.textContent = `${progress.done}/${progress.total}`;
+        btn.appendChild(badge);
     }
-    btn.title = spT('sp.help.open');
-    btn.setAttribute('aria-label', spT('sp.help.open'));
-    btn.addEventListener('click', () => openHelp(item));
     return btn;
 }
 
