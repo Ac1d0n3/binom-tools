@@ -1,0 +1,10 @@
+data-accounts-enabled="{{ ! empty($accountsEnabled) ? '1' : '0' }}"
+data-account-user='@json($accountUser ?? null)'
+data-demo-mode="{{ ! empty($demoMode) ? '1' : '0' }}"
+data-login-url="{{ $loginUrl ?? '' }}"
+data-account-people='@json($accountPeopleJson ?? [])'
+data-account-teams='@json($accountTeamsJson ?? [])'
+data-server-plans='@json($serverPlansJson ?? [])'
+data-read-slugs='@json($readSlugsJson ?? [])'
+data-plans-api-url="{{ $plansApiUrl ?? '' }}"
+data-stories-api-url="{{ $storiesApiUrl ?? '' }}"

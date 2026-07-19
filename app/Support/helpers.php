@@ -74,6 +74,13 @@ if (! function_exists('tools_is_beta')) {
     }
 }
 
+if (! function_exists('accounts_enabled')) {
+    function accounts_enabled(): bool
+    {
+        return (bool) config('accounts.enabled', false);
+    }
+}
+
 if (! function_exists('tools_release_label')) {
     function tools_release_label(): ?string
     {

@@ -17,9 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: [
             \App\Http\Controllers\Playbooks\PlaybookStatsController::ENGAGEMENT_COOKIE,
         ]);
+        $middleware->alias([
+            'accounts.enabled' => \App\Http\Middleware\EnsureAccountsEnabled::class,
+            'accounts.auth' => \App\Http\Middleware\EnsureAuthenticatedAccount::class,
+            'accounts.auth.whenEnabled' => \App\Http\Middleware\EnsureAuthenticatedAccountWhenEnabled::class,
+        ]);
         $middleware->web(append: [
             \App\Http\Middleware\SetLocaleFromRoute::class,
             \App\Http\Middleware\EnsureToolEnabled::class,
+            \App\Http\Middleware\EnsureToolLogin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

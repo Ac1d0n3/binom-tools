@@ -13,6 +13,18 @@
 
 Live paths (unchanged technically): `/`, `/playbooks`, `/tools`, individual tool routes under `/tools/…`.
 
+## Optional accounts (file-based, no DB)
+
+Set `BINOM_TOOLS_ACCOUNTS_ENABLED=true` and keep `SESSION_DRIVER=file`. Copy example JSON from `storage/app/bn-tools/*.example.json` to `users.json` / `teams.json` / `story-acl.json`, then set passwords with:
+
+```bash
+php artisan bn-tools:user-password you@example.com
+```
+
+Passwords are stored only as `password_hash` digests. Plans, story ACL, and read-state live under `storage/app/bn-tools/` (gitignored).
+
+With accounts on, the Sprint Planner stays open for guests as a **demo**: start a local plan that never syncs to the server. Sign in to save and share plans. Individual governance tools can require login via `TOOL_*_LOGIN_REQUIRED` (default `false` / open).
+
 ## Stack
 
 | Layer | Tech |
@@ -79,6 +91,7 @@ binom-tools/
 | `APP_NAME` | Product name in page titles (`Story — Binom Governance`) |
 | `PLAYBOOKS_SHARE_ENABLED` | Show/hide share control on stories (default `true`) |
 | `TOOL_*_ENABLED` | Per-tool on/off (default `true`); disabled tools hide from nav/overview and return 404 |
+| `TOOL_*_LOGIN_REQUIRED` | Per-tool login gate when accounts are enabled (default `false` / open) |
 | `TOOLS_OVERVIEW_TITLE_*` | Optional governance overview H1 (defaults to Governance) |
 
 Story **views** and **likes** are stored as JSON under `storage/app/playbook-stats/` (no database). One view per browser/day (cookie); likes toggle with a cookie.

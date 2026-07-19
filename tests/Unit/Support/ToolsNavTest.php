@@ -19,6 +19,18 @@ final class ToolsNavTest extends TestCase
         $this->assertSame('TOOL_PROMPT_STUDIO_ENABLED', ToolsNav::enabledEnvKey('prompt-studio'));
     }
 
+    public function test_login_required_env_key(): void
+    {
+        $this->assertSame(
+            'TOOL_PROMPT_STUDIO_LOGIN_REQUIRED',
+            ToolsNav::loginRequiredEnvKey('prompt-studio'),
+        );
+        $this->assertSame(
+            'TOOL_DBT_GOVERNANCE_MACRO_GENERATOR_LOGIN_REQUIRED',
+            ToolsNav::loginRequiredEnvKey('dbt-governance-macro-generator'),
+        );
+    }
+
     /**
      * @return array<string, array{0: array<string, mixed>, 1: bool}>
      */

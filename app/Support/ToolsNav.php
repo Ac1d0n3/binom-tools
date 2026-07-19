@@ -14,6 +14,14 @@ final class ToolsNav
         return 'TOOL_'.strtoupper(str_replace('-', '_', $toolId)).'_ENABLED';
     }
 
+    /**
+     * Env/config key pattern: TOOL_{UPPER_SNAKE_ID}_LOGIN_REQUIRED (default false).
+     */
+    public static function loginRequiredEnvKey(string $toolId): string
+    {
+        return 'TOOL_'.strtoupper(str_replace('-', '_', $toolId)).'_LOGIN_REQUIRED';
+    }
+
     public static function isToolEnabled(string $toolId): bool
     {
         $map = config('tools.enabled', []);
@@ -23,6 +31,20 @@ final class ToolsNav
         }
 
         return true;
+    }
+
+    /**
+     * Whether a tool requires login when accounts mode is enabled.
+     */
+    public static function isToolLoginRequired(string $toolId): bool
+    {
+        $map = config('tools.login_required', []);
+
+        if (array_key_exists($toolId, $map)) {
+            return (bool) $map[$toolId];
+        }
+
+        return false;
     }
 
     /**

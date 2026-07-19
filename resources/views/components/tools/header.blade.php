@@ -76,5 +76,21 @@
                 aria-pressed="false"
             >EN</button>
         </div>
+
+        @if (! empty($accountsEnabled))
+            <div class="tools-header__account">
+                @if (! empty($accountUser))
+                    <a href="{{ locale_route('accounts.profile') }}" class="tools-btn tools-btn--ghost" title="{{ __('Account') }}">
+                        {{ $accountUser['displayName'] ?? $accountUser['email'] }}
+                    </a>
+                    <form method="post" action="{{ locale_route('accounts.logout') }}" style="display:inline">
+                        @csrf
+                        <button type="submit" class="tools-btn tools-btn--ghost" data-i18n="accounts.signOut">Sign out</button>
+                    </form>
+                @else
+                    <a href="{{ locale_route('accounts.login') }}" class="tools-btn tools-btn--ghost" data-i18n="accounts.signIn">Sign in</a>
+                @endif
+            </div>
+        @endif
     </div>
 </div>

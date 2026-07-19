@@ -1,0 +1,182 @@
+@extends('layouts.tools', [
+    'viteEntries' => [
+        'resources/css/sprint-planner.css',
+        'resources/js/sprint-planner/show.js',
+    ],
+])
+
+@section('title', 'Sprint Plan — ' . config('app.name'))
+
+@section('content')
+    <div
+        class="tools-content tools-content--wide sp-app"
+        id="sp-app"
+        data-sp-page="show"
+        data-sp-instance-id="{{ $instanceId }}"
+        data-sp-templates='@json($templatesJson)'
+        data-sp-index-url="{{ locale_route('sprint-planner.index') }}"
+        data-sp-settings-url="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}"
+        @include('components.sprint-planner.accounts-attrs')
+    >
+        <x-sprint-planner.subnav active="plans" />
+
+        <p id="sp-ephemeral-banner" class="sp-local-banner" role="status" hidden>
+            <i class="fa-solid fa-flask" aria-hidden="true"></i>
+            <span>{{ current_locale() === 'de'
+                ? 'Demo-Plan — nur in dieser Browser-Session. Optional: Plan-Passwort in den Einstellungen (ohne Login, nur lokal). Zum Speichern und Teilen auf dem Server brauchst du lokale Login-Daten.'
+                : 'Demo plan — this browser session only. Optional: set a plan password in settings (no login, local soft-lock). Sign in with local credentials to save and share on the server.' }}</span>
+            @if (! empty($loginUrl))
+                <a
+                    id="sp-ephemeral-login"
+                    href="{{ $loginUrl }}"
+                    class="tools-btn tools-btn--secondary tools-btn--small"
+                >{{ current_locale() === 'de' ? 'Anmelden' : 'Sign in' }}</a>
+            @endif
+        </p>
+
+        <div id="sp-plan-missing" class="sp-empty" hidden>
+            <p data-i18n="sp.error.planMissing">This plan was not found in local storage.</p>
+            <a href="{{ locale_route('sprint-planner.index') }}" class="tools-btn tools-btn--primary" data-i18n="sp.action.backToPlans">Back to plans</a>
+        </div>
+
+        <div id="sp-plan-locked" class="sp-empty sp-lock-panel" hidden>
+            <h2 class="sp-section__title" data-i18n="sp.password.unlockTitle">Unlock plan</h2>
+            <p data-i18n="sp.password.unlockLead">This plan is locally protected. Enter the password.</p>
+            <p class="sp-password-note" data-i18n="sp.password.note">Local soft lock in this browser only — not real access control.</p>
+            <form id="sp-unlock-form" class="sp-lock-form">
+                <label class="sp-field">
+                    <span data-i18n="sp.password.current">Current password</span>
+                    <input type="password" id="sp-unlock-password" class="tools-input" autocomplete="current-password" required minlength="4">
+                </label>
+                <p id="sp-unlock-error" class="sp-field-error" hidden></p>
+                <div class="sp-action-row">
+                    <a href="{{ locale_route('sprint-planner.index') }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.backToPlans">Back to plans</a>
+                    <button type="submit" class="tools-btn tools-btn--primary" data-i18n="sp.password.unlock">Unlock</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="sp-plan-view" hidden>
+            <header class="sp-plan-header">
+                <div class="sp-plan-header__main">
+                    <h1 class="tools-page-title" id="sp-plan-title"></h1>
+                    <p class="tools-page-lead" id="sp-plan-description"></p>
+                    <dl class="sp-meta">
+                        <div><dt data-i18n="sp.field.startDate">Start date</dt><dd id="sp-plan-started"></dd></div>
+                        <div><dt data-i18n="sp.field.owner">Owner</dt><dd id="sp-plan-owner"></dd></div>
+                        <div><dt data-i18n="sp.field.currentSprint">Current sprint</dt><dd id="sp-plan-current-sprint"></dd></div>
+                        <div><dt data-i18n="sp.field.status">Status</dt><dd id="sp-plan-status"></dd></div>
+                        <div><dt data-i18n="sp.field.team">Team</dt><dd id="sp-plan-team"></dd></div>
+                        <div><dt data-i18n="sp.field.participants">Participants</dt><dd id="sp-plan-participants"></dd></div>
+                    </dl>
+                    <div class="sp-progress" id="sp-plan-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="sp-progress__bar" id="sp-plan-progress-bar"></div>
+                        <span class="sp-progress__label" id="sp-plan-progress-label">0%</span>
+                    </div>
+                </div>
+                <div class="sp-plan-header__actions">
+                    <a href="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.settings">Settings</a>
+                    <button type="button" class="tools-btn tools-btn--primary" id="sp-add-sprint" data-i18n="sp.action.addSprint">Add sprint</button>
+                </div>
+            </header>
+
+            <div class="sp-filters sp-filters--plan" role="group" aria-label="Plan item filters">
+                <label class="sp-check"><input type="checkbox" id="sp-filter-current-week"> <span data-i18n="sp.filter.currentWeek">Current week only</span></label>
+                <label class="sp-check"><input type="checkbox" id="sp-filter-hide-done"> <span data-i18n="sp.filter.hideDone">Hide completed</span></label>
+                <label class="sp-check"><input type="checkbox" id="sp-filter-open-only"> <span data-i18n="sp.filter.openOnly">Open items only</span></label>
+                <label class="sp-check"><input type="checkbox" id="sp-filter-blocked"> <span data-i18n="sp.filter.blocked">Blocked items</span></label>
+                <label class="sp-check"><input type="checkbox" id="sp-filter-my-tasks"> <span data-i18n="sp.filter.myTasks">My tasks</span></label>
+                <label class="sp-field sp-field--compact">
+                    <span data-i18n="sp.filter.person">Person</span>
+                    <select id="sp-filter-person" class="tools-input"></select>
+                </label>
+                <label class="sp-field sp-field--compact">
+                    <span data-i18n="sp.filter.teamSelect">Team</span>
+                    <select id="sp-filter-team" class="tools-input"></select>
+                </label>
+                <label class="sp-field sp-field--compact">
+                    <span data-i18n="sp.filter.status">Status</span>
+                    <select id="sp-filter-status" class="tools-input">
+                        <option value="" data-i18n="sp.filter.any">Any</option>
+                        <option value="open" data-i18n="sp.status.open">Open</option>
+                        <option value="in_progress" data-i18n="sp.status.inProgress">In progress</option>
+                        <option value="blocked" data-i18n="sp.status.blocked">Blocked</option>
+                        <option value="completed" data-i18n="sp.status.completed">Completed</option>
+                    </select>
+                </label>
+                <label class="sp-field sp-field--compact">
+                    <span data-i18n="sp.filter.priority">Priority</span>
+                    <select id="sp-filter-priority" class="tools-input">
+                        <option value="" data-i18n="sp.filter.any">Any</option>
+                        <option value="low" data-i18n="sp.priority.low">Low</option>
+                        <option value="normal" data-i18n="sp.priority.normal">Normal</option>
+                        <option value="high" data-i18n="sp.priority.high">High</option>
+                        <option value="critical" data-i18n="sp.priority.critical">Critical</option>
+                    </select>
+                </label>
+            </div>
+
+            <div id="sp-sprints" class="sp-sprints"></div>
+        </div>
+
+        <dialog id="sp-sprint-dialog" class="sp-dialog">
+            <form method="dialog" id="sp-sprint-form" class="sp-dialog__form">
+                <h2 class="sp-dialog__title" data-i18n="sp.dialog.sprintTitle">Sprint</h2>
+                <input type="hidden" id="sp-sprint-edit-id">
+                <label class="sp-field"><span data-i18n="sp.field.titleDe">Title (DE)</span><input type="text" id="sp-sprint-title-de" class="tools-input" required></label>
+                <label class="sp-field"><span data-i18n="sp.field.titleEn">Title (EN)</span><input type="text" id="sp-sprint-title-en" class="tools-input"></label>
+                <label class="sp-field"><span data-i18n="sp.field.goalDe">Goal (DE)</span><textarea id="sp-sprint-goal-de" class="tools-input" rows="2" required></textarea></label>
+                <label class="sp-field"><span data-i18n="sp.field.goalEn">Goal (EN)</span><textarea id="sp-sprint-goal-en" class="tools-input" rows="2"></textarea></label>
+                <label class="sp-field"><span data-i18n="sp.field.position">Position</span><input type="number" id="sp-sprint-position" class="tools-input" min="1" step="1"></label>
+                <label class="sp-check"><input type="checkbox" id="sp-sprint-notes-enabled" checked> <span data-i18n="sp.field.enableNotes">Enable notes</span></label>
+                <div class="sp-dialog__actions">
+                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
+                </div>
+            </form>
+        </dialog>
+
+        <dialog id="sp-item-dialog" class="sp-dialog">
+            <form method="dialog" id="sp-item-form" class="sp-dialog__form">
+                <h2 class="sp-dialog__title" id="sp-item-dialog-title" data-i18n="sp.dialog.itemTitle">Item</h2>
+                <input type="hidden" id="sp-item-sprint-id">
+                <input type="hidden" id="sp-item-type">
+                <input type="hidden" id="sp-item-id">
+                <label class="sp-field"><span data-i18n="sp.field.labelDe">Label (DE)</span><input type="text" id="sp-item-label-de" class="tools-input" required></label>
+                <label class="sp-field"><span data-i18n="sp.field.labelEn">Label (EN)</span><input type="text" id="sp-item-label-en" class="tools-input"></label>
+                <label class="sp-field"><span data-i18n="sp.field.assigneeType">Assignee type</span>
+                    <select id="sp-item-assignee-type" class="tools-input">
+                        <option value="person" data-i18n="sp.assignee.person">Person</option>
+                        <option value="team" data-i18n="sp.assignee.team">Team</option>
+                    </select>
+                </label>
+                <label class="sp-field"><span data-i18n="sp.field.assignee">Assignee</span><select id="sp-item-assignee-id" class="tools-input"></select></label>
+                <label class="sp-field"><span data-i18n="sp.field.status">Status</span>
+                    <select id="sp-item-status" class="tools-input">
+                        <option value="open" data-i18n="sp.status.open">Open</option>
+                        <option value="in_progress" data-i18n="sp.status.inProgress">In progress</option>
+                        <option value="blocked" data-i18n="sp.status.blocked">Blocked</option>
+                        <option value="completed" data-i18n="sp.status.completed">Completed</option>
+                    </select>
+                </label>
+                <label class="sp-field"><span data-i18n="sp.field.priority">Priority</span>
+                    <select id="sp-item-priority" class="tools-input">
+                        <option value="low" data-i18n="sp.priority.low">Low</option>
+                        <option value="normal" selected data-i18n="sp.priority.normal">Normal</option>
+                        <option value="high" data-i18n="sp.priority.high">High</option>
+                        <option value="critical" data-i18n="sp.priority.critical">Critical</option>
+                    </select>
+                </label>
+                <label class="sp-field"><span data-i18n="sp.field.dueDate">Due date</span><input type="date" id="sp-item-due" class="tools-input"></label>
+                <label class="sp-field"><span data-i18n="sp.field.note">Note</span><textarea id="sp-item-note" class="tools-input" rows="2" maxlength="4000"></textarea></label>
+                <div class="sp-dialog__actions">
+                    <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
+                    <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
+                </div>
+            </form>
+        </dialog>
+
+        <div id="sp-toast" class="sp-toast" role="status" aria-live="polite" hidden></div>
+        <p id="sp-save-status" class="sp-save-status" aria-live="polite"></p>
+    </div>
+@endsection

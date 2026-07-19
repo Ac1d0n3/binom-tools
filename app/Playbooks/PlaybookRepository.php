@@ -254,7 +254,10 @@ final class PlaybookRepository
         // Bust cache when Markdown rendering / flowchart HTML changes.
         $mtime = max($mtime, $this->playbookRendererMtime());
 
-        return "playbook:{$slug}:{$mtime}";
+        // Absolute asset URLs in cached HTML depend on APP_URL / asset base.
+        $urlFingerprint = sha1((string) config('app.url').'|'.(string) config('app.asset_url'));
+
+        return "playbook:{$slug}:{$mtime}:{$urlFingerprint}";
     }
 
     private function playbookRendererMtime(): int

@@ -285,6 +285,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Per-tool login requirement (TOOL_{ID}_LOGIN_REQUIRED, default false)
+    |--------------------------------------------------------------------------
+    |
+    | Only enforced when BINOM_TOOLS_ACCOUNTS_ENABLED=true.
+    |
+    */
+    'login_required' => [
+        'dbt-governance-macro-generator' => filter_var(env('TOOL_DBT_GOVERNANCE_MACRO_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'pii-policy-generator' => filter_var(env('TOOL_PII_POLICY_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'pii-unreviewed-gate-generator' => filter_var(env('TOOL_PII_UNREVIEWED_GATE_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'pii-recommend-generator' => filter_var(env('TOOL_PII_RECOMMEND_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'dbt-dq-macro-generator' => filter_var(env('TOOL_DBT_DQ_MACRO_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'dbt-dq-rules-generator' => filter_var(env('TOOL_DBT_DQ_RULES_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'dbt-dq-history-generator' => filter_var(env('TOOL_DBT_DQ_HISTORY_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'schema-yml-editor' => filter_var(env('TOOL_SCHEMA_YML_EDITOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'prompt-studio' => filter_var(env('TOOL_PROMPT_STUDIO_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'governance-ai-sanitizer' => filter_var(env('TOOL_GOVERNANCE_AI_SANITIZER_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Governance overview page header ( /tools )
     |--------------------------------------------------------------------------
     */

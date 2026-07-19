@@ -3,20 +3,26 @@
 require_once __DIR__.'/../app/Support/helpers.php';
 
 use App\Http\Controllers\About\AboutController;
+use App\Http\Controllers\Accounts\AuthController;
+use App\Http\Controllers\Accounts\PlanApiController;
+use App\Http\Controllers\Accounts\StoryAclController;
+use App\Http\Controllers\Accounts\TeamsController;
+use App\Http\Controllers\Accounts\UsersController;
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
+use App\Http\Controllers\SprintPlanner\SprintPlannerController;
 use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
 use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
-use App\Http\Controllers\Tools\PromptStudioConfigController;
-use App\Http\Controllers\Tools\PromptStudioController;
 use App\Http\Controllers\Tools\PiiPolicyGeneratorController;
 use App\Http\Controllers\Tools\PiiRecommendGeneratorController;
 use App\Http\Controllers\Tools\PiiUnreviewedGateGeneratorController;
+use App\Http\Controllers\Tools\PromptStudioConfigController;
+use App\Http\Controllers\Tools\PromptStudioController;
 use App\Http\Controllers\Tools\SchemaYmlEditorController;
 use App\Http\Controllers\Tools\ToolsLandingController;
 use App\Http\Controllers\Tools\ToolsOverviewController;
@@ -47,6 +53,62 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/playbooks/{slug}', [PlaybookController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name($name('playbooks.show'));
+
+    Route::middleware(['accounts.enabled'])->group(static function () use ($name): void {
+        Route::get('/login', [AuthController::class, 'showLogin'])->name($name('accounts.login'));
+        Route::post('/login', [AuthController::class, 'login'])
+            ->middleware('throttle:10,1')
+            ->name($name('accounts.login.submit'));
+        Route::post('/logout', [AuthController::class, 'logout'])->name($name('accounts.logout'));
+    });
+
+    Route::middleware(['accounts.enabled', 'accounts.auth'])->group(static function () use ($name): void {
+        Route::get('/account', [AuthController::class, 'profile'])->name($name('accounts.profile'));
+        Route::put('/account', [AuthController::class, 'updateProfile'])->name($name('accounts.profile.update'));
+        Route::get('/account/users', [UsersController::class, 'index'])->name($name('accounts.users'));
+        Route::post('/account/users', [UsersController::class, 'store'])->name($name('accounts.users.store'));
+        Route::put('/account/users/{userId}', [UsersController::class, 'update'])
+            ->where('userId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.users.update'));
+        Route::delete('/account/users/{userId}', [UsersController::class, 'destroy'])
+            ->where('userId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.users.destroy'));
+        Route::get('/account/teams', [TeamsController::class, 'index'])->name($name('accounts.teams'));
+        Route::post('/account/teams', [TeamsController::class, 'store'])->name($name('accounts.teams.store'));
+        Route::put('/account/teams/{teamId}', [TeamsController::class, 'update'])
+            ->where('teamId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.teams.update'));
+        Route::delete('/account/teams/{teamId}', [TeamsController::class, 'destroy'])
+            ->where('teamId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.teams.destroy'));
+        Route::get('/account/story-access', [StoryAclController::class, 'index'])->name($name('accounts.story-acl'));
+        Route::put('/account/story-access/{slug}', [StoryAclController::class, 'update'])
+            ->where('slug', '[a-z0-9-]+')
+            ->name($name('accounts.story-acl.update'));
+        Route::post('/playbooks/{slug}/read', [StoryAclController::class, 'markRead'])
+            ->where('slug', '[a-z0-9-]+')
+            ->name($name('accounts.playbooks.read'));
+
+        Route::get('/api/sprint-planner/plans', [PlanApiController::class, 'index'])->name($name('accounts.plans.index'));
+        Route::get('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'show'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.show'));
+        Route::post('/api/sprint-planner/plans', [PlanApiController::class, 'store'])->name($name('accounts.plans.store'));
+        Route::delete('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'destroy'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.destroy'));
+        Route::get('/api/sprint-planner/stories', [PlanApiController::class, 'storyMeta'])->name($name('accounts.plans.stories'));
+    });
+
+    Route::get('/sprint-planner', [SprintPlannerController::class, 'index'])->name($name('sprint-planner.index'));
+    Route::get('/sprint-planner/templates', [SprintPlannerController::class, 'templates'])->name($name('sprint-planner.templates'));
+    Route::get('/sprint-planner/people', [SprintPlannerController::class, 'people'])->name($name('sprint-planner.people'));
+    Route::get('/sprint-planner/{instanceId}/settings', [SprintPlannerController::class, 'settings'])
+        ->where('instanceId', 'plan_[a-zA-Z0-9_]+')
+        ->name($name('sprint-planner.settings'));
+    Route::get('/sprint-planner/{instanceId}', [SprintPlannerController::class, 'show'])
+        ->where('instanceId', 'plan_[a-zA-Z0-9_]+')
+        ->name($name('sprint-planner.show'));
     Route::get('/about', [AboutController::class, 'show'])->name($name('about.show'));
     Route::get('/impressum', [ImpressumController::class, 'show'])->name($name('legal.impressum'));
     Route::get('/datenschutz', [PrivacyController::class, 'show'])->name($name('legal.privacy'));

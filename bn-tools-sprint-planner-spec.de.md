@@ -1,4 +1,3 @@
-# BN Tools – Sprint Planner Spezifikation
 
 ## 1. Ziel
 

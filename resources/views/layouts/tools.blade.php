@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-<html lang="{{ current_locale() }}" data-app-base="{{ app_base_path() }}">
+<html
+    lang="{{ current_locale() }}"
+    data-app-base="{{ app_base_path() }}"
+    @if (! empty($accountsEnabled) && ! empty($accountUser))
+        data-accounts-read-mode="1"
+        data-accounts-read-url="{{ $accountsReadUrlTemplate }}"
+        data-accounts-read-slugs='@json($accountsReadSlugs ?? [])'
+    @endif
+>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
