@@ -13,6 +13,10 @@ export function createLocalId(prefix) {
     return `${prefix}${rand}`;
 }
 
+export function createUserTemplateId() {
+    return createLocalId('utpl_');
+}
+
 export function createPersonId() {
     return createLocalId('person_');
 }

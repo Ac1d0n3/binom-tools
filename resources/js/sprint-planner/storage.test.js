@@ -13,14 +13,20 @@ import {
     calculateOverallProgress,
     resolveSprints,
 } from './progress.js';
-import { filterSprints, itemMatchesFilters } from './filters.js';
+import { filterSprints, itemMatchesFilters, normalizePlanFilters } from './filters.js';
 import {
     EXPORT_TYPE_WORKSPACE,
     applyImport,
     buildWorkspaceExport,
     validateImportPayload,
 } from './export-import.js';
-import { addCustomSprint, setPlanPassword, startInstanceFromTemplate } from './instance-manager.js';
+import { addCustomSprint, claimAllUnassigned, claimItem, setPlanPassword, startInstanceFromTemplate } from './instance-manager.js';
+import {
+    createLinkAttachment,
+    isAllowedAttachment,
+    normalizeAttachments,
+    validateAttachmentFile,
+} from './attachments.js';
 import { hashPassword, isPasswordProtected, verifyPassword } from './plan-password.js';
 import { ensureDefaultCatalog, DEFAULT_PEOPLE, DEFAULT_TEAMS } from './defaults.js';
 
@@ -303,6 +309,39 @@ describe('filters', () => {
         expect(itemMatchesFilters(item, { myTasks: true }, { activePersonId: 'person_02' })).toBe(false);
     });
 
+    it('ANDs myTasks with unassigned (both on → no match for assigned items)', () => {
+        const mine = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        const open = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: null,
+        };
+        expect(itemMatchesFilters(mine, { myTasks: true, unassigned: true }, { activePersonId: 'person_01' })).toBe(false);
+        expect(itemMatchesFilters(open, { myTasks: true, unassigned: true }, { activePersonId: 'person_01' })).toBe(false);
+        expect(itemMatchesFilters(open, { unassigned: true }, { activePersonId: 'person_01' })).toBe(true);
+        expect(itemMatchesFilters(mine, { myTasks: true }, { activePersonId: 'person_01' })).toBe(true);
+    });
+
+    it('ANDs person filter with status', () => {
+        const item = {
+            completed: false,
+            status: 'open',
+            priority: 'normal',
+            assigneeType: 'person',
+            assigneeId: 'person_01',
+        };
+        expect(itemMatchesFilters(item, { personId: 'person_01', status: 'open' }, { activePersonId: null })).toBe(true);
+        expect(itemMatchesFilters(item, { personId: 'person_01', status: 'blocked' }, { activePersonId: null })).toBe(false);
+    });
+
     it('filters current week sprints', () => {
         const sprints = [
             { number: 1, tasks: [{ completed: false, status: 'open', priority: 'normal' }], deliverables: [] },
@@ -375,6 +414,97 @@ describe('instance-manager', () => {
         expect(template.locales.en.title).toBe('EN');
     });
 
+    it('assigns template items to the active person on start', () => {
+        const template = {
+            slug: 'demo-assign',
+            version: 1,
+            sprints: [
+                {
+                    id: 'sprint_1',
+                    number: 1,
+                    tasks: [{ id: 'task_a', assigneeType: 'person', assigneeId: null }],
+                    deliverables: [{ id: 'del_a', assigneeType: 'person', assigneeId: null }],
+                },
+            ],
+            locales: {
+                de: { title: 'DE', description: '', sprints: [] },
+                en: { title: 'EN', description: '', sprints: [] },
+            },
+        };
+        const started = startInstanceFromTemplate(template, { startedAt: '2026-07-01' });
+        expect(started.ok).toBe(true);
+        const taskKey = statusKey('demo-assign', 'sprint_1', 'task', 'task_a');
+        const delKey = statusKey('demo-assign', 'sprint_1', 'deliverable', 'del_a');
+        expect(started.instance.itemOverrides[taskKey].assigneeId).toBe('person_thomas_a');
+        expect(started.instance.itemOverrides[delKey].assigneeId).toBe('person_thomas_a');
+        expect(started.instance.templateSnapshot?.slug).toBe('demo-assign');
+        expect(started.instance.templateSnapshot?.sprints).toHaveLength(1);
+    });
+
+    it('keeps templateSlug when claim mutates overrides', () => {
+        const template = {
+            slug: 'demo-keep-slug',
+            version: 1,
+            sprints: [{ id: 'sprint_1', number: 1, tasks: [{ id: 'task_b' }], deliverables: [] }],
+            locales: {
+                de: { title: 'DE', description: '', sprints: [] },
+                en: { title: 'EN', description: '', sprints: [] },
+            },
+        };
+        const started = startInstanceFromTemplate(template, { startedAt: '2026-07-01' });
+        const key = statusKey('demo-keep-slug', 'sprint_1', 'task', 'task_b');
+        const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_matthias');
+        expect(claimed.ok).toBe(true);
+        const again = loadWorkspace().data.instances[started.instance.id];
+        expect(again.templateSlug).toBe('demo-keep-slug');
+        expect(again.startedAt).toBe('2026-07-01');
+        expect(again.templateSnapshot?.slug).toBe('demo-keep-slug');
+    });
+
+    it('claims an unassigned override item', () => {
+        const template = {
+            slug: 'demo-claim',
+            version: 1,
+            sprints: [
+                {
+                    id: 'sprint_1',
+                    number: 1,
+                    tasks: [{ id: 'task_b' }],
+                    deliverables: [],
+                },
+            ],
+            locales: {
+                de: { title: 'DE', description: '', sprints: [{ id: 'sprint_1', title: 'S1', goal: 'G', tasks: [{ id: 'task_b', label: 'T' }] }] },
+                en: { title: 'EN', description: '', sprints: [{ id: 'sprint_1', title: 'S1', goal: 'G', tasks: [{ id: 'task_b', label: 'T' }] }] },
+            },
+        };
+        const started = startInstanceFromTemplate(template, { startedAt: '2026-07-01' });
+        const key = statusKey('demo-claim', 'sprint_1', 'task', 'task_b');
+        expect(started.instance.itemOverrides[key].assigneeId).toBe('person_thomas_a');
+
+        const ws = loadWorkspace().data;
+        ws.instances[started.instance.id].itemOverrides[key].assigneeId = null;
+        saveWorkspace(ws);
+
+        const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_matthias');
+        expect(claimed.ok).toBe(true);
+        expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
+            .toBe('person_matthias');
+
+        const again = loadWorkspace().data;
+        again.instances[started.instance.id].itemOverrides[key].assigneeId = null;
+        saveWorkspace(again);
+
+        const all = claimAllUnassigned(
+            started.instance.id,
+            [{ kind: 'task', statusKey: key, custom: false, sprintId: 'sprint_1', assigneeId: null }],
+            'person_thomas_a',
+        );
+        expect(all.ok).toBe(true);
+        expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
+            .toBe('person_thomas_a');
+    });
+
     it('stores a password hash and verifies it', async () => {
         const template = {
             slug: 'demo',
@@ -392,6 +522,35 @@ describe('instance-manager', () => {
         expect(await verifyPassword('secret', instance)).toBe(true);
         expect(await verifyPassword('wrong', instance)).toBe(false);
         expect(instance.passwordHash).not.toBe('secret');
+    });
+});
+
+describe('attachments', () => {
+    it('normalizes link and file metadata', () => {
+        const link = createLinkAttachment({ label: 'Deck', href: 'https://example.com/a.pptx' });
+        expect(link.kind).toBe('link');
+        expect(link.name).toBe('Deck');
+        const list = normalizeAttachments([
+            link,
+            { id: 'att_x', name: 'shot.png', mime: 'image/png', kind: 'file', href: '', previewable: true },
+            { id: 'att_x', name: 'dup' },
+        ]);
+        expect(list).toHaveLength(2);
+        expect(list[1].previewable).toBe(true);
+    });
+
+    it('validates mime and size', () => {
+        expect(isAllowedAttachment('application/pdf', 'a.pdf')).toBe(true);
+        expect(isAllowedAttachment('application/zip', 'a.zip')).toBe(false);
+        const ok = validateAttachmentFile({ name: 'a.pdf', type: 'application/pdf', size: 100 });
+        expect(ok.ok).toBe(true);
+        const big = validateAttachmentFile({
+            name: 'a.pdf',
+            type: 'application/pdf',
+            size: 20 * 1024 * 1024,
+        });
+        expect(big.ok).toBe(false);
+        expect(big.error).toBe('attachment-too-large');
     });
 });
 

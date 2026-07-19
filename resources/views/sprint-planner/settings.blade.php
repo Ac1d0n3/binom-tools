@@ -13,11 +13,12 @@
         id="sp-app"
         data-sp-page="settings"
         data-sp-instance-id="{{ $instanceId }}"
-        data-sp-templates='@json($templatesJson)'
+        data-sp-templates="{{ json_encode($templatesJson ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) }}"
         data-sp-show-url="{{ locale_route('sprint-planner.show', ['instanceId' => $instanceId]) }}"
         data-sp-index-url="{{ locale_route('sprint-planner.index') }}"
         @include('components.sprint-planner.accounts-attrs')
     >
+        @include('components.sprint-planner.bootstrap-json')
         <x-sprint-planner.subnav active="plans" />
 
         <div id="sp-plan-missing" class="sp-empty" hidden>

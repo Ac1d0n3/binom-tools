@@ -1,5 +1,6 @@
 import { getLocale, withAppBasePath } from '../../locale.js';
 import { isAccountsMode, readAccountsBootstrap } from '../accounts-bridge.js';
+import { resolveExternalHelpHref } from '../external-links.js';
 import { isPlaybookRead, markPlaybookRead } from '../../playbooks/read-state.js';
 import { itemHasHelp, requiredStoryProgress } from '../progress.js';
 import { spT } from './helpers.js';
@@ -21,6 +22,15 @@ export function hydrateStoryTitles(stories) {
 }
 
 export function readStoryTitlesFromDom(root = document.getElementById('sp-app')) {
+    const fromScript = document.getElementById('sp-bootstrap-stories');
+    if (fromScript?.textContent?.trim()) {
+        try {
+            hydrateStoryTitles(JSON.parse(fromScript.textContent));
+            return;
+        } catch {
+            // fall through
+        }
+    }
     if (!root?.dataset?.spStories) {
         return;
     }
@@ -57,6 +67,7 @@ function isStoryRead(slug) {
 }
 
 /**
+ * Resolve playbook story URLs (internal). Help/community links use resolveExternalHelpHref.
  * @param {string} href
  */
 export function resolveHelpHref(href) {
@@ -75,6 +86,11 @@ export function resolveHelpHref(href) {
     }
     return value;
 }
+
+/**
+ * @param {string} href
+ */
+export { resolveExternalHelpHref } from '../external-links.js';
 
 /**
  * @param {import('../progress.js').SpStoryRef} story
@@ -281,7 +297,11 @@ export function fillHelpPanel(payload, onChanged) {
         for (const link of payload.helpLinks) {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.href = resolveHelpHref(link.href);
+            const href = resolveExternalHelpHref(link.href);
+            if (href === '#') {
+                continue;
+            }
+            a.href = href;
             a.target = '_blank';
             a.rel = 'noopener noreferrer';
             a.textContent = link.label || link.href;

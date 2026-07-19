@@ -79,6 +79,18 @@ export function storageErrorMessage(key) {
     if (key === 'storage-full') {
         return spT('sp.error.storageFull');
     }
+    if (key === 'active-person-missing') {
+        return spT('sp.error.activePersonMissing');
+    }
+    if (key === 'attachment-too-large') {
+        return spT('sp.error.attachmentTooLarge');
+    }
+    if (key === 'attachment-type') {
+        return spT('sp.error.attachmentType');
+    }
+    if (key === 'attachment-upload' || String(key || '').startsWith('attachment-upload')) {
+        return spT('sp.error.attachmentUpload');
+    }
     if (key === 'storage-corrupt') {
         return spT('sp.error.storageCorrupt');
     }
@@ -93,13 +105,14 @@ export function storageErrorMessage(key) {
  * @param {Array<{id: string, label: string}>} options
  * @param {string} [selected]
  * @param {boolean} [includeEmpty]
+ * @param {string} [emptyLabel]
  */
-export function fillSelect(select, options, selected = '', includeEmpty = true) {
+export function fillSelect(select, options, selected = '', includeEmpty = true, emptyLabel = '') {
     select.innerHTML = '';
     if (includeEmpty) {
         const opt = document.createElement('option');
         opt.value = '';
-        opt.textContent = spT('sp.field.none');
+        opt.textContent = emptyLabel || spT('sp.field.none');
         select.appendChild(opt);
     }
     for (const item of options) {
@@ -134,18 +147,44 @@ export function planOwnershipLabel(instance, workspace) {
 }
 
 /**
+ * Read JSON from a bootstrap <script type="application/json" id="…"> tag.
+ * @param {string} elementId
+ * @param {unknown} [fallback]
+ */
+export function readBootstrapJson(elementId, fallback = null) {
+    const el = document.getElementById(elementId);
+    if (!el?.textContent?.trim()) {
+        return fallback;
+    }
+    try {
+        return JSON.parse(el.textContent);
+    } catch {
+        return fallback;
+    }
+}
+
+/**
  * @returns {object[]}
  */
 export function readTemplatesFromDom() {
+    const fromScript = readBootstrapJson('sp-bootstrap-templates', null);
     const root = document.getElementById('sp-app');
-    if (!root) {
-        return [];
+    let fromAttr = [];
+    if (root?.dataset?.spTemplates) {
+        try {
+            const parsed = JSON.parse(root.dataset.spTemplates);
+            fromAttr = Array.isArray(parsed) ? parsed : [];
+        } catch {
+            fromAttr = [];
+        }
     }
-    try {
-        return JSON.parse(root.dataset.spTemplates || '[]');
-    } catch {
-        return [];
+    if (Array.isArray(fromScript) && fromScript.length > 0) {
+        return fromScript;
     }
+    if (fromAttr.length > 0) {
+        return fromAttr;
+    }
+    return Array.isArray(fromScript) ? fromScript : [];
 }
 
 /**

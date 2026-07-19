@@ -73,6 +73,8 @@ final class PlanStore
             if (($existing['ownerUserId'] ?? null) !== $actor->id && ! $this->isViewer($actor, $existing)) {
                 throw new InvalidArgumentException('Only owner or viewers can update.');
             }
+            // Never let a partial client payload wipe structural identity.
+            $plan = $this->mergePreservedFields($existing, $plan);
         }
 
         $plan['id'] = $id;
@@ -146,5 +148,50 @@ final class PlanStore
         $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $planId) ?: 'invalid';
 
         return $this->config->plansDirectory().DIRECTORY_SEPARATOR.$safe.'.json';
+    }
+
+    /**
+     * Keep plan identity when a partial client payload left them empty.
+     * Progress/override bags are intentionally not merged (empty can be legitimate).
+     *
+     * @param  array<string, mixed>  $existing
+     * @param  array<string, mixed>  $incoming
+     * @return array<string, mixed>
+     */
+    private function mergePreservedFields(array $existing, array $incoming): array
+    {
+        foreach (['templateSlug', 'startedAt', 'createdAt'] as $key) {
+            $next = $incoming[$key] ?? null;
+            $prev = $existing[$key] ?? null;
+            if (($next === null || $next === '') && $prev !== null && $prev !== '') {
+                $incoming[$key] = $prev;
+            }
+        }
+
+        $prevTranslations = $existing['translations'] ?? null;
+        $nextTranslations = $incoming['translations'] ?? null;
+        if ($this->isEmptyStructure($nextTranslations) && ! $this->isEmptyStructure($prevTranslations)) {
+            $incoming['translations'] = $prevTranslations;
+        }
+
+        $prevSnapshot = $existing['templateSnapshot'] ?? null;
+        $nextSnapshot = $incoming['templateSnapshot'] ?? null;
+        if ($this->isEmptyStructure($nextSnapshot) && ! $this->isEmptyStructure($prevSnapshot)) {
+            $incoming['templateSnapshot'] = $prevSnapshot;
+        }
+
+        return $incoming;
+    }
+
+    private function isEmptyStructure(mixed $value): bool
+    {
+        if ($value === null) {
+            return true;
+        }
+        if (! is_array($value)) {
+            return false;
+        }
+
+        return $value === [];
     }
 }

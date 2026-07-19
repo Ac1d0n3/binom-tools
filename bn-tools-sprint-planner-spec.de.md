@@ -76,9 +76,17 @@ Empfohlene Routen:
 ```text
 /sprint-planner
 /sprint-planner/templates
+/sprint-planner/create
 /sprint-planner/people
 /sprint-planner/{instanceId}
 /sprint-planner/{instanceId}/settings
+```
+
+Accounts-API (nur eingeloggt):
+
+```text
+/api/sprint-planner/user-templates
+/api/sprint-planner/user-templates/{templateId}
 ```
 
 Die tatsächlichen Routen müssen an die vorhandene Routing- und Lokalisierungsstruktur von BN Tools angepasst werden.
@@ -367,9 +375,11 @@ Sprint-Stories und Links:
 ```text
 stories        = [{ slug, required }]  (Pflichtlektüre vs. optional)
 linkedStories  = Playbook-Slugs (Legacy → required: true)
-links          = freie Links [{ label, href }]
+links          = externe Hilfe-/Community-Links [{ label, href }]
 flowSteps      = Schritte für Playbook-FLOW-Darstellung (mind. 2)
 ```
+
+`links` und `helpLinks` dürfen **nur** externe URLs sein (`https://`, `http://`, `mailto:`). Keine bare Playbook-Slugs und keine `/playbooks/…`-Pfade — Stories gehören ausschließlich ins Stories-Feld.
 
 Task-/Deliverable-Hilfe:
 
@@ -377,11 +387,50 @@ Task-/Deliverable-Hilfe:
 helpText       = lokalisierter Hilfetext
 stories        = [{ slug, required }]
 linkedStories  = Legacy-CSV/Liste → required: true
-helpLinks      = [{ label, href }]
+helpLinks      = [{ label, href }]  (nur externe URLs)
 demoCode       = optionaler Demo-/Checklisten-Block
+attachments    = optionale Anhänge (siehe § Anhänge)
+table          = optionale Datentabelle (Spalten + Zeilen)
 ```
 
+### Task-Tabellen
+
+Aufgaben/Deliverables können eine editierbare Tabelle tragen (z. B. Quellen sammeln):
+
+```text
+table: {
+  columns: [{ id, label }],
+  rows: [{ id, cells: { [columnId]: string } }]
+}
+```
+
+Vorlagen/Creator können Spalten vorgeben (z. B. Source, Owner, Access, Consumed by); Instanzen füllen Zeilen. Darstellung in der Planansicht, im Item-Dialog und in Detailed-/Documentation-Reports.
+
 Hilfe-Panel (UI): Story-Karten mit Titel, Pflicht/Optional, gelesen/ungelesen, Öffnen, Als gelesen markieren. Item-Zeile zeigt `?` mit Lese-Fortschritt, keine Slug-Badges.
+
+### Anhänge
+
+Aufgaben und Deliverables können Anhänge tragen:
+
+```text
+attachments: [{
+  id, name, mime, size,
+  kind: 'link' | 'file',
+  href, previewable,
+  uploadedAt, uploadedBy,
+  localBlob?
+}]
+```
+
+Erlaubt: Bilder, PDF, Word, PowerPoint, Excel (inkl. CSV). Max. 10 MB pro Datei.
+
+Speicherung:
+
+- **Link-Anhänge:** immer (lokal und Accounts)
+- **Datei-Anhänge lokal/Demo:** Metadaten im Workspace-JSON, Blob in IndexedDB (`bn-tools-sprint-planner-blobs-v1`)
+- **Datei-Anhänge Accounts (eingeloggt):** Upload unter `/api/sprint-planner/plans/{planId}/attachments`, Dateien neben dem Plan-JSON auf dem Server
+
+Im Detailed-Report erscheinen Bilder als Preview, andere Dateien als Download-Link.
 
 Blocker (Instanz-Overrides / Custom-Items):
 
@@ -391,7 +440,11 @@ blockerReason: "…"
 blockerSince: YYYY-MM-DD
 ```
 
-Statusbericht: druckbare HTML-Ansicht (Browser „Als PDF speichern“) mit Fortschritt, Blockern, Zuweisungen.
+Statusbericht: druckbare HTML-Ansicht (Browser „Als PDF speichern“) mit drei Modi:
+
+- **Executive (CEO):** KPI-Strip (Fortschritt, aktueller Sprint, Blocker-Anzahl, Unassigned), Sprint-Ziel, Top-Blocker, offene Items des aktuellen Sprints, Fortschritt je Sprint
+- **Detailed:** vollständige Item-Liste pro Sprint inkl. Status, Assignee, Notiz, Hilfetext, Hilfe-Links, Tabellen und Anhänge
+- **Documentation:** Doku ohne Fortschritts-KPIs — Ziele, Hilfetext, externe Links, Tabellen, Notizen, Anhänge
 
 Stack-Vorlagen (neben dem generischen First Quarter):
 
@@ -616,11 +669,15 @@ Arbeiten als: Thomas Lindackers
 Diese Auswahl beeinflusst:
 
 - Filter „Meine Aufgaben“
-- Standardzuordnung bei neuen Aufgaben
+- Standardzuordnung bei neuen Aufgaben und Deliverables
+- Standardzuordnung aller Template-Tasks beim Start einer Planinstanz (wenn eine aktive Person gesetzt ist)
 - Anzeige persönlicher Fortschritte
+- Aktion „Übernehmen“ (Pick) für unzugewiesene Elemente
 - keine Rechte oder Sicherheit
 
 Die aktive Person ist keine Authentifizierung.
+
+Unzugewiesene Elemente zeigen in der Zeile **Übernehmen** (setzt die aktive Person) und **Zuweisen** (öffnet den Dialog). Wenn alle Elemente eines Plans unzugewiesen sind, erscheint ein Banner mit **Alle übernehmen**.
 
 ### 11.4 Berechtigungen
 
@@ -978,7 +1035,9 @@ Mindestens testen:
 - aktueller Sprint
 - Erstellen, Bearbeiten und Löschen eigener Sprints
 - Zuordnung von Personen und Teams
+- Default-Assignee beim Planstart und Pick/Claim-all
 - Filter „Meine Aufgaben“
+- Anhänge (Normalisierung, MIME-Whitelist)
 - LocalStorage-Lesen und -Schreiben
 - beschädigte Daten
 - Export und Import
@@ -1010,6 +1069,13 @@ Die Umsetzung ist abgeschlossen, wenn:
 15. Bestehende BN-Tools-Bereiche unverändert funktionieren.
 16. Responsive Darstellung und Tastaturbedienung funktionieren.
 17. Es wurden passende Tests ergänzt.
+18. Unzugewiesene Tasks können per Übernehmen/Zuweisen/Alle übernehmen der aktiven Person zugeordnet werden.
+19. Berichte Executive, Detailed und Documentation sind druckbar; Detailed zeigt Notizen, Hilfetext, Links, Tabellen und Anhänge; Documentation ohne Progress-KPIs.
+20. Anhänge (Links immer; Dateien lokal via IndexedDB bzw. Accounts via Upload-API) funktionieren.
+21. Assignee-Filter sind XOR (All / My tasks / Unassigned / Person / Team) — nicht UND.
+22. Hilfe-Links sind nur externe URLs; Stories bleiben im Stories-Feld.
+23. Eingeloggte Nutzer können User-Templates erstellen, bearbeiten und löschen (Plan Creator).
+24. Task-Tabellen mit vorgebbaren Spalten und editierbaren Zeilen funktionieren.
 
 ---
 
@@ -1017,15 +1083,23 @@ Die Umsetzung ist abgeschlossen, wenn:
 
 Nicht implementieren:
 
-- Login
-- echte Benutzerkonten
-- serverseitige Rechte
 - gemeinsame Echtzeitbearbeitung
-- Cloud-Synchronisierung
+- Cloud-Synchronisierung über Geräte hinweg (außer Accounts-Pläne auf derselben Instanz)
 - E-Mail-Benachrichtigungen
 - Kalenderintegration
-- Datenbank
+- relationale Datenbank
 - komplexes Kanban
 - Drag-and-drop, falls es zusätzliche große Dependencies erfordert
 
-Die Architektur soll eine spätere Erweiterung ermöglichen, aber Version 1 bleibt vollständig lokal.
+**Hinweis:** Accounts-Modus (Login, geteilte Pläne, Datei-Upload für Anhänge, User-Templates) existiert als optionale Server-Erweiterung. Der lokale Modus ohne Login bleibt vollständig nutzbar; Dateianhänge liegen dann in IndexedDB. Der Plan Creator kann lokal einen Plan mit `templateSnapshot` starten; Speichern als wiederverwendbare Vorlage erfordert Login.
+
+### User-Templates und Plan Creator
+
+- Repo-Markdown-Vorlagen bleiben read-only.
+- Eingeloggte Nutzer speichern eigene Vorlagen unter `storage/app/bn-tools/user-templates/` (`utpl_*`).
+- Plan Creator (`/sprint-planner/create`): Sprints/Tasks mit Hilfe, externen Links, optionalen Tabellen-Spalten; Aktionen „Als Vorlage speichern“ und „Plan starten“.
+- Custom-Pläne speichern bei Bedarf `templateSnapshot` auf der Instanz, damit die Struktur ohne Repo-Datei auflösbar bleibt.
+
+### Plan-Filter (Assignee)
+
+Eine Dimension `assigneeFilter`: `all` | `myTasks` | `unassigned` | `person` | `team` (nicht unabhängige UND-Checkboxen). Person/Team-Selects nutzen „Beliebig“ als Leerwert. Leere Treffer zeigen einen Hinweis statt weißer Fläche.

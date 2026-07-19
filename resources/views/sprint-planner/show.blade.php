@@ -14,12 +14,13 @@
         id="sp-app"
         data-sp-page="show"
         data-sp-instance-id="{{ $instanceId }}"
-        data-sp-templates='@json($templatesJson)'
-        data-sp-stories='@json($storiesJson ?? [])'
+        data-sp-templates="{{ json_encode($templatesJson ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) }}"
+        data-sp-stories="{{ json_encode($storiesJson ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) }}"
         data-sp-index-url="{{ locale_route('sprint-planner.index') }}"
         data-sp-settings-url="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}"
         @include('components.sprint-planner.accounts-attrs')
     >
+        @include('components.sprint-planner.bootstrap-json')
         <x-sprint-planner.subnav active="plans" />
 
         <p id="sp-ephemeral-banner" class="sp-local-banner" role="status" hidden>
@@ -77,11 +78,32 @@
                     </div>
                 </div>
                 <div class="sp-plan-header__actions">
-                    <button type="button" class="tools-btn tools-btn--secondary" id="sp-status-report-btn" data-i18n="sp.action.statusReport">Status report</button>
+                    <button type="button" class="tools-btn tools-btn--secondary" id="sp-status-report-btn" data-i18n="sp.action.statusReport">Report</button>
                     <a href="{{ locale_route('sprint-planner.settings', ['instanceId' => $instanceId]) }}" class="tools-btn tools-btn--secondary" data-i18n="sp.action.settings">Settings</a>
                     <button type="button" class="tools-btn tools-btn--primary" id="sp-add-sprint" data-i18n="sp.action.addSprint">Add sprint</button>
                 </div>
             </header>
+
+            <div id="sp-unassigned-banner" class="sp-unassigned-banner" role="status" hidden>
+                <p id="sp-unassigned-banner-text" data-i18n="sp.unassigned.banner">All tasks are unassigned.</p>
+                <button type="button" class="tools-btn tools-btn--primary tools-btn--small" id="sp-claim-all-btn" data-i18n="sp.action.claimAll">Claim all</button>
+            </div>
+
+            <div id="sp-template-missing" class="sp-empty sp-template-recover" hidden>
+                <p id="sp-template-missing-text"></p>
+                <p class="sp-password-note" data-i18n="sp.recover.lead">
+                    Choose the original template to restore this plan’s tasks. Progress and assignments are kept when status keys still match.
+                </p>
+                <div class="sp-action-row sp-template-recover__row">
+                    <label class="sp-field">
+                        <span data-i18n="sp.recover.pickTemplate">Template</span>
+                        <select id="sp-recover-template" class="tools-input"></select>
+                    </label>
+                    <button type="button" class="tools-btn tools-btn--primary" id="sp-recover-template-btn" data-i18n="sp.recover.apply">
+                        Restore template
+                    </button>
+                </div>
+            </div>
 
             <div class="sp-filters sp-filters--plan" role="group" aria-label="Plan item filters">
                 <label class="sp-check"><input type="checkbox" id="sp-filter-current-week"> <span data-i18n="sp.filter.currentWeek">Current week only</span></label>
@@ -122,6 +144,8 @@
 
             <div id="sp-blockers" class="sp-blockers" hidden></div>
 
+            <p id="sp-filter-empty" class="sp-empty sp-filter-empty" hidden data-i18n="sp.filter.empty">No tasks match these filters.</p>
+
             <div id="sp-sprints" class="sp-sprints"></div>
         </div>
 
@@ -141,7 +165,7 @@
                 </label>
                 <label class="sp-field">
                     <span data-i18n="sp.field.sprintLinks">Links</span>
-                    <textarea id="sp-sprint-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | /path-or-url"></textarea>
+                    <textarea id="sp-sprint-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | https://…"></textarea>
                 </label>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
@@ -195,12 +219,35 @@
                 </label>
                 <label class="sp-field">
                     <span data-i18n="sp.field.helpLinks">Help links</span>
-                    <textarea id="sp-item-help-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | /path-or-url"></textarea>
+                    <textarea id="sp-item-help-links" class="tools-input" rows="3" data-i18n-placeholder="sp.field.linksHint" placeholder="Label | https://…"></textarea>
                 </label>
+                <fieldset class="sp-field" id="sp-item-table-field">
+                    <legend data-i18n="sp.field.table">Data table</legend>
+                    <div id="sp-item-table-editor"></div>
+                </fieldset>
                 <label class="sp-field">
                     <span data-i18n="sp.field.demoCode">Demo code</span>
                     <textarea id="sp-item-demo-code" class="tools-input" rows="3" maxlength="8000"></textarea>
                 </label>
+                <fieldset class="sp-field sp-attachments-field">
+                    <legend data-i18n="sp.field.attachments">Attachments</legend>
+                    <ul id="sp-item-attachments-list" class="sp-attachments-list"></ul>
+                    <div class="sp-attachments-add">
+                        <label class="sp-field sp-field--compact">
+                            <span data-i18n="sp.field.attachmentLinkLabel">Link label</span>
+                            <input type="text" id="sp-item-att-label" class="tools-input" maxlength="200">
+                        </label>
+                        <label class="sp-field sp-field--compact">
+                            <span data-i18n="sp.field.attachmentLinkUrl">URL</span>
+                            <input type="url" id="sp-item-att-url" class="tools-input" maxlength="2000" placeholder="https://">
+                        </label>
+                        <button type="button" class="tools-btn tools-btn--secondary tools-btn--small" id="sp-item-att-add-link" data-i18n="sp.action.addAttachmentLink">Add link</button>
+                        <label class="tools-btn tools-btn--secondary tools-btn--small sp-file-btn">
+                            <span data-i18n="sp.action.addAttachmentFile">Attach file</span>
+                            <input type="file" id="sp-item-att-file" accept=".jpg,.jpeg,.png,.gif,.webp,.svg,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,image/*,application/pdf" hidden>
+                        </label>
+                    </div>
+                </fieldset>
                 <div class="sp-dialog__actions">
                     <button type="submit" value="cancel" class="tools-btn tools-btn--secondary" data-i18n="sp.action.cancel">Cancel</button>
                     <button type="submit" value="confirm" class="tools-btn tools-btn--primary" data-i18n="sp.action.save">Save</button>
@@ -219,7 +266,12 @@
 
         <div id="sp-status-report" class="sp-status-report" hidden aria-hidden="true">
             <div class="sp-status-report__header">
-                <h2 class="sp-dialog__title" data-i18n="sp.report.title">Status report</h2>
+                <h2 class="sp-dialog__title" data-i18n="sp.report.title">Report</h2>
+                <div class="sp-status-report__modes" role="group" aria-label="Report mode">
+                    <button type="button" id="sp-report-mode-executive" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="executive" data-i18n="sp.report.mode.executive">Executive (CEO)</button>
+                    <button type="button" id="sp-report-mode-detailed" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="detailed" data-i18n="sp.report.mode.detailed">Detailed</button>
+                    <button type="button" id="sp-report-mode-documentation" class="tools-btn tools-btn--secondary tools-btn--small" data-report-mode="documentation" data-i18n="sp.report.mode.documentation">Documentation</button>
+                </div>
                 <div class="sp-status-report__actions">
                     <button type="button" id="sp-status-report-print" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.action.printReport">Print</button>
                     <button type="button" id="sp-status-report-close" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="sp.help.close" aria-label="Close">Close</button>

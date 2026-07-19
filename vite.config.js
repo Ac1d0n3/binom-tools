@@ -45,6 +45,7 @@ export default defineConfig(({ command }) => ({
                 'resources/js/sprint-planner/show.js',
                 'resources/js/sprint-planner/people.js',
                 'resources/js/sprint-planner/templates.js',
+                'resources/js/sprint-planner/create.js',
                 'resources/js/sprint-planner/settings.js',
                 'resources/js/tools/dbt-governance-macro-generator/index.js',
                 'resources/js/tools/pii-recommend-generator/index.js',

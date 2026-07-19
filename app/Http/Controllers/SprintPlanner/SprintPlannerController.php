@@ -8,6 +8,7 @@ use App\Accounts\PlanStore;
 use App\Accounts\ReadStateStore;
 use App\Accounts\TeamRepository;
 use App\Accounts\UserRepository;
+use App\Accounts\UserTemplateStore;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
 use App\SprintPlanner\SprintPlanRepository;
@@ -26,6 +27,7 @@ class SprintPlannerController extends Controller
         private readonly PlanStore $planStore,
         private readonly ReadStateStore $readState,
         private readonly PlaybookRepository $playbooks,
+        private readonly UserTemplateStore $userTemplates,
     ) {}
 
     public function index(): View
@@ -36,6 +38,33 @@ class SprintPlannerController extends Controller
     public function templates(): View
     {
         return view('sprint-planner.templates', $this->sharedViewData());
+    }
+
+    public function create(Request $request): View|RedirectResponse
+    {
+        if ($this->accountsConfig->enabled()) {
+            $user = $this->accountAuth->user();
+            if ($user === null) {
+                return redirect()->guest(locale_route('accounts.login'));
+            }
+        }
+
+        $editId = (string) $request->query('template', '');
+        $editTemplate = null;
+        if ($editId !== '' && $this->accountsConfig->enabled()) {
+            $user = $this->accountAuth->user();
+            if ($user !== null) {
+                $found = $this->userTemplates->find($editId);
+                if ($found !== null && (($found['ownerUserId'] ?? null) === $user->id || $user->canManageUsers)) {
+                    $editTemplate = $found;
+                }
+            }
+        }
+
+        return view('sprint-planner.create', [
+            ...$this->sharedViewData(),
+            'editTemplateJson' => $editTemplate,
+        ]);
     }
 
     public function people(): View|RedirectResponse
@@ -84,12 +113,14 @@ class SprintPlannerController extends Controller
         $teams = [];
         $serverPlans = [];
         $readSlugs = [];
+        $userTemplates = [];
 
         if ($accountsOn && $user !== null) {
             $people = array_map(static fn ($u) => $u->toPublicArray(), $this->users->all());
             $teams = array_map(static fn ($t) => $t->toArray(), $this->teams->all());
             $serverPlans = $this->planStore->listVisibleTo($user);
             $readSlugs = array_keys($this->readState->forUser($user->id));
+            $userTemplates = $this->userTemplates->listFor($user);
         }
 
         $storiesJson = array_map(static fn (array $item): array => [
@@ -98,9 +129,13 @@ class SprintPlannerController extends Controller
             'titleEn' => $item['locales']['en']['title'] ?? null,
         ], $this->playbooks->allForIndex());
 
+        $repoTemplates = $this->plans->allForClient();
+        $clientTemplates = array_merge($repoTemplates, $userTemplates);
+
         return [
             'templates' => $this->plans->allForIndex(),
-            'templatesJson' => $this->plans->allForClient(),
+            'templatesJson' => $clientTemplates,
+            'userTemplatesJson' => $userTemplates,
             'storiesJson' => $storiesJson,
             'accountsEnabled' => $accountsOn,
             'accountUser' => $user?->toPublicArray(),
@@ -112,6 +147,8 @@ class SprintPlannerController extends Controller
             'readSlugsJson' => $readSlugs,
             'plansApiUrl' => $accountsOn && $user !== null ? locale_route('accounts.plans.index') : null,
             'storiesApiUrl' => $accountsOn && $user !== null ? locale_route('accounts.plans.stories') : null,
+            'userTemplatesApiUrl' => $accountsOn && $user !== null ? locale_route('accounts.user-templates.index') : null,
+            'createPlanUrl' => locale_route('sprint-planner.create'),
         ];
     }
 }

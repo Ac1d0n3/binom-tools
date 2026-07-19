@@ -36,6 +36,18 @@ final class AccountsConfig
         return $this->basePath().DIRECTORY_SEPARATOR.'plans';
     }
 
+    public function userTemplatesDirectory(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'user-templates';
+    }
+
+    public function planAttachmentsDirectory(string $planId): string
+    {
+        $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $planId) ?: 'invalid';
+
+        return $this->plansDirectory().DIRECTORY_SEPARATOR.$safe.DIRECTORY_SEPARATOR.'attachments';
+    }
+
     public function readStateDirectory(): string
     {
         return $this->basePath().DIRECTORY_SEPARATOR.'read-state';

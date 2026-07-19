@@ -5,6 +5,8 @@ require_once __DIR__.'/../app/Support/helpers.php';
 use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Accounts\AuthController;
 use App\Http\Controllers\Accounts\PlanApiController;
+use App\Http\Controllers\Accounts\PlanAttachmentController;
+use App\Http\Controllers\Accounts\UserTemplateApiController;
 use App\Http\Controllers\Accounts\StoryAclController;
 use App\Http\Controllers\Accounts\TeamsController;
 use App\Http\Controllers\Accounts\UsersController;
@@ -98,10 +100,30 @@ $registerRoutes = static function (bool $localized): void {
             ->where('planId', 'plan_[a-zA-Z0-9_]+')
             ->name($name('accounts.plans.destroy'));
         Route::get('/api/sprint-planner/stories', [PlanApiController::class, 'storyMeta'])->name($name('accounts.plans.stories'));
+        Route::get('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'index'])->name($name('accounts.user-templates.index'));
+        Route::get('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'show'])
+            ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
+            ->name($name('accounts.user-templates.show'));
+        Route::post('/api/sprint-planner/user-templates', [UserTemplateApiController::class, 'store'])->name($name('accounts.user-templates.store'));
+        Route::delete('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'destroy'])
+            ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
+            ->name($name('accounts.user-templates.destroy'));
+        Route::post('/api/sprint-planner/plans/{planId}/attachments', [PlanAttachmentController::class, 'store'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.attachments.store'));
+        Route::get('/api/sprint-planner/plans/{planId}/attachments/{attachmentId}', [PlanAttachmentController::class, 'show'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->where('attachmentId', 'att_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.attachments.show'));
+        Route::delete('/api/sprint-planner/plans/{planId}/attachments/{attachmentId}', [PlanAttachmentController::class, 'destroy'])
+            ->where('planId', 'plan_[a-zA-Z0-9_]+')
+            ->where('attachmentId', 'att_[a-zA-Z0-9_]+')
+            ->name($name('accounts.plans.attachments.destroy'));
     });
 
     Route::get('/sprint-planner', [SprintPlannerController::class, 'index'])->name($name('sprint-planner.index'));
     Route::get('/sprint-planner/templates', [SprintPlannerController::class, 'templates'])->name($name('sprint-planner.templates'));
+    Route::get('/sprint-planner/create', [SprintPlannerController::class, 'create'])->name($name('sprint-planner.create'));
     Route::get('/sprint-planner/people', [SprintPlannerController::class, 'people'])->name($name('sprint-planner.people'));
     Route::get('/sprint-planner/{instanceId}/settings', [SprintPlannerController::class, 'settings'])
         ->where('instanceId', 'plan_[a-zA-Z0-9_]+')

@@ -60,16 +60,79 @@ export function readAccountsBootstrap() {
         };
     }
 
+    const accountUser = pickBootstrap(
+        readScriptJson('sp-bootstrap-account-user', null),
+        parseJson(root.dataset.accountUser, null),
+    );
+    const people = pickBootstrapList(
+        readScriptJson('sp-bootstrap-account-people', null),
+        parseJson(root.dataset.accountPeople, []),
+    );
+    const teams = pickBootstrapList(
+        readScriptJson('sp-bootstrap-account-teams', null),
+        parseJson(root.dataset.accountTeams, []),
+    );
+    const serverPlans = pickBootstrapList(
+        readScriptJson('sp-bootstrap-server-plans', null),
+        parseJson(root.dataset.serverPlans, []),
+    );
+    const readSlugs = pickBootstrapList(
+        readScriptJson('sp-bootstrap-read-slugs', null),
+        parseJson(root.dataset.readSlugs, []),
+    );
+
     return {
         plansApiUrl: root.dataset.plansApiUrl || null,
         storiesApiUrl: root.dataset.storiesApiUrl || null,
         loginUrl: root.dataset.loginUrl || null,
-        accountUser: parseJson(root.dataset.accountUser, null),
-        people: parseJson(root.dataset.accountPeople, []),
-        teams: parseJson(root.dataset.accountTeams, []),
-        serverPlans: parseJson(root.dataset.serverPlans, []),
-        readSlugs: parseJson(root.dataset.readSlugs, []),
+        accountUser: accountUser && typeof accountUser === 'object' ? accountUser : null,
+        people,
+        teams,
+        serverPlans,
+        readSlugs,
     };
+}
+
+/**
+ * @param {unknown} primary
+ * @param {unknown} fallback
+ */
+function pickBootstrap(primary, fallback) {
+    if (primary !== null && primary !== undefined) {
+        return primary;
+    }
+    return fallback;
+}
+
+/**
+ * @param {unknown} primary
+ * @param {unknown} fallback
+ * @returns {Array}
+ */
+function pickBootstrapList(primary, fallback) {
+    if (Array.isArray(primary) && primary.length > 0) {
+        return primary;
+    }
+    if (Array.isArray(fallback) && fallback.length > 0) {
+        return fallback;
+    }
+    return Array.isArray(primary) ? primary : (Array.isArray(fallback) ? fallback : []);
+}
+
+/**
+ * @param {string} elementId
+ * @param {unknown} fallback
+ */
+function readScriptJson(elementId, fallback) {
+    const el = document.getElementById(elementId);
+    if (!el?.textContent?.trim()) {
+        return fallback;
+    }
+    try {
+        return JSON.parse(el.textContent);
+    } catch {
+        return fallback;
+    }
 }
 
 /** @returns {string} */
@@ -131,6 +194,64 @@ export async function deletePlanOnServer(planId, plansApiUrl) {
     if (!response.ok && response.status !== 404) {
         throw new Error(`plans-delete-${response.status}`);
     }
+}
+
+/**
+ * Upload a plan attachment file (accounts mode).
+ * @param {string} planId
+ * @param {File} file
+ * @param {string} [attachmentId]
+ * @returns {Promise<{attachment: import('./attachments.js').SpAttachment}>}
+ */
+export async function uploadAttachmentToServer(planId, file, attachmentId) {
+    const plansApiUrl = readAccountsBootstrap().plansApiUrl;
+    if (!plansApiUrl) {
+        throw new Error('plans-api-missing');
+    }
+    const base = plansApiUrl.replace(/\/$/, '');
+    const url = `${base}/${encodeURIComponent(planId)}/attachments`;
+    const body = new FormData();
+    body.append('file', file);
+    if (attachmentId) {
+        body.append('attachmentId', attachmentId);
+    }
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': csrfToken(),
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+        body,
+    });
+    if (!response.ok) {
+        throw new Error(`attachment-upload-${response.status}`);
+    }
+    return response.json();
+}
+
+/**
+ * Delete a server-side attachment.
+ * @param {string} planId
+ * @param {string} attachmentId
+ */
+export async function deleteAttachmentOnServer(planId, attachmentId) {
+    const plansApiUrl = readAccountsBootstrap().plansApiUrl;
+    if (!plansApiUrl) {
+        return;
+    }
+    const base = plansApiUrl.replace(/\/$/, '');
+    const url = `${base}/${encodeURIComponent(planId)}/attachments/${encodeURIComponent(attachmentId)}`;
+    await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': csrfToken(),
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+    });
 }
 
 /**

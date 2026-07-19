@@ -12,9 +12,10 @@
         class="tools-content tools-content--wide sp-app"
         id="sp-app"
         data-sp-page="people"
-        data-sp-templates='@json($templatesJson)'
+        data-sp-templates="{{ json_encode($templatesJson ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) }}"
         @include('components.sprint-planner.accounts-attrs')
     >
+        @include('components.sprint-planner.bootstrap-json')
         <h1 class="tools-page-title" data-i18n="sp.peopleTitle">Teams &amp; people</h1>
         <p class="tools-page-lead" data-i18n="{{ ! empty($accountsEnabled) ? 'sp.peopleLeadAccounts' : 'sp.peopleLead' }}">
             @if (! empty($accountsEnabled))

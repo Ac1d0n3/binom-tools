@@ -114,6 +114,7 @@ export function createDefaultPreferences() {
             status: '',
             priority: '',
         },
+        planFiltersVersion: 3,
         expandedSprints: {},
         manualCurrentSprint: {},
     };
@@ -190,6 +191,7 @@ function normalizeInstances(instances) {
             customSprints: Array.isArray(item.customSprints) ? /** @type {any} */ (item.customSprints) : [],
             sprintOverrides: isPlainObject(item.sprintOverrides) ? /** @type {any} */ (item.sprintOverrides) : {},
             itemOverrides: isPlainObject(item.itemOverrides) ? /** @type {any} */ (item.itemOverrides) : {},
+            templateSnapshot: isPlainObject(item.templateSnapshot) ? /** @type {any} */ (item.templateSnapshot) : null,
             passwordHash: item.passwordHash ? String(item.passwordHash) : null,
             passwordSalt: item.passwordSalt ? String(item.passwordSalt) : null,
             ownerUserId: item.ownerUserId ? String(item.ownerUserId) : null,
@@ -301,6 +303,33 @@ function loadAccountsWorkspace() {
         ),
     );
 
+    // Recover identity fields wiped on the server from the local cache (same plan id).
+    for (const [id, local] of Object.entries(localWorkspace.instances || {})) {
+        if (local.ephemeral) {
+            continue;
+        }
+        const server = serverInstances[id];
+        if (!server) {
+            continue;
+        }
+        if (!server.templateSlug && local.templateSlug) {
+            server.templateSlug = local.templateSlug;
+        }
+        if (!server.templateSnapshot && local.templateSnapshot) {
+            server.templateSnapshot = local.templateSnapshot;
+        }
+        if (!server.startedAt && local.startedAt) {
+            server.startedAt = local.startedAt;
+        }
+        if (
+            (!server.translations || Object.keys(server.translations).length === 0)
+            && local.translations
+            && Object.keys(local.translations).length > 0
+        ) {
+            server.translations = local.translations;
+        }
+    }
+
     // Keep local-only demo (ephemeral) plans alongside server plans.
     const ephemeralLocal = Object.fromEntries(
         Object.entries(localWorkspace.instances || {}).filter(([, plan]) => plan.ephemeral),
@@ -312,6 +341,21 @@ function loadAccountsWorkspace() {
         : (localWorkspace.workspace.activePersonId && catalog.people[localWorkspace.workspace.activePersonId]
             ? localWorkspace.workspace.activePersonId
             : null);
+
+    // Ensure the signed-in user is always claimable / filterable as a person.
+    if (accountUser?.id && !catalog.people[String(accountUser.id)]) {
+        const id = String(accountUser.id);
+        const displayName = String(accountUser.displayName || accountUser.email || id);
+        catalog.people[id] = {
+            id,
+            displayName,
+            shortName: displayName.slice(0, 2).toUpperCase(),
+            email: String(accountUser.email || ''),
+            role: '',
+            colorToken: 'accent-1',
+            archived: false,
+        };
+    }
 
     return {
         schemaVersion: SCHEMA_VERSION,
@@ -338,7 +382,12 @@ function loadAccountsWorkspace() {
 /** @type {Promise<void>} */
 let accountsSyncQueue = Promise.resolve();
 
-export function saveWorkspace(workspace) {
+/**
+ * @param {SpWorkspaceRoot} workspace
+ * @param {{ dirtyPlanIds?: string[] }} [options]
+ *   When set, only those non-ephemeral plans are POSTed (avoids overwriting siblings from a stale page bootstrap).
+ */
+export function saveWorkspace(workspace, options = {}) {
     try {
         const payload = normalizeWorkspace(workspace);
         payload.schemaVersion = SCHEMA_VERSION;
@@ -354,10 +403,16 @@ export function saveWorkspace(workspace) {
                 }
             }
             const bootstrap = readAccountsBootstrap();
+            const dirtyIds = Array.isArray(options.dirtyPlanIds)
+                ? new Set(options.dirtyPlanIds.map(String))
+                : null;
             accountsSyncQueue = accountsSyncQueue
                 .then(async () => {
                     for (const plan of Object.values(payload.instances)) {
                         if (plan.ephemeral) {
+                            continue;
+                        }
+                        if (dirtyIds && !dirtyIds.has(String(plan.id))) {
                             continue;
                         }
                         await upsertPlanOnServer(plan, bootstrap.plansApiUrl);

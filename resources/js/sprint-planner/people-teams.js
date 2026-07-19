@@ -27,7 +27,7 @@ export function upsertPerson(input) {
     if (!workspace.people[id].displayName) {
         return { ok: false, error: 'validation' };
     }
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     return saved.ok ? { ok: true, person: workspace.people[id] } : { ok: false, error: saved.error };
 }
 
@@ -41,7 +41,7 @@ export function archivePerson(personId, archived = true) {
     if (archived && workspace.workspace.activePersonId === personId) {
         workspace.workspace.activePersonId = null;
     }
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     return saved.ok ? { ok: true } : { ok: false, error: saved.error };
 }
 
@@ -64,7 +64,7 @@ export function upsertTeam(input) {
         memberIds: Array.isArray(input.memberIds) ? input.memberIds.map(String) : [],
         archived: Boolean(input.archived),
     };
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     return saved.ok ? { ok: true, team: workspace.teams[id] } : { ok: false, error: saved.error };
 }
 
@@ -78,7 +78,7 @@ export function archiveTeam(teamId, archived = true) {
     if (archived && workspace.workspace.defaultTeamId === teamId) {
         workspace.workspace.defaultTeamId = null;
     }
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     return saved.ok ? { ok: true } : { ok: false, error: saved.error };
 }
 
@@ -86,7 +86,7 @@ export function setActivePerson(personId) {
     const loaded = loadWorkspace();
     const workspace = loaded.data;
     workspace.workspace.activePersonId = personId || null;
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     return saved.ok ? { ok: true } : { ok: false, error: saved.error };
 }
 
@@ -94,7 +94,7 @@ export function setDefaultTeam(teamId) {
     const loaded = loadWorkspace();
     const workspace = loaded.data;
     workspace.workspace.defaultTeamId = teamId || null;
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     return saved.ok ? { ok: true } : { ok: false, error: saved.error };
 }
 

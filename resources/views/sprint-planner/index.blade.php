@@ -35,10 +35,11 @@
         class="tools-content tools-content--wide sp-app"
         id="sp-app"
         data-sp-page="index"
-        data-sp-templates='@json($templatesJson)'
+        data-sp-templates="{{ json_encode($templatesJson ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) }}"
         data-sp-show-base="{{ locale_route('sprint-planner.index') }}"
         @include('components.sprint-planner.accounts-attrs')
     >
+        @include('components.sprint-planner.bootstrap-json')
         <h1 class="tools-page-title">Sprint Planner</h1>
         @if ($pageLeadText)
             <p class="tools-page-lead">{{ $pageLeadText }}</p>

@@ -1,9 +1,37 @@
 import { getLocale } from '../../locale.js';
-import { isAccountsMode, readAccountsBootstrap } from '../accounts-bridge.js';
-import { filterSprints } from '../filters.js';
+import {
+    isAccountsMode,
+    readAccountsBootstrap,
+    uploadAttachmentToServer,
+    usesServerPlans,
+} from '../accounts-bridge.js';
+import {
+    createFileAttachmentMeta,
+    createLinkAttachment,
+    normalizeAttachments,
+    validateAttachmentFile,
+} from '../attachments.js';
+import {
+    deleteLocalBlob,
+    putLocalBlob,
+    resolveAttachmentHref,
+} from '../attachment-store.js';
+import {
+    readTableEditor,
+    renderItemTableReadonly,
+    renderTableEditor,
+} from '../item-table.js';
+import {
+    formatExternalLinksTextarea,
+    parseExternalLinksTextarea,
+    resolveExternalHelpHref,
+} from '../external-links.js';
+import { filterSprints, hasActiveItemFilters, normalizePlanFilters } from '../filters.js';
 import {
     addCustomItem,
     addCustomSprint,
+    claimAllUnassigned,
+    claimItem,
     deleteCustomItem,
     deleteCustomSprint,
     duplicateSprint,
@@ -13,6 +41,7 @@ import {
     setSprintNote,
     toggleCompleted,
     updateCustomOrOverrideSprint,
+    updateInstance,
     updateItemMeta,
 } from '../instance-manager.js';
 import { listPeople, listTeams, localizedText } from '../people-teams.js';
@@ -47,15 +76,20 @@ import {
     readStoryTitlesFromDom,
     renderFlow,
     renderHelpButton,
-    resolveHelpHref,
 } from './help-panel.js';
 
 const noteTimers = {};
 let sprintDialogState = { sprint: null, isCustom: false };
 let itemDialogState = {};
+/** @type {import('../attachments.js').SpAttachment[]} */
+let dialogAttachments = [];
 let bound = false;
+/** @type {'executive'|'detailed'|'documentation'} */
+let reportMode = 'executive';
 /** @type {{instance: object, template: object|undefined, sprints: object[], workspace: object, locale: 'de'|'en'}|null} */
 let lastRenderContext = null;
+/** @type {Set<string>} */
+const healedIdentityPlanIds = new Set();
 
 export function initPlanShowPage() {
     const root = document.getElementById('sp-app');
@@ -79,6 +113,8 @@ export function initPlanShowPage() {
         bindDialogs(instanceId, render);
         bindHelpPanelChrome();
         bindStatusReport();
+        bindClaimAll(instanceId);
+        bindTemplateRecover(instanceId, render);
         document.getElementById('sp-add-sprint')?.addEventListener('click', () => {
             openSprintDialog(null, false);
         });
@@ -157,7 +193,80 @@ function renderPlan(instanceId) {
     }
 
     const templates = readTemplatesFromDom();
-    const template = templates.find((item) => item.slug === instance.templateSlug);
+
+    // If the page bootstrap lost identity but local cache / merge restored it, write back once.
+    const bootstrapPlan = (readAccountsBootstrap().serverPlans || [])
+        .find((plan) => plan && String(plan.id) === String(instanceId));
+    if (
+        !healedIdentityPlanIds.has(String(instanceId))
+        && bootstrapPlan
+        && !String(bootstrapPlan.templateSlug || '').trim()
+        && String(instance.templateSlug || '').trim()
+    ) {
+        healedIdentityPlanIds.add(String(instanceId));
+        updateInstance(instanceId, (plan) => {
+            plan.templateSlug = instance.templateSlug;
+            if (instance.templateSnapshot) {
+                plan.templateSnapshot = instance.templateSnapshot;
+            }
+            if (instance.translations) {
+                plan.translations = instance.translations;
+            }
+            if (instance.startedAt) {
+                plan.startedAt = instance.startedAt;
+            }
+        });
+    }
+
+    const repairedSlug = repairTemplateSlug(instance, templates);
+    if (repairedSlug && repairedSlug !== instance.templateSlug) {
+        instance.templateSlug = repairedSlug;
+        const snapshot = templates.find((item) => item.slug === repairedSlug) || instance.templateSnapshot;
+        // Persist repair so later assign/sync keeps the slug.
+        updateInstance(instanceId, (plan) => {
+            plan.templateSlug = repairedSlug;
+            if (snapshot && !plan.templateSnapshot) {
+                plan.templateSnapshot = structuredClone(snapshot);
+            }
+            if ((!plan.translations || Object.keys(plan.translations).length === 0) && snapshot?.locales) {
+                plan.translations = {
+                    de: {
+                        title: snapshot.locales?.de?.title || repairedSlug,
+                        description: snapshot.locales?.de?.description || '',
+                    },
+                    en: {
+                        title: snapshot.locales?.en?.title || repairedSlug,
+                        description: snapshot.locales?.en?.description || '',
+                    },
+                };
+            }
+            if (!plan.startedAt) {
+                plan.startedAt = new Date().toISOString().slice(0, 10);
+            }
+        });
+        if (snapshot) {
+            instance.templateSnapshot = snapshot;
+        }
+    }
+
+    // Prefer live catalog, then snapshot (self-contained plans).
+    const template = templates.find((item) => item.slug === instance.templateSlug)
+        || (instance.templateSnapshot?.sprints ? instance.templateSnapshot : null)
+        || null;
+
+    const templateMissingEl = document.getElementById('sp-template-missing');
+    const templateMissingText = document.getElementById('sp-template-missing-text');
+    if (templateMissingEl) {
+        templateMissingEl.hidden = Boolean(template);
+        if (!template) {
+            if (templateMissingText) {
+                templateMissingText.textContent = spT('sp.error.templateMissing', {
+                    slug: instance.templateSlug || '—',
+                });
+            }
+            fillRecoverTemplateSelect(templates, locale);
+        }
+    }
 
     const sprints = template ? resolveSprints(template, instance, locale) : [];
     const progress = calculateOverallProgress(sprints);
@@ -209,15 +318,118 @@ function renderPlan(instanceId) {
     });
 
     renderBlockers(sprints, workspace, locale);
+    renderUnassignedBanner(sprints, workspace);
     renderSprints(filtered, currentNumber, instance, template, locale, workspace);
+    renderFilterEmpty(filtered, sprints, filters);
 
     lastRenderContext = { instance, template, sprints, workspace, locale };
 }
 
+/**
+ * @param {ReturnType<typeof filterSprints>} filtered
+ * @param {ReturnType<typeof resolveSprints>} allSprints
+ * @param {ReturnType<typeof normalizePlanFilters>} filters
+ */
+function renderFilterEmpty(filtered, allSprints, filters) {
+    const empty = document.getElementById('sp-filter-empty');
+    if (!empty) {
+        return;
+    }
+    const hasItems = allSprints.some((s) => s.tasks.length + s.deliverables.length > 0);
+    const normalized = normalizePlanFilters(filters);
+    const show = hasItems && filtered.length === 0 && hasActiveItemFilters(filters);
+    empty.hidden = !show;
+    if (show && normalized.myTasks && normalized.unassigned) {
+        empty.textContent = spT('sp.filter.emptyMyAndUnassigned');
+    } else if (show) {
+        empty.textContent = spT('sp.filter.empty');
+    }
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ */
+function renderUnassignedBanner(sprints, workspace) {
+    const banner = document.getElementById('sp-unassigned-banner');
+    const text = document.getElementById('sp-unassigned-banner-text');
+    if (!banner) {
+        return;
+    }
+    let total = 0;
+    let unassigned = 0;
+    for (const sprint of sprints) {
+        for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+            total += 1;
+            if (!item.assigneeId) {
+                unassigned += 1;
+            }
+        }
+    }
+    const show = total > 0 && unassigned === total;
+    banner.hidden = !show;
+    if (show && text) {
+        text.textContent = workspace.workspace.activePersonId
+            ? spT('sp.unassigned.banner')
+            : spT('sp.unassigned.needActivePerson');
+    }
+}
+
+function bindClaimAll(instanceId) {
+    document.getElementById('sp-claim-all-btn')?.addEventListener('click', () => {
+        const ctx = lastRenderContext;
+        if (!ctx || ctx.instance.id !== instanceId) {
+            return;
+        }
+        const personId = ctx.workspace.workspace.activePersonId;
+        if (!personId) {
+            showToast(spT('sp.error.activePersonMissing'));
+            return;
+        }
+        const items = [];
+        for (const sprint of ctx.sprints) {
+            for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+                items.push({
+                    kind: item.kind,
+                    statusKey: item.statusKey,
+                    custom: item.custom,
+                    sprintId: item.sprintId,
+                    assigneeId: item.assigneeId,
+                });
+            }
+        }
+        const result = claimAllUnassigned(instanceId, items, personId);
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.toast.claimedAll'));
+        rerender();
+    });
+}
+
 function bindFilters(render) {
     const prefs = loadPreferences();
-    const planFilters = prefs.planFilters || {};
-    const map = {
+    // Reset assignee XOR radios → AND checkboxes (clear stuck Unassigned-only state).
+    if (Number(prefs.planFiltersVersion) < 3) {
+        prefs.planFilters = normalizePlanFilters({
+            currentWeek: Boolean(prefs.planFilters?.currentWeek),
+            hideDone: Boolean(prefs.planFilters?.hideDone),
+            openOnly: Boolean(prefs.planFilters?.openOnly),
+            blocked: Boolean(prefs.planFilters?.blocked),
+            myTasks: false,
+            unassigned: false,
+            personId: '',
+            teamId: '',
+            status: prefs.planFilters?.status || '',
+            priority: prefs.planFilters?.priority || '',
+        });
+        prefs.planFiltersVersion = 3;
+        savePreferences(prefs);
+    }
+    const planFilters = normalizePlanFilters(prefs.planFilters || {});
+
+    const checkboxMap = {
         'sp-filter-current-week': 'currentWeek',
         'sp-filter-hide-done': 'hideDone',
         'sp-filter-open-only': 'openOnly',
@@ -225,7 +437,7 @@ function bindFilters(render) {
         'sp-filter-my-tasks': 'myTasks',
         'sp-filter-unassigned': 'unassigned',
     };
-    for (const [id, key] of Object.entries(map)) {
+    for (const [id, key] of Object.entries(checkboxMap)) {
         const el = document.getElementById(id);
         if (!el) {
             continue;
@@ -236,6 +448,7 @@ function bindFilters(render) {
             render();
         });
     }
+
     for (const id of ['sp-filter-person', 'sp-filter-team', 'sp-filter-status', 'sp-filter-priority']) {
         const el = document.getElementById(id);
         if (!el) {
@@ -251,6 +464,132 @@ function bindFilters(render) {
     }
 }
 
+/**
+ * Recover missing templateSlug from snapshot, status keys, or title match.
+ * @param {import('../storage.js').SpPlanInstance} instance
+ * @param {object[]} templates
+ * @returns {string}
+ */
+function repairTemplateSlug(instance, templates) {
+    const current = String(instance.templateSlug || '').trim();
+    if (current) {
+        return current;
+    }
+
+    const fromSnapshot = instance.templateSnapshot?.slug
+        ? String(instance.templateSnapshot.slug)
+        : '';
+    if (fromSnapshot) {
+        return fromSnapshot;
+    }
+
+    const keyBags = [
+        ...(instance.completedTasks || []),
+        ...(instance.completedDeliverables || []),
+        ...Object.keys(instance.itemOverrides || {}),
+        ...Object.keys(instance.fieldValues || {}),
+        ...Object.keys(instance.sprintNotes || {}),
+        ...Object.keys(instance.sprintOverrides || {}),
+    ];
+    /** @type {Map<string, number>} */
+    const slugVotes = new Map();
+    for (const key of keyBags) {
+        const slug = String(key).split(':')[0].trim();
+        if (!slug || slug.includes(' ')) {
+            continue;
+        }
+        // statusKey shape: slug:sprintId:kind:itemId
+        if (String(key).split(':').length < 3) {
+            continue;
+        }
+        slugVotes.set(slug, (slugVotes.get(slug) || 0) + 1);
+    }
+    if (slugVotes.size > 0) {
+        const ranked = [...slugVotes.entries()].sort((a, b) => b[1] - a[1]);
+        const [bestSlug] = ranked[0];
+        if (templates.some((t) => t.slug === bestSlug) || bestSlug.startsWith('custom:')) {
+            return bestSlug;
+        }
+        // Even without a catalog hit, return the slug so snapshot / recover UI can use it.
+        return bestSlug;
+    }
+
+    const locale = getLocale();
+    const title = instance.translations?.[locale]?.title
+        || instance.translations?.en?.title
+        || instance.translations?.de?.title
+        || '';
+    if (title) {
+        const byTitle = templates.find((t) => (
+            t.locales?.en?.title === title
+            || t.locales?.de?.title === title
+        ));
+        if (byTitle?.slug) {
+            return byTitle.slug;
+        }
+    }
+
+    return '';
+}
+
+/**
+ * @param {object[]} templates
+ * @param {'de'|'en'} locale
+ */
+function fillRecoverTemplateSelect(templates, locale) {
+    const select = document.getElementById('sp-recover-template');
+    if (!select) {
+        return;
+    }
+    const options = templates.map((t) => ({
+        id: t.slug,
+        label: t.locales?.[locale]?.title || t.locales?.en?.title || t.slug,
+    }));
+    fillSelect(select, options, select.value || options[0]?.id || '', false);
+}
+
+/**
+ * @param {string} instanceId
+ * @param {() => void} render
+ */
+function bindTemplateRecover(instanceId, render) {
+    document.getElementById('sp-recover-template-btn')?.addEventListener('click', () => {
+        const slug = document.getElementById('sp-recover-template')?.value || '';
+        const templates = readTemplatesFromDom();
+        const template = templates.find((t) => t.slug === slug);
+        if (!template) {
+            showToast(spT('sp.error.templateMissing', { slug: slug || '—' }));
+            return;
+        }
+        const result = updateInstance(instanceId, (plan) => {
+            plan.templateSlug = template.slug;
+            plan.templateVersion = Number(template.version) || plan.templateVersion || 1;
+            plan.templateSnapshot = structuredClone(template);
+            if (!plan.translations || Object.keys(plan.translations).length === 0) {
+                plan.translations = {
+                    de: {
+                        title: template.locales?.de?.title || template.slug,
+                        description: template.locales?.de?.description || '',
+                    },
+                    en: {
+                        title: template.locales?.en?.title || template.slug,
+                        description: template.locales?.en?.description || '',
+                    },
+                };
+            }
+            if (!plan.startedAt) {
+                plan.startedAt = new Date().toISOString().slice(0, 10);
+            }
+        });
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.recover.done'));
+        render();
+    });
+}
+
 function persistFilters() {
     const prefs = loadPreferences();
     prefs.planFilters = readFilters(prefs);
@@ -258,7 +597,7 @@ function persistFilters() {
 }
 
 function readFilters(prefs) {
-    return {
+    return normalizePlanFilters({
         currentWeek: document.getElementById('sp-filter-current-week')?.checked
             ?? prefs.planFilters?.currentWeek
             ?? false,
@@ -281,12 +620,13 @@ function readFilters(prefs) {
         teamId: document.getElementById('sp-filter-team')?.value || '',
         status: document.getElementById('sp-filter-status')?.value || '',
         priority: document.getElementById('sp-filter-priority')?.value || '',
-    };
+    });
 }
 
 function populateFilterPeopleTeams(locale) {
     const personSelect = document.getElementById('sp-filter-person');
     const teamSelect = document.getElementById('sp-filter-team');
+    const anyLabel = spT('sp.filter.any');
     if (personSelect) {
         const current = personSelect.value;
         fillSelect(
@@ -294,6 +634,7 @@ function populateFilterPeopleTeams(locale) {
             listPeople().map((p) => ({ id: p.id, label: p.displayName })),
             current,
             true,
+            anyLabel,
         );
     }
     if (teamSelect) {
@@ -303,6 +644,7 @@ function populateFilterPeopleTeams(locale) {
             listTeams().map((team) => ({ id: team.id, label: localizedText(team.name, locale) })),
             current,
             true,
+            anyLabel,
         );
     }
 }
@@ -557,6 +899,48 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         actions.appendChild(helpBtn);
     }
 
+    if (!item.assigneeId) {
+        const pick = document.createElement('button');
+        pick.type = 'button';
+        pick.className = 'tools-btn tools-btn--secondary tools-btn--small';
+        pick.textContent = spT('sp.action.pick');
+        pick.addEventListener('click', () => {
+            const personId = workspace.workspace.activePersonId;
+            if (!personId) {
+                showToast(spT('sp.error.activePersonMissing'));
+                return;
+            }
+            const result = claimItem(
+                instance.id,
+                item.kind,
+                item.statusKey,
+                item.custom,
+                sprint.id,
+                personId,
+            );
+            if (!result.ok) {
+                showToast(storageErrorMessage(result.error));
+                return;
+            }
+            showToast(spT('sp.toast.claimed'));
+            rerender();
+        });
+        actions.appendChild(pick);
+
+        const assign = document.createElement('button');
+        assign.type = 'button';
+        assign.className = 'tools-btn tools-btn--secondary tools-btn--small';
+        assign.textContent = spT('sp.action.assign');
+        assign.addEventListener('click', () => openItemDialog({
+            sprintId: sprint.id,
+            kind: item.kind,
+            custom: item.custom,
+            item,
+            focusAssignee: true,
+        }));
+        actions.appendChild(assign);
+    }
+
     const edit = document.createElement('button');
     edit.type = 'button';
     edit.className = 'tools-btn tools-btn--secondary tools-btn--small';
@@ -568,6 +952,16 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
         item,
     }));
     actions.appendChild(edit);
+
+    if (Array.isArray(item.attachments) && item.attachments.length > 0) {
+        const attBadge = document.createElement('span');
+        attBadge.className = 'sp-item__att-count';
+        const count = item.attachments.length;
+        attBadge.textContent = count === 1
+            ? spT('sp.attachments.count', { count })
+            : spT('sp.attachments.countPlural', { count });
+        main.appendChild(attBadge);
+    }
 
     if (item.custom) {
         const del = document.createElement('button');
@@ -582,6 +976,14 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     }
 
     li.append(check, main, actions);
+
+    const tableEl = renderItemTableReadonly(item.table);
+    if (tableEl) {
+        const tableHost = document.createElement('div');
+        tableHost.className = 'sp-item__table';
+        tableHost.appendChild(tableEl);
+        li.appendChild(tableHost);
+    }
 
     return li;
 }
@@ -611,10 +1013,13 @@ function renderGenericLinks(links, className) {
             continue;
         }
         const a = document.createElement('a');
-        a.href = resolveHelpHref(link.href);
+        a.href = resolveExternalHelpHref(link.href);
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
         a.textContent = link.label || link.href;
+        if (a.href === '#') {
+            continue;
+        }
         wrap.appendChild(a);
     }
     return wrap;
@@ -625,50 +1030,19 @@ function statusKeyToLabel(status) {
 }
 
 /**
- * Parse "Label | href" lines, or bare slugs / hrefs.
+ * Parse "Label | https://…" lines for external help/community links only.
  * @param {string} raw
- * @returns {{links: Array<{label: string, href: string}>, storySlugs: string[]}}
+ * @returns {{links: Array<{label: string, href: string}>, rejected: string[]}}
  */
 function parseLinksTextarea(raw) {
-    /** @type {Array<{label: string, href: string}>} */
-    const links = [];
-    /** @type {string[]} */
-    const storySlugs = [];
-    for (const line of String(raw || '').split('\n')) {
-        const trimmed = line.trim();
-        if (!trimmed) {
-            continue;
-        }
-        const pipe = trimmed.indexOf('|');
-        if (pipe >= 0) {
-            const label = trimmed.slice(0, pipe).trim();
-            const href = trimmed.slice(pipe + 1).trim();
-            if (href) {
-                links.push({ label: label || href, href });
-            }
-            continue;
-        }
-        if (/^[a-z0-9-]+$/i.test(trimmed) && !trimmed.includes('/')) {
-            storySlugs.push(trimmed);
-            continue;
-        }
-        links.push({ label: trimmed, href: trimmed });
-    }
-    return { links, storySlugs };
+    return parseExternalLinksTextarea(raw);
 }
 
 /**
  * @param {Array<{label: string, href: string}>} links
- * @param {string[]} [storySlugs]
  */
-function formatLinksTextarea(links = [], storySlugs = []) {
-    const lines = [
-        ...storySlugs.map(String),
-        ...links.map((link) => (link.label && link.label !== link.href
-            ? `${link.label} | ${link.href}`
-            : link.href)),
-    ];
-    return lines.filter(Boolean).join('\n');
+function formatLinksTextarea(links = []) {
+    return formatExternalLinksTextarea(links);
 }
 
 /**
@@ -824,6 +1198,9 @@ function bindDialogs(instanceId, render) {
         }
         const stories = parseStoriesTextarea(document.getElementById('sp-sprint-stories')?.value || '');
         const parsedLinks = parseLinksTextarea(document.getElementById('sp-sprint-links')?.value || '');
+        if (parsedLinks.rejected?.length) {
+            showToast(spT('sp.toast.linksRejected'));
+        }
         const data = {
             titleDe: document.getElementById('sp-sprint-title-de').value,
             titleEn: document.getElementById('sp-sprint-title-en').value,
@@ -857,6 +1234,9 @@ function bindDialogs(instanceId, render) {
         }
         const stories = parseStoriesTextarea(document.getElementById('sp-item-stories')?.value || '');
         const parsedLinks = parseLinksTextarea(document.getElementById('sp-item-help-links')?.value || '');
+        if (parsedLinks.rejected?.length) {
+            showToast(spT('sp.toast.linksRejected'));
+        }
         const status = document.getElementById('sp-item-status').value;
         const previousStatus = itemDialogState.item?.status;
         const blockerReason = document.getElementById('sp-item-blocker-reason')?.value || '';
@@ -879,8 +1259,10 @@ function bindDialogs(instanceId, render) {
             linkedStorySlugs: stories.map((story) => story.slug),
             helpLinks: parsedLinks.links,
             demoCode: document.getElementById('sp-item-demo-code')?.value || '',
+            table: readTableEditor(document.getElementById('sp-item-table-editor')),
             blockerReason,
             blockerSince,
+            attachments: normalizeAttachments(dialogAttachments),
         };
         const kind = document.getElementById('sp-item-type').value;
         const sprintId = document.getElementById('sp-item-sprint-id').value;
@@ -905,6 +1287,58 @@ function bindDialogs(instanceId, render) {
 
     document.getElementById('sp-item-assignee-type')?.addEventListener('change', () => refreshAssigneeOptions());
     document.getElementById('sp-item-status')?.addEventListener('change', () => updateBlockerFieldVisibility());
+    document.getElementById('sp-item-att-add-link')?.addEventListener('click', () => {
+        const label = document.getElementById('sp-item-att-label')?.value || '';
+        const href = document.getElementById('sp-item-att-url')?.value || '';
+        if (!href.trim()) {
+            return;
+        }
+        const workspace = loadWorkspace().data;
+        dialogAttachments.push(createLinkAttachment({
+            label,
+            href: href.trim(),
+            uploadedBy: workspace.workspace.activePersonId,
+        }));
+        document.getElementById('sp-item-att-label').value = '';
+        document.getElementById('sp-item-att-url').value = '';
+        renderDialogAttachments(instanceId);
+        showToast(spT('sp.toast.attachmentAdded'));
+    });
+    document.getElementById('sp-item-att-file')?.addEventListener('change', async (event) => {
+        const input = /** @type {HTMLInputElement} */ (event.target);
+        const file = input.files?.[0];
+        input.value = '';
+        if (!file) {
+            return;
+        }
+        const validation = validateAttachmentFile(file);
+        if (!validation.ok) {
+            showToast(storageErrorMessage(validation.error));
+            return;
+        }
+        const workspace = loadWorkspace().data;
+        const personId = workspace.workspace.activePersonId;
+        try {
+            if (usesServerPlans() && !workspace.instances[instanceId]?.ephemeral) {
+                const { attachment } = await uploadAttachmentToServer(instanceId, file);
+                dialogAttachments.push(normalizeAttachments([attachment])[0]);
+            } else {
+                const meta = createFileAttachmentMeta({
+                    name: file.name,
+                    mime: file.type || 'application/octet-stream',
+                    size: file.size,
+                    uploadedBy: personId,
+                    localBlob: true,
+                });
+                await putLocalBlob(instanceId, meta.id, file);
+                dialogAttachments.push(meta);
+            }
+            renderDialogAttachments(instanceId);
+            showToast(spT('sp.toast.attachmentAdded'));
+        } catch (err) {
+            showToast(storageErrorMessage(err?.message || 'attachment-upload'));
+        }
+    });
 }
 
 function openSprintDialog(sprint, isCustom) {
@@ -938,13 +1372,19 @@ function updateBlockerFieldVisibility() {
 
 function openItemDialog(state) {
     closeHelpPanel();
+    const workspace = loadWorkspace().data;
+    const activePersonId = workspace.workspace.activePersonId || null;
     itemDialogState = state;
     document.getElementById('sp-item-sprint-id').value = state.sprintId;
     document.getElementById('sp-item-type').value = state.kind;
     document.getElementById('sp-item-id').value = state.item?.id || '';
     document.getElementById('sp-item-label-de').value = state.item?.label || '';
     document.getElementById('sp-item-label-en').value = state.item?.label || '';
-    document.getElementById('sp-item-assignee-type').value = state.item?.assigneeType || 'person';
+    const defaultAssigneeType = state.create ? 'person' : (state.item?.assigneeType || 'person');
+    const defaultAssigneeId = state.create
+        ? activePersonId
+        : (state.item?.assigneeId || '');
+    document.getElementById('sp-item-assignee-type').value = defaultAssigneeType || 'person';
     document.getElementById('sp-item-status').value = state.item?.status || 'open';
     document.getElementById('sp-item-priority').value = state.item?.priority || 'normal';
     document.getElementById('sp-item-due').value = state.item?.dueDate || '';
@@ -981,9 +1421,53 @@ function openItemDialog(state) {
     if (blockerReasonEl) {
         blockerReasonEl.value = state.item?.blockerReason || '';
     }
-    refreshAssigneeOptions(state.item?.assigneeId || '');
+    dialogAttachments = normalizeAttachments(state.item?.attachments || []);
+    const instanceId = document.getElementById('sp-app')?.dataset?.spInstanceId || '';
+    renderDialogAttachments(instanceId);
+    const tableHost = document.getElementById('sp-item-table-editor');
+    if (tableHost) {
+        renderTableEditor(tableHost, state.item?.table || null, { spT });
+    }
+    refreshAssigneeOptions(defaultAssigneeId || '');
     updateBlockerFieldVisibility();
     document.getElementById('sp-item-dialog').showModal();
+    if (state.focusAssignee) {
+        document.getElementById('sp-item-assignee-id')?.focus();
+    }
+}
+
+/**
+ * @param {string} instanceId
+ */
+function renderDialogAttachments(instanceId) {
+    const list = document.getElementById('sp-item-attachments-list');
+    if (!list) {
+        return;
+    }
+    list.replaceChildren();
+    for (const att of dialogAttachments) {
+        const li = document.createElement('li');
+        li.className = 'sp-attachments-list__item';
+        const name = document.createElement('span');
+        name.textContent = att.name;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'tools-btn tools-btn--secondary tools-btn--small';
+        remove.textContent = spT('sp.action.removeAttachment');
+        remove.addEventListener('click', async () => {
+            dialogAttachments = dialogAttachments.filter((entry) => entry.id !== att.id);
+            if (att.localBlob && instanceId) {
+                try {
+                    await deleteLocalBlob(instanceId, att.id);
+                } catch {
+                    // ignore
+                }
+            }
+            renderDialogAttachments(instanceId);
+        });
+        li.append(name, remove);
+        list.appendChild(li);
+    }
 }
 
 function refreshAssigneeOptions(selected) {
@@ -1025,17 +1509,48 @@ function bindStatusReport() {
         if (!lastRenderContext) {
             return;
         }
-        const { instance, template, sprints, workspace, locale } = lastRenderContext;
-        renderStatusReport(instance, template, sprints, workspace, locale);
+        refreshStatusReport();
         showStatusReport();
     });
     document.getElementById('sp-status-report-close')?.addEventListener('click', closeStatusReport);
     document.getElementById('sp-status-report-print')?.addEventListener('click', () => window.print());
+    document.getElementById('sp-report-mode-executive')?.addEventListener('click', () => {
+        reportMode = 'executive';
+        updateReportModeButtons();
+        refreshStatusReport();
+    });
+    document.getElementById('sp-report-mode-detailed')?.addEventListener('click', () => {
+        reportMode = 'detailed';
+        updateReportModeButtons();
+        refreshStatusReport();
+    });
+    document.getElementById('sp-report-mode-documentation')?.addEventListener('click', () => {
+        reportMode = 'documentation';
+        updateReportModeButtons();
+        refreshStatusReport();
+    });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeStatusReport();
         }
     });
+    updateReportModeButtons();
+}
+
+function updateReportModeButtons() {
+    for (const btn of document.querySelectorAll('[data-report-mode]')) {
+        const mode = btn.getAttribute('data-report-mode');
+        btn.classList.toggle('tools-btn--primary', mode === reportMode);
+        btn.classList.toggle('tools-btn--secondary', mode !== reportMode);
+    }
+}
+
+function refreshStatusReport() {
+    if (!lastRenderContext) {
+        return;
+    }
+    const { instance, template, sprints, workspace, locale } = lastRenderContext;
+    renderStatusReport(instance, template, sprints, workspace, locale);
 }
 
 function showStatusReport() {
@@ -1075,6 +1590,8 @@ function renderStatusReport(instance, template, sprints, workspace, locale) {
         template?.unit || 'week',
     );
     const currentSprint = sprints.find((sprint) => sprint.number === currentNumber);
+    const blockers = collectBlockers(sprints);
+    const unassignedCount = countUnassigned(sprints);
 
     const title = document.createElement('h1');
     title.className = 'tools-page-title';
@@ -1082,6 +1599,133 @@ function renderStatusReport(instance, template, sprints, workspace, locale) {
         || template?.locales?.[locale]?.title
         || instance.templateSlug;
     body.appendChild(title);
+
+    if (reportMode === 'executive') {
+        renderExecutiveReport(body, {
+            progress,
+            currentSprint,
+            blockers,
+            unassignedCount,
+            sprints,
+            workspace,
+            locale,
+        });
+        return;
+    }
+
+    if (reportMode === 'documentation') {
+        renderDocumentationReport(body, {
+            sprints,
+            workspace,
+            locale,
+            instanceId: instance.id,
+            description: instance.translations?.[locale]?.description
+                || template?.locales?.[locale]?.description
+                || '',
+        });
+        return;
+    }
+
+    renderDetailedReport(body, {
+        progress,
+        currentSprint,
+        blockers,
+        sprints,
+        workspace,
+        locale,
+        instanceId: instance.id,
+    });
+}
+
+/**
+ * @param {HTMLElement} body
+ * @param {object} ctx
+ */
+function renderExecutiveReport(body, ctx) {
+    const {
+        progress, currentSprint, blockers, unassignedCount, sprints, workspace, locale,
+    } = ctx;
+
+    const kpi = document.createElement('div');
+    kpi.className = 'sp-report-kpi';
+    kpi.append(
+        buildKpiCard(spT('sp.report.progress'), `${progress.percent}%`, `${progress.done}/${progress.total}`),
+        buildKpiCard(
+            spT('sp.report.currentSprint'),
+            currentSprint ? `#${currentSprint.number}` : '—',
+            currentSprint ? `${currentSprint.progress.percent}%` : '',
+        ),
+        buildKpiCard(spT('sp.report.kpiBlockers'), String(blockers.length), ''),
+        buildKpiCard(spT('sp.report.unassignedCount'), String(unassignedCount), ''),
+    );
+    body.appendChild(kpi);
+
+    if (currentSprint?.goal) {
+        body.appendChild(buildReportSection(spT('sp.report.currentGoal'), () => {
+            const p = document.createElement('p');
+            p.textContent = currentSprint.goal;
+            return [p];
+        }));
+    }
+
+    const topBlockers = blockers.slice(0, 5);
+    body.appendChild(buildReportSection(spT('sp.report.topBlockers'), () => {
+        if (!topBlockers.length) {
+            return [buildEmptyParagraph()];
+        }
+        return [buildReportTable(
+            [spT('sp.report.colSprint'), spT('sp.report.colItem'), spT('sp.report.colAssignee'), spT('sp.report.colReason')],
+            topBlockers.map((blocker) => [
+                `#${blocker.sprintNumber}`,
+                blocker.item.label,
+                resolveAssigneeName(blocker.item, workspace, locale) || spT('sp.report.unassigned'),
+                blocker.item.blockerReason || '',
+            ]),
+        )];
+    }));
+
+    const openInCurrent = [];
+    if (currentSprint) {
+        for (const item of [...currentSprint.tasks, ...currentSprint.deliverables]) {
+            if (!item.completed && item.status !== 'completed') {
+                openInCurrent.push(item);
+            }
+        }
+    }
+    body.appendChild(buildReportSection(spT('sp.report.thisSprint'), () => {
+        if (!openInCurrent.length) {
+            return [buildEmptyParagraph()];
+        }
+        return [buildReportTable(
+            [spT('sp.report.colItem'), spT('sp.report.colStatus'), spT('sp.report.colAssignee')],
+            openInCurrent.map((item) => [
+                item.label,
+                spT(`sp.status.${statusKeyToLabel(item.status)}`),
+                resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned'),
+            ]),
+        )];
+    }));
+
+    body.appendChild(buildReportSection(spT('sp.report.sprintProgress'), () => [
+        buildReportTable(
+            [spT('sp.report.colSprint'), spT('sp.field.status'), spT('sp.report.colTotal')],
+            sprints.map((sprint) => [
+                `#${sprint.number} ${sprint.title}`,
+                `${sprint.progress.percent}%`,
+                `${sprint.progress.done}/${sprint.progress.total}`,
+            ]),
+        ),
+    ]));
+}
+
+/**
+ * @param {HTMLElement} body
+ * @param {object} ctx
+ */
+function renderDetailedReport(body, ctx) {
+    const {
+        progress, currentSprint, blockers, sprints, workspace, locale, instanceId,
+    } = ctx;
 
     body.appendChild(buildReportSection(spT('sp.report.progress'), () => {
         const p = document.createElement('p');
@@ -1097,7 +1741,6 @@ function renderStatusReport(instance, template, sprints, workspace, locale) {
         return [p];
     }));
 
-    const blockers = collectBlockers(sprints);
     body.appendChild(buildReportSection(spT('sp.report.blockers'), () => {
         if (!blockers.length) {
             return [buildEmptyParagraph()];
@@ -1157,6 +1800,296 @@ function renderStatusReport(instance, template, sprints, workspace, locale) {
             ]),
         )];
     }));
+
+    for (const sprint of sprints) {
+        const section = document.createElement('section');
+        section.className = 'sp-report-section sp-report-section--detailed';
+        const heading = document.createElement('h3');
+        heading.textContent = `#${sprint.number} ${sprint.title}`;
+        section.appendChild(heading);
+        const items = [...sprint.tasks, ...sprint.deliverables];
+        if (!items.length) {
+            section.appendChild(buildEmptyParagraph());
+            body.appendChild(section);
+            continue;
+        }
+        for (const item of items) {
+            section.appendChild(buildDetailedItemCard(item, workspace, locale, instanceId));
+        }
+        body.appendChild(section);
+    }
+}
+
+/**
+ * @param {import('../progress.js').ResolvedItem} item
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @param {'de'|'en'} locale
+ * @param {string} instanceId
+ */
+function buildDetailedItemCard(item, workspace, locale, instanceId) {
+    const card = document.createElement('article');
+    card.className = 'sp-report-item';
+    const title = document.createElement('h4');
+    title.className = 'sp-report-item__title';
+    title.textContent = item.label;
+    card.appendChild(title);
+
+    const meta = document.createElement('p');
+    meta.className = 'sp-report-item__meta';
+    meta.textContent = [
+        spT(`sp.status.${statusKeyToLabel(item.status)}`),
+        spT(`sp.priority.${item.priority}`),
+        resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned'),
+        item.dueDate || '',
+    ].filter(Boolean).join(' · ');
+    card.appendChild(meta);
+
+    if (item.note) {
+        const note = document.createElement('p');
+        note.className = 'sp-report-item__note';
+        note.textContent = `${spT('sp.report.note')}: ${item.note}`;
+        card.appendChild(note);
+    }
+
+    if (item.helpText) {
+        const help = document.createElement('p');
+        help.className = 'sp-report-item__help';
+        help.textContent = item.helpText;
+        card.appendChild(help);
+    }
+
+    const tableEl = renderItemTableReadonly(item.table);
+    if (tableEl) {
+        card.appendChild(tableEl);
+    }
+
+    if (Array.isArray(item.helpLinks) && item.helpLinks.length) {
+        const links = document.createElement('ul');
+        links.className = 'sp-report-item__links';
+        for (const link of item.helpLinks) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = resolveExternalHelpHref(link.href);
+            if (a.href === '#') {
+                continue;
+            }
+            a.textContent = link.label || link.href;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            li.appendChild(a);
+            links.appendChild(li);
+        }
+        card.appendChild(links);
+    }
+
+    if (Array.isArray(item.attachments) && item.attachments.length) {
+        const attWrap = document.createElement('div');
+        attWrap.className = 'sp-report-item__attachments';
+        const attTitle = document.createElement('p');
+        attTitle.textContent = spT('sp.report.attachments');
+        attWrap.appendChild(attTitle);
+        const list = document.createElement('ul');
+        list.className = 'sp-report-attachments';
+        for (const att of item.attachments) {
+            const li = document.createElement('li');
+            void appendAttachmentReportNode(li, instanceId, att);
+            list.appendChild(li);
+        }
+        attWrap.appendChild(list);
+        card.appendChild(attWrap);
+    }
+
+    return card;
+}
+
+/**
+ * Documentation report: goals, help, links, tables, notes — no progress KPIs.
+ * @param {HTMLElement} body
+ * @param {object} ctx
+ */
+function renderDocumentationReport(body, ctx) {
+    const { sprints, workspace, locale, instanceId, description } = ctx;
+    if (description) {
+        const lead = document.createElement('p');
+        lead.className = 'tools-page-lead';
+        lead.textContent = description;
+        body.appendChild(lead);
+    }
+
+    for (const sprint of sprints) {
+        const section = document.createElement('section');
+        section.className = 'sp-report-section sp-report-section--docs';
+        const heading = document.createElement('h3');
+        heading.textContent = `#${sprint.number} ${sprint.title}`;
+        section.appendChild(heading);
+        if (sprint.goal) {
+            const goal = document.createElement('p');
+            goal.className = 'sp-report-item__help';
+            goal.textContent = sprint.goal;
+            section.appendChild(goal);
+        }
+        if (Array.isArray(sprint.links) && sprint.links.length) {
+            const links = document.createElement('ul');
+            links.className = 'sp-report-item__links';
+            for (const link of sprint.links) {
+                const href = resolveExternalHelpHref(link.href);
+                if (href === '#') {
+                    continue;
+                }
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = href;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.textContent = link.label || link.href;
+                li.appendChild(a);
+                links.appendChild(li);
+            }
+            if (links.childNodes.length) {
+                section.appendChild(links);
+            }
+        }
+        const items = [...sprint.tasks, ...sprint.deliverables];
+        for (const item of items) {
+            section.appendChild(buildDocumentationItemCard(item, workspace, locale, instanceId));
+        }
+        body.appendChild(section);
+    }
+}
+
+/**
+ * @param {import('../progress.js').ResolvedItem} item
+ * @param {import('../storage.js').SpWorkspaceRoot} workspace
+ * @param {'de'|'en'} locale
+ * @param {string} instanceId
+ */
+function buildDocumentationItemCard(item, workspace, locale, instanceId) {
+    const card = document.createElement('article');
+    card.className = 'sp-report-item sp-report-item--docs';
+    const title = document.createElement('h4');
+    title.className = 'sp-report-item__title';
+    title.textContent = item.label;
+    card.appendChild(title);
+
+    if (item.helpText) {
+        const help = document.createElement('p');
+        help.className = 'sp-report-item__help';
+        help.textContent = item.helpText;
+        card.appendChild(help);
+    }
+
+    if (item.note) {
+        const note = document.createElement('p');
+        note.className = 'sp-report-item__note';
+        note.textContent = item.note;
+        card.appendChild(note);
+    }
+
+    const tableEl = renderItemTableReadonly(item.table);
+    if (tableEl) {
+        card.appendChild(tableEl);
+    }
+
+    if (Array.isArray(item.helpLinks) && item.helpLinks.length) {
+        const links = document.createElement('ul');
+        links.className = 'sp-report-item__links';
+        for (const link of item.helpLinks) {
+            const href = resolveExternalHelpHref(link.href);
+            if (href === '#') {
+                continue;
+            }
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = href;
+            a.textContent = link.label || link.href;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            li.appendChild(a);
+            links.appendChild(li);
+        }
+        if (links.childNodes.length) {
+            card.appendChild(links);
+        }
+    }
+
+    if (Array.isArray(item.attachments) && item.attachments.length) {
+        const attWrap = document.createElement('div');
+        attWrap.className = 'sp-report-item__attachments';
+        const list = document.createElement('ul');
+        list.className = 'sp-report-attachments';
+        for (const att of item.attachments) {
+            const li = document.createElement('li');
+            void appendAttachmentReportNode(li, instanceId, att);
+            list.appendChild(li);
+        }
+        attWrap.appendChild(list);
+        card.appendChild(attWrap);
+    }
+
+    return card;
+}
+
+/**
+ * @param {HTMLElement} host
+ * @param {string} instanceId
+ * @param {import('../attachments.js').SpAttachment} att
+ */
+async function appendAttachmentReportNode(host, instanceId, att) {
+    const href = await resolveAttachmentHref(instanceId, att);
+    if (att.previewable && href) {
+        const img = document.createElement('img');
+        img.className = 'sp-report-attachment-img';
+        img.src = href;
+        img.alt = att.name;
+        host.appendChild(img);
+    }
+    const a = document.createElement('a');
+    if (href) {
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+    }
+    a.textContent = att.name + (att.blobMissing ? ` (${spT('sp.attachments.missingBlob')})` : '');
+    host.appendChild(a);
+}
+
+/**
+ * @param {string} label
+ * @param {string} value
+ * @param {string} hint
+ */
+function buildKpiCard(label, value, hint) {
+    const card = document.createElement('div');
+    card.className = 'sp-report-kpi__card';
+    const dt = document.createElement('div');
+    dt.className = 'sp-report-kpi__label';
+    dt.textContent = label;
+    const dd = document.createElement('div');
+    dd.className = 'sp-report-kpi__value';
+    dd.textContent = value;
+    card.append(dt, dd);
+    if (hint) {
+        const hintEl = document.createElement('div');
+        hintEl.className = 'sp-report-kpi__hint';
+        hintEl.textContent = hint;
+        card.appendChild(hintEl);
+    }
+    return card;
+}
+
+/**
+ * @param {ReturnType<typeof resolveSprints>} sprints
+ */
+function countUnassigned(sprints) {
+    let count = 0;
+    for (const sprint of sprints) {
+        for (const item of [...sprint.tasks, ...sprint.deliverables]) {
+            if (!item.assigneeId) {
+                count += 1;
+            }
+        }
+    }
+    return count;
 }
 
 /**

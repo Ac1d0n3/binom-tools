@@ -1,4 +1,6 @@
 import { statusKey } from './ids.js';
+import { normalizeAttachments } from './attachments.js';
+import { mergeItemTable, normalizeItemTable } from './item-table.js';
 
 /**
  * @typedef {Object} SpHelpLink
@@ -41,6 +43,7 @@ import { statusKey } from './ids.js';
  * @property {string|null} demoCode
  * @property {string} blockerReason
  * @property {string|null} blockerSince
+ * @property {import('./attachments.js').SpAttachment[]} attachments
  */
 
 /**
@@ -93,16 +96,43 @@ export function resolveSprints(template, instance, locale) {
 }
 
 function pickLocalized(sprint, locale) {
-    const title = sprint.title?.[locale] || sprint.title?.en || sprint.title?.de || sprint.title || '';
-    const goal = sprint.goal?.[locale] || sprint.goal?.en || sprint.goal?.de || sprint.goal || '';
-    const description = sprint.description?.[locale] || sprint.description?.en || sprint.description?.de || null;
+    const title = localizeField(sprint.title, locale) || '';
+    const goal = localizeField(sprint.goal, locale) || '';
+    const description = localizeField(sprint.description, locale) || null;
     return { title, goal, description, tasks: [], deliverables: [], fields: [] };
 }
 
+/**
+ * @param {unknown} value
+ * @param {string} locale
+ * @returns {string}
+ */
+function localizeField(value, locale) {
+    if (typeof value === 'string') {
+        return value;
+    }
+    if (value && typeof value === 'object') {
+        const pack = /** @type {Record<string, string>} */ (value);
+        return String(pack[locale] || pack.en || pack.de || '');
+    }
+    return '';
+}
+
 function mergeSprint(sprint, texts, override, instance, templateSlug, locale, custom) {
-    const title = override.title?.[locale] || override.title?.en || texts.title || sprint.title || '';
-    const goal = override.goal?.[locale] || override.goal?.en || texts.goal || sprint.goal || '';
-    const description = override.description?.[locale] || texts.description || null;
+    const title = override.title?.[locale]
+        || override.title?.en
+        || texts.title
+        || localizeField(sprint.title, locale)
+        || '';
+    const goal = override.goal?.[locale]
+        || override.goal?.en
+        || texts.goal
+        || localizeField(sprint.goal, locale)
+        || '';
+    const description = override.description?.[locale]
+        || texts.description
+        || localizeField(sprint.description, locale)
+        || null;
     const notesEnabled = override.notes ?? sprint.notes ?? true;
 
     /** @type {ResolvedItem[]} */
@@ -235,7 +265,11 @@ function resolveTemplateItem({
         id: item.id,
         statusKey: key,
         kind,
-        label: textItem.label || itemOverride.label?.[locale] || itemOverride.label?.en || item.id,
+        label: textItem.label
+            || itemOverride.label?.[locale]
+            || itemOverride.label?.en
+            || localizeField(item.label, locale)
+            || item.id,
         completed,
         status,
         priority: itemOverride.priority || 'normal',
@@ -247,11 +281,14 @@ function resolveTemplateItem({
         sprintId,
         stories,
         linkedStorySlugs: stories.map((s) => s.slug),
-        helpText: pickHelpText(itemOverride, textItem, locale),
+        helpText: pickHelpText(itemOverride, textItem, locale)
+            || pickLocalizedHelpText(item.helpText, locale),
         helpLinks: mergeHelpLinks(textItem.helpLinks || item.helpLinks, itemOverride.helpLinks, locale),
         demoCode: pickDemoCode(itemOverride, textItem, locale),
         blockerReason: status === 'blocked' ? String(itemOverride.blockerReason || '') : '',
         blockerSince: status === 'blocked' ? (itemOverride.blockerSince || null) : null,
+        attachments: normalizeAttachments(itemOverride.attachments),
+        table: mergeItemTable(item.table, itemOverride.table),
     };
 }
 
@@ -280,6 +317,8 @@ function resolveCustomItem(item, key, kind, sprintId, completedList, locale) {
         demoCode: pickLocalizedHelpText(item.demoCode, locale),
         blockerReason: status === 'blocked' ? String(item.blockerReason || '') : '',
         blockerSince: status === 'blocked' ? (item.blockerSince || null) : null,
+        attachments: normalizeAttachments(item.attachments),
+        table: normalizeItemTable(item.table),
     };
 }
 
@@ -429,7 +468,8 @@ function normalizeHelpLinks(links, locale) {
             continue;
         }
         const href = String(/** @type {any} */ (link).href || '').trim();
-        if (!href) {
+        // Help/community links must be external (http/https/mailto), not playbook paths.
+        if (!/^https?:\/\//i.test(href) && !/^mailto:/i.test(href)) {
             continue;
         }
         let label = /** @type {any} */ (link).label;

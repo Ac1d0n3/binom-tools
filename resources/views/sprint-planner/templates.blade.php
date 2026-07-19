@@ -12,16 +12,25 @@
         class="tools-content tools-content--wide sp-app"
         id="sp-app"
         data-sp-page="templates"
-        data-sp-templates='@json($templatesJson)'
+        data-sp-templates="{{ json_encode($templatesJson ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) }}"
         data-sp-show-base="{{ locale_route('sprint-planner.index') }}"
         @include('components.sprint-planner.accounts-attrs')
     >
+        @include('components.sprint-planner.bootstrap-json')
         <h1 class="tools-page-title" data-i18n="sp.templatesTitle">Plan templates</h1>
         <p class="tools-page-lead" data-i18n="sp.templatesLead">
             Markdown templates define reusable sprint structures. Starting a plan creates a local instance.
         </p>
 
         <x-sprint-planner.subnav active="templates" />
+
+        <div class="sp-action-row sp-templates-toolbar">
+            @if (empty($accountsEnabled) || ! empty($accountUser))
+                <a href="{{ locale_route('sprint-planner.create') }}" class="tools-btn tools-btn--primary" data-i18n="sp.creator.new">New plan / template</a>
+            @elseif (! empty($loginUrl))
+                <a href="{{ $loginUrl }}" class="tools-btn tools-btn--secondary" data-i18n="sp.creator.loginToCreate">Sign in to create templates</a>
+            @endif
+        </div>
 
         <div id="sp-template-cards" class="sp-card-grid"></div>
         <p id="sp-templates-empty" class="sp-empty" hidden data-i18n="sp.empty.templates">No templates available.</p>

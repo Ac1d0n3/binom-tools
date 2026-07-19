@@ -4,6 +4,7 @@ import {
     readAccountsBootstrap,
     usesServerPlans,
 } from './accounts-bridge.js';
+import { normalizeAttachments } from './attachments.js';
 import { createDeliverableId, createPlanId, createSprintId, createTaskId, statusKey } from './ids.js';
 import { loadWorkspace, saveWorkspace } from './storage.js';
 
@@ -18,6 +19,7 @@ export function startInstanceFromTemplate(template, options) {
     const now = new Date().toISOString();
     const ephemeral = Boolean(options.ephemeral)
         || (isAccountsMode() && ! usesServerPlans());
+    const activePersonId = workspace.workspace.activePersonId || null;
 
     /** @type {import('./storage.js').SpPlanInstance} */
     const instance = {
@@ -46,7 +48,11 @@ export function startInstanceFromTemplate(template, options) {
         customDeliverables: {},
         customSprints: [],
         sprintOverrides: {},
-        itemOverrides: {},
+        itemOverrides: activePersonId
+            ? buildDefaultAssigneeOverrides(template, activePersonId)
+            : {},
+        // Always keep a snapshot so the plan stays renderable if the slug is lost or the template catalog fails to load.
+        templateSnapshot: structuredCloneSafe(template),
         ownerUserId: usesServerPlans() && ! ephemeral
             ? (readAccountsBootstrap().accountUser?.id || null)
             : null,
@@ -60,8 +66,109 @@ export function startInstanceFromTemplate(template, options) {
     };
 
     workspace.instances[id] = instance;
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [id] });
     return saved.ok ? { ok: true, instance } : { ok: false, error: saved.error };
+}
+
+/**
+ * Assign all template tasks/deliverables to a person via itemOverrides.
+ * @param {object} template
+ * @param {string} personId
+ * @returns {Record<string, Record<string, unknown>>}
+ */
+export function buildDefaultAssigneeOverrides(template, personId) {
+    /** @type {Record<string, Record<string, unknown>>} */
+    const overrides = {};
+    const slug = template?.slug || 'custom';
+    for (const sprint of Array.isArray(template?.sprints) ? template.sprints : []) {
+        for (const task of sprint.tasks || []) {
+            const key = statusKey(slug, sprint.id, 'task', task.id);
+            overrides[key] = {
+                assigneeType: 'person',
+                assigneeId: personId,
+            };
+        }
+        for (const del of sprint.deliverables || []) {
+            const key = statusKey(slug, sprint.id, 'deliverable', del.id);
+            overrides[key] = {
+                assigneeType: 'person',
+                assigneeId: personId,
+            };
+        }
+    }
+    return overrides;
+}
+
+/**
+ * Claim a single item for a person.
+ * @param {string} instanceId
+ * @param {'task'|'deliverable'} kind
+ * @param {string} key
+ * @param {boolean} isCustom
+ * @param {string} sprintId
+ * @param {string} personId
+ */
+export function claimItem(instanceId, kind, key, isCustom, sprintId, personId) {
+    if (!personId) {
+        return { ok: false, error: 'active-person-missing' };
+    }
+    return updateInstance(instanceId, (instance) => {
+        assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId);
+    });
+}
+
+/**
+ * Claim every currently unassigned resolved item.
+ * @param {string} instanceId
+ * @param {Array<{kind: 'task'|'deliverable', statusKey: string, custom: boolean, sprintId: string, assigneeId: string|null}>} items
+ * @param {string} personId
+ */
+export function claimAllUnassigned(instanceId, items, personId) {
+    if (!personId) {
+        return { ok: false, error: 'active-person-missing' };
+    }
+    return updateInstance(instanceId, (instance) => {
+        for (const item of items) {
+            if (item.assigneeId) {
+                continue;
+            }
+            assignPersonOnItem(
+                instance,
+                item.kind,
+                item.statusKey,
+                item.custom,
+                item.sprintId,
+                personId,
+            );
+        }
+    });
+}
+
+/**
+ * @param {import('./storage.js').SpPlanInstance} instance
+ * @param {'task'|'deliverable'} kind
+ * @param {string} key
+ * @param {boolean} isCustom
+ * @param {string} sprintId
+ * @param {string} personId
+ */
+function assignPersonOnItem(instance, kind, key, isCustom, sprintId, personId) {
+    if (isCustom) {
+        const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
+        const list = instance[bag][sprintId] || [];
+        const item = list.find((entry) => entry.statusKey === key || entry.id === key.split(':').pop());
+        if (!item) {
+            return;
+        }
+        item.assigneeType = 'person';
+        item.assigneeId = personId;
+        return;
+    }
+    if (!instance.itemOverrides[key]) {
+        instance.itemOverrides[key] = {};
+    }
+    instance.itemOverrides[key].assigneeType = 'person';
+    instance.itemOverrides[key].assigneeId = personId;
 }
 
 /**
@@ -75,9 +182,22 @@ export function updateInstance(instanceId, mutator) {
     if (!instance) {
         return { ok: false, error: 'plan-missing' };
     }
+    const previousSlug = String(instance.templateSlug || '');
+    const previousStartedAt = String(instance.startedAt || '');
+    const previousTranslations = instance.translations;
     mutator(instance);
+    // Never allow assign/edit paths to wipe structural identity fields.
+    if (!instance.templateSlug && previousSlug) {
+        instance.templateSlug = previousSlug;
+    }
+    if (!instance.startedAt && previousStartedAt) {
+        instance.startedAt = previousStartedAt;
+    }
+    if ((!instance.translations || Object.keys(instance.translations).length === 0) && previousTranslations) {
+        instance.translations = previousTranslations;
+    }
     instance.updatedAt = new Date().toISOString();
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [instanceId] });
     return saved.ok ? { ok: true, instance, workspace } : { ok: false, error: saved.error };
 }
 
@@ -290,6 +410,8 @@ export function addCustomItem(instanceId, sprintId, kind, data, templateSlug) {
             demoCode: data.demoCode || '',
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
+            attachments: normalizeAttachments(data.attachments),
+            table: data.table || null,
         };
         const bag = kind === 'task' ? 'customTasks' : 'customDeliverables';
         if (!instance[bag][sprintId]) {
@@ -329,6 +451,12 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             item.demoCode = data.demoCode || '';
             item.blockerReason = item.status === 'blocked' ? (data.blockerReason || '') : '';
             item.blockerSince = item.status === 'blocked' ? (data.blockerSince || null) : null;
+            if (Array.isArray(data.attachments) || data.attachments === null) {
+                item.attachments = normalizeAttachments(data.attachments || []);
+            }
+            if (data.table !== undefined) {
+                item.table = data.table;
+            }
             syncCompletion(instance, kind, key, item.status === 'completed');
             return;
         }
@@ -352,6 +480,12 @@ export function updateItemMeta(instanceId, kind, key, data, isCustom, sprintId) 
             blockerReason: data.status === 'blocked' ? (data.blockerReason || '') : '',
             blockerSince: data.status === 'blocked' ? (data.blockerSince || null) : null,
         };
+        if (Array.isArray(data.attachments) || data.attachments === null) {
+            instance.itemOverrides[key].attachments = normalizeAttachments(data.attachments || []);
+        }
+        if (data.table !== undefined) {
+            instance.itemOverrides[key].table = data.table;
+        }
         syncCompletion(instance, kind, key, data.status === 'completed');
     });
 }
@@ -382,7 +516,7 @@ export function duplicateInstance(instanceId) {
         createdAt: now,
         updatedAt: now,
     };
-    const saved = saveWorkspace(workspace);
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [id] });
     return saved.ok ? { ok: true, instance: workspace.instances[id] } : { ok: false, error: saved.error };
 }
 
@@ -417,7 +551,8 @@ export function deleteInstance(instanceId) {
     }
     const wasEphemeral = Boolean(existing.ephemeral);
     delete workspace.instances[instanceId];
-    const saved = saveWorkspace(workspace);
+    // Cache only — server delete is handled below (do not re-upsert siblings).
+    const saved = saveWorkspace(workspace, { dirtyPlanIds: [] });
     if (!saved.ok) {
         return { ok: false, error: saved.error };
     }
@@ -586,6 +721,19 @@ function syncCompletion(instance, kind, key, completed) {
         set.delete(key);
     }
     instance[listKey] = [...set];
+}
+
+/**
+ * @param {unknown} value
+ */
+function structuredCloneSafe(value) {
+    try {
+        return typeof structuredClone === 'function'
+            ? structuredClone(value)
+            : JSON.parse(JSON.stringify(value));
+    } catch {
+        return value && typeof value === 'object' ? { .../** @type {object} */ (value) } : value;
+    }
 }
 
 function resequenceCustomOnly() {

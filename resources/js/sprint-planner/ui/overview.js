@@ -19,7 +19,7 @@ import {
     spT,
     storageErrorMessage,
 } from './helpers.js';
-import { getLocale } from '../../locale.js';
+import { getLocale, withAppBasePath } from '../../locale.js';
 
 /**
  * Shared overview/template card rendering and start-plan dialog.
@@ -126,23 +126,66 @@ function renderTemplateCards(templates, locale, workspace) {
         const description = template.locales?.[locale]?.description || template.locales?.en?.description || '';
         const card = document.createElement('article');
         card.className = 'sp-card';
+        const isUser = Boolean(template.userTemplate || template.id?.startsWith?.('utpl_'));
         card.innerHTML = `
             <h3 class="sp-card__title"></h3>
             <p class="sp-card__desc"></p>
             <p class="sp-card__meta"></p>
-            <button type="button" class="tools-btn tools-btn--primary" data-start-slug=""></button>
+            <div class="sp-card__actions"></div>
         `;
         card.querySelector('.sp-card__title').textContent = title;
         card.querySelector('.sp-card__desc').textContent = description;
-        card.querySelector('.sp-card__meta').textContent = spT('sp.card.duration', {
-            count: template.duration || template.sprintCount || 0,
-        });
-        const btn = card.querySelector('button');
-        btn.dataset.startSlug = template.slug;
+        card.querySelector('.sp-card__meta').textContent = [
+            spT('sp.card.duration', { count: template.duration || template.sprintCount || template.sprints?.length || 0 }),
+            isUser ? spT('sp.creator.userTemplateBadge') : '',
+        ].filter(Boolean).join(' · ');
+        const actions = card.querySelector('.sp-card__actions');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tools-btn tools-btn--primary';
         btn.textContent = spT('sp.action.startPlan');
         btn.addEventListener('click', () => openStartDialog(template, workspace));
+        actions.appendChild(btn);
+
+        if (isUser && isLoggedIn()) {
+            const edit = document.createElement('a');
+            edit.className = 'tools-btn tools-btn--secondary';
+            edit.href = createPlanUrl(template.id);
+            edit.textContent = spT('sp.action.edit');
+            actions.appendChild(edit);
+
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.className = 'tools-btn tools-btn--secondary';
+            del.textContent = spT('sp.action.delete');
+            del.addEventListener('click', async () => {
+                if (!window.confirm(spT('sp.creator.confirmDeleteTemplate'))) {
+                    return;
+                }
+                try {
+                    const { deleteUserTemplate } = await import('../user-templates.js');
+                    await deleteUserTemplate(template.id);
+                    showToast(spT('sp.toast.deleted'));
+                    window.location.reload();
+                } catch {
+                    showToast(spT('sp.creator.templateSaveFailed'));
+                }
+            });
+            actions.appendChild(del);
+        }
+
         container.appendChild(card);
     }
+}
+
+function createPlanUrl(templateId = '') {
+    const root = document.getElementById('sp-app');
+    const base = root?.dataset?.createPlanUrl || withAppBasePath('/sprint-planner/create');
+    if (!templateId) {
+        return base;
+    }
+    const sep = base.includes('?') ? '&' : '?';
+    return `${base}${sep}template=${encodeURIComponent(templateId)}`;
 }
 
 function renderPlanCards(workspace, templates, locale) {
@@ -165,7 +208,7 @@ function renderPlanCards(workspace, templates, locale) {
     const archived = [];
 
     for (const instance of instances) {
-        const template = templateBySlug[instance.templateSlug];
+        const template = templateBySlug[instance.templateSlug] || instance.templateSnapshot;
         const sprints = template ? resolveSprints(template, instance, locale) : [];
         const progress = calculateOverallProgress(sprints);
         const current = calculateCurrentSprintNumber(
