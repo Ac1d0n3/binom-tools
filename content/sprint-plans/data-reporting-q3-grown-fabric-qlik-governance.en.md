@@ -102,11 +102,11 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -158,11 +158,11 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: eight-pillars, metadata-catalog-lineage, access-security-governance
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -217,11 +217,11 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: access-security-governance, pii-privacy-governance, data-ownership-stewardship
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -273,11 +273,11 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -372,9 +372,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: metadata-catalog-lineage, data-ownership-stewardship, define-kpi
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Helps make sources, models, KPIs, owners and DSDR-relevant dependencies visible.
@@ -422,9 +422,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: dq-test-kpis, access-security-governance, operating-and-governing-the-platform
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
 deliverables:
   - id: dq-release-gates-artifact
     label: Release and DQ gate process

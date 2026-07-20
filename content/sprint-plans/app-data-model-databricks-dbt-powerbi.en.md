@@ -53,9 +53,13 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Generates Delta MERGE and SCD2 patterns for incremental lakehouse models.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Generates dbt-on-Databricks starter snippets for incremental models, tests, jobs, and Unity Catalog handoff.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -103,9 +107,13 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Generates Delta MERGE and SCD2 patterns for incremental lakehouse models.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Generates dbt-on-Databricks starter snippets for incremental models, tests, jobs, and Unity Catalog handoff.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -153,9 +161,13 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Generates Delta MERGE and SCD2 patterns for incremental lakehouse models.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Generates dbt-on-Databricks starter snippets for incremental models, tests, jobs, and Unity Catalog handoff.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -203,9 +215,13 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Generates Delta MERGE and SCD2 patterns for incremental lakehouse models.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Generates dbt-on-Databricks starter snippets for incremental models, tests, jobs, and Unity Catalog handoff.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -253,9 +269,13 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: dq-test-kpis, metadata-catalog-lineage, operating-and-governing-the-platform
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Generates Delta MERGE and SCD2 patterns for incremental lakehouse models.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Generates dbt-on-Databricks starter snippets for incremental models, tests, jobs, and Unity Catalog handoff.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -303,9 +323,13 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Generates Delta MERGE and SCD2 patterns for incremental lakehouse models.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Generates dbt-on-Databricks starter snippets for incremental models, tests, jobs, and Unity Catalog handoff.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.

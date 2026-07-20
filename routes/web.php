@@ -21,7 +21,9 @@ use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
 use App\Http\Controllers\Tools\DatabricksDqPatternGeneratorController;
+use App\Http\Controllers\Tools\DatabricksPiiGovernancePatternGeneratorController;
 use App\Http\Controllers\Tools\FabricDqPatternGeneratorController;
+use App\Http\Controllers\Tools\FabricPiiGovernancePatternGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
 use App\Http\Controllers\Tools\ImpactEffortController;
 use App\Http\Controllers\Tools\KpiDefinitionController;
@@ -204,6 +206,163 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.fabric-dq-pattern-generator'));
     Route::get('/tools/databricks-dq-pattern-generator', [DatabricksDqPatternGeneratorController::class, 'show'])
         ->name($name('tools.databricks-dq-pattern-generator'));
+    Route::get('/tools/fabric-pii-governance-pattern-generator', [FabricPiiGovernancePatternGeneratorController::class, 'show'])
+        ->name($name('tools.fabric-pii-governance-pattern-generator'));
+    Route::get('/tools/databricks-pii-governance-pattern-generator', [DatabricksPiiGovernancePatternGeneratorController::class, 'show'])
+        ->name($name('tools.databricks-pii-governance-pattern-generator'));
+
+    Route::view('/tools/fabric-dq-rule-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'fabric',
+        'toolId' => 'fabric-dq-rule-generator',
+        'pageTitle' => 'Fabric DQ Rule Generator',
+        'titleKey' => 'lakehouseDq.fabricDqRule.pageTitle',
+        'leadKey' => 'lakehouseDq.fabricDqRule.lead',
+        'introKey' => 'lakehouseDq.fabricDqRule.howto.intro',
+        'tipKey' => 'lakehouseDq.fabricDqRule.howto.tip',
+        'table' => 'sales.orders_curated',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, order_date, amount',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email',
+        'owner' => 'data-owner-sales',
+        'selectedPattern' => 'dq',
+        'patterns' => ['dq' => 'DQ Checks'],
+        'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
+    ])->name($name('tools.fabric-dq-rule-generator'));
+    Route::view('/tools/fabric-notebook-snippet-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'fabric',
+        'toolId' => 'fabric-notebook-snippet-generator',
+        'pageTitle' => 'Fabric Notebook Snippet Generator',
+        'titleKey' => 'lakehouseDq.fabricNotebook.pageTitle',
+        'leadKey' => 'lakehouseDq.fabricNotebook.lead',
+        'introKey' => 'lakehouseDq.fabricNotebook.howto.intro',
+        'tipKey' => 'lakehouseDq.fabricNotebook.howto.tip',
+        'table' => 'sales.orders_curated',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, order_date, amount',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email, customer_name',
+        'owner' => 'data-owner-sales',
+        'selectedPattern' => 'dq',
+        'patterns' => ['dq' => 'DQ Notebook', 'delta' => 'Delta Notebook', 'scd2' => 'SCD2 Notebook', 'governance' => 'Governance Notebook'],
+        'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
+    ])->name($name('tools.fabric-notebook-snippet-generator'));
+    Route::view('/tools/fabric-pipeline-checklist-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'fabric',
+        'toolId' => 'fabric-pipeline-checklist-generator',
+        'pageTitle' => 'Fabric Pipeline Checklist Generator',
+        'titleKey' => 'lakehouseDq.fabricPipeline.pageTitle',
+        'leadKey' => 'lakehouseDq.fabricPipeline.lead',
+        'introKey' => 'lakehouseDq.fabricPipeline.howto.intro',
+        'tipKey' => 'lakehouseDq.fabricPipeline.howto.tip',
+        'table' => 'sales.orders_curated',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, order_date, amount',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email, customer_name',
+        'owner' => 'data-owner-sales',
+        'selectedPattern' => 'pipeline',
+        'patterns' => ['pipeline' => 'Pipeline Checklist', 'delta' => 'Delta Load', 'governance' => 'Governance Gate'],
+        'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
+    ])->name($name('tools.fabric-pipeline-checklist-generator'));
+    Route::view('/tools/fabric-semantic-model-guardrails', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'fabric',
+        'toolId' => 'fabric-semantic-model-guardrails',
+        'pageTitle' => 'Fabric Semantic Model Guardrails',
+        'titleKey' => 'lakehouseDq.fabricSemantic.pageTitle',
+        'leadKey' => 'lakehouseDq.fabricSemantic.lead',
+        'introKey' => 'lakehouseDq.fabricSemantic.howto.intro',
+        'tipKey' => 'lakehouseDq.fabricSemantic.howto.tip',
+        'table' => 'sales.orders_semantic',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, amount, order_date',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email, customer_name',
+        'owner' => 'semantic-model-owner',
+        'selectedPattern' => 'semantic',
+        'patterns' => ['semantic' => 'Semantic Guardrails', 'governance' => 'Governance Gate'],
+        'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
+    ])->name($name('tools.fabric-semantic-model-guardrails'));
+    Route::view('/tools/databricks-dq-expectation-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'databricks',
+        'toolId' => 'databricks-dq-expectation-generator',
+        'pageTitle' => 'Databricks DQ Expectation Generator',
+        'titleKey' => 'lakehouseDq.databricksDqExpectation.pageTitle',
+        'leadKey' => 'lakehouseDq.databricksDqExpectation.lead',
+        'introKey' => 'lakehouseDq.databricksDqExpectation.howto.intro',
+        'tipKey' => 'lakehouseDq.databricksDqExpectation.howto.tip',
+        'table' => 'main.sales.orders_curated',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, order_date, amount',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email',
+        'owner' => 'data-owner-sales',
+        'selectedPattern' => 'dq',
+        'patterns' => ['dq' => 'DLT Expectations'],
+        'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
+    ])->name($name('tools.databricks-dq-expectation-generator'));
+    Route::view('/tools/databricks-dbt-on-databricks-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'databricks',
+        'toolId' => 'databricks-dbt-on-databricks-generator',
+        'pageTitle' => 'Databricks dbt-on-Databricks Generator',
+        'titleKey' => 'lakehouseDq.databricksDbt.pageTitle',
+        'leadKey' => 'lakehouseDq.databricksDbt.lead',
+        'introKey' => 'lakehouseDq.databricksDbt.howto.intro',
+        'tipKey' => 'lakehouseDq.databricksDbt.howto.tip',
+        'table' => 'main.sales.orders_curated',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, order_date, amount',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email, customer_name',
+        'owner' => 'analytics-engineering',
+        'selectedPattern' => 'dbt',
+        'patterns' => ['dbt' => 'dbt on Databricks', 'dq' => 'DLT Expectations', 'governance' => 'Unity Catalog Gate'],
+        'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
+    ])->name($name('tools.databricks-dbt-on-databricks-generator'));
+    Route::view('/tools/unity-catalog-governance-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'databricks',
+        'toolId' => 'unity-catalog-governance-generator',
+        'pageTitle' => 'Unity Catalog Governance Generator',
+        'titleKey' => 'lakehouseDq.unityCatalog.pageTitle',
+        'leadKey' => 'lakehouseDq.unityCatalog.lead',
+        'introKey' => 'lakehouseDq.unityCatalog.howto.intro',
+        'tipKey' => 'lakehouseDq.unityCatalog.howto.tip',
+        'table' => 'main.customer.customer_app_curated',
+        'keys' => 'customer_id',
+        'required' => 'customer_id, consent_status, updated_at',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email, customer_name, phone',
+        'owner' => 'data-owner-customer',
+        'selectedPattern' => 'governance',
+        'patterns' => ['governance' => 'Unity Catalog Gate'],
+        'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
+    ])->name($name('tools.unity-catalog-governance-generator'));
+    Route::view('/tools/delta-load-scd-pattern-generator', 'tools.lakehouse-pattern-tool', [
+        'platform' => 'databricks',
+        'toolId' => 'delta-load-scd-pattern-generator',
+        'pageTitle' => 'Delta Load / SCD Pattern Generator',
+        'titleKey' => 'lakehouseDq.deltaScd.pageTitle',
+        'leadKey' => 'lakehouseDq.deltaScd.lead',
+        'introKey' => 'lakehouseDq.deltaScd.howto.intro',
+        'tipKey' => 'lakehouseDq.deltaScd.howto.tip',
+        'table' => 'main.sales.orders_curated',
+        'keys' => 'order_id',
+        'required' => 'order_id, customer_id, order_date, amount',
+        'freshness' => 'updated_at',
+        'pii' => 'customer_email',
+        'owner' => 'data-owner-sales',
+        'selectedPattern' => 'delta',
+        'patterns' => ['delta' => 'Delta MERGE', 'scd2' => 'SCD2'],
+        'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
+        'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
+    ])->name($name('tools.delta-load-scd-pattern-generator'));
 };
 
 $registerRoutes(false);

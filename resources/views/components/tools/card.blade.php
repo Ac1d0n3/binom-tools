@@ -12,6 +12,7 @@
     'overviewItem' => false,
     'searchText' => null,
     'tags' => [],
+    'products' => [],
     'dbtBadge' => false,
     'platformMarks' => [],
 ])
@@ -20,6 +21,7 @@
     $platformMarkAssets = [
         'Fabric' => 'images/fabric-badge.svg',
         'Databricks' => 'images/databricks-badge.svg',
+        'AI' => 'images/ai-badge.svg',
     ];
 @endphp
 
@@ -30,6 +32,7 @@
     @if ($overviewItem) data-overview-item @endif
     @if ($searchText) data-search-text="{{ $searchText }}" @endif
     @if (count($tags) > 0) data-tags="{{ implode(',', $tags) }}" @endif
+    @if (count($products) > 0) data-products="{{ implode(',', $products) }}" @endif
     @if ($external) target="_blank" rel="noopener noreferrer" @endif
 >
     <div class="tools-card__main">

@@ -17,7 +17,7 @@
             <x-tools.workflow-nav :tool-id="$toolId" />
         @endif
 
-        <div class="pii-policy-generator" id="{{ $appId }}">
+        <div class="pii-policy-generator" id="{{ $appId }}" @if ($toolId) data-tool-id="{{ $toolId }}" @endif>
             {{ $slot }}
         </div>
     </div>

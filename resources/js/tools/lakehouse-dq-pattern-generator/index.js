@@ -45,6 +45,7 @@ export function bootLakehouseDqPatternGenerator(platform) {
             pii: splitCsv(els.pii?.value || ''),
             owner: els.owner?.value?.trim() || 'data-owner',
             pattern: els.pattern?.value || 'dq',
+            toolId: app.dataset.toolId || '',
         };
     }
 

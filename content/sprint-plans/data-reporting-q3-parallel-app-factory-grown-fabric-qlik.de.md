@@ -148,11 +148,11 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: pii-privacy-governance, eight-pillars, access-security-governance
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung und Zugriffsregeln direkt für die nächste App vorzubereiten.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -205,9 +205,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
       - label: Business-Logik außerhalb von BI-Apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Hilft, neue Apps nicht wieder mit versteckter Logik in Qlik/Power BI zu bauen.
@@ -256,9 +256,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
 deliverables:
   - id: build-app2-loads-model-artifact
     label: App-2-Datenmodell
@@ -304,9 +304,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: dq-test-kpis, operating-and-governing-the-platform, metadata-catalog-lineage
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
 deliverables:
   - id: app2-dq-reconciliation-artifact
     label: App-2-DQ-Paket
@@ -528,11 +528,11 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: pii-privacy-governance, metadata-catalog-lineage, access-security-governance
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung und Zugriffsregeln direkt für die nächste App vorzubereiten.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -585,9 +585,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
       - label: Business-Logik außerhalb von BI-Apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Hilft, neue Apps nicht wieder mit versteckter Logik in Qlik/Power BI zu bauen.
@@ -636,9 +636,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
       - label: Business-Logik außerhalb von BI-Apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Hilft, neue Apps nicht wieder mit versteckter Logik in Qlik/Power BI zu bauen.

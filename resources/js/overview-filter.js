@@ -34,12 +34,16 @@ export function initOverviewFilters() {
     const searchInput = /** @type {HTMLInputElement | null} */ (
         root.querySelector('[data-overview-search]')
     );
+    const productSelect = /** @type {HTMLSelectElement | null} */ (
+        root.querySelector('[data-overview-product]')
+    );
     const categoryButtons = root.querySelectorAll('[data-overview-category]');
     const tagButtons = root.querySelectorAll('[data-overview-tag]');
     const tagModeRoot = root.querySelector('[data-tag-match-mode]');
     const filterResetButton = root.querySelector('[data-overview-filter-reset]');
     const storyItems = root.querySelectorAll('[data-overview-item]');
     const seriesItems = root.querySelectorAll('[data-overview-series-item]');
+    const workflowSections = root.querySelectorAll('[data-overview-workflow-section]');
     const emptyEl = root.querySelector('[data-overview-empty]');
     const unreadEmptyEl = root.querySelector('[data-overview-unread-empty]');
     const seriesEmptyEl = root.querySelector('[data-overview-series-empty]');
@@ -65,6 +69,9 @@ export function initOverviewFilters() {
 
     /** @returns {ToolsLocale} */
     const locale = () => getLocale();
+
+    /** @returns {string} */
+    const activeProduct = () => productSelect?.value || 'all';
 
     /**
      * @param {Element} grid
@@ -156,6 +163,9 @@ export function initOverviewFilters() {
         return [...activeTags].every((tag) => tags.includes(tag));
     };
 
+    /** @param {string[]} products */
+    const matchesProductFilter = (products) => activeProduct() === 'all' || products.includes(activeProduct());
+
     const syncTagAllChip = () => {
         tagButtons.forEach((button) => {
             const tag = button.getAttribute('data-overview-tag') ?? '';
@@ -171,9 +181,24 @@ export function initOverviewFilters() {
             return;
         }
 
-        const hasFilters = activeCategoryKey !== 'all' || activeTags.size > 0;
+        const hasFilters = activeCategoryKey !== 'all' || activeTags.size > 0 || activeProduct() !== 'all';
         filterResetButton.disabled = !hasFilters;
         filterResetButton.setAttribute('aria-disabled', hasFilters ? 'false' : 'true');
+    };
+
+    const applyWorkflowSections = () => {
+        if (workflowSections.length === 0) {
+            return;
+        }
+
+        workflowSections.forEach((section) => {
+            const products = (section.getAttribute('data-products') ?? '')
+                .split(',')
+                .map((product) => product.trim())
+                .filter(Boolean);
+
+            section.hidden = !matchesProductFilter(products);
+        });
     };
 
     const applyStories = () => {
@@ -187,18 +212,23 @@ export function initOverviewFilters() {
                 .split(',')
                 .map((tag) => tag.trim())
                 .filter(Boolean);
+            const products = (item.getAttribute('data-products') ?? '')
+                .split(',')
+                .map((product) => product.trim())
+                .filter(Boolean);
             const slug = item.getAttribute('data-playbook-slug') ?? '';
             const categoryKey = item.getAttribute('data-category-key') ?? '';
             const matchesSearch = query === '' || text.includes(query);
             const matchesCategory = activeCategoryKey === 'all' || categoryKey === activeCategoryKey;
             const matchesTag = matchesTagFilter(tags);
+            const matchesProduct = productSelect === null || matchesProductFilter(products);
             const read = isPlaybookRead(slug);
 
-            if (matchesSearch && matchesCategory && matchesTag && hideRead && read) {
+            if (matchesSearch && matchesCategory && matchesTag && matchesProduct && hideRead && read) {
                 wouldShowButRead += 1;
             }
 
-            const show = matchesSearch && matchesCategory && matchesTag && (!hideRead || !read);
+            const show = matchesSearch && matchesCategory && matchesTag && matchesProduct && (!hideRead || !read);
 
             item.hidden = !show;
             if (show) visible += 1;
@@ -216,6 +246,7 @@ export function initOverviewFilters() {
 
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
         syncFilterReset();
+        applyWorkflowSections();
         sortStories();
     };
 
@@ -272,6 +303,10 @@ export function initOverviewFilters() {
         activeCategoryKey = 'all';
         activeTags.clear();
 
+        if (productSelect) {
+            productSelect.value = 'all';
+        }
+
         categoryButtons.forEach((button) => {
             const key = button.getAttribute('data-overview-category') ?? '';
             button.classList.toggle('tools-filter-chip--active', key === 'all');
@@ -286,6 +321,7 @@ export function initOverviewFilters() {
     };
 
     searchInput?.addEventListener('input', apply);
+    productSelect?.addEventListener('change', apply);
 
     categoryButtons.forEach((button) => {
         button.addEventListener('click', () => {

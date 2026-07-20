@@ -104,11 +104,11 @@ tasks:
       Achte auf: Governance nur zu dokumentieren, ohne sie im Prozess testbar zu machen.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Erzeugt Databricks-spezifische DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.
+      - label: Unity Catalog Governance Generator
+        href: /tools/unity-catalog-governance-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung, Rollen und Zugriffsregeln als konkrete Policy vorzubereiten.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -160,11 +160,11 @@ tasks:
       Achte auf: Governance nur zu dokumentieren, ohne sie im Prozess testbar zu machen.
     linkedStories: eight-pillars, metadata-catalog-lineage, access-security-governance
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Erzeugt Databricks-spezifische DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.
+      - label: Unity Catalog Governance Generator
+        href: /tools/unity-catalog-governance-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung, Rollen und Zugriffsregeln als konkrete Policy vorzubereiten.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -219,11 +219,11 @@ tasks:
       Achte auf: Governance nur zu dokumentieren, ohne sie im Prozess testbar zu machen.
     linkedStories: access-security-governance, pii-privacy-governance, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Erzeugt Databricks-spezifische DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.
+      - label: Unity Catalog Governance Generator
+        href: /tools/unity-catalog-governance-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung, Rollen und Zugriffsregeln als konkrete Policy vorzubereiten.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -275,11 +275,11 @@ tasks:
       Achte auf: Governance nur zu dokumentieren, ohne sie im Prozess testbar zu machen.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Erzeugt Databricks-spezifische DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.
+      - label: Unity Catalog Governance Generator
+        href: /tools/unity-catalog-governance-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung, Rollen und Zugriffsregeln als konkrete Policy vorzubereiten.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -374,9 +374,9 @@ tasks:
       Achte auf: Governance nur zu dokumentieren, ohne sie im Prozess testbar zu machen.
     linkedStories: metadata-catalog-lineage, data-ownership-stewardship, define-kpi
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Erzeugt Databricks-spezifische DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Hilft, Quellen, Modelle, KPIs, Owner und DSDR-relevante Abhängigkeiten sichtbar zu machen.
@@ -424,9 +424,9 @@ tasks:
       Achte auf: Governance nur zu dokumentieren, ohne sie im Prozess testbar zu machen.
     linkedStories: dq-test-kpis, access-security-governance, operating-and-governing-the-platform
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Erzeugt Databricks-spezifische DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.
 deliverables:
   - id: dq-release-gates-artifact
     label: Release- und DQ-Gate-Prozess

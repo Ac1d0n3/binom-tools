@@ -62,6 +62,16 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('DQ Rules Generator');
         $response->assertSee('Fabric DQ Pattern Generator');
         $response->assertSee('Databricks DQ Pattern Generator');
+        $response->assertSee('Fabric PII Governance Pattern Generator');
+        $response->assertSee('Databricks PII Governance Pattern Generator');
+        $response->assertSee('Fabric DQ Rule Generator');
+        $response->assertSee('Fabric Notebook Snippet Generator');
+        $response->assertSee('Fabric Pipeline Checklist Generator');
+        $response->assertSee('Fabric Semantic Model Guardrails');
+        $response->assertSee('Databricks DQ Expectation Generator');
+        $response->assertSee('Databricks dbt-on-Databricks Generator');
+        $response->assertSee('Unity Catalog Governance Generator');
+        $response->assertSee('Delta Load / SCD Pattern Generator');
         $response->assertSee('tools-card__platform-mark', false);
         $response->assertSee('images/fabric-badge.svg', false);
         $response->assertSee('images/databricks-badge.svg', false);
@@ -74,7 +84,12 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-workflow-section', false);
         $response->assertSee('data-overview-filter-root', false);
         $response->assertSee('data-overview-search', false);
+        $response->assertSee('data-overview-product', false);
+        $response->assertSee('data-products="fabric"', false);
+        $response->assertSee('data-products="databricks"', false);
+        $response->assertSee('data-products="dbt"', false);
         $response->assertSee('data-overview-item', false);
+        $response->assertSee('tools-overview-sticky-header', false);
         $response->assertSee('tools-shell__main--overview', false);
         $response->assertSee('tools-overview-scroll', false);
         $response->assertSee('tools-overview-release', false);
@@ -186,6 +201,34 @@ class ToolsPagesTest extends TestCase
             ->assertSee('lakehouse-dq-pattern-generator-app', false)
             ->assertSee('lakehouse-dq-notebook-pre', false)
             ->assertSee('lakehouseDq.databricks.pageTitle', false);
+
+        $this->get('/tools/fabric-pii-governance-pattern-generator')
+            ->assertOk()
+            ->assertSee('lakehouse-dq-pattern-generator-app', false)
+            ->assertSee('lakehouse-dq-sql-pre', false)
+            ->assertSee('lakehouseDq.fabricPii.pageTitle', false);
+
+        $this->get('/tools/databricks-pii-governance-pattern-generator')
+            ->assertOk()
+            ->assertSee('lakehouse-dq-pattern-generator-app', false)
+            ->assertSee('lakehouse-dq-notebook-pre', false)
+            ->assertSee('lakehouseDq.databricksPii.pageTitle', false);
+
+        foreach ([
+            '/tools/fabric-dq-rule-generator' => 'lakehouseDq.fabricDqRule.pageTitle',
+            '/tools/fabric-notebook-snippet-generator' => 'lakehouseDq.fabricNotebook.pageTitle',
+            '/tools/fabric-pipeline-checklist-generator' => 'lakehouseDq.fabricPipeline.pageTitle',
+            '/tools/fabric-semantic-model-guardrails' => 'lakehouseDq.fabricSemantic.pageTitle',
+            '/tools/databricks-dq-expectation-generator' => 'lakehouseDq.databricksDqExpectation.pageTitle',
+            '/tools/databricks-dbt-on-databricks-generator' => 'lakehouseDq.databricksDbt.pageTitle',
+            '/tools/unity-catalog-governance-generator' => 'lakehouseDq.unityCatalog.pageTitle',
+            '/tools/delta-load-scd-pattern-generator' => 'lakehouseDq.deltaScd.pageTitle',
+        ] as $url => $titleKey) {
+            $this->get($url)
+                ->assertOk()
+                ->assertSee('lakehouse-dq-pattern-generator-app', false)
+                ->assertSee($titleKey, false);
+        }
     }
 
     public function test_meta_export_generator_page_renders(): void

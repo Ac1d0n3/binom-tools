@@ -53,11 +53,11 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Helps define PII classes, masking and access rules for the concrete field or app.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
@@ -106,11 +106,11 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Helps define PII classes, masking and access rules for the concrete field or app.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
@@ -159,11 +159,11 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Helps define PII classes, masking and access rules for the concrete field or app.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
@@ -212,11 +212,11 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Fabric DQ Rule Generator
+        href: /tools/fabric-dq-rule-generator
+        description: Generates Fabric-specific DQ rules for required fields, business keys, freshness, and release gates.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Helps define PII classes, masking and access rules for the concrete field or app.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage

@@ -184,9 +184,13 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Erzeugt dbt-on-Databricks Starter-Snippets fuer Incremental Models, Tests, Jobs und Unity-Catalog-Handoff.
       - label: dbt Docs - Incremental models
         href: https://docs.getdbt.com/docs/build/incremental-models
         description: Nutze die Doku als Referenz fuer inkrementelle Modelle, Wasserzeichen und Reprocessing-Entscheidungen.
@@ -233,9 +237,13 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Erzeugt dbt-on-Databricks Starter-Snippets fuer Incremental Models, Tests, Jobs und Unity-Catalog-Handoff.
       - label: Kimball Group - Slowly Changing Dimensions
         href: https://www.kimballgroup.com/2008/09/slowly-changing-dimensions-part-2/
         description: Nutze den Artikel als Referenz fuer SCD-Typen, Historisierung und fachliche Trade-offs.
@@ -450,9 +458,13 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
+      - label: Databricks dbt-on-Databricks Generator
+        href: /tools/databricks-dbt-on-databricks-generator
+        description: Erzeugt dbt-on-Databricks Starter-Snippets fuer Incremental Models, Tests, Jobs und Unity-Catalog-Handoff.
       - label: Power-BI-App
         href: https://learn.microsoft.com/en-us/power-bi/create-reports/
         description: Nutze die Doku als Referenz fuer App-Anbindung, Semantik und erste Visuals.

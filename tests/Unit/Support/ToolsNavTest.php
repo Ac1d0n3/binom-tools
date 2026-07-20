@@ -42,6 +42,11 @@ final class ToolsNavTest extends TestCase
             ['Fabric'],
             ToolsNav::platformMarks(['id' => 'fabric-dq-pattern-generator', 'for' => ['Fabric']]),
         );
+
+        $this->assertSame(
+            ['AI'],
+            ToolsNav::platformMarks(['id' => 'prompt-studio', 'for' => ['AI']]),
+        );
     }
 
     /**

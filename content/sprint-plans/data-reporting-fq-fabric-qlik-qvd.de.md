@@ -223,9 +223,10 @@ tasks:
       Achte auf: undokumentierte Excel-Extrakte und „jemand startet freitags ein Skript“.
     linkedStories: before-building-the-first-table, building-from-scratch
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
         description: Nutze das Tool, um Personen, Rollen, Einfluss, Interesse und Owner direkt als Stakeholder-Tabelle zu strukturieren.
@@ -354,9 +355,10 @@ tasks:
       Achte auf: falsche Sicherheit durch Tool-Lineage, die nur einen Teilpfad abdeckt.
     linkedStories: metadata-catalog-lineage, missing-pieces-metadata-catalog-lineage
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: Meta Export Generator
         href: /tools/meta-export-generator
         description: Nutze das Tool, um Metadaten aus Quellen, Feldern und Ownern als wiederverwendbaren Export vorzubereiten.
@@ -424,9 +426,10 @@ tasks:
       Achte auf: KPIs ohne Owner und Metriken, die nur als Dashboard-Titel existieren.
     linkedStories: define-kpi, kpi-metric-governance
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: KPI Definition Card
         href: /tools/kpi-definition
         description: Nutze das Tool, um KPI-Name, Formel, Grain, Filter, Owner und offene Definitionen sauber festzuhalten.
@@ -489,9 +492,9 @@ links:
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
     description: Nutze das Tool, um Datenqualitätsregeln aus beobachteten Problemen in testbare Checks zu übersetzen.
-  - label: Fabric DQ Pattern Generator
-    href: /tools/fabric-dq-pattern-generator
-    description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+  - label: Fabric DQ Rule Generator
+    href: /tools/fabric-dq-rule-generator
+    description: Erzeugt Fabric-spezifische DQ-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.
   - label: DQ Macro Generator
     href: /tools/dbt-dq-macro-generator
     description: Nutze das Tool, um wiederverwendbare dbt-Makros für Datenqualitätsprüfungen vorzubereiten.
@@ -508,18 +511,20 @@ tasks:
       Achte auf: Kosmetik fixen, während Schlüssel und Daten weiter unzuverlässig bleiben.
     linkedStories: data-quality-governance, dq-test-kpis, missing-pieces-data-quality
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
         description: Nutze das Tool, um Datenqualitätsregeln aus beobachteten Problemen in testbare Checks zu übersetzen.
       - label: dbt Docs - Data tests
         href: https://docs.getdbt.com/docs/build/data-tests
         description: Nutze die Doku, um Datenqualitätsannahmen als dbt-Tests umsetzbar zu machen.
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
         description: Nutze das Tool, um wiederverwendbare dbt-Makros für Datenqualitätsprüfungen vorzubereiten.
@@ -535,11 +540,12 @@ tasks:
       Achte auf: jeden Datenfehler mit gleicher Dringlichkeit zu behandeln.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
+      - label: Fabric PII Governance Pattern Generator
+        href: /tools/fabric-pii-governance-pattern-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung und Zugriffsregeln als Policy-Entwurf zu strukturieren.
       - label: Microsoft Purview - Data classification
         href: https://learn.microsoft.com/en-us/purview/data-classification
@@ -851,9 +857,10 @@ tasks:
       Achte auf: Scope-Ausweitung während des Baus und Tests „auf später“ zu schieben.
     linkedStories: building-from-scratch, dbt-role, dq-test-kpis
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
         description: Nutze das Tool, um dbt-Schema-YAML, Spaltenbeschreibungen und Tests für den Pilot-Umfang zu pflegen.
@@ -938,9 +945,10 @@ tasks:
       Achte auf: Erfolg zu erklären, weil „die Pipeline läuft“.
     linkedStories: dq-test-kpis, data-quality-governance
     helpLinks:
-      - label: Fabric DQ Pattern Generator
-        href: /tools/fabric-dq-pattern-generator
-        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
+      - 
+      - label: Delta Load / SCD Pattern Generator
+        href: /tools/delta-load-scd-pattern-generator
+        description: Erzeugt Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
         description: Nutze das Tool, um DQ-Ergebnisse über Zeit nachvollziehbar zu machen und Validierung zu belegen.

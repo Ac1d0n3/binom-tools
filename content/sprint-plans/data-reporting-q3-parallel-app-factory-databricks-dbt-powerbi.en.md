@@ -147,11 +147,11 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: pii-privacy-governance, eight-pillars, access-security-governance
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
+      - label: Unity Catalog Governance Generator
+        href: /tools/unity-catalog-governance-generator
         description: Use the tool to prepare PII classes, masking and access rules directly for the next app.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -204,9 +204,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
       - label: Keeping business logic outside BI apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Helps avoid rebuilding hidden logic inside Qlik/Power BI for new apps.
@@ -255,9 +255,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
 deliverables:
   - id: build-app2-loads-model-artifact
     label: App 2 data model
@@ -303,9 +303,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: dq-test-kpis, operating-and-governing-the-platform, metadata-catalog-lineage
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
 deliverables:
   - id: app2-dq-reconciliation-artifact
     label: App 2 DQ package
@@ -527,11 +527,11 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: pii-privacy-governance, metadata-catalog-lineage, access-security-governance
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
-      - label: PII Policy Generator
-        href: /tools/pii-policy-generator
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
+      - label: Unity Catalog Governance Generator
+        href: /tools/unity-catalog-governance-generator
         description: Use the tool to prepare PII classes, masking and access rules directly for the next app.
       - label: PII & Privacy Governance
         href: /playbooks/pii-privacy-governance
@@ -584,9 +584,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
       - label: Keeping business logic outside BI apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Helps avoid rebuilding hidden logic inside Qlik/Power BI for new apps.
@@ -635,9 +635,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
       - label: Keeping business logic outside BI apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Helps avoid rebuilding hidden logic inside Qlik/Power BI for new apps.

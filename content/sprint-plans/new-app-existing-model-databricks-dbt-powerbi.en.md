@@ -53,9 +53,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -103,9 +103,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -153,9 +153,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: dq-test-kpis, metadata-catalog-lineage, operating-and-governing-the-platform
     helpLinks:
-      - label: Databricks DQ Pattern Generator
-        href: /tools/databricks-dq-pattern-generator
-        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
+      - label: Databricks DQ Expectation Generator
+        href: /tools/databricks-dq-expectation-generator
+        description: Generates Databricks-specific DLT expectations and notebook checks for required fields, keys, and freshness.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.

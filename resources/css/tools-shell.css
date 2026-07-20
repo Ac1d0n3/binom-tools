@@ -1722,7 +1722,38 @@ html[data-color-scheme='dark'] .tools-hero {
     margin-bottom: 0.75rem;
 }
 
+.tools-overview-sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    flex-shrink: 0;
+    padding-top: 0.75rem;
+    padding-bottom: 0.2rem;
+    background: var(--content-background-color);
+}
+
+.tools-overview-sticky-header::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.75rem;
+    height: 0.75rem;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        var(--content-background-color),
+        color-mix(in srgb, var(--content-background-color) 0%, transparent)
+    );
+}
+
 .tools-overview-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.35rem;
+}
+
+.tools-overview-product-filter {
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -2240,7 +2271,7 @@ html[data-color-scheme='dark'] .tools-hero {
     min-height: 0;
     max-width: 1280px;
     overflow: hidden;
-    padding-block: 0.75rem 0;
+    padding-block: 0 0;
     padding-inline: 1.5rem;
 }
 

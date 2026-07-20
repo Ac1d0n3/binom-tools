@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+    buildDatabricksNotebook,
     buildDatabricksSql,
+    buildFabricNotebook,
     buildFabricSql,
     buildRunbook,
     splitCsv,
@@ -33,5 +35,19 @@ describe('lakehouse dq pattern builder', () => {
 
     it('builds a release runbook', () => {
         expect(buildRunbook('databricks', state)).toContain('Release gate');
+    });
+
+    it('builds specialized Fabric generator outputs', () => {
+        expect(buildFabricSql({ ...state, toolId: 'fabric-dq-rule-generator' })).toContain('Fabric DQ Rule Generator');
+        expect(buildFabricNotebook({ ...state, toolId: 'fabric-notebook-snippet-generator' })).toContain('Fabric Notebook Snippet Generator');
+        expect(buildRunbook('fabric', { ...state, pattern: 'pipeline', toolId: 'fabric-pipeline-checklist-generator' })).toContain('Fabric Pipeline Checklist');
+        expect(buildRunbook('fabric', { ...state, pattern: 'semantic', toolId: 'fabric-semantic-model-guardrails' })).toContain('Fabric Semantic Model Guardrails');
+    });
+
+    it('builds specialized Databricks generator outputs', () => {
+        expect(buildDatabricksSql({ ...state, toolId: 'databricks-dq-expectation-generator' })).toContain('Databricks DQ Expectation Generator');
+        expect(buildDatabricksSql({ ...state, pattern: 'governance', toolId: 'unity-catalog-governance-generator' })).toContain('Unity Catalog Governance Generator');
+        expect(buildDatabricksNotebook({ ...state, pattern: 'dbt', toolId: 'databricks-dbt-on-databricks-generator' })).toContain('Databricks job handoff for dbt');
+        expect(buildRunbook('databricks', { ...state, pattern: 'delta', toolId: 'delta-load-scd-pattern-generator' })).toContain('Delta Load / SCD Pattern Runbook');
     });
 });
