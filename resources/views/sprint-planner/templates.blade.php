@@ -30,6 +30,12 @@
             @elseif (! empty($loginUrl))
                 <a href="{{ $loginUrl }}" class="tools-btn tools-btn--secondary" data-i18n="sp.creator.loginToCreate">Sign in to create templates</a>
             @endif
+            <label class="sp-field sp-template-filter">
+                <span data-i18n="sp.template.filterLandscape">Landscape</span>
+                <select id="sp-template-landscape-filter" class="tools-input">
+                    <option value="all" data-i18n="sp.template.filterAll">All landscapes</option>
+                </select>
+            </label>
         </div>
 
         <div id="sp-template-cards" class="sp-card-grid"></div>

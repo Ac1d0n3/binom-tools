@@ -948,6 +948,14 @@ html.bn-theme-blue-water-dark .sp-status-overview__item--completed {
 
 .sp-templates-toolbar {
     margin-bottom: 1rem;
+    align-items: end;
+    gap: 0.75rem;
+}
+
+.sp-template-filter {
+    min-width: min(100%, 18rem);
+    margin-left: auto;
+    margin-bottom: 0;
 }
 
 .sp-creator {

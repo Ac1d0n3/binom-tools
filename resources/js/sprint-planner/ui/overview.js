@@ -63,6 +63,15 @@ export function initOverviewPage({ templatesOnly = false } = {}) {
         });
     }
 
+    const templateLandscapeFilter = document.getElementById('sp-template-landscape-filter');
+    if (templateLandscapeFilter) {
+        templateLandscapeFilter.value = String(prefs.templateLandscapeFilter || 'all');
+        templateLandscapeFilter.addEventListener('change', () => {
+            savePreferences({ ...loadPreferences(), templateLandscapeFilter: templateLandscapeFilter.value });
+            render();
+        });
+    }
+
     document.getElementById('sp-export-workspace')?.addEventListener('click', () => {
         const data = buildWorkspaceExport();
         downloadJson(data, `bn-tools-sprint-workspace-${new Date().toISOString().slice(0, 10)}.json`);
@@ -139,7 +148,16 @@ function renderTemplateCards(templates, locale, workspace) {
         empty.hidden = true;
     }
 
-    for (const group of groupTemplatesForCatalog(templates, locale)) {
+    syncTemplateLandscapeFilter(templates, locale);
+    const filteredTemplates = filterTemplatesForCatalog(templates, locale);
+    if (filteredTemplates.length === 0) {
+        if (empty) {
+            empty.hidden = false;
+        }
+        return;
+    }
+
+    for (const group of groupTemplatesForCatalog(filteredTemplates, locale)) {
         const section = document.createElement('section');
         section.className = 'sp-template-roadmap';
         const heading = document.createElement('div');
@@ -174,6 +192,39 @@ function renderTemplateCards(templates, locale, workspace) {
         }
         container.appendChild(section);
     }
+}
+
+function syncTemplateLandscapeFilter(templates, locale) {
+    const select = document.getElementById('sp-template-landscape-filter');
+    if (!select) {
+        return;
+    }
+    const current = select.value || 'all';
+    const tracks = new Map();
+    for (const template of templates) {
+        const id = templateTrackId(template, locale);
+        tracks.set(id, templateTrackTitle(template, locale));
+    }
+    select.innerHTML = '';
+    const all = document.createElement('option');
+    all.value = 'all';
+    all.textContent = spT('sp.template.filterAll');
+    select.appendChild(all);
+    for (const [id, title] of Array.from(tracks.entries()).sort((a, b) => a[1].localeCompare(b[1]))) {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = title;
+        select.appendChild(option);
+    }
+    select.value = tracks.has(current) ? current : 'all';
+}
+
+function filterTemplatesForCatalog(templates, locale) {
+    const selected = document.getElementById('sp-template-landscape-filter')?.value || 'all';
+    if (selected === 'all') {
+        return templates;
+    }
+    return templates.filter((template) => templateTrackId(template, locale) === selected);
 }
 
 function groupTemplatesForCatalog(templates, locale) {
