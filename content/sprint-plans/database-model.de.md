@@ -5,6 +5,9 @@ slug: database-model
 description: Fokussiertes DB-/Warehouse-Modell: Scope, Entitäten, Beziehungen, Naming und Review.
 duration: 4
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
 category: Data Modeling
 author: Thomas Lindackers
 version: 1
@@ -34,7 +37,7 @@ stories:
 tasks:
   - id: w1-scope
     label: Business-Fragen und Grain festhalten
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Business question, Fact grain, Decision, Out of scope, Owner
@@ -55,7 +58,7 @@ tasks:
         description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
   - id: w1-sources
     label: Kandidaten-Quellen inventarisieren
-    plannedMinutes: 60
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Freshness, Key fields, Known issue
@@ -78,7 +81,7 @@ tasks:
 deliverables:
   - id: w1-scope-note
     label: Scope- & Grain-Notiz
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Erstelle eine Scope-Notiz mit Business-Fragen, Fact-Grain, benoetigten Quellen, Nicht-Zielen und offenen Annahmen.
       Das Deliverable ist fertig, wenn eine andere Person daraus erkennen kann, welche Tabellenklasse gebraucht wird und welche Details bewusst nicht modelliert werden.
@@ -106,7 +109,7 @@ goal: Entitäten, Keys und Beziehungen entwerfen.
 tasks:
   - id: w2-entities
     label: Entitätsliste und Keys entwerfen
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Entity, Type, Grain, Primary key, Change behavior
@@ -131,7 +134,7 @@ tasks:
         description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
   - id: w2-rels
     label: Beziehungen und Kardinalität mappen
-    plannedMinutes: 120
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: From table, To table, Cardinality, Join key, Integrity rule
@@ -148,7 +151,7 @@ tasks:
 deliverables:
   - id: w2-model-draft
     label: ER-Entwurf
-    plannedMinutes: 120
+    plannedMinutes: 360
     helpText: |
       Erstelle ein Diagramm oder eine Tabellenliste mit Entitaeten, Keys, Kardinalitaeten, Grain und offenen Modellentscheidungen.
       Das Deliverable ist fertig, wenn Fact- und Dimensionstabellen unterscheidbar sind und jede Beziehung einen Grund hat.
@@ -172,7 +175,7 @@ goal: Naming, Typen und Konventionen anwenden.
 tasks:
   - id: w3-naming
     label: Naming-Konventionen anwenden
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Object, Current name, Proposed name, Rule, Exception
@@ -187,7 +190,7 @@ tasks:
         description: Nutze die Seite als externe Referenz für Beispiele, Prüffragen oder Vorgehensweise zu dieser Aufgabe; nichts installieren.
   - id: w3-types
     label: Typen und Nullability bestätigen
-    plannedMinutes: 60
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: Column, Type, Nullable, Default, PII, Test
@@ -210,7 +213,7 @@ tasks:
 deliverables:
   - id: w3-standards
     label: Naming- & Typstandards angewendet
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Lege eine Checkliste oder PR-Notiz ab, die Naming, Typen, Nullability, PII-Entscheidungen und geplante Tests zusammenfasst.
       Das Deliverable ist fertig, wenn Reviewer die Konventionen nachvollziehen und strittige Ausnahmen gezielt kommentieren koennen.
@@ -234,7 +237,7 @@ goal: Mit Ownern reviewen und v1 einfrieren.
 tasks:
   - id: w4-review
     label: Walkthrough mit Stakeholdern
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Stakeholder, Concern, Decision, Owner, Due date
@@ -255,7 +258,7 @@ tasks:
         description: Nutze die Beispiele, um klare Akzeptanzkriterien für Reports, Daten oder Änderungen zu formulieren.
   - id: w4-freeze
     label: Modell v1 einfrieren und Next Steps
-    plannedMinutes: 120
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Follow-up, Reason, Owner, Priority, Target
@@ -272,7 +275,7 @@ tasks:
 deliverables:
   - id: w4-model-v1
     label: Modell v1 freigegeben
-    plannedMinutes: 120
+    plannedMinutes: 300
     helpText: |
       Sammle freigegebenes Modellartefakt, Review-Entscheidungen, bekannte Limits und Follow-ups an einem Ort.
       Das Deliverable ist fertig, wenn v1 gebaut werden kann, ohne die fachliche Modellentscheidung neu zu verhandeln.

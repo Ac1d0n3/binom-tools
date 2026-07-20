@@ -53,6 +53,16 @@ final class SprintPlanFrontmatterParser
             'unit' => 'week',
             'category' => null,
             'author' => null,
+            'recommended_people_min' => null,
+            'recommended_people_max' => null,
+            'capacity_hours_per_person_week' => 40,
+            'roadmap_family' => null,
+            'roadmap_title' => null,
+            'roadmap_track' => null,
+            'roadmap_track_title' => null,
+            'roadmap_phase' => null,
+            'roadmap_option' => null,
+            'roadmap_follows' => [],
             'version' => 1,
             'locale' => null,
             'tags' => [],
@@ -143,11 +153,11 @@ final class SprintPlanFrontmatterParser
 
     private function castValue(string $key, string $value): mixed
     {
-        if (in_array($key, ['duration', 'version'], true)) {
+        if (in_array($key, ['duration', 'version', 'recommended_people_min', 'recommended_people_max', 'capacity_hours_per_person_week', 'roadmap_phase'], true)) {
             return (int) $value;
         }
 
-        if ($key === 'tags') {
+        if (in_array($key, ['tags', 'roadmap_follows'], true)) {
             return array_values(array_filter(array_map(
                 'trim',
                 preg_split('/\s*,\s*/', $value) ?: []

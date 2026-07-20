@@ -5,6 +5,9 @@ slug: change-tests
 description: DB- oder Report-Änderung sicher liefern: Impact, Tests, Verify, Release.
 duration: 3
 unit: week
+recommended_people_min: 1
+recommended_people_max: 1
+capacity_hours_per_person_week: 40
 category: Quality
 author: Thomas Lindackers
 version: 1
@@ -32,7 +35,7 @@ stories:
 tasks:
   - id: w1-impact
     label: Änderung und Impact dokumentieren
-    plannedMinutes: 120
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Object, Change, Consumer, Risk, Rollback
@@ -55,7 +58,7 @@ tasks:
         description: Nutze die Doku als Referenz, um Continuous-Integration-Checks für Änderungen aufzusetzen oder zu prüfen.
   - id: w1-scope
     label: In/Out-of-Scope vereinbaren
-    plannedMinutes: 60
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     tableColumns: Scope item, In/Out, Reason, Owner, Decision
@@ -71,7 +74,7 @@ tasks:
 deliverables:
   - id: w1-impact-note
     label: Impact-Notiz
-    plannedMinutes: 60
+    plannedMinutes: 120
     helpText: |
       Erstelle eine Impact-Notiz mit Aenderungszusammenfassung, betroffenen Objekten, Konsumenten, Scope-Grenzen und Rollback.
       Das Deliverable ist fertig, wenn Reviewer erkennen koennen, welche Tests erforderlich sind und welche Risiken bewusst akzeptiert werden.
@@ -99,7 +102,7 @@ goal: Tests entwerfen und anlegen.
 tasks:
   - id: w2-tests
     label: Automatisierte Tests anlegen/erweitern
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Risk, Test type, Assertion, Severity, Owner
@@ -125,7 +128,7 @@ tasks:
         description: Nutze den Artikel, um Testarten und DQ-Denken in konkrete Checks zu übersetzen.
   - id: w2-fixtures
     label: Fixtures / erwartete Ergebnisse vorbereiten
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Scenario, Input, Expected result, Edge case, Evidence
@@ -141,7 +144,7 @@ tasks:
 deliverables:
   - id: w2-test-pack
     label: Test-Pack
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Erstelle eine Liste neuer oder geaenderter Tests mit Assertion, Severity, Owner, Zielumgebung und erwartetem Verhalten.
       Das Deliverable ist fertig, wenn ein Reviewer jeden Test einem Impact-Risiko zuordnen kann.
@@ -165,7 +168,7 @@ goal: Änderung verifizieren und releasen.
 tasks:
   - id: w3-verify
     label: Tests in Zielumgebung ausführen
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Check, Environment, Result, Evidence, Follow-up
@@ -183,7 +186,7 @@ tasks:
         description: Nutze die Guidance, um Veröffentlichung, Review und Freigabe von Enterprise-Reports zu planen.
   - id: w3-release
     label: Release Notes und Monitoring
-    plannedMinutes: 60
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     tableColumns: Change, Watch signal, Owner, Escalation, Time window
@@ -199,7 +202,7 @@ tasks:
 deliverables:
   - id: w3-release
     label: Release-Nachweis
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Sammle Testergebnisse, Release Notes, Monitoring-Plan, bekannte Restrisiken und Rollback-Entscheidung.
       Das Deliverable ist fertig, wenn nachvollziehbar ist, welche Version released wurde und warum sie akzeptabel ist.

@@ -34,7 +34,7 @@ SESSION_DRIVER=file
 # BINOM_TOOLS_ACCOUNTS_PROFILE_AVATAR_ENABLED=false
 ```
 
-Laufzeitdaten liegen unter `storage/app/bn-tools/` (gitignored):
+Laufzeitdaten liegen unter `storage/app/bn-tools/` (**nicht in Git**; lokal + im FTP-Bundle `deploy-ftp/`, das ebenfalls gitignored ist):
 
 | Datei / Ordner | Zweck |
 | --- | --- |
@@ -43,8 +43,13 @@ Laufzeitdaten liegen unter `storage/app/bn-tools/` (gitignored):
 | `story-acl.json` | Sichtbarkeit einzelner Playbooks |
 | `plans/` | Server-seitige Sprint-Plan-Instanzen |
 | `user-templates/` | Von Nutzern gespeicherte Planvorlagen |
+| `read-state/` | Lesestatus je Nutzer |
 
-Beim Start kopiert `BnToolsSeedStore` fehlende Dateien aus Seeds unter `app/SprintPlanner/bn-tools-seed/` (analog zu Playbook-Stats-Seeds). Beim FTP-Deploy werden lokale Seeds gespiegelt.
+`npm run deploy:ftp` packt diese Daten nach:
+- `deploy-ftp/app/SprintPlanner/bn-tools-seed/` (Hydrate beim App-Start, **nur fehlende** Dateien)
+- `deploy-ftp/storage/app/bn-tools/` (direkter Server-Pfad zum Hochladen)
+
+Server-`.env`: `BINOM_TOOLS_ACCOUNTS_ENABLED=true` und `SESSION_DRIVER=file`.
 
 ## Login
 

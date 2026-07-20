@@ -5,6 +5,9 @@ slug: report-kpi-analysis
 description: Von Entscheidungsfragen zum abgenommenen Report: KPIs, Quellen, Pilot und Übergabe.
 duration: 4
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
 category: Reporting
 author: Thomas Lindackers
 version: 1
@@ -32,7 +35,7 @@ stories:
 tasks:
   - id: w1-questions
     label: Entscheidungsfragen formulieren
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Decision question, Audience, Action, KPI candidate, Success signal
@@ -61,7 +64,7 @@ tasks:
         description: Nutze die Doku als Referenz für Report-Aufbau, Seitenstruktur und Power-BI-Umsetzung.
   - id: w1-audience
     label: Konsumenten und Kadenz mappen
-    plannedMinutes: 60
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     tableColumns: Consumer group, Decision, Cadence, Tool, Access need
@@ -74,7 +77,7 @@ tasks:
 deliverables:
   - id: w1-brief
     label: Analyse-Briefing
-    plannedMinutes: 120
+    plannedMinutes: 180
     helpText: |
       Erstelle ein kurzes Briefing mit Entscheidungsfragen, Zielgruppen, Kadenz, Erfolgskriterien und expliziten Nicht-Zielen.
       Das Deliverable ist fertig, wenn Auftraggeber und Umsetzer dieselbe Antwort auf "Warum bauen wir das?" geben koennen.
@@ -102,7 +105,7 @@ goal: KPIs und Definitionen festlegen.
 tasks:
   - id: w2-kpis
     label: Kern-KPIs auswählen
-    plannedMinutes: 120
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: KPI, Formula, Grain, Owner, Refresh, Decision use
@@ -123,7 +126,7 @@ tasks:
         description: Nutze die Beispiele, um KPI-Darstellung und Schwellenwerte verständlich zu gestalten.
   - id: w2-defs
     label: Metrik-Definitionen dokumentieren
-    plannedMinutes: 120
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Metric, Numerator, Denominator, Filters, Exclusions, Owner
@@ -136,7 +139,7 @@ tasks:
 deliverables:
   - id: w2-kpi-catalog
     label: KPI-Katalog-Entwurf
-    plannedMinutes: 120
+    plannedMinutes: 240
     helpText: |
       Erstelle einen KPI-Katalog mit Formel, Grain, Owner, Quelle, Refresh, fachlicher Abnahme und offenen Fragen.
       Das Deliverable ist fertig, wenn jede Kernkennzahl eine verantwortliche Person und eine pruefbare Definition hat.
@@ -164,7 +167,7 @@ goal: Quellen anbinden und Report mocken.
 tasks:
   - id: w3-sources
     label: Quellfelder validieren
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Source field, Business meaning, Quality check, Owner, Issue
@@ -185,7 +188,7 @@ tasks:
         description: Nutze die Doku als Referenz für Report-Aufbau, Seitenstruktur und Power-BI-Umsetzung.
   - id: w3-mock
     label: Mock / Pilot-View bauen
-    plannedMinutes: 240
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -201,7 +204,7 @@ tasks:
 deliverables:
   - id: w3-pilot
     label: Pilot-View oder Mock
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Lege Link oder Screenshot des Piloten zusammen mit Feedback-Notizen, offenen Datenfragen und Designentscheidungen ab.
       Das Deliverable ist fertig, wenn die Zielgruppe sagen kann, ob Richtung, Kennzahlen und Detailgrad passen.
@@ -229,7 +232,7 @@ goal: Report abnehmen und übergeben.
 tasks:
   - id: w4-accept
     label: Abnahme-Checkliste durchgehen
-    plannedMinutes: 30
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Check, Result, Evidence, Owner, Follow-up
@@ -246,7 +249,7 @@ tasks:
         description: Nutze die Beispiele, um klare Akzeptanzkriterien für Reports, Daten oder Änderungen zu formulieren.
   - id: w4-handoff
     label: Handoff-Runbook
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Topic, Owner, Procedure, Frequency, Escalation
@@ -262,7 +265,7 @@ tasks:
 deliverables:
   - id: w4-accepted
     label: Report abgenommen
-    plannedMinutes: 120
+    plannedMinutes: 180
     helpText: |
       Sammle Abnahme-Checkliste, Runbook-Link, bekannte Limits und offene Folgeaufgaben an einem Ort.
       Das Deliverable ist fertig, wenn fachliche Abnahme, Betriebsverantwortung und naechster Review-Termin dokumentiert sind.

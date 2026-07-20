@@ -199,11 +199,14 @@ export function renderTableEditor(host, table, i18n) {
     const columnsInput = document.createElement('input');
     columnsInput.type = 'text';
     columnsInput.className = 'tools-input';
+    columnsInput.id = `sp-table-columns-${Math.random().toString(36).slice(2, 9)}`;
+    columnsInput.name = columnsInput.id;
     columnsInput.setAttribute('data-sp-table-columns', '1');
     columnsInput.value = formatTableColumnsText(table?.columns || []);
     columnsInput.placeholder = spT('sp.field.tableColumnsHint');
     columnsInput.readOnly = columnsLocked;
     columnsInput.disabled = columnsLocked;
+    columnsLabel.htmlFor = columnsInput.id;
     columnsLabel.append(columnsSpan, columnsInput);
     host.appendChild(columnsLabel);
 
@@ -388,6 +391,9 @@ function renderRows(wrap, columns, rows, spT, opts = {}) {
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'tools-input tools-input--table';
+            input.name = `sp-table-${row.id}-${col.id}`;
+            input.id = `sp-table-${row.id}-${col.id}`;
+            input.setAttribute('aria-label', col.label || col.id);
             input.setAttribute('data-col-id', col.id);
             input.value = row.cells?.[col.id] || '';
             td.appendChild(input);

@@ -5,6 +5,9 @@ slug: planning-quarter-lite
 description: Lightweight quarter: weekly planning and delivery rhythm without a full platform journey.
 duration: 13
 unit: week
+recommended_people_min: 1
+recommended_people_max: 1
+capacity_hours_per_person_week: 40
 category: Planning
 author: Thomas Lindackers
 version: 1

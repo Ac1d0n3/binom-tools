@@ -5,6 +5,9 @@ slug: planning-month
 description: Schlanker Monatsplan: Wochenziele, Owner und saubere Übergabe in den nächsten Monat.
 duration: 4
 unit: week
+recommended_people_min: 1
+recommended_people_max: 1
+capacity_hours_per_person_week: 40
 category: Planning
 author: Thomas Lindackers
 version: 1

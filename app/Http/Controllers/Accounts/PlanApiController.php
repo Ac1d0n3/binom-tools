@@ -62,7 +62,11 @@ class PlanApiController extends Controller
         ]);
 
         $historyMeta = is_array($data['history'] ?? null) ? $data['history'] : [];
-        $plan = $this->plans->save($data['plan'], $user, $historyMeta);
+        try {
+            $plan = $this->plans->save($data['plan'], $user, $historyMeta);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
         return response()->json(['plan' => $plan]);
     }

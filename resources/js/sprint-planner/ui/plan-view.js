@@ -31,7 +31,7 @@ import {
     parseExternalLinksTextarea,
     resolveHelpHref,
 } from '../external-links.js';
-import { createLocalId } from '../ids.js';
+import { createLocalId, resolvePlanStartedAt } from '../ids.js';
 import {
     appendDiscoveryRowsToItemTable,
     appendMarkdownToNote,
@@ -100,9 +100,11 @@ import { isPlaybookRead } from '../../playbooks/read-state.js';
 import {
     collectTimeRows,
     findLastActualMinutes,
+    formatHoursShort,
     formatMinutesLabel,
     formatMinutesShort,
     normalizeMinutes,
+    sumPlannedMinutes,
     TIME_PRESETS,
     timeSelectOptions,
     timeVariance,
@@ -142,6 +144,8 @@ const statusBannerSession = new Map();
 /** @type {Set<string>} */
 const healedIdentityPlanIds = new Set();
 /** @type {Set<string>} */
+const healedStartedAtPlanIds = new Set();
+/** @type {Set<string>} */
 const strippedTemplateOverridePlanIds = new Set();
 /** @type {Set<string>} */
 const backfilledParticipantsPlanIds = new Set();
@@ -178,6 +182,7 @@ export function initPlanShowPage() {
         bindUndoAndHistory(instanceId);
         bindClaimAll(instanceId);
         bindTemplateRecover(instanceId, render);
+        bindPlanStartedAt(instanceId, render);
         document.getElementById('sp-add-sprint')?.addEventListener('click', () => {
             openAddSprintFromTemplateDialog();
         });
@@ -238,6 +243,30 @@ function renderPlan(instanceId) {
         return;
     }
     missing.hidden = true;
+
+    // Restore startedAt from plan id when recover/heal had filled "today" or left it empty.
+    if (!healedStartedAtPlanIds.has(String(instanceId))) {
+        healedStartedAtPlanIds.add(String(instanceId));
+        const bootstrapPlanForDate = (readAccountsBootstrap().serverPlans || [])
+            .find((plan) => plan && String(plan.id) === String(instanceId));
+        const bootstrapStartedAt = String(bootstrapPlanForDate?.startedAt || '').trim();
+        const resolvedStartedAt = resolvePlanStartedAt(
+            instance.id || instanceId,
+            instance.startedAt || bootstrapStartedAt,
+        );
+        if (
+            resolvedStartedAt
+            && (
+                resolvedStartedAt !== String(instance.startedAt || '')
+                || resolvedStartedAt !== bootstrapStartedAt
+            )
+        ) {
+            updateInstance(instanceId, (plan) => {
+                plan.startedAt = resolvedStartedAt;
+            });
+            instance.startedAt = resolvedStartedAt;
+        }
+    }
 
     if (isPasswordProtected(instance) && !isPlanUnlocked(instanceId)) {
         if (locked) {
@@ -339,7 +368,7 @@ function renderPlan(instanceId) {
                 };
             }
             if (!plan.startedAt) {
-                plan.startedAt = new Date().toISOString().slice(0, 10);
+                plan.startedAt = resolvePlanStartedAt(plan.id || instanceId, plan.startedAt);
             }
         });
         if (snapshot) {
@@ -421,7 +450,10 @@ function renderPlan(instanceId) {
         instance.translations?.[locale]?.description
         || template?.locales?.[locale]?.description
         || '';
-    document.getElementById('sp-plan-started').textContent = instance.startedAt;
+    const startedInput = document.getElementById('sp-plan-started');
+    if (startedInput instanceof HTMLInputElement) {
+        startedInput.value = instance.startedAt || '';
+    }
     const ownerEl = document.getElementById('sp-plan-owner');
     if (ownerEl) {
         ownerEl.textContent = planOwnershipLabel(instance, workspace);
@@ -456,6 +488,8 @@ function renderPlan(instanceId) {
     if (participantsHost) {
         participantsHost.replaceChildren(renderParticipantChips(instance.participantIds || [], workspace));
     }
+    const effortModel = buildPlanEffortModel(sprints, template, workspace, locale);
+    renderPlanEffortSummary(effortModel);
 
     lastRenderContext = { instance, template, sprints, workspace, locale };
 
@@ -490,7 +524,7 @@ function renderPlan(instanceId) {
 
     renderStatusBanner(sprints, workspace, locale, instance);
     renderUnassignedBanner(sprints, workspace);
-    renderSprints(filtered, currentNumber, instance, template, locale, workspace);
+    renderSprints(filtered, currentNumber, instance, template, locale, workspace, effortModel);
     renderFilterEmpty(filtered, sprints, filters);
     syncUndoHistoryChrome(instanceId);
     applyPendingToolTransfer(instanceId, sprints, locale);
@@ -549,6 +583,112 @@ function renderScheduleBanner(schedule) {
         count: schedule.openCount,
         sources,
     });
+}
+
+function buildPlanEffortModel(sprints, template, workspace, locale) {
+    const totalMinutes = sumPlannedMinutes(sprints);
+    const duration = normalizeMinutes(template?.duration) || Math.max(1, sprints.length || 1);
+    const capacityHours = normalizeMinutes(template?.capacityHoursPerPersonWeek) || 40;
+    const plannedWeeklyMinutes = totalMinutes > 0 && duration > 0
+        ? totalMinutes / duration
+        : capacityHours * 60;
+    const people = new Map();
+    const itemWeeks = new Map();
+
+    const ensurePerson = (id) => {
+        const key = id ? String(id) : '__unassigned__';
+        if (!people.has(key)) {
+            people.set(key, {
+                id: key,
+                label: key === '__unassigned__'
+                    ? spT('sp.report.unassigned')
+                    : (workspace.people?.[key]?.displayName || key),
+                minutes: 0,
+                weeks: 0,
+            });
+        }
+        return people.get(key);
+    };
+
+    for (const sprint of sprints || []) {
+        for (const kind of /** @type {const} */ (['tasks', 'deliverables'])) {
+            for (const item of sprint[kind] || []) {
+                const minutes = normalizeMinutes(item.plannedMinutes) || 0;
+                if (minutes <= 0) {
+                    continue;
+                }
+                const assigneeId = item.assigneeType === 'person' && item.assigneeId
+                    ? String(item.assigneeId)
+                    : '__unassigned__';
+                const person = ensurePerson(assigneeId);
+                person.minutes += minutes;
+                person.weeks = Math.max(1, Math.ceil(person.minutes / Math.max(1, plannedWeeklyMinutes)));
+                itemWeeks.set(item.statusKey, person.weeks);
+            }
+        }
+    }
+
+    const rows = [...people.values()]
+        .filter((row) => row.minutes > 0)
+        .sort((a, b) => {
+            if (a.id === '__unassigned__') return 1;
+            if (b.id === '__unassigned__') return -1;
+            return b.minutes - a.minutes;
+        });
+    const estimatedWeeks = rows.reduce((max, row) => Math.max(max, row.weeks), 0);
+    const capacityMinutes = duration * capacityHours * 60;
+    const bufferPct = totalMinutes > 0 && capacityMinutes > 0
+        ? Math.max(0, ((capacityMinutes - totalMinutes) / capacityMinutes) * 100)
+        : 0;
+
+    return {
+        totalMinutes,
+        duration,
+        capacityHours,
+        plannedWeeklyMinutes,
+        estimatedWeeks,
+        bufferPct,
+        people: rows,
+        itemWeeks,
+        locale,
+    };
+}
+
+function renderPlanEffortSummary(model) {
+    const host = document.getElementById('sp-plan-effort-summary');
+    if (!host) {
+        return;
+    }
+    host.replaceChildren();
+    if (!model || model.totalMinutes <= 0) {
+        host.hidden = true;
+        return;
+    }
+
+    const headline = document.createElement('div');
+    headline.className = 'sp-plan-effort-summary__headline';
+    headline.textContent = spT('sp.effort.summary', {
+        hours: formatHoursShort(model.totalMinutes / 60),
+        weeks: model.estimatedWeeks || model.duration,
+        load: formatHoursShort(model.plannedWeeklyMinutes / 60),
+        buffer: formatHoursShort(model.bufferPct),
+    });
+    host.appendChild(headline);
+
+    const list = document.createElement('div');
+    list.className = 'sp-plan-effort-summary__people';
+    for (const row of model.people) {
+        const chip = document.createElement('span');
+        chip.className = `sp-plan-effort-chip${row.id === '__unassigned__' ? ' sp-plan-effort-chip--open' : ''}`;
+        chip.textContent = spT('sp.effort.person', {
+            name: row.label,
+            hours: formatHoursShort(row.minutes / 60),
+            weeks: row.weeks,
+        });
+        list.appendChild(chip);
+    }
+    host.appendChild(list);
+    host.hidden = false;
 }
 
 /**
@@ -1163,20 +1303,49 @@ function fillRecoverTemplateSelect(templates, locale) {
     if (!select) {
         return;
     }
-    const options = templates.map((t) => ({
-        id: t.slug,
-        label: t.locales?.[locale]?.title || t.locales?.en?.title || t.slug,
-    }));
-    fillSelect(select, options, select.value || options[0]?.id || '', false);
+    const options = [
+        { id: '', label: '—' },
+        ...templates.map((t) => ({
+            id: t.slug,
+            label: t.locales?.[locale]?.title || t.locales?.en?.title || t.slug,
+        })),
+    ];
+    // Do not auto-pick the first catalog template (often the wrong one).
+    fillSelect(select, options, '', false);
 }
 
 /**
  * @param {string} instanceId
  * @param {() => void} render
  */
+function bindPlanStartedAt(instanceId, render) {
+    document.getElementById('sp-plan-started')?.addEventListener('change', (event) => {
+        const value = String(event.target?.value || '').trim();
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+            showToast(spT('sp.error.invalidStartDate'));
+            render();
+            return;
+        }
+        const result = updateInstance(instanceId, (plan) => {
+            plan.startedAt = value;
+        });
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            render();
+            return;
+        }
+        showToast(spT('sp.toast.saved'));
+        render();
+    });
+}
+
 function bindTemplateRecover(instanceId, render) {
     document.getElementById('sp-recover-template-btn')?.addEventListener('click', () => {
         const slug = document.getElementById('sp-recover-template')?.value || '';
+        if (!slug) {
+            showToast(spT('sp.recover.pickTemplate'));
+            return;
+        }
         const templates = readTemplatesFromDom();
         const template = templates.find((t) => t.slug === slug);
         if (!template) {
@@ -1200,7 +1369,7 @@ function bindTemplateRecover(instanceId, render) {
                 };
             }
             if (!plan.startedAt) {
-                plan.startedAt = new Date().toISOString().slice(0, 10);
+                plan.startedAt = resolvePlanStartedAt(plan.id || instanceId, plan.startedAt);
             }
         });
         if (!result.ok) {
@@ -1692,7 +1861,7 @@ function statusBannerIcon(status) {
     return 'fa-solid fa-ban';
 }
 
-function renderSprints(sprints, currentNumber, instance, template, locale, workspace) {
+function renderSprints(sprints, currentNumber, instance, template, locale, workspace, effortModel = null) {
     const host = document.getElementById('sp-sprints');
     const prefs = loadPreferences();
     const expanded = prefs.expandedSprints?.[instance.id] || {};
@@ -1821,8 +1990,8 @@ function renderSprints(sprints, currentNumber, instance, template, locale, works
         if (Array.isArray(sprint.links) && sprint.links.length > 0) {
             body.appendChild(renderGenericLinks(sprint.links, 'sp-sprint-links'));
         }
-        body.appendChild(renderItemSection('tasks', sprint, instance, locale, workspace));
-        body.appendChild(renderItemSection('deliverables', sprint, instance, locale, workspace));
+            body.appendChild(renderItemSection('tasks', sprint, instance, locale, workspace, effortModel));
+            body.appendChild(renderItemSection('deliverables', sprint, instance, locale, workspace, effortModel));
         body.appendChild(renderFields(sprint, instance));
         if (sprint.notesEnabled) {
             body.appendChild(renderNotes(sprint, instance));
@@ -1911,7 +2080,7 @@ function openSprintHelp(sprint) {
     }, () => rerender());
 }
 
-function renderItemSection(kind, sprint, instance, locale, workspace) {
+function renderItemSection(kind, sprint, instance, locale, workspace, effortModel = null) {
     const section = document.createElement('section');
     section.className = 'sp-sprint__section';
     const title = document.createElement('div');
@@ -1935,13 +2104,13 @@ function renderItemSection(kind, sprint, instance, locale, workspace) {
     list.className = 'sp-item-list';
     const items = kind === 'tasks' ? sprint.tasks : sprint.deliverables;
     for (const item of items) {
-        list.appendChild(renderItemRow(item, sprint, instance, locale, workspace));
+        list.appendChild(renderItemRow(item, sprint, instance, locale, workspace, effortModel));
     }
     section.appendChild(list);
     return section;
 }
 
-function renderItemRow(item, sprint, instance, locale, workspace) {
+function renderItemRow(item, sprint, instance, locale, workspace, effortModel = null) {
     const li = document.createElement('li');
     li.className = `sp-item-wrap sp-item-wrap--${item.status}`;
     li.dataset.itemKey = item.statusKey;
@@ -1993,7 +2162,8 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     label.textContent = item.label;
     const meta = document.createElement('span');
     meta.className = 'sp-item__meta';
-    const range = sprintDateRange(instance.startedAt, sprint.number, 'week');
+    const effortWeek = effortModel?.itemWeeks?.get(item.statusKey) || sprint.number;
+    const range = sprintDateRange(instance.startedAt, effortWeek, 'week');
     const weekLabel = range ? formatIsoWeekLabel(range.isoWeek, locale) : '';
     const plannedDue = range
         ? spT('sp.schedule.dueBy', { date: formatDateShort(range.end, locale) })
@@ -2029,6 +2199,16 @@ function renderItemRow(item, sprint, instance, locale, workspace) {
     srAssignee.className = 'visually-hidden';
     srAssignee.textContent = resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned');
     main.append(label, meta, srAssignee);
+
+    if (item.dependencyBlocked && item.dependencyReason) {
+        const waiting = document.createElement('p');
+        waiting.className = 'sp-item__dependency-waiting';
+        waiting.id = `${item.statusKey}-dependency`;
+        waiting.textContent = item.dependencyReason;
+        main.appendChild(waiting);
+        li.classList.add('sp-item-wrap--waiting');
+        row.classList.add('sp-item--waiting');
+    }
 
     if (item.status === 'blocked' && item.blockerReason) {
         const reason = document.createElement('p');
@@ -2243,7 +2423,7 @@ function renderSprintDependencyMarker(sprint, sprints) {
     marker.dataset.dependencyTooltip = tooltip;
     marker.setAttribute('aria-label', tooltip);
     marker.setAttribute('role', 'img');
-    marker.tabIndex = 0;
+    marker.title = tooltip;
     marker.dataset.dependencyType = 'sprint';
     marker.dataset.dependencySelf = sprint.id;
     marker.dataset.dependencyDeps = deps.join('|');
@@ -2281,7 +2461,7 @@ function renderDependencyMarker(item, sprint) {
     marker.dataset.dependencyTooltip = tooltip;
     marker.setAttribute('aria-label', tooltip);
     marker.setAttribute('role', 'img');
-    marker.tabIndex = 0;
+    marker.title = tooltip;
     marker.dataset.dependencyType = 'item';
     marker.dataset.dependencySelf = item.statusKey;
     marker.dataset.dependencyDeps = deps.join('|');

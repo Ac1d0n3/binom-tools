@@ -154,6 +154,13 @@ export async function upsertPlanOnServer(plan, plansApiUrl, historyMeta = {}) {
         return { plan };
     }
 
+    const slug = String(plan.templateSlug || '').trim();
+    const hasSnapshot = plan.templateSnapshot && typeof plan.templateSnapshot === 'object';
+    // Hollow shells (no template) stay local until Restore template — avoid 422 spam.
+    if (!slug && !hasSnapshot) {
+        return { plan, skipped: true };
+    }
+
     /** @type {Record<string, unknown>} */
     const body = { plan };
     if (historyMeta && (historyMeta.action || historyMeta.summary)) {
@@ -176,7 +183,13 @@ export async function upsertPlanOnServer(plan, plansApiUrl, historyMeta = {}) {
     });
 
     if (!response.ok) {
-        throw new Error(`plans-save-${response.status}`);
+        let detail = '';
+        try {
+            detail = await response.text();
+        } catch {
+            // ignore
+        }
+        throw new Error(`plans-save-${response.status}${detail ? `: ${detail.slice(0, 300)}` : ''}`);
     }
 
     return response.json();

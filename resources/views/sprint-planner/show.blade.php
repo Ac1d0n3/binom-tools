@@ -152,13 +152,19 @@
                     <div class="sp-plan-header__main">
                         <p class="tools-page-lead" id="sp-plan-description"></p>
                         <dl class="sp-meta">
-                            <div><dt data-i18n="sp.field.startDate">Start date</dt><dd id="sp-plan-started"></dd></div>
+                            <div>
+                                <dt data-i18n="sp.field.startDate">Start date</dt>
+                                <dd>
+                                    <input type="date" id="sp-plan-started" class="tools-input tools-input--compact" required>
+                                </dd>
+                            </div>
                             <div><dt data-i18n="sp.field.owner">Owner</dt><dd id="sp-plan-owner"></dd></div>
                             <div><dt data-i18n="sp.field.currentSprint">Current sprint</dt><dd id="sp-plan-current-sprint"></dd></div>
                             <div><dt data-i18n="sp.field.status">Status</dt><dd id="sp-plan-status"></dd></div>
                             <div><dt data-i18n="sp.field.team">Team</dt><dd id="sp-plan-team"></dd></div>
                             <div><dt data-i18n="sp.field.participants">Participants</dt><dd id="sp-plan-participants"></dd></div>
                         </dl>
+                        <div id="sp-plan-effort-summary" class="sp-plan-effort-summary" hidden></div>
                         <div
                             id="sp-plan-status-overview"
                             class="sp-status-overview"

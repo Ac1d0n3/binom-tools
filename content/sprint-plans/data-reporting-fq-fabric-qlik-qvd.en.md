@@ -1,10 +1,19 @@
 ---
 type: sprint-plan
-title: First Quarter — Fabric? → Qlik Script / QVDs (Chaos)
+title: First Quarter — Fabric / QVD / Qlik grown landscape
 slug: data-reporting-fq-fabric-qlik-qvd
-description: Chaotic landscape: unclear sources, possible Fabric, many QVD generators with SUBs, DELTAs and SCD — partner and in-house mixed.
+description: Q1 roadmap for a grown Fabric/QVD/Qlik landscape with unclear sources, scripts, and ownership: understand the data and reporting landscape, clarify risks, choose the most important app, and prepare the A-Z prototype for Q2.
 duration: 13
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
+roadmap_family: data-reporting-year-roadmap
+roadmap_title: Data & Reporting Year Roadmap
+roadmap_track: data-reporting-grown-fabric-qvd-qlik
+roadmap_track_title: Grown Fabric / QVD / Qlik landscape
+roadmap_phase: 1
+roadmap_option: Path 3 Grown Fabric / QVD / Qlik landscape
 category: Data Platform
 author: Thomas Lindackers
 version: 1
@@ -14,10 +23,10 @@ tags:
   - Qlik
   - QVD
   - SCD
-  - Chaos
+  - Grown landscape
 ---
 
-Thirteen weeks to understand reporting and the data platform, clarify risks, and deliver a first pilot.
+Thirteen weeks to understand the grown Fabric/QVD/Qlik landscape with unclear sources, scripts, and ownership well enough to end the quarter with a committed app decision, a sliced A-Z prototype, and a realistic Q2 implementation backlog.
 
 ```sprint
 id: week-01
@@ -44,6 +53,7 @@ stories:
 tasks:
   - id: align-management-expectations
     label: Align expectations with leadership
+    plannedMinutes: 540
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -52,14 +62,12 @@ tasks:
       Watch for: vague goals (“better reporting”), hidden compliance pressure, and conflicting sponsors.
     linkedStories: data-ownership-stewardship, eight-pillars
     helpLinks:
-      - label: Data Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: The 8 Pillars of Data Governance
-        href: /playbooks/eight-pillars
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Atlassian - Project poster
+        href: https://www.atlassian.com/team-playbook/plays/project-poster
+        description: Read this as a thinking frame for mandate, problem, goal, stakeholders, and open decisions; nothing to install.
   - id: identify-stakeholders
     label: Identify relevant stakeholders
+    plannedMinutes: 540
     assigneeType: team
     assigneeId: null
     tableColumns: Name, Role, Influence, Interest, Owner
@@ -72,18 +80,22 @@ tasks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
         description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
-      - label: Missing Pieces – Ownership & Stewardship
-        href: /playbooks/missing-pieces-ownership-stewardship
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Atlassian - DACI decision framework
+        href: https://www.atlassian.com/team-playbook/plays/daci
+        description: Use it to separate decision makers, contributors, and informed people for decisions.
 
 deliverables:
   - id: stakeholder-list
     label: Create stakeholder list
+    plannedMinutes: 360
+    dependsOn: identify-stakeholders
     helpText: |
       Deliverable “Create stakeholder list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: initial-mandate
     label: Initial mandate documented
+    plannedMinutes: 420
+    dependsOn: align-management-expectations, identify-stakeholders
     helpText: |
       Deliverable “Initial mandate documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -106,6 +118,7 @@ id: week-02
 number: 2
 title: Reporting Landscape
 goal: Capture existing reports, users, and critical gaps.
+dependsOn: week-01
 description: Focus: generator inventory, SUB libraries, delta logic, SCD patterns, owner per generator, what should be source of truth.
 
 stories:
@@ -117,6 +130,7 @@ stories:
 tasks:
   - id: inventory-reports
     label: Inventory existing reports
+    plannedMinutes: 840
     assigneeType: person
     assigneeId: null
     tableColumns: Report, Owner, Tool, Cadence, Business question
@@ -129,14 +143,12 @@ tasks:
       - label: Report Inventory Canvas
         href: /tools/report-inventory
         description: Use the tool to inventory reports consistently with owner, tool, cadence, and business question.
-      - label: One Business Question, Different BI Engines
-        href: /playbooks/bi-tools
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: One App Cannot Answer Every Question
-        href: /playbooks/one-app
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Microsoft Learn - Power BI implementation planning
+        href: https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-introduction
+        description: Use the guidance as a checklist for Power BI roles, workspaces, governance, and rollout questions.
   - id: map-report-consumers
     label: Map report consumers and usage frequency
+    plannedMinutes: 600
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -144,19 +156,19 @@ tasks:
       Separate “nice to have” from “blocks operations or board reporting”.
       Watch for: consumers who never open the report but block changes, and unknown distribution lists.
     linkedStories: bi-tools, one-app
-    helpLinks:
-      - label: BI tools overview
-        href: /playbooks/bi-tools
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: report-inventory
     label: Report inventory documented
+    plannedMinutes: 480
+    dependsOn: inventory-reports
     helpText: |
       Deliverable “Report inventory documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: gap-list
     label: Initial gap list created
+    plannedMinutes: 180
+    dependsOn: inventory-reports, map-report-consumers
     helpText: |
       Deliverable “Initial gap list created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -175,6 +187,7 @@ id: week-03
 number: 3
 title: Source Systems
 goal: Understand relevant source systems, owners, and interfaces.
+dependsOn: week-02
 
 stories:
   - slug: before-building-the-first-table
@@ -185,6 +198,7 @@ stories:
 tasks:
   - id: list-source-systems
     label: Capture source systems and owners
+    plannedMinutes: 600
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Access, Consumed by
@@ -197,14 +211,10 @@ tasks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
         description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
-      - label: Before Building the First Table
-        href: /playbooks/before-building-the-first-table
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: SAP Data & Analytics Stack
-        href: /playbooks/sap-overview
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: document-interfaces
     label: Document interfaces and extraction paths
+    plannedMinutes: 720
+    dependsOn: list-source-systems
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -216,18 +226,22 @@ tasks:
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
         description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
-      - label: Building a Warehouse from Scratch
-        href: /playbooks/building-from-scratch
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Atlassian - DACI decision framework
+        href: https://www.atlassian.com/team-playbook/plays/daci
+        description: Use it to separate decision makers, contributors, and informed people for decisions.
 
 deliverables:
   - id: source-system-map
     label: Source system map created
+    plannedMinutes: 480
+    dependsOn: list-source-systems
     helpText: |
       Deliverable “Source system map created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: owner-matrix
     label: Owner matrix created
+    plannedMinutes: 240
+    dependsOn: list-source-systems, document-interfaces
     helpText: |
       Deliverable “Owner matrix created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -246,6 +260,7 @@ id: week-04
 number: 4
 title: Data Creation
 goal: How operational data is created and which rules apply.
+dependsOn: week-03
 
 stories:
   - slug: before-building-the-first-table
@@ -256,6 +271,7 @@ stories:
 tasks:
   - id: trace-data-creation
     label: Trace data creation in core processes
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -263,15 +279,10 @@ tasks:
       Sketch process → system fields → report fields for 1–3 critical flows.
       Watch for: late corrections in Excel, optional fields that drive KPIs, and process exceptions that never reach the warehouse.
     linkedStories: before-building-the-first-table, trash-iinout
-    helpLinks:
-      - label: Trash In, Trash Out
-        href: /playbooks/trash-iinout
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Before Building the First Table
-        href: /playbooks/before-building-the-first-table
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: capture-business-rules
     label: Document business rules and exceptions
+    plannedMinutes: 480
+    dependsOn: trace-data-creation
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -279,19 +290,19 @@ tasks:
       Prefer examples with real edge cases over abstract definitions.
       Watch for: “everybody knows” rules that exist only in people’s heads.
     linkedStories: define-kpi, missing-pieces-trusted-metrics
-    helpLinks:
-      - label: KPI Definition, Ownership and Versioning
-        href: /playbooks/define-kpi
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: creation-notes
     label: Data creation notes
+    plannedMinutes: 360
+    dependsOn: trace-data-creation
     helpText: |
       Deliverable “Data creation notes”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: rule-summary
     label: Business rule summary
+    plannedMinutes: 300
+    dependsOn: capture-business-rules
     helpText: |
       Deliverable “Business rule summary”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -310,6 +321,7 @@ id: week-05
 number: 5
 title: End-to-End Lineage
 goal: Make the path from source to report traceable.
+dependsOn: week-03, week-04
 
 flowVariant: linear
 flowLayout: vertical
@@ -330,6 +342,7 @@ stories:
 tasks:
   - id: map-lineage-paths
     label: Sketch central lineage paths
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -341,14 +354,10 @@ tasks:
       - label: Meta Export Generator
         href: /tools/meta-export-generator
         description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
-      - label: Metadata, Catalog & Lineage
-        href: /playbooks/metadata-catalog-lineage
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Missing Pieces – Metadata, Catalog & Lineage
-        href: /playbooks/missing-pieces-metadata-catalog-lineage
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: identify-lineage-gaps
     label: Mark lineage gaps and blind spots
+    plannedMinutes: 360
+    dependsOn: map-lineage-paths
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -356,19 +365,19 @@ tasks:
       Prioritize gaps that affect trust in critical KPIs or compliance-sensitive data.
       Watch for: ignoring “temporary” transforms that have existed for years.
     linkedStories: metadata-catalog-lineage, missing-pieces-metadata-catalog-lineage
-    helpLinks:
-      - label: Metadata, Catalog & Lineage
-        href: /playbooks/metadata-catalog-lineage
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: lineage-sketch
     label: Lineage sketch created
+    plannedMinutes: 480
+    dependsOn: map-lineage-paths
     helpText: |
       Deliverable “Lineage sketch created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: lineage-gap-log
     label: Lineage gap log
+    plannedMinutes: 300
+    dependsOn: identify-lineage-gaps
     helpText: |
       Deliverable “Lineage gap log”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -387,6 +396,7 @@ id: week-06
 number: 6
 title: KPI Inventory
 goal: Clarify key KPIs, definitions, and ownership.
+dependsOn: week-02, week-04
 
 stories:
   - slug: define-kpi
@@ -399,6 +409,7 @@ stories:
 tasks:
   - id: collect-kpis
     label: Collect KPIs from reports and stakeholder interviews
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -410,14 +421,13 @@ tasks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
         description: Use the tool to capture KPI name, formula, grain, filters, owner, and open definition questions.
-      - label: KPI Definition, Ownership and Versioning
-        href: /playbooks/define-kpi
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: KPI & Metric Governance
-        href: /playbooks/kpi-metric-governance
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Tableau - Visualize Key Progress Indicators
+        href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
+        description: Use the examples to design understandable KPI display and thresholds.
   - id: normalize-definitions
     label: Align definitions and calculation rules
+    plannedMinutes: 600
+    dependsOn: collect-kpis
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -425,19 +435,19 @@ tasks:
       Version the definition if the business still needs the old variant temporarily.
       Watch for: “average of everyone’s number” as a compromise.
     linkedStories: define-kpi, missing-pieces-trusted-metrics
-    helpLinks:
-      - label: Trusted Metrics (Missing Pieces)
-        href: /playbooks/missing-pieces-trusted-metrics
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: kpi-inventory
     label: KPI inventory created
+    plannedMinutes: 480
+    dependsOn: collect-kpis
     helpText: |
       Deliverable “KPI inventory created”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: definition-backlog
     label: Definition backlog prioritized
+    plannedMinutes: 240
+    dependsOn: normalize-definitions
     helpText: |
       Deliverable “Definition backlog prioritized”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -456,6 +466,7 @@ id: week-07
 number: 7
 title: Data Quality and Risks
 goal: Prioritize quality issues and risks.
+dependsOn: week-05, week-06
 
 stories:
   - slug: data-quality-governance
@@ -476,6 +487,7 @@ links:
 tasks:
   - id: assess-dq-issues
     label: Assess known DQ issues
+    plannedMinutes: 600
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -484,20 +496,19 @@ tasks:
       Watch for: fixing cosmetics while core keys and dates remain unreliable.
     linkedStories: data-quality-governance, dq-test-kpis, missing-pieces-data-quality
     helpLinks:
-      - label: Data Quality Governance
-        href: /playbooks/data-quality-governance
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: From Tests to Measurable Data Quality
-        href: /playbooks/dq-test-kpis
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
         description: Use the tool to turn observed data issues into testable quality checks.
+      - label: dbt Docs - Data tests
+        href: https://docs.getdbt.com/docs/build/data-tests
+        description: Use the docs to turn quality assumptions into implementable dbt tests.
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
         description: Use the tool to prepare reusable dbt macros for data quality checks.
   - id: rate-risks
     label: Rate business and compliance risks
+    plannedMinutes: 480
+    dependsOn: assess-dq-issues
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -506,24 +517,25 @@ tasks:
       Watch for: treating every data bug as equal urgency.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
-      - label: PII & Privacy Governance
-        href: /playbooks/pii-privacy-governance
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Access & Security Governance
-        href: /playbooks/access-security-governance
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to structure PII classes, masking, and access rules as a policy draft.
+      - label: Microsoft Purview - Data classification
+        href: https://learn.microsoft.com/en-us/purview/data-classification
+        description: Use the docs to classify PII/sensitivity levels and data categories cleanly.
 
 deliverables:
   - id: dq-risk-register
     label: DQ and risk register
+    plannedMinutes: 600
+    dependsOn: assess-dq-issues, rate-risks
     helpText: |
       Deliverable “DQ and risk register”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: hotspot-list
     label: Prioritized hotspot list
+    plannedMinutes: 240
+    dependsOn: rate-risks
     helpText: |
       Deliverable “Prioritized hotspot list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -542,6 +554,7 @@ id: week-08
 number: 8
 title: Architecture Diagnosis
 goal: Assess the current architecture and name bottlenecks.
+dependsOn: week-03
 flowVariant: linear
 flowLayout: vertical
 flowSteps:
@@ -566,6 +579,7 @@ stories:
 tasks:
   - id: review-architecture
     label: Review current architecture and tools
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -577,20 +591,13 @@ tasks:
       - label: Architecture Fit Checklist
         href: /tools/architecture-fit
         description: Use the tool to assess current architecture, bottlenecks, and target shape against pragmatic criteria.
-      - label: Choosing the Simplest Viable Architecture
-        href: /playbooks/choosing-the-simplest-viable-architecture
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Beyond Bronze, Silver and Gold
-        href: /playbooks/beyond-bronze-silver-gold
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: BIG 5 Stacks Overview
-        href: /playbooks/big-five
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: One Architecture – Multiple Platforms
-        href: /playbooks/platform-examples
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Microsoft Learn - Medallion architecture
+        href: https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion
+        description: Use the explanation as a reference for Bronze/Silver/Gold zones and check whether they are really needed here.
   - id: document-bottlenecks
     label: Document bottlenecks and technical debt
+    plannedMinutes: 480
+    dependsOn: review-architecture
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -598,22 +605,19 @@ tasks:
       Separate “hurts this quarter’s pilot” from “strategic debt”.
       Watch for: rewriting everything instead of isolating one improv able path.
     linkedStories: modernizing-an-existing-warehouse, host-vs-cloud, bridge-solution
-    helpLinks:
-      - label: Modernizing an Existing Warehouse
-        href: /playbooks/modernizing-an-existing-warehouse
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Cloud vs. Self-Hosted
-        href: /playbooks/host-vs-cloud
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: architecture-notes
     label: Architecture diagnosis notes
+    plannedMinutes: 480
+    dependsOn: review-architecture
     helpText: |
       Deliverable “Architecture diagnosis notes”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: bottleneck-list
     label: Bottleneck list
+    plannedMinutes: 240
+    dependsOn: document-bottlenecks
     helpText: |
       Deliverable “Bottleneck list”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -632,6 +636,7 @@ id: week-09
 number: 9
 title: Prioritization
 goal: Prioritize actions by impact and feasibility.
+dependsOn: week-07, week-08
 
 stories:
   - slug: eight-pillars
@@ -642,6 +647,7 @@ stories:
 tasks:
   - id: score-initiatives
     label: Score initiatives by impact and effort
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -653,14 +659,13 @@ tasks:
       - label: Impact–Effort Prioritizer
         href: /tools/impact-effort
         description: Use the tool to prioritize initiatives by impact, effort, risk, and dependencies.
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Simplest Viable Architecture
-        href: /playbooks/choosing-the-simplest-viable-architecture
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
+      - label: Atlassian - Prioritization matrix
+        href: https://www.atlassian.com/work-management/project-management/prioritization-matrix
+        description: Use the examples to align impact-vs-effort scoring with stakeholders.
   - id: agree-priorities
     label: Agree priorities with stakeholders
+    plannedMinutes: 600
+    dependsOn: score-initiatives
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -668,19 +673,31 @@ tasks:
       Confirm who can unblock people and systems during the pilot weeks.
       Watch for: silent disagreement that resurfaces after build starts.
     linkedStories: eight-pillars, data-ownership-stewardship
-    helpLinks:
-      - label: The 8 Pillars of Data Governance
-        href: /playbooks/eight-pillars
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
+  - id: select-primary-app
+    label: Commit to the most important app
+    plannedMinutes: 360
+    plannedMinutes: 360
+    dependsOn: agree-priorities
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Make a binding decision which app becomes the first A-Z prototype. Justify it with business value, data availability, sponsor strength, and how reusable the pattern is.
+      State explicitly which good candidates must wait and why.
+      Watch for: starting multiple apps before one pattern has been proven cleanly from source to user.
+    linkedStories: one-app, bridge-solution, eight-pillars
 deliverables:
   - id: priority-matrix
     label: Prioritization matrix
+    plannedMinutes: 420
+    dependsOn: score-initiatives
     helpText: |
       Deliverable “Prioritization matrix”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: quarter-backlog
     label: Quarter backlog agreed
+    plannedMinutes: 420
+    dependsOn: select-primary-app, priority-matrix
     helpText: |
       Deliverable “Quarter backlog agreed”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -699,6 +716,7 @@ id: week-10
 number: 10
 title: Target Picture
 goal: Sketch a clear target picture for reporting and the data platform.
+dependsOn: week-09
 
 stories:
   - slug: bridge-solution
@@ -713,6 +731,7 @@ stories:
 tasks:
   - id: draft-target-picture
     label: Draft target picture and principles
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -720,21 +739,10 @@ tasks:
       Keep principles short and testable. Show what you will stop doing.
       Watch for: futuristic architecture slides with no near-term path.
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role, transformation-options
-    helpLinks:
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: The Role of dbt
-        href: /playbooks/dbt-role
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Self-Hosted Data Platforms
-        href: /playbooks/self-hosted-data-platform
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Transformation Options
-        href: /playbooks/transformation-options
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: validate-target-picture
     label: Validate target picture with stakeholders
+    plannedMinutes: 480
+    dependsOn: draft-target-picture
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -742,19 +750,31 @@ tasks:
       Capture objections as backlog items, not as reasons to freeze.
       Watch for: approval theater without named owners for the target state.
     linkedStories: eight-pillars, data-ownership-stewardship
-    helpLinks:
-      - label: Data Ownership & Stewardship
-        href: /playbooks/data-ownership-stewardship
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
+  - id: slice-az-prototype
+    label: Slice the A-Z prototype
+    plannedMinutes: 480
+    plannedMinutes: 480
+    dependsOn: validate-target-picture
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Cut the first prototype small enough to run from source through model/rules into a usable app view. Define data scope, KPI question, user group, acceptance signal, and clear non-goals.
+      Plan only the first reliable end-to-end slice, not the final platform.
+      Watch for: scope that sounds like an MVP to the business but technically contains three products.
+    linkedStories: one-app, building-from-scratch, define-kpi, bridge-solution
 deliverables:
   - id: target-picture
     label: Target picture documented
+    plannedMinutes: 480
+    dependsOn: draft-target-picture, validate-target-picture, slice-az-prototype
     helpText: |
       Deliverable “Target picture documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: guiding-principles
     label: Guiding principles defined
+    plannedMinutes: 240
+    dependsOn: draft-target-picture
     helpText: |
       Deliverable “Guiding principles defined”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -773,6 +793,7 @@ id: week-11
 number: 11
 title: Implement Pilot
 goal: Implement the prioritized pilot within a limited scope.
+dependsOn: week-10
 
 stories:
   - slug: building-from-scratch
@@ -794,6 +815,7 @@ links:
 tasks:
   - id: build-pilot
     label: Build the pilot
+    plannedMinutes: 1320
     demoCode: |
       // QVD generator checklist
       // 1) Who owns the SUB?
@@ -808,12 +830,6 @@ tasks:
       Watch for: expanding scope mid-build and skipping tests “until later”.
     linkedStories: building-from-scratch, dbt-role, dq-test-kpis
     helpLinks:
-      - label: Building a Warehouse from Scratch
-        href: /playbooks/building-from-scratch
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: The Role of dbt
-        href: /playbooks/dbt-role
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
         description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
@@ -823,8 +839,12 @@ tasks:
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
         description: Use the tool to turn observed data issues into testable quality checks.
+      - label: dbt Docs - Data tests
+        href: https://docs.getdbt.com/docs/build/data-tests
+        description: Use the docs to turn quality assumptions into implementable dbt tests.
   - id: track-pilot-blockers
     label: Manage blockers and dependencies
+    plannedMinutes: 240
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -832,19 +852,19 @@ tasks:
       Protect the pilot from unrelated “quick wins”.
       Watch for: silent waiting on unresolved access tickets.
     linkedStories: access-security-governance, data-ownership-stewardship
-    helpLinks:
-      - label: Access & Security Governance
-        href: /playbooks/access-security-governance
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
 deliverables:
   - id: pilot-increment
     label: Pilot increment ready
+    plannedMinutes: 360
+    dependsOn: build-pilot
     helpText: |
       Deliverable “Pilot increment ready”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: pilot-changelog
     label: Pilot change log
+    plannedMinutes: 120
+    dependsOn: build-pilot, track-pilot-blockers
     helpText: |
       Deliverable “Pilot change log”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -863,6 +883,7 @@ id: week-12
 number: 12
 title: Validate Pilot
 goal: Verify the pilot's value, quality, and acceptance.
+dependsOn: week-11
 
 stories:
   - slug: dq-test-kpis
@@ -873,6 +894,7 @@ stories:
 tasks:
   - id: run-pilot-review
     label: Review pilot with users
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -880,15 +902,10 @@ tasks:
       Capture concrete change requests vs. nice-to-haves.
       Watch for: demoing to sponsors only and skipping end users.
     linkedStories: bi-tools, define-kpi
-    helpLinks:
-      - label: KPI Definition, Ownership and Versioning
-        href: /playbooks/define-kpi
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: BI tools overview
-        href: /playbooks/bi-tools
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: measure-pilot-outcomes
     label: Measure outcomes and quality
+    plannedMinutes: 480
+    dependsOn: run-pilot-review
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -897,21 +914,25 @@ tasks:
       Watch for: declaring success because “the pipeline runs”.
     linkedStories: dq-test-kpis, data-quality-governance
     helpLinks:
-      - label: From Tests to Measurable Data Quality
-        href: /playbooks/dq-test-kpis
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
         description: Use the tool to make DQ results traceable over time and support validation evidence.
+      - label: GitHub Docs - Status checks
+        href: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
+        description: Use the docs as a reference for automated checks, review signals, and release quality.
 
 deliverables:
   - id: validation-report
     label: Validation report
+    plannedMinutes: 600
+    dependsOn: run-pilot-review, measure-pilot-outcomes
     helpText: |
       Deliverable “Validation report”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: go-nogo-recommendation
     label: Go/No-Go recommendation
+    plannedMinutes: 300
+    dependsOn: validation-report
     helpText: |
       Deliverable “Go/No-Go recommendation”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
@@ -930,6 +951,7 @@ id: week-13
 number: 13
 title: Quarter Close
 goal: Secure results, capture lessons, and prepare the next quarter.
+dependsOn: week-12
 
 stories:
   - slug: eight-pillars
@@ -942,6 +964,7 @@ stories:
 tasks:
   - id: summarize-quarter
     label: Summarize quarter results
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -949,15 +972,10 @@ tasks:
       Attach the artifacts (inventory, KPI defs, lineage sketch, risk register) as lasting assets.
       Watch for: burying bad news or unfinished ownership in appendices.
     linkedStories: eight-pillars, dsdr-governance
-    helpLinks:
-      - label: The 8 Pillars of Data Governance
-        href: /playbooks/eight-pillars
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: DSDR Governance
-        href: /playbooks/dsdr-governance
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
   - id: plan-next-quarter
     label: Roughly plan the next quarter
+    plannedMinutes: 240
+    dependsOn: summarize-quarter
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -965,25 +983,43 @@ tasks:
       Reconfirm owners, capacity, and what must stop to make room.
       Watch for: restarting discovery from zero instead of extending proven patterns.
     linkedStories: bridge-solution, modernizing-an-existing-warehouse, operating-and-governing-the-platform
-    helpLinks:
-      - label: Bridge Solutions
-        href: /playbooks/bridge-solution
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Modernizing an Existing Warehouse
-        href: /playbooks/modernizing-an-existing-warehouse
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
-      - label: Operating and Governing the Platform
-        href: /playbooks/operating-and-governing-the-platform
-        description: Opens the related planner story as background reading; use it for understanding, not as an installation step.
 
+  - id: create-q2-prototype-backlog
+    label: Create Q2 follow-up backlog
+    plannedMinutes: 360
+    plannedMinutes: 360
+    dependsOn: summarize-quarter
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Derive an executable Q2 backlog from findings, target picture, app decision, and prototype slice. Cut epics and tasks so implementation, review, data quality, and acceptance stay visible.
+      Mark chain tasks, parallel work packages, business dependencies, and decisions needed before sprint start.
+      Watch for: a wishlist backlog without order, definition of done, or owners.
+    linkedStories: bridge-solution, building-from-scratch, operating-and-governing-the-platform
+  - id: check-prototype-readiness
+    label: Check technical prototype readiness
+    plannedMinutes: 360
+    plannedMinutes: 360
+    dependsOn: create-q2-prototype-backlog
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Check access, test data, target system, development environment, review path, privacy points, and business contacts for the first A-Z prototype.
+      Document missing approvals as Q2 start risks with owner and latest decision date.
+      Watch for: starting Q2 with a polished roadmap but no working access to the relevant source.
+    linkedStories: access-security-governance, dq-test-kpis, building-from-scratch
 deliverables:
   - id: quarter-report
     label: Quarter report
+    plannedMinutes: 480
+    dependsOn: summarize-quarter
     helpText: |
       Deliverable “Quarter report”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.
   - id: next-quarter-outline
     label: Outline for the next quarter
+    plannedMinutes: 360
+    dependsOn: plan-next-quarter, create-q2-prototype-backlog, check-prototype-readiness, quarter-report
     helpText: |
       Deliverable “Outline for the next quarter”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.

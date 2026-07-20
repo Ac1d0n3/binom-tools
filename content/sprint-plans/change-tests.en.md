@@ -5,6 +5,9 @@ slug: change-tests
 description: Ship a database or report change safely: impact, tests, verify, release.
 duration: 3
 unit: week
+recommended_people_min: 1
+recommended_people_max: 1
+capacity_hours_per_person_week: 40
 category: Quality
 author: Thomas Lindackers
 version: 1
@@ -32,7 +35,7 @@ stories:
 tasks:
   - id: w1-impact
     label: Document change and impact
-    plannedMinutes: 120
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Object, Change, Consumer, Risk, Rollback
@@ -55,7 +58,7 @@ tasks:
         description: Use the docs as a reference for setting up or reviewing continuous integration checks for changes.
   - id: w1-scope
     label: Agree in/out of scope
-    plannedMinutes: 60
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     tableColumns: Scope item, In/Out, Reason, Owner, Decision
@@ -71,7 +74,7 @@ tasks:
 deliverables:
   - id: w1-impact-note
     label: Impact note
-    plannedMinutes: 60
+    plannedMinutes: 120
     helpText: |
       Create an impact note with change summary, affected objects, consumers, scope boundaries, and rollback.
       The deliverable is done when reviewers can see which tests are required and which risks are deliberately accepted.
@@ -99,7 +102,7 @@ goal: Design and add tests.
 tasks:
   - id: w2-tests
     label: Add or extend automated tests
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Risk, Test type, Assertion, Severity, Owner
@@ -125,7 +128,7 @@ tasks:
         description: Use the article to translate test types and DQ thinking into concrete checks.
   - id: w2-fixtures
     label: Prepare fixtures / expected results
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Scenario, Input, Expected result, Edge case, Evidence
@@ -141,7 +144,7 @@ tasks:
 deliverables:
   - id: w2-test-pack
     label: Test pack
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Create a list of new or changed tests with assertion, severity, owner, target environment, and expected behavior.
       The deliverable is done when a reviewer can map every test to an impact risk.
@@ -165,7 +168,7 @@ goal: Verify change and release.
 tasks:
   - id: w3-verify
     label: Run tests in target environment
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Check, Environment, Result, Evidence, Follow-up
@@ -183,7 +186,7 @@ tasks:
         description: Use the guidance to plan publishing, review, and approval for enterprise reports.
   - id: w3-release
     label: Release notes and monitoring
-    plannedMinutes: 60
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     tableColumns: Change, Watch signal, Owner, Escalation, Time window
@@ -199,7 +202,7 @@ tasks:
 deliverables:
   - id: w3-release
     label: Release evidence
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Collect test results, release notes, monitoring plan, known residual risks, and rollback decision.
       The deliverable is done when it is clear which version was released and why it is acceptable.

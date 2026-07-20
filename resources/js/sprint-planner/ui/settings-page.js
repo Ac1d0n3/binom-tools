@@ -84,6 +84,11 @@ export function initSettingsPage() {
             || instance.translations?.en?.title
             || instance.templateSlug;
 
+        const startDateInput = document.getElementById('sp-settings-start-date');
+        if (startDateInput instanceof HTMLInputElement) {
+            startDateInput.value = String(instance.startedAt || '');
+        }
+
         const protectedPlan = isPasswordProtected(instance);
         document.getElementById('sp-password-status').textContent = protectedPlan
             ? spT('sp.password.statusOn')
@@ -99,6 +104,23 @@ export function initSettingsPage() {
         renderSharing(instance, locale);
         renderTemplateSwitch(instance, locale);
     };
+
+    document.getElementById('sp-settings-start-date-save')?.addEventListener('click', () => {
+        const value = String(document.getElementById('sp-settings-start-date')?.value || '').trim();
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+            showToast(spT('sp.error.invalidStartDate'));
+            return;
+        }
+        const result = updateInstance(instanceId, (instance) => {
+            instance.startedAt = value;
+        });
+        if (!result.ok) {
+            showToast(storageErrorMessage(result.error));
+            return;
+        }
+        showToast(spT('sp.toast.saved'));
+        render();
+    });
 
     document.getElementById('sp-plan-teams-save')?.addEventListener('click', () => {
         const teamIds = [...document.querySelectorAll('#sp-plan-teams input:checked')].map((el) => el.value);

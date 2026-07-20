@@ -5,6 +5,9 @@ slug: database-model
 description: Design a focused database / warehouse model: scope, entities, relationships, naming, and review.
 duration: 4
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
 category: Data Modeling
 author: Thomas Lindackers
 version: 1
@@ -34,7 +37,7 @@ stories:
 tasks:
   - id: w1-scope
     label: Capture business questions and grain
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Business question, Fact grain, Decision, Out of scope, Owner
@@ -55,7 +58,7 @@ tasks:
         description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w1-sources
     label: Inventory candidate sources
-    plannedMinutes: 60
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Freshness, Key fields, Known issue
@@ -78,7 +81,7 @@ tasks:
 deliverables:
   - id: w1-scope-note
     label: Scope & grain note
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Create a scope note with business questions, fact grain, required sources, non-goals, and open assumptions.
       The deliverable is done when another person can see which table class is needed and which details are intentionally not modeled.
@@ -106,7 +109,7 @@ goal: Draft entities, keys, and relationships.
 tasks:
   - id: w2-entities
     label: Draft entity list and keys
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Entity, Type, Grain, Primary key, Change behavior
@@ -131,7 +134,7 @@ tasks:
         description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w2-rels
     label: Map relationships and cardinality
-    plannedMinutes: 120
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: From table, To table, Cardinality, Join key, Integrity rule
@@ -148,7 +151,7 @@ tasks:
 deliverables:
   - id: w2-model-draft
     label: Entity-relationship draft
-    plannedMinutes: 120
+    plannedMinutes: 360
     helpText: |
       Create a diagram or table list with entities, keys, cardinalities, grain, and open modeling decisions.
       The deliverable is done when fact and dimension tables are distinguishable and every relationship has a reason.
@@ -172,7 +175,7 @@ goal: Apply naming, types, and conventions.
 tasks:
   - id: w3-naming
     label: Apply naming conventions
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Object, Current name, Proposed name, Rule, Exception
@@ -187,7 +190,7 @@ tasks:
         description: Use the page as an external reference for examples, review questions, or approach for this task; nothing to install.
   - id: w3-types
     label: Confirm types and nullability
-    plannedMinutes: 60
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: Column, Type, Nullable, Default, PII, Test
@@ -210,7 +213,7 @@ tasks:
 deliverables:
   - id: w3-standards
     label: Naming & type standards applied
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Store a checklist or PR note summarizing naming, types, nullability, PII decisions, and planned tests.
       The deliverable is done when reviewers can understand the conventions and comment on disputed exceptions directly.
@@ -234,7 +237,7 @@ goal: Review with owners and freeze v1.
 tasks:
   - id: w4-review
     label: Walkthrough with stakeholders
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Stakeholder, Concern, Decision, Owner, Due date
@@ -255,7 +258,7 @@ tasks:
         description: Use the examples to write clear acceptance criteria for reports, data, or changes.
   - id: w4-freeze
     label: Freeze model v1 and next steps
-    plannedMinutes: 120
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Follow-up, Reason, Owner, Priority, Target
@@ -272,7 +275,7 @@ tasks:
 deliverables:
   - id: w4-model-v1
     label: Model v1 approved
-    plannedMinutes: 120
+    plannedMinutes: 300
     helpText: |
       Keep the approved model artifact, review decisions, known limits, and follow-ups in one place.
       The deliverable is done when v1 can be built without renegotiating the business modeling decision.

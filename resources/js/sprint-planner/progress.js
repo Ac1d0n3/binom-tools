@@ -307,6 +307,16 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         };
     }
 
+    const overrideDeps = Object.prototype.hasOwnProperty.call(override, 'dependsOn')
+        ? override.dependsOn
+        : undefined;
+    // Empty override arrays must not wipe template chains (?? only skips null/undefined).
+    const dependsOn = normalizeSprintDependsOn(
+        (Array.isArray(overrideDeps) && overrideDeps.length > 0)
+            ? overrideDeps
+            : (sprint.dependsOn || []),
+    );
+
     return {
         id: sprint.id,
         number: Number(override.number ?? sprint.number ?? 0),
@@ -319,7 +329,7 @@ function mergeSprint(sprint, texts, override, instance, templateSlug, locale, cu
         stories,
         linkedStorySlugs,
         links: overrideLinks !== null ? overrideLinks : templateLinks,
-        dependsOn: normalizeSprintDependsOn(override.dependsOn ?? sprint.dependsOn),
+        dependsOn,
         dependencyWaiting: false,
         dependencyReason: '',
         flow,
@@ -396,7 +406,10 @@ function resolveTemplateItem({
     defaultAssigneeType = 'person',
 }) {
     const completed = completedList.includes(key) || itemOverride.status === 'completed';
-    const status = itemOverride.status || (completed ? 'completed' : 'open');
+    // Checkbox / completedTasks win over a stale override status (e.g. still "open" after heal).
+    const status = completed
+        ? 'completed'
+        : (itemOverride.status || 'open');
     const stories = normalizeStories(
         item.stories || item.linkedStorySlugs || item.linkedStories,
     );
@@ -458,7 +471,9 @@ function resolveTemplateItem({
 
 function resolveCustomItem(item, key, kind, sprintId, completedList, locale, templateSlug, allowedKeys) {
     const completed = completedList.includes(key) || item.status === 'completed';
-    const status = item.status || (completed ? 'completed' : 'open');
+    const status = completed
+        ? 'completed'
+        : (item.status || 'open');
     const stories = normalizeStories(item.stories || item.linkedStorySlugs);
     const dependsOn = resolveDependsOnKeys(item.dependsOn, {
         templateSlug,
@@ -644,7 +659,7 @@ function normalizeHelpLinks(links, locale) {
             continue;
         }
         const href = String(/** @type {any} */ (link).href || '').trim();
-        // External help URLs or in-app /tools/ — not playbook paths or bare slugs.
+        // External URLs or in-app /tools/ only — playbooks belong in stories/linkedStories.
         if (!isAllowedHelpHref(href)) {
             continue;
         }

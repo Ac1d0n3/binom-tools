@@ -113,6 +113,36 @@ class StoryAclAndPlanStoreTest extends TestCase
         $this->assertSame('plan_20260817_acid1', $visible[0]['id']);
     }
 
+    public function test_plan_is_visible_when_user_owns_an_assigned_task(): void
+    {
+        $store = new PlanStore(
+            new AccountsConfig,
+            new JsonFileStore,
+            new TeamRepository(new AccountsConfig, new JsonFileStore),
+        );
+        $owner = $this->user('user_owner', []);
+        $assignee = $this->user('user_assignee', []);
+
+        $store->save([
+            'id' => 'plan_20260719_task_assigned',
+            'templateSlug' => 'demo',
+            'viewerUserIds' => [],
+            'viewerTeamIds' => [],
+            'participantIds' => [],
+            'itemOverrides' => [
+                'demo:week-01:task:task_a' => [
+                    'assigneeType' => 'person',
+                    'assigneeId' => 'user_assignee',
+                ],
+            ],
+        ], $owner);
+
+        $visible = $store->listVisibleTo($assignee);
+        $this->assertCount(1, $visible);
+        $this->assertSame('plan_20260719_task_assigned', $visible[0]['id']);
+        $this->assertTrue($store->canAccess($assignee, $visible[0]));
+    }
+
     public function test_plan_history_is_recorded_and_can_be_restored(): void
     {
         $store = new PlanStore(

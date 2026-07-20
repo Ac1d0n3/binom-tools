@@ -112,7 +112,7 @@ export function renderStoryCard(story, onChanged) {
     const head = document.createElement('div');
     head.className = 'sp-story-card__head';
     if (story.required) {
-        head.appendChild(createRequiredIcon());
+        head.appendChild(createRequiredIcon({ read }));
     }
     const title = document.createElement('strong');
     title.className = 'sp-story-card__title';
@@ -121,7 +121,7 @@ export function renderStoryCard(story, onChanged) {
 
     const meta = document.createElement('p');
     meta.className = 'sp-story-card__meta';
-    meta.textContent = `${story.slug} · ${read ? spT('sp.story.read') : spT('sp.story.unread')}`;
+    meta.textContent = story.slug;
 
     const actions = document.createElement('div');
     actions.className = 'sp-story-card__actions';
@@ -131,7 +131,7 @@ export function renderStoryCard(story, onChanged) {
         href: resolveHelpHref(`/playbooks/${story.slug}`),
     }));
 
-    // Required stories must be read in the playbook itself — no manual check-off.
+    // Optional stories can be marked read in-panel; required ones only via opening the playbook.
     if (!read && !story.required) {
         actions.appendChild(createIconButton({
             icon: 'check',
@@ -149,14 +149,6 @@ export function renderStoryCard(story, onChanged) {
     }
 
     card.append(head, meta, actions);
-
-    if (!read && story.required) {
-        const hint = document.createElement('p');
-        hint.className = 'sp-story-card__hint';
-        hint.textContent = spT('sp.help.requiredMustOpen');
-        card.appendChild(hint);
-    }
-
     return card;
 }
 
@@ -167,6 +159,7 @@ export function renderStoryCard(story, onChanged) {
 function renderHelpLinkCard(link, planContext) {
     const locale = getLocale();
     const isTool = isAppToolHref(link.href);
+    const isPlaybook = /^\/(?:de\/|en\/)?playbooks\//i.test(String(link.href || ''));
     const isExternal = isExternalHelpHref(link.href);
     let href = resolveAllowedHelpHref(link.href, locale);
     if (href === '#') {
@@ -178,7 +171,7 @@ function renderHelpLinkCard(link, planContext) {
 
     const card = document.createElement('article');
     card.className = 'sp-help-link-card';
-    card.dataset.kind = isTool ? 'internal' : (isExternal ? 'external' : 'link');
+    card.dataset.kind = isTool || isPlaybook ? 'internal' : (isExternal ? 'external' : 'link');
 
     const head = document.createElement('div');
     head.className = 'sp-help-link-card__head';
@@ -190,17 +183,15 @@ function renderHelpLinkCard(link, planContext) {
     title.target = '_blank';
     title.rel = 'noopener noreferrer';
 
-    const badge = document.createElement('span');
-    badge.className = 'sp-help-link-card__badge';
-    badge.textContent = isTool ? spT('sp.help.internalLink') : spT('sp.help.externalLink');
-
-    head.append(title, badge);
+    head.append(title);
 
     const description = document.createElement('p');
     description.className = 'sp-help-link-card__description';
-    description.textContent = link.description
-        ? String(link.description)
-        : (isTool ? spT('sp.help.internalLinkFallback') : spT('sp.help.externalLinkFallback'));
+    if (link.description) {
+        description.textContent = String(link.description);
+    } else {
+        description.hidden = true;
+    }
 
     const actions = document.createElement('div');
     actions.className = 'sp-help-link-card__actions';

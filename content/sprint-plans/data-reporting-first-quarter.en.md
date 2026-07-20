@@ -5,6 +5,15 @@ slug: data-reporting-first-quarter
 description: Understand the data and reporting landscape and deliver the first sustainable improvement.
 duration: 13
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
+roadmap_family: data-reporting-year-roadmap
+roadmap_title: Data & Reporting Year Roadmap
+roadmap_track: data-reporting-base
+roadmap_track_title: General data and reporting landscape
+roadmap_phase: 1
+roadmap_option: Base Q1 general data and reporting landscape
 category: Data Platform
 author: Thomas Lindackers
 version: 1
@@ -42,7 +51,7 @@ stories:
 tasks:
   - id: align-management-expectations
     label: Align expectations with leadership
-    plannedMinutes: 30
+    plannedMinutes: 540
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -56,7 +65,7 @@ tasks:
         description: Read this as a thinking frame for mandate, problem, goal, stakeholders, and open decisions; nothing to install.
   - id: identify-stakeholders
     label: Identify relevant stakeholders
-    plannedMinutes: 30
+    plannedMinutes: 540
     assigneeType: team
     assigneeId: null
     tableColumns: Name, Role, Influence, Interest, Owner
@@ -76,7 +85,7 @@ tasks:
 deliverables:
   - id: stakeholder-list
     label: Create stakeholder list
-    plannedMinutes: 30
+    plannedMinutes: 360
     dependsOn: identify-stakeholders
     helpText: |
       Use the table from “Identify relevant stakeholders” as the working base.
@@ -84,7 +93,7 @@ deliverables:
       Add open access needs, blocking people, or missing operational owners as notes instead of hiding them in raw notes.
   - id: initial-mandate
     label: Initial mandate documented
-    plannedMinutes: 120
+    plannedMinutes: 420
     dependsOn: align-management-expectations, identify-stakeholders
     helpText: |
       Create the artifact “Initial mandate documented” with purpose, owner, date, source, and open decision.
@@ -119,7 +128,7 @@ stories:
 tasks:
   - id: inventory-reports
     label: Inventory existing reports
-    plannedMinutes: 120
+    plannedMinutes: 840
     assigneeType: person
     assigneeId: null
     tableColumns: Report, Owner, Tool, Cadence, Business question
@@ -137,7 +146,7 @@ tasks:
         description: Use the guidance as a checklist for Power BI roles, workspaces, governance, and rollout questions.
   - id: map-report-consumers
     label: Map report consumers and usage frequency
-    plannedMinutes: 120
+    plannedMinutes: 600
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -148,14 +157,14 @@ tasks:
 deliverables:
   - id: report-inventory
     label: Report inventory documented
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: inventory-reports
     helpText: |
       Create the artifact “Report inventory documented” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: gap-list
     label: Initial gap list created
-    plannedMinutes: 30
+    plannedMinutes: 180
     dependsOn: inventory-reports, map-report-consumers
     helpText: |
       Create the artifact “Initial gap list created” with purpose, owner, date, source, and open decision.
@@ -186,7 +195,7 @@ stories:
 tasks:
   - id: list-source-systems
     label: Capture source systems and owners
-    plannedMinutes: 30
+    plannedMinutes: 600
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Access, Consumed by
@@ -201,7 +210,7 @@ tasks:
         description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
   - id: document-interfaces
     label: Document interfaces and extraction paths
-    plannedMinutes: 120
+    plannedMinutes: 720
     dependsOn: list-source-systems
     assigneeType: team
     assigneeId: null
@@ -221,14 +230,14 @@ tasks:
 deliverables:
   - id: source-system-map
     label: Source system map created
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: list-source-systems
     helpText: |
       Create the artifact “Source system map created” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: owner-matrix
     label: Owner matrix created
-    plannedMinutes: 30
+    plannedMinutes: 240
     dependsOn: list-source-systems, document-interfaces
     helpText: |
       Create the artifact “Owner matrix created” with purpose, owner, date, source, and open decision.
@@ -259,7 +268,7 @@ stories:
 tasks:
   - id: trace-data-creation
     label: Trace data creation in core processes
-    plannedMinutes: 60
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -269,7 +278,7 @@ tasks:
     linkedStories: before-building-the-first-table, trash-iinout
   - id: capture-business-rules
     label: Document business rules and exceptions
-    plannedMinutes: 30
+    plannedMinutes: 480
     dependsOn: trace-data-creation
     assigneeType: team
     assigneeId: null
@@ -281,14 +290,14 @@ tasks:
 deliverables:
   - id: creation-notes
     label: Data creation notes
-    plannedMinutes: 60
+    plannedMinutes: 360
     dependsOn: trace-data-creation
     helpText: |
       Create the artifact “Data creation notes” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: rule-summary
     label: Business rule summary
-    plannedMinutes: 60
+    plannedMinutes: 300
     dependsOn: capture-business-rules
     helpText: |
       Create the artifact “Business rule summary” with purpose, owner, date, source, and open decision.
@@ -329,7 +338,7 @@ stories:
 tasks:
   - id: map-lineage-paths
     label: Sketch central lineage paths
-    plannedMinutes: 60
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -343,7 +352,7 @@ tasks:
         description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
   - id: identify-lineage-gaps
     label: Mark lineage gaps and blind spots
-    plannedMinutes: 30
+    plannedMinutes: 360
     dependsOn: map-lineage-paths
     assigneeType: team
     assigneeId: null
@@ -355,14 +364,14 @@ tasks:
 deliverables:
   - id: lineage-sketch
     label: Lineage sketch created
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: map-lineage-paths
     helpText: |
       Create the artifact “Lineage sketch created” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: lineage-gap-log
     label: Lineage gap log
-    plannedMinutes: 60
+    plannedMinutes: 300
     dependsOn: identify-lineage-gaps
     helpText: |
       Create the artifact “Lineage gap log” with purpose, owner, date, source, and open decision.
@@ -395,7 +404,7 @@ stories:
 tasks:
   - id: collect-kpis
     label: Collect KPIs from reports and stakeholder interviews
-    plannedMinutes: 120
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -412,7 +421,7 @@ tasks:
         description: Use the examples to design understandable KPI display and thresholds.
   - id: normalize-definitions
     label: Align definitions and calculation rules
-    plannedMinutes: 30
+    plannedMinutes: 600
     dependsOn: collect-kpis
     assigneeType: team
     assigneeId: null
@@ -424,14 +433,14 @@ tasks:
 deliverables:
   - id: kpi-inventory
     label: KPI inventory created
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: collect-kpis
     helpText: |
       Create the artifact “KPI inventory created” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: definition-backlog
     label: Definition backlog prioritized
-    plannedMinutes: 120
+    plannedMinutes: 240
     dependsOn: normalize-definitions
     helpText: |
       Create the artifact “Definition backlog prioritized” with purpose, owner, date, source, and open decision.
@@ -472,7 +481,7 @@ links:
 tasks:
   - id: assess-dq-issues
     label: Assess known DQ issues
-    plannedMinutes: 60
+    plannedMinutes: 600
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -492,7 +501,7 @@ tasks:
         description: Use the tool to prepare reusable dbt macros for data quality checks.
   - id: rate-risks
     label: Rate business and compliance risks
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: assess-dq-issues
     assigneeType: team
     assigneeId: null
@@ -512,14 +521,14 @@ tasks:
 deliverables:
   - id: dq-risk-register
     label: DQ and risk register
-    plannedMinutes: 60
+    plannedMinutes: 600
     dependsOn: assess-dq-issues, rate-risks
     helpText: |
       Create the artifact “DQ and risk register” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: hotspot-list
     label: Prioritized hotspot list
-    plannedMinutes: 30
+    plannedMinutes: 240
     dependsOn: rate-risks
     helpText: |
       Create the artifact “Prioritized hotspot list” with purpose, owner, date, source, and open decision.
@@ -563,7 +572,7 @@ stories:
 tasks:
   - id: review-architecture
     label: Review current architecture and tools
-    plannedMinutes: 180
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -580,7 +589,7 @@ tasks:
         description: Use the explanation as a reference for Bronze/Silver/Gold zones and check whether they are really needed here.
   - id: document-bottlenecks
     label: Document bottlenecks and technical debt
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: review-architecture
     assigneeType: team
     assigneeId: null
@@ -592,14 +601,14 @@ tasks:
 deliverables:
   - id: architecture-notes
     label: Architecture diagnosis notes
-    plannedMinutes: 180
+    plannedMinutes: 480
     dependsOn: review-architecture
     helpText: |
       Create the artifact “Architecture diagnosis notes” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: bottleneck-list
     label: Bottleneck list
-    plannedMinutes: 30
+    plannedMinutes: 240
     dependsOn: document-bottlenecks
     helpText: |
       Create the artifact “Bottleneck list” with purpose, owner, date, source, and open decision.
@@ -630,7 +639,7 @@ stories:
 tasks:
   - id: score-initiatives
     label: Score initiatives by impact and effort
-    plannedMinutes: 60
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -647,7 +656,7 @@ tasks:
         description: Use the examples to align impact-vs-effort scoring with stakeholders.
   - id: agree-priorities
     label: Agree priorities with stakeholders
-    plannedMinutes: 120
+    plannedMinutes: 600
     dependsOn: score-initiatives
     assigneeType: team
     assigneeId: null
@@ -656,18 +665,29 @@ tasks:
       Confirm who can unblock people and systems during the pilot weeks.
       Watch for: silent disagreement that resurfaces after build starts.
     linkedStories: eight-pillars, data-ownership-stewardship
+  - id: select-primary-app
+    label: Commit to the most important app
+    plannedMinutes: 360
+    dependsOn: agree-priorities
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Make a binding decision which app becomes the first A-Z prototype. Justify it with business value, data availability, sponsor strength, and how reusable the pattern is.
+      State explicitly which good candidates must wait and why.
+      Watch for: starting multiple apps before one pattern has been proven cleanly from source to user.
+    linkedStories: one-app, bridge-solution, eight-pillars
 deliverables:
   - id: priority-matrix
     label: Prioritization matrix
-    plannedMinutes: 120
+    plannedMinutes: 420
     dependsOn: score-initiatives
     helpText: |
       Create the artifact “Prioritization matrix” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: quarter-backlog
     label: Quarter backlog agreed
-    plannedMinutes: 180
-    dependsOn: agree-priorities, priority-matrix
+    plannedMinutes: 420
+    dependsOn: select-primary-app, priority-matrix
     helpText: |
       Create the artifact “Quarter backlog agreed” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
@@ -701,7 +721,7 @@ stories:
 tasks:
   - id: draft-target-picture
     label: Draft target picture and principles
-    plannedMinutes: 60
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -711,7 +731,7 @@ tasks:
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role, transformation-options
   - id: validate-target-picture
     label: Validate target picture with stakeholders
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: draft-target-picture
     assigneeType: team
     assigneeId: null
@@ -720,17 +740,28 @@ tasks:
       Capture objections as backlog items, not as reasons to freeze.
       Watch for: approval theater without named owners for the target state.
     linkedStories: eight-pillars, data-ownership-stewardship
+  - id: slice-az-prototype
+    label: Slice the A-Z prototype
+    plannedMinutes: 480
+    dependsOn: validate-target-picture
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Cut the first prototype small enough to run from source through model/rules into a usable app view. Define data scope, KPI question, user group, acceptance signal, and clear non-goals.
+      Plan only the first reliable end-to-end slice, not the final platform.
+      Watch for: scope that sounds like an MVP to the business but technically contains three products.
+    linkedStories: one-app, building-from-scratch, define-kpi, bridge-solution
 deliverables:
   - id: target-picture
     label: Target picture documented
-    plannedMinutes: 120
-    dependsOn: draft-target-picture, validate-target-picture
+    plannedMinutes: 480
+    dependsOn: draft-target-picture, validate-target-picture, slice-az-prototype
     helpText: |
       Create the artifact “Target picture documented” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: guiding-principles
     label: Guiding principles defined
-    plannedMinutes: 60
+    plannedMinutes: 240
     dependsOn: draft-target-picture
     helpText: |
       Create the artifact “Guiding principles defined” with purpose, owner, date, source, and open decision.
@@ -772,7 +803,7 @@ links:
 tasks:
   - id: build-pilot
     label: Build the pilot
-    plannedMinutes: 240
+    plannedMinutes: 1320
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -795,7 +826,7 @@ tasks:
         description: Use the docs to turn quality assumptions into implementable dbt tests.
   - id: track-pilot-blockers
     label: Manage blockers and dependencies
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -806,14 +837,14 @@ tasks:
 deliverables:
   - id: pilot-increment
     label: Pilot increment ready
-    plannedMinutes: 30
+    plannedMinutes: 360
     dependsOn: build-pilot
     helpText: |
       Create the artifact “Pilot increment ready” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: pilot-changelog
     label: Pilot change log
-    plannedMinutes: 60
+    plannedMinutes: 120
     dependsOn: build-pilot, track-pilot-blockers
     helpText: |
       Create the artifact “Pilot change log” with purpose, owner, date, source, and open decision.
@@ -844,7 +875,7 @@ stories:
 tasks:
   - id: run-pilot-review
     label: Review pilot with users
-    plannedMinutes: 60
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -854,7 +885,7 @@ tasks:
     linkedStories: bi-tools, define-kpi
   - id: measure-pilot-outcomes
     label: Measure outcomes and quality
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: run-pilot-review
     assigneeType: team
     assigneeId: null
@@ -874,14 +905,14 @@ tasks:
 deliverables:
   - id: validation-report
     label: Validation report
-    plannedMinutes: 120
+    plannedMinutes: 600
     dependsOn: run-pilot-review, measure-pilot-outcomes
     helpText: |
       Create the artifact “Validation report” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: go-nogo-recommendation
     label: Go/No-Go recommendation
-    plannedMinutes: 60
+    plannedMinutes: 300
     dependsOn: validation-report
     helpText: |
       Create the artifact “Go/No-Go recommendation” with purpose, owner, date, source, and open decision.
@@ -914,7 +945,7 @@ stories:
 tasks:
   - id: summarize-quarter
     label: Summarize quarter results
-    plannedMinutes: 180
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -924,27 +955,49 @@ tasks:
     linkedStories: eight-pillars, dsdr-governance
   - id: plan-next-quarter
     label: Roughly plan the next quarter
-    plannedMinutes: 180
+    plannedMinutes: 240
     dependsOn: summarize-quarter
     assigneeType: team
     assigneeId: null
     helpText: |
-      Propose the next 1–3 initiatives based on remaining hotspots and the validated target picture.
-      Reconfirm owners, capacity, and what must stop to make room.
+      Summarize the Q2 direction from the app decision, prototype slice, and validation results.
+      Briefly reconfirm owners, capacity, and what must stop to make room.
       Watch for: restarting discovery from zero instead of extending proven patterns.
     linkedStories: bridge-solution, modernizing-an-existing-warehouse, operating-and-governing-the-platform
+  - id: create-q2-prototype-backlog
+    label: Create Q2 follow-up backlog
+    plannedMinutes: 360
+    dependsOn: summarize-quarter
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Derive an executable Q2 backlog from findings, target picture, app decision, and prototype slice. Cut epics and tasks so implementation, review, data quality, and acceptance stay visible.
+      Mark chain tasks, parallel work packages, business dependencies, and decisions needed before sprint start.
+      Watch for: a wishlist backlog without order, definition of done, or owners.
+    linkedStories: bridge-solution, building-from-scratch, operating-and-governing-the-platform
+  - id: check-prototype-readiness
+    label: Check technical prototype readiness
+    plannedMinutes: 360
+    dependsOn: create-q2-prototype-backlog
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Check access, test data, target system, development environment, review path, privacy points, and business contacts for the first A-Z prototype.
+      Document missing approvals as Q2 start risks with owner and latest decision date.
+      Watch for: starting Q2 with a polished roadmap but no working access to the relevant source.
+    linkedStories: access-security-governance, dq-test-kpis, building-from-scratch
 deliverables:
   - id: quarter-report
     label: Quarter report
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: summarize-quarter
     helpText: |
       Create the artifact “Quarter report” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.
   - id: next-quarter-outline
     label: Outline for the next quarter
-    plannedMinutes: 180
-    dependsOn: plan-next-quarter, quarter-report
+    plannedMinutes: 360
+    dependsOn: plan-next-quarter, create-q2-prototype-backlog, check-prototype-readiness, quarter-report
     helpText: |
       Create the artifact “Outline for the next quarter” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.

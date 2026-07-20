@@ -6,6 +6,7 @@ import {
     usesSessionDemoStore,
 } from './accounts-bridge.js';
 import { ensureDefaultCatalog } from './defaults.js';
+import { inferStartedAtFromPlanId } from './ids.js';
 import {
     normalizeAvatarIcon,
     normalizeColorToken,
@@ -268,12 +269,13 @@ function normalizeInstances(instances) {
             continue;
         }
         const item = /** @type {Record<string, unknown>} */ (value);
+        const planId = String(item.id || id);
         out[id] = {
-            id: String(item.id || id),
+            id: planId,
             templateSlug: String(item.templateSlug || ''),
             templateVersion: Number(item.templateVersion) || 1,
             translations: isPlainObject(item.translations) ? /** @type {any} */ (item.translations) : {},
-            startedAt: String(item.startedAt || ''),
+            startedAt: String(item.startedAt || '').trim() || inferStartedAtFromPlanId(planId),
             status: /** @type {any} */ (['active', 'completed', 'archived'].includes(String(item.status))
                 ? item.status
                 : 'active'),
@@ -406,6 +408,9 @@ function loadAccountsWorkspace() {
         ),
     );
 
+    /** @type {string[]} */
+    const hollowServerHeals = [];
+
     // Prefer the local cache when it is as new or newer than the page bootstrap.
     // Otherwise claim/assign updates vanish on the next render (bootstrap stays stale until reload).
     for (const [id, local] of Object.entries(localWorkspace.instances || {})) {
@@ -416,6 +421,12 @@ function loadAccountsWorkspace() {
         if (!server) {
             // Plan created this session and not yet in the HTML bootstrap.
             serverInstances[id] = local;
+            continue;
+        }
+        // Hollow server shell must never win over a local plan that still has identity/progress.
+        if (isHollowPlan(server) && !isHollowPlan(local)) {
+            serverInstances[id] = local;
+            hollowServerHeals.push(String(id));
             continue;
         }
         const localUpdated = String(local.updatedAt || '');
@@ -448,6 +459,7 @@ function loadAccountsWorkspace() {
             server.teamId = null;
         }
         mergeMissingAssignmentsFromLocal(server, local);
+        mergeProgressBagsFromLocal(server, local);
     }
 
     // Keep local-only demo (ephemeral) plans alongside server plans.
@@ -499,7 +511,7 @@ function loadAccountsWorkspace() {
         }
     }
 
-    return {
+    const workspaceRoot = {
         schemaVersion: SCHEMA_VERSION,
         workspace: {
             ...base.workspace,
@@ -512,6 +524,74 @@ function loadAccountsWorkspace() {
         teams: catalog.teams,
         instances: { ...serverInstances, ...ephemeralLocal },
     };
+
+    // Push healed local plans back so the server stops serving hollow shells.
+    if (hollowServerHeals.length > 0 && typeof queueMicrotask === 'function') {
+        queueMicrotask(() => {
+            saveWorkspace(workspaceRoot, {
+                dirtyPlanIds: hollowServerHeals,
+                historyByPlanId: Object.fromEntries(
+                    hollowServerHeals.map((id) => [id, {
+                        action: 'heal',
+                        summary: 'Restored full local plan over hollow server shell',
+                    }]),
+                ),
+            });
+        });
+    }
+
+    return workspaceRoot;
+}
+
+/**
+ * @param {SpPlanInstance|Record<string, unknown>|null|undefined} plan
+ */
+function isHollowPlan(plan) {
+    if (!plan || typeof plan !== 'object') {
+        return true;
+    }
+    const slug = String(plan.templateSlug || '').trim();
+    const hasSnap = isPlainObject(plan.templateSnapshot) && Object.keys(plan.templateSnapshot).length > 0;
+    if (slug || hasSnap) {
+        return false;
+    }
+    const hasProgress = (Array.isArray(plan.completedTasks) && plan.completedTasks.length > 0)
+        || (Array.isArray(plan.completedDeliverables) && plan.completedDeliverables.length > 0)
+        || (isPlainObject(plan.itemOverrides) && Object.keys(plan.itemOverrides).length > 0)
+        || (isPlainObject(plan.fieldValues) && Object.keys(plan.fieldValues).length > 0)
+        || String(plan.startedAt || '').trim() !== '';
+    return !hasProgress;
+}
+
+function mergeProgressBagsFromLocal(server, local) {
+    for (const key of [
+        'completedTasks',
+        'completedDeliverables',
+        'removedItemKeys',
+    ]) {
+        const next = server[key];
+        const prev = local[key];
+        if (Array.isArray(prev) && prev.length && (!Array.isArray(next) || next.length === 0)) {
+            server[key] = [...prev];
+        }
+    }
+    for (const key of [
+        'fieldValues',
+        'sprintNotes',
+        'customTasks',
+        'customDeliverables',
+        'sprintOverrides',
+        'itemOverrides',
+    ]) {
+        const next = server[key];
+        const prev = local[key];
+        if (isPlainObject(prev) && Object.keys(prev).length > 0
+            && (!isPlainObject(next) || Object.keys(next).length === 0)) {
+            server[key] = structuredClone
+                ? structuredClone(prev)
+                : JSON.parse(JSON.stringify(prev));
+        }
+    }
 }
 
 function hasStoredAssignee(value) {

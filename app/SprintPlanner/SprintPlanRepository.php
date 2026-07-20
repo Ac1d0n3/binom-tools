@@ -144,6 +144,9 @@ final class SprintPlanRepository
                 'title' => (string) ($meta['title'] ?? ''),
                 'description' => (string) ($meta['description'] ?? ''),
                 'category' => $meta['category'] ?? null,
+                'roadmapTitle' => $this->normalizeOptionalString($meta['roadmap_title'] ?? null),
+                'roadmapTrackTitle' => $this->normalizeOptionalString($meta['roadmap_track_title'] ?? null),
+                'roadmapOption' => $this->normalizeOptionalString($meta['roadmap_option'] ?? null),
                 'sprints' => $this->localizeSprintTexts($fence['sprints']),
             ];
         }
@@ -160,6 +163,16 @@ final class SprintPlanRepository
                 'unit' => (string) ($metaByLocale['en']['unit'] ?? $metaByLocale['de']['unit'] ?? 'week'),
                 'category' => $metaByLocale['en']['category'] ?? $metaByLocale['de']['category'] ?? null,
                 'author' => $metaByLocale['en']['author'] ?? $metaByLocale['de']['author'] ?? null,
+                'recommendedPeopleMin' => $this->normalizePeopleCount($metaByLocale['en']['recommended_people_min'] ?? $metaByLocale['de']['recommended_people_min'] ?? null),
+                'recommendedPeopleMax' => $this->normalizePeopleCount($metaByLocale['en']['recommended_people_max'] ?? $metaByLocale['de']['recommended_people_max'] ?? null),
+                'capacityHoursPerPersonWeek' => $this->normalizeCapacityHours($metaByLocale['en']['capacity_hours_per_person_week'] ?? $metaByLocale['de']['capacity_hours_per_person_week'] ?? null),
+                'roadmapFamily' => $this->normalizeOptionalString($metaByLocale['en']['roadmap_family'] ?? $metaByLocale['de']['roadmap_family'] ?? null),
+                'roadmapTitle' => $this->normalizeOptionalString($metaByLocale['en']['roadmap_title'] ?? $metaByLocale['de']['roadmap_title'] ?? null),
+                'roadmapTrack' => $this->normalizeOptionalString($metaByLocale['en']['roadmap_track'] ?? $metaByLocale['de']['roadmap_track'] ?? null),
+                'roadmapTrackTitle' => $this->normalizeOptionalString($metaByLocale['en']['roadmap_track_title'] ?? $metaByLocale['de']['roadmap_track_title'] ?? null),
+                'roadmapPhase' => $this->normalizeOptionalInteger($metaByLocale['en']['roadmap_phase'] ?? $metaByLocale['de']['roadmap_phase'] ?? null),
+                'roadmapOption' => $this->normalizeOptionalString($metaByLocale['en']['roadmap_option'] ?? $metaByLocale['de']['roadmap_option'] ?? null),
+                'roadmapFollows' => $this->normalizeStructuralStringList($metaByLocale['en']['roadmap_follows'] ?? $metaByLocale['de']['roadmap_follows'] ?? []),
                 'tags' => $metaByLocale['en']['tags'] ?? $metaByLocale['de']['tags'] ?? [],
                 'locales' => $locales,
                 'sprints' => $this->mergeStructuralSprints($sprintsByLocale),
@@ -186,6 +199,16 @@ final class SprintPlanRepository
             'unit' => (string) ($enMeta['unit'] ?? 'week'),
             'category' => $enMeta['category'] ?? null,
             'author' => $enMeta['author'] ?? null,
+            'recommendedPeopleMin' => $this->normalizePeopleCount($enMeta['recommended_people_min'] ?? null),
+            'recommendedPeopleMax' => $this->normalizePeopleCount($enMeta['recommended_people_max'] ?? null),
+            'capacityHoursPerPersonWeek' => $this->normalizeCapacityHours($enMeta['capacity_hours_per_person_week'] ?? null),
+            'roadmapFamily' => $this->normalizeOptionalString($enMeta['roadmap_family'] ?? null),
+            'roadmapTitle' => $this->normalizeOptionalString($enMeta['roadmap_title'] ?? null),
+            'roadmapTrack' => $this->normalizeOptionalString($enMeta['roadmap_track'] ?? null),
+            'roadmapTrackTitle' => $this->normalizeOptionalString($enMeta['roadmap_track_title'] ?? null),
+            'roadmapPhase' => $this->normalizeOptionalInteger($enMeta['roadmap_phase'] ?? null),
+            'roadmapOption' => $this->normalizeOptionalString($enMeta['roadmap_option'] ?? null),
+            'roadmapFollows' => $this->normalizeStructuralStringList($enMeta['roadmap_follows'] ?? []),
             'tags' => is_array($enMeta['tags'] ?? null) ? $enMeta['tags'] : [],
             'locales' => $locales,
             'sprints' => $this->mergeStructuralSprints($sprintsByLocale),
@@ -265,6 +288,46 @@ final class SprintPlanRepository
         $minutes = (int) round((float) $value);
 
         return $minutes < 0 ? null : $minutes;
+    }
+
+    private function normalizePeopleCount(mixed $value): ?int
+    {
+        if ($value === null || $value === '' || ! is_numeric($value)) {
+            return null;
+        }
+        $people = (int) round((float) $value);
+
+        return $people > 0 ? $people : null;
+    }
+
+    private function normalizeCapacityHours(mixed $value): int
+    {
+        if ($value === null || $value === '' || ! is_numeric($value)) {
+            return 40;
+        }
+        $hours = (int) round((float) $value);
+
+        return $hours > 0 ? $hours : 40;
+    }
+
+    private function normalizeOptionalString(mixed $value): ?string
+    {
+        if (! is_scalar($value)) {
+            return null;
+        }
+
+        $normalized = trim((string) $value);
+
+        return $normalized === '' ? null : $normalized;
+    }
+
+    private function normalizeOptionalInteger(mixed $value): ?int
+    {
+        if ($value === null || $value === '' || ! is_numeric($value)) {
+            return null;
+        }
+
+        return (int) round((float) $value);
     }
 
     /**

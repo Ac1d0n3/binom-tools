@@ -108,6 +108,117 @@ export function formatMinutesLabel(minutes, spT) {
 }
 
 /**
+ * @param {Array<{ tasks?: object[], deliverables?: object[] }>} sprints
+ * @returns {number}
+ */
+export function sumPlannedMinutes(sprints) {
+    let planned = 0;
+    for (const sprint of sprints || []) {
+        for (const kind of /** @type {const} */ (['tasks', 'deliverables'])) {
+            for (const item of sprint[kind] || []) {
+                const minutes = normalizeMinutes(item.plannedMinutes);
+                if (minutes !== null) {
+                    planned += minutes;
+                }
+            }
+        }
+    }
+
+    return planned;
+}
+
+/**
+ * @param {number} hours
+ * @returns {string}
+ */
+export function formatHoursShort(hours) {
+    if (!Number.isFinite(hours)) {
+        return '—';
+    }
+    if (Number.isInteger(hours)) {
+        return String(hours);
+    }
+    return String(Math.round(hours * 10) / 10);
+}
+
+/**
+ * @param {{ recommendedPeopleMin?: number|null, recommendedPeopleMax?: number|null, capacityHoursPerPersonWeek?: number|null }} source
+ * @returns {{ min: number|null, max: number|null, capacity: number }}
+ */
+export function normalizeTeamCapacity(source) {
+    const min = normalizeMinutes(source?.recommendedPeopleMin);
+    const max = normalizeMinutes(source?.recommendedPeopleMax);
+    const capacity = normalizeMinutes(source?.capacityHoursPerPersonWeek) || 40;
+    if (min === null && max === null) {
+        return { min: null, max: null, capacity };
+    }
+    const safeMin = Math.max(1, min ?? max ?? 1);
+    const safeMax = Math.max(safeMin, max ?? safeMin);
+
+    return { min: safeMin, max: safeMax, capacity };
+}
+
+/**
+ * @param {Array<{ tasks?: object[], deliverables?: object[] }>} sprints
+ * @param {{ recommendedPeopleMin?: number|null, recommendedPeopleMax?: number|null, capacityHoursPerPersonWeek?: number|null }} source
+ * @param {(key: string, vars?: Record<string, string|number>) => string} spT
+ * @returns {string[]}
+ */
+export function effortFacts(sprints, source, spT) {
+    const plannedMinutes = sumPlannedMinutes(sprints);
+    if (plannedMinutes <= 0) {
+        return [];
+    }
+    const hours = plannedMinutes / 60;
+    const facts = [
+        spT('sp.card.personHours', { count: formatHoursShort(hours) }),
+    ];
+    const team = normalizeTeamCapacity(source);
+    if (team.min !== null && team.max !== null) {
+        const duration = normalizeMinutes(source?.duration);
+        const basePeople = team.min;
+        const baseCapacity = duration && duration > 0
+            ? duration * basePeople * team.capacity
+            : hours;
+        const utilization = baseCapacity > 0 ? Math.min(1, hours / baseCapacity) : 1;
+        const bufferPct = Math.max(0, Math.round((1 - utilization) * 1000) / 10);
+        const weeksForPeople = (people) => {
+            if (duration && duration > 0 && basePeople > 0) {
+                return (duration * basePeople) / people;
+            }
+            return utilization > 0 ? hours / (people * team.capacity * utilization) : hours / (people * team.capacity);
+        };
+
+        facts.push(spT('sp.card.planBasis', {
+            weeks: duration || formatHoursShort(weeksForPeople(basePeople)),
+            people: basePeople,
+            hours: team.capacity,
+        }));
+        if (bufferPct > 0) {
+            facts.push(spT('sp.card.buffer', { percent: formatHoursShort(bufferPct) }));
+        }
+        if (team.max > basePeople) {
+            facts.push(spT('sp.card.partTimeSplit', {
+                people: team.max,
+                percent: Math.round((basePeople / team.max) * 100),
+            }));
+            facts.push(spT('sp.card.fullTimeWeeks', {
+                people: team.max,
+                weeks: formatHoursShort(weeksForPeople(team.max)),
+            }));
+        } else {
+            facts.push(spT('sp.card.recommendedPeopleOne', { count: basePeople }));
+        }
+        facts.push(spT('sp.card.fullTimeWeeks', {
+            people: 3,
+            weeks: formatHoursShort(weeksForPeople(3)),
+        }));
+    }
+
+    return facts;
+}
+
+/**
  * Build `<option>` values for preset + custom select.
  *
  * @param {number|null|undefined} current

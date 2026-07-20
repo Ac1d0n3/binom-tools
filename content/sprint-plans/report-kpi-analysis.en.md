@@ -5,6 +5,9 @@ slug: report-kpi-analysis
 description: From decision questions to an accepted report: KPIs, sources, pilot, and handoff.
 duration: 4
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
 category: Reporting
 author: Thomas Lindackers
 version: 1
@@ -32,7 +35,7 @@ stories:
 tasks:
   - id: w1-questions
     label: Write decision questions
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Decision question, Audience, Action, KPI candidate, Success signal
@@ -61,7 +64,7 @@ tasks:
         description: Use the docs as a reference for report structure, pages, and Power BI implementation.
   - id: w1-audience
     label: Map consumers and cadence
-    plannedMinutes: 60
+    plannedMinutes: 180
     assigneeType: person
     assigneeId: null
     tableColumns: Consumer group, Decision, Cadence, Tool, Access need
@@ -74,7 +77,7 @@ tasks:
 deliverables:
   - id: w1-brief
     label: Analysis brief
-    plannedMinutes: 120
+    plannedMinutes: 180
     helpText: |
       Create a short brief with decision questions, audiences, cadence, success criteria, and explicit non-goals.
       The deliverable is done when sponsor and implementer can give the same answer to "Why are we building this?"
@@ -102,7 +105,7 @@ goal: Define KPIs and definitions.
 tasks:
   - id: w2-kpis
     label: Select core KPIs
-    plannedMinutes: 120
+    plannedMinutes: 300
     assigneeType: person
     assigneeId: null
     tableColumns: KPI, Formula, Grain, Owner, Refresh, Decision use
@@ -123,7 +126,7 @@ tasks:
         description: Use the examples to design understandable KPI display and thresholds.
   - id: w2-defs
     label: Document metric definitions
-    plannedMinutes: 120
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Metric, Numerator, Denominator, Filters, Exclusions, Owner
@@ -136,7 +139,7 @@ tasks:
 deliverables:
   - id: w2-kpi-catalog
     label: KPI catalog draft
-    plannedMinutes: 120
+    plannedMinutes: 240
     helpText: |
       Create a KPI catalog with formula, grain, owner, source, refresh, business acceptance, and open questions.
       The deliverable is done when every core metric has an accountable person and a testable definition.
@@ -164,7 +167,7 @@ goal: Connect sources and mock the report.
 tasks:
   - id: w3-sources
     label: Validate source fields
-    plannedMinutes: 60
+    plannedMinutes: 360
     assigneeType: person
     assigneeId: null
     tableColumns: Source field, Business meaning, Quality check, Owner, Issue
@@ -185,7 +188,7 @@ tasks:
         description: Use the docs as a reference for report structure, pages, and Power BI implementation.
   - id: w3-mock
     label: Build mock / pilot view
-    plannedMinutes: 240
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -201,7 +204,7 @@ tasks:
 deliverables:
   - id: w3-pilot
     label: Pilot view or mock
-    plannedMinutes: 60
+    plannedMinutes: 180
     helpText: |
       Store a link or screenshot of the pilot together with feedback notes, open data questions, and design decisions.
       The deliverable is done when the audience can say whether the direction, metrics, and detail level fit.
@@ -229,7 +232,7 @@ goal: Accept the report and hand off.
 tasks:
   - id: w4-accept
     label: Run acceptance checklist
-    plannedMinutes: 30
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Check, Result, Evidence, Owner, Follow-up
@@ -246,7 +249,7 @@ tasks:
         description: Use the examples to write clear acceptance criteria for reports, data, or changes.
   - id: w4-handoff
     label: Handoff runbook
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: person
     assigneeId: null
     tableColumns: Topic, Owner, Procedure, Frequency, Escalation
@@ -262,7 +265,7 @@ tasks:
 deliverables:
   - id: w4-accepted
     label: Report accepted
-    plannedMinutes: 120
+    plannedMinutes: 180
     helpText: |
       Keep the acceptance checklist, runbook link, known limits, and follow-up work in one place.
       The deliverable is done when business acceptance, operating responsibility, and next review date are documented.

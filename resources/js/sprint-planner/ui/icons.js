@@ -71,15 +71,15 @@ export function createIconButton(opts) {
 }
 
 /**
- * Required-story marker (red icon).
+ * Required-story marker (calm text badge — not an alert icon).
+ * @param {{read?: boolean}} [opts]
  * @returns {HTMLSpanElement}
  */
-export function createRequiredIcon() {
+export function createRequiredIcon(opts = {}) {
     const span = document.createElement('span');
-    span.className = 'sp-required-icon';
-    span.innerHTML = iconSvg('required');
-    span.title = spT('sp.help.required');
-    span.setAttribute('aria-label', spT('sp.help.required'));
-    span.setAttribute('role', 'img');
+    const read = Boolean(opts.read);
+    span.className = read ? 'sp-required-badge sp-required-badge--done' : 'sp-required-badge';
+    span.textContent = read ? spT('sp.story.read') : spT('sp.help.required');
+    span.title = read ? spT('sp.story.read') : spT('sp.help.required');
     return span;
 }

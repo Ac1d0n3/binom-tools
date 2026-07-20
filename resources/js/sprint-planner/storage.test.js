@@ -269,6 +269,37 @@ describe('progress', () => {
         expect(calculateOverallProgress(sprints)).toEqual({ done: 1, total: 3, percent: 33 });
     });
 
+    it('shows status completed when completedTasks wins over stale open override', () => {
+        const key = statusKey('demo', 'week-01', 'task', 't1');
+        const instance = {
+            id: 'plan_x',
+            templateSlug: 'demo',
+            templateVersion: 1,
+            translations: {},
+            startedAt: '2026-01-01',
+            status: 'active',
+            teamIds: [],
+            participantIds: [],
+            completedTasks: [key],
+            completedDeliverables: [],
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            itemOverrides: {
+                [key]: { status: 'open', assigneeType: 'person', assigneeId: 'person_1' },
+            },
+            archived: false,
+            createdAt: '',
+            updatedAt: '',
+        };
+        const sprints = resolveSprints(template, instance, 'en');
+        expect(sprints[0].tasks[0].completed).toBe(true);
+        expect(sprints[0].tasks[0].status).toBe('completed');
+    });
+
     it('keeps progress keys stable across locale switch', () => {
         const instance = {
             id: 'plan_x',
@@ -976,6 +1007,103 @@ describe('instance-manager', () => {
         expect(all.claimed).toBe(1);
         expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
             .toBe('person_thomas_a');
+    });
+
+    it('prefers full local plan over hollow newer server shell', () => {
+        const accountUser = { id: 'user_acidone', displayName: 'Acidone', email: 'a@x.test' };
+        const planId = 'plan_hollow_heal_1';
+        const hollowServer = {
+            id: planId,
+            templateSlug: '',
+            templateVersion: 1,
+            translations: {},
+            startedAt: '',
+            status: 'active',
+            teamIds: ['team_q'],
+            participantIds: [],
+            completedTasks: [],
+            completedDeliverables: [],
+            fieldValues: {},
+            sprintNotes: {},
+            customTasks: {},
+            customDeliverables: {},
+            customSprints: [],
+            sprintOverrides: {},
+            itemOverrides: {},
+            templateSnapshot: null,
+            ownerUserId: 'user_acidone',
+            viewerUserIds: [],
+            viewerTeamIds: ['team_q'],
+            linkedStorySlugs: [],
+            ephemeral: false,
+            archived: false,
+            createdAt: '2026-07-01T00:00:00.000Z',
+            updatedAt: '2026-07-20T12:00:00.000Z',
+        };
+        const localFull = {
+            ...hollowServer,
+            templateSlug: 'data-reporting-first-quarter',
+            startedAt: '2026-08-17',
+            updatedAt: '2026-07-19T10:00:00.000Z',
+            itemOverrides: {
+                'data-reporting-first-quarter:week-01:task:t1': {
+                    assigneeType: 'person',
+                    assigneeId: 'user_acidone',
+                },
+            },
+            completedTasks: ['data-reporting-first-quarter:week-01:task:t1'],
+            templateSnapshot: { slug: 'data-reporting-first-quarter', sprints: [{ id: 'week-01' }] },
+            translations: {
+                de: { title: 'FQ', description: '' },
+                en: { title: 'FQ', description: '' },
+            },
+        };
+
+        const root = {
+            dataset: {
+                accountsEnabled: '1',
+                accountUser: JSON.stringify(accountUser),
+                plansApiUrl: '/api/plans',
+                storiesApiUrl: '',
+                loginUrl: '/login',
+                accountPeople: '[]',
+                accountTeams: '[]',
+                serverPlans: JSON.stringify([hollowServer]),
+                readSlugs: '[]',
+            },
+        };
+        vi.stubGlobal('document', {
+            getElementById: (id) => (id === 'sp-app' ? root : null),
+            querySelector: () => null,
+        });
+        const fetchMock = vi.fn(async () => ({
+            ok: true,
+            json: async () => ({ plan: localFull }),
+        }));
+        vi.stubGlobal('fetch', fetchMock);
+
+        localStorage.setItem(WORKSPACE_KEY, JSON.stringify(normalizeWorkspace({
+            schemaVersion: 1,
+            workspace: {
+                id: 'workspace_default',
+                name: 'Shared',
+                locale: 'en',
+                activePersonId: 'user_acidone',
+                defaultTeamId: null,
+            },
+            people: {},
+            teams: {},
+            instances: { [planId]: localFull },
+        })));
+
+        const loaded = loadWorkspace();
+        expect(loaded.ok).toBe(true);
+        const plan = loaded.data.instances[planId];
+        expect(plan.templateSlug).toBe('data-reporting-first-quarter');
+        expect(plan.startedAt).toBe('2026-08-17');
+        expect(plan.completedTasks).toEqual(['data-reporting-first-quarter:week-01:task:t1']);
+        expect(plan.itemOverrides['data-reporting-first-quarter:week-01:task:t1'].assigneeId)
+            .toBe('user_acidone');
     });
 
     it('keeps claim overrides across reload in accounts mode (local newer than bootstrap)', () => {

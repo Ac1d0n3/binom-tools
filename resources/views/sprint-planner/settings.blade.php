@@ -48,6 +48,15 @@
             <p class="tools-page-lead" id="sp-settings-plan-title"></p>
 
             <section class="sp-section">
+                <h2 class="sp-section__title" data-i18n="sp.field.startDate">Start date</h2>
+                <label class="sp-field">
+                    <span data-i18n="sp.field.startDate">Start date</span>
+                    <input type="date" id="sp-settings-start-date" class="tools-input" required>
+                </label>
+                <button type="button" class="tools-btn tools-btn--primary" id="sp-settings-start-date-save" data-i18n="sp.action.save">Save</button>
+            </section>
+
+            <section class="sp-section">
                 <h2 class="sp-section__title" data-i18n="sp.field.teams">Teams</h2>
                 <fieldset class="sp-field">
                     <legend class="visually-hidden" data-i18n="sp.field.teams">Teams</legend>

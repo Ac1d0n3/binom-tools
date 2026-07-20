@@ -5,6 +5,15 @@ slug: data-reporting-first-quarter
 description: Die Daten- und Reporting-Landschaft verstehen und die erste nachhaltige Verbesserung umsetzen.
 duration: 13
 unit: week
+recommended_people_min: 1
+recommended_people_max: 2
+capacity_hours_per_person_week: 40
+roadmap_family: data-reporting-year-roadmap
+roadmap_title: Data & Reporting Jahres-Roadmap
+roadmap_track: data-reporting-base
+roadmap_track_title: Allgemeine Daten- und Reporting-Landschaft
+roadmap_phase: 1
+roadmap_option: Basis Q1 allgemeine Daten- und Reporting-Landschaft
 category: Data Platform
 author: Thomas Lindackers
 version: 1
@@ -42,7 +51,7 @@ stories:
 tasks:
   - id: align-management-expectations
     label: Erwartungen mit der Führung abstimmen
-    plannedMinutes: 30
+    plannedMinutes: 540
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -56,7 +65,7 @@ tasks:
         description: Lies die Vorlage als Denkrahmen für Auftrag, Problem, Ziel, Stakeholder und offene Entscheidungen; nichts installieren.
   - id: identify-stakeholders
     label: Relevante Stakeholder identifizieren
-    plannedMinutes: 30
+    plannedMinutes: 540
     assigneeType: team
     assigneeId: null
     tableColumns: Name, Rolle, Einfluss, Interesse, Owner
@@ -76,7 +85,7 @@ tasks:
 deliverables:
   - id: stakeholder-list
     label: Stakeholder-Liste erstellen
-    plannedMinutes: 30
+    plannedMinutes: 360
     dependsOn: identify-stakeholders
     helpText: |
       Nutze die Tabelle aus der Aufgabe „Relevante Stakeholder identifizieren“ als Arbeitsbasis.
@@ -84,7 +93,7 @@ deliverables:
       Ergänze offene Zugänge, blockierende Personen oder fehlende operative Owner als Hinweise, statt sie in Rohnotizen zu verstecken.
   - id: initial-mandate
     label: Initialen Auftrag dokumentiert
-    plannedMinutes: 60
+    plannedMinutes: 420
     dependsOn: align-management-expectations, identify-stakeholders
     helpText: |
       Erstelle das Artefakt „Initialen Auftrag dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -119,7 +128,7 @@ stories:
 tasks:
   - id: inventory-reports
     label: Bestehende Reports inventarisieren
-    plannedMinutes: 120
+    plannedMinutes: 840
     assigneeType: person
     assigneeId: null
     tableColumns: Report, Owner, Tool, Rhythmus, Geschäftsfrage
@@ -137,7 +146,7 @@ tasks:
         description: Nutze die Guidance als Checkliste für Power-BI-Rollen, Arbeitsbereiche, Governance und Rollout-Fragen.
   - id: map-report-consumers
     label: Report-Nutzer und Nutzungshäufigkeit kartieren
-    plannedMinutes: 120
+    plannedMinutes: 600
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -148,14 +157,14 @@ tasks:
 deliverables:
   - id: report-inventory
     label: Report-Inventar dokumentiert
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: inventory-reports
     helpText: |
       Erstelle das Artefakt „Report-Inventar dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: gap-list
     label: Erste Lückenliste erstellt
-    plannedMinutes: 30
+    plannedMinutes: 180
     dependsOn: inventory-reports, map-report-consumers
     helpText: |
       Erstelle das Artefakt „Erste Lückenliste erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -186,7 +195,7 @@ stories:
 tasks:
   - id: list-source-systems
     label: Quellsysteme und Owner erfassen
-    plannedMinutes: 30
+    plannedMinutes: 600
     assigneeType: person
     assigneeId: null
     tableColumns: Source, Owner, Access, Consumed by
@@ -201,7 +210,7 @@ tasks:
         description: Nutze das Tool, um Metadaten aus Quellen, Feldern und Ownern als wiederverwendbaren Export vorzubereiten.
   - id: document-interfaces
     label: Schnittstellen und Extraktionswege dokumentieren
-    plannedMinutes: 120
+    plannedMinutes: 720
     dependsOn: list-source-systems
     assigneeType: team
     assigneeId: null
@@ -221,14 +230,14 @@ tasks:
 deliverables:
   - id: source-system-map
     label: Quellsystem-Landkarte erstellt
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: list-source-systems
     helpText: |
       Erstelle das Artefakt „Quellsystem-Landkarte erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: owner-matrix
     label: Owner-Matrix erstellt
-    plannedMinutes: 30
+    plannedMinutes: 240
     dependsOn: list-source-systems, document-interfaces
     helpText: |
       Erstelle das Artefakt „Owner-Matrix erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -259,7 +268,7 @@ stories:
 tasks:
   - id: trace-data-creation
     label: Datenerzeugung in Kernprozessen nachverfolgen
-    plannedMinutes: 60
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -269,7 +278,7 @@ tasks:
     linkedStories: before-building-the-first-table, trash-iinout
   - id: capture-business-rules
     label: Geschäftsregeln und Ausnahmen dokumentieren
-    plannedMinutes: 30
+    plannedMinutes: 480
     dependsOn: trace-data-creation
     assigneeType: team
     assigneeId: null
@@ -281,14 +290,14 @@ tasks:
 deliverables:
   - id: creation-notes
     label: Notizen zur Datenerzeugung
-    plannedMinutes: 60
+    plannedMinutes: 360
     dependsOn: trace-data-creation
     helpText: |
       Erstelle das Artefakt „Notizen zur Datenerzeugung“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: rule-summary
     label: Zusammenfassung der Geschäftsregeln
-    plannedMinutes: 60
+    plannedMinutes: 300
     dependsOn: capture-business-rules
     helpText: |
       Erstelle das Artefakt „Zusammenfassung der Geschäftsregeln“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -329,7 +338,7 @@ stories:
 tasks:
   - id: map-lineage-paths
     label: Zentrale Lineage-Pfade skizzieren
-    plannedMinutes: 60
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -343,7 +352,7 @@ tasks:
         description: Nutze das Tool, um Metadaten aus Quellen, Feldern und Ownern als wiederverwendbaren Export vorzubereiten.
   - id: identify-lineage-gaps
     label: Lineage-Lücken und blinde Flecken markieren
-    plannedMinutes: 30
+    plannedMinutes: 360
     dependsOn: map-lineage-paths
     assigneeType: team
     assigneeId: null
@@ -355,14 +364,14 @@ tasks:
 deliverables:
   - id: lineage-sketch
     label: Lineage-Skizze erstellt
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: map-lineage-paths
     helpText: |
       Erstelle das Artefakt „Lineage-Skizze erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: lineage-gap-log
     label: Lineage-Lückenprotokoll
-    plannedMinutes: 60
+    plannedMinutes: 300
     dependsOn: identify-lineage-gaps
     helpText: |
       Erstelle das Artefakt „Lineage-Lückenprotokoll“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -395,7 +404,7 @@ stories:
 tasks:
   - id: collect-kpis
     label: KPIs aus Reports und Stakeholder-Interviews sammeln
-    plannedMinutes: 120
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -412,7 +421,7 @@ tasks:
         description: Nutze die Beispiele, um KPI-Darstellung und Schwellenwerte verständlich zu gestalten.
   - id: normalize-definitions
     label: Definitionen und Berechnungsregeln angleichen
-    plannedMinutes: 60
+    plannedMinutes: 600
     dependsOn: collect-kpis
     assigneeType: team
     assigneeId: null
@@ -424,14 +433,14 @@ tasks:
 deliverables:
   - id: kpi-inventory
     label: KPI-Inventar erstellt
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: collect-kpis
     helpText: |
       Erstelle das Artefakt „KPI-Inventar erstellt“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: definition-backlog
     label: Definitions-Backlog priorisiert
-    plannedMinutes: 60
+    plannedMinutes: 240
     dependsOn: normalize-definitions
     helpText: |
       Erstelle das Artefakt „Definitions-Backlog priorisiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -472,7 +481,7 @@ links:
 tasks:
   - id: assess-dq-issues
     label: Bekannte DQ-Probleme bewerten
-    plannedMinutes: 60
+    plannedMinutes: 600
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -492,7 +501,7 @@ tasks:
         description: Nutze das Tool, um wiederverwendbare dbt-Makros für Datenqualitätsprüfungen vorzubereiten.
   - id: rate-risks
     label: Business- und Compliance-Risiken bewerten
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: assess-dq-issues
     assigneeType: team
     assigneeId: null
@@ -512,14 +521,14 @@ tasks:
 deliverables:
   - id: dq-risk-register
     label: DQ- und Risiko-Register
-    plannedMinutes: 60
+    plannedMinutes: 600
     dependsOn: assess-dq-issues, rate-risks
     helpText: |
       Erstelle das Artefakt „DQ- und Risiko-Register“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: hotspot-list
     label: Priorisierte Hotspot-Liste
-    plannedMinutes: 30
+    plannedMinutes: 240
     dependsOn: rate-risks
     helpText: |
       Erstelle das Artefakt „Priorisierte Hotspot-Liste“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -563,7 +572,7 @@ stories:
 tasks:
   - id: review-architecture
     label: Aktuelle Architektur und Tools prüfen
-    plannedMinutes: 180
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -580,7 +589,7 @@ tasks:
         description: Nutze die Erklärung als Referenz für Bronze/Silver/Gold-Zonen und prüfe, ob sie hier wirklich nötig sind.
   - id: document-bottlenecks
     label: Engpässe und technische Schulden dokumentieren
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: review-architecture
     assigneeType: team
     assigneeId: null
@@ -592,14 +601,14 @@ tasks:
 deliverables:
   - id: architecture-notes
     label: Notizen zur Architekturdiagnose
-    plannedMinutes: 180
+    plannedMinutes: 480
     dependsOn: review-architecture
     helpText: |
       Erstelle das Artefakt „Notizen zur Architekturdiagnose“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: bottleneck-list
     label: Engpass-Liste
-    plannedMinutes: 30
+    plannedMinutes: 240
     dependsOn: document-bottlenecks
     helpText: |
       Erstelle das Artefakt „Engpass-Liste“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -630,7 +639,7 @@ stories:
 tasks:
   - id: score-initiatives
     label: Initiativen nach Impact und Aufwand bewerten
-    plannedMinutes: 60
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -647,7 +656,7 @@ tasks:
         description: Nutze die Beispiele, um Impact-vs.-Effort-Bewertungen verständlich mit Stakeholdern abzustimmen.
   - id: agree-priorities
     label: Prioritäten mit Stakeholdern abstimmen
-    plannedMinutes: 120
+    plannedMinutes: 600
     dependsOn: score-initiatives
     assigneeType: team
     assigneeId: null
@@ -656,18 +665,29 @@ tasks:
       Kläre, wer Menschen und Systeme in den Pilotwochen freischalten kann.
       Achte auf: stillen Widerspruch, der nach Baustart wieder auftaucht.
     linkedStories: eight-pillars, data-ownership-stewardship
+  - id: select-primary-app
+    label: Wichtigste App verbindlich festlegen
+    plannedMinutes: 360
+    dependsOn: agree-priorities
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Entscheide verbindlich, welche App als erster A-Z-Prototyp gebaut wird. Begründe die Wahl mit Geschäftswert, Datenverfügbarkeit, Sponsor-Stärke und Wiederverwendbarkeit des Musters.
+      Halte explizit fest, welche guten Kandidaten warten müssen und warum.
+      Achte auf: mehrere Apps gleichzeitig zu starten, bevor ein Muster von Quelle bis Nutzer sauber bewiesen ist.
+    linkedStories: one-app, bridge-solution, eight-pillars
 deliverables:
   - id: priority-matrix
     label: Priorisierungsmatrix
-    plannedMinutes: 120
+    plannedMinutes: 420
     dependsOn: score-initiatives
     helpText: |
       Erstelle das Artefakt „Priorisierungsmatrix“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: quarter-backlog
     label: Quartals-Backlog vereinbart
-    plannedMinutes: 180
-    dependsOn: agree-priorities, priority-matrix
+    plannedMinutes: 420
+    dependsOn: select-primary-app, priority-matrix
     helpText: |
       Erstelle das Artefakt „Quartals-Backlog vereinbart“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
@@ -701,7 +721,7 @@ stories:
 tasks:
   - id: draft-target-picture
     label: Zielbild und Prinzipien entwerfen
-    plannedMinutes: 120
+    plannedMinutes: 720
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -711,7 +731,7 @@ tasks:
     linkedStories: bridge-solution, choosing-the-simplest-viable-architecture, dbt-role, transformation-options
   - id: validate-target-picture
     label: Zielbild mit Stakeholdern validieren
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: draft-target-picture
     assigneeType: team
     assigneeId: null
@@ -720,17 +740,28 @@ tasks:
       Halte Einwände als Backlog fest, nicht als Freeze-Grund.
       Achte auf: Approval-Theater ohne benannte Owner für den Zielzustand.
     linkedStories: eight-pillars, data-ownership-stewardship
+  - id: slice-az-prototype
+    label: A-Z-Prototyp grob schneiden
+    plannedMinutes: 480
+    dependsOn: validate-target-picture
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Schneide den ersten Prototyp so klein, dass er von Quelle über Modell/Regeln bis zur nutzbaren App-Endansicht durchläuft. Definiere Datenumfang, KPI-Frage, Nutzergruppe, Akzeptanzsignal und klare Nicht-Ziele.
+      Plane bewusst nur den ersten belastbaren Durchstich, nicht die finale Plattform.
+      Achte auf: Scope, der fachlich nach MVP klingt, technisch aber schon drei Produkte enthält.
+    linkedStories: one-app, building-from-scratch, define-kpi, bridge-solution
 deliverables:
   - id: target-picture
     label: Zielbild dokumentiert
-    plannedMinutes: 120
-    dependsOn: draft-target-picture, validate-target-picture
+    plannedMinutes: 480
+    dependsOn: draft-target-picture, validate-target-picture, slice-az-prototype
     helpText: |
       Erstelle das Artefakt „Zielbild dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: guiding-principles
     label: Leitprinzipien definiert
-    plannedMinutes: 60
+    plannedMinutes: 240
     dependsOn: draft-target-picture
     helpText: |
       Erstelle das Artefakt „Leitprinzipien definiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -772,7 +803,7 @@ links:
 tasks:
   - id: build-pilot
     label: Den Piloten bauen
-    plannedMinutes: 240
+    plannedMinutes: 1320
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -795,7 +826,7 @@ tasks:
         description: Nutze die Doku, um Datenqualitätsannahmen als dbt-Tests umsetzbar zu machen.
   - id: track-pilot-blockers
     label: Blocker und Abhängigkeiten managen
-    plannedMinutes: 60
+    plannedMinutes: 240
     assigneeType: team
     assigneeId: null
     helpText: |
@@ -806,14 +837,14 @@ tasks:
 deliverables:
   - id: pilot-increment
     label: Pilot-Inkrement bereit
-    plannedMinutes: 60
+    plannedMinutes: 360
     dependsOn: build-pilot
     helpText: |
       Erstelle das Artefakt „Pilot-Inkrement bereit“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: pilot-changelog
     label: Pilot-Changelog
-    plannedMinutes: 60
+    plannedMinutes: 120
     dependsOn: build-pilot, track-pilot-blockers
     helpText: |
       Erstelle das Artefakt „Pilot-Changelog“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -844,7 +875,7 @@ stories:
 tasks:
   - id: run-pilot-review
     label: Piloten mit Nutzern reviewen
-    plannedMinutes: 60
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -854,7 +885,7 @@ tasks:
     linkedStories: bi-tools, define-kpi
   - id: measure-pilot-outcomes
     label: Ergebnisse und Qualität messen
-    plannedMinutes: 60
+    plannedMinutes: 480
     dependsOn: run-pilot-review
     assigneeType: team
     assigneeId: null
@@ -874,14 +905,14 @@ tasks:
 deliverables:
   - id: validation-report
     label: Validierungsbericht
-    plannedMinutes: 120
+    plannedMinutes: 600
     dependsOn: run-pilot-review, measure-pilot-outcomes
     helpText: |
       Erstelle das Artefakt „Validierungsbericht“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: go-nogo-recommendation
     label: Go/No-Go-Empfehlung
-    plannedMinutes: 60
+    plannedMinutes: 300
     dependsOn: validation-report
     helpText: |
       Erstelle das Artefakt „Go/No-Go-Empfehlung“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
@@ -914,7 +945,7 @@ stories:
 tasks:
   - id: summarize-quarter
     label: Quartalsergebnisse zusammenfassen
-    plannedMinutes: 180
+    plannedMinutes: 480
     assigneeType: person
     assigneeId: null
     helpText: |
@@ -924,27 +955,49 @@ tasks:
     linkedStories: eight-pillars, dsdr-governance
   - id: plan-next-quarter
     label: Nächstes Quartal grob planen
-    plannedMinutes: 180
+    plannedMinutes: 240
     dependsOn: summarize-quarter
     assigneeType: team
     assigneeId: null
     helpText: |
-      Schlage die nächsten 1–3 Initiativen auf Basis verbleibender Hotspots und des validierten Zielbilds vor.
-      Bestätige Owner, Kapazität und was gestoppt werden muss, um Platz zu schaffen.
+      Fasse die Anschlussrichtung für Q2 auf Basis der App-Entscheidung, des Prototyp-Schnitts und der Validierung zusammen.
+      Bestätige kurz Owner, Kapazität und was gestoppt werden muss, um Platz zu schaffen.
       Achte auf: Discovery von null neu zu starten statt bewährte Muster zu erweitern.
     linkedStories: bridge-solution, modernizing-an-existing-warehouse, operating-and-governing-the-platform
+  - id: create-q2-prototype-backlog
+    label: Q2-Anschlussbacklog erstellen
+    plannedMinutes: 360
+    dependsOn: summarize-quarter
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Leite aus Findings, Zielbild, App-Entscheidung und Prototyp-Schnitt ein umsetzbares Q2-Backlog ab. Schneide Epics und Tasks so, dass Umsetzung, Review, Datenqualität und Abnahme sichtbar bleiben.
+      Markiere Kettenaufgaben, parallele Arbeitspakete, Abhängigkeiten zu Fachbereichen und Entscheidungen, die vor Sprintstart fallen müssen.
+      Achte auf: ein Wunschlisten-Backlog ohne Reihenfolge, Definition of Done oder Owner.
+    linkedStories: bridge-solution, building-from-scratch, operating-and-governing-the-platform
+  - id: check-prototype-readiness
+    label: Technische Readiness für den Prototyp prüfen
+    plannedMinutes: 360
+    dependsOn: create-q2-prototype-backlog
+    assigneeType: team
+    assigneeId: null
+    helpText: |
+      Prüfe für den ersten A-Z-Prototyp Zugriff, Testdaten, Zielsystem, Entwicklungsumgebung, Review-Weg, Datenschutzpunkte und fachliche Ansprechpartner.
+      Dokumentiere fehlende Freigaben als Start-Risiken für Q2 mit Owner und spätestem Entscheidungsdatum.
+      Achte auf: Q2 mit einer perfekten Roadmap zu starten, aber ohne lauffähigen Zugang zur relevanten Quelle.
+    linkedStories: access-security-governance, dq-test-kpis, building-from-scratch
 deliverables:
   - id: quarter-report
     label: Quartalsbericht
-    plannedMinutes: 120
+    plannedMinutes: 480
     dependsOn: summarize-quarter
     helpText: |
       Erstelle das Artefakt „Quartalsbericht“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.
   - id: next-quarter-outline
     label: Skizze für das nächste Quartal
-    plannedMinutes: 180
-    dependsOn: plan-next-quarter, quarter-report
+    plannedMinutes: 360
+    dependsOn: plan-next-quarter, create-q2-prototype-backlog, check-prototype-readiness, quarter-report
     helpText: |
       Erstelle das Artefakt „Skizze für das nächste Quartal“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.

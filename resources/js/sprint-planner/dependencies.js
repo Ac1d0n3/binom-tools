@@ -92,7 +92,12 @@ export function resolveDependsOnKeys(raw, opts) {
  */
 export function pickRawDependsOn(stored, templateItem) {
     if (stored && Object.prototype.hasOwnProperty.call(stored, 'dependsOn')) {
-        return stored.dependsOn;
+        const raw = stored.dependsOn;
+        // Prefer template chains when an override only stored an empty list.
+        if (Array.isArray(raw) && raw.length === 0 && templateItem?.dependsOn) {
+            return templateItem.dependsOn;
+        }
+        return raw;
     }
     return templateItem?.dependsOn;
 }

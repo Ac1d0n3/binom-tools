@@ -9,19 +9,21 @@ import {
 } from './external-links.js';
 
 describe('sprint-planner external / tool help links', () => {
-    it('accepts /tools/ paths', () => {
+    it('accepts /tools/ and rejects /playbooks/ in helpLinks', () => {
         expect(isAppToolHref('/tools/report-inventory')).toBe(true);
         expect(isAppToolHref('/de/tools/report-inventory')).toBe(true);
-        expect(isAppToolHref('/playbooks/bi-tools')).toBe(false);
         expect(isAllowedHelpHref('/tools/kpi-definition')).toBe(true);
         expect(isAllowedHelpHref('/playbooks/bi-tools')).toBe(false);
+        expect(isAllowedHelpHref('/de/playbooks/platform-examples')).toBe(false);
+        expect(isAllowedHelpHref('/stories/bi-tools')).toBe(false);
     });
 
-    it('localizes and resolves tool hrefs', () => {
+    it('localizes and resolves tool hrefs (not playbooks)', () => {
         expect(localizeToolHref('/tools/report-inventory', 'de')).toBe('/de/tools/report-inventory');
         expect(resolveHelpHref('/tools/report-inventory', 'en')).toBe('/en/tools/report-inventory');
-        expect(resolveHelpHref('https://example.com/x', 'de')).toBe('https://example.com/x');
         expect(resolveHelpHref('/playbooks/bi-tools', 'de')).toBe('#');
+        expect(resolveHelpHref('https://example.com/x', 'de')).toBe('https://example.com/x');
+        expect(resolveHelpHref('/stories/bi-tools', 'de')).toBe('#');
     });
 
     it('builds plan context query on tool links', () => {
@@ -40,13 +42,16 @@ describe('sprint-planner external / tool help links', () => {
         expect(href).toContain('return=%2Fde%2Fsprint-planner%2Fplan_1');
     });
 
-    it('parses tool lines in the links textarea', () => {
+    it('parses tool lines and rejects playbook lines in the links textarea', () => {
         const { links, rejected } = parseExternalLinksTextarea(
-            'Report Inventory | /tools/report-inventory\nStory | /playbooks/bi-tools',
+            'Report Inventory | /tools/report-inventory\nStory | /playbooks/bi-tools\nBad | /stories/x',
         );
         expect(links).toEqual([
             { label: 'Report Inventory', href: '/tools/report-inventory', description: '' },
         ]);
-        expect(rejected).toEqual(['Story | /playbooks/bi-tools']);
+        expect(rejected).toEqual([
+            'Story | /playbooks/bi-tools',
+            'Bad | /stories/x',
+        ]);
     });
 });

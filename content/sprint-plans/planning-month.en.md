@@ -5,6 +5,9 @@ slug: planning-month
 description: Lightweight month plan: weekly outcomes, owners, and a clean handoff to next month.
 duration: 4
 unit: week
+recommended_people_min: 1
+recommended_people_max: 1
+capacity_hours_per_person_week: 40
 category: Planning
 author: Thomas Lindackers
 version: 1

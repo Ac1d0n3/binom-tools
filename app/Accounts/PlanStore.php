@@ -86,7 +86,18 @@ final class PlanStore
         $plan['viewerUserIds'] = array_values(array_map('strval', $plan['viewerUserIds'] ?? $existing['viewerUserIds'] ?? []));
         $plan['viewerTeamIds'] = array_values(array_map('strval', $plan['viewerTeamIds'] ?? $existing['viewerTeamIds'] ?? []));
         $plan['linkedStorySlugs'] = array_values(array_map('strval', $plan['linkedStorySlugs'] ?? $existing['linkedStorySlugs'] ?? []));
+        $plan['participantIds'] = array_values(array_map('strval', $plan['participantIds'] ?? $existing['participantIds'] ?? []));
+        if (($plan['ownerUserId'] ?? '') !== '' && ! in_array((string) $plan['ownerUserId'], $plan['participantIds'], true)) {
+            $plan['participantIds'][] = (string) $plan['ownerUserId'];
+        }
         $plan = $this->normalizePlanTeams($plan);
+
+        $slug = trim((string) ($plan['templateSlug'] ?? ''));
+        // New plans must carry a template. Updates may still heal a hollow shell via recover.
+        if ($existing === null && $slug === '') {
+            throw new InvalidArgumentException('Plan templateSlug is required.');
+        }
+
         $plan['updatedAt'] = now()->toIso8601String();
         $plan['updatedBy'] = $actor->id;
 
@@ -94,7 +105,8 @@ final class PlanStore
         unset($plan['password'], $plan['plainPassword'], $plan['password_plaintext']);
 
         $this->store->ensureDirectory($this->config->plansDirectory());
-        $this->store->write($this->pathFor($id), $plan);
+        // Encode empty map fields as {} (not []) without mutating the returned plan shape.
+        $this->store->write($this->pathFor($id), $this->planPayloadForJson($plan));
 
         return $plan;
     }
@@ -284,7 +296,60 @@ final class PlanStore
             return true;
         }
 
+        if ($this->planAssignsUser($plan, $user->id)) {
+            return true;
+        }
+
         return $this->isViewer($user, $plan) || $this->isPlanTeamMember($user, $plan);
+    }
+
+    /**
+     * @param  array<string, mixed>  $plan
+     */
+    private function planAssignsUser(array $plan, string $userId): bool
+    {
+        if ($userId === '') {
+            return false;
+        }
+
+        foreach ($plan['itemOverrides'] ?? [] as $override) {
+            if (is_array($override) && (string) ($override['assigneeId'] ?? '') === $userId) {
+                return true;
+            }
+        }
+
+        foreach (['customTasks', 'customDeliverables'] as $bag) {
+            foreach ($plan[$bag] ?? [] as $items) {
+                if (! is_array($items)) {
+                    continue;
+                }
+                foreach ($items as $item) {
+                    if (is_array($item) && (string) ($item['assigneeId'] ?? '') === $userId) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        $snapshot = $plan['templateSnapshot'] ?? null;
+        if (! is_array($snapshot)) {
+            return false;
+        }
+
+        foreach ($snapshot['sprints'] ?? [] as $sprint) {
+            if (! is_array($sprint)) {
+                continue;
+            }
+            foreach (['tasks', 'deliverables'] as $bag) {
+                foreach ($sprint[$bag] ?? [] as $item) {
+                    if (is_array($item) && (string) ($item['assigneeId'] ?? '') === $userId) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -367,6 +432,12 @@ final class PlanStore
             if ($this->isEmptyStructure($next) && ! $this->isEmptyStructure($prev)) {
                 $incoming[$key] = $prev;
             }
+        }
+
+        $incoming['participantIds'] = array_values(array_map('strval', $incoming['participantIds'] ?? []));
+        $ownerId = (string) ($incoming['ownerUserId'] ?? $existing['ownerUserId'] ?? '');
+        if ($ownerId !== '' && ! in_array($ownerId, $incoming['participantIds'], true)) {
+            $incoming['participantIds'][] = $ownerId;
         }
 
         // Restores must be allowed to clear progress bags from an older snapshot.
@@ -549,6 +620,42 @@ final class PlanStore
         }
         $plan['teamIds'] = array_values(array_unique($teamIds));
         $plan['teamId'] = null;
+
+        return $plan;
+    }
+
+    /**
+     * Encode empty map-shaped fields as JSON objects (PHP [] would become []).
+     * Only touches keys already present — do not invent new empty maps (breaks noop-diff).
+     *
+     * @param  array<string, mixed>  $plan
+     * @return array<string, mixed>
+     */
+    private function planPayloadForJson(array $plan): array
+    {
+        foreach ([
+            'itemOverrides',
+            'fieldValues',
+            'sprintNotes',
+            'customTasks',
+            'customDeliverables',
+            'sprintOverrides',
+            'translations',
+        ] as $key) {
+            if (! array_key_exists($key, $plan)) {
+                continue;
+            }
+            $value = $plan[$key];
+            if ($value === [] || (is_array($value) && $value === [])) {
+                $plan[$key] = new \stdClass;
+            } elseif (is_array($value) && array_is_list($value) && $value === []) {
+                $plan[$key] = new \stdClass;
+            }
+        }
+
+        if (array_key_exists('templateSnapshot', $plan) && $plan['templateSnapshot'] === []) {
+            $plan['templateSnapshot'] = null;
+        }
 
         return $plan;
     }

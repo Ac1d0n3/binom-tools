@@ -1,6 +1,6 @@
 /**
- * Help/community links: external URLs plus in-app /tools/ paths.
- * Playbook/story paths and bare slugs stay out of helpLinks.
+ * Help/community links: external URLs and in-app /tools/ paths.
+ * Playbook stories belong in `stories` / `linkedStories`, not helpLinks.
  */
 
 /**
@@ -29,6 +29,16 @@ export function isAppToolHref(href) {
 }
 
 /**
+ * In-app playbook/story paths (locale-optional).
+ * @param {string} href
+ * @returns {boolean}
+ */
+export function isAppPlaybookHref(href) {
+    const value = String(href || '').trim();
+    return /^\/(?:de\/|en\/)?playbooks\//i.test(value);
+}
+
+/**
  * @param {string} href
  * @returns {boolean}
  */
@@ -37,14 +47,14 @@ export function isAllowedHelpHref(href) {
 }
 
 /**
- * Prefer locale-prefixed tool paths when opened from a localized plan page.
+ * Prefer locale-prefixed in-app paths when opened from a localized plan page.
  * @param {string} href
  * @param {string} [locale]
  * @returns {string}
  */
-export function localizeToolHref(href, locale = 'en') {
+export function localizeAppHref(href, locale = 'en') {
     const value = String(href || '').trim();
-    if (!isAppToolHref(value)) {
+    if (!isAppToolHref(value) && !isAppPlaybookHref(value)) {
         return value;
     }
     const stripped = value.replace(/^\/(de|en)(?=\/)/i, '');
@@ -53,7 +63,16 @@ export function localizeToolHref(href, locale = 'en') {
 }
 
 /**
- * Resolve href for help links. External URLs and /tools/ paths only.
+ * @param {string} href
+ * @param {string} [locale]
+ * @returns {string}
+ */
+export function localizeToolHref(href, locale = 'en') {
+    return localizeAppHref(href, locale);
+}
+
+/**
+ * Resolve href for help links: external URLs and /tools/.
  * @param {string} href
  * @param {string} [locale]
  * @returns {string}
@@ -64,7 +83,7 @@ export function resolveHelpHref(href, locale = 'en') {
         return value;
     }
     if (isAppToolHref(value)) {
-        return localizeToolHref(value, locale);
+        return localizeAppHref(value, locale);
     }
     return '#';
 }
@@ -98,7 +117,7 @@ export function resolveExternalHelpHref(href) {
  */
 export function buildPlanToolHref(href, context, locale = 'en') {
     const path = resolveHelpHref(href, locale);
-    if (path === '#' || !context?.instanceId || !context?.itemKey) {
+    if (path === '#' || !isAppToolHref(href) || !context?.instanceId || !context?.itemKey) {
         return path;
     }
     const params = new URLSearchParams({
@@ -114,7 +133,7 @@ export function buildPlanToolHref(href, context, locale = 'en') {
 }
 
 /**
- * Parse "Label | https://…" lines. Allows external URLs and /tools/ paths.
+ * Parse "Label | https://…" lines. Allows external URLs and /tools/ paths (not /playbooks/).
  * @param {string} raw
  * @returns {{links: Array<{label: string, href: string, description: string}>, rejected: string[]}}
  */

@@ -10,6 +10,7 @@ import { listPeople, listTeams, localizedText } from '../people-teams.js';
 import { calculateCurrentSprintNumber, calculateOverallProgress, resolveSprints } from '../progress.js';
 import { loadPreferences, loadWorkspace, savePreferences } from '../storage.js';
 import { normalizeTeamIds } from '../trigram.js';
+import { effortFacts } from '../time.js';
 import {
     applySpI18n,
     planOwnershipLabel,
@@ -138,61 +139,213 @@ function renderTemplateCards(templates, locale, workspace) {
         empty.hidden = true;
     }
 
-    for (const template of templates) {
-        const title = template.locales?.[locale]?.title || template.locales?.en?.title || template.slug;
-        const description = template.locales?.[locale]?.description || template.locales?.en?.description || '';
-        const card = document.createElement('article');
-        card.className = 'sp-card';
-        const isUser = Boolean(template.userTemplate || template.id?.startsWith?.('utpl_'));
-        card.innerHTML = `
-            <h3 class="sp-card__title"></h3>
-            <p class="sp-card__desc"></p>
-            <p class="sp-card__meta"></p>
-            <div class="sp-card__actions"></div>
+    for (const group of groupTemplatesForCatalog(templates, locale)) {
+        const section = document.createElement('section');
+        section.className = 'sp-template-roadmap';
+        const heading = document.createElement('div');
+        heading.className = 'sp-template-roadmap__head';
+        heading.innerHTML = `
+            <div>
+                <h3 class="sp-template-roadmap__title"></h3>
+            </div>
+            <p class="sp-template-roadmap__count"></p>
         `;
-        card.querySelector('.sp-card__title').textContent = title;
-        card.querySelector('.sp-card__desc').textContent = description;
-        card.querySelector('.sp-card__meta').textContent = [
-            spT('sp.card.duration', { count: template.duration || template.sprintCount || template.sprints?.length || 0 }),
-            isUser ? spT('sp.creator.userTemplateBadge') : '',
-        ].filter(Boolean).join(' · ');
-        const actions = card.querySelector('.sp-card__actions');
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'tools-btn tools-btn--primary';
-        btn.textContent = spT('sp.action.startPlan');
-        btn.addEventListener('click', () => openStartDialog(template, workspace));
-        actions.appendChild(btn);
-
-        if (isUser && isLoggedIn()) {
-            const edit = document.createElement('a');
-            edit.className = 'tools-btn tools-btn--secondary';
-            edit.href = createPlanUrl(template.id);
-            edit.textContent = spT('sp.action.edit');
-            actions.appendChild(edit);
-
-            const del = document.createElement('button');
-            del.type = 'button';
-            del.className = 'tools-btn tools-btn--secondary';
-            del.textContent = spT('sp.action.delete');
-            del.addEventListener('click', async () => {
-                if (!window.confirm(spT('sp.creator.confirmDeleteTemplate'))) {
-                    return;
-                }
-                try {
-                    const { deleteUserTemplate } = await import('../user-templates.js');
-                    await deleteUserTemplate(template.id);
-                    showToast(spT('sp.toast.deleted'));
-                    window.location.reload();
-                } catch {
-                    showToast(spT('sp.creator.templateSaveFailed'));
-                }
-            });
-            actions.appendChild(del);
+        heading.querySelector('.sp-template-roadmap__title').textContent = group.title;
+        heading.querySelector('.sp-template-roadmap__count').textContent = spT('sp.template.roadmapCount', { count: group.templates.length });
+        section.appendChild(heading);
+        for (const track of group.tracks) {
+            const trackSection = document.createElement('details');
+            trackSection.className = 'sp-template-track';
+            const trackTitle = document.createElement('summary');
+            trackTitle.className = 'sp-template-track__title';
+            trackTitle.innerHTML = `
+                <span></span>
+                <span class="sp-template-track__count"></span>
+            `;
+            trackTitle.querySelector('span').textContent = track.title;
+            trackTitle.querySelector('.sp-template-track__count').textContent = spT('sp.template.roadmapCount', { count: track.templates.length });
+            const grid = document.createElement('div');
+            grid.className = 'sp-card-grid sp-card-grid--roadmap';
+            for (const template of track.templates) {
+                grid.appendChild(renderTemplateCard(template, locale, workspace, templates));
+            }
+            trackSection.append(trackTitle, grid);
+            section.appendChild(trackSection);
         }
-
-        container.appendChild(card);
+        container.appendChild(section);
     }
+}
+
+function groupTemplatesForCatalog(templates, locale) {
+    const buckets = new Map();
+    for (const template of templates) {
+        const bucket = templateDurationBucket(template);
+        if (!buckets.has(bucket.id)) {
+            buckets.set(bucket.id, {
+                ...bucket,
+                tracks: new Map(),
+                templates: [],
+            });
+        }
+        const group = buckets.get(bucket.id);
+        group.templates.push(template);
+        const trackId = templateTrackId(template, locale);
+        if (!group.tracks.has(trackId)) {
+            group.tracks.set(trackId, {
+                id: trackId,
+                title: templateTrackTitle(template, locale),
+                templates: [],
+            });
+        }
+        group.tracks.get(trackId).templates.push(template);
+    }
+
+    return Array.from(buckets.values()).map((group) => ({
+        ...group,
+        tracks: Array.from(group.tracks.values()).map((track) => ({
+            ...track,
+            templates: track.templates.sort(compareRoadmapTemplates),
+        })).sort((a, b) => a.title.localeCompare(b.title)),
+    })).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+}
+
+function templateDurationBucket(template) {
+    const unit = String(template.unit || 'week');
+    const duration = Number(template.duration || template.sprintCount || template.sprints?.length || 0);
+    if (unit === 'week' && duration >= 10) {
+        return { id: 'quarter', order: 1, title: spT('sp.template.bucketQuarter') };
+    }
+    if ((unit === 'week' && duration >= 3) || unit === 'month') {
+        return { id: 'month', order: 2, title: spT('sp.template.bucketMonth') };
+    }
+    if (unit === 'week' || unit === 'day') {
+        return { id: 'week', order: 3, title: spT('sp.template.bucketWeek') };
+    }
+    return { id: 'other', order: 4, title: spT('sp.template.bucketOther') };
+}
+
+function templateTrackId(template, locale) {
+    return String(template.roadmapTrack || template.roadmapFamily || template.category || localizedRoadmapTitle(template, locale) || 'other');
+}
+
+function templateTrackTitle(template, locale) {
+    return localizedRoadmapTrackTitle(template, locale)
+        || localizedRoadmapTitle(template, locale)
+        || template.category
+        || spT('sp.template.trackOther');
+}
+
+function compareRoadmapTemplates(a, b) {
+    const phaseA = Number.isFinite(Number(a.roadmapPhase)) ? Number(a.roadmapPhase) : 999;
+    const phaseB = Number.isFinite(Number(b.roadmapPhase)) ? Number(b.roadmapPhase) : 999;
+    if (phaseA !== phaseB) {
+        return phaseA - phaseB;
+    }
+    return String(a.roadmapOption || a.slug).localeCompare(String(b.roadmapOption || b.slug));
+}
+
+function roadmapFallbackTitle(template, locale) {
+    const title = template.locales?.[locale]?.title || template.locales?.en?.title || template.slug;
+    return title.replace(/\s+[—-]\s+.*/, '');
+}
+
+function renderTemplateCard(template, locale, workspace, templates = []) {
+    const title = template.locales?.[locale]?.title || template.locales?.en?.title || template.slug;
+    const description = template.locales?.[locale]?.description || template.locales?.en?.description || '';
+    const card = document.createElement('article');
+    card.className = 'sp-card';
+    const isUser = Boolean(template.userTemplate || template.id?.startsWith?.('utpl_'));
+    card.innerHTML = `
+        <div class="sp-card__head">
+            <h3 class="sp-card__title"></h3>
+            <span class="sp-card__phase" hidden></span>
+        </div>
+        <p class="sp-card__roadmap" hidden></p>
+        <p class="sp-card__desc"></p>
+        <p class="sp-card__meta"></p>
+        <div class="sp-card__actions"></div>
+    `;
+    card.querySelector('.sp-card__title').textContent = title;
+    card.querySelector('.sp-card__desc').textContent = description;
+    const phase = card.querySelector('.sp-card__phase');
+    if (template.roadmapPhase) {
+        phase.hidden = false;
+        phase.textContent = spT('sp.template.phase', { phase: template.roadmapPhase });
+    }
+    const roadmap = card.querySelector('.sp-card__roadmap');
+    const roadmapParts = [
+        localizedRoadmapOption(template, locale) ? spT('sp.template.option', { option: localizedRoadmapOption(template, locale) }) : '',
+        roadmapFollowsLabel(template, templates, locale),
+    ].filter(Boolean);
+    if (roadmapParts.length > 0) {
+        roadmap.hidden = false;
+        roadmap.textContent = roadmapParts.join(' · ');
+    }
+    card.querySelector('.sp-card__meta').textContent = [
+        spT('sp.card.duration', { count: template.duration || template.sprintCount || template.sprints?.length || 0 }),
+        ...effortFacts(template.sprints || [], template, spT),
+        isUser ? spT('sp.creator.userTemplateBadge') : '',
+    ].filter(Boolean).join(' · ');
+    const actions = card.querySelector('.sp-card__actions');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tools-btn tools-btn--primary';
+    btn.textContent = spT('sp.action.startPlan');
+    btn.addEventListener('click', () => openStartDialog(template, workspace));
+    actions.appendChild(btn);
+
+    if (isUser && isLoggedIn()) {
+        const edit = document.createElement('a');
+        edit.className = 'tools-btn tools-btn--secondary';
+        edit.href = createPlanUrl(template.id);
+        edit.textContent = spT('sp.action.edit');
+        actions.appendChild(edit);
+
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'tools-btn tools-btn--secondary';
+        del.textContent = spT('sp.action.delete');
+        del.addEventListener('click', async () => {
+            if (!window.confirm(spT('sp.creator.confirmDeleteTemplate'))) {
+                return;
+            }
+            try {
+                const { deleteUserTemplate } = await import('../user-templates.js');
+                await deleteUserTemplate(template.id);
+                showToast(spT('sp.toast.deleted'));
+                window.location.reload();
+            } catch {
+                showToast(spT('sp.creator.templateSaveFailed'));
+            }
+        });
+        actions.appendChild(del);
+    }
+
+    return card;
+}
+
+function localizedRoadmapTitle(template, locale) {
+    return template.locales?.[locale]?.roadmapTitle || template.locales?.en?.roadmapTitle || template.roadmapTitle || '';
+}
+
+function localizedRoadmapTrackTitle(template, locale) {
+    return template.locales?.[locale]?.roadmapTrackTitle || template.locales?.en?.roadmapTrackTitle || template.roadmapTrackTitle || '';
+}
+
+function localizedRoadmapOption(template, locale) {
+    return template.locales?.[locale]?.roadmapOption || template.locales?.en?.roadmapOption || template.roadmapOption || '';
+}
+
+function roadmapFollowsLabel(template, templates, locale) {
+    const follows = Array.isArray(template.roadmapFollows) ? template.roadmapFollows : [];
+    if (follows.length === 0) {
+        return '';
+    }
+    const titles = follows.map((slug) => {
+        const found = templates.find((entry) => entry.slug === slug);
+        return found?.locales?.[locale]?.title || found?.locales?.en?.title || slug;
+    });
+    return spT('sp.template.follows', { titles: titles.join(', ') });
 }
 
 function createPlanUrl(templateId = '') {
@@ -233,7 +386,9 @@ function renderPlanCards(workspace, templates, locale) {
             sprints.length || template?.duration || 1,
             template?.unit || 'week',
         );
-        const cardData = { instance, template, progress, current, locale, workspace };
+        const cardData = {
+            instance, template, sprints, progress, current, locale, workspace,
+        };
 
         if (instance.archived || instance.status === 'archived') {
             if (filter === 'all' || filter === 'archived') {
@@ -250,7 +405,16 @@ function renderPlanCards(workspace, templates, locale) {
         }
         if (filter === 'mine') {
             const activeId = workspace.workspace.activePersonId;
-            if (!activeId || !instance.participantIds.includes(activeId)) {
+            const ownerId = String(instance.ownerUserId || '');
+            const participants = Array.isArray(instance.participantIds) ? instance.participantIds.map(String) : [];
+            if (
+                !activeId
+                || (
+                    ownerId !== String(activeId)
+                    && !participants.includes(String(activeId))
+                    && !sprintsContainAssignee(sprints, activeId)
+                )
+            ) {
                 continue;
             }
         }
@@ -287,7 +451,9 @@ function renderPlanCards(workspace, templates, locale) {
     }
 }
 
-function createPlanCard({ instance, template, progress, current, locale, workspace }) {
+function createPlanCard({
+    instance, template, sprints, progress, current, locale, workspace,
+}) {
     const title = instance.translations?.[locale]?.title
         || instance.translations?.en?.title
         || template?.locales?.[locale]?.title
@@ -311,6 +477,10 @@ function createPlanCard({ instance, template, progress, current, locale, workspa
         <ul class="sp-card__facts">
             <li data-fact="owner"></li>
             <li data-fact="duration"></li>
+            <li data-fact="effort"></li>
+            <li data-fact="staffing"></li>
+            <li data-fact="capacity"></li>
+            <li data-fact="scenarios"></li>
             <li data-fact="progress"></li>
             <li data-fact="current"></li>
             <li data-fact="status"></li>
@@ -327,6 +497,11 @@ function createPlanCard({ instance, template, progress, current, locale, workspa
     card.querySelector('[data-fact="duration"]').textContent = spT('sp.card.duration', {
         count: template?.duration || 0,
     });
+    const facts = effortFacts(sprints, template || {}, spT);
+    card.querySelector('[data-fact="effort"]').textContent = facts[0] || '';
+    card.querySelector('[data-fact="staffing"]').textContent = facts[1] || '';
+    card.querySelector('[data-fact="capacity"]').textContent = facts[2] || '';
+    card.querySelector('[data-fact="scenarios"]').textContent = facts.slice(3).join(' · ');
     card.querySelector('[data-fact="progress"]').textContent = spT('sp.card.progress', {
         percent: progress.percent,
     });
@@ -359,6 +534,24 @@ function createPlanCard({ instance, template, progress, current, locale, workspa
     link.href = planUrl(instance.id);
     link.textContent = spT('sp.action.open');
     return card;
+}
+
+function sprintsContainAssignee(sprints, assigneeId) {
+    const needle = String(assigneeId || '');
+    if (!needle) {
+        return false;
+    }
+    for (const sprint of sprints || []) {
+        for (const kind of /** @type {const} */ (['tasks', 'deliverables'])) {
+            for (const item of sprint[kind] || []) {
+                if (String(item?.assigneeId || '') === needle) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 function setupStartDialog(onStarted) {

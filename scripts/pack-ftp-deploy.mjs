@@ -129,19 +129,20 @@ for (const name of ['users.json', 'teams.json', 'story-acl.json']) {
         bnToolsSeedCount += 1;
     }
 }
-const userTemplatesSrc = join(bnToolsRuntime, 'user-templates');
-const userTemplatesSeed = join(bnToolsSeedDir, 'user-templates');
-if (existsSync(userTemplatesSrc)) {
-    mkdirSync(userTemplatesSeed, { recursive: true });
-    for (const name of readdirSync(userTemplatesSrc).filter((n) => n.endsWith('.json'))) {
-        cpSync(join(userTemplatesSrc, name), join(userTemplatesSeed, name));
-        bnToolsSeedCount += 1;
+for (const dirName of ['user-templates', 'plans', 'read-state']) {
+    const srcDir = join(bnToolsRuntime, dirName);
+    const destDir = join(bnToolsSeedDir, dirName);
+    if (!existsSync(srcDir)) {
+        continue;
     }
+    mkdirSync(destDir, { recursive: true });
+    cpSync(srcDir, destDir, { recursive: true });
+    bnToolsSeedCount += 1;
 }
 console.log(
     bnToolsSeedCount > 0
-        ? `bn-tools seeds packed: ${bnToolsSeedCount} JSON file(s) → app/SprintPlanner/bn-tools-seed/`
-        : 'No local bn-tools users/templates found — FTP bundle will not include account seeds',
+        ? `bn-tools seeds packed: ${bnToolsSeedCount} item(s) → app/SprintPlanner/bn-tools-seed/ (users/teams/acl + templates/plans/read-state)`
+        : 'No local bn-tools runtime found — FTP bundle will not include account/plan seeds',
 );
 
 if (existsSync(outDir)) {
@@ -183,47 +184,56 @@ for (const rel of deployPaths) {
     cpSync(src, dest, { recursive: true });
 }
 
+// Direct upload mirror of local runtime (gitignored) — same paths as on the server.
+if (existsSync(bnToolsRuntime)) {
+    const runtimeDest = join(outDir, 'storage/app/bn-tools');
+    mkdirSync(dirname(runtimeDest), { recursive: true });
+    cpSync(bnToolsRuntime, runtimeDest, { recursive: true });
+    console.log('bn-tools runtime mirrored → deploy-ftp/storage/app/bn-tools/');
+}
+
 writeFileSync(
     join(outDir, 'UPLOAD.txt'),
     `FTP-Deploy für governance.binom.net
 ===================================
 
-1. Inhalt von deploy-ftp/ ins Webroot hochladen (Ordnerstruktur beibehalten).
+Ziel: Server = aktueller lokaler Stand. deploy-ftp/ IST dieser Snapshot.
 
-2. Enthaltene Pfade:
-   - public/                Komplett (build/, images/, favicons, prompt-studio/config, …)
-     Font Awesome: public/build/assets/fa-solid-*.woff2 + fa-brands-*.woff2
-   - public/.htaccess       Production-Rewrites (alle /tools/* → Laravel)
-   - resources/views/       Blade-Templates
-   - content/               Story-Markdown
-   - app/Support/           Locale-Helper, Nav
-   - app/Playbooks/         Story-Renderer, Stats-Store
-   - app/Catalog/
-   - app/Console/Commands/
-   - app/Providers/AppServiceProvider.php
-   - app/Http/Controllers/Tools|Playbooks|Legal/
-   - app/Http/Middleware/   (SetLocale + EnsureToolEnabled)
-   - bootstrap/app.php
-   - config/tools.php
-   - config/playbooks.php
-   - config/app.php
-   - routes/web.php         lädt locale_route()-Helper
-   - storage/app/playbook-stats/  Optional runtime counters (werden aus Seed befüllt)
-   - app/Playbooks/stats-seed/    Seeded Views/Likes (lokal generiert, NICHT in Git; deploy:ftp packt sie)
-   - app/SprintPlanner/bn-tools-seed/  Lokale Accounts + User-Templates (NICHT in Git; deploy:ftp packt sie)
+1. Gesamten Inhalt von deploy-ftp/ ins Webroot hochladen und BESTEHENDE
+   Dateien ÜBERSCHREIBEN (nicht „nur fehlende Dateien“).
 
-   Wichtig: Gesamten deploy-ftp/-Baum hochladen — besonders public/build/assets/ komplett!
+2. Pflicht — ohne kompletten Replace bleibt der Server alt:
+   - public/build/              kompletter Ordner ersetzen (neue show-*.js Hashes)
+   - public/build/manifest.json
+   - content/sprint-plans/      alle *.md (Sprint- + Task-dependsOn, Help-Links)
+   - resources/views/
+   - app/SprintPlanner/ + app/Accounts/
+
+3. Weitere Pfade:
+   - public/                (images, favicons, …) + public/.htaccess (Production)
+   - content/               Stories + Sprint-Pläne
+   - app/… bootstrap/app.php config/ routes/web.php
+   - storage/app/playbook-stats/
+   - app/Playbooks/stats-seed/
+   - app/SprintPlanner/bn-tools-seed/
+   - storage/app/bn-tools/  Runtime (Login + Pläne)
+
+   Wichtig: Gesamten deploy-ftp/-Baum hochladen.
    Ohne EnsureToolEnabled.php + aktualisiertes bootstrap/app.php → 500 auf der Startseite.
-   Views/Likes kommen aus app/Playbooks/stats-seed/ (FTP) und werden nach storage/app/playbook-stats/ kopiert.
-   Users/Teams/ACL/User-Templates kommen aus app/SprintPlanner/bn-tools-seed/ und werden nach storage/app/bn-tools/ kopiert (nur wenn dort noch fehlend).
 
-3. WICHTIG — falls von früheren Deploys noch vorhanden, per FTP LÖSCHEN:
-   - public/tools/   (physischer Ordner blockiert /tools/ und alle Tool-Seiten!)
+4. Nach Upload:
+   - Hard-Refresh (Cmd+Shift+R)
+   - Optional: storage/framework/views/*.php löschen
+   - Kontrolle: Seite lädt NEUES show-*.js (nicht show-BDJxt-FY.js)
+   - Kontrolle: Fabric-Template taskDeps=36 (nicht 0)
 
-4. Nach Deploy prüfen: /tools/, /tools/prompt-studio/, Icons sichtbar.
+5. Falls vorhanden, LÖSCHEN:
+   - public/tools/   (blockiert /tools/*)
 
-5. Optional Cache auf dem Server leeren:
-   - storage/framework/views/*.php
+6. Accounts/.env:
+   BINOM_TOOLS_ACCOUNTS_ENABLED=true
+   SESSION_DRIVER=file
+   Bei Login-Problemen users.json aus deploy-ftp/storage/app/bn-tools/ überschreiben.
 
 Build: ${new Date().toISOString()}
 `,

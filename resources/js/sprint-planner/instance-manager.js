@@ -82,7 +82,7 @@ export function undoLastInstanceChange(instanceId) {
 export function startInstanceFromTemplate(template, options) {
     const loaded = loadWorkspace();
     const workspace = loaded.data;
-    const id = createPlanId();
+    const id = createPlanId(options.startedAt);
     const now = new Date().toISOString();
     const ephemeral = Boolean(options.ephemeral)
         || (isAccountsMode() && ! usesServerPlans());
@@ -1081,7 +1081,7 @@ export function duplicateInstance(instanceId) {
     if (!source) {
         return { ok: false, error: 'plan-missing' };
     }
-    const id = createPlanId();
+    const id = createPlanId(source.startedAt);
     const now = new Date().toISOString();
     workspace.instances[id] = {
         ...structuredClone(source),
