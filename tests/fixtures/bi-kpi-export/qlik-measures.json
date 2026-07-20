@@ -1,0 +1,16 @@
+{
+  "measures": [
+    {
+      "qInfo": {
+        "qId": "m_sales",
+        "qType": "measure"
+      },
+      "qMeasure": {
+        "qLabel": "Net Sales",
+        "qDef": "Sum(Sales) - Sum(Discount)",
+        "qDescription": "Revenue after discounts",
+        "qTags": ["sales", "certified"]
+      }
+    }
+  ]
+}

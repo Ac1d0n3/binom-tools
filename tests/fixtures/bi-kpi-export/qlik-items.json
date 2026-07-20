@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "id": "item_1",
+      "name": "Sales Management",
+      "resourceId": "app_1",
+      "resourceType": "app",
+      "spaceId": "space_managed",
+      "space": {
+        "id": "space_managed",
+        "name": "Finance Published",
+        "type": "managed"
+      },
+      "resourceAttributes": {
+        "id": "app_1",
+        "name": "Sales Management",
+        "published": true,
+        "publishTime": "2026-07-18T12:00:00Z",
+        "lastReloadTime": "2026-07-20T05:00:00Z",
+        "ownerId": "owner_1"
+      }
+    }
+  ]
+}

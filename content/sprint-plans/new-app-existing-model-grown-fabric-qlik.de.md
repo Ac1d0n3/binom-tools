@@ -40,6 +40,8 @@ stories:
     required: false
   - slug: data-ownership-stewardship
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: app-scope
@@ -51,7 +53,7 @@ tasks:
       Lege Zielgruppe, Kernfragen, Seiten, KPIs, Navigationslogik und Abnahme fest.
       Berücksichtige sowohl vorhandene Qlik/QVD-Logik als auch den modernisierten Fabric/Fabric+dbt-Weg.
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
-    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
+    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship, python-bi-export-setup
     helpLinks:
       - label: Fabric DQ Rule Generator
         href: /tools/fabric-dq-rule-generator
@@ -59,6 +61,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: app-scope-artifact
     label: App-Scope
@@ -90,6 +95,8 @@ stories:
     required: false
   - slug: data-ownership-stewardship
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: build-app
@@ -101,7 +108,7 @@ tasks:
       Baue Views, Filter im BI-Tool, Navigation, KPIs, Detailpfade und Lade-/Refresh-Verhalten.
       Berücksichtige sowohl vorhandene Qlik/QVD-Logik als auch den modernisierten Fabric/Fabric+dbt-Weg.
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
-    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
+    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship, python-bi-export-setup
     helpLinks:
       - label: Fabric DQ Rule Generator
         href: /tools/fabric-dq-rule-generator
@@ -109,6 +116,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: build-app-artifact
     label: App-Slice
@@ -159,6 +169,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: validate-release-artifact
     label: App-Release-Nachweis

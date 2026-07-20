@@ -257,6 +257,7 @@ const shellLabels = {
         'workflow.step-stakeholder-matrix': 'Stakeholder Matrix',
         'workflow.step-report-inventory': 'Report Inventory',
         'workflow.step-kpi-definition': 'KPI Definition',
+        'workflow.step-bi-python-toolkit': 'BI Python Toolkit',
         'workflow.step-architecture-fit': 'Architecture Fit',
         'workflow.step-impact-effort': 'Impact–Effort',
         'nav.dbt-dq-macro-generator': 'DG Macro Generator',
@@ -307,6 +308,35 @@ const shellLabels = {
         'card.kpi-definition.title': 'KPI Definition Card',
         'card.kpi-definition.description':
             'KPI-Definitionen für Plan-Deliverables — nur Export, keine Speicherung im Tool.',
+        'nav.bi-python-toolkit': 'BI Python Toolkit',
+        'card.bi-python-toolkit.title': 'BI Python Export Toolkit',
+        'card.bi-python-toolkit.description':
+            'Python-Dateien für Qlik KPI-Export, App-/Sheet-Inventar und BI-Formel-Inventare herunterladen.',
+        'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
+        'biPythonToolkit.pageLead':
+            'Lade Python-Tools herunter, führe sie lokal aus und nutze die Outputs als CSV, Markdown oder Plan-JSON.',
+        'biPythonToolkit.howto.intro':
+            'Die Tools laufen auf deinem Rechner. Dieses Web-Tool speichert keine API Keys und verbindet sich nicht direkt mit Qlik, Power BI oder Tableau.',
+        'biPythonToolkit.howto.step1': 'Python installieren und einen Projektordner mit virtuellem Environment anlegen.',
+        'biPythonToolkit.howto.step2': 'Benötigte Python-Dateien hier herunterladen und in den Projektordner legen.',
+        'biPythonToolkit.howto.step3': 'Exports lokal ausführen und CSV, Markdown oder Plan-JSON im Sprint Planner verwenden.',
+        'biPythonToolkit.howto.tip':
+            'Für Qlik-Sheets wird zusätzlich websocket-client benötigt. Ohne --include-sheets reicht die Python-Standardbibliothek.',
+        'biPythonToolkit.setupStoryLink':
+            'Python-Anleitung: Python installieren, Ordner initialisieren, Exports ausführen',
+        'biPythonToolkit.openSetupStory': 'Python Setup Story',
+        'biPythonToolkit.downloads.title': 'Downloads',
+        'biPythonToolkit.downloads.lead': 'Speichere die Dateien lokal in deinem Python-Projektordner.',
+        'biPythonToolkit.download.kpi': 'KPI Export Script',
+        'biPythonToolkit.download.inventory': 'Qlik App Inventory Script',
+        'biPythonToolkit.download.readme': 'README herunterladen',
+        'biPythonToolkit.commands.title': 'Beispiel-Kommandos',
+        'biPythonToolkit.commands.lead': 'Passe Dateinamen, Tenant und API Key an deine Umgebung an.',
+        'biPythonToolkit.scripts.title': 'Scripts ansehen und kopieren',
+        'biPythonToolkit.scripts.lead':
+            'Du kannst die Python-Dateien direkt hier prüfen, kopieren oder als Datei herunterladen.',
+        'biPythonToolkit.copyScript': 'Script kopieren',
+        'biPythonToolkit.downloadScript': 'Download',
         'nav.architecture-fit': 'Architecture Fit',
         'card.architecture-fit.title': 'Architecture Fit Checklist',
         'card.architecture-fit.description':
@@ -590,6 +620,7 @@ const shellLabels = {
         'workflow.step-stakeholder-matrix': 'Stakeholder Matrix',
         'workflow.step-report-inventory': 'Report Inventory',
         'workflow.step-kpi-definition': 'KPI Definition',
+        'workflow.step-bi-python-toolkit': 'BI Python Toolkit',
         'workflow.step-architecture-fit': 'Architecture Fit',
         'workflow.step-impact-effort': 'Impact–Effort',
         'nav.dbt-dq-macro-generator': 'DG Macro Generator',
@@ -640,6 +671,35 @@ const shellLabels = {
         'card.kpi-definition.title': 'KPI Definition Card',
         'card.kpi-definition.description':
             'KPI definitions for plan deliverables — export only, nothing stored in the tool.',
+        'nav.bi-python-toolkit': 'BI Python Toolkit',
+        'card.bi-python-toolkit.title': 'BI Python Export Toolkit',
+        'card.bi-python-toolkit.description':
+            'Download Python files for Qlik KPI export, app/sheet inventory and BI formula inventories.',
+        'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
+        'biPythonToolkit.pageLead':
+            'Download Python tools, run them locally, and use the outputs as CSV, Markdown or plan JSON.',
+        'biPythonToolkit.howto.intro':
+            'The tools run on your machine. This web tool does not store API keys and does not connect directly to Qlik, Power BI or Tableau.',
+        'biPythonToolkit.howto.step1': 'Install Python and create a project folder with a virtual environment.',
+        'biPythonToolkit.howto.step2': 'Download the required Python files here and place them in the project folder.',
+        'biPythonToolkit.howto.step3': 'Run exports locally and use CSV, Markdown or plan JSON in the Sprint Planner.',
+        'biPythonToolkit.howto.tip':
+            'Qlik sheet extraction additionally needs websocket-client. Without --include-sheets, the Python standard library is enough.',
+        'biPythonToolkit.setupStoryLink':
+            'Python setup guide: install Python, initialize a folder, run the exports',
+        'biPythonToolkit.openSetupStory': 'Python Setup Story',
+        'biPythonToolkit.downloads.title': 'Downloads',
+        'biPythonToolkit.downloads.lead': 'Save the files locally in your Python project folder.',
+        'biPythonToolkit.download.kpi': 'KPI export script',
+        'biPythonToolkit.download.inventory': 'Qlik app inventory script',
+        'biPythonToolkit.download.readme': 'Download README',
+        'biPythonToolkit.commands.title': 'Example commands',
+        'biPythonToolkit.commands.lead': 'Adjust filenames, tenant and API key for your environment.',
+        'biPythonToolkit.scripts.title': 'View and copy scripts',
+        'biPythonToolkit.scripts.lead':
+            'Review the Python files directly here, copy them, or download them as files.',
+        'biPythonToolkit.copyScript': 'Copy script',
+        'biPythonToolkit.downloadScript': 'Download',
         'nav.architecture-fit': 'Architecture Fit',
         'card.architecture-fit.title': 'Architecture Fit Checklist',
         'card.architecture-fit.description':

@@ -16,6 +16,7 @@ use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
 use App\Http\Controllers\Tools\ArchitectureFitController;
+use App\Http\Controllers\Tools\BiPythonToolkitController;
 use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
 use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
@@ -192,6 +193,11 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.report-inventory'));
     Route::get('/tools/kpi-definition', [KpiDefinitionController::class, 'show'])
         ->name($name('tools.kpi-definition'));
+    Route::get('/tools/bi-python-toolkit', [BiPythonToolkitController::class, 'show'])
+        ->name($name('tools.bi-python-toolkit'));
+    Route::get('/tools/bi-python-toolkit/download/{file}', [BiPythonToolkitController::class, 'download'])
+        ->where('file', 'bi-kpi-export|qlik-app-inventory|readme')
+        ->name($name('tools.bi-python-toolkit.download'));
     Route::get('/tools/architecture-fit', [ArchitectureFitController::class, 'show'])
         ->name($name('tools.architecture-fit'));
     Route::get('/tools/impact-effort', [ImpactEffortController::class, 'show'])

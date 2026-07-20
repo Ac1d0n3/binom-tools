@@ -1,0 +1,20 @@
+{
+  "model": {
+    "tables": [
+      {
+        "name": "Sales",
+        "measures": [
+          {
+            "name": "Net Sales",
+            "expression": [
+              "SUM ( Sales[Amount] )",
+              "- SUM ( Sales[Discount] )"
+            ],
+            "description": "Revenue after discounts",
+            "formatString": "#,0.00"
+          }
+        ]
+      }
+    ]
+  }
+}

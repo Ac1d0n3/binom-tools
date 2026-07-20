@@ -37,6 +37,7 @@
                 'dbt' => 'dbt',
                 'fabric' => 'Fabric',
                 'databricks' => 'Databricks',
+                'qlik' => 'Qlik',
                 'ai' => 'AI',
                 'other' => 'Other',
             ];
@@ -53,7 +54,7 @@
                     }
 
                     $key = strtolower(trim($target));
-                    if (in_array($key, ['fabric', 'databricks', 'ai'], true)) {
+                    if (in_array($key, ['fabric', 'databricks', 'qlik', 'ai'], true)) {
                         $products[] = $key;
                     }
                 }

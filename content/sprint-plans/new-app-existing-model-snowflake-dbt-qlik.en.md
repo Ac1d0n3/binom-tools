@@ -40,6 +40,8 @@ stories:
     required: false
   - slug: data-ownership-stewardship
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: app-scope
@@ -51,11 +53,14 @@ tasks:
       Define audience, core questions, pages, KPIs, navigation logic and acceptance.
       Consider Snowflake/dbt/Qlik, Qlik app, model, DQ, access and privacy together.
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
-    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
+    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship, python-bi-export-setup
     helpLinks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python downloads for Qlik app/sheet inventory and KPI formula exports.
 deliverables:
   - id: app-scope-artifact
     label: App scope
@@ -87,6 +92,8 @@ stories:
     required: false
   - slug: data-ownership-stewardship
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: build-app
@@ -98,11 +105,14 @@ tasks:
       Build views, BI-tool filters, navigation, KPIs, detail paths and load/refresh behavior.
       Consider Snowflake/dbt/Qlik, Qlik app, model, DQ, access and privacy together.
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
-    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
+    linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship, python-bi-export-setup
     helpLinks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python downloads for Qlik app/sheet inventory and KPI formula exports.
 deliverables:
   - id: build-app-artifact
     label: App slice
@@ -153,6 +163,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python downloads for Qlik app/sheet inventory and KPI formula exports.
 deliverables:
   - id: validate-release-artifact
     label: App release evidence

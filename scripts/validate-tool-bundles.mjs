@@ -23,6 +23,7 @@ const viteEntries = [
     'resources/js/tools/pii-policy-generator/index.js',
     'resources/js/tools/schema-yml-editor/index.js',
     'resources/js/tools/meta-export-generator/index.js',
+    'resources/js/tools/bi-python-toolkit/index.js',
     'resources/js/tools/dbt-dq-macro-generator/index.js',
     'resources/js/tools/dbt-dq-rules-generator/index.js',
     'resources/js/tools/dbt-dq-history-generator/index.js',

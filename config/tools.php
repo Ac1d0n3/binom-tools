@@ -137,6 +137,7 @@ return [
                 'stakeholder-matrix',
                 'report-inventory',
                 'kpi-definition',
+                'bi-python-toolkit',
                 'architecture-fit',
                 'impact-effort',
             ],
@@ -535,6 +536,24 @@ return [
             'workflowStep' => 3,
         ],
         [
+            'id' => 'bi-python-toolkit',
+            'route' => 'tools.bi-python-toolkit',
+            'label' => [
+                'de' => 'BI Python Export Toolkit',
+                'en' => 'BI Python Export Toolkit',
+            ],
+            'description' => [
+                'de' => 'Python-Downloads für Qlik KPI-Export, Qlik App-/Sheet-Inventar und BI-Formel-Inventare.',
+                'en' => 'Python downloads for Qlik KPI export, Qlik app/sheet inventory and BI formula inventories.',
+            ],
+            'example' => true,
+            'icon' => 'fa-file-code',
+            'accent' => 'accent',
+            'for' => ['Qlik'],
+            'workflow' => 'discovery-assessment',
+            'workflowStep' => 4,
+        ],
+        [
             'id' => 'architecture-fit',
             'route' => 'tools.architecture-fit',
             'label' => [
@@ -549,7 +568,7 @@ return [
             'icon' => 'fa-sitemap',
             'accent' => 'accent',
             'workflow' => 'discovery-assessment',
-            'workflowStep' => 4,
+            'workflowStep' => 5,
         ],
         [
             'id' => 'impact-effort',
@@ -566,7 +585,7 @@ return [
             'icon' => 'fa-bullseye',
             'accent' => 'primary',
             'workflow' => 'discovery-assessment',
-            'workflowStep' => 5,
+            'workflowStep' => 6,
         ],
         [
             'id' => 'prompt-studio',

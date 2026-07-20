@@ -21,6 +21,7 @@
     $platformMarkAssets = [
         'Fabric' => 'images/fabric-badge.svg',
         'Databricks' => 'images/databricks-badge.svg',
+        'Qlik' => 'images/qlik-badge.svg',
         'AI' => 'images/ai-badge.svg',
     ];
 @endphp

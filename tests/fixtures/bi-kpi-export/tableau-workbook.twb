@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<workbook name="Sales Workbook">
+  <datasources>
+    <datasource name="sales_ds" caption="Sales Datasource">
+      <column name="[Net Sales]" caption="Net Sales" role="measure" datatype="real">
+        <calculation class="tableau" formula="SUM([Sales]) - SUM([Discount])" />
+      </column>
+    </datasource>
+  </datasources>
+</workbook>

@@ -58,6 +58,7 @@ export default defineConfig(({ command }) => ({
                 'resources/js/tools/stakeholder-matrix/index.js',
                 'resources/js/tools/report-inventory/index.js',
                 'resources/js/tools/kpi-definition/index.js',
+                'resources/js/tools/bi-python-toolkit/index.js',
                 'resources/js/tools/architecture-fit/index.js',
                 'resources/js/tools/impact-effort/index.js',
                 'resources/js/tools/dbt-dq-macro-generator/index.js',

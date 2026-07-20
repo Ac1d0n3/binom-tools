@@ -132,7 +132,7 @@ final class ToolsNav
      */
     public static function platformMarks(array $item): array
     {
-        $allowed = ['fabric', 'databricks', 'ai'];
+        $allowed = ['fabric', 'databricks', 'qlik', 'ai'];
         $targets = $item['for'] ?? [];
 
         if (! is_array($targets)) {

@@ -40,6 +40,8 @@ stories:
     required: false
   - slug: metadata-catalog-lineage
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: filter-scope
@@ -51,7 +53,7 @@ tasks:
       Definiere Filterzweck, Pflicht-/Default-Werte, Berechtigungen, PII-Auswirkungen und Performance-Risiken.
       Berücksichtige Snowflake/dbt/Qlik, Qlik-App, Modell, DQ, Zugriff und Datenschutz gemeinsam.
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
-    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
+    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage, python-bi-export-setup
     helpLinks:
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
@@ -59,6 +61,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: filter-scope-artifact
     label: Filter-Scope
@@ -90,6 +95,8 @@ stories:
     required: false
   - slug: metadata-catalog-lineage
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: implement-filter
@@ -101,7 +108,7 @@ tasks:
       Baue Filterlogik im Modell/App-Layer, Default-Zustände, leere Treffer, Drilldowns und Interaktionen.
       Berücksichtige Snowflake/dbt/Qlik, Qlik-App, Modell, DQ, Zugriff und Datenschutz gemeinsam.
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
-    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
+    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage, python-bi-export-setup
     helpLinks:
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
@@ -109,6 +116,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: implement-filter-artifact
     label: Filter-Implementierung
@@ -140,6 +150,8 @@ stories:
     required: false
   - slug: metadata-catalog-lineage
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: filter-test-matrix
@@ -151,7 +163,7 @@ tasks:
       Teste Kombinationen, Rollen, Row-/Column-Level-Regeln, Exporte, Caching und Performance.
       Berücksichtige Snowflake/dbt/Qlik, Qlik-App, Modell, DQ, Zugriff und Datenschutz gemeinsam.
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
-    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
+    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage, python-bi-export-setup
     helpLinks:
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
@@ -159,6 +171,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: filter-test-matrix-artifact
     label: Filter-Testmatrix
@@ -190,6 +205,8 @@ stories:
     required: false
   - slug: metadata-catalog-lineage
     required: false
+  - slug: python-bi-export-setup
+    required: false
 
 tasks:
   - id: release-filtered-app
@@ -201,7 +218,7 @@ tasks:
       Validiere fachliche Ergebnisse, bekannte Einschränkungen, Hilfe, Monitoring und Release-Entscheidung.
       Berücksichtige Snowflake/dbt/Qlik, Qlik-App, Modell, DQ, Zugriff und Datenschutz gemeinsam.
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
-    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
+    linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage, python-bi-export-setup
     helpLinks:
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
@@ -209,6 +226,9 @@ tasks:
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
+      - label: BI Python Export Toolkit
+        href: /tools/bi-python-toolkit
+        description: Python-Downloads fuer Qlik App-/Sheet-Inventar und KPI-Formel-Exports.
 deliverables:
   - id: release-filtered-app-artifact
     label: Gefilterter App-Release
