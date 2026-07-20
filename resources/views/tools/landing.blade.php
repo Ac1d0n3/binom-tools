@@ -46,6 +46,7 @@
                             :card-id="$item['id']"
                             :example="$item['example'] ?? false"
                             :dbt-badge="\App\Support\ToolsNav::showsDbtBadge($item)"
+                            :platform-marks="\App\Support\ToolsNav::platformMarks($item)"
                         />
                     @endforeach
                     <x-tools.overview-card

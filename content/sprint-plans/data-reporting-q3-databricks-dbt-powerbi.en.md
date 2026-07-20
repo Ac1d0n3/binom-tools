@@ -104,6 +104,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
@@ -157,6 +160,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: eight-pillars, metadata-catalog-lineage, access-security-governance
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
@@ -213,6 +219,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: access-security-governance, pii-privacy-governance, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
@@ -266,6 +275,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to prepare PII classes, masking, roles and access rules as a concrete policy.
@@ -362,6 +374,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: metadata-catalog-lineage, data-ownership-stewardship, define-kpi
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Helps make sources, models, KPIs, owners and DSDR-relevant dependencies visible.
@@ -409,9 +424,9 @@ tasks:
       Watch for: documenting governance without making it testable in the process.
     linkedStories: dq-test-kpis, access-security-governance, operating-and-governing-the-platform
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Use the tool to prepare reusable DQ checks for release gates.
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
 deliverables:
   - id: dq-release-gates-artifact
     label: Release and DQ gate process

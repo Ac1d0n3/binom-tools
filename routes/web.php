@@ -20,6 +20,8 @@ use App\Http\Controllers\Tools\DbtDqHistoryGeneratorController;
 use App\Http\Controllers\Tools\DbtDqMacroGeneratorController;
 use App\Http\Controllers\Tools\DbtDqRulesGeneratorController;
 use App\Http\Controllers\Tools\DbtGovernanceMacroGeneratorController;
+use App\Http\Controllers\Tools\DatabricksDqPatternGeneratorController;
+use App\Http\Controllers\Tools\FabricDqPatternGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
 use App\Http\Controllers\Tools\ImpactEffortController;
 use App\Http\Controllers\Tools\KpiDefinitionController;
@@ -198,6 +200,10 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.dbt-dq-rules-generator'));
     Route::get('/tools/dbt-dq-history-generator', [DbtDqHistoryGeneratorController::class, 'show'])
         ->name($name('tools.dbt-dq-history-generator'));
+    Route::get('/tools/fabric-dq-pattern-generator', [FabricDqPatternGeneratorController::class, 'show'])
+        ->name($name('tools.fabric-dq-pattern-generator'));
+    Route::get('/tools/databricks-dq-pattern-generator', [DatabricksDqPatternGeneratorController::class, 'show'])
+        ->name($name('tools.databricks-dq-pattern-generator'));
 };
 
 $registerRoutes(false);

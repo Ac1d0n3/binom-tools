@@ -31,6 +31,19 @@ final class ToolsNavTest extends TestCase
         );
     }
 
+    public function test_platform_marks_only_return_platform_names(): void
+    {
+        $this->assertSame(
+            [],
+            ToolsNav::platformMarks(['workflow' => 'dbt-dq-governance', 'for' => ['dbt', 'DQ']]),
+        );
+
+        $this->assertSame(
+            ['Fabric'],
+            ToolsNav::platformMarks(['id' => 'fabric-dq-pattern-generator', 'for' => ['Fabric']]),
+        );
+    }
+
     /**
      * @return array<string, array{0: array<string, mixed>, 1: bool}>
      */

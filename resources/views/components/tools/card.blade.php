@@ -13,7 +13,15 @@
     'searchText' => null,
     'tags' => [],
     'dbtBadge' => false,
+    'platformMarks' => [],
 ])
+
+@php
+    $platformMarkAssets = [
+        'Fabric' => 'images/fabric-badge.svg',
+        'Databricks' => 'images/databricks-badge.svg',
+    ];
+@endphp
 
 <a
     href="{{ $href }}"
@@ -50,8 +58,24 @@
             <i class="fa-solid fa-arrow-right tools-card__arrow" aria-hidden="true"></i>
         @endif
     </div>
-    @if ($dbtBadge)
-        <div class="tools-card__brand" aria-hidden="true">
+    @if ($dbtBadge || count($platformMarks) > 0)
+        <div class="tools-card__purpose" aria-label="Tool target">
+            @if (count($platformMarks) > 0)
+                <span class="tools-card__platform-marks">
+                    @foreach ($platformMarks as $mark)
+                        @if (isset($platformMarkAssets[$mark]))
+                            <img
+                                src="{{ asset($platformMarkAssets[$mark]) }}"
+                                alt=""
+                                class="tools-card__platform-mark"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        @endif
+                    @endforeach
+                </span>
+            @endif
+            @if ($dbtBadge)
             <img
                 src="{{ asset('images/dbt-badge.svg') }}"
                 alt=""
@@ -61,6 +85,7 @@
                 loading="lazy"
                 decoding="async"
             />
+            @endif
         </div>
     @endif
 </a>

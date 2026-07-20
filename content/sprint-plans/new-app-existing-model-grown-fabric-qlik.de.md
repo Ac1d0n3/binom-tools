@@ -53,6 +53,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
@@ -100,6 +103,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.
@@ -147,9 +153,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: dq-test-kpis, metadata-catalog-lineage, operating-and-governing-the-platform
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Hilft, wiederverwendbare DQ-Prüfungen für Modell- oder Feldänderungen vorzubereiten.
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Nutze es, um Quelle, Modell, Feld, KPI und App-Verwendung nachvollziehbar zu dokumentieren.

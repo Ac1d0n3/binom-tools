@@ -60,6 +60,13 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('Meta Export Generator');
         $response->assertSee('PII Policy Generator');
         $response->assertSee('DQ Rules Generator');
+        $response->assertSee('Fabric DQ Pattern Generator');
+        $response->assertSee('Databricks DQ Pattern Generator');
+        $response->assertSee('tools-card__platform-mark', false);
+        $response->assertSee('images/fabric-badge.svg', false);
+        $response->assertSee('images/databricks-badge.svg', false);
+        $response->assertSee('Fabric');
+        $response->assertSee('Databricks');
         $response->assertSee('PII Table Gate');
         $response->assertSee('Recommend Generator');
         $response->assertSee('Security &amp; governance setup', false);
@@ -164,6 +171,21 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('dbt-dq-history-generator-app', false);
         $response->assertSee('dq-history-pre', false);
+    }
+
+    public function test_lakehouse_dq_pattern_generators_render(): void
+    {
+        $this->get('/tools/fabric-dq-pattern-generator')
+            ->assertOk()
+            ->assertSee('lakehouse-dq-pattern-generator-app', false)
+            ->assertSee('lakehouse-dq-sql-pre', false)
+            ->assertSee('lakehouseDq.fabric.pageTitle', false);
+
+        $this->get('/tools/databricks-dq-pattern-generator')
+            ->assertOk()
+            ->assertSee('lakehouse-dq-pattern-generator-app', false)
+            ->assertSee('lakehouse-dq-notebook-pre', false)
+            ->assertSee('lakehouseDq.databricks.pageTitle', false);
     }
 
     public function test_meta_export_generator_page_renders(): void

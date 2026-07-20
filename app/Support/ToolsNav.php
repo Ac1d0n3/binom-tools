@@ -123,4 +123,37 @@ final class ToolsNav
 
         return is_string($workflow) && str_starts_with($workflow, 'dbt-');
     }
+
+    /**
+     * Small "for what" labels shown on tool cards.
+     *
+     * @param  array<string, mixed>  $item
+     * @return list<string>
+     */
+    public static function platformMarks(array $item): array
+    {
+        $allowed = ['fabric', 'databricks'];
+        $targets = $item['for'] ?? [];
+
+        if (! is_array($targets)) {
+            return [];
+        }
+
+        $targets = array_values(array_filter(
+            array_map(
+                static fn (mixed $target): string => is_string($target) ? trim($target) : '',
+                $targets,
+            ),
+            static fn (string $target): bool => $target !== '' && in_array(strtolower($target), $allowed, true),
+        ));
+
+        if (self::showsDbtBadge($item)) {
+            $targets = array_values(array_filter(
+                $targets,
+                static fn (string $target): bool => strtolower($target) !== 'dbt',
+            ));
+        }
+
+        return $targets;
+    }
 }

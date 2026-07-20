@@ -147,6 +147,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: pii-privacy-governance, eight-pillars, access-security-governance
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to prepare PII classes, masking and access rules directly for the next app.
@@ -201,12 +204,12 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Keeping business logic outside BI apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Helps avoid rebuilding hidden logic inside Qlik/Power BI for new apps.
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Use the tool to generate reusable DQ rules for new app models.
 deliverables:
   - id: reuse-factory-model-pattern-artifact
     label: Reused model pattern
@@ -252,9 +255,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Use the tool to generate reusable DQ rules for new app models.
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
 deliverables:
   - id: build-app2-loads-model-artifact
     label: App 2 data model
@@ -300,9 +303,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: dq-test-kpis, operating-and-governing-the-platform, metadata-catalog-lineage
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Use the tool to generate reusable DQ rules for new app models.
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
 deliverables:
   - id: app2-dq-reconciliation-artifact
     label: App 2 DQ package
@@ -524,6 +527,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: pii-privacy-governance, metadata-catalog-lineage, access-security-governance
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to prepare PII classes, masking and access rules directly for the next app.
@@ -578,6 +584,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Keeping business logic outside BI apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Helps avoid rebuilding hidden logic inside Qlik/Power BI for new apps.
@@ -626,6 +635,9 @@ tasks:
       Watch for: buying speed by skipping governance gates.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Keeping business logic outside BI apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Helps avoid rebuilding hidden logic inside Qlik/Power BI for new apps.

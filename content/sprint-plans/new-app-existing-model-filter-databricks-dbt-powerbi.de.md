@@ -53,6 +53,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Hilft, PII-Klassen, Maskierung und Zugriffsregeln für das konkrete Feld oder die App festzulegen.
@@ -103,6 +106,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Hilft, PII-Klassen, Maskierung und Zugriffsregeln für das konkrete Feld oder die App festzulegen.
@@ -153,6 +159,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Hilft, PII-Klassen, Maskierung und Zugriffsregeln für das konkrete Feld oder die App festzulegen.
@@ -203,6 +212,9 @@ tasks:
       Achte auf: kleine Änderungen ohne PII, DQ, Catalog und App-Auswirkung durchzuwinken.
     linkedStories: pii-privacy-governance, access-security-governance, metadata-catalog-lineage
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Hilft, PII-Klassen, Maskierung und Zugriffsregeln für das konkrete Feld oder die App festzulegen.

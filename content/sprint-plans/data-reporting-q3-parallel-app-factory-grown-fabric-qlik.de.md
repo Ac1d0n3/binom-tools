@@ -148,6 +148,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: pii-privacy-governance, eight-pillars, access-security-governance
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung und Zugriffsregeln direkt für die nächste App vorzubereiten.
@@ -202,12 +205,12 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Business-Logik außerhalb von BI-Apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Hilft, neue Apps nicht wieder mit versteckter Logik in Qlik/Power BI zu bauen.
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Nutze das Tool, um wiederverwendbare DQ-Regeln für neue App-Modelle zu erzeugen.
 deliverables:
   - id: reuse-factory-model-pattern-artifact
     label: Wiederverwendetes Modellmuster
@@ -253,9 +256,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Nutze das Tool, um wiederverwendbare DQ-Regeln für neue App-Modelle zu erzeugen.
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
 deliverables:
   - id: build-app2-loads-model-artifact
     label: App-2-Datenmodell
@@ -301,9 +304,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: dq-test-kpis, operating-and-governing-the-platform, metadata-catalog-lineage
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Nutze das Tool, um wiederverwendbare DQ-Regeln für neue App-Modelle zu erzeugen.
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
 deliverables:
   - id: app2-dq-reconciliation-artifact
     label: App-2-DQ-Paket
@@ -525,6 +528,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: pii-privacy-governance, metadata-catalog-lineage, access-security-governance
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Nutze das Tool, um PII-Klassen, Maskierung und Zugriffsregeln direkt für die nächste App vorzubereiten.
@@ -579,6 +585,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, keeping-business-logic-outside-bi-apps, one-data-product-multiple-consumers
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Business-Logik außerhalb von BI-Apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Hilft, neue Apps nicht wieder mit versteckter Logik in Qlik/Power BI zu bauen.
@@ -627,6 +636,9 @@ tasks:
       Achte auf: Geschwindigkeit durch Überspringen der Governance-Gates zu erkaufen.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Business-Logik außerhalb von BI-Apps
         href: /playbooks/keeping-business-logic-outside-bi-apps
         description: Hilft, neue Apps nicht wieder mit versteckter Logik in Qlik/Power BI zu bauen.

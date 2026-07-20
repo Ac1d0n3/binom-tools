@@ -53,6 +53,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -100,6 +103,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -147,6 +153,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -194,6 +203,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -241,9 +253,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: dq-test-kpis, metadata-catalog-lineage, operating-and-governing-the-platform
     helpLinks:
-      - label: dbt DQ Macro Generator
-        href: /tools/dbt-dq-macro-generator
-        description: Helps prepare reusable DQ checks for model or field changes.
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.
@@ -291,6 +303,9 @@ tasks:
       Watch for: approving small changes without PII, DQ, catalog and app impact checks.
     linkedStories: building-from-scratch, define-kpi, data-ownership-stewardship
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Generates Databricks-specific DLT, SQL and notebook patterns for DQ rules, Delta MERGE, SCD2 and Unity Catalog gates.
       - label: Metadata, Catalog & Lineage
         href: /playbooks/metadata-catalog-lineage
         description: Use it to document source, model, field, KPI and app usage traceably.

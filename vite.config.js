@@ -63,6 +63,8 @@ export default defineConfig(({ command }) => ({
                 'resources/js/tools/dbt-dq-macro-generator/index.js',
                 'resources/js/tools/dbt-dq-rules-generator/index.js',
                 'resources/js/tools/dbt-dq-history-generator/index.js',
+                'resources/js/tools/fabric-dq-pattern-generator/index.js',
+                'resources/js/tools/databricks-dq-pattern-generator/index.js',
             ],
             refresh: true,
             fonts: [

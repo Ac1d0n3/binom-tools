@@ -770,10 +770,11 @@ html[data-shell-full-width='true'] .tools-content--overview {
 }
 
 .tools-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    padding: 1.1rem 1.15rem;
+    padding: 1.1rem 1.15rem 2.25rem;
     border: 1px solid var(--tools-card-border);
     border-radius: 12px;
     background: var(--tools-card-background);
@@ -1045,18 +1046,32 @@ html[data-color-scheme='dark'] .tools-card__series-badge {
     color: var(--theme-color-accent);
 }
 
-.tools-card--dbt {
-    position: relative;
-}
-
-.tools-card__brand {
+.tools-card__purpose {
     position: absolute;
     right: 0.9rem;
     bottom: 0.65rem;
     display: flex;
     align-items: center;
-    line-height: 0;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    max-width: calc(100% - 1.8rem);
+    line-height: 1;
     pointer-events: none;
+}
+
+.tools-card__platform-marks {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    line-height: 0;
+}
+
+.tools-card__platform-mark {
+    display: block;
+    width: auto;
+    height: 0.583rem;
+    opacity: 0.72;
 }
 
 .tools-card__dbt-badge {

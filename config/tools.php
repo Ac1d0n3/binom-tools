@@ -68,6 +68,22 @@ return [
                 'dbt-dq-history-generator',
             ],
         ],
+        'lakehouse-dq-patterns' => [
+            'label' => [
+                'de' => 'Lakehouse DQ Patterns',
+                'en' => 'Lakehouse DQ patterns',
+            ],
+            'description' => [
+                'de' => 'Copy-Paste-Patterns für Fabric und Databricks: Checks, Delta/SCD-Snippets und Governance-Runbooks.',
+                'en' => 'Copy-paste patterns for Fabric and Databricks: checks, Delta/SCD snippets, and governance runbooks.',
+            ],
+            'icon' => 'fa-layer-group',
+            'accent' => 'accent',
+            'steps' => [
+                'fabric-dq-pattern-generator',
+                'databricks-dq-pattern-generator',
+            ],
+        ],
         'discovery-assessment' => [
             'label' => [
                 'de' => 'Discovery & Assessment',
@@ -205,6 +221,42 @@ return [
             'accent' => 'primary',
             'workflow' => 'dbt-dq-governance',
             'workflowStep' => 3,
+        ],
+        [
+            'id' => 'fabric-dq-pattern-generator',
+            'route' => 'tools.fabric-dq-pattern-generator',
+            'label' => [
+                'de' => 'Fabric DQ Pattern Generator',
+                'en' => 'Fabric DQ Pattern Generator',
+            ],
+            'description' => [
+                'de' => 'SQL- und Notebook-Patterns für Fabric Lakehouse/Warehouse: DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.',
+                'en' => 'SQL and notebook patterns for Fabric Lakehouse/Warehouse: DQ rules, Delta loads, SCD2, and pipeline gates.',
+            ],
+            'example' => true,
+            'icon' => 'fa-layer-group',
+            'accent' => 'accent',
+            'for' => ['Fabric'],
+            'workflow' => 'lakehouse-dq-patterns',
+            'workflowStep' => 1,
+        ],
+        [
+            'id' => 'databricks-dq-pattern-generator',
+            'route' => 'tools.databricks-dq-pattern-generator',
+            'label' => [
+                'de' => 'Databricks DQ Pattern Generator',
+                'en' => 'Databricks DQ Pattern Generator',
+            ],
+            'description' => [
+                'de' => 'DLT Expectations, Delta MERGE/SCD2 und Unity-Catalog-Governance-Patterns für Databricks.',
+                'en' => 'DLT expectations, Delta MERGE/SCD2, and Unity Catalog governance patterns for Databricks.',
+            ],
+            'example' => true,
+            'icon' => 'fa-database',
+            'accent' => 'primary',
+            'for' => ['Databricks'],
+            'workflow' => 'lakehouse-dq-patterns',
+            'workflowStep' => 2,
         ],
         [
             'id' => 'schema-yml-editor',
@@ -397,6 +449,8 @@ return [
         'dbt-dq-macro-generator' => filter_var(env('TOOL_DBT_DQ_MACRO_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'dbt-dq-rules-generator' => filter_var(env('TOOL_DBT_DQ_RULES_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'dbt-dq-history-generator' => filter_var(env('TOOL_DBT_DQ_HISTORY_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'fabric-dq-pattern-generator' => filter_var(env('TOOL_FABRIC_DQ_PATTERN_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'databricks-dq-pattern-generator' => filter_var(env('TOOL_DATABRICKS_DQ_PATTERN_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'schema-yml-editor' => filter_var(env('TOOL_SCHEMA_YML_EDITOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'meta-export-generator' => filter_var(env('TOOL_META_EXPORT_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'stakeholder-matrix' => filter_var(env('TOOL_STAKEHOLDER_MATRIX_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
@@ -424,6 +478,8 @@ return [
         'dbt-dq-macro-generator' => filter_var(env('TOOL_DBT_DQ_MACRO_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'dbt-dq-rules-generator' => filter_var(env('TOOL_DBT_DQ_RULES_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'dbt-dq-history-generator' => filter_var(env('TOOL_DBT_DQ_HISTORY_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'fabric-dq-pattern-generator' => filter_var(env('TOOL_FABRIC_DQ_PATTERN_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'databricks-dq-pattern-generator' => filter_var(env('TOOL_DATABRICKS_DQ_PATTERN_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'schema-yml-editor' => filter_var(env('TOOL_SCHEMA_YML_EDITOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'meta-export-generator' => filter_var(env('TOOL_META_EXPORT_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'stakeholder-matrix' => filter_var(env('TOOL_STAKEHOLDER_MATRIX_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),

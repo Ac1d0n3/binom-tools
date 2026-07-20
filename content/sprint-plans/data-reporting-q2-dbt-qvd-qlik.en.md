@@ -181,6 +181,9 @@ tasks:
       Watch that existing app logic is understood functionally before it is rebuilt technically.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: dbt Docs - Incremental models
         href: https://docs.getdbt.com/docs/build/incremental-models
         description: Use the docs as a reference for incremental models, watermarks, and reprocessing decisions.
@@ -227,6 +230,9 @@ tasks:
       Watch that existing app logic is understood functionally before it is rebuilt technically.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: Kimball Group - Slowly Changing Dimensions
         href: https://www.kimballgroup.com/2008/09/slowly-changing-dimensions-part-2/
         description: Use the article as a reference for SCD types, history handling, and business trade-offs.
@@ -441,6 +447,9 @@ tasks:
       Watch that existing app logic is understood functionally before it is rebuilt technically.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: Qlik app
         href: https://help.qlik.com/
         description: Use the docs as a reference for app connection, semantics, and first visuals.

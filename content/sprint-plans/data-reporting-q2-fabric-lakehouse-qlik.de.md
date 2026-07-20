@@ -181,6 +181,9 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: dbt Docs - Incremental models
         href: https://docs.getdbt.com/docs/build/incremental-models
         description: Nutze die Doku als Referenz fuer inkrementelle Modelle, Wasserzeichen und Reprocessing-Entscheidungen.
@@ -227,6 +230,9 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Kimball Group - Slowly Changing Dimensions
         href: https://www.kimballgroup.com/2008/09/slowly-changing-dimensions-part-2/
         description: Nutze den Artikel als Referenz fuer SCD-Typen, Historisierung und fachliche Trade-offs.
@@ -441,6 +447,9 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Erzeugt Fabric-spezifische SQL-/Notebook-Patterns fuer DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.
       - label: Qlik-App
         href: https://help.qlik.com/
         description: Nutze die Doku als Referenz fuer App-Anbindung, Semantik und erste Visuals.

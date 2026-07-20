@@ -184,6 +184,9 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: dbt Docs - Incremental models
         href: https://docs.getdbt.com/docs/build/incremental-models
         description: Nutze die Doku als Referenz fuer inkrementelle Modelle, Wasserzeichen und Reprocessing-Entscheidungen.
@@ -230,6 +233,9 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: Kimball Group - Slowly Changing Dimensions
         href: https://www.kimballgroup.com/2008/09/slowly-changing-dimensions-part-2/
         description: Nutze den Artikel als Referenz fuer SCD-Typen, Historisierung und fachliche Trade-offs.
@@ -444,6 +450,9 @@ tasks:
       Achte darauf, vorhandene App-Logik fachlich zu verstehen, bevor sie technisch neu gebaut wird.
     linkedStories: building-from-scratch, dq-test-kpis
     helpLinks:
+      - label: Databricks DQ Pattern Generator
+        href: /tools/databricks-dq-pattern-generator
+        description: Erzeugt Databricks-spezifische DLT-/SQL-/Notebook-Patterns fuer DQ-Regeln, Delta MERGE, SCD2 und Unity-Catalog-Gates.
       - label: Power-BI-App
         href: https://learn.microsoft.com/en-us/power-bi/create-reports/
         description: Nutze die Doku als Referenz fuer App-Anbindung, Semantik und erste Visuals.

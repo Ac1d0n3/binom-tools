@@ -93,6 +93,7 @@
                         :overview-item="true"
                         :search-text="$searchText"
                         :dbt-badge="\App\Support\ToolsNav::showsDbtBadge($item)"
+                        :platform-marks="\App\Support\ToolsNav::platformMarks($item)"
                         :meta="isset($item['workflowStep'], $stepTotal) ? 'Step ' . $item['workflowStep'] . '/' . $stepTotal : null"
                     />
                 @endforeach

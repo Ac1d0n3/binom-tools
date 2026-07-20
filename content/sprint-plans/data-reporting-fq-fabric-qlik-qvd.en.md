@@ -223,6 +223,9 @@ tasks:
       Watch for: undocumented Excel extracts and “someone runs a script on Fridays”.
     linkedStories: before-building-the-first-table, building-from-scratch
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: Stakeholder & RACI Matrix
         href: /tools/stakeholder-matrix
         description: Use the tool to structure people, roles, influence, interest, and owners directly as a stakeholder table.
@@ -351,6 +354,9 @@ tasks:
       Watch for: false confidence from tool lineage that only covers part of the path.
     linkedStories: metadata-catalog-lineage, missing-pieces-metadata-catalog-lineage
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: Meta Export Generator
         href: /tools/meta-export-generator
         description: Use the tool to prepare reusable metadata exports from sources, fields, and owners.
@@ -418,6 +424,9 @@ tasks:
       Watch for: KPIs without an owner and metrics that only exist as dashboard titles.
     linkedStories: define-kpi, kpi-metric-governance
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: KPI Definition Card
         href: /tools/kpi-definition
         description: Use the tool to capture KPI name, formula, grain, filters, owner, and open definition questions.
@@ -480,6 +489,9 @@ links:
   - label: DQ Rules Generator
     href: /tools/dbt-dq-rules-generator
     description: Use the tool to turn observed data issues into testable quality checks.
+  - label: Fabric DQ Pattern Generator
+    href: /tools/fabric-dq-pattern-generator
+    description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
   - label: DQ Macro Generator
     href: /tools/dbt-dq-macro-generator
     description: Use the tool to prepare reusable dbt macros for data quality checks.
@@ -496,12 +508,18 @@ tasks:
       Watch for: fixing cosmetics while core keys and dates remain unreliable.
     linkedStories: data-quality-governance, dq-test-kpis, missing-pieces-data-quality
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: DQ Rules Generator
         href: /tools/dbt-dq-rules-generator
         description: Use the tool to turn observed data issues into testable quality checks.
       - label: dbt Docs - Data tests
         href: https://docs.getdbt.com/docs/build/data-tests
         description: Use the docs to turn quality assumptions into implementable dbt tests.
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: DQ Macro Generator
         href: /tools/dbt-dq-macro-generator
         description: Use the tool to prepare reusable dbt macros for data quality checks.
@@ -517,6 +535,9 @@ tasks:
       Watch for: treating every data bug as equal urgency.
     linkedStories: pii-privacy-governance, access-security-governance, eight-pillars
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: PII Policy Generator
         href: /tools/pii-policy-generator
         description: Use the tool to structure PII classes, masking, and access rules as a policy draft.
@@ -830,6 +851,9 @@ tasks:
       Watch for: expanding scope mid-build and skipping tests “until later”.
     linkedStories: building-from-scratch, dbt-role, dq-test-kpis
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: Schema YML Editor
         href: /tools/schema-yml-editor
         description: Use the tool to maintain dbt schema YAML, column descriptions, and tests for the pilot scope.
@@ -914,6 +938,9 @@ tasks:
       Watch for: declaring success because “the pipeline runs”.
     linkedStories: dq-test-kpis, data-quality-governance
     helpLinks:
+      - label: Fabric DQ Pattern Generator
+        href: /tools/fabric-dq-pattern-generator
+        description: Generates Fabric-specific SQL and notebook patterns for DQ rules, Delta loads, SCD2 and pipeline gates.
       - label: DQ History Generator
         href: /tools/dbt-dq-history-generator
         description: Use the tool to make DQ results traceable over time and support validation evidence.
