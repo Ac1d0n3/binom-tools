@@ -46,8 +46,10 @@ import { getPromptLocale, setPromptLocale, normalizePromptLocale } from './promp
 import {
     getLimitKindForTask,
     modelHasPlans,
+    modelsForTask,
     normalizeModelPlan,
     resolveCharLimit,
+    shouldShowTargetAi,
 } from './model-limits.js';
 import { ensureStarterTemplates } from './seed-library.js';
 import {
@@ -361,7 +363,6 @@ function syncSelectionSummary() {
 
     if (emptyPick) emptyPick.hidden = tech || hasSelection;
     if (selectionSummary) selectionSummary.hidden = tech || !hasSelection;
-    if (targetAi) targetAi.hidden = !hasSelection && !tech;
 
     if (!hasSelection || tech) {
         if (selectionTitle) selectionTitle.textContent = '';
@@ -397,11 +398,38 @@ function syncSelectionSummary() {
 function syncTargetAiUi() {
     if (!stateManager || !config) return;
     const draft = stateManager.getDraft();
-    const model = config.models.find((m) => m.id === draft.modelId);
+    const task = config.tasks.find((t) => t.id === draft.taskId);
+    const tech = isTechMode();
+    const availableModels = task ? modelsForTask(task, config.models) : tech ? config.models : [];
+    const model = availableModels.find((m) => m.id === draft.modelId)
+        ?? config.models.find((m) => m.id === draft.modelId);
     const hasPlans = modelHasPlans(model);
     const plan = normalizeModelPlan(draft.modelPlan ?? model?.defaultPlan);
     const limit = resolveCharLimit({ model, plan, taskId: draft.taskId });
     const limitKind = getLimitKindForTask(draft.taskId);
+    const showTargetAi = shouldShowTargetAi({
+        task,
+        models: config.models,
+        modelId: draft.modelId,
+        modelPlan: plan,
+        tech,
+    });
+
+    if (targetAi) targetAi.hidden = !showTargetAi;
+
+    if (modelSelect && showTargetAi) {
+        // Strict: only task-relevant models. Never dump the full catalog.
+        const list = availableModels.length > 0 ? availableModels : [];
+        const options =
+            draft.modelId && !list.some((m) => m.id === draft.modelId) && model && list.length > 0
+                ? [...list, model]
+                : list.length > 0
+                  ? list
+                  : model
+                    ? [model]
+                    : [];
+        populateSelect(modelSelect, options, draft.modelId);
+    }
 
     if (modelPlanBox) {
         modelPlanBox.hidden = !hasPlans;
@@ -599,7 +627,8 @@ function renderBuilder() {
     const tasks = getTasksForRole(draft.roleId, config);
     populateSelect(taskSelect, tasks, draft.taskId, 'label', !draft.taskId);
 
-    populateSelect(modelSelect, config.models, draft.modelId);
+    // Model options are owned by syncTargetAiUi (filtered by task hints).
+    syncTargetAiUi();
 
     const allParameters = getParametersForTask(draft.taskId, config);
     const split = splitParametersForMode(allParameters, {

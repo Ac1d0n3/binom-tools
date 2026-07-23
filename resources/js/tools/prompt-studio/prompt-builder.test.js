@@ -72,4 +72,93 @@ describe('prompt-builder', () => {
         expect(builtDe.compiled).toContain('Schreibe Lyrics für Songtext.');
         expect(builtDe.compiled).not.toContain('You are an experienced');
     });
+
+    it('applies ChatGPT section headers via formatRules', () => {
+        const text = formatForModel(
+            { system: 'You are helpful.', task: 'Write a brief.' },
+            {
+                id: 'chatgpt',
+                label: { en: 'ChatGPT', de: 'ChatGPT' },
+                sectionOrder: ['system', 'task'],
+                formatRules: {
+                    joinSections: '\n\n',
+                    includeSectionHeaders: true,
+                    headerFormat: '## {section}',
+                },
+            },
+        );
+        expect(text).toContain('## system\nYou are helpful.');
+        expect(text).toContain('## task\nWrite a brief.');
+    });
+
+    it('omits system/output and appends Midjourney suffixes', () => {
+        const text = formatForModel(
+            {
+                system: 'Ignore me',
+                task: 'neon skyline',
+                parameters: 'cinematic lighting',
+                output: 'single prompt',
+            },
+            {
+                id: 'midjourney',
+                label: { en: 'Midjourney', de: 'Midjourney' },
+                sectionOrder: ['system', 'task', 'parameters', 'output'],
+                formatRules: {
+                    joinSections: ', ',
+                    omitSystemSection: true,
+                    omitOutputSection: true,
+                    suffixParams: ['--ar', '--v'],
+                    negativePromptPrefix: '--no',
+                },
+            },
+            {
+                parameterValues: {
+                    aspectRatio: '16:9',
+                    modelVersion: '6',
+                    negativePrompt: 'blur, watermark',
+                },
+            },
+        );
+        expect(text).toBe('neon skyline, cinematic lighting --ar 16:9 --v 6\n--no blur, watermark');
+        expect(text).not.toContain('Ignore me');
+        expect(text).not.toContain('single prompt');
+    });
+
+    it('compacts Suno-style tags and enforces maxLength', () => {
+        const text = formatForModel(
+            {
+                task: 'Create style',
+                parameters: 'Genre: indie\nMood: warm',
+            },
+            {
+                id: 'suno',
+                label: { en: 'Suno', de: 'Suno' },
+                sectionOrder: ['task', 'parameters'],
+                formatRules: {
+                    joinSections: ', ',
+                    compactTags: true,
+                    maxLength: 40,
+                },
+            },
+        );
+        expect(text).toContain('Create style, Genre: indie, Mood: warm');
+        expect(text.length).toBeLessThanOrEqual(40);
+    });
+
+    it('uses modelLabel in compiled templates', () => {
+        const built = buildPrompt({
+            template: {
+                id: 'hero',
+                sections: [{ id: 'output', template: 'Ready for {{modelLabel}}' }],
+            },
+            parameterValues: {},
+            model: {
+                id: 'flux',
+                label: { en: 'Flux', de: 'Flux' },
+                sectionOrder: ['output'],
+            },
+            extraContext: { modelLabel: 'Flux' },
+        });
+        expect(built.compiled).toBe('Ready for Flux');
+    });
 });

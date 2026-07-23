@@ -443,24 +443,24 @@
       },
       "sections": {
         "system": {
-          "en": "You are an experienced {{roleLabel}}. Create Suno-optimized style prompts without naming real artists or bands.",
-          "de": "Du bist ein erfahrener {{roleLabel}}. Erstelle Suno-optimierte Style-Prompts, ohne echte Künstler oder Bands zu nennen."
+          "en": "You are an experienced {{roleLabel}}. Create {{modelLabel}}-optimized style prompts without naming real artists or bands.",
+          "de": "Du bist ein erfahrener {{roleLabel}}. Erstelle für {{modelLabel}} optimierte Style-Prompts, ohne echte Künstler oder Bands zu nennen."
         },
         "context": {
           "en": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
           "de": "{{#if previousOutput}}Ausgabe des vorherigen Schritts:\n{{previousOutput}}{{/if}}"
         },
         "task": {
-          "en": "Create a Suno style prompt for {{taskLabel}}.",
-          "de": "Erstelle einen Suno-Style-Prompt für {{taskLabel}}."
+          "en": "Create a {{modelLabel}} style prompt for {{taskLabel}}.",
+          "de": "Erstelle einen Style-Prompt für {{modelLabel}} ({{taskLabel}})."
         },
         "parameters": {
           "en": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}{{#if forbiddenArtistNames}}\nNever reference these artists: {{forbiddenArtistNames}}{{/if}}\nUse descriptive tags only — no real artist or band names.",
           "de": "Genre: {{genre}}\nBPM: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\nStimme: {{voice}}{{#if forbiddenArtistNames}}\nNenne diese Künstler niemals: {{forbiddenArtistNames}}{{/if}}\nVerwende nur beschreibende Tags — keine echten Künstler- oder Bandnamen."
         },
         "output": {
-          "en": "Deliver ONE Suno style prompt string of at most 1000 characters (hard limit). Prefer a compact tag-style line first. Never include real artist or band names.",
-          "de": "Liefere GENAU EINEN Suno-Style-Prompt mit maximal 1000 Zeichen (feste Grenze). Bevorzuge zuerst eine kompakte Tag-Zeile. Nenne niemals echte Künstler- oder Bandnamen."
+          "en": "Deliver ONE {{modelLabel}} style prompt string (respect the tool limit). Prefer a compact tag-style line first. Never include real artist or band names.",
+          "de": "Liefere GENAU EINEN Style-Prompt für {{modelLabel}} (Limit der Ziel-AI beachten). Bevorzuge zuerst eine kompakte Tag-Zeile. Nenne niemals echte Künstler- oder Bandnamen."
         }
       }
     },
@@ -517,8 +517,8 @@
           "de": "Motiv: {{motiv}}\nSeitenverhältnis: {{aspectRatio}}\nStil: {{style}}\nFarben: {{colors}}\nKomposition: {{composition}}\nText im Bild: {{textInImage}}\nGröße: {{size}}\nLicht: {{lighting}}\nKamera: {{camera}}\n{{#if reference}}Referenz:\n{{reference}}\n{{/if}}{{#if imageFormat}}Bevorzugtes Dateiformat: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} Bei SVG: mehrfarbig mit CSS-Variablen (--svg-primary/secondary/accent/surface/muted) für einfaches Theming.{{/if}}\n{{#if negativePrompt}}Ausschließen: {{negativePrompt}}{{/if}}"
         },
         "output": {
-          "en": "Deliver a single optimized image generation prompt. Explicitly state aspect ratio, color palette, composition (e.g. rule of thirds / negative space), lighting, and whether text appears in the image. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
-          "de": "Liefere einen einzelnen optimierten Bildgenerierungs-Prompt. Nenne explizit Seitenverhältnis, Farbpalette, Komposition (z. B. Drittel-Regel / Negativraum), Licht und ob Text im Bild erscheint. Einsatzbereit für Midjourney, Flux oder GPT Image {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
+          "en": "Deliver a single optimized image generation prompt. Explicitly state aspect ratio, color palette, composition (e.g. rule of thirds / negative space), lighting, and whether text appears in the image. Ready for {{modelLabel}} {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
+          "de": "Liefere einen einzelnen optimierten Bildgenerierungs-Prompt. Nenne explizit Seitenverhältnis, Farbpalette, Komposition (z. B. Drittel-Regel / Negativraum), Licht und ob Text im Bild erscheint. Einsatzbereit für {{modelLabel}} {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
         }
       }
     },
@@ -546,8 +546,8 @@
           "de": "Motiv: {{motiv}}\nSeitenverhältnis: {{aspectRatio}}\nStil: {{style}}\nFarben: {{colors}}\nKomposition: {{composition}}\nText im Bild: {{textInImage}}\nGröße: {{size}}\nLicht: {{lighting}}\n{{#if artistName}}Künstler-/Titeltext: {{artistName}}\n{{/if}}{{#if imageFormat}}Bevorzugtes Dateiformat: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} Bei SVG: mehrfarbig mit CSS-Variablen (--svg-primary/secondary/accent/surface/muted) für einfaches Theming.{{/if}}\n{{#if negativePrompt}}Ausschließen: {{negativePrompt}}{{/if}}"
         },
         "output": {
-          "en": "Deliver a single optimized cover prompt. Include aspect ratio (often 1:1), palette, composition, lighting, negative space for optional title/artist text, and what must not appear. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
-          "de": "Liefere einen einzelnen optimierten Cover-Prompt. Nenne Seitenverhältnis (oft 1:1), Farbpalette, Komposition, Licht, Negativraum für optionalen Titel-/Künstlertext und was nicht erscheinen darf. Einsatzbereit für Midjourney, Flux oder GPT Image {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
+          "en": "Deliver a single optimized cover prompt. Include aspect ratio (often 1:1), palette, composition, lighting, negative space for optional title/artist text, and what must not appear. Ready for {{modelLabel}} {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
+          "de": "Liefere einen einzelnen optimierten Cover-Prompt. Nenne Seitenverhältnis (oft 1:1), Farbpalette, Komposition, Licht, Negativraum für optionalen Titel-/Künstlertext und was nicht erscheinen darf. Einsatzbereit für {{modelLabel}} {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
         }
       }
     },
@@ -662,8 +662,8 @@
           "de": "Motiv: {{motiv}}\nSeitenverhältnis: {{aspectRatio}}\nStil: {{style}}\nFarben: {{colors}}\nKomposition: {{composition}}\nText im Bild: {{textInImage}}\nGröße: {{size}}\nLicht: {{lighting}}\nKamera: {{camera}}\n{{#if reference}}Referenz:\n{{reference}}\n{{/if}}{{#if imageFormat}}Bevorzugtes Dateiformat: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} Bei SVG: mehrfarbig mit CSS-Variablen (--svg-primary/secondary/accent/surface/muted) für einfaches Theming.{{/if}}\n{{#if negativePrompt}}Ausschließen: {{negativePrompt}}{{/if}}"
         },
         "output": {
-          "en": "Deliver an optimized comic prompt. Specify panel count or single-panel framing, ink/style, palette, composition, speech-bubble text policy, and exclusions. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
-          "de": "Liefere einen optimierten Comic-Prompt. Beschreibe Panel-Anzahl oder Einzelpanel-Framing, Tuschestil, Farbpalette, Komposition, Umgang mit Sprechblasentext und Ausschlüsse. Einsatzbereit für Midjourney, Flux oder GPT Image {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
+          "en": "Deliver an optimized comic prompt. Specify panel count or single-panel framing, ink/style, palette, composition, speech-bubble text policy, and exclusions. Ready for {{modelLabel}} {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
+          "de": "Liefere einen optimierten Comic-Prompt. Beschreibe Panel-Anzahl oder Einzelpanel-Framing, Tuschestil, Farbpalette, Komposition, Umgang mit Sprechblasentext und Ausschlüsse. Einsatzbereit für {{modelLabel}} {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
         }
       }
     },
@@ -691,8 +691,8 @@
           "de": "Motiv: {{motiv}}\nSeitenverhältnis: {{aspectRatio}}\nStil: {{style}}\nFarben: {{colors}}\nKomposition: {{composition}}\nText im Bild: {{textInImage}}\nGröße: {{size}}\nLicht: {{lighting}}\nKamera: {{camera}}\n{{#if reference}}Referenz:\n{{reference}}\n{{/if}}{{#if imageFormat}}Bevorzugtes Dateiformat: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} Bei SVG: mehrfarbig mit CSS-Variablen (--svg-primary/secondary/accent/surface/muted) für einfaches Theming.{{/if}}\n{{#if negativePrompt}}Ausschließen: {{negativePrompt}}{{/if}}"
         },
         "output": {
-          "en": "Deliver a product photography prompt. Specify surface/background, key light, shadow softness, aspect ratio, composition (centered vs rule of thirds), and whether packaging text appears. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
-          "de": "Liefere einen Produktfoto-Prompt. Beschreibe Untergrund/Hintergrund, Hauptlicht, Schattenweichheit, Seitenverhältnis, Komposition (zentriert vs. Drittel-Regel) und ob Verpackungstext erscheint. Einsatzbereit für Midjourney, Flux oder GPT Image {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
+          "en": "Deliver a product photography prompt. Specify surface/background, key light, shadow softness, aspect ratio, composition (centered vs rule of thirds), and whether packaging text appears. Ready for {{modelLabel}} {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
+          "de": "Liefere einen Produktfoto-Prompt. Beschreibe Untergrund/Hintergrund, Hauptlicht, Schattenweichheit, Seitenverhältnis, Komposition (zentriert vs. Drittel-Regel) und ob Verpackungstext erscheint. Einsatzbereit für {{modelLabel}} {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
         }
       }
     },
@@ -749,8 +749,8 @@
           "de": "Motiv: {{motiv}}\nSeitenverhältnis: {{aspectRatio}}\nStil: {{style}}\nFarben: {{colors}}\nKomposition: {{composition}}\nText im Bild: {{textInImage}}\nGröße: {{size}}\nLicht: {{lighting}}\nKamera: {{camera}}\n{{#if reference}}Referenz:\n{{reference}}\n{{/if}}{{#if imageFormat}}Bevorzugtes Dateiformat: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} Bei SVG: mehrfarbig mit CSS-Variablen (--svg-primary/secondary/accent/surface/muted) für einfaches Theming.{{/if}}\n{{#if negativePrompt}}Ausschließen: {{negativePrompt}}{{/if}}"
         },
         "output": {
-          "en": "Deliver a social image prompt. Emphasize the chosen aspect ratio (prefer 1:1 or 9:16), focal subject, palette, composition with safe margins for optional overlay text, and platform-ready clarity. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
-          "de": "Liefere einen Social-Bildprompt. Betone das gewählte Seitenverhältnis (bevorzugt 1:1 oder 9:16), Hauptmotiv, Farbpalette, Komposition mit sicheren Rändern für optionalen Overlay-Text und plattformgerechte Klarheit. Einsatzbereit für Midjourney, Flux oder GPT Image {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
+          "en": "Deliver a social image prompt. Emphasize the chosen aspect ratio (prefer 1:1 or 9:16), focal subject, palette, composition with safe margins for optional overlay text, and platform-ready clarity. Ready for {{modelLabel}} {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}",
+          "de": "Liefere einen Social-Bildprompt. Betone das gewählte Seitenverhältnis (bevorzugt 1:1 oder 9:16), Hauptmotiv, Farbpalette, Komposition mit sicheren Rändern für optionalen Overlay-Text und plattformgerechte Klarheit. Einsatzbereit für {{modelLabel}} {{#if imageFormat}}Zielformat: {{imageFormat}}.{{/if}}"
         }
       }
     },
@@ -2151,8 +2151,8 @@
       },
       "sections": {
         "system": {
-          "en": "You are an experienced {{roleLabel}}. Write shot-ready prompts for AI video tools (Runway, Kling, Sora-style). Keep motion, camera, and continuity explicit.",
-          "de": "Du bist ein erfahrener {{roleLabel}}. Schreibe drehreife Prompts für KI-Videotools (Runway, Kling, Sora-artig). Halte Bewegung, Kamera und Kontinuität explizit fest."
+          "en": "You are an experienced {{roleLabel}}. Write shot-ready prompts optimized for {{modelLabel}}. Keep motion, camera, and continuity explicit.",
+          "de": "Du bist ein erfahrener {{roleLabel}}. Schreibe drehreife Prompts, optimiert für {{modelLabel}}. Halte Bewegung, Kamera und Kontinuität explizit fest."
         },
         "context": {
           "en": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step:\n{{previousOutput}}\n{{/if}}{{#if videoFormat}}Deliverable: {{videoFormat}}\n{{/if}}",

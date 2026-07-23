@@ -378,7 +378,7 @@
       "modelHints": [
         "chatgpt",
         "claude",
-        "suno"
+        "gemini"
       ],
       "category": "music"
     },
@@ -410,7 +410,7 @@
       "modelHints": [
         "chatgpt",
         "claude",
-        "suno"
+        "gemini"
       ],
       "category": "music"
     },
@@ -443,19 +443,19 @@
       "modelHints": [
         "chatgpt",
         "claude",
-        "suno"
+        "gemini"
       ],
       "category": "music"
     },
     {
       "id": "suno-style",
       "label": {
-        "de": "Suno Style-Prompt",
-        "en": "Suno style prompt"
+        "de": "Musik Style-Prompt",
+        "en": "Music style prompt"
       },
       "description": {
-        "de": "Separater Style-Prompt für Suno (max. 1000 Zeichen)",
-        "en": "Separate Suno style prompt (max 1000 characters)"
+        "de": "Separater Style-Prompt für Suno, Udio oder Stable Audio",
+        "en": "Separate style prompt for Suno, Udio, or Stable Audio"
       },
       "roleIds": [
         "music-producer",
@@ -473,7 +473,9 @@
       ],
       "templateId": "suno-style",
       "modelHints": [
-        "suno"
+        "suno",
+        "udio",
+        "stable-audio"
       ],
       "category": "music"
     },
@@ -502,7 +504,7 @@
       "modelHints": [
         "chatgpt",
         "claude",
-        "suno"
+        "gemini"
       ],
       "category": "music"
     },
@@ -2504,9 +2506,11 @@
       ],
       "templateId": "ai-video-prompts",
       "modelHints": [
-        "chatgpt",
-        "claude",
-        "gemini"
+        "runway",
+        "kling",
+        "sora",
+        "luma",
+        "pika"
       ],
       "category": "video",
       "parameterDefaults": {

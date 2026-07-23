@@ -47,6 +47,7 @@ import { normalizeCategory } from './categories.js';
  * @property {string} id
  * @property {Record<ToolsLocale, string>} label
  * @property {string[]} sectionOrder
+ * @property {'llm' | 'music' | 'image' | 'video'} [family]
  * @property {Record<string, unknown>} [formatRules]
  * @property {'free' | 'paid'} [defaultPlan]
  * @property {Array<{ id: string, label?: Record<ToolsLocale, string> }>} [plans]

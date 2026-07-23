@@ -228,7 +228,9 @@ export class StateManager {
         this.sections.applyCompiled(built.compiledList, { preserveOverrides: true });
 
         const sections = this.sections.toMap();
-        const compiled = formatForModel(sections, model);
+        const compiled = formatForModel(sections, model, {
+            parameterValues: this.draft.parameterValues,
+        });
 
         this.patchDraft(
             {
@@ -285,7 +287,9 @@ export class StateManager {
 
     getCompiledPrompt() {
         const model = this.config.models.find((m) => m.id === this.draft.modelId);
-        return formatForModel(this.sections.toMap(), model);
+        return formatForModel(this.sections.toMap(), model, {
+            parameterValues: this.draft.parameterValues,
+        });
     }
 
     /** @returns {import('./prompt-builder.js').CompiledSection[]} */

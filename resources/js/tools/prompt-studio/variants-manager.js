@@ -127,7 +127,7 @@ export class VariantsManager {
         });
 
         const sections = { ...built.sections, ...draft.sections };
-        return formatForModel(sections, model);
+        return formatForModel(sections, model, { parameterValues: draft.parameterValues });
     }
 
     /**
@@ -165,6 +165,8 @@ export class VariantsManager {
             model,
             extraContext: { roleId: draft.roleId, taskId: draft.taskId },
         });
-        return formatForModel({ ...built.sections, ...draft.sections }, model);
+        return formatForModel({ ...built.sections, ...draft.sections }, model, {
+            parameterValues: draft.parameterValues,
+        });
     }
 }

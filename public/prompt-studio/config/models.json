@@ -2,20 +2,39 @@
   "models": [
     {
       "id": "chatgpt",
-      "label": { "de": "ChatGPT", "en": "ChatGPT" },
-      "sectionOrder": ["system", "context", "task", "parameters", "output"],
+      "label": {
+        "de": "ChatGPT",
+        "en": "ChatGPT"
+      },
+      "sectionOrder": [
+        "system",
+        "context",
+        "task",
+        "parameters",
+        "output"
+      ],
       "formatRules": {
         "joinSections": "\n\n",
         "includeSectionHeaders": true,
         "headerFormat": "## {section}",
         "systemRole": "system",
         "userRole": "user"
-      }
+      },
+      "family": "llm"
     },
     {
       "id": "claude",
-      "label": { "de": "Claude", "en": "Claude" },
-      "sectionOrder": ["system", "context", "task", "parameters", "output"],
+      "label": {
+        "de": "Claude",
+        "en": "Claude"
+      },
+      "sectionOrder": [
+        "system",
+        "context",
+        "task",
+        "parameters",
+        "output"
+      ],
       "formatRules": {
         "joinSections": "\n\n",
         "includeSectionHeaders": true,
@@ -23,32 +42,55 @@
         "systemRole": "system",
         "userRole": "user",
         "preferXmlTags": false
-      }
+      },
+      "family": "llm"
     },
     {
       "id": "gemini",
-      "label": { "de": "Gemini", "en": "Gemini" },
-      "sectionOrder": ["context", "task", "parameters", "output"],
+      "label": {
+        "de": "Gemini",
+        "en": "Gemini"
+      },
+      "sectionOrder": [
+        "context",
+        "task",
+        "parameters",
+        "output"
+      ],
       "formatRules": {
         "joinSections": "\n\n",
         "includeSectionHeaders": true,
         "headerFormat": "**{section}**",
         "omitSystemSection": true
-      }
+      },
+      "family": "llm"
     },
     {
       "id": "suno",
-      "label": { "de": "Suno", "en": "Suno" },
-      "sectionOrder": ["task", "parameters", "output"],
+      "label": {
+        "de": "Suno",
+        "en": "Suno"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters",
+        "output"
+      ],
       "defaultPlan": "free",
       "plans": [
         {
           "id": "free",
-          "label": { "de": "Free", "en": "Free" }
+          "label": {
+            "de": "Free",
+            "en": "Free"
+          }
         },
         {
           "id": "paid",
-          "label": { "de": "Bezahlt", "en": "Paid" }
+          "label": {
+            "de": "Bezahlt",
+            "en": "Paid"
+          }
         }
       ],
       "limits": {
@@ -62,56 +104,246 @@
       "formatRules": {
         "joinSections": ", ",
         "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
         "compactTags": true,
-        "maxLength": 1000,
-        "stylePrefix": "[Style:"
-      }
+        "maxLength": 1000
+      },
+      "family": "music"
+    },
+    {
+      "id": "udio",
+      "label": {
+        "de": "Udio",
+        "en": "Udio"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters",
+        "output"
+      ],
+      "limits": {
+        "default": 2000,
+        "style": 2000,
+        "lyrics": 3000
+      },
+      "formatRules": {
+        "joinSections": ", ",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "compactTags": true,
+        "maxLength": 2000
+      },
+      "family": "music"
+    },
+    {
+      "id": "stable-audio",
+      "label": {
+        "de": "Stable Audio",
+        "en": "Stable Audio"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
+      "limits": {
+        "default": 1500,
+        "style": 1500
+      },
+      "formatRules": {
+        "joinSections": ". ",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "omitOutputSection": true,
+        "maxLength": 1500
+      },
+      "family": "music"
     },
     {
       "id": "midjourney",
-      "label": { "de": "Midjourney", "en": "Midjourney" },
-      "sectionOrder": ["task", "parameters"],
+      "label": {
+        "de": "Midjourney",
+        "en": "Midjourney"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
       "formatRules": {
         "joinSections": ", ",
         "includeSectionHeaders": false,
         "omitSystemSection": true,
+        "omitContextSection": true,
         "omitOutputSection": true,
-        "suffixParams": ["--ar", "--v"],
+        "suffixParams": [
+          "--ar",
+          "--v"
+        ],
         "negativePromptPrefix": "--no"
-      }
+      },
+      "family": "image"
     },
     {
       "id": "flux",
-      "label": { "de": "Flux", "en": "Flux" },
-      "sectionOrder": ["task", "parameters"],
+      "label": {
+        "de": "Flux",
+        "en": "Flux"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
       "formatRules": {
         "joinSections": ", ",
         "includeSectionHeaders": false,
         "omitSystemSection": true,
+        "omitContextSection": true,
         "omitOutputSection": true,
         "negativePromptPrefix": "Negative:"
-      }
+      },
+      "family": "image"
     },
     {
       "id": "gpt-image",
-      "label": { "de": "GPT Image", "en": "GPT Image" },
-      "sectionOrder": ["task", "parameters", "output"],
+      "label": {
+        "de": "GPT Image",
+        "en": "GPT Image"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters",
+        "output"
+      ],
       "formatRules": {
         "joinSections": "\n",
         "includeSectionHeaders": false,
         "omitSystemSection": true,
+        "omitContextSection": true,
         "naturalLanguage": true
-      }
+      },
+      "family": "image"
+    },
+    {
+      "id": "runway",
+      "label": {
+        "de": "Runway",
+        "en": "Runway"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
+      "formatRules": {
+        "joinSections": "\n",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "omitOutputSection": true,
+        "negativePromptPrefix": "Avoid:"
+      },
+      "family": "video"
+    },
+    {
+      "id": "kling",
+      "label": {
+        "de": "Kling",
+        "en": "Kling"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
+      "formatRules": {
+        "joinSections": "\n",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "omitOutputSection": true,
+        "negativePromptPrefix": "Negative prompt:"
+      },
+      "family": "video"
+    },
+    {
+      "id": "sora",
+      "label": {
+        "de": "Sora",
+        "en": "Sora"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters",
+        "output"
+      ],
+      "formatRules": {
+        "joinSections": "\n\n",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "naturalLanguage": true
+      },
+      "family": "video"
+    },
+    {
+      "id": "luma",
+      "label": {
+        "de": "Luma Dream Machine",
+        "en": "Luma Dream Machine"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
+      "formatRules": {
+        "joinSections": "\n",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "omitOutputSection": true,
+        "negativePromptPrefix": "Avoid:"
+      },
+      "family": "video"
+    },
+    {
+      "id": "pika",
+      "label": {
+        "de": "Pika",
+        "en": "Pika"
+      },
+      "sectionOrder": [
+        "task",
+        "parameters"
+      ],
+      "formatRules": {
+        "joinSections": ", ",
+        "includeSectionHeaders": false,
+        "omitSystemSection": true,
+        "omitContextSection": true,
+        "omitOutputSection": true,
+        "negativePromptPrefix": "Negative:"
+      },
+      "family": "video"
     },
     {
       "id": "generic",
-      "label": { "de": "Generisch", "en": "Generic" },
-      "sectionOrder": ["system", "context", "task", "parameters", "output"],
+      "label": {
+        "de": "Generisch",
+        "en": "Generic"
+      },
+      "sectionOrder": [
+        "system",
+        "context",
+        "task",
+        "parameters",
+        "output"
+      ],
       "formatRules": {
         "joinSections": "\n\n",
         "includeSectionHeaders": true,
         "headerFormat": "{section}:"
-      }
+      },
+      "family": "llm"
     }
   ]
 }

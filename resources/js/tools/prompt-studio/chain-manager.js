@@ -3,6 +3,7 @@ import { getParametersForTask, getTemplate } from './config-loader.js';
 import { t } from './labels.js';
 import { resolveLocalizedLabel, localizeParameterValues } from './localized-label.js';
 import { debouncedSaveSession } from './session-store.js';
+import { preferModelForTask } from './model-limits.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./config-validator.js').ToolsLocale} ToolsLocale */
@@ -230,33 +231,37 @@ export class ChainManager {
         const task = this.config.tasks.find((t) => t.id === step.taskId);
         const templateId = task?.templateId ?? (step.taskId === 'custom-block' ? 'custom-block' : step.taskId);
         const template = getTemplate(templateId, this.config);
-        const model = this.config.models[0];
+        const modelId = preferModelForTask(task, '', this.config.models);
+        const model = this.config.models.find((m) => m.id === modelId) ?? this.config.models[0];
         if (!template) return '';
 
         const role = this.config.roles.find((r) => r.id === step.roleId);
         const parameterDefs = task ? getParametersForTask(task.id, this.config) : [];
+        const parameterValues = localizeParameterValues(
+            {
+                ...(step.parameterValues ?? {}),
+                previousOutput: step.previousOutput ?? '',
+                goal: step.parameterValues?.goal ?? '',
+            },
+            parameterDefs,
+            locale,
+        );
         const built = buildPrompt({
             template,
-            parameterValues: localizeParameterValues(
-                {
-                    ...(step.parameterValues ?? {}),
-                    previousOutput: step.previousOutput ?? '',
-                    goal: step.parameterValues?.goal ?? '',
-                },
-                parameterDefs,
-                locale,
-            ),
+            parameterValues,
             model,
             extraContext: {
                 roleId: step.roleId,
                 taskId: step.taskId,
+                modelId: model?.id ?? '',
                 roleLabel: resolveLocalizedLabel(role?.label, locale, step.roleId),
                 taskLabel: resolveLocalizedLabel(task?.label, locale, step.taskId),
+                modelLabel: resolveLocalizedLabel(model?.label, locale, model?.id ?? ''),
             },
             locale,
         });
 
-        return formatForModel(built.sections, model);
+        return formatForModel(built.sections, model, { parameterValues });
     }
 
     /**

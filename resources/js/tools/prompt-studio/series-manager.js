@@ -77,7 +77,7 @@ export class SeriesManager {
                     },
                 });
                 const sections = { ...built.sections, ...series.baseDraft.sections };
-                compiled = formatForModel(sections, model);
+                compiled = formatForModel(sections, model, { parameterValues });
             }
 
             return {

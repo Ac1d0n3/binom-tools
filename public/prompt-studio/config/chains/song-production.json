@@ -60,8 +60,8 @@
       "taskId": "suno-style",
       "passOutputAs": "previousOutput",
       "notes": {
-        "de": "Suno Style Prompt generieren",
-        "en": "Generate Suno style prompt"
+        "de": "Musik-Style-Prompt für Suno/Udio generieren",
+        "en": "Generate music style prompt for Suno/Udio"
       }
     },
     {

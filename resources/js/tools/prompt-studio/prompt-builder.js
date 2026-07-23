@@ -7,6 +7,19 @@ import { formatDisplayValue, resolveLocalizedLabel } from './localized-label.js'
  */
 
 /**
+ * Map Midjourney-style CLI flags to draft parameter ids.
+ * @type {Record<string, string>}
+ */
+const SUFFIX_PARAM_KEYS = {
+    '--ar': 'aspectRatio',
+    '--v': 'modelVersion',
+    '--stylize': 'stylize',
+    '--s': 'stylize',
+    '--chaos': 'chaos',
+    '--q': 'quality',
+};
+
+/**
  * @param {unknown} value
  * @returns {boolean}
  */
@@ -87,7 +100,6 @@ export function compileSections(sectionDefs, context, locale = 'en') {
 
 /**
  * @param {CompiledSection[]} sections
- * @param {PromptModelDef | undefined} model
  * @returns {Record<string, string>}
  */
 export function sectionsToMap(sections) {
@@ -100,37 +112,130 @@ export function sectionsToMap(sections) {
 }
 
 /**
- * @param {Record<string, string>} sections
- * @param {PromptModelDef | undefined} model
+ * @param {Record<string, unknown>} rules
  * @returns {string}
  */
-export function formatForModel(sections, model) {
+function resolveSectionSeparator(rules) {
+    if (typeof rules.joinSections === 'string') return rules.joinSections;
+    if (typeof rules.separator === 'string') return rules.separator;
+    if (rules.style === 'comma-separated') return ', ';
+    if (rules.style === 'single-block') return ' ';
+    return '\n\n';
+}
+
+/**
+ * @param {string} sectionId
+ * @param {Record<string, unknown>} rules
+ * @returns {string}
+ */
+function formatSectionHeader(sectionId, rules) {
+    const template =
+        typeof rules.headerFormat === 'string' && rules.headerFormat.trim()
+            ? rules.headerFormat
+            : '## {section}';
+    return template.replaceAll('{section}', sectionId);
+}
+
+/**
+ * @param {Record<string, unknown>} parameterValues
+ * @param {unknown} suffixParams
+ * @returns {string}
+ */
+function buildSuffixParams(parameterValues, suffixParams) {
+    if (!Array.isArray(suffixParams) || suffixParams.length === 0) return '';
+
+    /** @type {string[]} */
+    const parts = [];
+    for (const raw of suffixParams) {
+        if (typeof raw !== 'string' || !raw.trim()) continue;
+        const flag = raw.trim();
+        const key = SUFFIX_PARAM_KEYS[flag];
+        if (!key) continue;
+        const value = parameterValues[key];
+        if (!isTruthy(value)) continue;
+        parts.push(`${flag} ${String(value).trim()}`);
+    }
+    return parts.length ? ` ${parts.join(' ')}` : '';
+}
+
+/**
+ * @param {Record<string, unknown>} parameterValues
+ * @param {unknown} prefix
+ * @returns {string}
+ */
+function buildNegativePromptSuffix(parameterValues, prefix) {
+    if (typeof prefix !== 'string' || !prefix.trim()) return '';
+    const raw = parameterValues.negativePrompt;
+    if (!isTruthy(raw)) return '';
+    const text = String(raw).trim();
+    if (!text) return '';
+    const spacer = prefix.endsWith(' ') ? '' : ' ';
+    return `\n${prefix}${spacer}${text}`;
+}
+
+/**
+ * Format compiled sections according to the target model's formatRules.
+ * @param {Record<string, string>} sections
+ * @param {PromptModelDef | undefined} model
+ * @param {{ parameterValues?: Record<string, unknown> }} [options]
+ * @returns {string}
+ */
+export function formatForModel(sections, model, options = {}) {
+    const parameterValues = options.parameterValues ?? {};
     const order = model?.sectionOrder ?? Object.keys(sections);
-    const rules = model?.formatRules ?? {};
-    const separator = typeof rules.separator === 'string' ? rules.separator : '\n\n';
-    const includeLabels = rules.includeLabels === true;
+    const rules = /** @type {Record<string, unknown>} */ (model?.formatRules ?? {});
     const omitEmpty = rules.omitEmpty !== false;
+    const includeHeaders = rules.includeSectionHeaders === true || rules.includeLabels === true;
+    const separator = resolveSectionSeparator(rules);
 
     const parts = order
         .map((sectionId) => {
+            if (sectionId === 'system' && rules.omitSystemSection === true) return '';
+            if (sectionId === 'output' && rules.omitOutputSection === true) return '';
+            if (sectionId === 'context' && rules.omitContextSection === true) return '';
+
             const content = sections[sectionId]?.trim() ?? '';
             if (omitEmpty && !content) return '';
-            if (includeLabels) {
-                return `## ${sectionId}\n${content}`;
+            if (includeHeaders) {
+                return `${formatSectionHeader(sectionId, rules)}\n${content}`;
             }
             return content;
         })
         .filter(Boolean);
 
-    if (rules.style === 'comma-separated') {
-        return parts.join(', ');
+    const joinWith = rules.compactTags === true ? ', ' : separator;
+    let body = parts.join(joinWith);
+
+    if (rules.compactTags === true) {
+        body = body
+            .replace(/\n+/g, ', ')
+            .replace(/\s*,\s*/g, ', ')
+            .replace(/,\s*,+/g, ', ')
+            .trim();
     }
 
-    if (rules.style === 'single-block') {
-        return parts.join(' ');
+    if (typeof rules.stylePrefix === 'string' && rules.stylePrefix.trim() && body) {
+        const prefix = rules.stylePrefix.trim();
+        const close =
+            typeof rules.styleSuffix === 'string'
+                ? rules.styleSuffix
+                : prefix.includes('[') && !prefix.includes(']')
+                  ? ']'
+                  : '';
+        const needsSpace = /[:\w]$/.test(prefix);
+        body = `${prefix}${needsSpace ? ' ' : ''}${body}${close}`;
     }
 
-    return parts.join(separator);
+    body += buildSuffixParams(parameterValues, rules.suffixParams);
+    body += buildNegativePromptSuffix(parameterValues, rules.negativePromptPrefix);
+
+    if (typeof rules.maxLength === 'number' && Number.isFinite(rules.maxLength) && rules.maxLength > 0) {
+        if (body.length > rules.maxLength) {
+            body = body.slice(0, rules.maxLength).trimEnd();
+        }
+    }
+
+    return body.trim();
 }
 
 /**
@@ -161,7 +266,7 @@ export function buildPrompt(options) {
     const context = buildTemplateContext(parameterValues, extraContext);
     const compiledList = compileSections(template.sections, context, locale);
     const sections = sectionsToMap(compiledList);
-    const compiled = formatForModel(sections, model);
+    const compiled = formatForModel(sections, model, { parameterValues });
 
     return { sections, compiled, compiledList };
 }

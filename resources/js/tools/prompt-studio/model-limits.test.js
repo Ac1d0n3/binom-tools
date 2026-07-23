@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
     getLimitKindForTask,
     modelHasPlans,
+    modelsForTask,
     normalizeModelPlan,
     preferModelForTask,
     resolveCharLimit,
+    shouldShowTargetAi,
 } from './model-limits.js';
 
 describe('model-limits', () => {
@@ -24,6 +26,10 @@ describe('model-limits', () => {
         },
         formatRules: { maxLength: 1000 },
     };
+
+    const chatgpt = { id: 'chatgpt', label: { de: 'ChatGPT', en: 'ChatGPT' }, sectionOrder: [] };
+    const claude = { id: 'claude', label: { de: 'Claude', en: 'Claude' }, sectionOrder: [] };
+    const runway = { id: 'runway', label: { de: 'Runway', en: 'Runway' }, sectionOrder: [] };
 
     it('normalizes plans', () => {
         expect(normalizeModelPlan('paid')).toBe('paid');
@@ -45,9 +51,55 @@ describe('model-limits', () => {
     });
 
     it('prefers model hints for song tasks', () => {
-        const models = [suno, { id: 'chatgpt', label: { de: 'ChatGPT', en: 'ChatGPT' }, sectionOrder: [] }];
+        const models = [suno, chatgpt];
         expect(preferModelForTask({ id: 'lyrics', modelHints: ['suno'] }, 'chatgpt', models)).toBe('suno');
         expect(preferModelForTask({ id: 'lyrics', modelHints: ['suno'] }, 'suno', models)).toBe('suno');
+    });
+
+    it('filters models by task hints', () => {
+        const models = [
+            { ...chatgpt, family: 'llm' },
+            { ...claude, family: 'llm' },
+            { ...suno, family: 'music' },
+            { ...runway, family: 'video' },
+        ];
+        expect(modelsForTask({ id: 'lyrics', modelHints: ['suno', 'chatgpt'] }, models).map((m) => m.id)).toEqual([
+            'suno',
+            'chatgpt',
+        ]);
+        // Unknown hints must not fall back to the full catalog.
+        expect(modelsForTask({ id: 'x', modelHints: ['missing'] }, models)).toEqual([]);
+        // No hints → LLM family only.
+        expect(modelsForTask({ id: 'plain' }, models).map((m) => m.id)).toEqual(['chatgpt', 'claude']);
+    });
+
+    it('shows Target AI for multi-model tasks and Suno plans', () => {
+        expect(
+            shouldShowTargetAi({
+                task: { id: 'brief', modelHints: ['chatgpt', 'claude'] },
+                models: [chatgpt, claude],
+                modelId: 'chatgpt',
+            }),
+        ).toBe(true);
+
+        expect(
+            shouldShowTargetAi({
+                task: { id: 'suno-style', modelHints: ['suno'] },
+                models: [suno],
+                modelId: 'suno',
+            }),
+        ).toBe(true);
+
+        expect(
+            shouldShowTargetAi({
+                task: { id: 'only-one', modelHints: ['runway'] },
+                models: [runway],
+                modelId: 'runway',
+            }),
+        ).toBe(false);
+
+        expect(shouldShowTargetAi({ task: null, models: [chatgpt], tech: true })).toBe(true);
+        expect(shouldShowTargetAi({ task: null, models: [chatgpt], tech: false })).toBe(false);
     });
 
     it('reports plans', () => {
