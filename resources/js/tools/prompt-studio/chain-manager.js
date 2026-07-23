@@ -1,7 +1,7 @@
 import { buildPrompt, formatForModel } from './prompt-builder.js';
-import { getTemplate } from './config-loader.js';
+import { getParametersForTask, getTemplate } from './config-loader.js';
 import { t } from './labels.js';
-import { resolveLocalizedLabel } from './localized-label.js';
+import { resolveLocalizedLabel, localizeParameterValues } from './localized-label.js';
 import { debouncedSaveSession } from './session-store.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
@@ -234,13 +234,18 @@ export class ChainManager {
         if (!template) return '';
 
         const role = this.config.roles.find((r) => r.id === step.roleId);
+        const parameterDefs = task ? getParametersForTask(task.id, this.config) : [];
         const built = buildPrompt({
             template,
-            parameterValues: {
-                ...(step.parameterValues ?? {}),
-                previousOutput: step.previousOutput ?? '',
-                goal: step.parameterValues?.goal ?? '',
-            },
+            parameterValues: localizeParameterValues(
+                {
+                    ...(step.parameterValues ?? {}),
+                    previousOutput: step.previousOutput ?? '',
+                    goal: step.parameterValues?.goal ?? '',
+                },
+                parameterDefs,
+                locale,
+            ),
             model,
             extraContext: {
                 roleId: step.roleId,

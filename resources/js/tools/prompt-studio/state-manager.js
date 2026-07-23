@@ -1,5 +1,5 @@
 import { createDefaultDraft, debouncedSaveDraft, normalizeDraft } from './storage.js';
-import { resolveLocalizedLabel } from './localized-label.js';
+import { resolveLocalizedLabel, localizeParameterValues } from './localized-label.js';
 import { debouncedSaveSession } from './session-store.js';
 import { HistoryStack } from './history-stack.js';
 import { PromptSections } from './prompt-sections.js';
@@ -26,6 +26,9 @@ export class StateManager {
         this.draft = normalizeDraft(initialDraft ?? createDefaultDraft());
         /** @type {import('./config-validator.js').ToolsLocale} */
         this.locale = 'en';
+        /** Prompt preview language (independent from page/UI locale). */
+        /** @type {import('./config-validator.js').ToolsLocale} */
+        this.promptLocale = 'en';
         this.history = new HistoryStack();
         this.history.reset(this.draft);
         this.sections = new PromptSections(this.draft.sections, this.draft.sectionOverrides);
@@ -177,6 +180,23 @@ export class StateManager {
         this.locale = locale;
     }
 
+    /**
+     * Language used when compiling the live prompt preview (not the page chrome).
+     * @param {import('./config-validator.js').ToolsLocale} locale
+     * @param {{ recompile?: boolean }} [options]
+     */
+    setPromptLocale(locale, options = {}) {
+        this.promptLocale = locale === 'de' ? 'de' : 'en';
+        if (options.recompile !== false) {
+            this.recompile();
+        }
+    }
+
+    /** @returns {import('./config-validator.js').ToolsLocale} */
+    getPromptLocale() {
+        return this.promptLocale === 'de' ? 'de' : 'en';
+    }
+
     recompile() {
         const task = this.config.tasks.find((t) => t.id === this.draft.taskId);
         if (!task) return { compiled: '', compiledList: [] };
@@ -186,21 +206,23 @@ export class StateManager {
 
         const model = this.config.models.find((m) => m.id === this.draft.modelId);
         const role = this.config.roles.find((r) => r.id === this.draft.roleId);
+        const promptLocale = this.getPromptLocale();
+        const parameterDefs = getParametersForTask(this.draft.taskId, this.config);
         const extraContext = {
             roleId: this.draft.roleId,
             taskId: this.draft.taskId,
             modelId: this.draft.modelId,
-            roleLabel: resolveLocalizedLabel(role?.label, this.locale, this.draft.roleId),
-            taskLabel: resolveLocalizedLabel(task.label, this.locale, this.draft.taskId),
-            modelLabel: resolveLocalizedLabel(model?.label, this.locale, this.draft.modelId),
+            roleLabel: resolveLocalizedLabel(role?.label, promptLocale, this.draft.roleId),
+            taskLabel: resolveLocalizedLabel(task.label, promptLocale, this.draft.taskId),
+            modelLabel: resolveLocalizedLabel(model?.label, promptLocale, this.draft.modelId),
         };
 
         const built = buildPrompt({
             template,
-            parameterValues: this.draft.parameterValues,
+            parameterValues: localizeParameterValues(this.draft.parameterValues, parameterDefs, promptLocale),
             model,
             extraContext,
-            locale: this.locale,
+            locale: promptLocale,
         });
 
         this.sections.applyCompiled(built.compiledList, { preserveOverrides: true });
@@ -274,15 +296,22 @@ export class StateManager {
         if (!template) return [];
 
         const model = this.config.models.find((m) => m.id === this.draft.modelId);
+        const role = this.config.roles.find((r) => r.id === this.draft.roleId);
+        const promptLocale = this.getPromptLocale();
+        const parameterDefs = getParametersForTask(this.draft.taskId, this.config);
         const built = buildPrompt({
             template,
-            parameterValues: this.draft.parameterValues,
+            parameterValues: localizeParameterValues(this.draft.parameterValues, parameterDefs, promptLocale),
             model,
             extraContext: {
                 roleId: this.draft.roleId,
                 taskId: this.draft.taskId,
                 modelId: this.draft.modelId,
+                roleLabel: resolveLocalizedLabel(role?.label, promptLocale, this.draft.roleId),
+                taskLabel: resolveLocalizedLabel(task.label, promptLocale, this.draft.taskId),
+                modelLabel: resolveLocalizedLabel(model?.label, promptLocale, this.draft.modelId),
             },
+            locale: promptLocale,
         });
 
         return built.compiledList.map((section) => ({

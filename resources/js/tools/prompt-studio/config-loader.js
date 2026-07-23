@@ -152,18 +152,23 @@ function normalizeTemplateItem(item) {
     const tpl = /** @type {Record<string, unknown>} */ (item);
     if (typeof tpl.id !== 'string') return null;
 
-    /** @type {Array<{ id: string, label?: Record<string, string>, template: string }>} */
+    /** @type {Array<{ id: string, label?: Record<string, string>, template: string | Record<string, string> }>} */
     let sections = [];
 
     if (Array.isArray(tpl.sections)) {
-        sections = /** @type {Array<{ id: string, label?: Record<string, string>, template: string }>} */ (
+        sections = /** @type {Array<{ id: string, label?: Record<string, string>, template: string | Record<string, string> }>} */ (
             tpl.sections
         );
     } else if (tpl.sections && typeof tpl.sections === 'object') {
-        sections = Object.entries(/** @type {Record<string, string>} */ (tpl.sections)).map(([id, template]) => ({
-            id,
-            template: String(template),
-        }));
+        sections = Object.entries(/** @type {Record<string, unknown>} */ (tpl.sections)).map(([id, template]) => {
+            if (typeof template === 'string') {
+                return { id, template };
+            }
+            if (template && typeof template === 'object') {
+                return { id, template: /** @type {Record<string, string>} */ (template) };
+            }
+            return { id, template: '' };
+        });
     }
 
     return {

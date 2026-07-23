@@ -42,6 +42,7 @@ import {
     outputKindForArea,
     areaForOutputKind,
 } from './studio-area.js';
+import { getPromptLocale, setPromptLocale, normalizePromptLocale } from './prompt-locale.js';
 import {
     getLimitKindForTask,
     modelHasPlans,
@@ -153,6 +154,26 @@ const TASK_WORKFLOW_MAP = {
 
 function currentLocale() {
     return /** @type {import('./config-validator.js').ToolsLocale} */ (getLocale());
+}
+
+function syncPromptLocaleUi() {
+    const locale = stateManager?.getPromptLocale() ?? getPromptLocale(currentLocale());
+    document.querySelectorAll('[data-ps-prompt-locale]').forEach((btn) => {
+        const id = btn.getAttribute('data-ps-prompt-locale');
+        const active = id === locale;
+        btn.classList.toggle('prompt-studio__prompt-locale-btn--active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+}
+
+/**
+ * @param {import('./config-validator.js').ToolsLocale} locale
+ */
+function applyPromptLocale(locale) {
+    const next = setPromptLocale(normalizePromptLocale(locale));
+    stateManager?.setPromptLocale(next, { recompile: true });
+    syncPromptLocaleUi();
+    renderPreview();
 }
 
 function tr(key, params = {}) {
@@ -771,6 +792,7 @@ function renderModeToggle() {
 function renderAll() {
     renderModeToggle();
     syncAreaUi();
+    syncPromptLocaleUi();
     applyPreviewVisibility();
     syncKindUi();
     syncSelectionSummary();
@@ -826,6 +848,13 @@ function bindEvents() {
             helpAccordion.querySelectorAll(':scope > details[data-ps-help-item]').forEach((other) => {
                 if (other !== item) /** @type {HTMLDetailsElement} */ (other).open = false;
             });
+        });
+    });
+
+    document.querySelectorAll('[data-ps-prompt-locale]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const locale = normalizePromptLocale(btn.getAttribute('data-ps-prompt-locale'));
+            applyPromptLocale(locale);
         });
     });
 
@@ -1116,7 +1145,7 @@ function bindEvents() {
             const step = chainManager.activeSteps[index];
             if (!step) return;
             const compiled = processCompiledOutput(
-                chainManager.compileStep(step, currentLocale()),
+                chainManager.compileStep(step, stateManager?.getPromptLocale() ?? currentLocale()),
                 step.parameterValues ?? {},
             );
             await copyFromButton(/** @type {HTMLButtonElement} */ (copyBtn), compiled, (k) => tr(k));
@@ -1129,7 +1158,7 @@ function bindEvents() {
             const step = chainManager.activeSteps[index];
             if (!step) return;
             const compiled = processCompiledOutput(
-                chainManager.compileStep(step, currentLocale()),
+                chainManager.compileStep(step, stateManager?.getPromptLocale() ?? currentLocale()),
                 step.parameterValues ?? {},
             );
             saveToSanitizer({
@@ -1264,7 +1293,7 @@ function bindEvents() {
             taskId: draft.taskId,
             modelId: draft.modelId,
             parameterValues: draft.parameterValues,
-            locale: currentLocale(),
+            locale: stateManager.getPromptLocale(),
         });
         activeMetaPrompt = meta.body;
         metaTitle.textContent = meta.title;
@@ -1283,7 +1312,7 @@ function bindEvents() {
             modelId: draft.modelId,
             parameterValues: { ...draft.parameterValues, goal: goal ?? '' },
             goal: goal ?? '',
-            locale: currentLocale(),
+            locale: stateManager.getPromptLocale(),
         });
         activeMetaPrompt = meta.body;
         metaTitle.textContent = meta.title;
@@ -1330,8 +1359,10 @@ function bindEvents() {
         applyShellLabels(locale);
         applyPromptStudioLabels(locale);
         applyHowtoLabels(locale);
+        // Keep prompt preview language independent of the page chrome language.
         stateManager?.setLocale(locale);
         renderAll();
+        syncPromptLocaleUi();
     });
 }
 
@@ -1354,6 +1385,7 @@ async function init() {
     workspaceManager = new WorkspaceManager(config, { userTemplates: templateStore.list() });
     stateManager = createStateManager(config);
     stateManager.setLocale(locale);
+    stateManager.setPromptLocale(getPromptLocale(locale), { recompile: false });
 
     variantsManager = new VariantsManager(config);
     variantsManager.patch(createDefaultVariants());

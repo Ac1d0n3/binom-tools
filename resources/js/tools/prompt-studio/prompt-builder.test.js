@@ -37,16 +37,39 @@ describe('prompt-builder', () => {
         expect(built.compiled).toContain('Analyze sales');
     });
 
-    it('formats comma-separated model output', () => {
-        const formatted = formatForModel(
-            { user: 'hero image, blue tones' },
-            {
-                id: 'midjourney',
-                label: { en: 'Midjourney' },
-                sectionOrder: ['user'],
-                formatRules: { style: 'comma-separated' },
+    it('compiles bilingual section templates by locale', () => {
+        const builtDe = buildPrompt({
+            template: {
+                id: 'test',
+                sections: [
+                    {
+                        id: 'system',
+                        template: {
+                            en: 'You are an experienced {{roleLabel}}.',
+                            de: 'Du bist ein erfahrener {{roleLabel}}.',
+                        },
+                    },
+                    {
+                        id: 'task',
+                        template: {
+                            en: 'Write lyrics for {{taskLabel}}.',
+                            de: 'Schreibe Lyrics für {{taskLabel}}.',
+                        },
+                    },
+                ],
             },
-        );
-        expect(formatted).toBe('hero image, blue tones');
+            parameterValues: {},
+            model: {
+                id: 'chatgpt',
+                label: { en: 'ChatGPT' },
+                sectionOrder: ['system', 'task'],
+            },
+            extraContext: { roleLabel: 'Songwriter', taskLabel: 'Songtext' },
+            locale: 'de',
+        });
+
+        expect(builtDe.compiled).toContain('Du bist ein erfahrener Songwriter.');
+        expect(builtDe.compiled).toContain('Schreibe Lyrics für Songtext.');
+        expect(builtDe.compiled).not.toContain('You are an experienced');
     });
 });

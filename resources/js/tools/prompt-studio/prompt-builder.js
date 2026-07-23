@@ -54,7 +54,18 @@ export function renderTemplate(template, context, locale = 'en', options = {}) {
  */
 
 /**
- * @param {Array<{ id: string, label?: Record<string, string>, template: string }>} sectionDefs
+ * Section bodies may be a plain string (legacy EN) or { de, en }.
+ * @param {unknown} template
+ * @param {import('./config-validator.js').ToolsLocale} locale
+ * @returns {string}
+ */
+export function resolveSectionTemplate(template, locale = 'en') {
+    if (typeof template === 'string') return template;
+    return resolveLocalizedLabel(template, locale, '');
+}
+
+/**
+ * @param {Array<{ id: string, label?: Record<string, string>, template: string | Record<string, string> }>} sectionDefs
  * @param {TemplateContext} context
  * @param {import('./config-validator.js').ToolsLocale} [locale]
  * @returns {CompiledSection[]}
@@ -62,7 +73,8 @@ export function renderTemplate(template, context, locale = 'en', options = {}) {
 export function compileSections(sectionDefs, context, locale = 'en') {
     return sectionDefs
         .map((section) => {
-            const content = renderTemplate(section.template, context, locale);
+            const template = resolveSectionTemplate(section.template, locale);
+            const content = renderTemplate(template, context, locale);
             if (!content) return null;
             return {
                 id: section.id,

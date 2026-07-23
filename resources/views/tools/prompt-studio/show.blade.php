@@ -307,6 +307,10 @@
                         <header class="prompt-studio__preview-header">
                             <h2 data-i18n="promptStudio.preview">Live preview</h2>
                             <div class="prompt-studio__preview-header-actions">
+                                <div class="prompt-studio__prompt-locale" role="group" aria-label="Prompt language" data-i18n-aria-label="promptStudio.promptLocale">
+                                    <button type="button" class="prompt-studio__prompt-locale-btn" data-ps-prompt-locale="de" aria-pressed="false">DE</button>
+                                    <button type="button" class="prompt-studio__prompt-locale-btn" data-ps-prompt-locale="en" aria-pressed="false">EN</button>
+                                </div>
                                 <span id="ps-char-count" class="prompt-studio__char-count"></span>
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-preview-collapse-btn" aria-expanded="true" data-i18n="promptStudio.previewToggle.hide">
                                     Hide preview

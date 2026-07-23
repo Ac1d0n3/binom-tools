@@ -50,3 +50,55 @@ export function formatDisplayValue(value, locale = 'en') {
     }
     return String(value);
 }
+
+/**
+ * Map select/chips/multiselect raw values to localized option labels for prompt output.
+ * Free-text values and unknown options stay unchanged. Does not mutate the input.
+ *
+ * @param {Record<string, unknown>} values
+ * @param {Array<{ id: string, type?: string, options?: unknown[], suggestions?: unknown[] }>} parameterDefs
+ * @param {ToolsLocale} [locale]
+ * @returns {Record<string, unknown>}
+ */
+export function localizeParameterValues(values, parameterDefs, locale = 'en') {
+    if (!values || !parameterDefs?.length) return { ...values };
+
+    /** @type {Record<string, unknown>} */
+    const out = { ...values };
+
+    for (const def of parameterDefs) {
+        const raw = values[def.id];
+        if (raw === null || raw === undefined || raw === '') continue;
+
+        const choices = [...(def.options ?? []), ...(def.suggestions ?? [])];
+        if (!choices.length) continue;
+
+        /**
+         * @param {unknown} entry
+         * @returns {string}
+         */
+        const resolveChoice = (entry) => {
+            const key = String(entry);
+            const match = choices.find((opt) => {
+                if (opt && typeof opt === 'object' && 'value' in /** @type {object} */ (opt)) {
+                    return String(/** @type {{ value?: unknown }} */ (opt).value) === key;
+                }
+                return String(opt) === key;
+            });
+            if (!match || typeof match !== 'object' || match === null) return key;
+            const labeled = /** @type {{ label?: unknown, value?: unknown }} */ (match);
+            if ('label' in labeled) {
+                return resolveLocalizedLabel(labeled.label, locale, key);
+            }
+            return key;
+        };
+
+        if (Array.isArray(raw)) {
+            out[def.id] = raw.map(resolveChoice);
+        } else {
+            out[def.id] = resolveChoice(raw);
+        }
+    }
+
+    return out;
+}

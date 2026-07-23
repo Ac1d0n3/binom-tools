@@ -56,7 +56,7 @@ import { normalizeCategory } from './categories.js';
 /**
  * @typedef {Object} PromptTemplateDef
  * @property {string} id
- * @property {Array<{ id: string, label?: Record<ToolsLocale, string>, template: string }>} sections
+ * @property {Array<{ id: string, label?: Record<ToolsLocale, string>, template: string | Record<ToolsLocale, string> }>} sections
  */
 
 /**

@@ -461,6 +461,33 @@
     flex-wrap: wrap;
 }
 
+.prompt-studio__prompt-locale {
+    display: inline-flex;
+    flex-shrink: 0;
+    border: 1px solid var(--base-border-color);
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--content-background-color);
+}
+
+.prompt-studio__prompt-locale-btn {
+    border: 0;
+    background: transparent;
+    color: var(--content-font-color);
+    padding: 0.3rem 0.65rem;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+}
+
+.prompt-studio__prompt-locale-btn[aria-pressed='true'],
+.prompt-studio__prompt-locale-btn--active {
+    background: var(--theme-color-primary);
+    color: #fff;
+}
+
 .prompt-studio__preview-reopen {
     display: none;
     width: auto;
