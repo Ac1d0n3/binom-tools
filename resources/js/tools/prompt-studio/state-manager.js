@@ -1,11 +1,12 @@
 import { createDefaultDraft, debouncedSaveDraft, normalizeDraft } from './storage.js';
 import { resolveLocalizedLabel } from './localized-label.js';
-import { debouncedSaveSession, loadSession } from './session-store.js';
+import { debouncedSaveSession } from './session-store.js';
 import { HistoryStack } from './history-stack.js';
 import { PromptSections } from './prompt-sections.js';
 import { buildPrompt, formatForModel } from './prompt-builder.js';
 import { createDefaultParameterValues } from './field-renderer.js';
 import { getParametersForTask, getTemplate, getTasksForRole } from './config-loader.js';
+import { getTaskOutputKind } from './md-export.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./storage.js').PromptDraftState} PromptDraftState */
@@ -99,10 +100,12 @@ export class StateManager {
     setRoleAndTask(roleId, taskId) {
         const parameters = getParametersForTask(taskId, this.config);
         const parameterValues = createDefaultParameterValues(parameters, {});
+        const task = this.config.tasks.find((t) => t.id === taskId);
 
         this.patchDraft({
             roleId,
             taskId,
+            kind: getTaskOutputKind(task),
             parameterValues,
             sections: {},
             sectionOverrides: {},
@@ -116,9 +119,11 @@ export class StateManager {
     setTask(taskId) {
         const parameters = getParametersForTask(taskId, this.config);
         const parameterValues = createDefaultParameterValues(parameters, this.draft.parameterValues);
+        const task = this.config.tasks.find((t) => t.id === taskId);
 
         this.patchDraft({
             taskId,
+            kind: getTaskOutputKind(task),
             parameterValues,
             sections: {},
             sectionOverrides: {},
@@ -274,12 +279,6 @@ export class StateManager {
  * @returns {StateManager}
  */
 export function createStateManager(config) {
-    const session = loadSession();
-    const initial =
-        session && 'data' in session && session.data.draft.roleId
-            ? session.data.draft
-            : session && 'data' in session
-              ? session.data.draft
-              : createDefaultDraft();
-    return new StateManager(config, initial);
+    // Always boot with an empty builder — resume via Aufgaben, Vorlagen, or Zuletzt.
+    return new StateManager(config, createDefaultDraft());
 }

@@ -39,7 +39,7 @@ import { createDefaultDraft, normalizeDraft, STORAGE_KEYS } from './storage.js';
 
 export const SESSION_STORAGE_KEY = 'binom-tools-prompt-studio-session';
 const LIBRARY_OPEN_KEY = 'binom-tools-prompt-studio-library-open';
-const PREVIEW_OPEN_KEY = 'binom-tools-prompt-studio-preview-open';
+export const PREVIEW_OPEN_KEY = 'binom-tools-prompt-studio-preview-open';
 
 /** @returns {PromptSessionVariants} */
 export function createDefaultVariants() {
@@ -198,7 +198,7 @@ export function debouncedSaveSession(patch, source = 'auto') {
 /** @returns {boolean} */
 export function isLibraryDrawerOpen() {
     const stored = localStorage.getItem(LIBRARY_OPEN_KEY);
-    if (stored === null) return false;
+    if (stored === null) return true;
     return stored === 'true';
 }
 

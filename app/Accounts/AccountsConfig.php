@@ -46,6 +46,11 @@ final class AccountsConfig
         return $this->basePath().DIRECTORY_SEPARATOR.'user-templates';
     }
 
+    public function promptStudioLibraryDirectory(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'prompt-studio-library';
+    }
+
     public function planAttachmentsDirectory(string $planId): string
     {
         $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $planId) ?: 'invalid';

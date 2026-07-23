@@ -9,6 +9,7 @@ import {
     validateChains,
     validateMetaPrompts,
 } from './config-validator.js';
+import { getTaskOutputKind } from './md-export.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./config-validator.js').PromptRoleDef} PromptRoleDef */
@@ -16,6 +17,17 @@ import {
 /** @typedef {import('./config-validator.js').PromptParameterDef} PromptParameterDef */
 /** @typedef {import('./config-validator.js').PromptModelDef} PromptModelDef */
 /** @typedef {import('./config-validator.js').PromptTemplateDef} PromptTemplateDef */
+
+/**
+ * @param {PromptTaskDef[] | undefined} tasks
+ * @returns {PromptTaskDef[]}
+ */
+function withNormalizedOutputKinds(tasks) {
+    return (tasks ?? []).map((task) => ({
+        ...task,
+        outputKind: getTaskOutputKind(task),
+    }));
+}
 
 /**
  * @param {string} path
@@ -262,7 +274,7 @@ async function loadAndMergePlugins(baseUrl, coreConfig) {
         merged = {
             ...merged,
             roles: mergeById(merged.roles, validateRoles(roles).roles ?? []),
-            tasks: mergeById(merged.tasks, validateTasks(tasks).tasks ?? []),
+            tasks: withNormalizedOutputKinds(mergeById(merged.tasks, validateTasks(tasks).tasks ?? [])),
             parameters: mergeById(merged.parameters, validateParameters(parameters).parameters ?? []),
             models: mergeById(merged.models, validateModels(models).models ?? []),
             templates: mergeById(merged.templates, validateTemplates(normalizedTemplates).templates ?? []),
@@ -307,7 +319,7 @@ export async function loadConfig(baseUrl) {
     const partial = {
         manifest: manifestResult.manifest,
         roles: validateRoles(rolesRaw).roles,
-        tasks: validateTasks(tasksRaw).tasks,
+        tasks: withNormalizedOutputKinds(validateTasks(tasksRaw).tasks),
         parameters: validateParameters(parametersRaw).parameters,
         models: validateModels(modelsRaw).models,
         templates: validateTemplates(templatesNormalized).templates,

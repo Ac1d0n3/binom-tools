@@ -17,6 +17,15 @@ class PromptStudioPageTest extends TestCase
         $response->assertSee('workflow.setupLabel.ai-prompt-workflow', false);
         $response->assertSee('ps-role-select', false);
         $response->assertSee('ps-sanitize-btn', false);
+        $response->assertDontSee('ps-song-cta', false);
+        $response->assertDontSee('ps-lyrics-cta', false);
+        $response->assertDontSee('data-ps-kind=', false);
+        $response->assertSee('ps-output-kind-badge', false);
+        $response->assertSee('data-ps-tab="library"', false);
+        $response->assertSee('ps-preview-toggle', false);
+        $response->assertSee('ps-download-md-btn', false);
+        $response->assertSee('ps-help-drawer', false);
+        $response->assertSee('ps-library-drawer', false);
     }
 
     public function test_prompt_studio_config_manifest_is_public(): void

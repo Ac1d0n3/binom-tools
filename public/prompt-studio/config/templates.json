@@ -2,7 +2,10 @@
   "templates": [
     {
       "id": "analysis",
-      "label": { "de": "Analyse", "en": "Analysis" },
+      "label": {
+        "de": "Analyse",
+        "en": "Analysis"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Provide structured, actionable business analysis.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
@@ -13,7 +16,10 @@
     },
     {
       "id": "root-cause-analysis",
-      "label": { "de": "Root Cause Analysis", "en": "Root cause analysis" },
+      "label": {
+        "de": "Root Cause Analysis",
+        "en": "Root cause analysis"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} specializing in root cause analysis (RCA). Use structured methods such as 5 Whys and fishbone diagrams.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
@@ -24,7 +30,10 @@
     },
     {
       "id": "workshop",
-      "label": { "de": "Workshop", "en": "Workshop" },
+      "label": {
+        "de": "Workshop",
+        "en": "Workshop"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} and workshop facilitator. Design engaging, outcome-focused sessions.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Participants: {{stakeholders}}{{/if}}",
@@ -35,7 +44,10 @@
     },
     {
       "id": "brainstorming",
-      "label": { "de": "Brainstorming", "en": "Brainstorming" },
+      "label": {
+        "de": "Brainstorming",
+        "en": "Brainstorming"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} facilitating creative brainstorming. Encourage diverse ideas without premature judgment.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Participants: {{stakeholders}}{{/if}}",
@@ -46,7 +58,10 @@
     },
     {
       "id": "process-improve",
-      "label": { "de": "Prozess verbessern", "en": "Process improvement" },
+      "label": {
+        "de": "Prozess verbessern",
+        "en": "Process improvement"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} focused on process optimization and continuous improvement.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
@@ -57,7 +72,10 @@
     },
     {
       "id": "document-create",
-      "label": { "de": "Dokument erstellen", "en": "Create document" },
+      "label": {
+        "de": "Dokument erstellen",
+        "en": "Create document"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} and professional writer. Create clear, well-structured documents.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Audience / stakeholders: {{stakeholders}}{{/if}}",
@@ -68,7 +86,10 @@
     },
     {
       "id": "class-create",
-      "label": { "de": "Klasse erstellen", "en": "Create class" },
+      "label": {
+        "de": "Klasse erstellen",
+        "en": "Create class"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Write production-ready, maintainable code.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture context:\n{{architecture}}{{/if}}",
@@ -79,7 +100,10 @@
     },
     {
       "id": "method-develop",
-      "label": { "de": "Methode entwickeln", "en": "Develop method" },
+      "label": {
+        "de": "Methode entwickeln",
+        "en": "Develop method"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Write clean, testable methods with clear contracts.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture context:\n{{architecture}}{{/if}}",
@@ -90,7 +114,10 @@
     },
     {
       "id": "api-design",
-      "label": { "de": "API entwerfen", "en": "API design" },
+      "label": {
+        "de": "API entwerfen",
+        "en": "API design"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} specializing in API design. Follow REST best practices and clear contracts.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}System architecture:\n{{architecture}}{{/if}}",
@@ -101,7 +128,10 @@
     },
     {
       "id": "refactoring",
-      "label": { "de": "Refactoring", "en": "Refactoring" },
+      "label": {
+        "de": "Refactoring",
+        "en": "Refactoring"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Refactor code safely while preserving behavior.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture:\n{{architecture}}{{/if}}",
@@ -112,7 +142,10 @@
     },
     {
       "id": "review",
-      "label": { "de": "Review", "en": "Code review" },
+      "label": {
+        "de": "Review",
+        "en": "Code review"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} performing thorough code reviews. Be constructive and specific.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture context:\n{{architecture}}{{/if}}",
@@ -123,7 +156,10 @@
     },
     {
       "id": "tests-write",
-      "label": { "de": "Tests schreiben", "en": "Write tests" },
+      "label": {
+        "de": "Tests schreiben",
+        "en": "Write tests"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} writing comprehensive, maintainable tests.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if architecture}}Architecture:\n{{architecture}}{{/if}}",
@@ -134,7 +170,10 @@
     },
     {
       "id": "song-develop",
-      "label": { "de": "Song entwickeln", "en": "Develop song" },
+      "label": {
+        "de": "Song entwickeln",
+        "en": "Develop song"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create compelling songs with strong structure and emotional impact.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -145,7 +184,10 @@
     },
     {
       "id": "lyrics",
-      "label": { "de": "Lyrics", "en": "Lyrics" },
+      "label": {
+        "de": "Lyrics",
+        "en": "Lyrics"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Write evocative, singable lyrics with clear structure.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -156,7 +198,10 @@
     },
     {
       "id": "hook",
-      "label": { "de": "Hook", "en": "Hook" },
+      "label": {
+        "de": "Hook",
+        "en": "Hook"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create memorable, catchy hooks.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -167,7 +212,10 @@
     },
     {
       "id": "suno-style",
-      "label": { "de": "Suno Style", "en": "Suno style" },
+      "label": {
+        "de": "Suno Style",
+        "en": "Suno style"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create Suno-optimized style prompts without naming real artists or bands.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -178,7 +226,10 @@
     },
     {
       "id": "album",
-      "label": { "de": "Album", "en": "Album" },
+      "label": {
+        "de": "Album",
+        "en": "Album"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Design cohesive album concepts with narrative arc.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -189,7 +240,10 @@
     },
     {
       "id": "hero",
-      "label": { "de": "Hero", "en": "Hero image" },
+      "label": {
+        "de": "Hero",
+        "en": "Hero image"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create compelling hero image prompts.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
@@ -200,7 +254,10 @@
     },
     {
       "id": "cover",
-      "label": { "de": "Cover", "en": "Cover" },
+      "label": {
+        "de": "Cover",
+        "en": "Cover"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Design striking cover art prompts.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -211,7 +268,10 @@
     },
     {
       "id": "diagram",
-      "label": { "de": "Diagramm", "en": "Diagram" },
+      "label": {
+        "de": "Diagramm",
+        "en": "Diagram"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create clear, informative diagram prompts.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -222,7 +282,10 @@
     },
     {
       "id": "infographic",
-      "label": { "de": "Infografik", "en": "Infographic" },
+      "label": {
+        "de": "Infografik",
+        "en": "Infographic"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Design informative, visually engaging infographics.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -233,7 +296,10 @@
     },
     {
       "id": "logo",
-      "label": { "de": "Logo", "en": "Logo" },
+      "label": {
+        "de": "Logo",
+        "en": "Logo"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create distinctive, scalable logo prompts.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -244,7 +310,10 @@
     },
     {
       "id": "character",
-      "label": { "de": "Charakter", "en": "Character" },
+      "label": {
+        "de": "Charakter",
+        "en": "Character"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Design memorable, consistent characters.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
@@ -255,7 +324,10 @@
     },
     {
       "id": "storyboard",
-      "label": { "de": "Storyboard", "en": "Storyboard" },
+      "label": {
+        "de": "Storyboard",
+        "en": "Storyboard"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create detailed, production-ready storyboards.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -266,7 +338,10 @@
     },
     {
       "id": "scenes",
-      "label": { "de": "Szenen", "en": "Scenes" },
+      "label": {
+        "de": "Szenen",
+        "en": "Scenes"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Write vivid, actionable scene descriptions.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -277,7 +352,10 @@
     },
     {
       "id": "camera",
-      "label": { "de": "Kamera", "en": "Camera" },
+      "label": {
+        "de": "Kamera",
+        "en": "Camera"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}} and cinematographer. Specify precise camera work.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -288,7 +366,10 @@
     },
     {
       "id": "trailer",
-      "label": { "de": "Trailer", "en": "Trailer" },
+      "label": {
+        "de": "Trailer",
+        "en": "Trailer"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Create compelling trailer concepts.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
@@ -299,7 +380,10 @@
     },
     {
       "id": "document-summarize",
-      "label": { "de": "Dokument zusammenfassen", "en": "Summarize document" },
+      "label": {
+        "de": "Dokument zusammenfassen",
+        "en": "Summarize document"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Summarize documents clearly and accurately.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}",
@@ -310,7 +394,10 @@
     },
     {
       "id": "document-follow-up",
-      "label": { "de": "Folgeaktion", "en": "Follow-up action" },
+      "label": {
+        "de": "Folgeaktion",
+        "en": "Follow-up action"
+      },
       "sections": {
         "system": "You are an experienced {{roleLabel}}. Act on a prior summary with a clear follow-up task.",
         "context": "{{#if previousOutput}}Summary from previous step:\n{{previousOutput}}\n{{/if}}{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}{{/if}}",
@@ -321,11 +408,56 @@
     },
     {
       "id": "custom-block",
-      "label": { "de": "Eigener Prompt-Block", "en": "Custom prompt block" },
+      "label": {
+        "de": "Eigener Prompt-Block",
+        "en": "Custom prompt block"
+      },
       "sections": {
         "system": "You are a helpful AI assistant.",
         "task": "{{goal}}",
         "output": "Deliver a clear, complete response."
+      }
+    },
+    {
+      "id": "angular-signals",
+      "label": {
+        "de": "Angular Signals",
+        "en": "Angular Signals"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} specializing in modern Angular. Prefer Signals (signal/computed/effect), standalone APIs, and @if/@for/@switch. Do not introduce NgModules or legacy patterns unless explicitly required.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if standards}}Project standards:\n{{standards}}{{/if}}",
+        "task": "Deliver for the following goal:\n\n{{goal}}",
+        "parameters": "Language: {{language}}\nFramework: {{framework}}\n{{#if version}}Version: {{version}}{{/if}}",
+        "output": "Deliver:\n1. Concise guidance or implementation\n2. Explicit Signals/control-flow usage\n3. What to avoid (legacy patterns)\n4. Short verification checklist"
+      }
+    },
+    {
+      "id": "debug-investigate",
+      "label": {
+        "de": "Debug investigate",
+        "en": "Debug investigate"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Investigate failures systematically: reproduce, hypothesize, gather evidence, propose the smallest safe fix.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if documents}}Evidence / logs:\n{{documents}}{{/if}}",
+        "task": "Investigate:\n\n{{goal}}",
+        "parameters": "{{#if process}}Observed process / steps:\n{{process}}{{/if}}",
+        "output": "Deliver:\n1. Repro steps\n2. Ranked hypotheses\n3. What to check next (logs/tests)\n4. Proposed fix\n5. Verification plan"
+      }
+    },
+    {
+      "id": "automate-repo-task",
+      "label": {
+        "de": "Automate repo task",
+        "en": "Automate repo task"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Turn recurring repository work into clear agent or script steps with safety checks.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if standards}}Constraints:\n{{standards}}{{/if}}",
+        "task": "Automate or plan agent steps for:\n\n{{goal}}",
+        "parameters": "{{#if process}}Current manual process:\n{{process}}{{/if}}",
+        "output": "Deliver as an agent-ready plan:\n1. Goal\n2. Inputs/outputs\n3. Step list with validation\n4. Risks and rollback\n5. Done-when checklist"
       }
     }
   ]

@@ -20,18 +20,28 @@ import { ContinueManager } from './continue-manager.js';
 import { VariantsManager } from './variants-manager.js';
 import { generateOptimizerMetaPrompt, generateSplitMetaPrompt } from './meta-prompt-generator.js';
 import { buildExportBundle, importBundle, downloadExportBundle } from './export-import.js';
-import { pushRecentEntry } from './storage.js';
+import { pushRecentEntry, loadChains, saveChains, saveWorkspace } from './storage.js';
 import {
-    loadSession,
     isLibraryDrawerOpen,
     setLibraryDrawerOpen,
+    isPreviewDrawerOpen,
+    setPreviewDrawerOpen,
     loadForbiddenSongWords,
     loadForbiddenArtistNames,
     debouncedSaveSession,
+    createDefaultVariants,
 } from './session-store.js';
 import { getUiMode, setUiMode, applyUiModeClasses, splitParametersForMode, isTechMode } from './ui-mode.js';
 import { saveToSanitizer, loadPromptBridge } from '../prompt-shared/prompt-bridge-storage.js';
 import { copyFromButton } from '../pii-shared/tool-utils.js';
+import { buildMarkdownDocument, downloadTextFile, markdownFilename, normalizeOutputKind, getTaskOutputKind } from './md-export.js';
+import { ensureStarterTemplates } from './seed-library.js';
+import {
+    fetchLibraryBundle,
+    mergeById,
+    readLibraryApiConfig,
+    upsertLibraryBundle,
+} from './library-api.js';
 
 const app = document.getElementById('prompt-studio-app');
 if (!app) {
@@ -69,6 +79,15 @@ const roleHelp = document.getElementById('ps-role-help');
 const taskHelp = document.getElementById('ps-task-help');
 const workflowSuggestion = document.getElementById('ps-workflow-suggestion');
 const libraryDrawer = /** @type {HTMLDetailsElement | null} */ (document.getElementById('ps-library-drawer'));
+const helpDrawer = /** @type {HTMLDetailsElement | null} */ (document.getElementById('ps-help-drawer'));
+const previewToggleBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-preview-toggle'));
+const previewCollapseBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-preview-collapse-btn'));
+const previewReopenBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-preview-reopen-btn'));
+const downloadMdBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-download-md-btn'));
+const outputKindBadge = document.getElementById('ps-output-kind-badge');
+const templateKindFilter = /** @type {HTMLSelectElement | null} */ (document.getElementById('ps-template-kind-filter'));
+const addRoleBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-add-role-btn'));
+const saveWorkflowLibraryBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-save-workflow-btn'));
 const variantsEnabled = /** @type {HTMLInputElement} */ (document.getElementById('ps-variants-enabled'));
 const variantsField = /** @type {HTMLSelectElement} */ (document.getElementById('ps-variants-field'));
 const variantsBody = document.getElementById('ps-variants-body');
@@ -141,7 +160,122 @@ function getCompiledForDisplay() {
         parameterValues: draft.parameterValues,
     });
     lastStrippedArtists = processed.removed;
-    return processed.text;
+    const body = processed.text;
+    const kind = normalizeOutputKind(draft.kind);
+    if (kind === 'prompt') return body;
+    const title = draft.title || draft.taskId || draft.roleId || 'document';
+    return buildMarkdownDocument({
+        kind,
+        title,
+        body,
+        globs: kind === 'rule' ? '**/*.{ts,html,scss}' : undefined,
+    });
+}
+
+function applyPreviewVisibility() {
+    const open = isPreviewDrawerOpen();
+    app.classList.toggle('prompt-studio--preview-collapsed', !open);
+    const hideLabel = tr('promptStudio.previewToggle.hide');
+    const showLabel = tr('promptStudio.previewToggle.show');
+    if (previewToggleBtn) {
+        previewToggleBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
+        previewToggleBtn.textContent = open ? hideLabel : showLabel;
+    }
+    if (previewCollapseBtn) {
+        previewCollapseBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        previewCollapseBtn.textContent = hideLabel;
+    }
+    if (previewReopenBtn) {
+        previewReopenBtn.hidden = open;
+        previewReopenBtn.textContent = showLabel;
+    }
+}
+
+function togglePreviewOpen() {
+    setPreviewDrawerOpen(!isPreviewDrawerOpen());
+    applyPreviewVisibility();
+}
+
+function kindLabelKey(kind) {
+    if (kind === 'rule') return 'promptStudio.kind.rule';
+    if (kind === 'agent-task') return 'promptStudio.kind.agentTask';
+    return 'promptStudio.kind.prompt';
+}
+
+function syncKindUi() {
+    const draft = stateManager?.getDraft();
+    const task = draft?.taskId ? config?.tasks.find((t) => t.id === draft.taskId) : null;
+    const kind = task ? getTaskOutputKind(task) : normalizeOutputKind(draft?.kind);
+    if (draft && draft.kind !== kind) {
+        stateManager?.patchDraft({ kind }, { recordHistory: false, persist: true, notify: false });
+    }
+    if (downloadMdBtn) downloadMdBtn.hidden = kind === 'prompt';
+    if (outputKindBadge) {
+        if (!draft?.taskId) {
+            outputKindBadge.hidden = true;
+            outputKindBadge.textContent = '';
+            return;
+        }
+        outputKindBadge.hidden = false;
+        const kindName = tr(kindLabelKey(kind));
+        outputKindBadge.textContent =
+            kind === 'prompt'
+                ? tr('promptStudio.outputKind.prompt', { kind: kindName })
+                : tr('promptStudio.outputKind.md', { kind: kindName });
+    }
+}
+
+function syncLibraryTabChrome() {
+    const tab = workspaceManager?.activeTab;
+    // Kind filter applies to Aufgaben and saved templates — not to workflows/roles.
+    if (templateKindFilter) templateKindFilter.hidden = tab !== 'library' && tab !== 'templates';
+    if (addRoleBtn) addRoleBtn.hidden = tab !== 'roles';
+    if (saveWorkflowLibraryBtn) saveWorkflowLibraryBtn.hidden = tab !== 'workflows';
+}
+
+async function syncLibraryToAccount() {
+    const api = readLibraryApiConfig(app);
+    if (!api.enabled || !templateStore || !workspaceManager) return;
+    const chainsLoaded = loadChains();
+    await upsertLibraryBundle(api.url, {
+        templates: templateStore.list(),
+        chains: chainsLoaded && 'data' in chainsLoaded ? chainsLoaded.data : [],
+        customRoles: workspaceManager.workspace.customRoles,
+    });
+}
+
+async function hydrateLibraryFromAccount() {
+    const api = readLibraryApiConfig(app);
+    if (!api.enabled || !templateStore || !workspaceManager) return;
+    const remote = await fetchLibraryBundle(api.url);
+    if (!remote) return;
+    templateStore.replaceAll(mergeById(templateStore.list(), /** @type {any[]} */ (remote.templates)));
+    workspaceManager.refreshUserTemplates(templateStore.list());
+    const localChains = loadChains();
+    const localChainList = localChains && 'data' in localChains ? localChains.data : [];
+    saveChains(mergeById(localChainList, /** @type {any[]} */ (remote.chains)), 'import');
+    workspaceManager.workspace.customRoles = mergeById(
+        workspaceManager.workspace.customRoles,
+        /** @type {any[]} */ (remote.customRoles),
+    );
+    saveWorkspace(workspaceManager.workspace, 'import');
+}
+
+function saveCurrentWorkflow() {
+    if (!chainManager || chainManager.activeSteps.length === 0) {
+        window.alert(tr('promptStudio.chain.empty'));
+        return;
+    }
+    const name = window.prompt(tr('promptStudio.workflow.savePrompt'), chainManager.presetId || 'My workflow');
+    if (!name) return;
+    const entry = chainManager.toUserChainEntry(name);
+    chainManager.presetId = entry.id;
+    const loaded = loadChains();
+    const list = loaded && 'data' in loaded ? loaded.data.filter((c) => c.id !== entry.id) : [];
+    list.unshift(entry);
+    saveChains(list, 'manual');
+    void syncLibraryToAccount();
+    renderWorkspace();
 }
 
 /**
@@ -237,16 +371,13 @@ function renderBuilderHints() {
     if (workflowSuggestion && config) {
         const workflowId = TASK_WORKFLOW_MAP[/** @type {keyof typeof TASK_WORKFLOW_MAP} */ (draft.taskId)];
         const chain = workflowId ? config.chains.find((c) => c.id === workflowId) : null;
-        if (chain) {
+        // Only hint at an optional multi-step workflow — single tasks stay the default path.
+        if (chain && !(chainManager?.isOpen)) {
             const name = resolveLocalizedLabel(chain.label, locale, chain.id);
-            const description = resolveLocalizedLabel(chain.description, locale, '');
             workflowSuggestion.hidden = false;
             workflowSuggestion.innerHTML = `
-                <div class="prompt-studio__workflow-suggestion-content">
-                    <p class="prompt-studio__workflow-suggestion-title">${escapeHtml(tr('promptStudio.workflowSuggest', { name }))}</p>
-                    ${description ? `<p class="prompt-studio__workflow-suggestion-desc">${escapeHtml(description)}</p>` : ''}
-                </div>
-                <button type="button" class="tools-btn tools-btn--sm tools-btn--primary" id="ps-workflow-start-btn">${escapeHtml(tr('promptStudio.workflowStart'))}</button>
+                <p class="prompt-studio__workflow-suggestion-title">${escapeHtml(tr('promptStudio.workflowSuggestOptional', { name }))}</p>
+                <button type="button" class="tools-btn tools-btn--sm" id="ps-workflow-start-btn">${escapeHtml(tr('promptStudio.workflowStart'))}</button>
             `;
             document.getElementById('ps-workflow-start-btn')?.addEventListener('click', () => {
                 chainManager?.loadChain(chain.id, locale);
@@ -387,6 +518,7 @@ function renderVariantsPanel() {
 
 function renderWorkspace() {
     if (!workspaceManager || !workspaceList) return;
+    syncLibraryTabChrome();
     workspaceList.innerHTML = workspaceManager.renderListHtml(currentLocale());
 }
 
@@ -448,6 +580,8 @@ function renderModeToggle() {
 
 function renderAll() {
     renderModeToggle();
+    applyPreviewVisibility();
+    syncKindUi();
     renderBuilder();
     renderVariantsPanel();
     renderPreview();
@@ -501,6 +635,39 @@ function bindEvents() {
         if (libraryDrawer) setLibraryDrawerOpen(libraryDrawer.open);
     });
 
+    previewToggleBtn?.addEventListener('click', () => togglePreviewOpen());
+    previewCollapseBtn?.addEventListener('click', () => togglePreviewOpen());
+    previewReopenBtn?.addEventListener('click', () => {
+        setPreviewDrawerOpen(true);
+        applyPreviewVisibility();
+    });
+
+    downloadMdBtn?.addEventListener('click', () => {
+        if (!stateManager) return;
+        const draft = stateManager.getDraft();
+        const kind = normalizeOutputKind(draft.kind);
+        const title = draft.title || draft.taskId || 'document';
+        downloadTextFile(getCompiledForDisplay(), markdownFilename(title, kind));
+    });
+
+    templateKindFilter?.addEventListener('change', () => {
+        const value = templateKindFilter.value === 'all' ? 'all' : normalizeOutputKind(templateKindFilter.value);
+        workspaceManager?.setTemplateKindFilter(value);
+        renderWorkspace();
+    });
+
+    addRoleBtn?.addEventListener('click', () => {
+        const name = window.prompt(tr('promptStudio.roles.addPrompt'), '');
+        if (!name || !workspaceManager) return;
+        workspaceManager.addCustomRole(name);
+        void syncLibraryToAccount();
+        renderBuilder();
+        renderWorkspace();
+    });
+
+    saveWorkflowLibraryBtn?.addEventListener('click', () => saveCurrentWorkflow());
+    document.getElementById('ps-chain-save-btn')?.addEventListener('click', () => saveCurrentWorkflow());
+
     roleSelect?.addEventListener('change', () => {
         if (!roleSelect.value) return;
         stateManager?.setRole(roleSelect.value);
@@ -525,6 +692,11 @@ function bindEvents() {
             renderWorkspace();
         });
     });
+
+    // Ensure default active tab matches DOM (Prompts / library)
+    document.querySelector('[data-ps-tab="library"]')?.classList.add('prompt-studio__tab--active');
+    document.querySelectorAll('[data-ps-tab]:not([data-ps-tab="library"])').forEach((b) => b.classList.remove('prompt-studio__tab--active'));
+    workspaceManager?.setTab('library');
 
     document.getElementById('ps-search')?.addEventListener('input', (event) => {
         const target = /** @type {HTMLInputElement} */ (event.target);
@@ -551,7 +723,14 @@ function bindEvents() {
         if (!itemId) return;
 
         if (workflowId) {
-            chainManager?.loadChain(workflowId, currentLocale());
+            if (itemId.startsWith('user-workflow:')) {
+                const loaded = loadChains();
+                const list = loaded && 'data' in loaded ? loaded.data : [];
+                const entry = list.find((c) => c.id === workflowId);
+                if (entry) chainManager?.loadUserChain(entry, currentLocale());
+            } else {
+                chainManager?.loadChain(workflowId, currentLocale());
+            }
             syncChainStepToBuilder();
             renderAll();
             focusChainPanel();
@@ -559,6 +738,8 @@ function bindEvents() {
         }
 
         if (itemId.startsWith('task:') && taskId && roleId) {
+            // Single task from library — leave any open workflow so the prompt stays standalone.
+            chainManager?.clear();
             stateManager.setRoleAndTask(roleId, taskId);
             applySongForbiddenDefaults();
             renderAll();
@@ -567,6 +748,18 @@ function bindEvents() {
             const tpl = templateStore?.getById(tplId);
             if (tpl?.draft) stateManager.loadDraft(tpl.draft);
             renderAll();
+        } else if (itemId.startsWith('recent:')) {
+            if (roleId && taskId) {
+                stateManager.setRoleAndTask(roleId, taskId);
+                applySongForbiddenDefaults();
+                renderAll();
+            }
+        } else if (itemId.startsWith('role:') || itemId.startsWith('custom-role:')) {
+            if (roleId) {
+                stateManager.setRole(roleId);
+                applySongForbiddenDefaults();
+                renderAll();
+            }
         }
     });
 
@@ -625,6 +818,7 @@ function bindEvents() {
         if (!name) return;
         templateStore.save(name, draft);
         workspaceManager?.refreshUserTemplates(templateStore.list());
+        void syncLibraryToAccount();
         renderWorkspace();
     });
 
@@ -911,34 +1105,31 @@ async function init() {
     setUiMode(getUiMode());
 
     if (libraryDrawer) libraryDrawer.open = isLibraryDrawerOpen();
+    if (helpDrawer) helpDrawer.open = false;
 
     config = await loadConfig(configBase);
-    const session = loadSession();
-    const sessionData = session && 'data' in session ? session.data : null;
 
+    ensureStarterTemplates();
     templateStore = new TemplateStore();
     workspaceManager = new WorkspaceManager(config, { userTemplates: templateStore.list() });
     stateManager = createStateManager(config);
     stateManager.setLocale(locale);
 
     variantsManager = new VariantsManager(config);
-    if (sessionData?.variants) {
-        variantsManager.patch(sessionData.variants);
-    }
-
-    chainManager = new ChainManager(config, sessionData?.activeChain);
+    variantsManager.patch(createDefaultVariants());
+    // Boot without restoring an in-progress workflow — empty start.
+    chainManager = new ChainManager(config);
+    chainManager.clear();
     continueManager = new ContinueManager();
 
-    const draft = stateManager.getDraft();
-    if (!draft.roleId && !draft.taskId) {
-        // Empty start — user picks role/task explicitly
-    } else if (!draft.modelId && config.models[0]) {
+    await hydrateLibraryFromAccount();
+    workspaceManager.refreshUserTemplates(templateStore.list());
+
+    if (config.models[0]) {
         stateManager.setModel(config.models[0].id);
-    } else {
-        stateManager.recompile();
     }
 
-    applySongForbiddenDefaults();
+    applyPreviewVisibility();
 
     bindEvents();
     handleBridgeReturn();

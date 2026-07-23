@@ -14,33 +14,28 @@
         <div class="tools-page-stack">
             <x-tools.workflow-nav tool-id="prompt-studio" />
 
-            <div id="prompt-studio-app" class="prompt-studio prompt-studio--regular" data-config-base="{{ prompt_studio_config_path() }}">
+            <div
+                id="prompt-studio-app"
+                class="prompt-studio prompt-studio--regular"
+                data-config-base="{{ prompt_studio_config_path() }}"
+                data-accounts-enabled="{{ ! empty($accountsEnabled) ? '1' : '0' }}"
+                data-account-user-id="{{ $accountUser['id'] ?? '' }}"
+                data-library-api-url="{{ ! empty($accountsEnabled) && ! empty($accountUser) ? url('/api/prompt-studio/library') : '' }}"
+            >
                 <div class="prompt-studio__chrome">
                     <div class="prompt-studio__chrome-top">
-                        <div class="prompt-studio__mode-toggle" role="group" aria-label="UI mode">
-                            <button type="button" class="prompt-studio__mode-btn prompt-studio__mode-btn--active" data-ps-mode="regular" data-i18n="promptStudio.mode.regular">Regular</button>
-                            <button type="button" class="prompt-studio__mode-btn" data-ps-mode="tech" data-i18n="promptStudio.mode.tech">Tech</button>
+                        <div class="prompt-studio__chrome-actions">
+                            <button type="button" class="tools-btn tools-btn--sm" id="ps-preview-toggle" aria-pressed="true" data-i18n="promptStudio.previewToggle">
+                                Hide preview
+                            </button>
+                            <div class="prompt-studio__mode-toggle" role="group" aria-label="UI mode">
+                                <button type="button" class="prompt-studio__mode-btn prompt-studio__mode-btn--active" data-ps-mode="regular" data-i18n="promptStudio.mode.regular">Regular</button>
+                                <button type="button" class="prompt-studio__mode-btn" data-ps-mode="tech" data-i18n="promptStudio.mode.tech">Tech</button>
+                            </div>
                         </div>
                     </div>
 
                     <div class="prompt-studio__chrome-drawers">
-                        <details class="prompt-studio__drawer" id="ps-library-drawer">
-                            <summary class="prompt-studio__drawer-summary" data-i18n="promptStudio.library.title">Library & workflows</summary>
-                            <div class="prompt-studio__drawer-body">
-                                <div class="prompt-studio__workspace-tabs" role="tablist">
-                                    <button type="button" class="prompt-studio__tab prompt-studio__tab--active" data-ps-tab="workflows" role="tab" data-i18n="promptStudio.tabs.workflows">Workflows</button>
-                                    <button type="button" class="prompt-studio__tab" data-ps-tab="library" role="tab" data-i18n="promptStudio.tabs.library">Tasks</button>
-                                    <button type="button" class="prompt-studio__tab" data-ps-tab="recent" role="tab" data-i18n="promptStudio.tabs.recent">Recent</button>
-                                    <button type="button" class="prompt-studio__tab" data-ps-tab="favorites" role="tab" data-i18n="promptStudio.tabs.favorites">Favorites</button>
-                                    <button type="button" class="prompt-studio__tab prompt-studio__tab--tech" data-ps-tab="templates" role="tab" data-i18n="promptStudio.tabs.templates">Templates</button>
-                                </div>
-                                <div class="prompt-studio__workspace-search">
-                                    <input type="search" id="ps-search" class="tools-input" data-i18n-placeholder="promptStudio.searchPlaceholder" placeholder="Search…" />
-                                </div>
-                                <div id="ps-workspace-list" class="prompt-studio__workspace-list prompt-studio__workspace-grid"></div>
-                            </div>
-                        </details>
-
                         <details class="prompt-studio__drawer" id="ps-help-drawer">
                             <summary class="prompt-studio__drawer-summary" data-i18n="promptStudio.howto.summary">How it works</summary>
                             <div class="prompt-studio__drawer-body prompt-studio__help-body">
@@ -55,32 +50,59 @@
                                     </ol>
                                     <p data-i18n="promptStudio.howto.overview.tip"></p>
                                 </section>
-                                <section class="prompt-studio__help-section">
-                                    <h4 data-i18n="promptStudio.howto.builder.summary">Builder</h4>
+                                <details class="prompt-studio__help-nested">
+                                    <summary data-i18n="promptStudio.howto.builder.summary">Builder</summary>
                                     <p data-i18n="promptStudio.howto.builder.intro"></p>
                                     <ul>
                                         <li data-i18n="promptStudio.howto.builder.step1"></li>
                                         <li data-i18n="promptStudio.howto.builder.step2"></li>
                                         <li data-i18n="promptStudio.howto.builder.step3"></li>
                                     </ul>
-                                </section>
-                                <section class="prompt-studio__help-section">
-                                    <h4 data-i18n="promptStudio.howto.workflow.summary">Workflows</h4>
+                                </details>
+                                <details class="prompt-studio__help-nested">
+                                    <summary data-i18n="promptStudio.howto.workflow.summary">Workflows</summary>
                                     <p data-i18n="promptStudio.howto.workflow.intro"></p>
                                     <ul>
                                         <li data-i18n="promptStudio.howto.workflow.step1"></li>
                                         <li data-i18n="promptStudio.howto.workflow.step2"></li>
                                         <li data-i18n="promptStudio.howto.workflow.step3"></li>
                                     </ul>
-                                </section>
-                                <section class="prompt-studio__help-section">
-                                    <h4 data-i18n="promptStudio.howto.preview.summary">Preview</h4>
-                                    <p data-i18n="promptStudio.howto.preview.intro"></p>
+                                </details>
+                                <details class="prompt-studio__help-nested">
+                                    <summary data-i18n="promptStudio.howto.kinds.summary">Output kinds</summary>
+                                    <p data-i18n="promptStudio.howto.kinds.intro"></p>
                                     <ul>
-                                        <li data-i18n="promptStudio.howto.preview.step1"></li>
-                                        <li data-i18n="promptStudio.howto.preview.step2"></li>
+                                        <li data-i18n="promptStudio.howto.kinds.step1"></li>
+                                        <li data-i18n="promptStudio.howto.kinds.step2"></li>
+                                        <li data-i18n="promptStudio.howto.kinds.step3"></li>
                                     </ul>
-                                </section>
+                                </details>
+                            </div>
+                        </details>
+
+                        <details class="prompt-studio__drawer" id="ps-library-drawer">
+                            <summary class="prompt-studio__drawer-summary" data-i18n="promptStudio.library.title">Library & workflows</summary>
+                            <div class="prompt-studio__drawer-body">
+                                <div class="prompt-studio__workspace-tabs" role="tablist">
+                                    <button type="button" class="prompt-studio__tab prompt-studio__tab--active" data-ps-tab="library" role="tab" data-i18n="promptStudio.tabs.library">Aufgaben</button>
+                                    <button type="button" class="prompt-studio__tab" data-ps-tab="workflows" role="tab" data-i18n="promptStudio.tabs.workflows">Workflows</button>
+                                    <button type="button" class="prompt-studio__tab" data-ps-tab="templates" role="tab" data-i18n="promptStudio.tabs.templates">My templates</button>
+                                    <button type="button" class="prompt-studio__tab" data-ps-tab="roles" role="tab" data-i18n="promptStudio.tabs.roles">Roles</button>
+                                    <button type="button" class="prompt-studio__tab" data-ps-tab="recent" role="tab" data-i18n="promptStudio.tabs.recent">Recent</button>
+                                    <button type="button" class="prompt-studio__tab" data-ps-tab="favorites" role="tab" data-i18n="promptStudio.tabs.favorites">Favorites</button>
+                                </div>
+                                <div class="prompt-studio__workspace-toolbar">
+                                    <input type="search" id="ps-search" class="tools-input" data-i18n-placeholder="promptStudio.searchPlaceholder" placeholder="Search…" />
+                                    <select id="ps-template-kind-filter" class="tools-select">
+                                        <option value="all" data-i18n="promptStudio.kindFilter.all">All kinds</option>
+                                        <option value="prompt" data-i18n="promptStudio.kind.prompt">Prompt</option>
+                                        <option value="rule" data-i18n="promptStudio.kind.rule">Project rule</option>
+                                        <option value="agent-task" data-i18n="promptStudio.kind.agentTask">Agent task</option>
+                                    </select>
+                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-add-role-btn" hidden data-i18n="promptStudio.roles.add">Add role</button>
+                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-save-workflow-btn" hidden data-i18n="promptStudio.workflow.save">Save workflow</button>
+                                </div>
+                                <div id="ps-workspace-list" class="prompt-studio__workspace-list prompt-studio__workspace-grid"></div>
                             </div>
                         </details>
                     </div>
@@ -105,15 +127,17 @@
                             <div id="ps-task-change-hint" class="prompt-studio__task-hint" hidden role="status"></div>
                             <div id="ps-workflow-suggestion" class="prompt-studio__workflow-suggestion" hidden></div>
 
+                            <p id="ps-output-kind-badge" class="prompt-studio__output-kind-badge" role="status"></p>
+
                             <div class="prompt-studio__builder-toolbar">
                             <div class="prompt-studio__toolbar-group" data-ps-toolbar="edit">
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-undo-btn" disabled data-i18n="promptStudio.undo">Undo</button>
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-redo-btn" disabled data-i18n="promptStudio.redo">Redo</button>
                             </div>
-                            <div class="prompt-studio__toolbar-group prompt-studio__toolbar-group--tech" data-ps-toolbar="workflow">
-                                <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-btn" data-i18n="promptStudio.chain">Chain</button>
-                                <button type="button" class="tools-btn tools-btn--sm" id="ps-split-btn" data-i18n="promptStudio.split">Split task</button>
-                                <button type="button" class="tools-btn tools-btn--sm" id="ps-optimize-btn" data-i18n="promptStudio.optimize">Improve prompt</button>
+                            <div class="prompt-studio__toolbar-group" data-ps-toolbar="workflow">
+                                <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-btn" data-i18n="promptStudio.chain">Workflow</button>
+                                <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-split-btn" data-i18n="promptStudio.split">Split task</button>
+                                <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-optimize-btn" data-i18n="promptStudio.optimize">Improve prompt</button>
                             </div>
                             <div class="prompt-studio__toolbar-group prompt-studio__toolbar-group--tech" data-ps-toolbar="data">
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-import-btn" data-i18n="promptStudio.import">Import</button>
@@ -125,14 +149,20 @@
                         <div class="prompt-studio__builder-body">
                             <div id="ps-chain-panel" class="prompt-studio__chain-panel" hidden>
                                 <header class="prompt-studio__subpanel-header">
-                                    <h3 data-i18n="promptStudio.chainTitle">Prompt chain</h3>
-                                    <p data-i18n="promptStudio.chain.lead">Multi-step workflow — copy and anonymize each step separately.</p>
+                                    <h3 data-i18n="promptStudio.chainTitle">Workflow</h3>
+                                    <p data-i18n="promptStudio.chain.lead">Multi-step workflow — copy each step, paste the AI reply into Previous output, then continue.</p>
                                 </header>
+                                <ol class="prompt-studio__chain-howto" data-i18n-list="promptStudio.chain.howto">
+                                    <li data-i18n="promptStudio.chain.howto1">Copy the step prompt into your AI tool.</li>
+                                    <li data-i18n="promptStudio.chain.howto2">Paste the AI reply into “Previous output”.</li>
+                                    <li data-i18n="promptStudio.chain.howto3">Click Next step.</li>
+                                </ol>
                                 <div id="ps-chain-learning" class="prompt-studio__chain-learning" hidden></div>
                                 <div id="ps-chain-steps"></div>
                                 <div class="prompt-studio__chain-actions">
                                     <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-prev-btn" data-i18n="promptStudio.chain.prev">Previous step</button>
                                     <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-next-btn" data-i18n="promptStudio.chain.next">Next step</button>
+                                    <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-save-btn" data-i18n="promptStudio.workflow.save">Save workflow</button>
                                     <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-chain-add-btn" data-i18n="promptStudio.chainAdd">+ Step</button>
                                     <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-chain-custom-btn" data-i18n="promptStudio.chain.custom">+ Custom block</button>
                                 </div>
@@ -204,10 +234,15 @@
                         </div>
                     </section>
 
-                    <section class="prompt-studio__preview" aria-label="Live preview">
+                    <section class="prompt-studio__preview" aria-label="Live preview" id="ps-preview-panel">
                         <header class="prompt-studio__preview-header">
                             <h2 data-i18n="promptStudio.preview">Live preview</h2>
-                            <span id="ps-char-count" class="prompt-studio__char-count"></span>
+                            <div class="prompt-studio__preview-header-actions">
+                                <span id="ps-char-count" class="prompt-studio__char-count"></span>
+                                <button type="button" class="tools-btn tools-btn--sm" id="ps-preview-collapse-btn" aria-expanded="true" data-i18n="promptStudio.previewToggle.hide">
+                                    Hide preview
+                                </button>
+                            </div>
                         </header>
                         <div class="prompt-studio__preview-body">
                             <div id="ps-preview-single" class="prompt-studio__preview-single" hidden>
@@ -219,11 +254,15 @@
                         </div>
                         <footer class="prompt-studio__preview-actions">
                             <button type="button" class="tools-btn" id="ps-copy-btn" data-i18n="promptStudio.copy">Copy prompt</button>
+                            <button type="button" class="tools-btn" id="ps-download-md-btn" data-i18n="promptStudio.downloadMd" hidden>Download .md</button>
                             <button type="button" class="tools-btn tools-btn--primary" id="ps-sanitize-btn" data-i18n="promptStudio.sanitize">Anonymize →</button>
-                            <button type="button" class="tools-btn prompt-studio__toolbar-group--tech" id="ps-save-template-btn" data-i18n="promptStudio.saveTemplate">Save template</button>
+                            <button type="button" class="tools-btn" id="ps-save-template-btn" data-i18n="promptStudio.saveTemplate">Save template</button>
                         </footer>
                     </section>
                 </div>
+                <button type="button" class="tools-btn tools-btn--sm prompt-studio__preview-reopen" id="ps-preview-reopen-btn" hidden data-i18n="promptStudio.previewToggle.show">
+                    Show live preview
+                </button>
             </div>
         </div>
     </div>

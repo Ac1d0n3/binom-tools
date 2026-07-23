@@ -7,6 +7,7 @@ use App\Http\Controllers\Accounts\AuthController;
 use App\Http\Controllers\Accounts\PlanApiController;
 use App\Http\Controllers\Accounts\PlanAttachmentController;
 use App\Http\Controllers\Accounts\UserTemplateApiController;
+use App\Http\Controllers\Accounts\PromptStudioLibraryApiController;
 use App\Http\Controllers\Accounts\StoryAclController;
 use App\Http\Controllers\Accounts\TeamsController;
 use App\Http\Controllers\Accounts\UsersController;
@@ -144,6 +145,8 @@ $registerRoutes = static function (bool $localized): void {
             Route::delete('/api/sprint-planner/user-templates/{templateId}', [UserTemplateApiController::class, 'destroy'])
                 ->where('templateId', 'utpl_[a-zA-Z0-9_]+')
                 ->name($name('accounts.user-templates.destroy'));
+            Route::get('/api/prompt-studio/library', [PromptStudioLibraryApiController::class, 'show'])->name($name('accounts.prompt-studio.library.show'));
+            Route::post('/api/prompt-studio/library', [PromptStudioLibraryApiController::class, 'store'])->name($name('accounts.prompt-studio.library.store'));
             Route::post('/api/sprint-planner/plans/{planId}/attachments', [PlanAttachmentController::class, 'store'])
                 ->where('planId', 'plan_[a-zA-Z0-9_]+')
                 ->name($name('accounts.plans.attachments.store'));

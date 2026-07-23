@@ -23,6 +23,7 @@
  * @property {string[]} parameterIds
  * @property {string} templateId
  * @property {string[]} [modelHints]
+ * @property {import('./md-export.js').OutputKind} [outputKind]
  */
 
 /**

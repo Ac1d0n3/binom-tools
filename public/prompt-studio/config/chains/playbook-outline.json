@@ -1,0 +1,33 @@
+{
+  "id": "playbook-outline",
+  "label": { "de": "Playbook-Gliederung", "en": "Playbook outline" },
+  "description": {
+    "de": "Thema → Gliederung → erster Abschnittsentwurf",
+    "en": "Topic → outline → first section draft"
+  },
+  "steps": [
+    {
+      "id": "step-brief",
+      "label": { "de": "Briefing", "en": "Brief" },
+      "roleId": "technical-writer",
+      "taskId": "document-create",
+      "notes": { "de": "Zielgruppe und Lernziel klären", "en": "Clarify audience and learning goal" }
+    },
+    {
+      "id": "step-outline",
+      "label": { "de": "Gliederung", "en": "Outline" },
+      "roleId": "technical-writer",
+      "taskId": "document-create",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Kapitelstruktur entwerfen", "en": "Draft chapter structure" }
+    },
+    {
+      "id": "step-section",
+      "label": { "de": "Abschnitt", "en": "Section" },
+      "roleId": "technical-writer",
+      "taskId": "document-create",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Ersten Abschnitt ausarbeiten", "en": "Expand the first section" }
+    }
+  ]
+}

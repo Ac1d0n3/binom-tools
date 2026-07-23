@@ -1,4 +1,5 @@
 import { loadTemplates, saveTemplates } from './storage.js';
+import { normalizeOutputKind } from './md-export.js';
 
 /** @typedef {import('./storage.js').PromptDraftState} PromptDraftState */
 
@@ -7,6 +8,7 @@ import { loadTemplates, saveTemplates } from './storage.js';
  * @property {string} id
  * @property {string} name
  * @property {string} [description]
+ * @property {import('./md-export.js').OutputKind} [kind]
  * @property {string} roleId
  * @property {string} taskId
  * @property {string} modelId
@@ -110,6 +112,7 @@ export class TemplateStore {
             name,
             description: meta.description,
             tags: meta.tags,
+            kind: normalizeOutputKind(draft.kind ?? meta.kind),
             roleId: draft.roleId,
             taskId: draft.taskId,
             modelId: draft.modelId,
@@ -130,6 +133,7 @@ export class TemplateStore {
             sectionOverrides: template.sectionOverrides,
             title: template.name,
             tags: template.tags ?? [],
+            kind: normalizeOutputKind(template.kind),
         };
     }
 
@@ -154,6 +158,7 @@ function normalizeTemplate(raw) {
         id: typeof obj.id === 'string' ? obj.id : `tpl_${Date.now().toString(36)}`,
         name: typeof obj.name === 'string' ? obj.name : 'Untitled',
         description: typeof obj.description === 'string' ? obj.description : undefined,
+        kind: normalizeOutputKind(obj.kind),
         roleId: typeof obj.roleId === 'string' ? obj.roleId : '',
         taskId: typeof obj.taskId === 'string' ? obj.taskId : '',
         modelId: typeof obj.modelId === 'string' ? obj.modelId : '',

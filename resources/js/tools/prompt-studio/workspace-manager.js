@@ -3,6 +3,7 @@ import { t } from './labels.js';
 import {
     createDefaultWorkspace,
     debouncedSaveWorkspace,
+    loadChains,
     loadRecent,
     loadSeries,
     loadWorkspace,
@@ -10,6 +11,7 @@ import {
     saveRecent,
     saveWorkspace,
 } from './storage.js';
+import { normalizeOutputKind, getTaskOutputKind } from './md-export.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./config-validator.js').PromptRoleDef} PromptRoleDef */
@@ -18,17 +20,46 @@ import {
 /** @typedef {import('./storage.js').PromptWorkspaceState} PromptWorkspaceState */
 /** @typedef {import('./storage.js').PromptRecentEntry} PromptRecentEntry */
 
-/** @typedef {'library' | 'favorites' | 'templates' | 'recent' | 'workflows'} WorkspaceTab */
+/** @typedef {'library' | 'favorites' | 'templates' | 'recent' | 'workflows' | 'roles'} WorkspaceTab */
+
+/** Featured standalone tasks shown first in the Aufgaben tab (not only via workflows). */
+const FEATURED_TASK_IDS = [
+    'song-develop',
+    'lyrics',
+    'hook',
+    'suno-style',
+    'cover',
+    'album',
+    'debug-investigate',
+    'angular-signals',
+    'automate-repo-task',
+];
+
+/**
+ * @param {PromptTaskDef[]} tasks
+ * @returns {PromptTaskDef[]}
+ */
+function sortTasksForLibrary(tasks) {
+    const featuredIndex = new Map(FEATURED_TASK_IDS.map((id, index) => [id, index]));
+    return [...tasks].sort((a, b) => {
+        const ai = featuredIndex.has(a.id) ? /** @type {number} */ (featuredIndex.get(a.id)) : Number.MAX_SAFE_INTEGER;
+        const bi = featuredIndex.has(b.id) ? /** @type {number} */ (featuredIndex.get(b.id)) : Number.MAX_SAFE_INTEGER;
+        if (ai !== bi) return ai - bi;
+        return a.id.localeCompare(b.id);
+    });
+}
 
 /**
  * @typedef {Object} WorkspaceItem
  * @property {string} id
- * @property {'template' | 'task' | 'chain' | 'recent' | 'custom-role'} kind
+ * @property {'template' | 'task' | 'chain' | 'recent' | 'custom-role' | 'role'} kind
  * @property {string} title
  * @property {string} [subtitle]
  * @property {string[]} [tags]
  * @property {string} [roleId]
  * @property {string} [taskId]
+ * @property {string} [workflowId]
+ * @property {string} [outputKind]
  * @property {boolean} [favorite]
  * @property {string} [folderId]
  */
@@ -50,8 +81,10 @@ export class WorkspaceManager {
         this.workspace = saved && 'data' in saved ? saved.data : createDefaultWorkspace();
 
         /** @type {WorkspaceTab} */
-        this.activeTab = 'workflows';
+        this.activeTab = 'library';
         this.searchQuery = '';
+        /** @type {import('./md-export.js').OutputKind | 'all'} */
+        this.templateKindFilter = 'all';
     }
 
     /** @param {WorkspaceTab} tab */
@@ -115,6 +148,11 @@ export class WorkspaceManager {
         debouncedSaveWorkspace(this.workspace, 'manual');
     }
 
+    /** @param {import('./md-export.js').OutputKind | 'all'} kind */
+    setTemplateKindFilter(kind) {
+        this.templateKindFilter = kind === 'all' ? 'all' : normalizeOutputKind(kind);
+    }
+
     /**
      * @param {string} name
      * @param {import('./config-validator.js').PromptRoleDef} [role]
@@ -134,6 +172,15 @@ export class WorkspaceManager {
                 },
             ];
         }
+        debouncedSaveWorkspace(this.workspace, 'manual');
+        return this.workspace.customRoles[0]?.id;
+    }
+
+    /**
+     * @param {string} id
+     */
+    removeCustomRole(id) {
+        this.workspace.customRoles = this.workspace.customRoles.filter((r) => r.id !== id);
         debouncedSaveWorkspace(this.workspace, 'manual');
     }
 
@@ -162,28 +209,7 @@ export class WorkspaceManager {
 
     /** @returns {WorkspaceItem[]} */
     getLibraryItems() {
-        /** @type {WorkspaceItem[]} */
-        const items = [];
-
-        for (const task of this.config.tasks) {
-            if (task.id === 'custom-block') continue;
-            const roleId = task.roleIds[0] ?? '';
-            const role = this.config.roles.find((r) => r.id === roleId);
-            const locale = 'en';
-            items.push({
-                id: `task:${task.id}`,
-                kind: 'task',
-                title: resolveLocalizedLabel(task.label, locale, task.id),
-                subtitle:
-                    resolveLocalizedLabel(task.description, locale, '') ||
-                    resolveLocalizedLabel(role?.label, locale, ''),
-                roleId,
-                taskId: task.id,
-                tags: ['task'],
-            });
-        }
-
-        return this.filterItems(items);
+        return this.getLibraryItemsForLocale('en');
     }
 
     /**
@@ -194,20 +220,25 @@ export class WorkspaceManager {
         /** @type {WorkspaceItem[]} */
         const items = [];
 
-        for (const task of this.config.tasks) {
+        for (const task of sortTasksForLibrary(this.config.tasks)) {
             if (task.id === 'custom-block') continue;
+            const outputKind = getTaskOutputKind(task);
+            if (this.templateKindFilter !== 'all' && outputKind !== this.templateKindFilter) continue;
             const roleId = task.roleIds[0] ?? '';
             const role = this.config.roles.find((r) => r.id === roleId);
+            const kindLabel = t(locale, kindLabelKey(outputKind));
+            const description =
+                resolveLocalizedLabel(task.description, locale, '') ||
+                resolveLocalizedLabel(role?.label, locale, '');
             items.push({
                 id: `task:${task.id}`,
                 kind: 'task',
                 title: resolveLocalizedLabel(task.label, locale, task.id),
-                subtitle:
-                    resolveLocalizedLabel(task.description, locale, '') ||
-                    resolveLocalizedLabel(role?.label, locale, ''),
+                subtitle: description ? `${kindLabel} · ${description}` : kindLabel,
                 roleId,
                 taskId: task.id,
-                tags: ['task'],
+                outputKind,
+                tags: ['task', outputKind],
             });
         }
 
@@ -219,37 +250,86 @@ export class WorkspaceManager {
      * @returns {WorkspaceItem[]}
      */
     getWorkflowItems(locale = 'en') {
-        const items = (this.config.chains ?? []).map((chain) => ({
+        const workflowLabel = t(locale, 'promptStudio.badge.workflow');
+        const presetItems = (this.config.chains ?? []).map((chain) => ({
             id: `workflow:${chain.id}`,
             kind: /** @type {const} */ ('chain'),
             title: resolveLocalizedLabel(chain.label, locale, chain.id),
-            subtitle:
+            subtitle: `${workflowLabel} · ${
                 resolveLocalizedLabel(chain.description, locale, '') ||
-                t(locale, 'promptStudio.workspace.stepCount', { count: chain.steps?.length ?? 0 }),
-            tags: ['workflow'],
+                t(locale, 'promptStudio.workspace.stepCount', { count: chain.steps?.length ?? 0 })
+            }`,
+            workflowId: chain.id,
+            tags: ['workflow', 'preset'],
         }));
-        return this.filterItems(items);
-    }
-
-    /** @returns {WorkspaceItem[]} */
-    getFavoriteItems() {
-        const all = [...this.getLibraryItemsForLocale('en'), ...this.getWorkflowItems('en'), ...this.getTemplateItems(), ...this.getRecentItems()];
-        return this.filterItems(all.filter((item) => this.isFavorite(item.id)));
+        const loaded = loadChains();
+        const userChains = loaded && 'data' in loaded ? loaded.data : [];
+        const userItems = userChains.map((chain) => ({
+            id: `user-workflow:${chain.id}`,
+            kind: /** @type {const} */ ('chain'),
+            title: chain.name,
+            subtitle: `${workflowLabel} · ${t(locale, 'promptStudio.workspace.stepCount', { count: chain.steps?.length ?? 0 })}`,
+            workflowId: chain.id,
+            tags: ['workflow', 'mine'],
+        }));
+        return this.filterItems([...presetItems, ...userItems]);
     }
 
     /** @returns {WorkspaceItem[]} */
     getTemplateItems() {
-        const items = this.userTemplates.map((tpl) => ({
-            id: `user:${tpl.id}`,
-            kind: /** @type {const} */ ('template'),
-            title: tpl.name,
-            subtitle: tpl.taskId ?? '',
-            roleId: tpl.roleId,
-            taskId: tpl.taskId,
-            tags: tpl.tags ?? ['template'],
-            favorite: this.isFavorite(`user:${tpl.id}`),
-        }));
+        const items = this.userTemplates
+            .filter((tpl) => {
+                if (this.templateKindFilter === 'all') return true;
+                return normalizeOutputKind(tpl.kind) === this.templateKindFilter;
+            })
+            .map((tpl) => ({
+                id: `user:${tpl.id}`,
+                kind: /** @type {const} */ ('template'),
+                title: tpl.name,
+                subtitle: [normalizeOutputKind(tpl.kind), tpl.taskId ?? ''].filter(Boolean).join(' · '),
+                roleId: tpl.roleId,
+                taskId: tpl.taskId,
+                outputKind: normalizeOutputKind(tpl.kind),
+                tags: tpl.tags ?? ['template'],
+                favorite: this.isFavorite(`user:${tpl.id}`),
+            }));
         return this.filterItems(items);
+    }
+
+    /**
+     * @param {ToolsLocale} locale
+     * @returns {WorkspaceItem[]}
+     */
+    getRoleItems(locale = 'en') {
+        const configRoles = this.config.roles.map((role) => ({
+            id: `role:${role.id}`,
+            kind: /** @type {const} */ ('role'),
+            title: resolveLocalizedLabel(role.label, locale, role.id),
+            subtitle: t(locale, 'promptStudio.workspace.taskCount', { count: role.taskIds?.length ?? 0 }),
+            roleId: role.id,
+            tags: ['role', 'preset'],
+        }));
+        const custom = this.workspace.customRoles.map((role) => ({
+            id: `custom-role:${role.id}`,
+            kind: /** @type {const} */ ('custom-role'),
+            title: resolveLocalizedLabel(role.label, locale, role.id),
+            subtitle: t(locale, 'promptStudio.roles.custom'),
+            roleId: role.id,
+            tags: ['role', 'mine'],
+        }));
+        return this.filterItems([...configRoles, ...custom]);
+    }
+
+    /** @returns {WorkspaceItem[]} */
+    getFavoriteItems() {
+        const all = [
+            ...this.getLibraryItemsForLocale('en'),
+            ...this.getWorkflowItems('en'),
+            ...this.getTemplateItems(),
+            ...this.getRecentItems(),
+            ...this.getRoleItems('en'),
+        ];
+        return this.filterItems(all.filter((item) => this.isFavorite(item.id)));
     }
 
     /** @returns {WorkspaceItem[]} */
@@ -310,6 +390,8 @@ export class WorkspaceManager {
                 return this.getRecentItems();
             case 'workflows':
                 return this.getWorkflowItems('en');
+            case 'roles':
+                return this.getRoleItems('en');
             default:
                 return this.getLibraryItems();
         }
@@ -327,6 +409,7 @@ export class WorkspaceManager {
                     ...this.getWorkflowItems(locale),
                     ...this.getTemplateItems(),
                     ...this.getRecentItems(),
+                    ...this.getRoleItems(locale),
                 ];
                 return this.filterItems(all.filter((item) => this.isFavorite(item.id)));
             }
@@ -336,6 +419,8 @@ export class WorkspaceManager {
                 return this.getRecentItems();
             case 'workflows':
                 return this.getWorkflowItems(locale);
+            case 'roles':
+                return this.getRoleItems(locale);
             default:
                 return this.getLibraryItemsForLocale(locale);
         }
@@ -354,7 +439,14 @@ export class WorkspaceManager {
         return items
             .map((item) => {
                 const fav = this.isFavorite(item.id);
-                return `<button type="button" class="prompt-studio__workspace-item" data-item-id="${escapeAttr(item.id)}" data-kind="${item.kind}" data-role-id="${escapeAttr(item.roleId ?? '')}" data-task-id="${escapeAttr(item.taskId ?? '')}" data-workflow-id="${escapeAttr(item.id.startsWith('workflow:') ? item.id.replace('workflow:', '') : '')}">
+                const badge =
+                    item.kind === 'chain'
+                        ? t(locale, 'promptStudio.badge.workflow')
+                        : item.outputKind
+                          ? t(locale, kindLabelKey(item.outputKind))
+                          : '';
+                return `<button type="button" class="prompt-studio__workspace-item" data-item-id="${escapeAttr(item.id)}" data-kind="${item.kind}" data-role-id="${escapeAttr(item.roleId ?? '')}" data-task-id="${escapeAttr(item.taskId ?? '')}" data-workflow-id="${escapeAttr(item.workflowId ?? '')}">
+                    ${badge ? `<span class="prompt-studio__workspace-item-badge">${escapeHtml(badge)}</span>` : ''}
                     <span class="prompt-studio__workspace-item-title">${escapeHtml(item.title)}</span>
                     ${item.subtitle ? `<span class="prompt-studio__workspace-item-sub">${escapeHtml(item.subtitle)}</span>` : ''}
                     <span class="prompt-studio__workspace-item-fav${fav ? ' is-active' : ''}" data-fav-id="${escapeAttr(item.id)}" aria-label="${escapeAttr(t(locale, 'promptStudio.workspace.favorite'))}">★</span>
@@ -389,6 +481,16 @@ function escapeAttr(value) {
  */
 function escapeHtml(value) {
     return escapeAttr(value).replaceAll('>', '&gt;');
+}
+
+/**
+ * @param {import('./md-export.js').OutputKind} kind
+ * @returns {string}
+ */
+function kindLabelKey(kind) {
+    if (kind === 'rule') return 'promptStudio.kind.rule';
+    if (kind === 'agent-task') return 'promptStudio.kind.agentTask';
+    return 'promptStudio.kind.prompt';
 }
 
 /**

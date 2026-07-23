@@ -53,14 +53,65 @@ export class ChainManager {
         this.persist();
     }
 
+    /** Close and clear the active workflow (single-task mode). */
+    clear() {
+        this.presetId = null;
+        this.currentStepIndex = 0;
+        this.isOpen = false;
+        this.activeSteps = [];
+        this.persist();
+    }
+
     /** @param {string} chainId */
     loadChain(chainId, locale = 'en') {
         const def = this.config.chains.find((c) => c.id === chainId);
-        if (!def) return;
+        if (!def) return false;
         this.loadFromConfig(def, locale);
         this.isOpen = true;
         this.currentStepIndex = 0;
         this.persist();
+        return true;
+    }
+
+    /**
+     * Load a user-saved workflow from local library.
+     * @param {{ id: string, name: string, steps: Array<{ id?: string, roleId: string, taskId: string, label?: string, parameterValues?: Record<string, unknown> }> }} entry
+     */
+    loadUserChain(entry, locale = 'en') {
+        this.presetId = entry.id;
+        this.activeSteps = (entry.steps || []).map((step, index) => ({
+            id: step.id ?? `step_${index + 1}`,
+            roleId: step.roleId,
+            taskId: step.taskId,
+            label: step.label || step.taskId,
+            parameterValues: step.parameterValues ?? {},
+            previousOutput: '',
+        }));
+        this.isOpen = true;
+        this.currentStepIndex = 0;
+        this.persist();
+        return this.activeSteps;
+    }
+
+    /**
+     * @param {string} name
+     * @returns {{ id: string, name: string, steps: import('./storage.js').PromptChainStep[], savedAt: string }}
+     */
+    toUserChainEntry(name) {
+        return {
+            id: this.presetId && String(this.presetId).startsWith('uchain_')
+                ? this.presetId
+                : `uchain_${Date.now().toString(36)}`,
+            name,
+            steps: this.activeSteps.map((step) => ({
+                id: step.id,
+                roleId: step.roleId,
+                taskId: step.taskId,
+                label: step.label,
+                parameterValues: step.parameterValues ?? {},
+            })),
+            savedAt: new Date().toISOString(),
+        };
     }
 
     /**

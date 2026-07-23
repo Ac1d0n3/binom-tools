@@ -1,3 +1,5 @@
+import { normalizeOutputKind } from './md-export.js';
+
 /** @typedef {'de' | 'en'} ToolsLocale */
 
 /**
@@ -10,6 +12,7 @@
  * @property {Record<string, boolean>} sectionOverrides
  * @property {string} [title]
  * @property {string[]} [tags]
+ * @property {import('./md-export.js').OutputKind} [kind]
  */
 
 /**
@@ -90,6 +93,7 @@ export function createDefaultDraft() {
         sectionOverrides: {},
         title: '',
         tags: [],
+        kind: /** @type {import('./md-export.js').OutputKind} */ ('prompt'),
     };
 }
 
@@ -130,6 +134,7 @@ export function normalizeDraft(raw) {
                 : base.sectionOverrides,
         title: typeof obj.title === 'string' ? obj.title : base.title,
         tags: Array.isArray(obj.tags) ? obj.tags.map(String) : base.tags,
+        kind: normalizeOutputKind(obj.kind),
     };
 }
 

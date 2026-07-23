@@ -1,0 +1,33 @@
+{
+  "id": "debug-investigate",
+  "label": { "de": "Debug-Untersuchung", "en": "Debug investigation" },
+  "description": {
+    "de": "Repro → Hypothesen → Fix-Vorschlag als Agent-Schritte",
+    "en": "Repro → hypotheses → fix proposal as agent steps"
+  },
+  "steps": [
+    {
+      "id": "step-repro",
+      "label": { "de": "Repro", "en": "Repro" },
+      "roleId": "debug-engineer",
+      "taskId": "debug-investigate",
+      "notes": { "de": "Fehler reproduzierbar beschreiben", "en": "Describe a reproducible failure" }
+    },
+    {
+      "id": "step-hypotheses",
+      "label": { "de": "Hypothesen", "en": "Hypotheses" },
+      "roleId": "debug-engineer",
+      "taskId": "debug-investigate",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Ursachen priorisieren", "en": "Prioritize likely causes" }
+    },
+    {
+      "id": "step-fix",
+      "label": { "de": "Fix", "en": "Fix" },
+      "roleId": "software-engineer",
+      "taskId": "refactoring",
+      "passOutputAs": "previousOutput",
+      "notes": { "de": "Minimalen Fix vorschlagen", "en": "Propose a minimal fix" }
+    }
+  ]
+}

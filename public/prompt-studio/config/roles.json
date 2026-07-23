@@ -2,82 +2,237 @@
   "roles": [
     {
       "id": "business-analyst",
-      "label": { "de": "Geschäftsanalyst", "en": "Business Analyst" },
+      "label": {
+        "de": "Geschäftsanalyst",
+        "en": "Business Analyst"
+      },
       "icon": "fa-chart-line",
-      "taskIds": ["analysis", "root-cause-analysis", "workshop", "brainstorming", "document-create", "document-summarize", "document-follow-up"],
-      "crossRoleTaskIds": ["hero", "infographic"]
+      "taskIds": [
+        "analysis",
+        "root-cause-analysis",
+        "workshop",
+        "brainstorming",
+        "document-create",
+        "document-summarize",
+        "document-follow-up"
+      ],
+      "crossRoleTaskIds": [
+        "hero",
+        "infographic"
+      ]
     },
     {
       "id": "business-process-analyst",
-      "label": { "de": "Prozessanalyst", "en": "Business Process Analyst" },
+      "label": {
+        "de": "Prozessanalyst",
+        "en": "Business Process Analyst"
+      },
       "icon": "fa-diagram-project",
-      "taskIds": ["analysis", "root-cause-analysis", "workshop", "process-improve", "document-create"]
+      "taskIds": [
+        "analysis",
+        "root-cause-analysis",
+        "workshop",
+        "process-improve",
+        "document-create"
+      ]
     },
     {
       "id": "ai-consultant",
-      "label": { "de": "KI-Berater", "en": "AI Consultant" },
+      "label": {
+        "de": "KI-Berater",
+        "en": "AI Consultant"
+      },
       "icon": "fa-robot",
-      "taskIds": ["analysis", "brainstorming", "workshop", "document-create"]
+      "taskIds": [
+        "analysis",
+        "brainstorming",
+        "workshop",
+        "document-create"
+      ]
     },
     {
       "id": "data-analyst",
-      "label": { "de": "Datenanalyst", "en": "Data Analyst" },
+      "label": {
+        "de": "Datenanalyst",
+        "en": "Data Analyst"
+      },
       "icon": "fa-database",
-      "taskIds": ["analysis", "root-cause-analysis", "document-create"]
+      "taskIds": [
+        "analysis",
+        "root-cause-analysis",
+        "document-create"
+      ]
     },
     {
       "id": "support-analyst",
-      "label": { "de": "Support-Analyst", "en": "Support Analyst" },
+      "label": {
+        "de": "Support-Analyst",
+        "en": "Support Analyst"
+      },
       "icon": "fa-headset",
-      "taskIds": ["analysis", "root-cause-analysis", "document-create"]
+      "taskIds": [
+        "analysis",
+        "root-cause-analysis",
+        "document-create"
+      ]
     },
     {
       "id": "software-engineer",
-      "label": { "de": "Softwareentwickler", "en": "Software Engineer" },
+      "label": {
+        "de": "Softwareentwickler",
+        "en": "Software Engineer"
+      },
       "icon": "fa-code",
-      "taskIds": ["class-create", "method-develop", "api-design", "refactoring", "review", "tests-write"]
+      "taskIds": [
+        "class-create",
+        "method-develop",
+        "api-design",
+        "refactoring",
+        "review",
+        "tests-write",
+        "debug-investigate",
+        "automate-repo-task",
+        "angular-signals"
+      ]
     },
     {
       "id": "solution-architect",
-      "label": { "de": "Lösungsarchitekt", "en": "Solution Architect" },
+      "label": {
+        "de": "Lösungsarchitekt",
+        "en": "Solution Architect"
+      },
       "icon": "fa-sitemap",
-      "taskIds": ["api-design", "class-create", "refactoring", "review"]
+      "taskIds": [
+        "api-design",
+        "class-create",
+        "refactoring",
+        "review"
+      ]
     },
     {
       "id": "songwriter",
-      "label": { "de": "Songwriter", "en": "Songwriter" },
+      "label": {
+        "de": "Songwriter",
+        "en": "Songwriter"
+      },
       "icon": "fa-pen-fancy",
-      "taskIds": ["song-develop", "lyrics", "hook", "album"]
+      "taskIds": [
+        "song-develop",
+        "lyrics",
+        "hook",
+        "album"
+      ]
     },
     {
       "id": "music-producer",
-      "label": { "de": "Musikproduzent", "en": "Music Producer" },
+      "label": {
+        "de": "Musikproduzent",
+        "en": "Music Producer"
+      },
       "icon": "fa-music",
-      "taskIds": ["song-develop", "suno-style", "album", "hook"]
+      "taskIds": [
+        "song-develop",
+        "suno-style",
+        "album",
+        "hook"
+      ]
     },
     {
       "id": "art-director",
-      "label": { "de": "Kreativdirektor", "en": "Art Director" },
+      "label": {
+        "de": "Kreativdirektor",
+        "en": "Art Director"
+      },
       "icon": "fa-palette",
-      "taskIds": ["hero", "cover", "character", "infographic"]
+      "taskIds": [
+        "hero",
+        "cover",
+        "character",
+        "infographic"
+      ]
     },
     {
       "id": "image-designer",
-      "label": { "de": "Bilddesigner", "en": "Image Designer" },
+      "label": {
+        "de": "Bilddesigner",
+        "en": "Image Designer"
+      },
       "icon": "fa-image",
-      "taskIds": ["hero", "cover", "diagram", "infographic", "logo", "character"]
+      "taskIds": [
+        "hero",
+        "cover",
+        "diagram",
+        "infographic",
+        "logo",
+        "character"
+      ]
     },
     {
       "id": "film-director",
-      "label": { "de": "Filmregisseur", "en": "Film Director" },
+      "label": {
+        "de": "Filmregisseur",
+        "en": "Film Director"
+      },
       "icon": "fa-film",
-      "taskIds": ["storyboard", "scenes", "camera", "trailer"]
+      "taskIds": [
+        "storyboard",
+        "scenes",
+        "camera",
+        "trailer"
+      ]
     },
     {
       "id": "technical-writer",
-      "label": { "de": "Technischer Redakteur", "en": "Technical Writer" },
+      "label": {
+        "de": "Technischer Redakteur",
+        "en": "Technical Writer"
+      },
       "icon": "fa-book",
-      "taskIds": ["document-create", "analysis"]
+      "taskIds": [
+        "document-create",
+        "analysis"
+      ]
+    },
+    {
+      "id": "angular-engineer",
+      "label": {
+        "de": "Angular-Entwickler",
+        "en": "Angular engineer"
+      },
+      "icon": "fa-angular",
+      "taskIds": [
+        "angular-signals",
+        "class-create",
+        "refactoring",
+        "review",
+        "tests-write"
+      ]
+    },
+    {
+      "id": "debug-engineer",
+      "label": {
+        "de": "Debug-Engineer",
+        "en": "Debug engineer"
+      },
+      "icon": "fa-bug",
+      "taskIds": [
+        "debug-investigate",
+        "root-cause-analysis",
+        "refactoring"
+      ]
+    },
+    {
+      "id": "automation-engineer",
+      "label": {
+        "de": "Automatisierungs-Engineer",
+        "en": "Automation engineer"
+      },
+      "icon": "fa-gears",
+      "taskIds": [
+        "automate-repo-task",
+        "api-design",
+        "document-create"
+      ]
     }
   ]
 }
