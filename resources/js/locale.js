@@ -305,6 +305,10 @@ const shellLabels = {
         'card.meta-export-generator.title': 'Meta Export Generator',
         'card.meta-export-generator.description':
             'Copy-Paste-SQL/Scripts für Schemas, Tabellen, Spalten und Access-Meta — 10 Plattformen, kein Live-Connect.',
+        'nav.pureview-scan-generator': 'PureView Scan Generator',
+        'nav.pureview-classification-generator': 'PureView Classification Generator',
+        'nav.pureview-glossary-generator': 'PureView Glossary Generator',
+        'nav.pureview-data-product-generator': 'PureView Data Product Generator',
         'nav.stakeholder-matrix': 'Stakeholder Matrix',
         'card.stakeholder-matrix.title': 'Stakeholder & RACI Matrix',
         'card.stakeholder-matrix.description':
@@ -696,6 +700,10 @@ const shellLabels = {
         'card.meta-export-generator.title': 'Meta Export Generator',
         'card.meta-export-generator.description':
             'Copy-paste SQL/scripts for schemas, tables, columns and access meta — 10 platforms, no live connect.',
+        'nav.pureview-scan-generator': 'PureView Scan Generator',
+        'nav.pureview-classification-generator': 'PureView Classification Generator',
+        'nav.pureview-glossary-generator': 'PureView Glossary Generator',
+        'nav.pureview-data-product-generator': 'PureView Data Product Generator',
         'nav.stakeholder-matrix': 'Stakeholder Matrix',
         'card.stakeholder-matrix.title': 'Stakeholder & RACI Matrix',
         'card.stakeholder-matrix.description':

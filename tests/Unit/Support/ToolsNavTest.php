@@ -47,6 +47,11 @@ final class ToolsNavTest extends TestCase
             ['AI'],
             ToolsNav::platformMarks(['id' => 'prompt-studio', 'for' => ['AI']]),
         );
+
+        $this->assertSame(
+            ['PureView'],
+            ToolsNav::platformMarks(['id' => 'pureview-scan-generator', 'for' => ['PureView']]),
+        );
     }
 
     public function test_is_ai_tool_detects_ai_workflow_and_for_tag(): void
@@ -70,16 +75,18 @@ final class ToolsNavTest extends TestCase
             ['id' => 'prompt-studio', 'for' => ['AI'], 'workflow' => 'ai-prompt-workflow', 'label' => ['en' => 'P', 'de' => 'P'], 'route' => 'tools.y'],
             ['id' => 'dbt-macro', 'workflow' => 'dbt-pii-governance', 'label' => ['en' => 'D', 'de' => 'D'], 'route' => 'tools.z'],
             ['id' => 'both', 'for' => ['Fabric', 'Databricks'], 'label' => ['en' => 'B', 'de' => 'B'], 'route' => 'tools.b'],
+            ['id' => 'pureview-scan', 'for' => ['PureView'], 'label' => ['en' => 'PV', 'de' => 'PV'], 'route' => 'tools.pv'],
         ];
 
         $groups = ToolsNav::groupByProduct($items);
         $ids = array_column($groups, 'id');
 
-        $this->assertSame(['ai', 'dbt', 'fabric', 'databricks'], $ids);
+        $this->assertSame(['ai', 'dbt', 'fabric', 'databricks', 'pureview'], $ids);
         $this->assertSame(['prompt-studio'], array_column($groups[0]['items'], 'id'));
         $this->assertSame(['dbt-macro'], array_column($groups[1]['items'], 'id'));
         $this->assertSame(['fabric-x', 'both'], array_column($groups[2]['items'], 'id'));
         $this->assertSame(['both'], array_column($groups[3]['items'], 'id'));
+        $this->assertSame(['pureview-scan'], array_column($groups[4]['items'], 'id'));
     }
 
     /**

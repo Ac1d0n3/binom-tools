@@ -77,6 +77,10 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('Databricks dbt-on-Databricks Generator');
         $response->assertSee('Unity Catalog Governance Generator');
         $response->assertSee('Delta Load / SCD Pattern Generator');
+        $response->assertSee('PureView Scan Generator');
+        $response->assertSee('PureView Classification Generator');
+        $response->assertSee('PureView Glossary Generator');
+        $response->assertSee('PureView Data Product Generator');
         $response->assertSee('tools-card__platform-mark', false);
         $response->assertSee('images/fabric-badge.svg', false);
         $response->assertSee('images/databricks-badge.svg', false);
@@ -92,16 +96,14 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-overview-product', false);
         $response->assertSee('data-products="fabric"', false);
         $response->assertSee('data-products="databricks"', false);
+        $response->assertSee('data-products="pureview"', false);
         $response->assertSee('data-products="dbt"', false);
         $response->assertSee('data-overview-item', false);
         $response->assertSee('tools-overview-sticky-header', false);
         $response->assertSee('tools-shell__main--overview', false);
         $response->assertSee('tools-overview-scroll', false);
-        $response->assertSee('tools-overview-release', false);
         $response->assertSee('tools-release-meta', false);
         $response->assertSee('v0.1.0', false);
-        $response->assertSee('data-i18n="tools.overviewBetaNote"', false);
-        $response->assertSee('data-i18n="about.learnMore"', false);
         $response->assertDontSee('data-i18n="tools.overviewTitle"', false);
         $response->assertDontSee('data-i18n="tools.overviewLead"', false);
     }
@@ -236,6 +238,25 @@ class ToolsPagesTest extends TestCase
         }
     }
 
+    public function test_pureview_generators_render(): void
+    {
+        foreach ([
+            '/tools/pureview-scan-generator' => 'pureview.scan.pageTitle',
+            '/tools/pureview-classification-generator' => 'pureview.classification.pageTitle',
+            '/tools/pureview-glossary-generator' => 'pureview.glossary.pageTitle',
+            '/tools/pureview-data-product-generator' => 'pureview.dataProduct.pageTitle',
+        ] as $url => $titleKey) {
+            $this->get($url)
+                ->assertOk()
+                ->assertSee('pureview-generator-app', false)
+                ->assertSee('pureview-json-pre', false)
+                ->assertSee('pureview-mapping-pre', false)
+                ->assertSee('pureview-runbook-pre', false)
+                ->assertSee($titleKey, false)
+                ->assertSee('pureview.howto.summary', false);
+        }
+    }
+
     public function test_meta_export_generator_page_renders(): void
     {
         $response = $this->get('/tools/meta-export-generator');
@@ -321,6 +342,7 @@ class ToolsPagesTest extends TestCase
         $this->assertStringContainsString('data-sidenav-accordion="dbt"', $toolsNav);
         $this->assertStringContainsString('data-sidenav-accordion="fabric"', $toolsNav);
         $this->assertStringContainsString('data-sidenav-accordion="databricks"', $toolsNav);
+        $this->assertStringContainsString('data-sidenav-accordion="pureview"', $toolsNav);
         $this->assertLessThan(
             strpos($toolsNav, 'data-sidenav-accordion="dbt"'),
             strpos($toolsNav, 'data-sidenav-accordion="ai"'),
@@ -333,8 +355,10 @@ class ToolsPagesTest extends TestCase
         $this->assertStringContainsString('data-i18n-nav="prompt-studio"', $toolsNav);
         $this->assertStringContainsString('data-i18n-nav="dbt-governance-macro-generator"', $toolsNav);
         $this->assertStringContainsString('data-i18n-nav="fabric-dq-pattern-generator"', $toolsNav);
+        $this->assertStringContainsString('data-i18n-nav="pureview-scan-generator"', $toolsNav);
         $this->assertStringContainsString('PII Macro Generator', $toolsNav);
         $this->assertStringContainsString('Prompt Studio', $toolsNav);
+        $this->assertStringContainsString('PureView Scan Generator', $toolsNav);
         $this->assertStringNotContainsString('tools-sidenav__step-num', $toolsNav);
 
         $storiesNav = (string) str($response->getContent())
