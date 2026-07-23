@@ -20,6 +20,7 @@ class ToolsLandingController extends Controller
             'ecosystemItems' => config('tools.ecosystem', []),
             'links' => config('tools.links', []),
             'heroPills' => config('tools.hero_pills', []),
+            'featuredAiTools' => $this->catalog->featuredAiTools(),
             'latestTools' => $this->catalog->latestTools(),
             'toolCount' => $this->catalog->toolCount(),
             'latestStories' => $this->stats->attachToItems($this->catalog->latestStories()),

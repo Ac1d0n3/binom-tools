@@ -13,8 +13,10 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('tools-hero', false);
         $response->assertSee('data-i18n="home.toolsTitle"', false);
+        $response->assertSee('data-i18n="home.aiTitle"', false);
         $response->assertSee('data-i18n="home.storiesTitle"', false);
         $response->assertSee('AI Sanitizer');
+        $response->assertSee('Prompt Studio');
         $response->assertSee('tools-card--overview', false);
         $response->assertSee(route('tools.overview'), false);
         $response->assertSee(route('playbooks.index'), false);
@@ -28,10 +30,13 @@ class ToolsPagesTest extends TestCase
 
         $html = $response->getContent();
         $storiesPos = strpos($html, 'data-i18n="home.storiesTitle"');
+        $aiPos = strpos($html, 'data-i18n="home.aiTitle"');
         $toolsPos = strpos($html, 'data-i18n="home.toolsTitle"');
         $this->assertNotFalse($storiesPos);
+        $this->assertNotFalse($aiPos);
         $this->assertNotFalse($toolsPos);
-        $this->assertLessThan($toolsPos, $storiesPos);
+        $this->assertLessThan($aiPos, $storiesPos);
+        $this->assertLessThan($toolsPos, $aiPos);
         $response->assertSee('data-i18n="footer.about"', false);
         $response->assertSee('v0.1.0', false);
         $response->assertSee('tools-beta-badge', false);
@@ -299,7 +304,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee(route('tools.overview'), false);
     }
 
-    public function test_sidebar_orders_workflow_tools_with_chain_icons_and_short_labels(): void
+    public function test_sidebar_groups_tools_by_product_accordions(): void
     {
         $response = $this->get('/tools');
 
@@ -309,23 +314,28 @@ class ToolsPagesTest extends TestCase
             ->after('data-i18n="nav.tools">Governance</p>')
             ->before('</aside>');
 
-        $this->assertStringContainsString('data-i18n-nav="dbt-governance-macro-generator"', $toolsNav);
-        $this->assertStringContainsString('data-i18n-nav="dbt-dq-history-generator"', $toolsNav);
+        $this->assertStringContainsString('tools-sidenav__accordion', $toolsNav);
+        $this->assertStringContainsString('tools-sidenav__accordion-input', $toolsNav);
+        $this->assertStringContainsString('type="checkbox"', $toolsNav);
+        $this->assertStringContainsString('data-sidenav-accordion="ai"', $toolsNav);
+        $this->assertStringContainsString('data-sidenav-accordion="dbt"', $toolsNav);
+        $this->assertStringContainsString('data-sidenav-accordion="fabric"', $toolsNav);
+        $this->assertStringContainsString('data-sidenav-accordion="databricks"', $toolsNav);
         $this->assertLessThan(
-            strpos($toolsNav, 'data-i18n-nav="dbt-dq-macro-generator"'),
-            strpos($toolsNav, 'data-i18n-nav="pii-recommend-generator"'),
+            strpos($toolsNav, 'data-sidenav-accordion="dbt"'),
+            strpos($toolsNav, 'data-sidenav-accordion="ai"'),
+        );
+        $this->assertLessThan(
+            strpos($toolsNav, 'data-sidenav-accordion="fabric"'),
+            strpos($toolsNav, 'data-sidenav-accordion="dbt"'),
         );
 
-        $response->assertSee('tools-sidenav__link-icon', false);
-        $response->assertSee('fa-shield-halved', false);
-        $response->assertSee('fa-table', false);
-        $this->assertStringNotContainsString('tools-sidenav__step-num', $toolsNav);
-        $this->assertStringNotContainsString('1/4', $toolsNav);
-        $this->assertStringNotContainsString('1/3', $toolsNav);
+        $this->assertStringContainsString('data-i18n-nav="prompt-studio"', $toolsNav);
+        $this->assertStringContainsString('data-i18n-nav="dbt-governance-macro-generator"', $toolsNav);
+        $this->assertStringContainsString('data-i18n-nav="fabric-dq-pattern-generator"', $toolsNav);
         $this->assertStringContainsString('PII Macro Generator', $toolsNav);
-        $this->assertStringContainsString('DG Macro Generator', $toolsNav);
-        $this->assertStringContainsString('PII Policy Generator', $toolsNav);
-        $this->assertStringContainsString('DQ Rules Generator', $toolsNav);
+        $this->assertStringContainsString('Prompt Studio', $toolsNav);
+        $this->assertStringNotContainsString('tools-sidenav__step-num', $toolsNav);
 
         $storiesNav = (string) str($response->getContent())
             ->after('data-i18n="nav.stories">Stories</p>')

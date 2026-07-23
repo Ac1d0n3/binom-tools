@@ -30,6 +30,30 @@
                 </div>
             </section>
 
+            @if (count($featuredAiTools) > 0)
+                <section class="tools-section">
+                    <h2 class="tools-section__title" data-i18n="home.aiTitle">AI tools</h2>
+                    <p class="tools-section__lead" data-i18n="home.aiLead">
+                        Build prompts and sanitize them before sending to external AI tools.
+                    </p>
+                    <div class="tools-card-grid">
+                        @foreach ($featuredAiTools as $item)
+                            <x-tools.card
+                                :href="locale_route($item['route'])"
+                                :title="$item['label']['en']"
+                                :description="$item['description']['en']"
+                                :icon="$item['icon']"
+                                :accent="$item['accent']"
+                                :card-id="$item['id']"
+                                :example="$item['example'] ?? false"
+                                :dbt-badge="\App\Support\ToolsNav::showsDbtBadge($item)"
+                                :platform-marks="\App\Support\ToolsNav::platformMarks($item)"
+                            />
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
             <section class="tools-section">
                 <h2 class="tools-section__title" data-i18n="home.toolsTitle">Governance</h2>
                 <p class="tools-section__lead" data-i18n="home.workflowsLead">

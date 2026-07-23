@@ -183,6 +183,9 @@ const shellLabels = {
         'home.workflowsLead':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
         'home.toolsTitle': 'Governance',
+        'home.aiTitle': 'AI-Tools',
+        'home.aiLead':
+            'Prompts erstellen und vor dem Senden an externe KI-Tools anonymisieren.',
         'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
@@ -571,6 +574,9 @@ const shellLabels = {
         'home.workflowsLead':
             'Interactive reference workflows — step by step, copy-paste ready.',
         'home.toolsTitle': 'Governance',
+        'home.aiTitle': 'AI tools',
+        'home.aiLead':
+            'Build prompts and sanitize them before sending to external AI tools.',
         'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
             'Playbooks on data governance topics — step by step, from idea to implementation.',
@@ -942,6 +948,13 @@ export function applyShellLabels(locale) {
         const key = `nav.${id}`;
         if (labels[key]) {
             el.textContent = labels[key];
+        }
+    });
+
+    document.querySelectorAll('[data-sidenav-bilingual]').forEach((el) => {
+        const text = el.getAttribute(locale === 'de' ? 'data-text-de' : 'data-text-en');
+        if (text) {
+            el.textContent = text;
         }
     });
 

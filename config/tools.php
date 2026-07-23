@@ -17,10 +17,34 @@ return [
     ],
 
     'workflows' => [
+        'ai-prompt-workflow' => [
+            'label' => [
+                'de' => 'AI Prompt Workflow',
+                'en' => 'AI prompt workflow',
+            ],
+            'navLabel' => [
+                'de' => 'AI',
+                'en' => 'AI',
+            ],
+            'description' => [
+                'de' => 'Prompt erstellen, PII anonymisieren, sicher ans LLM senden.',
+                'en' => 'Build prompt, anonymize PII, send safely to LLM.',
+            ],
+            'icon' => 'fa-microchip',
+            'accent' => 'primary',
+            'steps' => [
+                'prompt-studio',
+                'governance-ai-sanitizer',
+            ],
+        ],
         'dbt-pii-governance' => [
             'label' => [
                 'de' => 'Security & Governance Einrichtung',
                 'en' => 'Security & governance setup',
+            ],
+            'navLabel' => [
+                'de' => 'PII & Security',
+                'en' => 'PII & Security',
             ],
             'description' => [
                 'de' => 'Copy-Paste-Einrichtung: Makros, Policy, Table Gate, PII Recommend — Einstellungen werden über alle Steps geteilt.',
@@ -35,26 +59,14 @@ return [
                 'pii-recommend-generator',
             ],
         ],
-        'ai-prompt-workflow' => [
-            'label' => [
-                'de' => 'AI Prompt Workflow',
-                'en' => 'AI prompt workflow',
-            ],
-            'description' => [
-                'de' => 'Prompt erstellen, PII anonymisieren, sicher ans LLM senden.',
-                'en' => 'Build prompt, anonymize PII, send safely to LLM.',
-            ],
-            'icon' => 'fa-microchip',
-            'accent' => 'primary',
-            'steps' => [
-                'prompt-studio',
-                'governance-ai-sanitizer',
-            ],
-        ],
         'dbt-dq-governance' => [
             'label' => [
                 'de' => 'Datenqualität Einrichtung',
                 'en' => 'Data quality setup',
+            ],
+            'navLabel' => [
+                'de' => 'Datenqualität',
+                'en' => 'Data quality',
             ],
             'description' => [
                 'de' => 'Copy-Paste-Einrichtung: DQ-Makros, meta.dq_rules in schema.yml, History-Mart für Trends und Reports.',
@@ -73,6 +85,10 @@ return [
                 'de' => 'Lakehouse DQ Patterns',
                 'en' => 'Lakehouse DQ patterns',
             ],
+            'navLabel' => [
+                'de' => 'Lakehouse DQ',
+                'en' => 'Lakehouse DQ',
+            ],
             'description' => [
                 'de' => 'Copy-Paste-Patterns für Fabric und Databricks: Checks, Delta/SCD-Snippets und Governance-Runbooks.',
                 'en' => 'Copy-paste patterns for Fabric and Databricks: checks, Delta/SCD snippets, and governance runbooks.',
@@ -89,6 +105,10 @@ return [
                 'de' => 'Lakehouse PII & Governance Patterns',
                 'en' => 'Lakehouse PII & governance patterns',
             ],
+            'navLabel' => [
+                'de' => 'Lakehouse PII',
+                'en' => 'Lakehouse PII',
+            ],
             'description' => [
                 'de' => 'Copy-Paste-Patterns fuer Fabric und Databricks: PII-Felder, Owner, Zugriff, Maskierung und Governance-Gates.',
                 'en' => 'Copy-paste patterns for Fabric and Databricks: PII fields, owners, access, masking, and governance gates.',
@@ -104,6 +124,10 @@ return [
             'label' => [
                 'de' => 'Lakehouse Spezial-Generatoren',
                 'en' => 'Lakehouse specialized generators',
+            ],
+            'navLabel' => [
+                'de' => 'Lakehouse Tools',
+                'en' => 'Lakehouse tools',
             ],
             'description' => [
                 'de' => 'Spezialisierte Copy-Paste-Generatoren fuer Fabric, Databricks, Unity Catalog, Delta Loads, SCD und Semantic Guardrails.',
@@ -126,6 +150,10 @@ return [
             'label' => [
                 'de' => 'Discovery & Assessment',
                 'en' => 'Discovery & assessment',
+            ],
+            'navLabel' => [
+                'de' => 'Discovery',
+                'en' => 'Discovery',
             ],
             'description' => [
                 'de' => 'Inventare, Matrizen und Checklisten — standalone nutzbar, Export/Download, keine Speicherung im Tool.',

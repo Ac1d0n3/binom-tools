@@ -12,6 +12,7 @@ tags:
   - inventory
 order: -1
 author: Thomas Lindackers
+hero: images/playbooks/py-install-hero.png
 ---
 
 ## Why run this locally?

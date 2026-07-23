@@ -8,13 +8,23 @@ use Tests\TestCase;
 
 class LandingCatalogTest extends TestCase
 {
-    public function test_latest_tools_returns_at_most_five_in_reverse_config_order(): void
+    public function test_latest_tools_returns_non_ai_preview_cards(): void
     {
         $catalog = app(LandingCatalog::class);
         $latest = $catalog->latestTools();
+        $ai = $catalog->featuredAiTools();
 
         $this->assertLessThanOrEqual(LandingCatalog::TOOLS_PREVIEW_LIMIT, count($latest));
-        $this->assertSame('governance-ai-sanitizer', $latest[0]['id'] ?? null);
+        $this->assertNotEmpty($ai);
+        $this->assertContains('prompt-studio', array_column($ai, 'id'));
+        $this->assertContains('governance-ai-sanitizer', array_column($ai, 'id'));
+
+        foreach ($latest as $item) {
+            $this->assertFalse(
+                \App\Support\ToolsNav::isAiTool($item),
+                'latestTools must not include AI tools (they have a dedicated section)',
+            );
+        }
     }
 
     public function test_latest_stories_preview_uses_catalog_entries_only(): void

@@ -18,11 +18,23 @@ final class LandingCatalog
     ) {}
 
     /**
+     * AI tools always featured on the home page (independent of “latest”).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function featuredAiTools(): array
+    {
+        return ToolsNav::aiTools(ToolsNav::withRegisteredRoutes(config('tools.nav', [])));
+    }
+
+    /**
+     * Recent non-AI tools for the Governance preview strip.
+     *
      * @return list<array<string, mixed>>
      */
     public function latestTools(): array
     {
-        return collect(ToolsNav::withRegisteredRoutes(config('tools.nav', [])))
+        return collect(ToolsNav::withoutAiTools(ToolsNav::withRegisteredRoutes(config('tools.nav', []))))
             ->reverse()
             ->take(self::TOOLS_PREVIEW_LIMIT)
             ->values()
@@ -52,5 +64,4 @@ final class LandingCatalog
     {
         return count($this->playbooks->allForIndex());
     }
-
 }

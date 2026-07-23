@@ -49,6 +49,39 @@ final class ToolsNavTest extends TestCase
         );
     }
 
+    public function test_is_ai_tool_detects_ai_workflow_and_for_tag(): void
+    {
+        $this->assertTrue(ToolsNav::isAiTool(['workflow' => 'ai-prompt-workflow']));
+        $this->assertTrue(ToolsNav::isAiTool(['for' => ['AI']]));
+        $this->assertFalse(ToolsNav::isAiTool(['workflow' => 'dbt-pii-governance', 'for' => ['Fabric']]));
+
+        $items = [
+            ['id' => 'prompt-studio', 'for' => ['AI']],
+            ['id' => 'fabric-dq', 'for' => ['Fabric']],
+        ];
+        $this->assertSame(['prompt-studio'], array_column(ToolsNav::aiTools($items), 'id'));
+        $this->assertSame(['fabric-dq'], array_column(ToolsNav::withoutAiTools($items), 'id'));
+    }
+
+    public function test_group_by_product_orders_ai_dbt_fabric(): void
+    {
+        $items = [
+            ['id' => 'fabric-x', 'for' => ['Fabric'], 'label' => ['en' => 'F', 'de' => 'F'], 'route' => 'tools.x'],
+            ['id' => 'prompt-studio', 'for' => ['AI'], 'workflow' => 'ai-prompt-workflow', 'label' => ['en' => 'P', 'de' => 'P'], 'route' => 'tools.y'],
+            ['id' => 'dbt-macro', 'workflow' => 'dbt-pii-governance', 'label' => ['en' => 'D', 'de' => 'D'], 'route' => 'tools.z'],
+            ['id' => 'both', 'for' => ['Fabric', 'Databricks'], 'label' => ['en' => 'B', 'de' => 'B'], 'route' => 'tools.b'],
+        ];
+
+        $groups = ToolsNav::groupByProduct($items);
+        $ids = array_column($groups, 'id');
+
+        $this->assertSame(['ai', 'dbt', 'fabric', 'databricks'], $ids);
+        $this->assertSame(['prompt-studio'], array_column($groups[0]['items'], 'id'));
+        $this->assertSame(['dbt-macro'], array_column($groups[1]['items'], 'id'));
+        $this->assertSame(['fabric-x', 'both'], array_column($groups[2]['items'], 'id'));
+        $this->assertSame(['both'], array_column($groups[3]['items'], 'id'));
+    }
+
     /**
      * @return array<string, array{0: array<string, mixed>, 1: bool}>
      */

@@ -502,6 +502,103 @@ html[data-shell-full-width='true'] .tools-content--overview {
     opacity: 0.9;
 }
 
+.tools-sidenav__accordion {
+    list-style: none;
+}
+
+.tools-sidenav__accordion-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.tools-sidenav__accordion-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    /* Match .tools-sidenav__link padding exactly so text shares one left edge. */
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    color: var(--content-font-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tools-sidenav__accordion-summary:hover {
+    background: var(--state-layer-hover);
+}
+
+.tools-sidenav__accordion-input:focus-visible + .tools-sidenav__accordion-summary {
+    outline: 2px solid color-mix(in srgb, var(--theme-color-primary) 55%, transparent);
+    outline-offset: 1px;
+}
+
+.tools-sidenav__accordion-input:checked + .tools-sidenav__accordion-summary {
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+    color: var(--theme-color-primary);
+}
+
+.tools-sidenav__accordion-input:checked + .tools-sidenav__accordion-summary:hover {
+    background: color-mix(in srgb, var(--theme-color-primary) 16%, transparent);
+}
+
+.tools-sidenav__accordion-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tools-sidenav__accordion-chevron {
+    flex: 0 0 auto;
+    width: 1rem;
+    text-align: center;
+    font-size: 0.7rem;
+    line-height: 1;
+    color: inherit;
+    opacity: 0.55;
+    transition: transform 0.18s ease, opacity 0.15s ease;
+}
+
+.tools-sidenav__accordion-summary:hover .tools-sidenav__accordion-chevron {
+    opacity: 0.9;
+}
+
+.tools-sidenav__accordion-input:checked + .tools-sidenav__accordion-summary .tools-sidenav__accordion-chevron {
+    transform: rotate(180deg);
+    opacity: 0.9;
+}
+
+.tools-sidenav__list--nested {
+    display: none;
+    margin: 0;
+    padding: 0.1rem 0 0.35rem;
+}
+
+.tools-sidenav__accordion-input:checked ~ .tools-sidenav__list--nested {
+    display: block;
+}
+
+.tools-sidenav__list--nested .tools-sidenav__link--tool {
+    padding-left: 1.5rem;
+    font-size: 0.8125rem;
+}
+
 .tools-site-bar {
     padding: 0.75rem 1rem;
 }
