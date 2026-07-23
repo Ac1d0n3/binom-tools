@@ -11,7 +11,7 @@
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
         "task": "Perform a comprehensive analysis for the following goal:\n\n{{goal}}",
         "parameters": "{{#if process}}Current process:\n{{process}}\n{{/if}}{{#if kpis}}Key KPIs: {{kpis}}{{/if}}",
-        "output": "Deliver the result as {{outputFormat}} with:\n1. Executive summary\n2. Current-state assessment\n3. Key findings and risks\n4. Recommendations with priorities\n5. Suggested next steps"
+        "output": "Deliver the result {{#if outputFormat}}as {{outputFormat}}{{else}}in a clear structured format{{/if}} with:\n1. Executive summary\n2. Current-state assessment\n3. Key findings and risks\n4. Recommendations with priorities\n5. Suggested next steps"
       }
     },
     {
@@ -25,7 +25,7 @@
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Stakeholders: {{stakeholders}}\n{{/if}}{{#if documents}}Reference documents: {{documents}}{{/if}}",
         "task": "Conduct a root cause analysis for:\n\n{{goal}}",
         "parameters": "{{#if process}}Affected process:\n{{process}}\n{{/if}}{{#if kpis}}Impacted KPIs: {{kpis}}{{/if}}",
-        "output": "Deliver the result as {{outputFormat}} with:\n1. Problem statement\n2. Timeline of events\n3. Root causes (with evidence)\n4. Contributing factors\n5. Corrective and preventive actions\n6. Monitoring plan"
+        "output": "Deliver the result {{#if outputFormat}}as {{outputFormat}}{{else}}in a clear structured format{{/if}} with:\n1. Problem statement\n2. Timeline of events\n3. Root causes (with evidence)\n4. Contributing factors\n5. Corrective and preventive actions\n6. Monitoring plan"
       }
     },
     {
@@ -81,7 +81,7 @@
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Audience / stakeholders: {{stakeholders}}{{/if}}",
         "task": "Create a document with the following purpose:\n\n{{goal}}",
         "parameters": "{{#if documents}}Source material:\n{{documents}}\n{{/if}}{{#if language}}Output language preference: {{language}}{{/if}}",
-        "output": "Deliver a complete document as {{outputFormat}} with:\n1. Title and executive summary\n2. Structured sections with headings\n3. Clear conclusions and recommendations\n4. Appendix or references if needed"
+        "output": "Deliver a complete document {{#if outputFormat}}as {{outputFormat}}{{else}}in a clear structured format{{/if}} with:\n1. Title and executive summary\n2. Structured sections with headings\n3. Clear conclusions and recommendations\n4. Appendix or references if needed"
       }
     },
     {
@@ -193,7 +193,7 @@
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Write lyrics for {{taskLabel}}.",
         "parameters": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
-        "output": "Deliver complete lyrics with:\n1. Verse 1\n2. Pre-chorus (if applicable)\n3. Chorus\n4. Verse 2\n5. Bridge\n6. Final chorus / outro"
+        "output": "Deliver complete lyrics with:\n1. Verse 1\n2. Pre-chorus (if applicable)\n3. Chorus\n4. Verse 2\n5. Bridge\n6. Final chorus / outro\nRespect the target length limit when writing for Suno (Free ~3000 characters, Paid ~5000)."
       }
     },
     {
@@ -221,7 +221,7 @@
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a Suno style prompt for {{taskLabel}}.",
         "parameters": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}{{#if forbiddenArtistNames}}\nNever reference these artists: {{forbiddenArtistNames}}{{/if}}\nUse descriptive tags only — no real artist or band names.",
-        "output": "Deliver a compact Suno style tag string (max 120 chars) plus optional extended style description. Never include real artist or band names."
+        "output": "Deliver ONE Suno style prompt string of at most 1000 characters (hard limit). Prefer a compact tag-style line first. Never include real artist or band names."
       }
     },
     {
@@ -245,25 +245,25 @@
         "en": "Hero image"
       },
       "sections": {
-        "system": "You are an experienced {{roleLabel}}. Create compelling hero image prompts.",
+        "system": "You are an experienced {{roleLabel}}. Create compelling, production-ready hero image prompts with clear format, palette, composition, and lighting.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
-        "task": "Create a hero image prompt for {{taskLabel}}.",
-        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\nLighting: {{lighting}}\nCamera: {{camera}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
-        "output": "Deliver a single optimized image generation prompt ready for the target model."
+        "task": "Create a full-bleed hero/banner image prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\nLighting: {{lighting}}\nCamera: {{camera}}\n{{#if reference}}Reference:\n{{reference}}\n{{/if}}{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a single optimized image generation prompt. Explicitly state aspect ratio, color palette, composition (e.g. rule of thirds / negative space), lighting, and whether text appears in the image. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}"
       }
     },
     {
       "id": "cover",
       "label": {
-        "de": "Cover",
-        "en": "Cover"
+        "de": "Cover (Album/Buch)",
+        "en": "Cover (album/book)"
       },
       "sections": {
-        "system": "You are an experienced {{roleLabel}}. Design striking cover art prompts.",
+        "system": "You are an experienced {{roleLabel}}. Design striking album/book cover prompts with strong focal point, readable optional text, and print-friendly composition.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a cover art prompt for {{taskLabel}}.",
-        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\nLighting: {{lighting}}\n{{#if artistName}}Artist name on cover: {{artistName}}\n{{/if}}{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
-        "output": "Deliver a single optimized cover art prompt with composition notes."
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\nLighting: {{lighting}}\n{{#if artistName}}Artist / title text: {{artistName}}\n{{/if}}{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a single optimized cover prompt. Include aspect ratio (often 1:1), palette, composition, lighting, negative space for optional title/artist text, and what must not appear. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}"
       }
     },
     {
@@ -273,11 +273,11 @@
         "en": "Diagram"
       },
       "sections": {
-        "system": "You are an experienced {{roleLabel}}. Create clear, informative diagram prompts.",
+        "system": "You are an experienced {{roleLabel}}. Create clear, informative diagram prompts.\n\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a diagram prompt for {{taskLabel}}.",
-        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}",
-        "output": "Deliver a diagram prompt with layout, labels, and visual hierarchy specified."
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\n{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n",
+        "output": "Deliver a diagram prompt with layout, labels, visual hierarchy, aspect ratio, and color coding specified {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}"
       }
     },
     {
@@ -287,11 +287,11 @@
         "en": "Infographic"
       },
       "sections": {
-        "system": "You are an experienced {{roleLabel}}. Design informative, visually engaging infographics.",
+        "system": "You are an experienced {{roleLabel}}. Design informative, visually engaging infographics.\n\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create an infographic prompt for {{taskLabel}}.",
-        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\nLighting: {{lighting}}",
-        "output": "Deliver an infographic prompt with sections, data visualization types, and layout flow."
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\nLighting: {{lighting}}\n{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n",
+        "output": "Deliver an infographic prompt with sections, data visualization types, layout flow, palette, and text placement {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}"
       }
     },
     {
@@ -301,11 +301,67 @@
         "en": "Logo"
       },
       "sections": {
-        "system": "You are an experienced {{roleLabel}}. Create distinctive, scalable logo prompts.",
+        "system": "You are an experienced {{roleLabel}}. Create distinctive, scalable logo prompts that stay clear at small sizes.\n\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a logo prompt for {{taskLabel}}.",
-        "parameters": "Subject: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nSize: {{size}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
-        "output": "Deliver a logo prompt optimized for clarity at small sizes and brand recognition."
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\n{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a logo prompt optimized for clarity at small sizes. Specify silhouette, color strategy, composition/negative space, and whether a wordmark is included. Prefer simple shapes over busy backgrounds {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}"
+      }
+    },
+    {
+      "id": "comic",
+      "label": {
+        "de": "Comic / Panel",
+        "en": "Comic / panel"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create comic-style and panel prompts with clear line work, panel rhythm, and expressive characters.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
+        "task": "Create a comic / panel image prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\nLighting: {{lighting}}\nCamera: {{camera}}\n{{#if reference}}Reference:\n{{reference}}\n{{/if}}{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver an optimized comic prompt. Specify panel count or single-panel framing, ink/style, palette, composition, speech-bubble text policy, and exclusions. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}"
+      }
+    },
+    {
+      "id": "product-shot",
+      "label": {
+        "de": "Produktfoto",
+        "en": "Product shot"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create commercial product photography prompts with clean staging, controlled lighting, and brand-ready composition.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
+        "task": "Create a product shot prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\nLighting: {{lighting}}\nCamera: {{camera}}\n{{#if reference}}Reference:\n{{reference}}\n{{/if}}{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a product photography prompt. Specify surface/background, key light, shadow softness, aspect ratio, composition (centered vs rule of thirds), and whether packaging text appears. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}"
+      }
+    },
+    {
+      "id": "icon",
+      "label": {
+        "de": "App-/UI-Icon",
+        "en": "App / UI icon"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create crisp app and UI icon prompts that remain readable at small sizes.\n\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
+        "task": "Create an app/UI icon prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\n{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver an icon prompt defaulting to 1:1. Prefer flat or vector styles, limited colors, strong silhouette, generous padding/negative space, and no busy backgrounds unless requested {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}\n{{#if imageFormat==svg}}\nTHEMEABLE MULTI-COLOR SVG (required when format is SVG):\n- Prefer complete SVG markup (viewBox, clean paths/groups) over a raster image prompt.\n- Use 2–5 semantic color roles — multi-color is encouraged (not mono-only).\n- Theme later via CSS variables on fill/stroke: var(--svg-primary), var(--svg-secondary), var(--svg-accent), var(--svg-surface), var(--svg-muted); optional currentColor for text/icons.\n- Put fallback hex only inside a small <style> / :root block so colors can be remapped without redrawing.\n- Structure with <g> / classes per role (e.g. .svg-primary) so themes swap cleanly.\n- No baked-in final brand colors on shapes except as variable fallbacks.\n{{/if}}"
+      }
+    },
+    {
+      "id": "social-post",
+      "label": {
+        "de": "Social-Post",
+        "en": "Social post"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create scroll-stopping social media image prompts tuned for square (1:1) or vertical (9:16) formats.",
+        "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
+        "task": "Create a social post image prompt for {{taskLabel}}.",
+        "parameters": "Subject: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nText in image: {{textInImage}}\nSize: {{size}}\nLighting: {{lighting}}\nCamera: {{camera}}\n{{#if reference}}Reference:\n{{reference}}\n{{/if}}{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a social image prompt. Emphasize the chosen aspect ratio (prefer 1:1 or 9:16), focal subject, palette, composition with safe margins for optional overlay text, and platform-ready clarity. Ready for Midjourney, Flux, or GPT Image {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}"
       }
     },
     {
@@ -318,8 +374,8 @@
         "system": "You are an experienced {{roleLabel}}. Design memorable, consistent characters.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if reference}}Reference:\n{{reference}}{{/if}}",
         "task": "Create a character design prompt for {{taskLabel}}.",
-        "parameters": "Character: {{motiv}}\nStyle: {{style}}\nColors: {{colors}}\nAspect ratio: {{aspectRatio}}\nLighting: {{lighting}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
-        "output": "Deliver a character prompt with appearance, pose, expression, and outfit details."
+        "parameters": "Character: {{motiv}}\nAspect ratio: {{aspectRatio}}\nStyle: {{style}}\nColors: {{colors}}\nComposition: {{composition}}\nLighting: {{lighting}}\n{{#if imageFormat}}Preferred file format: {{imageFormat}}\n{{/if}}{{#if imageFormat==svg}} If SVG: multi-color with CSS vars (--svg-primary/secondary/accent/surface/muted) for easy theming.{{/if}}\n{{#if negativePrompt}}Exclude: {{negativePrompt}}{{/if}}",
+        "output": "Deliver a character prompt with appearance, pose, expression, outfit, composition framing, and lighting details {{#if imageFormat}}Target format: {{imageFormat}}.{{/if}}"
       }
     },
     {
@@ -332,8 +388,8 @@
         "system": "You are an experienced {{roleLabel}}. Create detailed, production-ready storyboards.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a storyboard for {{taskLabel}}.",
-        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}",
-        "output": "Deliver a panel-by-panel storyboard with shot descriptions, camera angles, and transitions."
+        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}\n{{#if videoFormat}}Deliverable format: {{videoFormat}}\n{{/if}}",
+        "output": "Deliver a panel-by-panel storyboard with shot descriptions, camera angles, and transitions.\n{{#if videoFormat}}Deliver primarily as: {{videoFormat}}.{{/if}}"
       }
     },
     {
@@ -346,8 +402,8 @@
         "system": "You are an experienced {{roleLabel}}. Write vivid, actionable scene descriptions.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Develop detailed scenes for {{taskLabel}}.",
-        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nLighting: {{lighting}}",
-        "output": "Deliver numbered scenes with action, dialogue cues, location, and timing."
+        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nLighting: {{lighting}}\n{{#if videoFormat}}Deliverable format: {{videoFormat}}\n{{/if}}",
+        "output": "Deliver numbered scenes with action, dialogue cues, location, and timing.\n{{#if videoFormat}}Deliver primarily as: {{videoFormat}}.{{/if}}"
       }
     },
     {
@@ -360,8 +416,8 @@
         "system": "You are an experienced {{roleLabel}} and cinematographer. Specify precise camera work.",
         "context": "{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Define camera direction for {{taskLabel}}.",
-        "parameters": "Camera setup: {{camera}}\nLighting: {{lighting}}\nScenes:\n{{scenes}}\nDuration: {{duration}}",
-        "output": "Deliver shot list with lens choices, movements, framing, and lighting setup per scene."
+        "parameters": "Camera setup: {{camera}}\nLighting: {{lighting}}\nScenes:\n{{scenes}}\nDuration: {{duration}}\n{{#if videoFormat}}Deliverable format: {{videoFormat}}\n{{/if}}",
+        "output": "Deliver shot list with lens choices, movements, framing, and lighting setup per scene.\n{{#if videoFormat}}Deliver primarily as: {{videoFormat}}.{{/if}}"
       }
     },
     {
@@ -374,8 +430,8 @@
         "system": "You are an experienced {{roleLabel}}. Create compelling trailer concepts.",
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}{{/if}}",
         "task": "Create a trailer concept for {{taskLabel}}.",
-        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nMood: {{mood}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}",
-        "output": "Deliver:\n1. Trailer structure (hook → build → climax → title)\n2. Scene sequence with timings\n3. Music/sound design notes\n4. Text overlays and call-to-action"
+        "parameters": "Scenes:\n{{scenes}}\nDuration: {{duration}}\nMood: {{mood}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}\n{{#if videoFormat}}Deliverable format: {{videoFormat}}\n{{/if}}",
+        "output": "Deliver:\n1. Trailer structure (hook → build → climax → title)\n2. Scene sequence with timings\n3. Music/sound design notes\n4. Text overlays and call-to-action\n{{#if videoFormat}}Deliver primarily as: {{videoFormat}}.{{/if}}"
       }
     },
     {
@@ -389,7 +445,7 @@
         "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}",
         "task": "Summarize the following:\n\n{{goal}}",
         "parameters": "{{#if documents}}Document / text:\n{{documents}}{{/if}}",
-        "output": "Deliver a structured summary as {{outputFormat}} with:\n1. Key points\n2. Main themes\n3. Important details\n4. Open questions or gaps"
+        "output": "Deliver a structured summary {{#if outputFormat}}as {{outputFormat}}{{else}}in a clear structured format{{/if}} with:\n1. Key points\n2. Main themes\n3. Important details\n4. Open questions or gaps"
       }
     },
     {
@@ -403,7 +459,7 @@
         "context": "{{#if previousOutput}}Summary from previous step:\n{{previousOutput}}\n{{/if}}{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}{{/if}}",
         "task": "Based on the summary, perform the following follow-up:\n\n{{goal}}",
         "parameters": "",
-        "output": "Deliver the follow-up result as {{outputFormat}} with actionable, structured output."
+        "output": "Deliver the follow-up result {{#if outputFormat}}as {{outputFormat}}{{else}}in a clear structured format{{/if}} with actionable, structured output."
       }
     },
     {
@@ -458,6 +514,552 @@
         "task": "Automate or plan agent steps for:\n\n{{goal}}",
         "parameters": "{{#if process}}Current manual process:\n{{process}}{{/if}}",
         "output": "Deliver as an agent-ready plan:\n1. Goal\n2. Inputs/outputs\n3. Step list with validation\n4. Risks and rollback\n5. Done-when checklist"
+      }
+    },
+    {
+      "id": "email-compose",
+      "label": {
+        "de": "E-Mail schreiben",
+        "en": "Write email"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} specializing in clear, professional correspondence. Prefer placeholders like [NAME] or [EMAIL] over inventing personal data. If real PII appears in the input, keep it as-is but remind the user to sanitize before pasting into external AI tools.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Recipient / salutation: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a new email for this purpose:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Subject line (1 option + 1 shorter alternative)\n2. Email body ready to send\n3. Optional: one softer and one more direct variant of the closing ask"
+      }
+    },
+    {
+      "id": "email-reply",
+      "label": {
+        "de": "E-Mail beantworten",
+        "en": "Reply to email"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Draft replies that address every open point in the incoming message. Do not invent facts. Prefer placeholders for sensitive data. Remind the user to run the AI Sanitizer when names, emails, phones, or addresses are present.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Notes from previous step:\n{{previousOutput}}\n{{/if}}{{#if recipient}}Reply to: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Draft a reply.\n\nUser intent / what to say:\n{{goal}}",
+        "parameters": "{{#if incomingMessage}}Incoming message (may contain PII — sanitize before external use):\n{{incomingMessage}}\n{{/if}}",
+        "output": "Deliver:\n1. Subject (Re: …)\n2. Reply body that answers all open questions\n3. Bullet list of points covered vs. still open\n4. Optional: shorter version"
+      }
+    },
+    {
+      "id": "email-follow-up",
+      "label": {
+        "de": "Nachfassen / Reminder",
+        "en": "Follow-up / reminder"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write polite follow-ups that nudge without guilt-tripping. Keep context short.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Recipient: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a follow-up email about:\n\n{{goal}}",
+        "parameters": "{{#if incomingMessage}}Prior thread / last message:\n{{incomingMessage}}\n{{/if}}",
+        "output": "Deliver:\n1. Subject\n2. Follow-up body\n3. Clear ask and suggested next date/action"
+      }
+    },
+    {
+      "id": "email-decline",
+      "label": {
+        "de": "Freundlich ablehnen",
+        "en": "Decline politely"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Decline clearly, kindly, and without over-apologizing. Offer an alternative when useful.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Recipient: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a polite decline for:\n\n{{goal}}",
+        "parameters": "{{#if incomingMessage}}Request being declined:\n{{incomingMessage}}\n{{/if}}",
+        "output": "Deliver:\n1. Subject\n2. Decline email body\n3. Optional alternative or referral line"
+      }
+    },
+    {
+      "id": "email-meeting",
+      "label": {
+        "de": "Terminanfrage",
+        "en": "Meeting request"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write scheduling emails with purpose, duration hint, and concrete time options.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Recipient: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a meeting request email for:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Subject\n2. Email body with agenda in 2–4 bullets\n3. 2–3 proposed time slots (use placeholders if times unknown)\n4. Call-to-action"
+      }
+    },
+    {
+      "id": "email-forward-summary",
+      "label": {
+        "de": "Weiterleiten mit Kurzfassung",
+        "en": "Forward with summary"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Summarize threads for a new reader and add a clear ask. Flag PII risk and prefer placeholders.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Forward to: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Create a forward email with summary.\n\nWhy forwarding / ask:\n{{goal}}",
+        "parameters": "{{#if incomingMessage}}Thread / message to forward:\n{{incomingMessage}}\n{{/if}}",
+        "output": "Deliver:\n1. Subject (Fwd: …)\n2. Short summary (3–6 bullets)\n3. Explicit ask for the recipient\n4. Optional: anonymized version note"
+      }
+    },
+    {
+      "id": "congratulation",
+      "label": {
+        "de": "Glückwunsch",
+        "en": "Congratulations"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write warm, specific congratulations — avoid empty clichés and exaggerated flattery.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Occasion: {{occasion}}\nRelationship: {{relationship}}\n{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a congratulatory message about:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Message ready to send (email or card style)\n2. Optional shorter chat/SMS variant\n3. One alternative closing line"
+      }
+    },
+    {
+      "id": "thank-you",
+      "label": {
+        "de": "Danksagung",
+        "en": "Thank-you note"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write sincere thank-you notes that name what you are grateful for.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Relationship: {{relationship}}\n{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a thank-you message for:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Thank-you message\n2. Optional shorter version"
+      }
+    },
+    {
+      "id": "invitation",
+      "label": {
+        "de": "Einladung",
+        "en": "Invitation"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write invitations with what / when / where / RSVP — use placeholders for missing details.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Occasion: {{occasion}}\nRelationship: {{relationship}}\n{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write an invitation for:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Invitation text\n2. Checklist of details still needed (if any)\n3. Short RSVP line"
+      }
+    },
+    {
+      "id": "apology",
+      "label": {
+        "de": "Entschuldigung",
+        "en": "Apology"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write sincere apologies: own the issue, avoid excuses, state the fix, and keep dignity for both sides.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Relationship: {{relationship}}\n{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write an apology for:\n\n{{goal}}",
+        "parameters": "{{#if incomingMessage}}Context / complaint:\n{{incomingMessage}}\n{{/if}}",
+        "output": "Deliver:\n1. Apology message\n2. Explicit next step / remedy\n3. Optional shorter version"
+      }
+    },
+    {
+      "id": "condolence",
+      "label": {
+        "de": "Beileid / Mitgefühl",
+        "en": "Condolence"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write brief, dignified condolences. No advice, no silver linings, no religious assumptions unless the user asks.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Relationship: {{relationship}}\n{{#if recipient}}To: {{recipient}}\n{{/if}}Language: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a condolence / sympathy message for:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Short message (prefer under 120 words)\n2. Optional even shorter card line"
+      }
+    },
+    {
+      "id": "greeting-card",
+      "label": {
+        "de": "Grußkarte / kurze Nachricht",
+        "en": "Greeting card / short note"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write short, warm card or chat messages that feel personal, not generic.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Occasion: {{occasion}}\nRelationship: {{relationship}}\n{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "Write a short greeting / card message for:\n\n{{goal}}",
+        "parameters": "",
+        "output": "Deliver:\n1. Card text (1–4 sentences)\n2. Two alternate one-liners"
+      }
+    },
+    {
+      "id": "email-inbox-triage",
+      "label": {
+        "de": "Posteingang sichten",
+        "en": "Triage inbox"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Triage a batch of emails efficiently. Prefer placeholders for PII. Remind the user to sanitize before pasting into external AI tools.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Inbox / email batch (may contain PII):\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver:\n1. Overview counts (how many threads/topics)\n2. Table or grouped list: Topic | Priority P0–P3 | Suggested owner | Action (reply/delegate/archive/wait)\n3. Quick wins (≤5 min)\n4. Items needing a human decision\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-inbox-summary",
+      "label": {
+        "de": "Mails: wichtigste Punkte",
+        "en": "Emails: key points"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Extract only high-signal facts from email batches. No fluff.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver:\n1. Key points (bullets)\n2. Commitments / promises made\n3. Deadlines\n4. Open questions\n5. What can be ignored\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-top-problems",
+      "label": {
+        "de": "Top-Probleme aus Mails",
+        "en": "Top problems from emails"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Identify the highest-impact problems evidenced by the emails. Rank by severity and frequency.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver a ranked Top problems list (default Top 3, more if clearly needed). For each: title, evidence, impact, who is affected, recommended next step.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-action-items",
+      "label": {
+        "de": "To-dos aus Mails",
+        "en": "Action items from emails"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Extract actionable tasks only. Mark missing owners/dates as [UNCLEAR].",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver a checklist table: Task | Owner | Due | Priority | Source. Then a short 'blocked by' list if dependencies appear.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-priority-sort",
+      "label": {
+        "de": "Mails priorisieren",
+        "en": "Prioritize emails"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Prioritize ruthlessly using P0–P3. Be explicit about assumptions.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver four sections P0/P1/P2/P3 with bullet items and one-line rationale each.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-thread-digest",
+      "label": {
+        "de": "Thread verdichten",
+        "en": "Condense thread"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Condense long threads without losing decisions or open asks.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step:\n{{previousOutput}}\n{{/if}}Language: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Thread:\n{{incomingMessage}}",
+        "output": "Deliver:\n1. One-paragraph overview\n2. Timeline (bullets)\n3. Decisions made\n4. Open questions\n5. Next steps"
+      }
+    },
+    {
+      "id": "email-status-digest",
+      "label": {
+        "de": "Status-Digest für Führung",
+        "en": "Status digest for leadership"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write leadership-ready digests: short, decision-oriented, no jargon padding.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Audience: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Source emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver a digest with: On track | Blocked | Needs decision | Risks | Ask. Keep under ~½ page.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-clarify",
+      "label": {
+        "de": "Rückfragen formulieren",
+        "en": "Draft clarifying questions"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Ask precise clarifying questions. Never invent missing facts.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Incoming message:\n{{incomingMessage}}",
+        "output": "Deliver:\n1. Short email with numbered questions\n2. Optional: what you already understand (to reduce back-and-forth)"
+      }
+    },
+    {
+      "id": "email-escalate",
+      "label": {
+        "de": "Eskalation schreiben",
+        "en": "Write escalation"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write factual escalations: impact, attempts so far, clear ask. No drama.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "{{#if incomingMessage}}Background emails:\n{{incomingMessage}}\n{{/if}}",
+        "output": "Deliver subject + escalation body with: Context, Impact, Tried so far, Decision needed, Deadline."
+      }
+    },
+    {
+      "id": "email-complaint-reply",
+      "label": {
+        "de": "Beschwerde beantworten",
+        "en": "Reply to complaint"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Reply to complaints with empathy and a concrete path forward. Do not admit legal liability unless the user explicitly asks.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}To: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Complaint:\n{{incomingMessage}}",
+        "output": "Deliver subject + reply. Include acknowledgment, facts you can state, next step, and contact path."
+      }
+    },
+    {
+      "id": "email-handoff",
+      "label": {
+        "de": "Interne Übergabe",
+        "en": "Internal handoff"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write crisp internal handoffs so a colleague can continue without digging the whole thread.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if recipient}}Handoff to: {{recipient}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Source emails / notes:\n{{incomingMessage}}",
+        "output": "Deliver handoff sections: Context | Stakeholders | Current status | Open items | Risks | Recommended next action | Attachments/links (placeholders)."
+      }
+    },
+    {
+      "id": "email-weekly-digest",
+      "label": {
+        "de": "Wochenrückblick aus Mails",
+        "en": "Weekly digest from emails"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Build a weekly narrative from inbox evidence only.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Week's emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver: Highlights | Decisions | Open work | Risks | Focus next week.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "email-batch-replies",
+      "label": {
+        "de": "Antwort-Skizzen (Batch)",
+        "en": "Reply sketches (batch)"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Draft short reply sketches for many emails. Prefer placeholders for PII.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Emails:\n{{incomingMessage}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "For each email/thread: Priority | Subject suggestion | Reply sketch (3–6 sentences) | Open risk if any.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "text-bulletize",
+      "label": {
+        "de": "Text → Bullet Points",
+        "en": "Text → bullet points"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Turn prose into scannable bullets without inventing facts.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Source text:\n{{documents}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver grouped bullet lists. Keep quotes only when critical.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "text-executive-brief",
+      "label": {
+        "de": "Exec-Brief",
+        "en": "Exec brief"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write decision-ready executive briefs.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if stakeholders}}Audience: {{stakeholders}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Source:\n{{documents}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver: Context (2 sentences) | Recommendation | Why (3 bullets) | Risks | Decision needed.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "text-pros-cons",
+      "label": {
+        "de": "Pro / Contra",
+        "en": "Pros / cons"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Compare options fairly and recommend with explicit criteria.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "Source / options:\n{{documents}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver options with Pros/Cons, then a recommendation and decision criteria.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "text-rewrite-tone",
+      "label": {
+        "de": "Ton umschreiben",
+        "en": "Rewrite tone"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Rewrite text to match the requested tone while preserving meaning and commitments.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Tone: {{tone}}\nLanguage: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Original text:\n{{documents}}",
+        "output": "Deliver the rewritten text. Optionally add a 3-bullet note on what changed in tone."
+      }
+    },
+    {
+      "id": "text-simplify",
+      "label": {
+        "de": "Einfacher erklären",
+        "en": "Simplify"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Explain clearly without dumbing down or inventing facts.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}\nLength: {{messageLength}}",
+        "task": "{{goal}}",
+        "parameters": "Source:\n{{documents}}",
+        "output": "Deliver a clearer version plus a short glossary of terms you simplified."
+      }
+    },
+    {
+      "id": "text-risks-open-questions",
+      "label": {
+        "de": "Risiken & offene Fragen",
+        "en": "Risks & open questions"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Surface risks and open questions. Label assumptions explicitly.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}Language: {{writingLanguage}}",
+        "task": "{{goal}}",
+        "parameters": "{{#if documents}}Documents:\n{{documents}}\n{{/if}}{{#if incomingMessage}}Emails:\n{{incomingMessage}}\n{{/if}}\n{{#if outputFormat}}Preferred output format: {{outputFormat}}{{/if}}",
+        "output": "Deliver: Risks (with rough impact) | Open questions | Assumptions | Suggested clarifications.\n{{#if outputFormat}}Deliver the structured parts as {{outputFormat}} (use a fenced code block for json/csv/yaml/tsv).{{/if}}"
+      }
+    },
+    {
+      "id": "md-story-en",
+      "label": {
+        "de": "Markdown-Story (EN)",
+        "en": "Markdown story (EN)"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} writing binom-tools playbooks. Output a complete English Markdown file ready to save as `{{playbookSlug}}.en.md`.\n\nHard rules:\n- YAML frontmatter with: title, description, category, tags, order, author, optional series/seriesPart/seriesTitle, and hero.\n- hero path: `images/playbooks/{{playbookSlug}}-hero.png`\n- Inline diagrams use this exact HTML figure pattern ({{diagramCount}} diagrams unless the brief says otherwise):\n<figure class=\"playbook-prose__figure\">\n    <img\n        src=\"images/playbooks/{{playbookSlug}}-imgN-en.png\"\n        alt=\"…\"\n        class=\"playbook-prose__image playbook-prose__image--diagram\"\n    />\n    <figcaption class=\"playbook-prose__figure-caption\">\n        …\n    </figcaption>\n</figure>\n- Use consecutive img1…imgN. Do not invent other image folders.\n- Clear H2/H3 structure, short paragraphs, practical examples.\n- End with a short checklist or takeaways section when useful.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step output:\n{{previousOutput}}\n{{/if}}{{#if stakeholders}}Audience: {{stakeholders}}\n{{/if}}Slug: {{playbookSlug}}\nDiagram count: {{diagramCount}}",
+        "task": "Write the full English playbook Markdown for:\n\n{{goal}}",
+        "parameters": "{{#if documents}}Source notes / brief:\n{{documents}}\n{{/if}}",
+        "output": "Deliver ONLY the complete `{{playbookSlug}}.en.md` content (frontmatter + body). After the file, add a short appendix listing every image path used (hero + imgN-en)."
+      }
+    },
+    {
+      "id": "md-story-de",
+      "label": {
+        "de": "Markdown-Story (DE)",
+        "en": "Markdown story (DE)"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} localizing binom-tools playbooks into German. Output a complete German Markdown file ready to save as `{{playbookSlug}}.de.md`.\n\nHard rules:\n- Mirror the English structure (same sections, same number of figures).\n- Localize title, description, category, alt texts, captions, and body into natural German.\n- Keep tags/series ids in English when they are identifiers; localize seriesTitle if present.\n- hero: `images/playbooks/{{playbookSlug}}-hero.png` (shared)\n- Diagram src must use the German locale suffix: `images/playbooks/{{playbookSlug}}-imgN-de.png`\n- Keep the same figure HTML classes and layout as the EN file.\n- Do not drop or invent diagrams relative to the EN source.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}English source / previous step:\n{{previousOutput}}\n{{/if}}Slug: {{playbookSlug}}\nDiagram count: {{diagramCount}}",
+        "task": "Produce the German playbook Markdown.\n\nBrief / constraints:\n{{goal}}",
+        "parameters": "{{#if documents}}Additional German notes or EN source paste:\n{{documents}}\n{{/if}}",
+        "output": "Deliver ONLY the complete `{{playbookSlug}}.de.md` content. After the file, list every image path used (hero + imgN-de)."
+      }
+    },
+    {
+      "id": "md-story-images",
+      "label": {
+        "de": "Bild-Brief (EN) + Dateiliste",
+        "en": "Image brief (EN) + filename list"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} preparing image-generation briefs for binom-tools playbooks.\n\nCreate ONE Markdown file (suggested name: `{{playbookSlug}}.images.md`) with:\n1. English-only image prompts (hero + each diagram). German alt/caption text is NOT required in the prompts — EN definitions are enough for generation.\n2. A complete inventory of EVERY image filename/path that appears (or must appear) in the EN and DE markdown stories.\n\nNaming conventions:\n- Hero: `images/playbooks/{{playbookSlug}}-hero.png`\n- EN diagrams: `images/playbooks/{{playbookSlug}}-imgN-en.png`\n- DE diagrams: `images/playbooks/{{playbookSlug}}-imgN-de.png`\n\nFor each diagram, provide: filename (EN), matching DE filename, purpose in the story, EN generation prompt (composition, labels in English, style: clean technical diagram, light background, high contrast), and optional negative hints.\nIf DE diagrams need localized labels in the artwork, note that as a post-step — still define the master prompt in English.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Story / previous step (use to align image list):\n{{previousOutput}}\n{{/if}}Slug: {{playbookSlug}}\nDiagram count: {{diagramCount}}",
+        "task": "Build the image brief Markdown and filename inventory for:\n\n{{goal}}",
+        "parameters": "{{#if documents}}Source Markdown (EN and/or DE) to extract exact image paths from:\n{{documents}}\n{{/if}}",
+        "output": "Deliver one Markdown document with these sections:\n## Overview\n## Filename inventory (checklist)\n- bullet list of ALL paths: hero, every `-en`, every `-de`\n- mark which ones are referenced in EN MD / DE MD\n## Hero\n## Diagrams (img1…imgN)\n## Export checklist\nDo not omit any filename that the stories use."
+      }
+    },
+    {
+      "id": "md-translate",
+      "label": {
+        "de": "Markdown übersetzen (DE↔EN)",
+        "en": "Translate markdown (DE↔EN)"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}} specializing in technical DE↔EN localization for Markdown playbooks.\n\nDirection: {{translateDirection}}.\nPreserve: heading hierarchy, lists, tables, code fences, figure HTML, class names, and YAML key names.\nLocalize: title, description, category (to the target language), prose, alt, figcaption.\nImage paths: switch `-en` ↔ `-de` in diagram `src` when translating between locales; keep shared hero paths unchanged.\nDo not summarize — deliver a full parallel document.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if playbookSlug}}Slug: {{playbookSlug}}\n{{/if}}Direction: {{translateDirection}}",
+        "task": "Translate the Markdown.\n\nExtra instructions:\n{{goal}}",
+        "parameters": "Source Markdown:\n{{documents}}",
+        "output": "Deliver the full translated Markdown file only, ready to save. Then append a short list of image paths present after translation."
+      }
+    },
+    {
+      "id": "video-script",
+      "label": {
+        "de": "Video-Drehbuch",
+        "en": "Video script"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write clear, shootable video scripts with timing and VO.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step:\n{{previousOutput}}\n{{/if}}{{#if videoFormat}}Deliverable: {{videoFormat}}\n{{/if}}",
+        "task": "Write a video script for:\n\n{{goal}}",
+        "parameters": "Scenes hint: {{scenes}}\nDuration: {{duration}}\nMood: {{mood}}\nStyle: {{style}}",
+        "output": "Deliver a scene-by-scene script with: scene #, duration, visual, VO/dialogue, on-screen text, notes. {{#if videoFormat}}Format: {{videoFormat}}.{{/if}}"
+      }
+    },
+    {
+      "id": "shot-list",
+      "label": {
+        "de": "Shot-Liste",
+        "en": "Shot list"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Produce production-ready shot lists.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step:\n{{previousOutput}}\n{{/if}}{{#if videoFormat}}Deliverable: {{videoFormat}}\n{{/if}}",
+        "task": "Create a shot list for:\n\n{{goal}}",
+        "parameters": "Scenes: {{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nAspect ratio: {{aspectRatio}}",
+        "output": "Columns: Shot # | Scene | Shot type | Camera move | Lens/framing | Duration | Audio | Notes.\n{{#if videoFormat}}Deliver as {{videoFormat}} (CSV/JSON as a fenced code block when selected).{{else}}Markdown table.{{/if}}"
+      }
+    },
+    {
+      "id": "youtube-brief",
+      "label": {
+        "de": "YouTube Brief",
+        "en": "YouTube brief"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Create YouTube/Shorts packaging briefs that convert.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step:\n{{previousOutput}}\n{{/if}}",
+        "task": "Create a YouTube / Shorts brief for:\n\n{{goal}}",
+        "parameters": "Duration: {{duration}}\nMood: {{mood}}\nStyle: {{style}}\nAspect ratio: {{aspectRatio}}\n{{#if videoFormat}}Video deliverable: {{videoFormat}}\n{{/if}}{{#if outputFormat}}Output format: {{outputFormat}}\n{{/if}}",
+        "output": "Deliver: 5 title options, hook (first 3s), outline/chapters, description, tags, CTA, thumbnail concept. {{#if outputFormat}}Prefer {{outputFormat}}.{{/if}}"
+      }
+    },
+    {
+      "id": "ai-video-prompts",
+      "label": {
+        "de": "KI-Video-Prompts",
+        "en": "AI video prompts"
+      },
+      "sections": {
+        "system": "You are an experienced {{roleLabel}}. Write shot-ready prompts for AI video tools (Runway, Kling, Sora-style). Keep motion, camera, and continuity explicit.",
+        "context": "{{#if conversationHistory}}Previous conversation:\n{{conversationHistory}}\n{{/if}}{{#if previousOutput}}Previous step:\n{{previousOutput}}\n{{/if}}{{#if videoFormat}}Deliverable: {{videoFormat}}\n{{/if}}",
+        "task": "Create AI video generation prompts for:\n\n{{goal}}",
+        "parameters": "Scenes: {{scenes}}\nDuration: {{duration}}\nCamera: {{camera}}\nStyle: {{style}}\nMood: {{mood}}\nAspect ratio: {{aspectRatio}}",
+        "output": "For each shot: prompt, negative/avoid, duration, camera move, continuity notes. Ready to paste into an AI video tool."
       }
     }
   ]

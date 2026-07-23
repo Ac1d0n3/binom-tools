@@ -1,6 +1,9 @@
 {
   "id": "meeting-to-tasks",
-  "label": { "de": "Meeting → Aufgaben", "en": "Meeting → tasks" },
+  "label": {
+    "de": "Meeting → Aufgaben",
+    "en": "Meeting → tasks"
+  },
   "description": {
     "de": "Notizen strukturieren, Prioritäten setzen, umsetzbare Tasks formulieren",
     "en": "Structure notes, set priorities, write actionable tasks"
@@ -8,26 +11,45 @@
   "steps": [
     {
       "id": "step-summarize",
-      "label": { "de": "Zusammenfassen", "en": "Summarize" },
+      "label": {
+        "de": "Zusammenfassen",
+        "en": "Summarize"
+      },
       "roleId": "business-analyst",
       "taskId": "document-summarize",
-      "notes": { "de": "Meeting-Notizen verdichten", "en": "Condense meeting notes" }
+      "notes": {
+        "de": "Meeting-Notizen verdichten",
+        "en": "Condense meeting notes"
+      }
     },
     {
       "id": "step-tasks",
-      "label": { "de": "Tasks", "en": "Tasks" },
+      "label": {
+        "de": "Tasks",
+        "en": "Tasks"
+      },
       "roleId": "business-analyst",
       "taskId": "document-follow-up",
       "passOutputAs": "previousOutput",
-      "notes": { "de": "Follow-ups und Owner ableiten", "en": "Derive follow-ups and owners" }
+      "notes": {
+        "de": "Follow-ups und Owner ableiten",
+        "en": "Derive follow-ups and owners"
+      }
     },
     {
       "id": "step-priority",
-      "label": { "de": "Priorisieren", "en": "Prioritize" },
+      "label": {
+        "de": "Priorisieren",
+        "en": "Prioritize"
+      },
       "roleId": "business-analyst",
       "taskId": "analysis",
       "passOutputAs": "previousOutput",
-      "notes": { "de": "Impact/Effort und nächste Schritte", "en": "Impact/effort and next steps" }
+      "notes": {
+        "de": "Impact/Effort und nächste Schritte",
+        "en": "Impact/effort and next steps"
+      }
     }
-  ]
+  ],
+  "category": "business"
 }

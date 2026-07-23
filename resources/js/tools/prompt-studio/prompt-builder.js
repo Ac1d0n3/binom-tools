@@ -20,22 +20,33 @@ function isTruthy(value) {
 }
 
 /**
- * Simple mustache-like template engine supporting {{var}} and {{#if var}}...{{/if}}.
+ * Simple mustache-like template engine supporting {{var}}, {{#if var}}...{{/if}},
+ * and {{#if var==value}}...{{/if}} (string equality).
  * @param {string} template
  * @param {TemplateContext} context
  * @param {import('./config-validator.js').ToolsLocale} [locale]
+ * @param {{ trim?: boolean }} [options]
  * @returns {string}
  */
-export function renderTemplate(template, context, locale = 'en') {
+export function renderTemplate(template, context, locale = 'en', options = {}) {
+    const shouldTrim = options.trim !== false;
     let result = template;
 
-    result = result.replace(/\{\{#if\s+([\w.-]+)\s*\}\}([\s\S]*?)\{\{\/if(?:\s+\1)?\s*\}\}/g, (_, key, block) => {
-        return isTruthy(context[key]) ? renderTemplate(block, context, locale) : '';
-    });
+    result = result.replace(
+        /\{\{#if\s+([\w.-]+)(?:\s*==\s*([^\s}]+))?\s*\}\}([\s\S]*?)\{\{\/if(?:\s+\1)?\s*\}\}/g,
+        (_, key, equals, block) => {
+            const raw = context[key];
+            const ok =
+                equals === undefined || equals === null || equals === ''
+                    ? isTruthy(raw)
+                    : String(raw ?? '').trim() === String(equals).trim();
+            return ok ? renderTemplate(block, context, locale, { trim: false }) : '';
+        },
+    );
 
     result = result.replace(/\{\{([\w.-]+)\}\}/g, (_, key) => formatDisplayValue(context[key], locale));
 
-    return result.trim();
+    return shouldTrim ? result.trim() : result;
 }
 
 /**

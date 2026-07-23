@@ -12,6 +12,8 @@ import {
     saveWorkspace,
 } from './storage.js';
 import { normalizeOutputKind, getTaskOutputKind } from './md-export.js';
+import { categoryLabel, normalizeCategory } from './categories.js';
+import { getStudioArea, outputKindForArea } from './studio-area.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./config-validator.js').PromptRoleDef} PromptRoleDef */
@@ -24,11 +26,17 @@ import { normalizeOutputKind, getTaskOutputKind } from './md-export.js';
 
 /** Featured standalone tasks shown first in the Aufgaben tab (not only via workflows). */
 const FEATURED_TASK_IDS = [
-    'song-develop',
-    'lyrics',
-    'hook',
-    'suno-style',
     'cover',
+    'logo',
+    'hero',
+    'comic',
+    'product-shot',
+    'icon',
+    'social-post',
+    'lyrics',
+    'suno-style',
+    'song-develop',
+    'hook',
     'album',
     'debug-investigate',
     'angular-signals',
@@ -60,6 +68,7 @@ function sortTasksForLibrary(tasks) {
  * @property {string} [taskId]
  * @property {string} [workflowId]
  * @property {string} [outputKind]
+ * @property {string} [category]
  * @property {boolean} [favorite]
  * @property {string} [folderId]
  */
@@ -85,6 +94,8 @@ export class WorkspaceManager {
         this.searchQuery = '';
         /** @type {import('./md-export.js').OutputKind | 'all'} */
         this.templateKindFilter = 'all';
+        /** @type {import('./categories.js').PromptCategory | 'all'} */
+        this.categoryFilter = 'all';
     }
 
     /** @param {WorkspaceTab} tab */
@@ -95,6 +106,14 @@ export class WorkspaceManager {
     /** @param {string} query */
     setSearch(query) {
         this.searchQuery = query.trim().toLowerCase();
+    }
+
+    /**
+     * @param {import('./categories.js').PromptCategory | 'all'} category
+     */
+    setCategoryFilter(category) {
+        const normalized = normalizeCategory(category);
+        this.categoryFilter = normalized || 'all';
     }
 
     /** @returns {PromptRoleDef[]} */
@@ -223,10 +242,14 @@ export class WorkspaceManager {
         for (const task of sortTasksForLibrary(this.config.tasks)) {
             if (task.id === 'custom-block') continue;
             const outputKind = getTaskOutputKind(task);
-            if (this.templateKindFilter !== 'all' && outputKind !== this.templateKindFilter) continue;
+            const areaKind = outputKindForArea(getStudioArea());
+            if (outputKind !== areaKind) continue;
+            const category = normalizeCategory(task.category);
+            if (this.categoryFilter !== 'all' && category !== this.categoryFilter) continue;
             const roleId = task.roleIds[0] ?? '';
             const role = this.config.roles.find((r) => r.id === roleId);
             const kindLabel = t(locale, kindLabelKey(outputKind));
+            const catLabel = category ? categoryLabel(locale, category, t) : '';
             const description =
                 resolveLocalizedLabel(task.description, locale, '') ||
                 resolveLocalizedLabel(role?.label, locale, '');
@@ -234,11 +257,12 @@ export class WorkspaceManager {
                 id: `task:${task.id}`,
                 kind: 'task',
                 title: resolveLocalizedLabel(task.label, locale, task.id),
-                subtitle: description ? `${kindLabel} · ${description}` : kindLabel,
+                subtitle: [catLabel, description].filter(Boolean).join(' · ') || description,
                 roleId,
                 taskId: task.id,
                 outputKind,
-                tags: ['task', outputKind],
+                category: category || undefined,
+                tags: ['task', outputKind, kindLabel, category, catLabel].filter(Boolean),
             });
         }
 
@@ -251,27 +275,42 @@ export class WorkspaceManager {
      */
     getWorkflowItems(locale = 'en') {
         const workflowLabel = t(locale, 'promptStudio.badge.workflow');
-        const presetItems = (this.config.chains ?? []).map((chain) => ({
-            id: `workflow:${chain.id}`,
-            kind: /** @type {const} */ ('chain'),
-            title: resolveLocalizedLabel(chain.label, locale, chain.id),
-            subtitle: `${workflowLabel} · ${
-                resolveLocalizedLabel(chain.description, locale, '') ||
-                t(locale, 'promptStudio.workspace.stepCount', { count: chain.steps?.length ?? 0 })
-            }`,
-            workflowId: chain.id,
-            tags: ['workflow', 'preset'],
-        }));
+        const presetItems = (this.config.chains ?? [])
+            .filter((chain) => {
+                const category = normalizeCategory(chain.category);
+                return this.categoryFilter === 'all' || category === this.categoryFilter;
+            })
+            .map((chain) => {
+                const category = normalizeCategory(chain.category);
+                const catLabel = category ? categoryLabel(locale, category, t) : '';
+                const stepsLabel = t(locale, 'promptStudio.workspace.stepCount', {
+                    count: chain.steps?.length ?? 0,
+                });
+                return {
+                    id: `workflow:${chain.id}`,
+                    kind: /** @type {const} */ ('chain'),
+                    title: resolveLocalizedLabel(chain.label, locale, chain.id),
+                    subtitle:
+                        [catLabel, resolveLocalizedLabel(chain.description, locale, '') || stepsLabel]
+                            .filter(Boolean)
+                            .join(' · ') || stepsLabel,
+                    workflowId: chain.id,
+                    category: category || undefined,
+                    tags: ['workflow', 'preset', workflowLabel, category, catLabel].filter(Boolean),
+                };
+            });
         const loaded = loadChains();
         const userChains = loaded && 'data' in loaded ? loaded.data : [];
-        const userItems = userChains.map((chain) => ({
-            id: `user-workflow:${chain.id}`,
-            kind: /** @type {const} */ ('chain'),
-            title: chain.name,
-            subtitle: `${workflowLabel} · ${t(locale, 'promptStudio.workspace.stepCount', { count: chain.steps?.length ?? 0 })}`,
-            workflowId: chain.id,
-            tags: ['workflow', 'mine'],
-        }));
+        const userItems = userChains
+            .filter(() => this.categoryFilter === 'all')
+            .map((chain) => ({
+                id: `user-workflow:${chain.id}`,
+                kind: /** @type {const} */ ('chain'),
+                title: chain.name,
+                subtitle: t(locale, 'promptStudio.workspace.stepCount', { count: chain.steps?.length ?? 0 }),
+                workflowId: chain.id,
+                tags: ['workflow', 'mine', workflowLabel],
+            }));
         return this.filterItems([...presetItems, ...userItems]);
     }
 
@@ -355,7 +394,18 @@ export class WorkspaceManager {
     filterItems(items) {
         if (!this.searchQuery) return items;
         return items.filter((item) => {
-            const haystack = [item.title, item.subtitle ?? '', ...(item.tags ?? []), item.roleId ?? '', item.taskId ?? '']
+            const catLabel = item.category ? categoryLabel('en', item.category, t) : '';
+            const catLabelDe = item.category ? categoryLabel('de', item.category, t) : '';
+            const haystack = [
+                item.title,
+                item.subtitle ?? '',
+                ...(item.tags ?? []),
+                item.roleId ?? '',
+                item.taskId ?? '',
+                item.category ?? '',
+                catLabel,
+                catLabelDe,
+            ]
                 .join(' ')
                 .toLowerCase();
             return haystack.includes(this.searchQuery);
@@ -439,16 +489,16 @@ export class WorkspaceManager {
         return items
             .map((item) => {
                 const fav = this.isFavorite(item.id);
+                const categoryBadge = item.category ? categoryLabel(locale, item.category, t) : '';
                 const badge =
                     item.kind === 'chain'
-                        ? t(locale, 'promptStudio.badge.workflow')
-                        : item.outputKind
-                          ? t(locale, kindLabelKey(item.outputKind))
-                          : '';
+                        ? categoryBadge || t(locale, 'promptStudio.badge.workflow')
+                        : categoryBadge ||
+                          (item.outputKind ? t(locale, kindLabelKey(item.outputKind)) : '');
                 return `<button type="button" class="prompt-studio__workspace-item" data-item-id="${escapeAttr(item.id)}" data-kind="${item.kind}" data-role-id="${escapeAttr(item.roleId ?? '')}" data-task-id="${escapeAttr(item.taskId ?? '')}" data-workflow-id="${escapeAttr(item.workflowId ?? '')}">
-                    ${badge ? `<span class="prompt-studio__workspace-item-badge">${escapeHtml(badge)}</span>` : ''}
+                    <span class="prompt-studio__workspace-item-badge${badge ? '' : ' is-empty'}"${badge ? '' : ' aria-hidden="true"'}>${escapeHtml(badge || '\u00a0')}</span>
                     <span class="prompt-studio__workspace-item-title">${escapeHtml(item.title)}</span>
-                    ${item.subtitle ? `<span class="prompt-studio__workspace-item-sub">${escapeHtml(item.subtitle)}</span>` : ''}
+                    ${item.subtitle ? `<span class="prompt-studio__workspace-item-sub">${escapeHtml(item.subtitle)}</span>` : '<span class="prompt-studio__workspace-item-sub" aria-hidden="true">&nbsp;</span>'}
                     <span class="prompt-studio__workspace-item-fav${fav ? ' is-active' : ''}" data-fav-id="${escapeAttr(item.id)}" aria-label="${escapeAttr(t(locale, 'promptStudio.workspace.favorite'))}">★</span>
                 </button>`;
             })

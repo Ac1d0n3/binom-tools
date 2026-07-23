@@ -1,6 +1,9 @@
 {
   "id": "business-visual",
-  "label": { "de": "Business + Visual", "en": "Business + visual" },
+  "label": {
+    "de": "Business + Visual",
+    "en": "Business + visual"
+  },
   "description": {
     "de": "Analyse → Infografik oder Hero-Bild zum Ergebnis",
     "en": "Analysis → infographic or hero image from the result"
@@ -8,7 +11,10 @@
   "steps": [
     {
       "id": "step-analysis",
-      "label": { "de": "Analyse", "en": "Analysis" },
+      "label": {
+        "de": "Analyse",
+        "en": "Analysis"
+      },
       "roleId": "business-analyst",
       "taskId": "analysis",
       "notes": {
@@ -22,7 +28,10 @@
     },
     {
       "id": "step-visual",
-      "label": { "de": "Visualisierung", "en": "Visualization" },
+      "label": {
+        "de": "Visualisierung",
+        "en": "Visualization"
+      },
       "roleId": "image-designer",
       "taskId": "infographic",
       "passOutputAs": "previousOutput",
@@ -35,5 +44,6 @@
         "en": "Paste step 1 AI output as context — describe the visual subject separately."
       }
     }
-  ]
+  ],
+  "category": "business"
 }

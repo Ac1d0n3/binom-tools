@@ -32,7 +32,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "business"
     },
     {
       "id": "root-cause-analysis",
@@ -64,7 +65,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "business"
     },
     {
       "id": "workshop",
@@ -82,6 +84,7 @@
         "process",
         "stakeholders",
         "kpis",
+        "outputFormat",
         "conversationHistory"
       ],
       "templateId": "workshop",
@@ -89,7 +92,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "business"
     },
     {
       "id": "brainstorming",
@@ -105,6 +109,7 @@
         "goal",
         "stakeholders",
         "kpis",
+        "outputFormat",
         "conversationHistory"
       ],
       "templateId": "brainstorming",
@@ -112,7 +117,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "business"
     },
     {
       "id": "process-improve",
@@ -129,6 +135,7 @@
         "stakeholders",
         "documents",
         "kpis",
+        "outputFormat",
         "conversationHistory"
       ],
       "templateId": "process-improve",
@@ -136,7 +143,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "business"
     },
     {
       "id": "document-create",
@@ -169,7 +177,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "writing"
     },
     {
       "id": "class-create",
@@ -197,7 +206,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "code"
     },
     {
       "id": "method-develop",
@@ -224,7 +234,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "code"
     },
     {
       "id": "api-design",
@@ -251,7 +262,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "code"
     },
     {
       "id": "refactoring",
@@ -278,7 +290,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "code"
     },
     {
       "id": "review",
@@ -304,7 +317,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "code"
     },
     {
       "id": "tests-write",
@@ -330,7 +344,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "code"
     },
     {
       "id": "song-develop",
@@ -364,7 +379,8 @@
         "chatgpt",
         "claude",
         "suno"
-      ]
+      ],
+      "category": "music"
     },
     {
       "id": "lyrics",
@@ -395,7 +411,8 @@
         "chatgpt",
         "claude",
         "suno"
-      ]
+      ],
+      "category": "music"
     },
     {
       "id": "hook",
@@ -427,16 +444,22 @@
         "chatgpt",
         "claude",
         "suno"
-      ]
+      ],
+      "category": "music"
     },
     {
       "id": "suno-style",
       "label": {
-        "de": "Suno Style",
-        "en": "Suno style"
+        "de": "Suno Style-Prompt",
+        "en": "Suno style prompt"
+      },
+      "description": {
+        "de": "Separater Style-Prompt für Suno (max. 1000 Zeichen)",
+        "en": "Separate Suno style prompt (max 1000 characters)"
       },
       "roleIds": [
-        "music-producer"
+        "music-producer",
+        "songwriter"
       ],
       "parameterIds": [
         "genre",
@@ -451,7 +474,8 @@
       "templateId": "suno-style",
       "modelHints": [
         "suno"
-      ]
+      ],
+      "category": "music"
     },
     {
       "id": "album",
@@ -479,7 +503,8 @@
         "chatgpt",
         "claude",
         "suno"
-      ]
+      ],
+      "category": "music"
     },
     {
       "id": "hero",
@@ -488,8 +513,8 @@
         "en": "Hero image"
       },
       "description": {
-        "de": "Hero-Bild-Prompt für Web oder Marketing",
-        "en": "Hero image prompt for web or marketing"
+        "de": "Vollflächiges Hero-/Banner-Bild mit Format, Stil und Komposition",
+        "en": "Full-bleed hero/banner image with format, style, and composition"
       },
       "roleIds": [
         "art-director",
@@ -497,9 +522,12 @@
       ],
       "parameterIds": [
         "motiv",
+        "imageFormat",
+        "aspectRatio",
         "style",
         "colors",
-        "aspectRatio",
+        "composition",
+        "textInImage",
         "size",
         "lighting",
         "camera",
@@ -512,17 +540,18 @@
         "midjourney",
         "flux",
         "gpt-image"
-      ]
+      ],
+      "category": "image"
     },
     {
       "id": "cover",
       "label": {
-        "de": "Cover",
-        "en": "Cover"
+        "de": "Cover (Album/Buch)",
+        "en": "Cover (album/book)"
       },
       "description": {
-        "de": "Album- oder Single-Cover mit optionalem Künstlernamen",
-        "en": "Album or single cover with optional artist name"
+        "de": "Album-, Single- oder Buchcover mit Format, Palette und Text-Option",
+        "en": "Album, single, or book cover with format, palette, and text option"
       },
       "roleIds": [
         "art-director",
@@ -530,9 +559,12 @@
       ],
       "parameterIds": [
         "motiv",
+        "imageFormat",
+        "aspectRatio",
         "style",
         "colors",
-        "aspectRatio",
+        "composition",
+        "textInImage",
         "artistName",
         "size",
         "lighting",
@@ -544,7 +576,12 @@
         "midjourney",
         "flux",
         "gpt-image"
-      ]
+      ],
+      "category": "image",
+      "parameterDefaults": {
+        "aspectRatio": "1:1",
+        "textInImage": "title-only"
+      }
     },
     {
       "id": "diagram",
@@ -557,9 +594,12 @@
       ],
       "parameterIds": [
         "motiv",
+        "imageFormat",
+        "aspectRatio",
         "style",
         "colors",
-        "aspectRatio",
+        "composition",
+        "textInImage",
         "size",
         "previousOutput"
       ],
@@ -568,7 +608,8 @@
         "midjourney",
         "flux",
         "gpt-image"
-      ]
+      ],
+      "category": "image"
     },
     {
       "id": "infographic",
@@ -582,9 +623,12 @@
       ],
       "parameterIds": [
         "motiv",
+        "imageFormat",
+        "aspectRatio",
         "style",
         "colors",
-        "aspectRatio",
+        "composition",
+        "textInImage",
         "size",
         "lighting",
         "previousOutput"
@@ -594,7 +638,8 @@
         "midjourney",
         "flux",
         "gpt-image"
-      ]
+      ],
+      "category": "image"
     },
     {
       "id": "logo",
@@ -607,9 +652,12 @@
       ],
       "parameterIds": [
         "motiv",
+        "imageFormat",
+        "aspectRatio",
         "style",
         "colors",
-        "aspectRatio",
+        "composition",
+        "textInImage",
         "size",
         "negativePrompt",
         "previousOutput"
@@ -619,7 +667,198 @@
         "midjourney",
         "flux",
         "gpt-image"
-      ]
+      ],
+      "category": "image",
+      "description": {
+        "de": "Skalierbares Logo mit klarer Form, Farben und Negativraum",
+        "en": "Scalable logo with clear shape, colors, and negative space"
+      },
+      "parameterDefaults": {
+        "aspectRatio": "1:1",
+        "composition": [
+          "centered",
+          "negative-space"
+        ],
+        "textInImage": "logo-wordmark"
+      }
+    },
+    {
+      "id": "comic",
+      "label": {
+        "de": "Comic / Panel",
+        "en": "Comic / panel"
+      },
+      "description": {
+        "de": "Comic-Stil, Panel-Layout oder Strip mit Stil und Komposition",
+        "en": "Comic style, panel layout, or strip with style and composition"
+      },
+      "roleIds": [
+        "art-director",
+        "image-designer"
+      ],
+      "parameterIds": [
+        "motiv",
+        "imageFormat",
+        "aspectRatio",
+        "style",
+        "colors",
+        "composition",
+        "textInImage",
+        "size",
+        "lighting",
+        "camera",
+        "reference",
+        "negativePrompt",
+        "previousOutput"
+      ],
+      "templateId": "comic",
+      "modelHints": [
+        "midjourney",
+        "flux",
+        "gpt-image"
+      ],
+      "category": "image",
+      "parameterDefaults": {
+        "aspectRatio": "3:2",
+        "style": [
+          "comic"
+        ],
+        "composition": [
+          "wide-shot"
+        ]
+      }
+    },
+    {
+      "id": "product-shot",
+      "label": {
+        "de": "Produktfoto",
+        "en": "Product shot"
+      },
+      "description": {
+        "de": "Produktfoto mit Licht, Hintergrund und Komposition",
+        "en": "Product photo with lighting, background, and composition"
+      },
+      "roleIds": [
+        "art-director",
+        "image-designer"
+      ],
+      "parameterIds": [
+        "motiv",
+        "imageFormat",
+        "aspectRatio",
+        "style",
+        "colors",
+        "composition",
+        "textInImage",
+        "size",
+        "lighting",
+        "camera",
+        "reference",
+        "negativePrompt",
+        "previousOutput"
+      ],
+      "templateId": "product-shot",
+      "modelHints": [
+        "midjourney",
+        "flux",
+        "gpt-image"
+      ],
+      "category": "image",
+      "parameterDefaults": {
+        "aspectRatio": "4:3",
+        "style": [
+          "photorealistic"
+        ],
+        "lighting": "studio",
+        "composition": [
+          "centered"
+        ]
+      }
+    },
+    {
+      "id": "icon",
+      "label": {
+        "de": "App-/UI-Icon",
+        "en": "App / UI icon"
+      },
+      "description": {
+        "de": "Klares App- oder UI-Icon, oft 1:1, mit Flat/Vector-Stil",
+        "en": "Clear app or UI icon, often 1:1, with flat/vector style"
+      },
+      "roleIds": [
+        "image-designer"
+      ],
+      "parameterIds": [
+        "motiv",
+        "imageFormat",
+        "aspectRatio",
+        "style",
+        "colors",
+        "composition",
+        "textInImage",
+        "size",
+        "negativePrompt",
+        "previousOutput"
+      ],
+      "templateId": "icon",
+      "modelHints": [
+        "midjourney",
+        "flux",
+        "gpt-image"
+      ],
+      "category": "image",
+      "parameterDefaults": {
+        "aspectRatio": "1:1",
+        "style": [
+          "flat-design",
+          "vector"
+        ],
+        "textInImage": "none"
+      }
+    },
+    {
+      "id": "social-post",
+      "label": {
+        "de": "Social-Post",
+        "en": "Social post"
+      },
+      "description": {
+        "de": "Social-Media-Motiv für 1:1 oder 9:16 mit Stil und Text-Option",
+        "en": "Social media visual for 1:1 or 9:16 with style and text option"
+      },
+      "roleIds": [
+        "art-director",
+        "image-designer"
+      ],
+      "parameterIds": [
+        "motiv",
+        "imageFormat",
+        "aspectRatio",
+        "style",
+        "colors",
+        "composition",
+        "textInImage",
+        "size",
+        "lighting",
+        "camera",
+        "reference",
+        "negativePrompt",
+        "previousOutput"
+      ],
+      "templateId": "social-post",
+      "modelHints": [
+        "midjourney",
+        "flux",
+        "gpt-image"
+      ],
+      "category": "image",
+      "parameterDefaults": {
+        "aspectRatio": "1:1",
+        "composition": [
+          "centered"
+        ],
+        "textInImage": "title-only"
+      }
     },
     {
       "id": "character",
@@ -633,9 +872,11 @@
       ],
       "parameterIds": [
         "motiv",
+        "imageFormat",
+        "aspectRatio",
         "style",
         "colors",
-        "aspectRatio",
+        "composition",
         "lighting",
         "reference",
         "negativePrompt",
@@ -646,7 +887,8 @@
         "midjourney",
         "flux",
         "gpt-image"
-      ]
+      ],
+      "category": "image"
     },
     {
       "id": "storyboard",
@@ -663,6 +905,7 @@
         "camera",
         "style",
         "aspectRatio",
+        "videoFormat",
         "previousOutput",
         "conversationHistory"
       ],
@@ -671,7 +914,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "video"
     },
     {
       "id": "scenes",
@@ -687,6 +931,7 @@
         "duration",
         "camera",
         "lighting",
+        "videoFormat",
         "previousOutput",
         "conversationHistory"
       ],
@@ -695,7 +940,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "video"
     },
     {
       "id": "camera",
@@ -711,6 +957,7 @@
         "lighting",
         "scenes",
         "duration",
+        "videoFormat",
         "previousOutput"
       ],
       "templateId": "camera",
@@ -718,7 +965,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "video"
     },
     {
       "id": "trailer",
@@ -735,6 +983,7 @@
         "mood",
         "style",
         "aspectRatio",
+        "videoFormat",
         "previousOutput",
         "conversationHistory"
       ],
@@ -743,7 +992,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "video"
     },
     {
       "id": "document-summarize",
@@ -771,7 +1021,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "writing"
     },
     {
       "id": "document-follow-up",
@@ -799,7 +1050,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "writing"
     },
     {
       "id": "custom-block",
@@ -816,7 +1068,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "writing"
     },
     {
       "id": "angular-signals",
@@ -846,7 +1099,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "agent"
     },
     {
       "id": "debug-investigate",
@@ -875,7 +1129,8 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "agent"
     },
     {
       "id": "automate-repo-task",
@@ -903,7 +1158,1360 @@
         "chatgpt",
         "claude",
         "gemini"
-      ]
+      ],
+      "category": "agent"
+    },
+    {
+      "id": "email-compose",
+      "label": {
+        "de": "E-Mail schreiben",
+        "en": "Write email"
+      },
+      "description": {
+        "de": "Neue professionelle E-Mail mit Betreff und Text",
+        "en": "New professional email with subject and body"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst",
+        "technical-writer"
+      ],
+      "parameterIds": [
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-compose",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail"
+    },
+    {
+      "id": "email-reply",
+      "label": {
+        "de": "E-Mail beantworten",
+        "en": "Reply to email"
+      },
+      "description": {
+        "de": "Antwort auf eine eingehende Mail — ideal mit Sanitizer bei PII",
+        "en": "Reply to an incoming email — use Sanitizer when PII is present"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst",
+        "technical-writer"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "email-reply",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "tone": "friendly",
+        "writingLanguage": "match"
+      }
+    },
+    {
+      "id": "email-follow-up",
+      "label": {
+        "de": "Nachfassen / Reminder",
+        "en": "Follow-up / reminder"
+      },
+      "description": {
+        "de": "Höfliches Nachhaken ohne Druck",
+        "en": "Polite follow-up without pressure"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "goal",
+        "incomingMessage",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-follow-up",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail"
+    },
+    {
+      "id": "email-decline",
+      "label": {
+        "de": "Freundlich ablehnen",
+        "en": "Decline politely"
+      },
+      "description": {
+        "de": "Nein sagen mit klarer Begründung und Alternativen",
+        "en": "Say no with a clear reason and alternatives"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "goal",
+        "incomingMessage",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-decline",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "tone": "empathetic"
+      }
+    },
+    {
+      "id": "email-meeting",
+      "label": {
+        "de": "Terminanfrage",
+        "en": "Meeting request"
+      },
+      "description": {
+        "de": "Einladung oder Terminvorschlag per Mail",
+        "en": "Invitation or scheduling email"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "business-analyst",
+        "support-analyst"
+      ],
+      "parameterIds": [
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-meeting",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail"
+    },
+    {
+      "id": "email-forward-summary",
+      "label": {
+        "de": "Weiterleiten mit Kurzfassung",
+        "en": "Forward with summary"
+      },
+      "description": {
+        "de": "Thread verdichten und mit Kontext weiterleiten",
+        "en": "Condense a thread and forward with context"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst",
+        "technical-writer"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-forward-summary",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail"
+    },
+    {
+      "id": "congratulation",
+      "label": {
+        "de": "Glückwunsch",
+        "en": "Congratulations"
+      },
+      "description": {
+        "de": "Geburtstage, Jubiläen, Erfolge — persönlich und treffend",
+        "en": "Birthdays, anniversaries, wins — personal and on-point"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "technical-writer"
+      ],
+      "parameterIds": [
+        "goal",
+        "occasion",
+        "relationship",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "congratulation",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "personal",
+      "parameterDefaults": {
+        "tone": "friendly",
+        "occasion": "birthday"
+      }
+    },
+    {
+      "id": "thank-you",
+      "label": {
+        "de": "Danksagung",
+        "en": "Thank-you note"
+      },
+      "description": {
+        "de": "Kurzer oder ausführlicher Dank — privat oder beruflich",
+        "en": "Short or longer thanks — personal or professional"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "goal",
+        "relationship",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "thank-you",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "personal"
+    },
+    {
+      "id": "invitation",
+      "label": {
+        "de": "Einladung",
+        "en": "Invitation"
+      },
+      "description": {
+        "de": "Event-, Team- oder private Einladung mit klaren Infos",
+        "en": "Event, team, or private invitation with clear details"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "goal",
+        "occasion",
+        "relationship",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "invitation",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "personal"
+    },
+    {
+      "id": "apology",
+      "label": {
+        "de": "Entschuldigung",
+        "en": "Apology"
+      },
+      "description": {
+        "de": "Aufrichtige Entschuldigung mit nächstem Schritt",
+        "en": "Sincere apology with a next step"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "goal",
+        "incomingMessage",
+        "relationship",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "apology",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "personal",
+      "parameterDefaults": {
+        "tone": "empathetic"
+      }
+    },
+    {
+      "id": "condolence",
+      "label": {
+        "de": "Beileid / Mitgefühl",
+        "en": "Condolence"
+      },
+      "description": {
+        "de": "Würdige, kurze Worte — ohne Floskeln und ohne Ratschläge",
+        "en": "Dignified, short words — no clichés, no advice"
+      },
+      "roleIds": [
+        "correspondence-writer"
+      ],
+      "parameterIds": [
+        "goal",
+        "relationship",
+        "recipient",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "condolence",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "personal",
+      "parameterDefaults": {
+        "messageLength": "short",
+        "tone": "empathetic"
+      }
+    },
+    {
+      "id": "greeting-card",
+      "label": {
+        "de": "Grußkarte / kurze Nachricht",
+        "en": "Greeting card / short note"
+      },
+      "description": {
+        "de": "Kurze Karte oder Chat-Nachricht zu einem Anlass",
+        "en": "Short card or chat message for an occasion"
+      },
+      "roleIds": [
+        "correspondence-writer"
+      ],
+      "parameterIds": [
+        "goal",
+        "occasion",
+        "relationship",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "greeting-card",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "personal",
+      "parameterDefaults": {
+        "messageLength": "short"
+      }
+    },
+    {
+      "id": "email-inbox-triage",
+      "label": {
+        "de": "Posteingang sichten",
+        "en": "Triage inbox"
+      },
+      "description": {
+        "de": "Viele Mails sortieren: Themen, Priorität, wer antworten muss",
+        "en": "Sort many emails: topics, priority, who must reply"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-inbox-triage",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Sichte alle Mails: gruppiere nach Thema, markiere Dringlichkeit (P0/P1/P2/P3), wer antworten sollte, und was ignoriert/archiviert werden kann.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-inbox-summary",
+      "label": {
+        "de": "Mails: wichtigste Punkte",
+        "en": "Emails: key points"
+      },
+      "description": {
+        "de": "Aus einem Stapel die wichtigsten Aussagen und Entscheidungen",
+        "en": "From a batch: the most important statements and decisions"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "messageLength",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-inbox-summary",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Fasse die wichtigsten Punkte aus allen Mails zusammen. Keine Floskeln — nur Fakten, Zusagen, offene Fragen und Deadlines.",
+        "writingLanguage": "de",
+        "messageLength": "medium"
+      }
+    },
+    {
+      "id": "email-top-problems",
+      "label": {
+        "de": "Top-Probleme aus Mails",
+        "en": "Top problems from emails"
+      },
+      "description": {
+        "de": "Top 3 (oder mehr) wiederkehrende / kritische Probleme",
+        "en": "Top 3 (or more) recurring / critical problems"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-top-problems",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Leite die Top 3 Probleme aus den Mails ab. Pro Problem: Kurzbeschreibung, Belege (welche Mails), Impact, vorgeschlagener nächster Schritt.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-action-items",
+      "label": {
+        "de": "To-dos aus Mails",
+        "en": "Action items from emails"
+      },
+      "description": {
+        "de": "Klare Aufgabenliste mit Owner und Frist",
+        "en": "Clear task list with owner and due date"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-action-items",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Extrahiere alle Action Items. Format: Aufgabe | Owner (oder [UNCLEAR]) | Frist | Quelle (Betreff/Absender-Platzhalter) | Priorität.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-priority-sort",
+      "label": {
+        "de": "Mails priorisieren",
+        "en": "Prioritize emails"
+      },
+      "description": {
+        "de": "P0–P3 Sortierung mit kurzer Begründung",
+        "en": "P0–P3 ranking with a short rationale"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-priority-sort",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Priorisiere jede Mail oder jeden Thread als P0 (sofort), P1 (heute), P2 (diese Woche), P3 (Backlog/Info). Kurze Begründung je Eintrag.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-thread-digest",
+      "label": {
+        "de": "Thread verdichten",
+        "en": "Condense thread"
+      },
+      "description": {
+        "de": "Langen Mail-Verlauf auf Entscheidungen und offene Punkte kürzen",
+        "en": "Shrink a long thread to decisions and open points"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst",
+        "technical-writer"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "messageLength",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "email-thread-digest",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Verdichte den Thread: Timeline (kurz), getroffene Entscheidungen, offene Fragen, nächste Schritte.",
+        "writingLanguage": "de",
+        "messageLength": "medium"
+      }
+    },
+    {
+      "id": "email-status-digest",
+      "label": {
+        "de": "Status-Digest für Führung",
+        "en": "Status digest for leadership"
+      },
+      "description": {
+        "de": "Kurzbriefing aus Mails für Chef/Team (ohne Fluff)",
+        "en": "Short briefing from emails for boss/team (no fluff)"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-status-digest",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Erstelle ein Status-Digest: Was läuft, was blockiert, was braucht Entscheidung, Risiken. Max. eine Seite.",
+        "tone": "concise",
+        "writingLanguage": "de",
+        "messageLength": "short"
+      }
+    },
+    {
+      "id": "email-clarify",
+      "label": {
+        "de": "Rückfragen formulieren",
+        "en": "Draft clarifying questions"
+      },
+      "description": {
+        "de": "Präzise Rückfragen statt langer Antwort",
+        "en": "Precise clarifying questions instead of a long reply"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "conversationHistory"
+      ],
+      "templateId": "email-clarify",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Formuliere eine kurze Mail mit den fehlenden Informationen als nummerierte Rückfragen. Keine Annahmen als Fakten darstellen.",
+        "tone": "concise",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-escalate",
+      "label": {
+        "de": "Eskalation schreiben",
+        "en": "Write escalation"
+      },
+      "description": {
+        "de": "Sachliche Eskalation mit Impact und gewünschter Entscheidung",
+        "en": "Factual escalation with impact and requested decision"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-escalate",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Schreibe eine Eskalations-Mail: Kontext, bisherige Versuche, Business-Impact, konkrete Entscheidung/Hilfe die gebraucht wird, Deadline.",
+        "tone": "assertive",
+        "writingLanguage": "de",
+        "messageLength": "medium"
+      }
+    },
+    {
+      "id": "email-complaint-reply",
+      "label": {
+        "de": "Beschwerde beantworten",
+        "en": "Reply to complaint"
+      },
+      "description": {
+        "de": "Empathisch, klar, mit Lösungsweg — ohne Schuldeingeständnis erzwingen",
+        "en": "Empathetic, clear, with a path forward — without forcing blame"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "email-complaint-reply",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Beantworte die Beschwerde: anerkennen, Sachlage klären, nächsten Schritt / Lösung / Kompensation (nur wenn im Ziel genannt), Erreichbarkeit.",
+        "tone": "empathetic",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-handoff",
+      "label": {
+        "de": "Interne Übergabe",
+        "en": "Internal handoff"
+      },
+      "description": {
+        "de": "Kolleg:in kurz und vollständig einarbeiten (aus Mails)",
+        "en": "Brief a colleague fully and briefly (from emails)"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "recipient",
+        "tone",
+        "writingLanguage",
+        "conversationHistory"
+      ],
+      "templateId": "email-handoff",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Erstelle eine interne Übergabe: Kontext, Stakeholder, Stand, offene Punkte, Risiken, empfohlene nächste Aktion, Links/Anhänge als Platzhalter.",
+        "tone": "concise",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "email-weekly-digest",
+      "label": {
+        "de": "Wochenrückblick aus Mails",
+        "en": "Weekly digest from emails"
+      },
+      "description": {
+        "de": "Was diese Woche passiert ist — aus dem Posteingang",
+        "en": "What happened this week — from the inbox"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "messageLength",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-weekly-digest",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Erstelle einen Wochenrückblick: Highlights, Entscheidungen, offene Baustellen, Top-Risiken, Fokus nächste Woche.",
+        "writingLanguage": "de",
+        "messageLength": "medium"
+      }
+    },
+    {
+      "id": "email-batch-replies",
+      "label": {
+        "de": "Antwort-Skizzen (Batch)",
+        "en": "Reply sketches (batch)"
+      },
+      "description": {
+        "de": "Für mehrere Mails je eine kurze Antwortskizze",
+        "en": "One short reply sketch per email"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "support-analyst"
+      ],
+      "parameterIds": [
+        "incomingMessage",
+        "goal",
+        "tone",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "email-batch-replies",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "mail",
+      "parameterDefaults": {
+        "goal": "Für jede erkennbare Mail/Thread eine Antwortskizze (3–6 Sätze) plus empfohlene Priorität. Keine vollständigen Romane.",
+        "tone": "friendly",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "text-bulletize",
+      "label": {
+        "de": "Text → Bullet Points",
+        "en": "Text → bullet points"
+      },
+      "description": {
+        "de": "Prosa in knappe, scannbare Punkte",
+        "en": "Prose into concise, scannable bullets"
+      },
+      "roleIds": [
+        "technical-writer",
+        "business-analyst",
+        "correspondence-writer",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "documents",
+        "goal",
+        "writingLanguage",
+        "messageLength",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "text-bulletize",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "goal": "Wandle den Text in klare Bullet Points um. Gruppiere thematisch. Keine neuen Fakten erfinden.",
+        "writingLanguage": "de",
+        "messageLength": "short"
+      }
+    },
+    {
+      "id": "text-executive-brief",
+      "label": {
+        "de": "Exec-Brief (½ Seite)",
+        "en": "Exec brief (½ page)"
+      },
+      "description": {
+        "de": "Entscheidungstaugliche Kurzfassung",
+        "en": "Decision-ready short brief"
+      },
+      "roleIds": [
+        "technical-writer",
+        "business-analyst",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "documents",
+        "goal",
+        "writingLanguage",
+        "stakeholders",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "text-executive-brief",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "goal": "Erstelle einen Exec-Brief: Kontext in 2 Sätzen, Empfehlung, 3 Gründe, Risiken, benötigte Entscheidung.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "text-pros-cons",
+      "label": {
+        "de": "Pro / Contra",
+        "en": "Pros / cons"
+      },
+      "description": {
+        "de": "Optionen fair gegenüberstellen",
+        "en": "Compare options fairly"
+      },
+      "roleIds": [
+        "technical-writer",
+        "business-analyst",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "documents",
+        "goal",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "text-pros-cons",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "goal": "Stelle Optionen als Pro/Contra gegenüber und gib eine klare Empfehlung mit Kriterien.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "text-rewrite-tone",
+      "label": {
+        "de": "Ton umschreiben",
+        "en": "Rewrite tone"
+      },
+      "description": {
+        "de": "Gleicher Inhalt, anderer Ton (formell, knapp, freundlich…)",
+        "en": "Same content, different tone (formal, concise, friendly…)"
+      },
+      "roleIds": [
+        "correspondence-writer",
+        "technical-writer",
+        "support-analyst"
+      ],
+      "parameterIds": [
+        "documents",
+        "goal",
+        "tone",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "text-rewrite-tone",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "goal": "Schreibe den Text im gewählten Ton um. Inhalt und Zusagen beibehalten, Härte/Weichheit anpassen.",
+        "tone": "concise",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "text-simplify",
+      "label": {
+        "de": "Einfacher erklären",
+        "en": "Simplify / explain clearly"
+      },
+      "description": {
+        "de": "Fachtext verständlich machen ohne Inhalt zu verfälschen",
+        "en": "Make technical text clear without distorting meaning"
+      },
+      "roleIds": [
+        "technical-writer",
+        "ai-consultant",
+        "business-analyst"
+      ],
+      "parameterIds": [
+        "documents",
+        "goal",
+        "writingLanguage",
+        "messageLength",
+        "conversationHistory"
+      ],
+      "templateId": "text-simplify",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "goal": "Erkläre den Inhalt klar und einfach. Fachbegriffe kurz erklären. Keine Marketing-Floskeln.",
+        "writingLanguage": "de",
+        "messageLength": "medium"
+      }
+    },
+    {
+      "id": "text-risks-open-questions",
+      "label": {
+        "de": "Risiken & offene Fragen",
+        "en": "Risks & open questions"
+      },
+      "description": {
+        "de": "Aus Text/Mails: was unklar ist und was schiefgehen kann",
+        "en": "From text/emails: what is unclear and what can go wrong"
+      },
+      "roleIds": [
+        "business-analyst",
+        "support-analyst",
+        "technical-writer",
+        "correspondence-writer"
+      ],
+      "parameterIds": [
+        "documents",
+        "incomingMessage",
+        "goal",
+        "writingLanguage",
+        "outputFormat",
+        "conversationHistory"
+      ],
+      "templateId": "text-risks-open-questions",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "goal": "Liste Risiken (Impact × Wahrscheinlichkeit grob) und offene Fragen. Markiere Annahmen explizit.",
+        "writingLanguage": "de"
+      }
+    },
+    {
+      "id": "md-story-en",
+      "label": {
+        "de": "Markdown-Story (EN)",
+        "en": "Markdown story (EN)"
+      },
+      "description": {
+        "de": "Playbook als {slug}.en.md mit Frontmatter, Figures und Bildpfaden",
+        "en": "Playbook as {slug}.en.md with frontmatter, figures, and image paths"
+      },
+      "roleIds": [
+        "technical-writer",
+        "business-analyst",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "goal",
+        "playbookSlug",
+        "diagramCount",
+        "documents",
+        "stakeholders",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "md-story-en",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "diagramCount": "5"
+      }
+    },
+    {
+      "id": "md-story-de",
+      "label": {
+        "de": "Markdown-Story (DE)",
+        "en": "Markdown story (DE)"
+      },
+      "description": {
+        "de": "Deutsche Playbook-Datei {slug}.de.md — parallel zur EN-Struktur",
+        "en": "German playbook file {slug}.de.md — parallel to the EN structure"
+      },
+      "roleIds": [
+        "technical-writer",
+        "business-analyst",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "goal",
+        "playbookSlug",
+        "diagramCount",
+        "documents",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "md-story-de",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing"
+    },
+    {
+      "id": "md-story-images",
+      "label": {
+        "de": "Bild-Brief (EN) + Dateiliste",
+        "en": "Image brief (EN) + filename list"
+      },
+      "description": {
+        "de": "Eine MD mit EN-Bildprompts plus Liste aller Bildnamen aus den Stories",
+        "en": "One MD with EN image prompts plus every image filename used in the stories"
+      },
+      "roleIds": [
+        "technical-writer",
+        "art-director",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "goal",
+        "playbookSlug",
+        "diagramCount",
+        "documents",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "md-story-images",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing"
+    },
+    {
+      "id": "md-translate",
+      "label": {
+        "de": "Markdown übersetzen (DE↔EN)",
+        "en": "Translate markdown (DE↔EN)"
+      },
+      "description": {
+        "de": "Struktur, Frontmatter und Bildpfade erhalten — Inhalte lokaliseren",
+        "en": "Keep structure, frontmatter, and image paths — localize the content"
+      },
+      "roleIds": [
+        "technical-writer",
+        "business-analyst",
+        "ai-consultant"
+      ],
+      "parameterIds": [
+        "documents",
+        "translateDirection",
+        "playbookSlug",
+        "goal",
+        "conversationHistory"
+      ],
+      "templateId": "md-translate",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "writing",
+      "parameterDefaults": {
+        "translateDirection": "en-to-de"
+      }
+    },
+    {
+      "id": "video-script",
+      "label": {
+        "de": "Video-Drehbuch",
+        "en": "Video script"
+      },
+      "description": {
+        "de": "Drehbuch mit Szenen, Timing und Sprechertext",
+        "en": "Script with scenes, timing, and voiceover"
+      },
+      "roleIds": [
+        "film-director"
+      ],
+      "parameterIds": [
+        "goal",
+        "scenes",
+        "duration",
+        "mood",
+        "style",
+        "videoFormat",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "video-script",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "video",
+      "parameterDefaults": {
+        "videoFormat": "script"
+      }
+    },
+    {
+      "id": "shot-list",
+      "label": {
+        "de": "Shot-Liste",
+        "en": "Shot list"
+      },
+      "description": {
+        "de": "Produktionsreife Shot-Liste (Markdown/CSV/JSON)",
+        "en": "Production-ready shot list (Markdown/CSV/JSON)"
+      },
+      "roleIds": [
+        "film-director"
+      ],
+      "parameterIds": [
+        "goal",
+        "scenes",
+        "duration",
+        "camera",
+        "aspectRatio",
+        "videoFormat",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "shot-list",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "video",
+      "parameterDefaults": {
+        "videoFormat": "shot-list"
+      }
+    },
+    {
+      "id": "youtube-brief",
+      "label": {
+        "de": "YouTube / Shorts Brief",
+        "en": "YouTube / Shorts brief"
+      },
+      "description": {
+        "de": "Titel, Hook, Kapitel, Beschreibung und Thumbnail-Idee",
+        "en": "Title, hook, chapters, description, and thumbnail idea"
+      },
+      "roleIds": [
+        "film-director",
+        "art-director"
+      ],
+      "parameterIds": [
+        "goal",
+        "duration",
+        "mood",
+        "style",
+        "aspectRatio",
+        "videoFormat",
+        "outputFormat",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "youtube-brief",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "video",
+      "parameterDefaults": {
+        "aspectRatio": "9:16"
+      }
+    },
+    {
+      "id": "ai-video-prompts",
+      "label": {
+        "de": "KI-Video-Prompts",
+        "en": "AI video prompts"
+      },
+      "description": {
+        "de": "Shot-Prompts für Runway / Kling / Sora o. Ä.",
+        "en": "Shot prompts for Runway / Kling / Sora etc."
+      },
+      "roleIds": [
+        "film-director"
+      ],
+      "parameterIds": [
+        "goal",
+        "scenes",
+        "duration",
+        "camera",
+        "style",
+        "mood",
+        "aspectRatio",
+        "videoFormat",
+        "previousOutput",
+        "conversationHistory"
+      ],
+      "templateId": "ai-video-prompts",
+      "modelHints": [
+        "chatgpt",
+        "claude",
+        "gemini"
+      ],
+      "category": "video",
+      "parameterDefaults": {
+        "videoFormat": "prompts"
+      }
     }
   ]
 }

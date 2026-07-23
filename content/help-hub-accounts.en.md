@@ -63,6 +63,17 @@ Set a password (user must already exist in `users.json`):
 php artisan bn-tools:user-password you@example.com
 ```
 
+## Invite people (add user)
+
+Under **Account → Users → Add user** you can quickly onboard someone:
+
+1. Enter email + display name (optional: teams, avatar).
+2. Defaults: **generate temporary password**, **send invitation email**, **must change password on first login**.
+3. The person receives login URL, email, and temporary password.
+4. After login they are forced to `/account` until they set a new password.
+
+Configure real SMTP in `.env` (`MAIL_MAILER`, `MAIL_HOST`, …). With `MAIL_MAILER=log` the invite is written to the Laravel log (useful locally). If sending fails, the UI shows the temporary password once so you can copy it.
+
 ## User flags
 
 | Field | Meaning |
@@ -71,6 +82,7 @@ php artisan bn-tools:user-password you@example.com
 | `canManageUsers` | Manage users, story ACL, other users’ templates |
 | `canManageTeams` | Manage teams |
 | `teamIds` | Team membership (for ACL and plan viewers) |
+| `mustChangePassword` | Must change password before using tools |
 
 Manage users and teams in the Account UI (requires manage rights): compact lists under `/account/users` and `/account/teams`, with dedicated create/edit pages. Team `memberIds` and user `teamIds` stay in sync. Optional `shortName` / `colorToken` / `avatarIcon` feed Sprint Planner chips. Users can also set avatar color and icon under **Account** (`BINOM_TOOLS_ACCOUNTS_PROFILE_AVATAR_ENABLED`, default on).
 

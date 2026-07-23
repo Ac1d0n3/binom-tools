@@ -40,6 +40,25 @@
       "id": "suno",
       "label": { "de": "Suno", "en": "Suno" },
       "sectionOrder": ["task", "parameters", "output"],
+      "defaultPlan": "free",
+      "plans": [
+        {
+          "id": "free",
+          "label": { "de": "Free", "en": "Free" }
+        },
+        {
+          "id": "paid",
+          "label": { "de": "Bezahlt", "en": "Paid" }
+        }
+      ],
+      "limits": {
+        "default": 1000,
+        "style": 1000,
+        "lyrics": {
+          "free": 3000,
+          "paid": 5000
+        }
+      },
       "formatRules": {
         "joinSections": ", ",
         "includeSectionHeaders": false,

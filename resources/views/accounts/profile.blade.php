@@ -11,7 +11,14 @@
 
         <x-accounts.flash :status-map="[
             'profile-updated' => 'accounts.saved',
+            'must-change-password' => 'accounts.flash.mustChangePassword',
         ]" />
+
+        @if (! empty($mustChangePassword))
+            <p class="sp-password-note" role="status" data-i18n="accounts.mustChangePasswordLead">
+                Please set a new password before using the tools.
+            </p>
+        @endif
 
         <form method="post" action="{{ locale_route('accounts.profile.update') }}" class="sp-lock-form" style="max-width:40rem">
             @csrf
@@ -44,16 +51,38 @@
             @endif
 
             <label class="sp-field">
-                <span data-i18n="accounts.currentPassword">Current password (to change password)</span>
-                <input type="password" name="current_password" class="tools-input" autocomplete="current-password">
+                <span data-i18n="{{ ! empty($mustChangePassword) ? 'accounts.temporaryPassword' : 'accounts.currentPassword' }}">
+                    {{ ! empty($mustChangePassword) ? 'Temporary password' : 'Current password (to change password)' }}
+                </span>
+                <input
+                    type="password"
+                    name="current_password"
+                    class="tools-input"
+                    autocomplete="current-password"
+                    @if (! empty($mustChangePassword)) required @endif
+                >
             </label>
             <label class="sp-field">
                 <span data-i18n="accounts.newPassword">New password</span>
-                <input type="password" name="password" class="tools-input" autocomplete="new-password" minlength="8">
+                <input
+                    type="password"
+                    name="password"
+                    class="tools-input"
+                    autocomplete="new-password"
+                    minlength="8"
+                    @if (! empty($mustChangePassword)) required @endif
+                >
             </label>
             <label class="sp-field">
                 <span data-i18n="accounts.confirmPassword">Confirm new password</span>
-                <input type="password" name="password_confirmation" class="tools-input" autocomplete="new-password" minlength="8">
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="tools-input"
+                    autocomplete="new-password"
+                    minlength="8"
+                    @if (! empty($mustChangePassword)) required @endif
+                >
             </label>
 
             <button type="submit" class="tools-btn tools-btn--primary" data-i18n="accounts.save">Save</button>

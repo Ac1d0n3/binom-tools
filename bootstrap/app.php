@@ -21,11 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'accounts.enabled' => \App\Http\Middleware\EnsureAccountsEnabled::class,
             'accounts.auth' => \App\Http\Middleware\EnsureAuthenticatedAccount::class,
             'accounts.auth.whenEnabled' => \App\Http\Middleware\EnsureAuthenticatedAccountWhenEnabled::class,
+            'accounts.password' => \App\Http\Middleware\EnsureAccountPasswordChanged::class,
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\SetLocaleFromRoute::class,
             \App\Http\Middleware\EnsureToolEnabled::class,
             \App\Http\Middleware\EnsureToolLogin::class,
+            \App\Http\Middleware\EnsureAccountPasswordChanged::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -81,6 +81,9 @@ class PromptStudioLibraryApiTest extends TestCase
         $this->assertContains('chains/meeting-to-tasks.json', $chains);
         $this->assertContains('chains/debug-investigate.json', $chains);
         $this->assertContains('chains/playbook-outline.json', $chains);
+        $this->assertContains('chains/email-inbox-to-reply.json', $chains);
+        $this->assertContains('chains/md-story-bilingual.json', $chains);
+        $this->assertContains('chains/email-inbox-insights.json', $chains);
     }
 
     private function removeDir(string $path): void

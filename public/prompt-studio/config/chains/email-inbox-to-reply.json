@@ -1,0 +1,41 @@
+{
+  "id": "email-inbox-to-reply",
+  "label": {
+    "de": "Inbox → Antwort",
+    "en": "Inbox → reply"
+  },
+  "description": {
+    "de": "Eingehende Mail zusammenfassen, dann Antwort entwerfen — vorher Sanitizer bei PII",
+    "en": "Summarize an incoming email, then draft a reply — sanitize PII first"
+  },
+  "steps": [
+    {
+      "id": "step-summarize",
+      "label": {
+        "de": "Zusammenfassen",
+        "en": "Summarize"
+      },
+      "roleId": "correspondence-writer",
+      "taskId": "email-forward-summary",
+      "notes": {
+        "de": "Thread verdichten und offene Punkte listen (PII vorher sanitizen)",
+        "en": "Condense the thread and list open points (sanitize PII first)"
+      }
+    },
+    {
+      "id": "step-reply",
+      "label": {
+        "de": "Antwort",
+        "en": "Reply"
+      },
+      "roleId": "correspondence-writer",
+      "taskId": "email-reply",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "Antwort aus Zusammenfassung und Ziel formulieren",
+        "en": "Draft the reply from the summary and your intent"
+      }
+    }
+  ],
+  "category": "mail"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "md-story-bilingual",
+  "label": {
+    "de": "Markdown-Story DE+EN + Bilder",
+    "en": "Markdown story DE+EN + images"
+  },
+  "description": {
+    "de": "EN-MD und DE-MD erzeugen, danach EN-Bildbrief inkl. kompletter Dateinamen-Liste",
+    "en": "Produce EN+DE MD files, then an EN image brief with a full filename inventory"
+  },
+  "steps": [
+    {
+      "id": "step-en",
+      "label": {
+        "de": "EN Story",
+        "en": "EN story"
+      },
+      "roleId": "technical-writer",
+      "taskId": "md-story-en",
+      "notes": {
+        "de": "{slug}.en.md mit Frontmatter und imgN-en Pfaden",
+        "en": "{slug}.en.md with frontmatter and imgN-en paths"
+      }
+    },
+    {
+      "id": "step-de",
+      "label": {
+        "de": "DE Story",
+        "en": "DE story"
+      },
+      "roleId": "technical-writer",
+      "taskId": "md-story-de",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "Parallele DE-Datei mit imgN-de Pfaden",
+        "en": "Parallel DE file with imgN-de paths"
+      }
+    },
+    {
+      "id": "step-images",
+      "label": {
+        "de": "Bilder + Liste",
+        "en": "Images + list"
+      },
+      "roleId": "technical-writer",
+      "taskId": "md-story-images",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "EN-Prompts für Bilder + Checklist aller Dateinamen aus beiden MDs",
+        "en": "EN image prompts + checklist of every filename from both MDs"
+      }
+    }
+  ],
+  "category": "writing"
+}

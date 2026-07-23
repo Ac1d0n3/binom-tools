@@ -17,7 +17,13 @@
 
         <x-accounts.flash :status-map="[
             'user-created' => 'accounts.flash.userCreated',
+            'user-created-invited' => 'accounts.flash.userCreatedInvited',
+            'user-created-invite-failed' => 'accounts.flash.userCreatedInviteFailed',
+            'user-created-with-password' => 'accounts.flash.userCreatedWithPassword',
             'user-updated' => 'accounts.flash.userUpdated',
+            'user-updated-invited' => 'accounts.flash.userUpdatedInvited',
+            'user-updated-invite-failed' => 'accounts.flash.userUpdatedInviteFailed',
+            'user-updated-with-password' => 'accounts.flash.userUpdatedWithPassword',
             'user-deleted' => 'accounts.flash.userDeleted',
         ]" />
 
@@ -67,6 +73,9 @@
                                 <strong>{{ $user['displayName'] }}</strong>
                                 <span class="sp-list__meta">
                                     {{ $user['email'] }}
+                                    @if (! empty($user['mustChangePassword']))
+                                        · <span data-i18n="accounts.pendingPasswordChange">Password change pending</span>
+                                    @endif
                                     @if (! ($user['active'] ?? true))
                                         · <span data-i18n="accounts.inactive">Inactive</span>
                                     @endif

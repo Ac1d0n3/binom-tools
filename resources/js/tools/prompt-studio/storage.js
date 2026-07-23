@@ -1,4 +1,5 @@
 import { normalizeOutputKind } from './md-export.js';
+import { normalizeModelPlan } from './model-limits.js';
 
 /** @typedef {'de' | 'en'} ToolsLocale */
 
@@ -7,6 +8,7 @@ import { normalizeOutputKind } from './md-export.js';
  * @property {string} roleId
  * @property {string} taskId
  * @property {string} modelId
+ * @property {import('./model-limits.js').ModelPlan} [modelPlan]
  * @property {Record<string, unknown>} parameterValues
  * @property {Record<string, string>} sections
  * @property {Record<string, boolean>} sectionOverrides
@@ -88,6 +90,7 @@ export function createDefaultDraft() {
         roleId: '',
         taskId: '',
         modelId: '',
+        modelPlan: /** @type {import('./model-limits.js').ModelPlan} */ ('free'),
         parameterValues: {},
         sections: {},
         sectionOverrides: {},
@@ -120,6 +123,7 @@ export function normalizeDraft(raw) {
         roleId: typeof obj.roleId === 'string' ? obj.roleId : base.roleId,
         taskId: typeof obj.taskId === 'string' ? obj.taskId : base.taskId,
         modelId: typeof obj.modelId === 'string' ? obj.modelId : base.modelId,
+        modelPlan: normalizeModelPlan(obj.modelPlan),
         parameterValues:
             obj.parameterValues && typeof obj.parameterValues === 'object'
                 ? /** @type {Record<string, unknown>} */ (obj.parameterValues)

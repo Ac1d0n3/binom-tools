@@ -1,6 +1,7 @@
 import { loadTemplates, saveTemplates } from './storage.js';
 
 const SEED_FLAG_KEY = 'binom-tools-prompt-studio-templates-seeded';
+const MAIL_SEED_FLAG_KEY = 'binom-tools-prompt-studio-templates-mail-seeded-v1';
 
 /**
  * Seed starter templates once when the user library is empty.
@@ -8,12 +9,14 @@ const SEED_FLAG_KEY = 'binom-tools-prompt-studio-templates-seeded';
  */
 export function ensureStarterTemplates() {
     if (localStorage.getItem(SEED_FLAG_KEY) === '1') {
+        ensureMailStarterTemplates();
         return false;
     }
     const loaded = loadTemplates();
     const existing = loaded && 'data' in loaded ? loaded.data : [];
     if (existing.length > 0) {
         localStorage.setItem(SEED_FLAG_KEY, '1');
+        ensureMailStarterTemplates();
         return false;
     }
 
@@ -98,9 +101,134 @@ export function ensureStarterTemplates() {
             tags: ['seed', 'agent-task', 'debug'],
             savedAt: now,
         },
+        ...mailSeedTemplates(now),
     ];
 
     saveTemplates(seeds, 'manual');
     localStorage.setItem(SEED_FLAG_KEY, '1');
+    localStorage.setItem(MAIL_SEED_FLAG_KEY, '1');
     return true;
+}
+
+/**
+ * Append mail/text starter templates for existing users (once).
+ * @returns {boolean}
+ */
+export function ensureMailStarterTemplates() {
+    if (localStorage.getItem(MAIL_SEED_FLAG_KEY) === '1') {
+        return false;
+    }
+    const loaded = loadTemplates();
+    /** @type {import('./template-store.js').UserTemplate[]} */
+    const existing =
+        loaded && 'data' in loaded
+            ? /** @type {import('./template-store.js').UserTemplate[]} */ (loaded.data)
+            : [];
+    const existingIds = new Set(existing.map((t) => t.id));
+    const now = new Date().toISOString();
+    const toAdd = mailSeedTemplates(now).filter((t) => !existingIds.has(t.id));
+    if (toAdd.length === 0) {
+        localStorage.setItem(MAIL_SEED_FLAG_KEY, '1');
+        return false;
+    }
+    saveTemplates([...toAdd, ...existing], 'manual');
+    localStorage.setItem(MAIL_SEED_FLAG_KEY, '1');
+    return true;
+}
+
+/**
+ * @param {string} now
+ * @returns {import('./template-store.js').UserTemplate[]}
+ */
+function mailSeedTemplates(now) {
+    return [
+        {
+            id: 'seed_mail_inbox_triage',
+            name: 'Posteingang sichten (Starter)',
+            kind: 'prompt',
+            roleId: 'correspondence-writer',
+            taskId: 'email-inbox-triage',
+            modelId: 'chatgpt',
+            parameterValues: {
+                goal: 'Sichte alle Mails: gruppiere nach Thema, markiere Dringlichkeit (P0/P1/P2/P3), wer antworten sollte, und was ignoriert/archiviert werden kann.',
+                writingLanguage: 'de',
+                incomingMessage:
+                    '[Hier alle Mails / Threads einfügen — bei personenbezogenen Daten vorher AI Sanitizer nutzen]',
+            },
+            sections: {},
+            sectionOverrides: {},
+            tags: ['seed', 'mail', 'triage'],
+            savedAt: now,
+        },
+        {
+            id: 'seed_mail_top_problems',
+            name: 'Top-Probleme aus Mails (Starter)',
+            kind: 'prompt',
+            roleId: 'correspondence-writer',
+            taskId: 'email-top-problems',
+            modelId: 'chatgpt',
+            parameterValues: {
+                goal: 'Leite die Top 3 Probleme aus den Mails ab. Pro Problem: Kurzbeschreibung, Belege, Impact, nächster Schritt.',
+                writingLanguage: 'de',
+                incomingMessage: '[Mail-Stapel einfügen]',
+            },
+            sections: {},
+            sectionOverrides: {},
+            tags: ['seed', 'mail', 'problems'],
+            savedAt: now,
+        },
+        {
+            id: 'seed_mail_action_items',
+            name: 'To-dos aus Mails (Starter)',
+            kind: 'prompt',
+            roleId: 'correspondence-writer',
+            taskId: 'email-action-items',
+            modelId: 'chatgpt',
+            parameterValues: {
+                goal: 'Extrahiere alle Action Items: Aufgabe | Owner | Frist | Quelle | Priorität.',
+                writingLanguage: 'de',
+                incomingMessage: '[Mails einfügen]',
+            },
+            sections: {},
+            sectionOverrides: {},
+            tags: ['seed', 'mail', 'actions'],
+            savedAt: now,
+        },
+        {
+            id: 'seed_mail_status_digest',
+            name: 'Status-Digest Führung (Starter)',
+            kind: 'prompt',
+            roleId: 'correspondence-writer',
+            taskId: 'email-status-digest',
+            modelId: 'chatgpt',
+            parameterValues: {
+                goal: 'Status-Digest: Was läuft, was blockiert, was braucht Entscheidung, Risiken. Max. eine Seite.',
+                tone: 'concise',
+                writingLanguage: 'de',
+                messageLength: 'short',
+                incomingMessage: '[Relevante Mails der Woche einfügen]',
+            },
+            sections: {},
+            sectionOverrides: {},
+            tags: ['seed', 'mail', 'digest'],
+            savedAt: now,
+        },
+        {
+            id: 'seed_text_exec_brief',
+            name: 'Exec-Brief (Starter)',
+            kind: 'prompt',
+            roleId: 'technical-writer',
+            taskId: 'text-executive-brief',
+            modelId: 'chatgpt',
+            parameterValues: {
+                goal: 'Exec-Brief: Kontext in 2 Sätzen, Empfehlung, 3 Gründe, Risiken, benötigte Entscheidung.',
+                writingLanguage: 'de',
+                documents: '[Quelltext / Notizen einfügen]',
+            },
+            sections: {},
+            sectionOverrides: {},
+            tags: ['seed', 'writing', 'exec'],
+            savedAt: now,
+        },
+    ];
 }

@@ -26,7 +26,7 @@
 
         <x-accounts.flash />
 
-        <form method="post" action="{{ $action }}" class="sp-lock-form" style="max-width:40rem">
+        <form method="post" action="{{ $action }}" class="sp-lock-form" id="accounts-user-form" style="max-width:40rem">
             @csrf
             @if ($isEdit)
                 @method('PUT')
@@ -43,17 +43,54 @@
                 </label>
             </div>
 
-            <label class="sp-field">
-                <span data-i18n="{{ $isEdit ? 'accounts.newPasswordOptional' : 'accounts.password' }}">
-                    {{ $isEdit ? 'New password (optional)' : 'Password' }}
+            @if (! $isEdit)
+                <input type="hidden" name="generatePassword" value="0">
+                <label class="sp-check">
+                    <input type="checkbox" name="generatePassword" value="1" id="accounts-generate-password" @checked(old('generatePassword', '1') == '1' || old('generatePassword') === true || old('generatePassword') === 1 || old('generatePassword') === null)>
+                    <span data-i18n="accounts.generatePassword">Generate temporary password</span>
+                </label>
+                <input type="hidden" name="sendInvite" value="0">
+                <label class="sp-check">
+                    <input type="checkbox" name="sendInvite" value="1" id="accounts-send-invite" @checked(old('sendInvite', '1') == '1' || old('sendInvite') === true || old('sendInvite') === 1 || old('sendInvite') === null)>
+                    <span data-i18n="accounts.sendInvite">Send invitation email with password</span>
+                </label>
+                <input type="hidden" name="mustChangePassword" value="0">
+                <label class="sp-check">
+                    <input type="checkbox" name="mustChangePassword" value="1" @checked(old('mustChangePassword', '1') == '1' || old('mustChangePassword') === true || old('mustChangePassword') === 1 || old('mustChangePassword') === null)>
+                    <span data-i18n="accounts.mustChangePassword">Must change password on first login</span>
+                </label>
+                <p class="sp-field-hint" data-i18n="accounts.inviteHint">
+                    Default: generate a password, email it, and require a change after login.
+                </p>
+            @else
+                <input type="hidden" name="generatePassword" value="0">
+                <label class="sp-check">
+                    <input type="checkbox" name="generatePassword" value="1" id="accounts-generate-password" @checked((string) old('generatePassword', '0') === '1')>
+                    <span data-i18n="accounts.resetGeneratePassword">Reset with generated temporary password</span>
+                </label>
+                <input type="hidden" name="sendInvite" value="0">
+                <label class="sp-check">
+                    <input type="checkbox" name="sendInvite" value="1" id="accounts-send-invite" @checked((string) old('sendInvite', '0') === '1')>
+                    <span data-i18n="accounts.resendInvite">Email the new password to the user</span>
+                </label>
+                <input type="hidden" name="mustChangePassword" value="0">
+                <label class="sp-check">
+                    <input type="checkbox" name="mustChangePassword" value="1" @checked((string) old('mustChangePassword', ($user['mustChangePassword'] ?? false) ? '1' : '0') === '1')>
+                    <span data-i18n="accounts.mustChangePassword">Must change password on next login</span>
+                </label>
+            @endif
+
+            <label class="sp-field" id="accounts-password-field">
+                <span data-i18n="{{ $isEdit ? 'accounts.newPasswordOptional' : 'accounts.passwordManual' }}">
+                    {{ $isEdit ? 'New password (optional)' : 'Password (if not generated)' }}
                 </span>
                 <input
                     type="password"
                     name="password"
                     class="tools-input"
                     minlength="8"
-                    @if (! $isEdit) required @endif
-                    autocomplete="{{ $isEdit ? 'new-password' : 'new-password' }}"
+                    autocomplete="new-password"
+                    id="accounts-password-input"
                 >
             </label>
 
@@ -99,7 +136,9 @@
 
             <div class="sp-action-row">
                 <a href="{{ locale_route('accounts.users') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
-                <button type="submit" class="tools-btn tools-btn--primary" data-i18n="accounts.save">Save</button>
+                <button type="submit" class="tools-btn tools-btn--primary" data-i18n="{{ $isEdit ? 'accounts.save' : 'accounts.addUserSubmit' }}">
+                    {{ $isEdit ? 'Save' : 'Add user' }}
+                </button>
             </div>
         </form>
 
@@ -117,4 +156,22 @@
             </form>
         @endif
     </div>
+
+    <script>
+        (function () {
+            const generate = document.getElementById('accounts-generate-password');
+            const passwordInput = document.getElementById('accounts-password-input');
+            const passwordField = document.getElementById('accounts-password-field');
+            if (!generate || !passwordInput || !passwordField) return;
+
+            const sync = () => {
+                const on = generate.checked;
+                passwordField.hidden = on;
+                passwordInput.required = !on && {{ $isEdit ? 'false' : 'true' }};
+                if (on) passwordInput.value = '';
+            };
+            generate.addEventListener('change', sync);
+            sync();
+        })();
+    </script>
 @endsection

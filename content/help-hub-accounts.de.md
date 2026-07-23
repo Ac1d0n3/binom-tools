@@ -63,6 +63,17 @@ Passwort setzen (Benutzer muss bereits in `users.json` existieren):
 php artisan bn-tools:user-password you@example.com
 ```
 
+## Leute einladen (Benutzer hinzufügen)
+
+Unter **Konto → Benutzer → Benutzer hinzufügen** kannst du jemanden schnell anlegen:
+
+1. E-Mail + Anzeigename (optional: Teams, Avatar).
+2. Standard: **temporäres Passwort erzeugen**, **Einladung per E-Mail**, **Passwortwechsel beim ersten Login**.
+3. Die Person bekommt Login-URL, E-Mail und temporäres Passwort.
+4. Nach dem Login muss unter `/account` zuerst ein neues Passwort gesetzt werden.
+
+SMTP in `.env` konfigurieren (`MAIL_MAILER`, `MAIL_HOST`, …). Mit `MAIL_MAILER=log` landet die Einladung im Laravel-Log (lokal praktisch). Schlägt der Versand fehl, zeigt die UI das temporäre Passwort einmal zum Kopieren.
+
 ## Benutzer-Flags
 
 | Feld | Bedeutung |
@@ -71,6 +82,7 @@ php artisan bn-tools:user-password you@example.com
 | `canManageUsers` | Benutzer verwalten, Story-ACL, User-Templates anderer |
 | `canManageTeams` | Teams verwalten |
 | `teamIds` | Zugehörigkeit zu Teams (für ACL und Plan-Viewer) |
+| `mustChangePassword` | Muss Passwort ändern, bevor Tools genutzt werden |
 
 Verwaltung in der UI unter Account → Users / Teams (nur mit Manage-Rechten): kompakte Listen unter `/account/users` und `/account/teams`, mit eigenen Create-/Edit-Seiten. Team-`memberIds` und User-`teamIds` bleiben synchron. Optionale `shortName` / `colorToken` / `avatarIcon` steuern Chips im Sprint Planner. Nutzer können Avatar-Farbe und Icon auch unter **Konto** selbst setzen (`BINOM_TOOLS_ACCOUNTS_PROFILE_AVATAR_ENABLED`, Default an).
 

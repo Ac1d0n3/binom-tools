@@ -2,12 +2,17 @@ import { describe, it, expect } from 'vitest';
 import { renderTemplate, buildPrompt, formatForModel } from './prompt-builder.js';
 
 describe('prompt-builder', () => {
-    it('renders variables and conditionals', () => {
-        const result = renderTemplate('Hello {{name}}{{#if extra}} - {{extra}}{{/if}}', {
-            name: 'World',
-            extra: '',
-        });
-        expect(result).toBe('Hello World');
+    it('renders equality conditionals', () => {
+        expect(
+            renderTemplate('A{{#if imageFormat==svg}} SVG{{/if}}{{#if imageFormat==png}} PNG{{/if}}', {
+                imageFormat: 'svg',
+            }),
+        ).toBe('A SVG');
+        expect(
+            renderTemplate('{{#if imageFormat==svg}}yes{{/if}}', {
+                imageFormat: 'png',
+            }),
+        ).toBe('');
     });
 
     it('compiles template sections for model output', () => {

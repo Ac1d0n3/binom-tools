@@ -35,6 +35,19 @@ import { getUiMode, setUiMode, applyUiModeClasses, splitParametersForMode, isTec
 import { saveToSanitizer, loadPromptBridge } from '../prompt-shared/prompt-bridge-storage.js';
 import { copyFromButton } from '../pii-shared/tool-utils.js';
 import { buildMarkdownDocument, downloadTextFile, markdownFilename, normalizeOutputKind, getTaskOutputKind } from './md-export.js';
+import {
+    getStudioArea,
+    setStudioArea,
+    normalizeStudioArea,
+    outputKindForArea,
+    areaForOutputKind,
+} from './studio-area.js';
+import {
+    getLimitKindForTask,
+    modelHasPlans,
+    normalizeModelPlan,
+    resolveCharLimit,
+} from './model-limits.js';
 import { ensureStarterTemplates } from './seed-library.js';
 import {
     fetchLibraryBundle,
@@ -80,12 +93,21 @@ const taskHelp = document.getElementById('ps-task-help');
 const workflowSuggestion = document.getElementById('ps-workflow-suggestion');
 const libraryDrawer = /** @type {HTMLDetailsElement | null} */ (document.getElementById('ps-library-drawer'));
 const helpDrawer = /** @type {HTMLDetailsElement | null} */ (document.getElementById('ps-help-drawer'));
+const helpAccordion = document.getElementById('ps-help-accordion');
 const previewToggleBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-preview-toggle'));
 const previewCollapseBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-preview-collapse-btn'));
 const previewReopenBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-preview-reopen-btn'));
 const downloadMdBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-download-md-btn'));
 const outputKindBadge = document.getElementById('ps-output-kind-badge');
+const selectionSummary = document.getElementById('ps-selection-summary');
+const selectionTitle = document.getElementById('ps-selection-title');
+const selectionMeta = document.getElementById('ps-selection-meta');
+const emptyPick = document.getElementById('ps-empty-pick');
+const targetAi = document.getElementById('ps-target-ai');
+const modelPlanBox = document.getElementById('ps-model-plan');
+const limitHint = document.getElementById('ps-limit-hint');
 const templateKindFilter = /** @type {HTMLSelectElement | null} */ (document.getElementById('ps-template-kind-filter'));
+const categoryFilter = /** @type {HTMLSelectElement | null} */ (document.getElementById('ps-category-filter'));
 const addRoleBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-add-role-btn'));
 const saveWorkflowLibraryBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('ps-save-workflow-btn'));
 const variantsEnabled = /** @type {HTMLInputElement} */ (document.getElementById('ps-variants-enabled'));
@@ -204,14 +226,18 @@ function kindLabelKey(kind) {
 
 function syncKindUi() {
     const draft = stateManager?.getDraft();
+    const area = getStudioArea();
+    const areaKind = outputKindForArea(area);
     const task = draft?.taskId ? config?.tasks.find((t) => t.id === draft.taskId) : null;
-    const kind = task ? getTaskOutputKind(task) : normalizeOutputKind(draft?.kind);
+    const taskKind = task ? getTaskOutputKind(task) : null;
+    // Prefer task kind when selected; otherwise follow the active studio area.
+    const kind = taskKind ?? areaKind;
     if (draft && draft.kind !== kind) {
         stateManager?.patchDraft({ kind }, { recordHistory: false, persist: true, notify: false });
     }
     if (downloadMdBtn) downloadMdBtn.hidden = kind === 'prompt';
     if (outputKindBadge) {
-        if (!draft?.taskId) {
+        if (!draft?.taskId && area === 'prompt') {
             outputKindBadge.hidden = true;
             outputKindBadge.textContent = '';
             return;
@@ -225,12 +251,163 @@ function syncKindUi() {
     }
 }
 
+function syncAreaUi() {
+    const area = getStudioArea();
+    document.getElementById('prompt-studio-app')?.setAttribute('data-ps-studio-area', area);
+    document.querySelectorAll('.prompt-studio__area-btn[data-ps-area]').forEach((btn) => {
+        const id = btn.getAttribute('data-ps-area');
+        const active = id === area;
+        btn.classList.toggle('prompt-studio__area-btn--active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    // Show only the active area help panel; Builder/Workflows stay available for every area.
+    document.querySelectorAll('#ps-help-accordion [data-ps-help-item]').forEach((panel) => {
+        const id = panel.getAttribute('data-ps-help-item');
+        const isAreaPanel = id === 'prompt' || id === 'rule' || id === 'agent';
+        const el = /** @type {HTMLDetailsElement} */ (panel);
+        if (isAreaPanel) {
+            el.hidden = id !== area;
+            el.open = id === area;
+            return;
+        }
+        el.hidden = false;
+        el.open = false;
+    });
+
+    const builderLead = document.querySelector('.prompt-studio__builder-heading [data-i18n="promptStudio.builder.lead"]');
+    if (builderLead) {
+        builderLead.textContent = tr(`promptStudio.builder.lead.${area}`);
+    }
+    if (emptyPick) {
+        emptyPick.textContent = tr(`promptStudio.empty.pick.${area}`);
+    }
+
+    // Hide category filter in rule/agent areas (short curated lists).
+    const tab = workspaceManager?.activeTab;
+    if (categoryFilter) {
+        const showCategory = area === 'prompt' && (tab === 'library' || tab === 'workflows');
+        categoryFilter.hidden = !showCategory;
+        if (!showCategory && categoryFilter.value !== 'all') {
+            categoryFilter.value = 'all';
+            workspaceManager?.setCategoryFilter('all');
+        }
+    }
+}
+
 function syncLibraryTabChrome() {
     const tab = workspaceManager?.activeTab;
-    // Kind filter applies to Aufgaben and saved templates — not to workflows/roles.
-    if (templateKindFilter) templateKindFilter.hidden = tab !== 'library' && tab !== 'templates';
-    if (addRoleBtn) addRoleBtn.hidden = tab !== 'roles';
+    const area = getStudioArea();
+    if (categoryFilter) {
+        categoryFilter.hidden = area !== 'prompt' || (tab !== 'library' && tab !== 'workflows');
+    }
+    if (templateKindFilter) templateKindFilter.hidden = tab !== 'templates';
+    if (addRoleBtn) addRoleBtn.hidden = tab !== 'roles' || !isTechMode();
     if (saveWorkflowLibraryBtn) saveWorkflowLibraryBtn.hidden = tab !== 'workflows';
+}
+
+/**
+ * Switch studio area; clear selection if the current task does not belong here.
+ * @param {import('./studio-area.js').StudioArea} area
+ */
+function applyStudioArea(area) {
+    const next = setStudioArea(area);
+    const kind = outputKindForArea(next);
+    const draft = stateManager?.getDraft();
+    const task = draft?.taskId ? config?.tasks.find((t) => t.id === draft.taskId) : null;
+    if (task && getTaskOutputKind(task) !== kind) {
+        chainManager?.clear();
+        stateManager?.patchDraft(
+            { roleId: '', taskId: '', kind, parameterValues: {}, sections: {}, sectionOverrides: {} },
+            { recordHistory: false, persist: true, notify: false },
+        );
+    } else if (stateManager) {
+        stateManager.patchDraft({ kind }, { recordHistory: false, persist: true, notify: false });
+    }
+    workspaceManager?.setTab('library');
+    document.querySelectorAll('[data-ps-tab]').forEach((b) => b.classList.remove('prompt-studio__tab--active'));
+    document.querySelector('[data-ps-tab="library"]')?.classList.add('prompt-studio__tab--active');
+    syncAreaUi();
+    renderAll();
+}
+
+function syncSelectionSummary() {
+    if (!stateManager || !config || !app) return;
+    const draft = stateManager.getDraft();
+    const hasSelection = Boolean(draft.taskId);
+    const tech = isTechMode();
+
+    app.classList.toggle('prompt-studio--has-selection', hasSelection);
+
+    if (emptyPick) emptyPick.hidden = tech || hasSelection;
+    if (selectionSummary) selectionSummary.hidden = tech || !hasSelection;
+    if (targetAi) targetAi.hidden = !hasSelection && !tech;
+
+    if (!hasSelection || tech) {
+        if (selectionTitle) selectionTitle.textContent = '';
+        if (selectionMeta) selectionMeta.textContent = '';
+        if (!hasSelection) {
+            syncTargetAiUi();
+            return;
+        }
+    }
+
+    if (hasSelection && !tech) {
+        const task = config.tasks.find((t) => t.id === draft.taskId);
+        const role = workspaceManager?.getAllRoles().find((r) => r.id === draft.roleId)
+            ?? config.roles.find((r) => r.id === draft.roleId);
+        const locale = currentLocale();
+        const taskLabel = resolveLocalizedLabel(task?.label, locale, draft.taskId);
+        const roleLabel = resolveLocalizedLabel(role?.label, locale, draft.roleId);
+        const kind = getTaskOutputKind(task);
+        const kindLabel = tr(kindLabelKey(kind));
+
+        if (selectionTitle) selectionTitle.textContent = taskLabel;
+        if (selectionMeta) {
+            const parts = [kindLabel];
+            if (roleLabel) parts.push(roleLabel);
+            if (chainManager?.isOpen) parts.push(tr('promptStudio.badge.workflow'));
+            selectionMeta.textContent = parts.join(' · ');
+        }
+    }
+
+    syncTargetAiUi();
+}
+
+function syncTargetAiUi() {
+    if (!stateManager || !config) return;
+    const draft = stateManager.getDraft();
+    const model = config.models.find((m) => m.id === draft.modelId);
+    const hasPlans = modelHasPlans(model);
+    const plan = normalizeModelPlan(draft.modelPlan ?? model?.defaultPlan);
+    const limit = resolveCharLimit({ model, plan, taskId: draft.taskId });
+    const limitKind = getLimitKindForTask(draft.taskId);
+
+    if (modelPlanBox) {
+        modelPlanBox.hidden = !hasPlans;
+        modelPlanBox.querySelectorAll('[data-ps-plan]').forEach((btn) => {
+            const id = btn.getAttribute('data-ps-plan');
+            btn.classList.toggle('prompt-studio__plan-btn--active', id === plan);
+        });
+    }
+
+    if (limitHint) {
+        if (!draft.taskId || limit == null) {
+            limitHint.hidden = true;
+            limitHint.textContent = '';
+        } else {
+            limitHint.hidden = false;
+            const kindKey =
+                limitKind === 'lyrics'
+                    ? 'promptStudio.limit.lyrics'
+                    : limitKind === 'style'
+                      ? 'promptStudio.limit.style'
+                      : 'promptStudio.limit.default';
+            limitHint.textContent = tr(kindKey, {
+                limit,
+                plan: hasPlans ? tr(plan === 'paid' ? 'promptStudio.modelPlan.paid' : 'promptStudio.modelPlan.free') : '',
+            });
+        }
+    }
 }
 
 async function syncLibraryToAccount() {
@@ -470,7 +647,20 @@ function renderPreview() {
         sectionsRoot.hidden = !isTechMode();
     }
 
-    if (charCount) charCount.textContent = tr('promptStudio.charCount', { count: compiled.length });
+    if (charCount) {
+        const model = config?.models.find((m) => m.id === draft.modelId);
+        const plan = normalizeModelPlan(draft.modelPlan ?? model?.defaultPlan);
+        const limit = resolveCharLimit({ model, plan, taskId: draft.taskId });
+        const count = compiled.length;
+        if (limit != null) {
+            charCount.textContent = tr('promptStudio.charCount.limit', { count, limit });
+            charCount.classList.toggle('is-over', count > limit);
+            charCount.classList.toggle('is-warn', count > limit * 0.9 && count <= limit);
+        } else {
+            charCount.textContent = tr('promptStudio.charCount', { count });
+            charCount.classList.remove('is-over', 'is-warn');
+        }
+    }
 
     if (piiPreview) {
         piiScanner.scan(compiled);
@@ -580,8 +770,10 @@ function renderModeToggle() {
 
 function renderAll() {
     renderModeToggle();
+    syncAreaUi();
     applyPreviewVisibility();
     syncKindUi();
+    syncSelectionSummary();
     renderBuilder();
     renderVariantsPanel();
     renderPreview();
@@ -620,12 +812,35 @@ function handleBridgeReturn() {
 }
 
 function bindEvents() {
+    document.querySelectorAll('.prompt-studio__area-btn[data-ps-area]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const area = normalizeStudioArea(btn.getAttribute('data-ps-area'));
+            applyStudioArea(area);
+        });
+    });
+
+    // Exclusive accordion: only one help panel open at a time (keeps drawer height stable).
+    helpAccordion?.querySelectorAll(':scope > details[data-ps-help-item]').forEach((item) => {
+        item.addEventListener('toggle', () => {
+            if (!(/** @type {HTMLDetailsElement} */ (item).open) || !helpAccordion) return;
+            helpAccordion.querySelectorAll(':scope > details[data-ps-help-item]').forEach((other) => {
+                if (other !== item) /** @type {HTMLDetailsElement} */ (other).open = false;
+            });
+        });
+    });
+
     document.querySelectorAll('[data-ps-mode]').forEach((btn) => {
         btn.addEventListener('click', () => {
             const mode = btn.getAttribute('data-ps-mode');
             if (mode === 'regular' || mode === 'tech') {
                 setUiMode(mode);
                 applyUiModeClasses(app);
+                // Roles tab is tech-only — leave it when switching to regular.
+                if (mode === 'regular' && workspaceManager?.activeTab === 'roles') {
+                    workspaceManager.setTab('library');
+                    document.querySelectorAll('[data-ps-tab]').forEach((b) => b.classList.remove('prompt-studio__tab--active'));
+                    document.querySelector('[data-ps-tab="library"]')?.classList.add('prompt-studio__tab--active');
+                }
                 renderAll();
             }
         });
@@ -656,6 +871,12 @@ function bindEvents() {
         renderWorkspace();
     });
 
+    categoryFilter?.addEventListener('change', () => {
+        const value = categoryFilter.value === 'all' ? 'all' : categoryFilter.value;
+        workspaceManager?.setCategoryFilter(/** @type {import('./categories.js').PromptCategory | 'all'} */ (value));
+        renderWorkspace();
+    });
+
     addRoleBtn?.addEventListener('click', () => {
         const name = window.prompt(tr('promptStudio.roles.addPrompt'), '');
         if (!name || !workspaceManager) return;
@@ -682,7 +903,18 @@ function bindEvents() {
         renderAll();
     });
 
-    modelSelect?.addEventListener('change', () => stateManager?.setModel(modelSelect.value));
+    modelSelect?.addEventListener('change', () => {
+        stateManager?.setModel(modelSelect.value);
+        renderAll();
+    });
+
+    document.querySelectorAll('[data-ps-plan]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const plan = normalizeModelPlan(btn.getAttribute('data-ps-plan'));
+            stateManager?.setModelPlan(plan);
+            renderAll();
+        });
+    });
 
     document.querySelectorAll('[data-ps-tab]').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -740,16 +972,23 @@ function bindEvents() {
         if (itemId.startsWith('task:') && taskId && roleId) {
             // Single task from library — leave any open workflow so the prompt stays standalone.
             chainManager?.clear();
+            const task = config.tasks.find((t) => t.id === taskId);
+            if (task) setStudioArea(areaForOutputKind(getTaskOutputKind(task)));
             stateManager.setRoleAndTask(roleId, taskId);
             applySongForbiddenDefaults();
             renderAll();
         } else if (itemId.startsWith('user:')) {
             const tplId = itemId.replace('user:', '');
             const tpl = templateStore?.getById(tplId);
-            if (tpl?.draft) stateManager.loadDraft(tpl.draft);
+            if (tpl?.draft) {
+                if (tpl.draft.kind) setStudioArea(areaForOutputKind(normalizeOutputKind(tpl.draft.kind)));
+                stateManager.loadDraft(tpl.draft);
+            }
             renderAll();
         } else if (itemId.startsWith('recent:')) {
             if (roleId && taskId) {
+                const task = config.tasks.find((t) => t.id === taskId);
+                if (task) setStudioArea(areaForOutputKind(getTaskOutputKind(task)));
                 stateManager.setRoleAndTask(roleId, taskId);
                 applySongForbiddenDefaults();
                 renderAll();
@@ -1103,6 +1342,7 @@ async function init() {
     applyHowtoLabels(locale);
     applyUiModeClasses(app);
     setUiMode(getUiMode());
+    setStudioArea(getStudioArea());
 
     if (libraryDrawer) libraryDrawer.open = isLibraryDrawerOpen();
     if (helpDrawer) helpDrawer.open = false;

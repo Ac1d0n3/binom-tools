@@ -42,6 +42,9 @@ export const TECH_ONLY_PARAMETER_IDS = new Set([
 
 const REGULAR_PRIMARY_LIMIT = 4;
 
+/** Image params that stay visible in Regular mode (format / colors / style). */
+const IMAGE_REGULAR_PRIMARY_IDS = new Set(['motiv', 'aspectRatio', 'style', 'colors', 'composition']);
+
 /**
  * @param {PromptParameterDef[]} parameters
  * @param {{ chainOpen?: boolean, taskId?: string }} [options]
@@ -60,7 +63,9 @@ export function splitParametersForMode(parameters, options = {}) {
     const advanced = [];
 
     for (const def of parameters) {
-        const forcePrimary = def.id === 'documents' && documentPrimaryTasks.has(options.taskId ?? '');
+        const forcePrimary =
+            (def.id === 'documents' && documentPrimaryTasks.has(options.taskId ?? '')) ||
+            IMAGE_REGULAR_PRIMARY_IDS.has(def.id);
 
         const isTechOnly =
             !forcePrimary &&
@@ -74,7 +79,7 @@ export function splitParametersForMode(parameters, options = {}) {
             continue;
         }
 
-        if (def.required || primary.length < REGULAR_PRIMARY_LIMIT) {
+        if (forcePrimary || def.required || primary.length < REGULAR_PRIMARY_LIMIT) {
             primary.push(def);
         } else {
             advanced.push(def);

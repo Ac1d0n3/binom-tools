@@ -233,7 +233,14 @@
         { "value": "minimalist", "label": { "de": "Minimalistisch", "en": "Minimalist" } },
         { "value": "illustration", "label": { "de": "Illustration", "en": "Illustration" } },
         { "value": "3d-render", "label": { "de": "3D-Render", "en": "3D render" } },
-        { "value": "flat-design", "label": { "de": "Flat Design", "en": "Flat design" } }
+        { "value": "flat-design", "label": { "de": "Flat Design", "en": "Flat design" } },
+        { "value": "comic", "label": { "de": "Comic", "en": "Comic" } },
+        { "value": "anime", "label": { "de": "Anime", "en": "Anime" } },
+        { "value": "watercolor", "label": { "de": "Aquarell", "en": "Watercolor" } },
+        { "value": "vector", "label": { "de": "Vektor", "en": "Vector" } },
+        { "value": "editorial", "label": { "de": "Editorial", "en": "Editorial" } },
+        { "value": "line-art", "label": { "de": "Line Art", "en": "Line art" } },
+        { "value": "pixel-art", "label": { "de": "Pixel Art", "en": "Pixel art" } }
       ]
     },
     {
@@ -247,7 +254,13 @@
         { "value": "monochrome", "label": { "de": "Monochrom", "en": "Monochrome" } },
         { "value": "warm", "label": { "de": "Warm", "en": "Warm" } },
         { "value": "cool", "label": { "de": "Kühl", "en": "Cool" } },
-        { "value": "high-contrast", "label": { "de": "Hoher Kontrast", "en": "High contrast" } }
+        { "value": "high-contrast", "label": { "de": "Hoher Kontrast", "en": "High contrast" } },
+        { "value": "pastel", "label": { "de": "Pastell", "en": "Pastel" } },
+        { "value": "neon", "label": { "de": "Neon", "en": "Neon" } },
+        { "value": "earth-tones", "label": { "de": "Erdtöne", "en": "Earth tones" } },
+        { "value": "complementary", "label": { "de": "Komplementär", "en": "Complementary" } },
+        { "value": "muted", "label": { "de": "Gedämpft", "en": "Muted" } },
+        { "value": "black-and-white", "label": { "de": "Schwarz-Weiß", "en": "Black and white" } }
       ]
     },
     {
@@ -256,13 +269,44 @@
       "group": "image",
       "label": { "de": "Seitenverhältnis", "en": "Aspect ratio" },
       "options": [
-        { "value": "1:1", "label": { "de": "1:1 (Quadrat)", "en": "1:1 (Square)" } },
-        { "value": "16:9", "label": { "de": "16:9 (Landscape)", "en": "16:9 (Landscape)" } },
-        { "value": "9:16", "label": { "de": "9:16 (Portrait)", "en": "9:16 (Portrait)" } },
-        { "value": "4:3", "label": { "de": "4:3", "en": "4:3" } },
-        { "value": "3:2", "label": { "de": "3:2", "en": "3:2" } }
+        { "value": "16:9", "label": { "de": "16:9 Landscape", "en": "16:9 Landscape" } },
+        { "value": "16:10", "label": { "de": "16:10 Landscape", "en": "16:10 Landscape" } },
+        { "value": "3:2", "label": { "de": "3:2 Landscape", "en": "3:2 Landscape" } },
+        { "value": "4:3", "label": { "de": "4:3 Landscape", "en": "4:3 Landscape" } },
+        { "value": "1:1", "label": { "de": "1:1 Square", "en": "1:1 Square" } },
+        { "value": "2:3", "label": { "de": "2:3 Portrait", "en": "2:3 Portrait" } },
+        { "value": "9:16", "label": { "de": "9:16 Portrait", "en": "9:16 Portrait" } }
       ],
       "default": "16:9"
+    },
+    {
+      "id": "composition",
+      "type": "chips",
+      "group": "image",
+      "label": { "de": "Komposition", "en": "Composition" },
+      "placeholder": { "de": "Komposition hinzufügen…", "en": "Add composition…" },
+      "suggestions": [
+        { "value": "rule-of-thirds", "label": { "de": "Drittelregel", "en": "Rule of thirds" } },
+        { "value": "centered", "label": { "de": "Zentriert", "en": "Centered" } },
+        { "value": "close-up", "label": { "de": "Nahaufnahme", "en": "Close-up" } },
+        { "value": "wide-shot", "label": { "de": "Weitwinkel", "en": "Wide shot" } },
+        { "value": "negative-space", "label": { "de": "Negativraum", "en": "Negative space" } },
+        { "value": "symmetry", "label": { "de": "Symmetrie", "en": "Symmetry" } },
+        { "value": "overhead", "label": { "de": "Aufsicht", "en": "Overhead" } }
+      ]
+    },
+    {
+      "id": "textInImage",
+      "type": "select",
+      "group": "image",
+      "label": { "de": "Text im Bild", "en": "Text in image" },
+      "options": [
+        { "value": "none", "label": { "de": "Kein Text", "en": "No text" } },
+        { "value": "title-only", "label": { "de": "Nur Titel", "en": "Title only" } },
+        { "value": "title-and-subtitle", "label": { "de": "Titel + Untertitel", "en": "Title and subtitle" } },
+        { "value": "logo-wordmark", "label": { "de": "Wortmarke / Logo-Text", "en": "Wordmark / logo text" } }
+      ],
+      "default": "none"
     },
     {
       "id": "size",
@@ -358,7 +402,13 @@
       "group": "business",
       "label": { "de": "Ausgabeformat", "en": "Output format" },
       "options": [
+        { "value": "", "label": { "de": "— beliebig / wie passend", "en": "— any / as appropriate" } },
         { "value": "markdown", "label": { "de": "Text / Markdown", "en": "Text / Markdown" } },
+        { "value": "json", "label": { "de": "JSON", "en": "JSON" } },
+        { "value": "csv", "label": { "de": "CSV", "en": "CSV" } },
+        { "value": "tsv", "label": { "de": "TSV", "en": "TSV" } },
+        { "value": "yaml", "label": { "de": "YAML", "en": "YAML" } },
+        { "value": "html", "label": { "de": "HTML", "en": "HTML" } },
         { "value": "pdf", "label": { "de": "PDF", "en": "PDF" } },
         { "value": "word", "label": { "de": "Word", "en": "Word" } },
         { "value": "excel", "label": { "de": "Excel", "en": "Excel" } },
@@ -366,10 +416,49 @@
         { "value": "image", "label": { "de": "Bild", "en": "Image" } },
         { "value": "code", "label": { "de": "Code", "en": "Code" } }
       ],
-      "default": "markdown",
+      "default": "",
       "help": {
-        "de": "In welchem Format soll die KI das Ergebnis liefern?",
-        "en": "In which format should the AI deliver the result?"
+        "de": "Optional. Z. B. Tabelle als JSON/CSV oder Dokument als Markdown.",
+        "en": "Optional. E.g. table as JSON/CSV or document as Markdown."
+      }
+    },
+    {
+      "id": "imageFormat",
+      "type": "select",
+      "group": "image",
+      "label": { "de": "Bildformat", "en": "Image format" },
+      "options": [
+        { "value": "", "label": { "de": "— beliebig", "en": "— any" } },
+        { "value": "png", "label": { "de": "PNG", "en": "PNG" } },
+        { "value": "svg", "label": { "de": "SVG (Vektor, thematisierbar)", "en": "SVG (vector, themeable)" } },
+        { "value": "webp", "label": { "de": "WebP", "en": "WebP" } },
+        { "value": "jpg", "label": { "de": "JPEG", "en": "JPEG" } },
+        { "value": "pdf", "label": { "de": "PDF (Druck)", "en": "PDF (print)" } }
+      ],
+      "default": "",
+      "help": {
+        "de": "Optional. Bei SVG: mehrfarbig mit CSS-Variablen (--svg-primary etc.), damit Themes später möglich sind.",
+        "en": "Optional. For SVG: multi-color with CSS variables (--svg-primary etc.) so themes can be applied later."
+      }
+    },
+    {
+      "id": "videoFormat",
+      "type": "select",
+      "group": "video",
+      "label": { "de": "Video-Ausgabe", "en": "Video deliverable" },
+      "options": [
+        { "value": "", "label": { "de": "— beliebig", "en": "— any" } },
+        { "value": "script", "label": { "de": "Drehbuch / Script (Markdown)", "en": "Script (Markdown)" } },
+        { "value": "storyboard", "label": { "de": "Storyboard", "en": "Storyboard" } },
+        { "value": "shot-list", "label": { "de": "Shot-Liste (Markdown)", "en": "Shot list (Markdown)" } },
+        { "value": "shot-list-csv", "label": { "de": "Shot-Liste (CSV)", "en": "Shot list (CSV)" } },
+        { "value": "shot-list-json", "label": { "de": "Shot-Liste (JSON)", "en": "Shot list (JSON)" } },
+        { "value": "prompts", "label": { "de": "KI-Video-Prompts", "en": "AI video prompts" } }
+      ],
+      "default": "",
+      "help": {
+        "de": "Optional. Wie die Video-Aufgabe ausgegeben werden soll.",
+        "en": "Optional. How the video task should be delivered."
       }
     },
     {
@@ -415,6 +504,145 @@
       "group": "image",
       "label": { "de": "Künstlername", "en": "Artist name" },
       "placeholder": { "de": "Optional auf dem Cover anzeigen", "en": "Optional text on the cover" }
+    },
+    {
+      "id": "incomingMessage",
+      "type": "textarea",
+      "group": "mail",
+      "label": { "de": "Eingehende Nachricht / E-Mail", "en": "Incoming message / email" },
+      "placeholder": {
+        "de": "Originalmail oder Nachricht hier einfügen (inkl. Absender, Betreff, Text)…",
+        "en": "Paste the original email or message here (sender, subject, body)…"
+      },
+      "help": {
+        "de": "Enthält oft Namen, E-Mails oder Telefonnummern. Vor dem Senden an externe KIs den AI Sanitizer nutzen.",
+        "en": "Often contains names, emails, or phone numbers. Use the AI Sanitizer before sending to external models."
+      },
+      "required": false
+    },
+    {
+      "id": "recipient",
+      "type": "text",
+      "group": "mail",
+      "label": { "de": "Empfänger / Anrede", "en": "Recipient / salutation" },
+      "placeholder": {
+        "de": "z. B. Frau Müller, Team Sales, Dear Alex",
+        "en": "e.g. Ms. Müller, Sales team, Dear Alex"
+      },
+      "help": {
+        "de": "Bei echten Namen lieber Platzhalter wie [NAME] — oder Sanitizer nutzen.",
+        "en": "Prefer placeholders like [NAME] for real names — or use the Sanitizer."
+      }
+    },
+    {
+      "id": "tone",
+      "type": "select",
+      "group": "mail",
+      "label": { "de": "Ton", "en": "Tone" },
+      "options": [
+        { "value": "formal", "label": { "de": "Formell", "en": "Formal" } },
+        { "value": "friendly", "label": { "de": "Freundlich", "en": "Friendly" } },
+        { "value": "concise", "label": { "de": "Knapp / klar", "en": "Concise" } },
+        { "value": "empathetic", "label": { "de": "Einfühlsam", "en": "Empathetic" } },
+        { "value": "assertive", "label": { "de": "Bestimmt", "en": "Assertive" } }
+      ],
+      "default": "friendly"
+    },
+    {
+      "id": "writingLanguage",
+      "type": "select",
+      "group": "mail",
+      "label": { "de": "Sprache der Nachricht", "en": "Message language" },
+      "options": [
+        { "value": "de", "label": { "de": "Deutsch", "en": "German" } },
+        { "value": "en", "label": { "de": "Englisch", "en": "English" } },
+        { "value": "match", "label": { "de": "Wie eingehende Nachricht", "en": "Match incoming message" } }
+      ],
+      "default": "de"
+    },
+    {
+      "id": "messageLength",
+      "type": "select",
+      "group": "mail",
+      "label": { "de": "Länge", "en": "Length" },
+      "options": [
+        { "value": "short", "label": { "de": "Kurz", "en": "Short" } },
+        { "value": "medium", "label": { "de": "Mittel", "en": "Medium" } },
+        { "value": "long", "label": { "de": "Ausführlich", "en": "Long" } }
+      ],
+      "default": "medium"
+    },
+    {
+      "id": "occasion",
+      "type": "select",
+      "group": "personal",
+      "label": { "de": "Anlass", "en": "Occasion" },
+      "options": [
+        { "value": "birthday", "label": { "de": "Geburtstag", "en": "Birthday" } },
+        { "value": "anniversary", "label": { "de": "Jubiläum / Jahrestag", "en": "Anniversary" } },
+        { "value": "promotion", "label": { "de": "Beförderung / Erfolg", "en": "Promotion / success" } },
+        { "value": "wedding", "label": { "de": "Hochzeit", "en": "Wedding" } },
+        { "value": "new-job", "label": { "de": "Neuer Job", "en": "New job" } },
+        { "value": "new-baby", "label": { "de": "Geburt / Baby", "en": "New baby" } },
+        { "value": "holiday", "label": { "de": "Feiertag / Saison", "en": "Holiday / season" } },
+        { "value": "other", "label": { "de": "Sonstiges", "en": "Other" } }
+      ],
+      "default": "birthday"
+    },
+    {
+      "id": "relationship",
+      "type": "select",
+      "group": "personal",
+      "label": { "de": "Beziehung", "en": "Relationship" },
+      "options": [
+        { "value": "colleague", "label": { "de": "Kolleg:in", "en": "Colleague" } },
+        { "value": "manager", "label": { "de": "Vorgesetzte:r", "en": "Manager" } },
+        { "value": "client", "label": { "de": "Kunde / Partner", "en": "Client / partner" } },
+        { "value": "friend", "label": { "de": "Freund:in", "en": "Friend" } },
+        { "value": "family", "label": { "de": "Familie", "en": "Family" } },
+        { "value": "acquaintance", "label": { "de": "Bekanntschaft", "en": "Acquaintance" } }
+      ],
+      "default": "colleague"
+    },
+    {
+      "id": "playbookSlug",
+      "type": "text",
+      "group": "writing",
+      "label": { "de": "Slug / Dateiname", "en": "Slug / filename" },
+      "placeholder": {
+        "de": "z. B. ai-basics → ai-basics.en.md / ai-basics.de.md",
+        "en": "e.g. ai-basics → ai-basics.en.md / ai-basics.de.md"
+      },
+      "help": {
+        "de": "Ohne Locale und Endung. Bilder: images/playbooks/{slug}-hero.png und {slug}-imgN-en|de.png",
+        "en": "Without locale or extension. Images: images/playbooks/{slug}-hero.png and {slug}-imgN-en|de.png"
+      },
+      "required": true
+    },
+    {
+      "id": "diagramCount",
+      "type": "select",
+      "group": "writing",
+      "label": { "de": "Anzahl Diagramme", "en": "Diagram count" },
+      "options": [
+        { "value": "3", "label": { "de": "3", "en": "3" } },
+        { "value": "4", "label": { "de": "4", "en": "4" } },
+        { "value": "5", "label": { "de": "5", "en": "5" } },
+        { "value": "6", "label": { "de": "6", "en": "6" } },
+        { "value": "8", "label": { "de": "8", "en": "8" } }
+      ],
+      "default": "5"
+    },
+    {
+      "id": "translateDirection",
+      "type": "select",
+      "group": "writing",
+      "label": { "de": "Übersetzungsrichtung", "en": "Translation direction" },
+      "options": [
+        { "value": "en-to-de", "label": { "de": "Englisch → Deutsch", "en": "English → German" } },
+        { "value": "de-to-en", "label": { "de": "Deutsch → Englisch", "en": "German → English" } }
+      ],
+      "default": "en-to-de"
     },
     {
       "id": "previousOutput",

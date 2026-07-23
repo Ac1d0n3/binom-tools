@@ -1,0 +1,46 @@
+{
+  "id": "email-inbox-insights",
+  "label": {
+    "de": "Posteingang → Insights",
+    "en": "Inbox → insights"
+  },
+  "description": {
+    "de": "Mails sichten, Top-Probleme, dann To-dos — vorher Sanitizer bei PII",
+    "en": "Triage emails, top problems, then action items — sanitize PII first"
+  },
+  "steps": [
+    {
+      "id": "step-triage",
+      "label": { "de": "Sichten", "en": "Triage" },
+      "roleId": "correspondence-writer",
+      "taskId": "email-inbox-triage",
+      "notes": {
+        "de": "Gesamten Stapel priorisieren und gruppieren",
+        "en": "Prioritize and group the whole batch"
+      }
+    },
+    {
+      "id": "step-problems",
+      "label": { "de": "Top-Probleme", "en": "Top problems" },
+      "roleId": "correspondence-writer",
+      "taskId": "email-top-problems",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "Die 3 wichtigsten Probleme mit Impact",
+        "en": "Top 3 problems with impact"
+      }
+    },
+    {
+      "id": "step-actions",
+      "label": { "de": "To-dos", "en": "Actions" },
+      "roleId": "correspondence-writer",
+      "taskId": "email-action-items",
+      "passOutputAs": "previousOutput",
+      "notes": {
+        "de": "Umsetzbare Aufgabenliste ableiten",
+        "en": "Derive an actionable task list"
+      }
+    }
+  ],
+  "category": "mail"
+}

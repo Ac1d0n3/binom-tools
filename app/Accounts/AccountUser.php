@@ -23,6 +23,7 @@ final class AccountUser
         public readonly string $shortName = '',
         public readonly string $colorToken = 'accent-1',
         public readonly string $avatarIcon = '',
+        public readonly bool $mustChangePassword = false,
     ) {}
 
     /**
@@ -69,6 +70,7 @@ final class AccountUser
             shortName: ShortName::normalize($data['shortName'] ?? ''),
             colorToken: AccentColors::normalize($data['colorToken'] ?? null),
             avatarIcon: AvatarIcons::normalize($data['avatarIcon'] ?? null),
+            mustChangePassword: (bool) ($data['mustChangePassword'] ?? false),
         );
     }
 
@@ -89,6 +91,7 @@ final class AccountUser
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,
             'avatarIcon' => $this->avatarIcon,
+            'mustChangePassword' => $this->mustChangePassword,
         ];
     }
 
@@ -110,6 +113,7 @@ final class AccountUser
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,
             'avatarIcon' => $this->avatarIcon,
+            'mustChangePassword' => $this->mustChangePassword,
         ];
     }
 }

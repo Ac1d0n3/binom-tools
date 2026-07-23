@@ -1,6 +1,9 @@
 {
   "id": "document-analysis",
-  "label": { "de": "Dokument analysieren", "en": "Document analysis" },
+  "label": {
+    "de": "Dokument analysieren",
+    "en": "Document analysis"
+  },
   "description": {
     "de": "Zusammenfassung → Folgeaktion — gutes Prompt-Timing lernen",
     "en": "Summary → follow-up action — learn good prompt timing"
@@ -8,7 +11,10 @@
   "steps": [
     {
       "id": "step-summarize",
-      "label": { "de": "Zusammenfassung", "en": "Summary" },
+      "label": {
+        "de": "Zusammenfassung",
+        "en": "Summary"
+      },
       "roleId": "business-analyst",
       "taskId": "document-summarize",
       "notes": {
@@ -22,7 +28,10 @@
     },
     {
       "id": "step-follow-up",
-      "label": { "de": "Folgeaktion", "en": "Follow-up action" },
+      "label": {
+        "de": "Folgeaktion",
+        "en": "Follow-up action"
+      },
       "roleId": "business-analyst",
       "taskId": "document-follow-up",
       "passOutputAs": "previousOutput",
@@ -37,7 +46,10 @@
     },
     {
       "id": "step-export",
-      "label": { "de": "Export", "en": "Export" },
+      "label": {
+        "de": "Export",
+        "en": "Export"
+      },
       "roleId": "technical-writer",
       "taskId": "document-create",
       "passOutputAs": "previousOutput",
@@ -46,5 +58,6 @@
         "en": "Export the result as a document (PDF, Word …)."
       }
     }
-  ]
+  ],
+  "category": "writing"
 }

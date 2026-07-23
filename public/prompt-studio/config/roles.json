@@ -14,7 +14,36 @@
         "brainstorming",
         "document-create",
         "document-summarize",
-        "document-follow-up"
+        "document-follow-up",
+        "email-compose",
+        "email-reply",
+        "email-follow-up",
+        "email-decline",
+        "email-meeting",
+        "email-forward-summary",
+        "email-inbox-triage",
+        "email-inbox-summary",
+        "email-top-problems",
+        "email-action-items",
+        "email-priority-sort",
+        "email-thread-digest",
+        "email-status-digest",
+        "email-clarify",
+        "email-escalate",
+        "email-handoff",
+        "email-weekly-digest",
+        "thank-you",
+        "invitation",
+        "apology",
+        "text-bulletize",
+        "text-executive-brief",
+        "text-pros-cons",
+        "text-simplify",
+        "text-risks-open-questions",
+        "md-story-en",
+        "md-story-de",
+        "md-story-images",
+        "md-translate"
       ],
       "crossRoleTaskIds": [
         "hero",
@@ -47,7 +76,16 @@
         "analysis",
         "brainstorming",
         "workshop",
-        "document-create"
+        "document-create",
+        "md-story-en",
+        "md-story-de",
+        "md-story-images",
+        "md-translate",
+        "text-bulletize",
+        "text-executive-brief",
+        "text-pros-cons",
+        "text-simplify",
+        "text-risks-open-questions"
       ]
     },
     {
@@ -73,7 +111,30 @@
       "taskIds": [
         "analysis",
         "root-cause-analysis",
-        "document-create"
+        "document-create",
+        "email-compose",
+        "email-reply",
+        "email-follow-up",
+        "email-decline",
+        "email-meeting",
+        "email-forward-summary",
+        "email-inbox-triage",
+        "email-inbox-summary",
+        "email-top-problems",
+        "email-action-items",
+        "email-priority-sort",
+        "email-thread-digest",
+        "email-status-digest",
+        "email-clarify",
+        "email-escalate",
+        "email-complaint-reply",
+        "email-handoff",
+        "email-weekly-digest",
+        "email-batch-replies",
+        "thank-you",
+        "apology",
+        "text-rewrite-tone",
+        "text-risks-open-questions"
       ]
     },
     {
@@ -148,7 +209,13 @@
         "hero",
         "cover",
         "character",
-        "infographic"
+        "infographic",
+        "comic",
+        "product-shot",
+        "social-post",
+        "icon",
+        "md-story-images",
+        "youtube-brief"
       ]
     },
     {
@@ -164,7 +231,11 @@
         "diagram",
         "infographic",
         "logo",
-        "character"
+        "character",
+        "comic",
+        "product-shot",
+        "icon",
+        "social-post"
       ]
     },
     {
@@ -178,7 +249,11 @@
         "storyboard",
         "scenes",
         "camera",
-        "trailer"
+        "trailer",
+        "video-script",
+        "shot-list",
+        "youtube-brief",
+        "ai-video-prompts"
       ]
     },
     {
@@ -190,7 +265,61 @@
       "icon": "fa-book",
       "taskIds": [
         "document-create",
-        "analysis"
+        "analysis",
+        "email-compose",
+        "email-reply",
+        "email-forward-summary",
+        "email-thread-digest",
+        "congratulation",
+        "md-story-en",
+        "md-story-de",
+        "md-story-images",
+        "md-translate",
+        "text-bulletize",
+        "text-executive-brief",
+        "text-pros-cons",
+        "text-rewrite-tone",
+        "text-simplify",
+        "text-risks-open-questions"
+      ]
+    },
+    {
+      "id": "correspondence-writer",
+      "label": {
+        "de": "Korrespondenz",
+        "en": "Correspondence"
+      },
+      "icon": "fa-envelope",
+      "taskIds": [
+        "email-compose",
+        "email-reply",
+        "email-follow-up",
+        "email-decline",
+        "email-meeting",
+        "email-forward-summary",
+        "email-inbox-triage",
+        "email-inbox-summary",
+        "email-top-problems",
+        "email-action-items",
+        "email-priority-sort",
+        "email-thread-digest",
+        "email-status-digest",
+        "email-clarify",
+        "email-escalate",
+        "email-complaint-reply",
+        "email-handoff",
+        "email-weekly-digest",
+        "email-batch-replies",
+        "congratulation",
+        "thank-you",
+        "invitation",
+        "apology",
+        "condolence",
+        "greeting-card",
+        "text-bulletize",
+        "text-rewrite-tone",
+        "text-risks-open-questions",
+        "document-create"
       ]
     },
     {

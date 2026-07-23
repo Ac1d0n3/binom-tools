@@ -16,7 +16,10 @@
       "chains/business-visual.json",
       "chains/meeting-to-tasks.json",
       "chains/debug-investigate.json",
-      "chains/playbook-outline.json"
+      "chains/playbook-outline.json",
+      "chains/email-inbox-to-reply.json",
+      "chains/md-story-bilingual.json",
+      "chains/email-inbox-insights.json"
     ]
   }
 }

@@ -98,6 +98,9 @@ final class UserRepository
             'avatarIcon' => array_key_exists('avatarIcon', $input)
                 ? $input['avatarIcon']
                 : ($current?->avatarIcon ?? ''),
+            'mustChangePassword' => array_key_exists('mustChangePassword', $input)
+                ? (bool) $input['mustChangePassword']
+                : ($current?->mustChangePassword ?? false),
         ]);
 
         $users[$id] = $user;

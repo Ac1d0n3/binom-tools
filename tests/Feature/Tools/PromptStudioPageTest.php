@@ -23,9 +23,19 @@ class PromptStudioPageTest extends TestCase
         $response->assertSee('ps-output-kind-badge', false);
         $response->assertSee('data-ps-tab="library"', false);
         $response->assertSee('ps-preview-toggle', false);
-        $response->assertSee('ps-download-md-btn', false);
+        $response->assertSee('ps-model-select', false);
+        $response->assertSee('ps-model-plan', false);
+        $response->assertSee('data-ps-plan="free"', false);
         $response->assertSee('ps-help-drawer', false);
         $response->assertSee('ps-library-drawer', false);
+        $response->assertSee('ps-category-filter', false);
+        $response->assertSee('promptStudio.category.all', false);
+        $response->assertSee('data-ps-area="prompt"', false);
+        $response->assertSee('data-ps-area="rule"', false);
+        $response->assertSee('data-ps-area="agent"', false);
+        $response->assertSee('ps-help-accordion', false);
+        $response->assertSee('data-ps-help-item="rule"', false);
+        $response->assertSee('data-ps-help-item="builder"', false);
     }
 
     public function test_prompt_studio_config_manifest_is_public(): void

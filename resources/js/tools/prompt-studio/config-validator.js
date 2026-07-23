@@ -1,5 +1,7 @@
 /** @typedef {'de' | 'en'} ToolsLocale */
 
+import { normalizeCategory } from './categories.js';
+
 /**
  * @typedef {Object} PromptManifest
  * @property {number} version
@@ -24,6 +26,8 @@
  * @property {string} templateId
  * @property {string[]} [modelHints]
  * @property {import('./md-export.js').OutputKind} [outputKind]
+ * @property {import('./categories.js').PromptCategory} [category]
+ * @property {Record<string, unknown>} [parameterDefaults]
  */
 
 /**
@@ -44,6 +48,9 @@
  * @property {Record<ToolsLocale, string>} label
  * @property {string[]} sectionOrder
  * @property {Record<string, unknown>} [formatRules]
+ * @property {'free' | 'paid'} [defaultPlan]
+ * @property {Array<{ id: string, label?: Record<ToolsLocale, string> }>} [plans]
+ * @property {{ default?: number, style?: number, lyrics?: number | Record<string, number> }} [limits]
  */
 
 /**
@@ -57,6 +64,7 @@
  * @property {string} id
  * @property {Record<ToolsLocale, string>} label
  * @property {Array<{ roleId: string, taskId: string, label?: Record<ToolsLocale, string> }>} steps
+ * @property {import('./categories.js').PromptCategory} [category]
  */
 
 /**
@@ -213,7 +221,8 @@ export function validateTasks(raw) {
             issues.push({ path: `${path}.templateId`, message: 'templateId is required' });
         }
 
-        tasks.push(/** @type {PromptTaskDef} */ (item));
+        const category = normalizeCategory(task.category);
+        tasks.push(/** @type {PromptTaskDef} */ ({ ...task, ...(category ? { category } : {}) }));
     });
 
     return { valid: issues.length === 0, issues, tasks };
@@ -377,7 +386,12 @@ export function validateChains(raw) {
         if (!Array.isArray(chain.steps)) {
             issues.push({ path: `${path}.steps`, message: 'steps must be an array' });
         }
-        chains.push(/** @type {PromptChainDef} */ (item));
+        chains.push(
+            /** @type {PromptChainDef} */ ({
+                ...chain,
+                ...(normalizeCategory(chain.category) ? { category: normalizeCategory(chain.category) } : {}),
+            }),
+        );
     });
 
     return { valid: issues.length === 0, issues, chains };

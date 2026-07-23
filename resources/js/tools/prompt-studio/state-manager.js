@@ -7,6 +7,7 @@ import { buildPrompt, formatForModel } from './prompt-builder.js';
 import { createDefaultParameterValues } from './field-renderer.js';
 import { getParametersForTask, getTemplate, getTasksForRole } from './config-loader.js';
 import { getTaskOutputKind } from './md-export.js';
+import { preferModelForTask, normalizeModelPlan } from './model-limits.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./storage.js').PromptDraftState} PromptDraftState */
@@ -101,12 +102,14 @@ export class StateManager {
         const parameters = getParametersForTask(taskId, this.config);
         const parameterValues = createDefaultParameterValues(parameters, {});
         const task = this.config.tasks.find((t) => t.id === taskId);
+        const modelId = preferModelForTask(task, this.draft.modelId, this.config.models);
 
         this.patchDraft({
             roleId,
             taskId,
+            modelId,
             kind: getTaskOutputKind(task),
-            parameterValues,
+            parameterValues: { ...parameterValues, ...(task?.parameterDefaults ?? {}) },
             sections: {},
             sectionOverrides: {},
         }, { notify: false });
@@ -120,11 +123,16 @@ export class StateManager {
         const parameters = getParametersForTask(taskId, this.config);
         const parameterValues = createDefaultParameterValues(parameters, this.draft.parameterValues);
         const task = this.config.tasks.find((t) => t.id === taskId);
+        const modelId = preferModelForTask(task, this.draft.modelId, this.config.models);
 
         this.patchDraft({
             taskId,
+            modelId,
             kind: getTaskOutputKind(task),
-            parameterValues,
+            parameterValues: {
+                ...parameterValues,
+                ...(task?.parameterDefaults ?? {}),
+            },
             sections: {},
             sectionOverrides: {},
         }, { notify: false });
@@ -135,7 +143,17 @@ export class StateManager {
 
     /** @param {string} modelId */
     setModel(modelId) {
-        this.patchDraft({ modelId }, { notify: false });
+        const model = this.config.models.find((m) => m.id === modelId);
+        const modelPlan = model?.defaultPlan
+            ? normalizeModelPlan(model.defaultPlan)
+            : this.draft.modelPlan;
+        this.patchDraft({ modelId, modelPlan }, { notify: false });
+        this.recompile();
+    }
+
+    /** @param {import('./model-limits.js').ModelPlan} plan */
+    setModelPlan(plan) {
+        this.patchDraft({ modelPlan: normalizeModelPlan(plan) }, { notify: false });
         this.recompile();
     }
 

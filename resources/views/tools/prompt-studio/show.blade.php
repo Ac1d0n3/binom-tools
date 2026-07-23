@@ -23,7 +23,12 @@
                 data-library-api-url="{{ ! empty($accountsEnabled) && ! empty($accountUser) ? url('/api/prompt-studio/library') : '' }}"
             >
                 <div class="prompt-studio__chrome">
-                    <div class="prompt-studio__chrome-top">
+                        <div class="prompt-studio__chrome-top">
+                        <div class="prompt-studio__area-toggle" role="tablist" aria-label="Studio area">
+                            <button type="button" class="prompt-studio__area-btn prompt-studio__area-btn--active" data-ps-area="prompt" role="tab" aria-selected="true" data-i18n="promptStudio.area.prompt">Prompt</button>
+                            <button type="button" class="prompt-studio__area-btn" data-ps-area="rule" role="tab" aria-selected="false" data-i18n="promptStudio.area.rule">Project rule</button>
+                            <button type="button" class="prompt-studio__area-btn" data-ps-area="agent" role="tab" aria-selected="false" data-i18n="promptStudio.area.agent">Agent</button>
+                        </div>
                         <div class="prompt-studio__chrome-actions">
                             <button type="button" class="tools-btn tools-btn--sm" id="ps-preview-toggle" aria-pressed="true" data-i18n="promptStudio.previewToggle">
                                 Hide preview
@@ -39,44 +44,76 @@
                         <details class="prompt-studio__drawer" id="ps-help-drawer">
                             <summary class="prompt-studio__drawer-summary" data-i18n="promptStudio.howto.summary">How it works</summary>
                             <div class="prompt-studio__drawer-body prompt-studio__help-body">
-                                <section class="prompt-studio__help-section">
-                                    <p data-i18n="promptStudio.howto.overview.intro"></p>
-                                    <ol>
-                                        <li data-i18n="promptStudio.howto.overview.step1"></li>
-                                        <li data-i18n="promptStudio.howto.overview.step2"></li>
-                                        <li data-i18n="promptStudio.howto.overview.step3"></li>
-                                        <li data-i18n="promptStudio.howto.overview.step4"></li>
-                                        <li data-i18n="promptStudio.howto.overview.step5"></li>
-                                    </ol>
-                                    <p data-i18n="promptStudio.howto.overview.tip"></p>
-                                </section>
-                                <details class="prompt-studio__help-nested">
-                                    <summary data-i18n="promptStudio.howto.builder.summary">Builder</summary>
-                                    <p data-i18n="promptStudio.howto.builder.intro"></p>
-                                    <ul>
-                                        <li data-i18n="promptStudio.howto.builder.step1"></li>
-                                        <li data-i18n="promptStudio.howto.builder.step2"></li>
-                                        <li data-i18n="promptStudio.howto.builder.step3"></li>
-                                    </ul>
-                                </details>
-                                <details class="prompt-studio__help-nested">
-                                    <summary data-i18n="promptStudio.howto.workflow.summary">Workflows</summary>
-                                    <p data-i18n="promptStudio.howto.workflow.intro"></p>
-                                    <ul>
-                                        <li data-i18n="promptStudio.howto.workflow.step1"></li>
-                                        <li data-i18n="promptStudio.howto.workflow.step2"></li>
-                                        <li data-i18n="promptStudio.howto.workflow.step3"></li>
-                                    </ul>
-                                </details>
-                                <details class="prompt-studio__help-nested">
-                                    <summary data-i18n="promptStudio.howto.kinds.summary">Output kinds</summary>
-                                    <p data-i18n="promptStudio.howto.kinds.intro"></p>
-                                    <ul>
-                                        <li data-i18n="promptStudio.howto.kinds.step1"></li>
-                                        <li data-i18n="promptStudio.howto.kinds.step2"></li>
-                                        <li data-i18n="promptStudio.howto.kinds.step3"></li>
-                                    </ul>
-                                </details>
+                                <div class="tools-column-accordion prompt-studio__help-accordion" id="ps-help-accordion">
+                                    <details class="tools-column-accordion__item" data-ps-help-item="prompt" open>
+                                        <summary class="tools-column-accordion__summary">
+                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.prompt.title">Prompt</span>
+                                        </summary>
+                                        <div class="tools-column-accordion__body">
+                                            <p data-i18n="promptStudio.howto.area.prompt.intro"></p>
+                                            <ol>
+                                                <li data-i18n="promptStudio.howto.area.prompt.step1"></li>
+                                                <li data-i18n="promptStudio.howto.area.prompt.step2"></li>
+                                                <li data-i18n="promptStudio.howto.area.prompt.step3"></li>
+                                            </ol>
+                                            <p data-i18n="promptStudio.howto.area.prompt.tip"></p>
+                                        </div>
+                                    </details>
+                                    <details class="tools-column-accordion__item" data-ps-help-item="rule" hidden>
+                                        <summary class="tools-column-accordion__summary">
+                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.rule.title">Project rule</span>
+                                        </summary>
+                                        <div class="tools-column-accordion__body">
+                                            <p data-i18n="promptStudio.howto.area.rule.intro"></p>
+                                            <ol>
+                                                <li data-i18n="promptStudio.howto.area.rule.step1"></li>
+                                                <li data-i18n="promptStudio.howto.area.rule.step2"></li>
+                                                <li data-i18n="promptStudio.howto.area.rule.step3"></li>
+                                            </ol>
+                                            <p data-i18n="promptStudio.howto.area.rule.tip"></p>
+                                        </div>
+                                    </details>
+                                    <details class="tools-column-accordion__item" data-ps-help-item="agent" hidden>
+                                        <summary class="tools-column-accordion__summary">
+                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.agent.title">Agent</span>
+                                        </summary>
+                                        <div class="tools-column-accordion__body">
+                                            <p data-i18n="promptStudio.howto.area.agent.intro"></p>
+                                            <ol>
+                                                <li data-i18n="promptStudio.howto.area.agent.step1"></li>
+                                                <li data-i18n="promptStudio.howto.area.agent.step2"></li>
+                                                <li data-i18n="promptStudio.howto.area.agent.step3"></li>
+                                            </ol>
+                                            <p data-i18n="promptStudio.howto.area.agent.tip"></p>
+                                        </div>
+                                    </details>
+                                    <details class="tools-column-accordion__item" data-ps-help-item="builder">
+                                        <summary class="tools-column-accordion__summary">
+                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.builder.summary">Builder</span>
+                                        </summary>
+                                        <div class="tools-column-accordion__body">
+                                            <p data-i18n="promptStudio.howto.builder.intro"></p>
+                                            <ul>
+                                                <li data-i18n="promptStudio.howto.builder.step1"></li>
+                                                <li data-i18n="promptStudio.howto.builder.step2"></li>
+                                                <li data-i18n="promptStudio.howto.builder.step3"></li>
+                                            </ul>
+                                        </div>
+                                    </details>
+                                    <details class="tools-column-accordion__item" data-ps-help-item="workflow">
+                                        <summary class="tools-column-accordion__summary">
+                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.workflow.summary">Workflows</span>
+                                        </summary>
+                                        <div class="tools-column-accordion__body">
+                                            <p data-i18n="promptStudio.howto.workflow.intro"></p>
+                                            <ul>
+                                                <li data-i18n="promptStudio.howto.workflow.step1"></li>
+                                                <li data-i18n="promptStudio.howto.workflow.step2"></li>
+                                                <li data-i18n="promptStudio.howto.workflow.step3"></li>
+                                            </ul>
+                                        </div>
+                                    </details>
+                                </div>
                             </div>
                         </details>
 
@@ -87,13 +124,24 @@
                                     <button type="button" class="prompt-studio__tab prompt-studio__tab--active" data-ps-tab="library" role="tab" data-i18n="promptStudio.tabs.library">Aufgaben</button>
                                     <button type="button" class="prompt-studio__tab" data-ps-tab="workflows" role="tab" data-i18n="promptStudio.tabs.workflows">Workflows</button>
                                     <button type="button" class="prompt-studio__tab" data-ps-tab="templates" role="tab" data-i18n="promptStudio.tabs.templates">My templates</button>
-                                    <button type="button" class="prompt-studio__tab" data-ps-tab="roles" role="tab" data-i18n="promptStudio.tabs.roles">Roles</button>
+                                    <button type="button" class="prompt-studio__tab prompt-studio__tech-only" data-ps-tab="roles" role="tab" data-i18n="promptStudio.tabs.roles">Roles</button>
                                     <button type="button" class="prompt-studio__tab" data-ps-tab="recent" role="tab" data-i18n="promptStudio.tabs.recent">Recent</button>
                                     <button type="button" class="prompt-studio__tab" data-ps-tab="favorites" role="tab" data-i18n="promptStudio.tabs.favorites">Favorites</button>
                                 </div>
                                 <div class="prompt-studio__workspace-toolbar">
                                     <input type="search" id="ps-search" class="tools-input" data-i18n-placeholder="promptStudio.searchPlaceholder" placeholder="Search…" />
-                                    <select id="ps-template-kind-filter" class="tools-select">
+                                    <select id="ps-category-filter" class="tools-select" aria-label="Category" data-i18n-aria-label="promptStudio.categoryFilter">
+                                        <option value="all" data-i18n="promptStudio.category.all">All categories</option>
+                                        <option value="image" data-i18n="promptStudio.category.image">Images</option>
+                                        <option value="video" data-i18n="promptStudio.category.video">Video</option>
+                                        <option value="music" data-i18n="promptStudio.category.music">Music</option>
+                                        <option value="code" data-i18n="promptStudio.category.code">Code / Dev</option>
+                                        <option value="business" data-i18n="promptStudio.category.business">Business</option>
+                                        <option value="writing" data-i18n="promptStudio.category.writing">Writing / Docs</option>
+                                        <option value="mail" data-i18n="promptStudio.category.mail">Email</option>
+                                        <option value="personal" data-i18n="promptStudio.category.personal">Personal</option>
+                                    </select>
+                                    <select id="ps-template-kind-filter" class="tools-select" hidden>
                                         <option value="all" data-i18n="promptStudio.kindFilter.all">All kinds</option>
                                         <option value="prompt" data-i18n="promptStudio.kind.prompt">Prompt</option>
                                         <option value="rule" data-i18n="promptStudio.kind.rule">Project rule</option>
@@ -112,10 +160,10 @@
                     <section class="prompt-studio__builder" aria-label="Prompt builder">
                         <header class="prompt-studio__builder-header">
                             <div class="prompt-studio__builder-heading">
-                                <h2 data-i18n="promptStudio.builder.title">Role & task</h2>
-                                <p data-i18n="promptStudio.builder.lead">Pick a role and task — fields adapt automatically.</p>
+                                <h2 data-i18n="promptStudio.builder.title">Builder</h2>
+                                <p data-i18n="promptStudio.builder.lead">Pick a task or workflow above, then fill the fields.</p>
                             </div>
-                            <div class="prompt-studio__steps" aria-label="Builder steps">
+                            <div class="prompt-studio__steps prompt-studio__tech-only" aria-label="Builder steps">
                                 <span class="prompt-studio__step prompt-studio__step--active" data-i18n="promptStudio.steps.role">1. Role</span>
                                 <span class="prompt-studio__step" data-i18n="promptStudio.steps.task">2. Task</span>
                                 <span class="prompt-studio__step" data-i18n="promptStudio.steps.fill">3. Fill in</span>
@@ -129,12 +177,35 @@
 
                             <p id="ps-output-kind-badge" class="prompt-studio__output-kind-badge" role="status"></p>
 
+                            <div id="ps-selection-summary" class="prompt-studio__selection-summary" hidden>
+                                <p id="ps-selection-title" class="prompt-studio__selection-title"></p>
+                                <p id="ps-selection-meta" class="prompt-studio__selection-meta"></p>
+                            </div>
+                            <p id="ps-empty-pick" class="prompt-studio__empty-pick" data-i18n="promptStudio.empty.pickTask">
+                                Pick a task or workflow in the library above to start.
+                            </p>
+
+                            <section id="ps-target-ai" class="prompt-studio__target-ai" hidden>
+                                <label class="tools-field prompt-studio__target-ai-model">
+                                    <span class="tools-field__label" data-i18n="promptStudio.model">Target AI</span>
+                                    <select id="ps-model-select" class="tools-select"></select>
+                                </label>
+                                <div id="ps-model-plan" class="prompt-studio__model-plan" hidden role="group" aria-label="Plan">
+                                    <span class="tools-field__label" data-i18n="promptStudio.modelPlan.label">Plan</span>
+                                    <div class="prompt-studio__model-plan-toggle">
+                                        <button type="button" class="prompt-studio__plan-btn" data-ps-plan="free" data-i18n="promptStudio.modelPlan.free">Free</button>
+                                        <button type="button" class="prompt-studio__plan-btn" data-ps-plan="paid" data-i18n="promptStudio.modelPlan.paid">Paid</button>
+                                    </div>
+                                </div>
+                                <p id="ps-limit-hint" class="prompt-studio__limit-hint" hidden></p>
+                            </section>
+
                             <div class="prompt-studio__builder-toolbar">
                             <div class="prompt-studio__toolbar-group" data-ps-toolbar="edit">
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-undo-btn" disabled data-i18n="promptStudio.undo">Undo</button>
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-redo-btn" disabled data-i18n="promptStudio.redo">Redo</button>
                             </div>
-                            <div class="prompt-studio__toolbar-group" data-ps-toolbar="workflow">
+                            <div class="prompt-studio__toolbar-group prompt-studio__tech-only" data-ps-toolbar="workflow">
                                 <button type="button" class="tools-btn tools-btn--sm" id="ps-chain-btn" data-i18n="promptStudio.chain">Workflow</button>
                                 <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-split-btn" data-i18n="promptStudio.split">Split task</button>
                                 <button type="button" class="tools-btn tools-btn--sm prompt-studio__toolbar-group--tech" id="ps-optimize-btn" data-i18n="promptStudio.optimize">Improve prompt</button>
@@ -168,8 +239,8 @@
                                 </div>
                             </div>
 
-                            <section class="prompt-studio__form-section">
-                                <div class="prompt-studio__builder-fields prompt-studio__builder-fields--row">
+                            <section class="prompt-studio__form-section prompt-studio__tech-only" id="ps-role-task-section">
+                                <div class="prompt-studio__builder-fields prompt-studio__builder-fields--row prompt-studio__builder-fields--row-2">
                                     <label class="tools-field">
                                         <span class="tools-field__label" data-i18n="promptStudio.role">Role</span>
                                         <select id="ps-role-select" class="tools-select"></select>
@@ -179,11 +250,6 @@
                                         <span class="tools-field__label" data-i18n="promptStudio.task">Task</span>
                                         <select id="ps-task-select" class="tools-select"></select>
                                         <p class="tools-field__help" id="ps-task-help"></p>
-                                    </label>
-                                    <label class="tools-field">
-                                        <span class="tools-field__label" data-i18n="promptStudio.model">Target model</span>
-                                        <select id="ps-model-select" class="tools-select"></select>
-                                        <p class="tools-field__help tools-field__help--spacer" aria-hidden="true">&nbsp;</p>
                                     </label>
                                 </div>
                             </section>
@@ -199,12 +265,15 @@
                                         <input type="checkbox" id="ps-variants-enabled" />
                                         <span data-i18n="promptStudio.variants.title">Variants</span>
                                     </label>
+                                </header>
+                                <div id="ps-variants-body" class="prompt-studio__variants-body" hidden>
+                                    <p class="prompt-studio__variants-help" data-i18n="promptStudio.variants.help">
+                                        One field varies (e.g. motif), everything else stays the same. One value per line, then step through or copy all.
+                                    </p>
                                     <label class="tools-field prompt-studio__variants-field-select">
                                         <span class="tools-field__label" data-i18n="promptStudio.variants.field">Varying field</span>
                                         <select id="ps-variants-field" class="tools-select"></select>
                                     </label>
-                                </header>
-                                <div id="ps-variants-body" class="prompt-studio__variants-body" hidden>
                                     <textarea id="ps-variants-bulk" class="tools-textarea" rows="4" data-i18n-placeholder="promptStudio.variants.bulkPlaceholder" placeholder="One value per line…"></textarea>
                                     <button type="button" class="tools-btn tools-btn--sm" id="ps-variants-add-btn" data-i18n="promptStudio.variants.add">Add values</button>
                                     <ul id="ps-variants-list" class="prompt-studio__variants-list"></ul>

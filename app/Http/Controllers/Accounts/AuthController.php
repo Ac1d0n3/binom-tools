@@ -51,6 +51,13 @@ class AuthController extends Controller
                 ->withErrors(['email' => __('auth.failed')]);
         }
 
+        $user = $this->auth->user();
+        if ($user?->mustChangePassword) {
+            return redirect()
+                ->to(locale_route('accounts.profile'))
+                ->with('status', 'must-change-password');
+        }
+
         return redirect()->intended(locale_route('tools.landing'));
     }
 
@@ -73,6 +80,7 @@ class AuthController extends Controller
         return view('accounts.profile', [
             'account' => $user->toPublicArray(),
             'profileAvatarEnabled' => $this->config->profileAvatarEnabled(),
+            'mustChangePassword' => $user->mustChangePassword,
         ]);
     }
 
@@ -81,10 +89,12 @@ class AuthController extends Controller
         $user = $this->auth->user();
         abort_if($user === null, 401);
 
+        $mustChange = $user->mustChangePassword;
+
         $rules = [
             'displayName' => ['required', 'string', 'max:120'],
-            'current_password' => ['nullable', 'string'],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'current_password' => [$mustChange ? 'required' : 'nullable', 'string'],
+            'password' => [$mustChange ? 'required' : 'nullable', 'string', 'min:8', 'confirmed'],
         ];
 
         if ($this->config->profileAvatarEnabled()) {
@@ -111,6 +121,7 @@ class AuthController extends Controller
                 return back()->withErrors(['current_password' => 'Current password is incorrect.']);
             }
             $payload['passwordHash'] = password_hash($data['password'], PASSWORD_DEFAULT);
+            $payload['mustChangePassword'] = false;
         }
 
         unset($payload['password'], $payload['password_confirmation'], $payload['current_password']);

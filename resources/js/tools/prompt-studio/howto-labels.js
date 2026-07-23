@@ -4,76 +4,98 @@
 export const promptStudioHowtoLabels = {
     de: {
         'promptStudio.howto.summary': 'So funktioniert\'s',
-        'promptStudio.howto.overview.intro':
-            'Baue KI-Arbeit als Einzelaufgabe oder optional als Workflow — Prompt, Projekt-Rule oder Agent-MD.',
-        'promptStudio.howto.overview.step1': 'Tab Aufgaben: eine Aufgabe wählen (Prompt / Rule / Agent).',
-        'promptStudio.howto.overview.step2': 'Felder ausfüllen — die Ausgabe-Art kommt von der Aufgabe.',
-        'promptStudio.howto.overview.step3': 'Prompt: kopieren. Rule/Agent: als .md herunterladen.',
-        'promptStudio.howto.overview.step4': 'Workflows nur wenn du mehrere Schritte verkettet brauchst.',
-        'promptStudio.howto.overview.step5':
-            'Eigene Vorlagen, Workflows und Rollen speichern — lokal; eingeloggt auch am Account.',
-        'promptStudio.howto.overview.tip':
-            'Hilfe zugeklappt lassen — Bibliothek öffnen zeigt zuerst Aufgaben, nicht Workflows.',
+
+        'promptStudio.howto.area.prompt.title': 'Bereich: Prompt',
+        'promptStudio.howto.area.prompt.intro':
+            'Hier erstellst du normale KI-Prompts zum Kopieren — Bilder, Musik, Code, Business, Text.',
+        'promptStudio.howto.area.prompt.step1': 'Oben „Prompt“ wählen, in der Bibliothek eine Aufgabe oder einen Workflow starten.',
+        'promptStudio.howto.area.prompt.step2': 'Felder ausfüllen (Motiv, Ziel, Format, …).',
+        'promptStudio.howto.area.prompt.step3': 'Fertigen Prompt kopieren und in deine KI einfügen.',
+        'promptStudio.howto.area.prompt.tip':
+            'Kategorie-Filter (Bilder, Musik, …) hilft beim Finden. Workflows verketten mehrere Schritte.',
+
+        'promptStudio.howto.area.rule.title': 'Bereich: Projekt-Rule',
+        'promptStudio.howto.area.rule.intro':
+            'Hier baust du Cursor-/Projekt-Rules als Markdown-Datei (mit Frontmatter) — nicht zum Chatten, sondern zur Projekt-Konfiguration.',
+        'promptStudio.howto.area.rule.step1': 'Oben „Projekt-Rule“ wählen und eine Rule-Vorlage in der Bibliothek öffnen.',
+        'promptStudio.howto.area.rule.step2': 'Felder ausfüllen (Standards, Scope, Verbote, …).',
+        'promptStudio.howto.area.rule.step3': 'Als .md herunterladen und in dein Projekt legen (z. B. Cursor Rules).',
+        'promptStudio.howto.area.rule.tip':
+            'Ergebnis ist eine Markdown-Datei, kein Chat-Prompt. Badge und Download-Button zeigen das an.',
+
+        'promptStudio.howto.area.agent.title': 'Bereich: Agent',
+        'promptStudio.howto.area.agent.intro':
+            'Hier erstellst du Agent-Aufgaben als strukturiertes Markdown — Debug-Pläne, Repo-Automation, Checklisten für AI-Agenten.',
+        'promptStudio.howto.area.agent.step1': 'Oben „Agent“ wählen und eine Agent-Hilfe in der Bibliothek öffnen.',
+        'promptStudio.howto.area.agent.step2': 'Kontext ausfüllen (Repro, Ziel, Constraints, …).',
+        'promptStudio.howto.area.agent.step3': 'Als .md herunterladen und dem Agenten / der IDE geben.',
+        'promptStudio.howto.area.agent.tip':
+            'Agent-MDs sind Arbeitsaufträge, keine Chat-Prompts. Nutze Workflows, wenn mehrere Schritte nötig sind.',
 
         'promptStudio.howto.builder.summary': 'Erstellen',
-        'promptStudio.howto.builder.intro': 'Hier stellst du Rolle, Aufgabe und die passenden Eingabefelder ein.',
-        'promptStudio.howto.builder.step1': 'Rolle = KI-Perspektive (Angular, Debug, Songwriter …).',
-        'promptStudio.howto.builder.step2': 'Aufgabe = einzelnes Ergebnis (Lyrics, Signals-Rule, Debug-Agent …).',
-        'promptStudio.howto.builder.step3': 'Varianten: Ein Feld variiert — Stil bleibt gleich.',
+        'promptStudio.howto.builder.intro': 'Im Standard nur Felder. Rolle und Dropdowns sitzen im Expertenmodus.',
+        'promptStudio.howto.builder.step1': 'Zuerst den Bereich oben wählen (Prompt, Projekt-Rule oder Agent).',
+        'promptStudio.howto.builder.step2': 'Dann in der Bibliothek eine passende Vorlage wählen und Eingaben ausfüllen.',
+        'promptStudio.howto.builder.step3': 'Experte: Rolle, Aufgabe und Modell manuell anpassen.',
 
         'promptStudio.howto.workflow.summary': 'Workflows',
         'promptStudio.howto.workflow.intro':
-            'Ein Workflow verkettet mehrere Aufgaben. Standard bleibt die Einzelaufgabe.',
-        'promptStudio.howto.workflow.step1': 'Nur im Tab Workflows starten — oder optionalen Hinweis im Builder nutzen.',
+            'Ein Workflow verkettet mehrere Schritte. Am sinnvollsten im Bereich Prompt; Agent kann eigene Ketten haben.',
+        'promptStudio.howto.workflow.step1': 'Tab Workflows öffnen und einen Workflow starten.',
         'promptStudio.howto.workflow.step2': 'Pro Schritt: Prompt/MD kopieren bzw. laden → in die KI einfügen.',
         'promptStudio.howto.workflow.step3': 'Antwort zurück in „Vorherige Ausgabe“ → Nächster Schritt.',
 
-        'promptStudio.howto.kinds.summary': 'Ausgabe-Arten',
-        'promptStudio.howto.kinds.intro': 'Steckt an der Aufgabe — kein separater Schalter.',
-        'promptStudio.howto.kinds.step1': 'Prompt-Aufgabe: Chat-/Modelltext zum Kopieren.',
-        'promptStudio.howto.kinds.step2': 'Projekt-Rule-Aufgabe: Markdown mit Frontmatter (Cursor Rules) zum Download.',
-        'promptStudio.howto.kinds.step3': 'Agent-Aufgabe: strukturiertes MD für Agent-Planung zum Download.',
-
         'promptStudio.howto.preview.summary': 'Vorschau',
         'promptStudio.howto.preview.intro': 'Der fertige Text zum Kopieren oder Download.',
-        'promptStudio.howto.preview.step1': 'Standardmodus: ein zusammenhängender Prompt.',
+        'promptStudio.howto.preview.step1': 'Standardmodus: ein zusammenhängender Text.',
         'promptStudio.howto.preview.step2': 'Expertenmodus: einzelne Abschnitte bearbeitbar.',
     },
     en: {
         'promptStudio.howto.summary': 'How it works',
-        'promptStudio.howto.overview.intro':
-            'Build AI work as a single task or optionally as a workflow — prompt, project rule, or agent MD.',
-        'promptStudio.howto.overview.step1': 'Tasks tab: pick one task (Prompt / Rule / Agent).',
-        'promptStudio.howto.overview.step2': 'Fill the fields — output kind comes from the task.',
-        'promptStudio.howto.overview.step3': 'Prompt: copy. Rule/Agent: download as .md.',
-        'promptStudio.howto.overview.step4': 'Use Workflows only when you need chained steps.',
-        'promptStudio.howto.overview.step5':
-            'Save your own templates, workflows, and roles — locally; when logged in also on your account.',
-        'promptStudio.howto.overview.tip':
-            'Keep help collapsed — opening the library shows tasks first, not workflows.',
+
+        'promptStudio.howto.area.prompt.title': 'Area: Prompt',
+        'promptStudio.howto.area.prompt.intro':
+            'Build normal AI prompts to copy — images, music, code, business, writing.',
+        'promptStudio.howto.area.prompt.step1': 'Choose “Prompt” above, then start a task or workflow in the library.',
+        'promptStudio.howto.area.prompt.step2': 'Fill the fields (subject, goal, format, …).',
+        'promptStudio.howto.area.prompt.step3': 'Copy the finished prompt into your AI tool.',
+        'promptStudio.howto.area.prompt.tip':
+            'Use the category filter (Images, Music, …) to find tasks. Workflows chain multiple steps.',
+
+        'promptStudio.howto.area.rule.title': 'Area: Project rule',
+        'promptStudio.howto.area.rule.intro':
+            'Build Cursor/project rules as Markdown (with frontmatter) — for project config, not chat.',
+        'promptStudio.howto.area.rule.step1': 'Choose “Project rule” above and open a rule template in the library.',
+        'promptStudio.howto.area.rule.step2': 'Fill the fields (standards, scope, constraints, …).',
+        'promptStudio.howto.area.rule.step3': 'Download as .md and place it in your project (e.g. Cursor rules).',
+        'promptStudio.howto.area.rule.tip':
+            'The result is a Markdown file, not a chat prompt. The badge and download button reflect that.',
+
+        'promptStudio.howto.area.agent.title': 'Area: Agent',
+        'promptStudio.howto.area.agent.intro':
+            'Build agent tasks as structured Markdown — debug plans, repo automation, checklists for AI agents.',
+        'promptStudio.howto.area.agent.step1': 'Choose “Agent” above and open an agent helper in the library.',
+        'promptStudio.howto.area.agent.step2': 'Fill in context (repro, goal, constraints, …).',
+        'promptStudio.howto.area.agent.step3': 'Download as .md and give it to the agent / IDE.',
+        'promptStudio.howto.area.agent.tip':
+            'Agent MDs are work orders, not chat prompts. Use workflows when you need multiple steps.',
 
         'promptStudio.howto.builder.summary': 'Builder',
-        'promptStudio.howto.builder.intro': 'Set role, task, and matching input fields here.',
-        'promptStudio.howto.builder.step1': 'Role = AI perspective (Angular, Debug, Songwriter …).',
-        'promptStudio.howto.builder.step2': 'Task = one deliverable (lyrics, Signals rule, debug agent …).',
-        'promptStudio.howto.builder.step3': 'Variants: one field varies — style stays the same.',
+        'promptStudio.howto.builder.intro': 'Regular mode shows fields only. Role and dropdowns live in Tech mode.',
+        'promptStudio.howto.builder.step1': 'First pick the area above (Prompt, Project rule, or Agent).',
+        'promptStudio.howto.builder.step2': 'Then pick a matching template in the library and fill the inputs.',
+        'promptStudio.howto.builder.step3': 'Tech: adjust role, task, and model manually.',
 
         'promptStudio.howto.workflow.summary': 'Workflows',
         'promptStudio.howto.workflow.intro':
-            'A workflow chains several tasks. The default remains a single task.',
-        'promptStudio.howto.workflow.step1': 'Start only from the Workflows tab — or the optional builder hint.',
+            'A workflow chains several steps. Most useful in Prompt; Agent can have its own chains.',
+        'promptStudio.howto.workflow.step1': 'Open the Workflows tab and start a workflow.',
         'promptStudio.howto.workflow.step2': 'Per step: copy/load prompt or MD → paste into your AI tool.',
         'promptStudio.howto.workflow.step3': 'Paste the reply into Previous output → Next step.',
 
-        'promptStudio.howto.kinds.summary': 'Output kinds',
-        'promptStudio.howto.kinds.intro': 'Comes from the task — not a separate toggle.',
-        'promptStudio.howto.kinds.step1': 'Prompt task: chat/model text to copy.',
-        'promptStudio.howto.kinds.step2': 'Project-rule task: Markdown with frontmatter (Cursor rules) to download.',
-        'promptStudio.howto.kinds.step3': 'Agent task: structured MD for agent planning to download.',
-
         'promptStudio.howto.preview.summary': 'Preview',
         'promptStudio.howto.preview.intro': 'The finished text to copy or download.',
-        'promptStudio.howto.preview.step1': 'Regular mode: one continuous prompt.',
+        'promptStudio.howto.preview.step1': 'Regular mode: one continuous text.',
         'promptStudio.howto.preview.step2': 'Tech mode: editable sections.',
     },
 };
