@@ -94,7 +94,7 @@ deliverables:
   - id: initial-mandate
     label: Initial mandate documented
     plannedMinutes: 420
-    dependsOn: align-management-expectations, identify-stakeholders
+    dependsOn: align-management-expectations
     helpText: |
       Deliverable “Initial mandate documented”: keep it short, traceable, and with owner/date.
       Use it as evidence for decisions — not as a dump of raw notes.

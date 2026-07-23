@@ -94,7 +94,7 @@ deliverables:
   - id: initial-mandate
     label: Initial mandate documented
     plannedMinutes: 420
-    dependsOn: align-management-expectations, identify-stakeholders
+    dependsOn: align-management-expectations
     helpText: |
       Create the artifact “Initial mandate documented” with purpose, owner, date, source, and open decision.
       The deliverable is done when it supports a concrete decision or handoff and does not only collect raw notes.

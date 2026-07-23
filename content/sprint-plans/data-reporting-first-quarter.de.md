@@ -94,7 +94,7 @@ deliverables:
   - id: initial-mandate
     label: Initialen Auftrag dokumentiert
     plannedMinutes: 420
-    dependsOn: align-management-expectations, identify-stakeholders
+    dependsOn: align-management-expectations
     helpText: |
       Erstelle das Artefakt „Initialen Auftrag dokumentiert“ mit Zweck, Owner, Datum, Quelle und offener Entscheidung.
       Das Deliverable ist fertig, wenn es eine konkrete Entscheidung oder Übergabe stützt und nicht nur Rohnotizen sammelt.

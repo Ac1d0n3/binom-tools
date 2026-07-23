@@ -27,6 +27,9 @@ const labels = {
         'piiRec.contentRules.add': 'Regel hinzufügen',
         'piiRec.contentRules.remove': 'Entfernen',
         'piiRec.scope.title': 'Default scope',
+        'piiRec.warehouse.title': 'Warehouse',
+        'piiRec.warehouse.hint':
+            'Wirkt auf Content-Scan-SQL (Regex/Sample), nicht auf Name-Audit oder YAML. Vorschau (regex):',
         'piiRec.access.title': 'Access & Warehouse',
         'piiRec.access.groups': 'Model access_groups',
         'piiRec.output.auditName': 'macros/pii_audit_by_name.sql',
@@ -60,6 +63,9 @@ const labels = {
         'piiRec.contentRules.add': 'Add rule',
         'piiRec.contentRules.remove': 'Remove',
         'piiRec.scope.title': 'Default scope',
+        'piiRec.warehouse.title': 'Warehouse',
+        'piiRec.warehouse.hint':
+            'Affects content-scan SQL (regex/sample), not name audit or YAML. Preview (regex):',
         'piiRec.access.title': 'Access & warehouse',
         'piiRec.access.groups': 'Model access_groups',
         'piiRec.output.auditName': 'macros/pii_audit_by_name.sql',

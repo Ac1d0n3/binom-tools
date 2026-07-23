@@ -59,6 +59,22 @@
                 </div>
             </section>
 
+            <section class="tools-section">
+                <h2 class="tools-section__title" data-i18n="home.sprintPlannerTitle">Sprint Planner</h2>
+                <div class="tools-card-grid tools-card-grid--wide-feature">
+                    <x-tools.card
+                        :href="locale_route('sprint-planner.index')"
+                        title="Sprint Planner"
+                        description="Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks."
+                        title-key="home.featuredPlanner.title"
+                        description-key="home.featuredPlanner.description"
+                        icon="fa-list-check"
+                        accent="primary"
+                        card-id="featured-sprint-planner"
+                    />
+                </div>
+            </section>
+
             @if (count($ecosystemItems) > 0)
                 <section class="tools-section">
                     <h2 class="tools-section__title" data-i18n="home.ecosystemTitle">Ecosystem</h2>

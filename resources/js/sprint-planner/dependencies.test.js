@@ -97,6 +97,30 @@ describe('dependencies', () => {
         expect(items[1].dependencyReason).toBe('');
     });
 
+    it('unlocks dependents when predecessor is found by local id', () => {
+        const items = [
+            {
+                id: 'a',
+                statusKey: taskA,
+                label: 'A',
+                completed: true,
+                status: 'completed',
+                dependsOn: [],
+            },
+            {
+                id: 'b',
+                statusKey: taskB,
+                label: 'B',
+                completed: false,
+                status: 'open',
+                // unresolved local template id (as shipped in bootstrap JSON)
+                dependsOn: ['a'],
+            },
+        ];
+        applySprintDependencyBlocks(items, (labels) => `Waiting on: ${labels.join(', ')}`);
+        expect(items[1].dependencyBlocked).toBe(false);
+    });
+
     it('collectSprintItemKeys includes template and custom items', () => {
         const keys = collectSprintItemKeys({
             templateSlug: slug,

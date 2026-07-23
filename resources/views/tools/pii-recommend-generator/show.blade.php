@@ -140,7 +140,7 @@
                 </x-tools.collapsible-info>
                 <div class="pii-policy-panel__grid">
                     <label class="pii-policy-field">
-                        <span>Warehouse</span>
+                        <span data-i18n="piiRec.warehouse.title">Warehouse</span>
                         <select id="rec-warehouse" class="pii-policy-input"></select>
                     </label>
                     <label class="pii-policy-field">
@@ -148,6 +148,8 @@
                         <select id="rec-default-scope" class="pii-policy-input"></select>
                     </label>
                 </div>
+                <p class="pii-policy-field-hint" data-i18n="piiRec.warehouse.hint"></p>
+                <pre id="rec-warehouse-preview" class="pii-warehouse-preview" aria-live="polite"></pre>
                 <label class="pii-policy-checkbox">
                     <input type="checkbox" id="rec-use-access-roles" checked />
                     <span data-i18n="govMacro.access.useRoles">Use access roles</span>

@@ -1,4 +1,5 @@
 import { formatSyncSourceLabel } from './pii-meta.js';
+import { warehouseDialectPreview } from './warehouse-templates.js';
 
 /**
  * @param {HTMLElement | null} el
@@ -62,6 +63,16 @@ export function readWarehouseFromSelect(selectEl) {
 export function writeWarehouseToForm(state, selectEl) {
     if (!selectEl) return;
     selectEl.value = state.selectedWarehouse ?? 'snowflake';
+}
+
+/**
+ * @param {HTMLElement | null} previewEl
+ * @param {string | undefined} warehouseId
+ * @param {'mask' | 'regex'} [kind='mask']
+ */
+export function updateWarehousePreview(previewEl, warehouseId, kind = 'mask') {
+    if (!previewEl) return;
+    previewEl.textContent = warehouseDialectPreview(warehouseId ?? 'snowflake', kind);
 }
 
 /** @param {string} value @returns {string[]} */

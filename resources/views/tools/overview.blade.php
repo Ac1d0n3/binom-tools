@@ -6,7 +6,7 @@
 @section('meta_description', 'Interactive governance workflows — dbt macros, PII policies, schema editors, and workflow examples you can copy into your stack.')
 
 @section('content')
-    <div class="tools-content tools-content--overview" data-overview-filter-root>
+    <div class="tools-content tools-content--overview tools-content--tools-overview" data-overview-filter-root>
         @if (config('tools.overview.show_title'))
             <h1
                 class="tools-page-title"
@@ -70,16 +70,6 @@
         @endphp
 
         <div class="tools-overview-sticky-header">
-            <div class="tools-overview-release">
-                <x-tools.release-meta variant="inline" />
-                <p class="tools-overview-release__note" data-i18n="tools.overviewBetaNote">
-                    Reference tools in active development.
-                </p>
-                <a href="{{ locale_route('about.show') }}" class="tools-overview-release__link" data-i18n="about.learnMore">
-                    About this project
-                </a>
-            </div>
-
             <div class="tools-overview-toolbar">
                 <label class="tools-overview-search">
                     <span class="sr-only" data-i18n="overview.searchLabel">Search</span>

@@ -186,6 +186,12 @@ const shellLabels = {
         'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
+        'home.sprintPlannerTitle': 'Sprint Planner',
+        'home.sprintPlannerLead':
+            'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
+        'home.featuredPlanner.title': 'Sprint Planner',
+        'home.featuredPlanner.description':
+            'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Inventare, KPI-Funde und offene Entscheidungen in nachvollziehbare Aufgaben überführen.',
         'home.viewAllTotal': 'insgesamt',
         'home.viewAllTools.title': 'Alle Workflows',
         'home.viewAllTools.description': 'Zur Governance-Übersicht mit Suche und allen Workflow-Beispielen.',
@@ -549,6 +555,12 @@ const shellLabels = {
         'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
             'Playbooks on data governance topics — step by step, from idea to implementation.',
+        'home.sprintPlannerTitle': 'Sprint Planner',
+        'home.sprintPlannerLead':
+            'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
+        'home.featuredPlanner.title': 'Sprint Planner',
+        'home.featuredPlanner.description':
+            'Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks.',
         'home.viewAllTotal': 'total',
         'home.viewAllTools.title': 'All workflows',
         'home.viewAllTools.description': 'Go to the governance overview with search and all workflow examples.',

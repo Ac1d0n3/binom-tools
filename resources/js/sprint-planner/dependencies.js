@@ -202,6 +202,13 @@ export function validateDependsOn(itemKey, rawDependsOn, opts) {
  */
 export function applySprintDependencyBlocks(items, formatWaitingOn) {
     const byKey = new Map(items.map((item) => [item.statusKey, item]));
+    const byId = new Map();
+    for (const item of items) {
+        const id = String(item.id || '').trim();
+        if (id && !byId.has(id)) {
+            byId.set(id, item);
+        }
+    }
 
     for (const item of items) {
         const deps = Array.isArray(item.dependsOn) ? item.dependsOn : [];
@@ -217,7 +224,7 @@ export function applySprintDependencyBlocks(items, formatWaitingOn) {
         /** @type {typeof items} */
         const openPreds = [];
         for (const depKey of deps) {
-            const pred = byKey.get(depKey);
+            const pred = findDependencyPredecessor(depKey, byKey, byId);
             if (!pred || pred.completed || pred.status === 'completed') {
                 continue;
             }
@@ -230,6 +237,24 @@ export function applySprintDependencyBlocks(items, formatWaitingOn) {
         item.dependencyBlocked = true;
         item.dependencyReason = formatWaitingOn(openPreds.map((p) => p.label));
     }
+}
+
+/**
+ * @param {string} depKey
+ * @param {Map<string, any>} byKey
+ * @param {Map<string, any>} byId
+ */
+function findDependencyPredecessor(depKey, byKey, byId) {
+    const key = String(depKey || '').trim();
+    if (!key) {
+        return null;
+    }
+    if (byKey.has(key)) {
+        return byKey.get(key);
+    }
+    // Template local ids ("identify-stakeholders") or trailing statusKey segment.
+    const localId = key.includes(':') ? key.split(':').pop() : key;
+    return byId.get(String(localId || '')) || null;
 }
 
 /**

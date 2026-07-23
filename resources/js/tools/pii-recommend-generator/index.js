@@ -21,9 +21,10 @@ import {
     readWarehouseFromSelect,
     splitCsv,
     updateSyncStatusEl,
+    updateWarehousePreview,
     writeWarehouseToForm,
 } from '../pii-shared/tool-utils.js';
-import { warehouseIds } from '../pii-shared/warehouse-templates.js';
+import { fillWarehouseSelect } from '../pii-shared/warehouse-templates.js';
 import {
     validateAccessConfig,
     validateContentHeuristicRules,
@@ -43,6 +44,7 @@ let storageWarning = null;
 
 const els = {
     warehouse: /** @type {HTMLSelectElement | null} */ (document.getElementById('rec-warehouse')),
+    warehousePreview: document.getElementById('rec-warehouse-preview'),
     defaultScope: /** @type {HTMLSelectElement} */ (document.getElementById('rec-default-scope')),
     useAccessRoles: /** @type {HTMLInputElement} */ (document.getElementById('rec-use-access-roles')),
     accessRolesPanel: document.getElementById('rec-access-roles-panel'),
@@ -138,6 +140,7 @@ function escapeAttr(value) {
 function readForm() {
     const warehouse = readWarehouseFromSelect(els.warehouse);
     if (warehouse) state.selectedWarehouse = warehouse;
+    updateWarehousePreview(els.warehousePreview, state.selectedWarehouse, 'regex');
     state.defaultScope = /** @type {import('../pii-shared/demo-model.js').PiiScope} */ (els.defaultScope.value);
     state.useAccessRoles = els.useAccessRoles.checked;
     state.defaultAccessRoles = splitCsv(els.defaultAccessRoles.value);
@@ -153,6 +156,7 @@ function readForm() {
 
 function writeForm() {
     writeWarehouseToForm(state, els.warehouse);
+    updateWarehousePreview(els.warehousePreview, state.selectedWarehouse, 'regex');
     els.defaultScope.value = state.defaultScope;
     els.useAccessRoles.checked = state.useAccessRoles;
     els.defaultAccessRoles.value = state.defaultAccessRoles.join(', ');
@@ -338,8 +342,7 @@ function bindEvents() {
 }
 
 function initWarehouseSelect() {
-    if (!els.warehouse) return;
-    els.warehouse.innerHTML = warehouseIds.map((id) => `<option value="${id}">${id}</option>`).join('');
+    fillWarehouseSelect(els.warehouse);
 }
 
 function initScopeSelect() {

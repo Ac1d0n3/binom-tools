@@ -2200,12 +2200,17 @@ function renderItemRow(item, sprint, instance, locale, workspace, effortModel = 
     srAssignee.textContent = resolveAssigneeName(item, workspace, locale) || spT('sp.report.unassigned');
     main.append(label, meta, srAssignee);
 
-    if (item.dependencyBlocked && item.dependencyReason) {
-        const waiting = document.createElement('p');
-        waiting.className = 'sp-item__dependency-waiting';
-        waiting.id = `${item.statusKey}-dependency`;
-        waiting.textContent = item.dependencyReason;
-        main.appendChild(waiting);
+    const dependencyLines = buildItemDependencyLines(item, sprint);
+    for (const line of dependencyLines) {
+        const el = document.createElement('p');
+        el.className = line.className;
+        if (line.id) {
+            el.id = line.id;
+        }
+        el.textContent = line.text;
+        main.appendChild(el);
+    }
+    if (item.dependencyBlocked) {
         li.classList.add('sp-item-wrap--waiting');
         row.classList.add('sp-item--waiting');
     }
@@ -2433,18 +2438,14 @@ function renderSprintDependencyMarker(sprint, sprints) {
 }
 
 function renderDependencyMarker(item, sprint) {
-    const deps = Array.isArray(item.dependsOn) ? item.dependsOn : [];
-    const items = [...(sprint.tasks || []), ...(sprint.deliverables || [])];
-    const byKey = new Map(items.map((entry) => [entry.statusKey, entry]));
-    const dependents = items.filter((candidate) => (
-        Array.isArray(candidate.dependsOn) && candidate.dependsOn.includes(item.statusKey)
-    ));
-    const isChain = deps.length > 0 || dependents.length > 0;
+    const predecessors = listItemPredecessors(item, sprint);
+    const dependents = listItemDependents(item, sprint);
+    const isChain = predecessors.length > 0 || dependents.length > 0;
     const marker = document.createElement('span');
     marker.className = `sp-item__dependency sp-item__dependency--${isChain ? 'chain' : 'parallel'}`;
     marker.innerHTML = iconSvg(isChain ? 'chain' : 'parallel');
-    const dependencyLabels = deps
-        .map((depKey) => byKey.get(depKey)?.label || depKey)
+    const dependencyLabels = predecessors
+        .map((entry) => entry.label || entry.id)
         .filter(Boolean);
     const dependentLabels = dependents
         .map((entry) => entry.label || entry.id)
@@ -2457,6 +2458,7 @@ function renderDependencyMarker(item, sprint) {
         waitingLabel: 'sp.deps.tooltipWaiting',
         predecessorLabel: 'sp.deps.tooltipPredecessor',
         chainLabel: 'sp.deps.tooltipChain',
+        dependsOnLabel: 'sp.deps.tooltipDependsOn',
     });
     marker.dataset.dependencyTooltip = tooltip;
     marker.setAttribute('aria-label', tooltip);
@@ -2464,10 +2466,124 @@ function renderDependencyMarker(item, sprint) {
     marker.title = tooltip;
     marker.dataset.dependencyType = 'item';
     marker.dataset.dependencySelf = item.statusKey;
-    marker.dataset.dependencyDeps = deps.join('|');
+    marker.dataset.dependencyDeps = predecessors.map((entry) => entry.statusKey).join('|');
     marker.dataset.dependencyDependents = dependents.map((entry) => entry.statusKey).join('|');
     bindDependencyHighlight(marker);
     return marker;
+}
+
+/**
+ * Items in this sprint that list `item` as a predecessor (outgoing edges).
+ * @param {import('../progress.js').ResolvedItem} item
+ * @param {ReturnType<typeof resolveSprints>[number]} sprint
+ * @returns {import('../progress.js').ResolvedItem[]}
+ */
+function listItemDependents(item, sprint) {
+    const items = [...(sprint.tasks || []), ...(sprint.deliverables || [])];
+    const selfKey = String(item.statusKey || '');
+    const selfId = String(item.id || localIdFromDependencyKey(selfKey));
+    return items.filter((candidate) => {
+        if (candidate.statusKey === selfKey) {
+            return false;
+        }
+        const deps = Array.isArray(candidate.dependsOn) ? candidate.dependsOn : [];
+        return deps.some((dep) => dependencyRefersTo(dep, selfKey, selfId));
+    });
+}
+
+/**
+ * @param {string} depKey
+ * @param {string} statusKeyValue
+ * @param {string} itemId
+ */
+function dependencyRefersTo(depKey, statusKeyValue, itemId) {
+    const value = String(depKey || '').trim();
+    if (!value) {
+        return false;
+    }
+    if (value === statusKeyValue) {
+        return true;
+    }
+    const localId = localIdFromDependencyKey(value);
+    return Boolean(itemId) && localId === itemId;
+}
+
+/**
+ * @param {string} key
+ */
+function localIdFromDependencyKey(key) {
+    const value = String(key || '');
+    return value.includes(':') ? value.split(':').pop() : value;
+}
+
+/**
+ * Items this item lists as predecessors (incoming edges).
+ * @param {import('../progress.js').ResolvedItem} item
+ * @param {ReturnType<typeof resolveSprints>[number]} sprint
+ * @returns {import('../progress.js').ResolvedItem[]}
+ */
+function listItemPredecessors(item, sprint) {
+    const items = [...(sprint.tasks || []), ...(sprint.deliverables || [])];
+    const byKey = new Map(items.map((entry) => [entry.statusKey, entry]));
+    const byId = new Map();
+    for (const entry of items) {
+        const id = String(entry.id || '').trim();
+        if (id && !byId.has(id)) {
+            byId.set(id, entry);
+        }
+    }
+    const deps = Array.isArray(item.dependsOn) ? item.dependsOn : [];
+    /** @type {import('../progress.js').ResolvedItem[]} */
+    const out = [];
+    const seen = new Set();
+    for (const depKey of deps) {
+        const pred = byKey.get(String(depKey || ''))
+            || byId.get(localIdFromDependencyKey(depKey));
+        if (!pred || seen.has(pred.statusKey)) {
+            continue;
+        }
+        seen.add(pred.statusKey);
+        out.push(pred);
+    }
+    return out;
+}
+
+/**
+ * Visible dependency lines under an item (both directions, always).
+ * @param {import('../progress.js').ResolvedItem} item
+ * @param {ReturnType<typeof resolveSprints>[number]} sprint
+ * @returns {Array<{text: string, className: string, id?: string}>}
+ */
+function buildItemDependencyLines(item, sprint) {
+    /** @type {Array<{text: string, className: string, id?: string}>} */
+    const lines = [];
+    const predecessors = listItemPredecessors(item, sprint);
+    if (predecessors.length) {
+        const open = predecessors.filter((entry) => (
+            !entry.completed && entry.status !== 'completed'
+        ));
+        const labels = predecessors.map((entry) => entry.label || entry.id).join(', ');
+        // Always keep the full inbound set visible (even when every predecessor is done).
+        // Use "Wartet auf" only while every listed predecessor is still open.
+        const stillFullyBlocked = open.length === predecessors.length;
+        lines.push({
+            text: stillFullyBlocked
+                ? spT('sp.deps.waitingOn', { labels })
+                : spT('sp.deps.dependsOn', { labels }),
+            className: open.length ? 'sp-item__dependency-waiting' : 'sp-item__dependency-depends',
+            id: open.length ? `${item.statusKey}-dependency` : undefined,
+        });
+    }
+    const dependents = listItemDependents(item, sprint);
+    if (dependents.length) {
+        lines.push({
+            text: spT('sp.deps.tooltipPredecessor', {
+                labels: dependents.map((entry) => entry.label || entry.id).join(', '),
+            }),
+            className: 'sp-item__dependency-unlocks',
+        });
+    }
+    return lines;
 }
 
 function bindDependencyHighlight(marker) {
@@ -2488,13 +2604,11 @@ function highlightDependencyTargets(marker) {
 
     marker.classList.add('sp-dependency-trigger--active');
     showDependencyTooltip(marker);
-    const directDependency = deps[deps.length - 1] || '';
-    const directDependent = dependents[0] || '';
-    if (directDependency) {
-        markDependencyNode(type, directDependency, 'dependency');
+    for (const key of deps) {
+        markDependencyNode(type, key, 'dependency');
     }
-    if (directDependent) {
-        markDependencyNode(type, directDependent, 'dependent');
+    for (const key of dependents) {
+        markDependencyNode(type, key, 'dependent');
     }
 }
 
@@ -2576,22 +2690,23 @@ function cssAttr(value) {
 }
 
 function dependencyTooltip(opts) {
-    if (opts.waitingReason) {
-        return opts.waitingReason;
-    }
     const deps = opts.dependencies || [];
     const dependents = opts.dependents || [];
-    if (deps.length && dependents.length) {
-        return spT(opts.chainLabel, {
-            dependencies: deps.join(', '),
-            dependents: dependents.join(', '),
-        });
-    }
+    /** @type {string[]} */
+    const parts = [];
     if (deps.length) {
-        return spT(opts.waitingLabel, { labels: deps.join(', ') });
+        // Full inbound set — do not fall back to waitingReason alone (that hid completed preds).
+        parts.push(spT(opts.dependsOnLabel || 'sp.deps.tooltipDependsOn', {
+            labels: deps.join(', '),
+        }));
+    } else if (opts.waitingReason) {
+        parts.push(String(opts.waitingReason));
     }
     if (dependents.length) {
-        return spT(opts.predecessorLabel, { labels: dependents.join(', ') });
+        parts.push(spT(opts.predecessorLabel, { labels: dependents.join(', ') }));
+    }
+    if (parts.length) {
+        return parts.join(' · ');
     }
     return opts.parallelLabel;
 }

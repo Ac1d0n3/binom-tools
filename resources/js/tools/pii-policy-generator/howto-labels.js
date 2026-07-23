@@ -26,7 +26,7 @@ export const piiHowtoLabels = {
         'pii.howto.overview.step9':
             'Nach Review hierher zurück — pii_details + pii-reviewed: true ist der Zielzustand.',
         'pii.howto.overview.tip':
-            'Tipp: Step 1 Makros müssen im Projekt liegen, bevor das Secure Model lauffähig ist.',
+            'Tipp: Step 1 Makros müssen im Projekt liegen, bevor das Secure Model lauffähig ist. Warehouse steuert nur Macro/Audit in Step 1 und 4 — das YAML hier bleibt warehouse-agnostisch.',
 
         'pii.howto.scenario.intro':
             'Das Zugriffsszenario bestimmt, wie pii_column_for_role() PII-Spalten pro Benutzerrolle ausgibt.',
@@ -98,7 +98,7 @@ export const piiHowtoLabels = {
         'pii.howto.macro.step4':
             'Dieses Tool erzeugt kein separates Macro mehr — vermeidet Duplikate.',
         'pii.howto.macro.tip':
-            'Nach Warehouse- oder Rollen-Änderung in Step 1: Makro neu kopieren.',
+            'Warehouse wirkt nur auf Macro (Step 1) und Content-Audit (Step 4). Schema-/Policy-YAML hier ändern sich bei Warehouse-Wechsel nicht — nach Änderung in Step 1 das Macro neu kopieren.',
 
         'pii.howto.policy.intro':
             'Die Policy-YAML ist eine Governance-Referenz für Audits und Dokumentation — nicht runtime-kritisch.',
@@ -145,7 +145,7 @@ export const piiHowtoLabels = {
         'pii.howto.overview.step9':
             'After review return here — pii_details + pii-reviewed: true is the target state.',
         'pii.howto.overview.tip':
-            'Tip: Step 1 macros must be in the project before the secure model runs.',
+            'Tip: Step 1 macros must be in the project before the secure model runs. Warehouse only affects macros/audits in steps 1 and 4 — YAML here stays warehouse-agnostic.',
 
         'pii.howto.scenario.intro':
             'The access scenario defines how pii_column_for_role() outputs PII columns per user role.',
@@ -217,7 +217,7 @@ export const piiHowtoLabels = {
         'pii.howto.macro.step4':
             'This tool no longer generates a separate macro — avoids duplication.',
         'pii.howto.macro.tip':
-            'After warehouse or role changes in step 1: re-copy the macro.',
+            'Warehouse only affects the macro (step 1) and content audit (step 4). Schema/policy YAML here does not change when you switch warehouse — re-copy the macro after changes in step 1.',
 
         'pii.howto.policy.intro':
             'Policy YAML is a governance reference for audits and documentation — not runtime-critical.',

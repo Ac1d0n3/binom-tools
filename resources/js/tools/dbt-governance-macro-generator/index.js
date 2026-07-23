@@ -19,9 +19,10 @@ import {
     readWarehouseFromSelect,
     splitCsv,
     updateSyncStatusEl,
+    updateWarehousePreview,
     writeWarehouseToForm,
 } from '../pii-shared/tool-utils.js';
-import { warehouseIds } from '../pii-shared/warehouse-templates.js';
+import { fillWarehouseSelect } from '../pii-shared/warehouse-templates.js';
 import { collectGeneratorIssues } from '../pii-shared/validation.js';
 import { mergeValidationTranslator } from '../pii-shared/validation-labels.js';
 import { renderValidatedOutputs } from '../pii-shared/validation-ui.js';
@@ -37,6 +38,7 @@ let storageWarning = null;
 
 const els = {
     warehouse: /** @type {HTMLSelectElement | null} */ (document.getElementById('gov-warehouse')),
+    warehousePreview: document.getElementById('gov-warehouse-preview'),
     useAccessRoles: /** @type {HTMLInputElement} */ (document.getElementById('gov-use-access-roles')),
     accessRolesPanel: document.getElementById('gov-access-roles-panel'),
     accessRulesPanel: document.getElementById('gov-access-rules-panel'),
@@ -65,6 +67,7 @@ function validationT(key, params = {}) {
 function readForm() {
     const warehouse = readWarehouseFromSelect(els.warehouse);
     if (warehouse) state.selectedWarehouse = warehouse;
+    updateWarehousePreview(els.warehousePreview, state.selectedWarehouse, 'mask');
     state.useAccessRoles = els.useAccessRoles.checked;
     state.defaultAccessRoles = splitCsv(els.defaultAccessRoles.value);
     state.accessRules = {
@@ -77,6 +80,7 @@ function readForm() {
 
 function writeForm() {
     writeWarehouseToForm(state, els.warehouse);
+    updateWarehousePreview(els.warehousePreview, state.selectedWarehouse, 'mask');
     els.useAccessRoles.checked = state.useAccessRoles;
     els.defaultAccessRoles.value = state.defaultAccessRoles.join(', ');
     els.maskedRoles.value = state.accessRules.masked.join(', ');
@@ -164,10 +168,7 @@ function hydrateFromStorage() {
 }
 
 function initWarehouseSelect() {
-    if (!els.warehouse) return;
-    els.warehouse.innerHTML = warehouseIds
-        .map((id) => `<option value="${id}">${id}</option>`)
-        .join('');
+    fillWarehouseSelect(els.warehouse);
 }
 
 function boot() {

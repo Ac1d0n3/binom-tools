@@ -2321,11 +2321,17 @@ html.bn-theme-blue-water-dark .sp-status-mark--on_hold {
     color: #b45309;
 }
 
-.sp-item__dependency-waiting {
+.sp-item__dependency-waiting,
+.sp-item__dependency-depends,
+.sp-item__dependency-unlocks {
     margin: 0.2rem 0 0;
     font-size: 0.8rem;
     line-height: 1.35;
     color: color-mix(in srgb, currentColor 62%, transparent);
+}
+
+.sp-item__dependency-unlocks {
+    margin-top: 0.15rem;
 }
 
 .sp-item--waiting .sp-item__check:disabled {

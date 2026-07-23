@@ -66,3 +66,31 @@ export function normalizeWarehouseId(id) {
 export function getWarehouseTemplate(id) {
     return warehouseTemplates[normalizeWarehouseId(id)];
 }
+
+/**
+ * Populate a warehouse &lt;select&gt; with human-readable labels (value stays the id).
+ * @param {HTMLSelectElement | null} selectEl
+ */
+export function fillWarehouseSelect(selectEl) {
+    if (!selectEl) return;
+    const current = selectEl.value;
+    selectEl.innerHTML = warehouseIds
+        .map((id) => `<option value="${id}">${warehouseTemplates[id].label}</option>`)
+        .join('');
+    if (current && warehouseIds.includes(/** @type {WarehouseId} */ (current))) {
+        selectEl.value = current;
+    }
+}
+
+/**
+ * One-line dialect sample for UI preview (mask expression or regex match).
+ * @param {string} id
+ * @param {'mask' | 'regex'} [kind='mask']
+ */
+export function warehouseDialectPreview(id, kind = 'mask') {
+    const wh = getWarehouseTemplate(id);
+    if (kind === 'regex') {
+        return wh.regexMatch('val', '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+    }
+    return wh.maskExpr('column_name');
+}

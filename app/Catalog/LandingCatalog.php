@@ -52,4 +52,5 @@ final class LandingCatalog
     {
         return count($this->playbooks->allForIndex());
     }
+
 }

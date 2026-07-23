@@ -9,6 +9,8 @@ const labels = {
             'Schritt 1/4: Laufzeit-Makros und Tests für dein dbt-Projekt kopieren — Einstellungen werden mit den anderen Setup-Tools geteilt.',
         'govMacro.warehouse.title': 'Warehouse',
         'govMacro.warehouse.description': 'Steuert SQL-Syntax in den generierten Makros.',
+        'govMacro.warehouse.hint':
+            'Ändert Mask- und Null-SQL in pii_governance.sql. Vorschau (pii_mask):',
         'govMacro.access.title': 'Access-Konfiguration',
         'govMacro.access.useRoles': 'Access Roles verwenden',
         'govMacro.access.defaultRoles': 'Default access_roles',
@@ -29,6 +31,8 @@ const labels = {
             'Step 1/4: Copy runtime macros and tests into your dbt project — settings are shared with other setup tools.',
         'govMacro.warehouse.title': 'Warehouse',
         'govMacro.warehouse.description': 'Controls SQL syntax in generated macros.',
+        'govMacro.warehouse.hint':
+            'Changes mask and null SQL in pii_governance.sql. Preview (pii_mask):',
         'govMacro.access.title': 'Access configuration',
         'govMacro.access.useRoles': 'Use access roles',
         'govMacro.access.defaultRoles': 'Default access_roles',

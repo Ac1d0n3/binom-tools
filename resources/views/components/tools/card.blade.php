@@ -2,6 +2,8 @@
     'href',
     'title',
     'description',
+    'titleKey' => null,
+    'descriptionKey' => null,
     'meta' => null,
     'icon' => '🔧',
     'accent' => 'primary',
@@ -46,7 +48,7 @@
         </div>
         <div class="tools-card__body">
             <div class="tools-card__title-row">
-                <h3 class="tools-card__title">{{ $title }}</h3>
+                <h3 class="tools-card__title" @if ($titleKey) data-i18n="{{ $titleKey }}" @endif>{{ $title }}</h3>
                 @if ($example)
                     <span class="tools-card__badge" data-i18n="card.exampleBadge">Example</span>
                 @endif
@@ -54,7 +56,7 @@
             @if ($meta)
                 <p class="tools-card__meta">{{ $meta }}</p>
             @endif
-            <p class="tools-card__desc">{{ $description }}</p>
+            <p class="tools-card__desc" @if ($descriptionKey) data-i18n="{{ $descriptionKey }}" @endif>{{ $description }}</p>
         </div>
         @if ($external)
             <i class="fa-solid fa-arrow-up-right-from-square tools-card__arrow" aria-hidden="true"></i>

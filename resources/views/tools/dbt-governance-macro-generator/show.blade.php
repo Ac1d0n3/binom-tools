@@ -38,9 +38,11 @@
                     <p data-i18n="govMacro.howto.warehouse.tip"></p>
                 </x-tools.collapsible-info>
                 <label class="pii-policy-field">
-                    <span>Warehouse</span>
+                    <span data-i18n="govMacro.warehouse.title">Warehouse</span>
                     <select id="gov-warehouse" class="pii-policy-input"></select>
                 </label>
+                <p class="pii-policy-field-hint" data-i18n="govMacro.warehouse.hint"></p>
+                <pre id="gov-warehouse-preview" class="pii-warehouse-preview" aria-live="polite"></pre>
             </section>
 
             <section class="pii-policy-panel" aria-labelledby="gov-access-title">

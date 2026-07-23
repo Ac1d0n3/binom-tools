@@ -94,7 +94,7 @@ deliverables:
   - id: initial-mandate
     label: Initialen Auftrag dokumentiert
     plannedMinutes: 420
-    dependsOn: align-management-expectations, identify-stakeholders
+    dependsOn: align-management-expectations
     helpText: |
       Deliverable „Initialen Auftrag dokumentiert“: halte es kurz, nachvollziehbar und mit Owner/Datum.
       Nutze es als Beleg für Entscheidungen — nicht als Ablage für Rohnotizen.
