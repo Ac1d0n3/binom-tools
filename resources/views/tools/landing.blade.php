@@ -12,6 +12,65 @@
 
         <div class="tools-content">
             <section class="tools-section">
+                <h2 class="tools-section__title" data-i18n="home.hubsTitle">Hubs</h2>
+                <p class="tools-section__lead" data-i18n="home.hubsLead">
+                    Entry points for stories, vendor resources, compliance, sprint planning, and interactive governance workflows.
+                </p>
+                <div class="tools-card-grid">
+                    <x-tools.card
+                        :href="locale_route('playbooks.index')"
+                        title="Stories"
+                        description="Step-by-step governance playbooks — from idea to implementation."
+                        title-key="home.hub.stories.title"
+                        description-key="home.hub.stories.description"
+                        icon="fa-book-open"
+                        accent="primary"
+                        card-id="hub-stories"
+                    />
+                    <x-tools.card
+                        :href="locale_route('resources.index')"
+                        title="Resources"
+                        description="Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency."
+                        title-key="home.hub.resources.title"
+                        description-key="home.hub.resources.description"
+                        icon="fa-link"
+                        accent="accent"
+                        card-id="hub-resources"
+                    />
+                    <x-tools.card
+                        :href="locale_route('compliance.index')"
+                        title="Compliance"
+                        description="Frameworks and regulations for data, privacy, security and AI — plus a consultant certification roadmap."
+                        title-key="home.hub.compliance.title"
+                        description-key="home.hub.compliance.description"
+                        icon="fa-scale-balanced"
+                        accent="accent"
+                        card-id="hub-compliance"
+                    />
+                    <x-tools.card
+                        :href="locale_route('sprint-planner.index')"
+                        title="Sprint Planner"
+                        description="Plan BI and governance work from templates, attach tool exports, and turn findings into trackable tasks."
+                        title-key="home.hub.sprintPlanner.title"
+                        description-key="home.hub.sprintPlanner.description"
+                        icon="fa-list-check"
+                        accent="primary"
+                        card-id="hub-sprint-planner"
+                    />
+                    <x-tools.card
+                        :href="locale_route('tools.overview')"
+                        title="Binom-Tools"
+                        description="Interactive reference workflows — step by step, copy-paste ready."
+                        title-key="home.hub.tools.title"
+                        description-key="home.hub.tools.description"
+                        icon="fa-screwdriver-wrench"
+                        accent="primary"
+                        card-id="hub-tools"
+                    />
+                </div>
+            </section>
+
+            <section class="tools-section">
                 <h2 class="tools-section__title" data-i18n="home.storiesTitle">Governance stories</h2>
                 <p class="tools-section__lead" data-i18n="home.storiesLead">
                     Playbooks on data governance topics — step by step, from idea to implementation.
@@ -55,7 +114,7 @@
             @endif
 
             <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.toolsTitle">Governance</h2>
+                <h2 class="tools-section__title" data-i18n="home.toolsTitle">Binom-Tools</h2>
                 <p class="tools-section__lead" data-i18n="home.workflowsLead">
                     Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
                 </p>
@@ -79,38 +138,6 @@
                         description-key="home.viewAllTools.description"
                         :count="$toolCount"
                         icon="fa-screwdriver-wrench"
-                    />
-                </div>
-            </section>
-
-            <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.sprintPlannerTitle">Sprint Planner</h2>
-                <div class="tools-card-grid tools-card-grid--wide-feature">
-                    <x-tools.card
-                        :href="locale_route('sprint-planner.index')"
-                        title="Sprint Planner"
-                        description="Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks."
-                        title-key="home.featuredPlanner.title"
-                        description-key="home.featuredPlanner.description"
-                        icon="fa-list-check"
-                        accent="primary"
-                        card-id="featured-sprint-planner"
-                    />
-                </div>
-            </section>
-
-            <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.resourcesTitle">Vendor resources</h2>
-                <p class="tools-section__lead" data-i18n="home.resourcesLead">
-                    Official help and governance docs from product vendors — filterable by product.
-                </p>
-                <div class="tools-card-grid">
-                    <x-tools.overview-card
-                        :href="locale_route('resources.index')"
-                        title-key="home.viewAllResources.title"
-                        description-key="home.viewAllResources.description"
-                        :count="count(config('vendor-resources.products', []))"
-                        icon="fa-link"
                     />
                 </div>
             </section>

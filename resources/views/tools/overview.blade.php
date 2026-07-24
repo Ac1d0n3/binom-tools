@@ -2,7 +2,7 @@
     'mainClass' => 'tools-shell__main--overview',
 ])
 
-@section('title', 'Governance — ' . config('app.name'))
+@section('title', 'Binom-Tools — ' . config('app.name'))
 @section('meta_description', 'Interactive governance workflows — dbt macros, PII policies, schema editors, and workflow examples you can copy into your stack.')
 
 @section('content')
@@ -16,12 +16,13 @@
                 @else
                     data-i18n="tools.overviewTitle"
                 @endif
-            >{{ config('tools.overview.title_en') ?: 'Governance' }}</h1>
+            >{{ config('tools.overview.title_en') ?: 'Binom-Tools' }}</h1>
         @endif
 
         @if (config('tools.overview.show_lead'))
             <p
                 class="tools-page-lead"
+                data-hub-lead
                 @if (filled(config('tools.overview.lead_en')) || filled(config('tools.overview.lead_de')))
                     data-text-de="{{ config('tools.overview.lead_de') ?? config('tools.overview.lead_en') }}"
                     data-text-en="{{ config('tools.overview.lead_en') ?? config('tools.overview.lead_de') }}"

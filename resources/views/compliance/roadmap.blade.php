@@ -14,7 +14,7 @@
                 </a>
             </p>
             <h1 class="tools-page-title" data-i18n="compliance.roadmapTitle">Consultant certification roadmap</h1>
-            <p class="tools-page-lead compliance-hub-sticky__lead" data-i18n="compliance.roadmapLead">
+            <p class="tools-page-lead compliance-hub-sticky__lead" data-hub-lead data-i18n="compliance.roadmapLead">
                 Which credentials help as a data/governance consultant — by region and learning phase. Orientation only.
             </p>
             <p class="compliance-hub-disclaimer" data-i18n="compliance.roadmapDisclaimer">

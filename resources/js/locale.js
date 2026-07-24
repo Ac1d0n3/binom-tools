@@ -118,7 +118,7 @@ export function applyLocaleToDocument(locale) {
 
 const shellLabels = {
     de: {
-        'nav.tools': 'Governance',
+        'nav.tools': 'Binom-Tools',
         'nav.home': 'Startseite',
         'nav.overview': 'Übersicht',
         'nav.openMenu': 'Navigation öffnen',
@@ -176,19 +176,37 @@ const shellLabels = {
             'Stories zu Data Governance — von PII, Qualität und Lineage bis KPIs und Ownership. Plus interaktive Governance-Workflows, versionierbar wie Code.',
         'home.hero.notice':
             'Klonbar als Starter-Template: eigene Stories, Workflows und Branding für euren internen Help Hub.',
-        'home.hero.ctaWorkflows': 'Governance öffnen',
+        'home.hero.ctaWorkflows': 'Binom-Tools öffnen',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Design-Konzept von',
         'home.workflowsTitle': 'Workflow-Beispiele',
         'home.workflowsLead':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
-        'home.toolsTitle': 'Governance',
+        'home.toolsTitle': 'Binom-Tools',
         'home.aiTitle': 'AI-Tools',
         'home.aiLead':
             'Prompts erstellen und vor dem Senden an externe KI-Tools anonymisieren.',
         'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
+        'home.hubsTitle': 'Hubs',
+        'home.hubsLead':
+            'Einstiege für Stories, Hersteller-Ressourcen, Compliance, Sprint-Planung und interaktive Governance-Workflows.',
+        'home.hub.stories.title': 'Stories',
+        'home.hub.stories.description':
+            'Schrittweise Governance-Playbooks — von der Idee bis zur Umsetzung.',
+        'home.hub.resources.title': 'Ressourcen',
+        'home.hub.resources.description':
+            'Offizielle Hilfe, Governance, Lernpfade, Cloud-Residenz (DSGVO) und Compliance — Filter nach Hersteller, Familie, SaaS/Open Source oder Residenz.',
+        'home.hub.compliance.title': 'Compliance',
+        'home.hub.compliance.description':
+            'Frameworks und Regeln zu Daten, Privacy, Security und KI — plus Zertifizierungs-Roadmap für Consultants.',
+        'home.hub.sprintPlanner.title': 'Sprint Planner',
+        'home.hub.sprintPlanner.description':
+            'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Funde in nachvollziehbare Aufgaben überführen.',
+        'home.hub.tools.title': 'Binom-Tools',
+        'home.hub.tools.description':
+            'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
         'home.sprintPlannerTitle': 'Sprint Planner',
         'home.sprintPlannerLead':
             'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
@@ -269,7 +287,7 @@ const shellLabels = {
         'compliance.roadmapWhy': 'Warum das hilft',
         'compliance.roadmapNeed': 'Was du brauchst',
         'compliance.roadmapCta': 'Zertifizierungs-Roadmap für Consultants →',
-        'tools.overviewTitle': 'Governance',
+        'tools.overviewTitle': 'Binom-Tools',
         'tools.overviewLead': 'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
         'overview.searchLabel': 'Suchen',
         'overview.searchPlaceholder': 'Suchen…',
@@ -302,6 +320,7 @@ const shellLabels = {
         'settings.openMenu': 'Einstellungen',
         'settings.fullWidth': 'Volle Breite',
         'settings.hideNavigation': 'Navigation ausblenden',
+        'settings.hideHubLeads': 'Hub-Infos ausblenden',
         'settings.hideSidebars': 'Sidebars ausblenden',
         'playbooks.focusExpand': 'Sidebars ausblenden',
         'playbooks.focusCollapse': 'Sidebars einblenden',
@@ -683,6 +702,7 @@ const shellLabels = {
         'nav.storiesMore': '+ {{count}} weitere Stories',
         'nav.resources': 'Ressourcen',
         'nav.resourcesOverview': 'Übersicht',
+        'nav.hubs': 'Hubs',
         'nav.compliance': 'Compliance',
         'nav.complianceOverview': 'Übersicht',
         'nav.complianceRoadmap': 'Zertifizierungs-Roadmap',
@@ -872,7 +892,7 @@ const shellLabels = {
         'legal.impressum.responsible.body': 'Thomas Lindackers\nVollckmarstr 28\n45219 Essen',
     },
     en: {
-        'nav.tools': 'Governance',
+        'nav.tools': 'Binom-Tools',
         'nav.home': 'Home',
         'nav.overview': 'Overview',
         'nav.openMenu': 'Open navigation',
@@ -930,19 +950,37 @@ const shellLabels = {
             'Stories on data governance — from PII, quality, and lineage to KPIs and ownership. Plus interactive governance workflows, versioned like code.',
         'home.hero.notice':
             'Clone as a starter template: your own stories, workflows, and branding for an internal help hub.',
-        'home.hero.ctaWorkflows': 'Open governance',
+        'home.hero.ctaWorkflows': 'Open Binom-Tools',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Design concept by',
         'home.workflowsTitle': 'Workflow examples',
         'home.workflowsLead':
             'Interactive reference workflows — step by step, copy-paste ready.',
-        'home.toolsTitle': 'Governance',
+        'home.toolsTitle': 'Binom-Tools',
         'home.aiTitle': 'AI tools',
         'home.aiLead':
             'Build prompts and sanitize them before sending to external AI tools.',
         'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
             'Playbooks on data governance topics — step by step, from idea to implementation.',
+        'home.hubsTitle': 'Hubs',
+        'home.hubsLead':
+            'Entry points for stories, vendor resources, compliance, sprint planning, and interactive governance workflows.',
+        'home.hub.stories.title': 'Stories',
+        'home.hub.stories.description':
+            'Step-by-step governance playbooks — from idea to implementation.',
+        'home.hub.resources.title': 'Resources',
+        'home.hub.resources.description':
+            'Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.',
+        'home.hub.compliance.title': 'Compliance',
+        'home.hub.compliance.description':
+            'Frameworks and regulations for data, privacy, security and AI — plus a consultant certification roadmap.',
+        'home.hub.sprintPlanner.title': 'Sprint Planner',
+        'home.hub.sprintPlanner.description':
+            'Plan BI and governance work from templates, attach tool exports, and turn findings into trackable tasks.',
+        'home.hub.tools.title': 'Binom-Tools',
+        'home.hub.tools.description':
+            'Interactive reference workflows — step by step, copy-paste ready.',
         'home.sprintPlannerTitle': 'Sprint Planner',
         'home.sprintPlannerLead':
             'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
@@ -1023,7 +1061,7 @@ const shellLabels = {
         'compliance.roadmapWhy': 'Why it helps',
         'compliance.roadmapNeed': 'What you need',
         'compliance.roadmapCta': 'Consultant certification roadmap →',
-        'tools.overviewTitle': 'Governance',
+        'tools.overviewTitle': 'Binom-Tools',
         'tools.overviewLead': 'Interactive reference workflows — step by step, copy-paste ready.',
         'overview.searchLabel': 'Search',
         'overview.searchPlaceholder': 'Search…',
@@ -1056,6 +1094,7 @@ const shellLabels = {
         'settings.openMenu': 'Settings',
         'settings.fullWidth': 'Full width',
         'settings.hideNavigation': 'Hide navigation',
+        'settings.hideHubLeads': 'Hide hub intros',
         'settings.hideSidebars': 'Hide sidebars',
         'playbooks.focusExpand': 'Hide sidebars',
         'playbooks.focusCollapse': 'Show sidebars',
@@ -1437,6 +1476,7 @@ const shellLabels = {
         'nav.storiesMore': '+ {{count}} more stories',
         'nav.resources': 'Resources',
         'nav.resourcesOverview': 'Overview',
+        'nav.hubs': 'Hubs',
         'nav.compliance': 'Compliance',
         'nav.complianceOverview': 'Overview',
         'nav.complianceRoadmap': 'Certification roadmap',

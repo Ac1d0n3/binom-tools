@@ -162,9 +162,8 @@ class VendorResourcesPageTest extends TestCase
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertSee('data-i18n="home.resourcesTitle"', false);
+        $response->assertSee('data-i18n="home.hub.resources.title"', false);
         $response->assertSee(route('resources.index'), false);
-        $response->assertSee('data-i18n="home.viewAllResources.title"', false);
     }
 
     public function test_sidebar_includes_resources_nav(): void
@@ -172,7 +171,8 @@ class VendorResourcesPageTest extends TestCase
         $response = $this->get('/resources');
 
         $response->assertOk();
+        $response->assertSee('data-i18n="nav.hubs"', false);
         $response->assertSee('data-i18n="nav.resources"', false);
-        $response->assertSee('data-i18n="nav.resourcesOverview"', false);
+        $response->assertSee('data-hub-lead', false);
     }
 }

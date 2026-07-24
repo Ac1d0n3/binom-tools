@@ -11,7 +11,7 @@ final class LandingCatalog
     public const TOOLS_PREVIEW_LIMIT = 5;
 
     /** Max story cards on the home page (next card is “View all stories”). */
-    public const STORIES_PREVIEW_LIMIT = 5;
+    public const STORIES_PREVIEW_LIMIT = 3;
 
     public function __construct(
         private readonly PlaybookRepository $playbooks,

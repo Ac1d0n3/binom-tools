@@ -311,12 +311,14 @@ html:has(.tools-shell__main--sprint-planner) body {
     gap: 0.15rem;
 }
 
-.tools-header__settings {
+.tools-header__settings,
+.tools-header__account {
     position: relative;
     flex-shrink: 0;
 }
 
-.tools-header__settings-menu {
+.tools-header__settings-menu,
+.tools-header__account-menu {
     position: absolute;
     top: calc(100% + 0.35rem);
     right: 0;
@@ -327,6 +329,10 @@ html:has(.tools-shell__main--sprint-planner) body {
     border-radius: 10px;
     background: var(--content-background-color);
     box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+}
+
+.tools-header__account-menu {
+    min-width: 12.5rem;
 }
 
 .tools-header__settings-option {
@@ -352,6 +358,108 @@ html:has(.tools-shell__main--sprint-planner) body {
     margin: 0;
     accent-color: var(--theme-color-primary);
     flex-shrink: 0;
+}
+
+.tools-header__avatar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 999px;
+}
+
+.tools-header__avatar-toggle:hover .tools-header__avatar,
+.tools-header__avatar-toggle[aria-expanded="true"] .tools-header__avatar {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-color-primary) 35%, transparent);
+}
+
+.tools-header__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--tools-avatar-bg, #2563eb);
+    color: var(--tools-avatar-fg, #fff);
+    border: var(--tools-avatar-border, 2px solid transparent);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    user-select: none;
+}
+
+.tools-header__avatar--icon {
+    font-size: 0;
+}
+
+.tools-header__avatar-icon {
+    display: block;
+    width: 1.05rem;
+    height: 1.05rem;
+    background-color: currentColor;
+    mask-image: var(--tools-avatar-mask);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-image: var(--tools-avatar-mask);
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+}
+
+.tools-header__account-menu-label {
+    padding: 0.45rem 0.65rem 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--content-font-color-muted, color-mix(in srgb, var(--content-font-color) 65%, transparent));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tools-header__account-menu-form {
+    margin: 0;
+}
+
+.tools-header__account-menu-item {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0.5rem 0.65rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--content-font-color);
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.tools-header__account-menu-item:hover {
+    background: var(--state-layer-hover);
+}
+
+.tools-header__account-menu-item--active {
+    background: var(--state-layer-hover);
+    font-weight: 600;
+}
+
+.tools-header__account-menu-item--danger {
+    color: var(--theme-color-danger, #b91c1c);
+}
+
+html[data-hide-hub-leads="true"] [data-hub-lead] {
+    display: none !important;
 }
 
 .tools-icon-button {

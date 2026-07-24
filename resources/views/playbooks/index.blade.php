@@ -33,6 +33,7 @@
                 @if (config('playbooks.overview.show_lead'))
                     <p
                         class="tools-page-lead"
+                        data-hub-lead
                         @if (filled(config('playbooks.overview.lead_en')) || filled(config('playbooks.overview.lead_de')))
                             data-text-de="{{ config('playbooks.overview.lead_de') ?? config('playbooks.overview.lead_en') }}"
                             data-text-en="{{ config('playbooks.overview.lead_en') ?? config('playbooks.overview.lead_de') }}"

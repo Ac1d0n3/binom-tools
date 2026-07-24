@@ -471,7 +471,7 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
 
         $toolsNav = (string) str($response->getContent())
-            ->after('data-i18n="nav.tools">Governance</p>')
+            ->after('data-i18n="nav.tools">Binom-Tools</p>')
             ->before('</aside>');
 
         $this->assertStringContainsString('tools-sidenav__accordion', $toolsNav);
@@ -505,7 +505,7 @@ class ToolsPagesTest extends TestCase
 
         $storiesNav = (string) str($response->getContent())
             ->after('data-i18n="nav.stories">Stories</p>')
-            ->before('data-i18n="nav.tools">Governance</p>');
+            ->before('data-i18n="nav.hubs">Hubs</p>');
 
         $storyLinkCount = substr_count($storiesNav, 'data-playbook-nav-title');
         $this->assertLessThanOrEqual(\App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT, $storyLinkCount);
@@ -517,6 +517,15 @@ class ToolsPagesTest extends TestCase
             $response->assertSee('data-i18n-count="'.$remaining.'"', false);
             $response->assertSee(route('playbooks.index'), false);
         }
+
+        $hubsNav = (string) str($response->getContent())
+            ->after('data-i18n="nav.hubs">Hubs</p>')
+            ->before('data-i18n="nav.tools">Binom-Tools</p>');
+        $this->assertStringContainsString('data-i18n="nav.resources"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.compliance"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.sprintPlanner"', $hubsNav);
+        $this->assertStringNotContainsString('data-i18n="nav.sprintPlannerPlans"', $hubsNav);
+        $this->assertStringNotContainsString('data-i18n="nav.account"', $hubsNav);
     }
 
     public function test_legacy_tool_urls_remain_available(): void
@@ -543,6 +552,25 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-header-settings', false);
         $response->assertSee('data-shell-full-width-toggle', false);
         $response->assertSee('data-i18n="settings.fullWidth"', false);
+        $response->assertSee('data-shell-hide-hub-leads-toggle', false);
+        $response->assertSee('data-i18n="settings.hideHubLeads"', false);
         $response->assertSee('dataset.shellFullWidth', false);
+        $response->assertSee('dataset.hideHubLeads', false);
+    }
+
+    public function test_landing_page_shows_hub_overview(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('data-i18n="home.hubsTitle"', false);
+        $response->assertSee('data-i18n="home.hub.stories.title"', false);
+        $response->assertSee('data-i18n="home.hub.resources.title"', false);
+        $response->assertSee('data-i18n="home.hub.compliance.title"', false);
+        $response->assertSee('data-i18n="home.hub.sprintPlanner.title"', false);
+        $response->assertSee('data-i18n="home.hub.tools.title"', false);
+        $response->assertSee(route('resources.index'), false);
+        $response->assertSee(route('compliance.index'), false);
+        $response->assertSee(route('sprint-planner.index'), false);
     }
 }

@@ -9,7 +9,7 @@
     <div class="tools-content tools-content--overview tools-content--compliance" data-overview-filter-root>
         <div class="tools-overview-sticky-header compliance-hub-sticky">
             <h1 class="tools-page-title" data-i18n="compliance.indexTitle">Compliance</h1>
-            <p class="tools-page-lead compliance-hub-sticky__lead" data-i18n="compliance.indexLead">
+            <p class="tools-page-lead compliance-hub-sticky__lead" data-hub-lead data-i18n="compliance.indexLead">
                 Frameworks and regulations that shape data, privacy, security and AI governance — purpose, key rules and official sources.
             </p>
             <p class="compliance-hub-disclaimer" data-i18n="compliance.disclaimer">

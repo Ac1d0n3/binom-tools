@@ -2,6 +2,7 @@ import { getLocale } from './locale.js';
 
 const FULL_WIDTH_STORAGE_KEY = 'binom-tools-shell-full-width';
 const SIDEBAR_COLLAPSED_STORAGE_KEY = 'binom-tools-shell-sidebar-collapsed';
+const HIDE_HUB_LEADS_STORAGE_KEY = 'binom-tools-hide-hub-leads';
 const PLAYBOOK_FOCUS_STORAGE_KEY = 'binom-tools-playbook-focus';
 const PLAYBOOK_TOC_OPEN_STORAGE_KEY = 'binom-tools-playbook-toc-open';
 
@@ -13,6 +14,11 @@ export function getShellFullWidth() {
 /** @returns {boolean} */
 export function getShellSidebarCollapsed() {
     return localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === 'true';
+}
+
+/** @returns {boolean} */
+export function getHideHubLeads() {
+    return localStorage.getItem(HIDE_HUB_LEADS_STORAGE_KEY) === 'true';
 }
 
 /** @returns {boolean} */
@@ -63,6 +69,17 @@ export function applyShellSidebarCollapsed(collapsed) {
     document.querySelectorAll('[data-shell-sidebar-toggle]').forEach((input) => {
         if (input instanceof HTMLInputElement) {
             input.checked = collapsed;
+        }
+    });
+}
+
+/** @param {boolean} enabled */
+export function applyHideHubLeads(enabled) {
+    document.documentElement.dataset.hideHubLeads = enabled ? 'true' : 'false';
+
+    document.querySelectorAll('[data-shell-hide-hub-leads-toggle]').forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+            input.checked = enabled;
         }
     });
 }
@@ -170,6 +187,13 @@ export function setShellSidebarCollapsed(collapsed) {
 }
 
 /** @param {boolean} enabled */
+export function setHideHubLeads(enabled) {
+    localStorage.setItem(HIDE_HUB_LEADS_STORAGE_KEY, enabled ? 'true' : 'false');
+    applyHideHubLeads(enabled);
+    window.dispatchEvent(new CustomEvent('binom-tools:shell-layout', { detail: { hideHubLeads: enabled } }));
+}
+
+/** @param {boolean} enabled */
 export function setPlaybookFocus(enabled) {
     localStorage.setItem(PLAYBOOK_FOCUS_STORAGE_KEY, enabled ? 'true' : 'false');
     // Entering focus: collapse TOC so reading starts clean; list button can reopen it.
@@ -194,10 +218,15 @@ export function setPlaybookTocOpen(enabled) {
     window.dispatchEvent(new CustomEvent('binom-tools:locale', { detail: { locale } }));
 }
 
-function closeSettingsMenu() {
-    const root = document.querySelector('[data-header-settings]');
-    const toggle = root?.querySelector('[data-header-settings-toggle]');
-    const menu = root?.querySelector('[data-header-settings-menu]');
+/**
+ * @param {string} rootSelector
+ * @param {string} toggleSelector
+ * @param {string} menuSelector
+ */
+function closeMenu(rootSelector, toggleSelector, menuSelector) {
+    const root = document.querySelector(rootSelector);
+    const toggle = root?.querySelector(toggleSelector);
+    const menu = root?.querySelector(menuSelector);
 
     if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) {
         return;
@@ -207,10 +236,15 @@ function closeSettingsMenu() {
     toggle.setAttribute('aria-expanded', 'false');
 }
 
-function openSettingsMenu() {
-    const root = document.querySelector('[data-header-settings]');
-    const toggle = root?.querySelector('[data-header-settings-toggle]');
-    const menu = root?.querySelector('[data-header-settings-menu]');
+/**
+ * @param {string} rootSelector
+ * @param {string} toggleSelector
+ * @param {string} menuSelector
+ */
+function openMenu(rootSelector, toggleSelector, menuSelector) {
+    const root = document.querySelector(rootSelector);
+    const toggle = root?.querySelector(toggleSelector);
+    const menu = root?.querySelector(menuSelector);
 
     if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) {
         return;
@@ -220,18 +254,42 @@ function openSettingsMenu() {
     toggle.setAttribute('aria-expanded', 'true');
 }
 
-function toggleSettingsMenu() {
-    const menu = document.querySelector('[data-header-settings-menu]');
+/**
+ * @param {string} rootSelector
+ * @param {string} toggleSelector
+ * @param {string} menuSelector
+ */
+function toggleMenu(rootSelector, toggleSelector, menuSelector) {
+    const menu = document.querySelector(menuSelector);
     if (menu instanceof HTMLElement && menu.hidden) {
-        openSettingsMenu();
+        openMenu(rootSelector, toggleSelector, menuSelector);
     } else {
-        closeSettingsMenu();
+        closeMenu(rootSelector, toggleSelector, menuSelector);
     }
+}
+
+function closeSettingsMenu() {
+    closeMenu('[data-header-settings]', '[data-header-settings-toggle]', '[data-header-settings-menu]');
+}
+
+function closeAccountMenu() {
+    closeMenu('[data-header-account]', '[data-header-account-toggle]', '[data-header-account-menu]');
+}
+
+function toggleSettingsMenu() {
+    closeAccountMenu();
+    toggleMenu('[data-header-settings]', '[data-header-settings-toggle]', '[data-header-settings-menu]');
+}
+
+function toggleAccountMenu() {
+    closeSettingsMenu();
+    toggleMenu('[data-header-account]', '[data-header-account-toggle]', '[data-header-account-menu]');
 }
 
 export function initShellLayoutControls() {
     applyShellFullWidth(getShellFullWidth());
     applyShellSidebarCollapsed(getShellSidebarCollapsed());
+    applyHideHubLeads(getHideHubLeads());
     // First visit: TOC open by default when preference was never stored.
     if (localStorage.getItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY) === null) {
         localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'true');
@@ -241,6 +299,11 @@ export function initShellLayoutControls() {
     document.querySelector('[data-header-settings-toggle]')?.addEventListener('click', (event) => {
         event.stopPropagation();
         toggleSettingsMenu();
+    });
+
+    document.querySelector('[data-header-account-toggle]')?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleAccountMenu();
     });
 
     document.querySelector('[data-shell-full-width-toggle]')?.addEventListener('change', (event) => {
@@ -259,6 +322,15 @@ export function initShellLayoutControls() {
         }
 
         setShellSidebarCollapsed(input.checked);
+    });
+
+    document.querySelector('[data-shell-hide-hub-leads-toggle]')?.addEventListener('change', (event) => {
+        const input = event.currentTarget;
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+
+        setHideHubLeads(input.checked);
     });
 
     document.querySelectorAll('[data-playbook-focus-toggle]').forEach((input) => {
@@ -297,19 +369,23 @@ export function initShellLayoutControls() {
     });
 
     document.addEventListener('click', (event) => {
-        const root = document.querySelector('[data-header-settings]');
-        if (!(root instanceof HTMLElement)) {
-            return;
+        const target = /** @type {Node} */ (event.target);
+
+        const settingsRoot = document.querySelector('[data-header-settings]');
+        if (settingsRoot instanceof HTMLElement && !settingsRoot.contains(target)) {
+            closeSettingsMenu();
         }
 
-        if (!root.contains(/** @type {Node} */ (event.target))) {
-            closeSettingsMenu();
+        const accountRoot = document.querySelector('[data-header-account]');
+        if (accountRoot instanceof HTMLElement && !accountRoot.contains(target)) {
+            closeAccountMenu();
         }
     });
 
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeSettingsMenu();
+            closeAccountMenu();
         }
     });
 }

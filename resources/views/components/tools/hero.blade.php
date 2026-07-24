@@ -25,7 +25,7 @@
 
             <div class="tools-hero__actions">
                 <a href="{{ $toolsOverviewUrl }}" class="tools-btn tools-btn--primary" data-i18n="home.hero.ctaWorkflows">
-                    Interaktive Tools
+                    Binom-Tools öffnen
                 </a>
                 <a
                     href="{{ \App\Support\ToolLinks::BINOM_NGX_DOCS }}"

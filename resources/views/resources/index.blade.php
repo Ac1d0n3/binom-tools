@@ -9,7 +9,7 @@
     <div class="tools-content tools-content--overview tools-content--resources" data-overview-filter-root>
         <div class="tools-overview-sticky-header vendor-resources-sticky">
             <h1 class="tools-page-title" data-i18n="resources.indexTitle">Vendor resources</h1>
-            <p class="tools-page-lead vendor-resources-sticky__lead" data-i18n="resources.indexLead">
+            <p class="tools-page-lead vendor-resources-sticky__lead" data-hub-lead data-i18n="resources.indexLead">
                 Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.
             </p>
 

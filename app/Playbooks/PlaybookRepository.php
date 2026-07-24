@@ -15,7 +15,7 @@ final class PlaybookRepository
     private static array $memoryCache = [];
 
     /** Max story links in the global sidebar (Overview link is separate). */
-    public const SIDEBAR_INDEX_LIMIT = 10;
+    public const SIDEBAR_INDEX_LIMIT = 3;
 
     public function __construct(
         private readonly PlaybookFrontmatterParser $frontmatterParser,

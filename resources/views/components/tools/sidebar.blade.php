@@ -29,6 +29,10 @@
     $remainingStoryCount = max(0, $totalStoryCount - count($sidebarPlaybooks));
 
     $toolGroups = \App\Support\ToolsNav::groupByProduct($navItems);
+    $routeBase = Locale::routeBaseName(request()->route()?->getName());
+    $resourcesActive = str_starts_with((string) $routeBase, 'resources.');
+    $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
+    $sprintPlannerActive = str_starts_with((string) $routeBase, 'sprint-planner.');
 @endphp
 
 <nav class="tools-sidenav">
@@ -90,175 +94,40 @@
     </div>
 
     <div class="tools-sidenav__group">
-        <p class="tools-sidenav__section" data-i18n="nav.resources">Resources</p>
+        <p class="tools-sidenav__section" data-i18n="nav.hubs">Hubs</p>
         <ul class="tools-sidenav__list">
             <li>
                 <a
                     href="{{ locale_route('resources.index') }}"
-                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('resources.index') ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.resourcesOverview"
+                    class="tools-sidenav__link {{ $resourcesActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.resources"
                 >
-                    Overview
+                    Resources
                 </a>
             </li>
-        </ul>
-    </div>
-
-    <div class="tools-sidenav__group">
-        <p class="tools-sidenav__section" data-i18n="nav.compliance">Compliance</p>
-        <ul class="tools-sidenav__list">
             <li>
                 <a
                     href="{{ locale_route('compliance.index') }}"
-                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('compliance.index') ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.complianceOverview"
+                    class="tools-sidenav__link {{ $complianceActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.compliance"
                 >
-                    Overview
+                    Compliance
                 </a>
             </li>
-            <li>
-                <a
-                    href="{{ locale_route('compliance.roadmap') }}"
-                    class="tools-sidenav__link {{ Locale::routeIs('compliance.roadmap') ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.complianceRoadmap"
-                >
-                    Certification roadmap
-                </a>
-            </li>
-            @if (Locale::routeIs('compliance.show') && is_string($currentSlug))
-                @php
-                    $complianceItems = config('compliance.items', []);
-                    $activeCompliance = collect($complianceItems)->first(
-                        static fn ($row) => is_array($row) && ($row['id'] ?? null) === $currentSlug
-                    );
-                    $activeComplianceLabelEn = is_array($activeCompliance)
-                        ? ($activeCompliance['label']['en'] ?? $currentSlug)
-                        : $currentSlug;
-                    $activeComplianceLabelDe = is_array($activeCompliance)
-                        ? ($activeCompliance['label']['de'] ?? $activeComplianceLabelEn)
-                        : $currentSlug;
-                @endphp
-                <li>
-                    <a
-                        href="{{ locale_route('compliance.show', ['slug' => $currentSlug]) }}"
-                        class="tools-sidenav__link tools-sidenav__link--active"
-                        data-text-de="{{ $activeComplianceLabelDe }}"
-                        data-text-en="{{ $activeComplianceLabelEn }}"
-                    >
-                        {{ $activeComplianceLabelEn }}
-                    </a>
-                </li>
-            @endif
-        </ul>
-    </div>
-
-    <div class="tools-sidenav__group">
-        <p class="tools-sidenav__section" data-i18n="nav.sprintPlanner">Sprint Planner</p>
-        <ul class="tools-sidenav__list">
             <li>
                 <a
                     href="{{ locale_route('sprint-planner.index') }}"
-                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('sprint-planner.index') ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.sprintPlannerPlans"
+                    class="tools-sidenav__link {{ $sprintPlannerActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.sprintPlanner"
                 >
-                    My plans
+                    Sprint Planner
                 </a>
             </li>
-            <li>
-                <a
-                    href="{{ locale_route('sprint-planner.templates') }}"
-                    class="tools-sidenav__link {{ Locale::routeIs('sprint-planner.templates') ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.sprintPlannerTemplates"
-                >
-                    Templates
-                </a>
-            </li>
-            @php
-                $showPeopleNav = empty($accountsEnabled)
-                    || (
-                        ! empty($accountUser)
-                        && (
-                            ! empty($accountUser['canManageUsers'])
-                            || ! empty($accountUser['canManageTeams'])
-                        )
-                    );
-            @endphp
-            @if ($showPeopleNav)
-                <li>
-                    <a
-                        href="{{ locale_route('sprint-planner.people') }}"
-                        class="tools-sidenav__link {{ Locale::routeIs('sprint-planner.people') ? 'tools-sidenav__link--active' : '' }}"
-                        data-i18n="nav.sprintPlannerPeople"
-                    >
-                        Teams &amp; people
-                    </a>
-                </li>
-            @endif
         </ul>
     </div>
 
-    @if (! empty($accountsEnabled))
-        <div class="tools-sidenav__group">
-            <p class="tools-sidenav__section" data-i18n="nav.account">Account</p>
-            <ul class="tools-sidenav__list">
-                @if (! empty($accountUser))
-                    <li>
-                        <a
-                            href="{{ locale_route('accounts.profile') }}"
-                            class="tools-sidenav__link {{ Locale::routeIs('accounts.profile') ? 'tools-sidenav__link--active' : '' }}"
-                            data-i18n="nav.accountProfile"
-                        >
-                            Profile
-                        </a>
-                    </li>
-                    @if (! empty($accountUser['canManageUsers']))
-                        <li>
-                            <a
-                                href="{{ locale_route('accounts.users') }}"
-                                class="tools-sidenav__link {{ Locale::routeIs('accounts.users') ? 'tools-sidenav__link--active' : '' }}"
-                                data-i18n="nav.accountUsers"
-                            >
-                                Users
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="{{ locale_route('accounts.story-acl') }}"
-                                class="tools-sidenav__link {{ Locale::routeIs('accounts.story-acl') ? 'tools-sidenav__link--active' : '' }}"
-                                data-i18n="nav.accountStoryAccess"
-                            >
-                                Story access
-                            </a>
-                        </li>
-                    @endif
-                    @if (! empty($accountUser['canManageTeams']))
-                        <li>
-                            <a
-                                href="{{ locale_route('accounts.teams') }}"
-                                class="tools-sidenav__link {{ Locale::routeIs('accounts.teams') ? 'tools-sidenav__link--active' : '' }}"
-                                data-i18n="nav.accountTeams"
-                            >
-                                Teams
-                            </a>
-                        </li>
-                    @endif
-                @else
-                    <li>
-                        <a
-                            href="{{ locale_route('accounts.login') }}"
-                            class="tools-sidenav__link {{ Locale::routeIs('accounts.login') ? 'tools-sidenav__link--active' : '' }}"
-                            data-i18n="nav.accountSignIn"
-                        >
-                            Sign in
-                        </a>
-                    </li>
-                @endif
-            </ul>
-        </div>
-    @endif
-
     <div class="tools-sidenav__group">
-        <p class="tools-sidenav__section" data-i18n="nav.tools">Governance</p>
+        <p class="tools-sidenav__section" data-i18n="nav.tools">Binom-Tools</p>
         <ul class="tools-sidenav__list">
             <li>
                 <a
