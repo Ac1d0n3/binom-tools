@@ -17,12 +17,15 @@ class VendorResourcesPageTest extends TestCase
         $response->assertSee('data-overview-model', false);
         $response->assertSee('data-overview-residency', false);
         $response->assertSee('data-overview-vendor', false);
+        $response->assertSee('data-overview-stack', false);
+        $response->assertSee('data-overview-stack-banner', false);
         $response->assertSee('data-overview-item', false);
         $response->assertSee('vendor-resources-grid', false);
         $response->assertSee('vendor-resources-card', false);
         $response->assertSee('vendor-resources-card__aside', false);
         $response->assertSee('vendor-resources-card__purpose', false);
         $response->assertSee('vendor-resources-sticky', false);
+        $response->assertSee('vendor-resources-stack-banner', false);
         $response->assertSee('data-i18n="resources.indexTitle"', false);
         $response->assertSee('data-i18n="resources.helpTitle"', false);
         $response->assertSee('data-i18n="resources.governanceTitle"', false);
@@ -30,11 +33,25 @@ class VendorResourcesPageTest extends TestCase
         $response->assertSee('data-i18n="resources.certificationsTitle"', false);
         $response->assertSee('data-i18n="resources.familyAll"', false);
         $response->assertSee('data-i18n="resources.familyLabel"', false);
+        $response->assertSee('data-i18n="resources.stackAll"', false);
+        $response->assertSee('data-i18n="resources.stackLabel"', false);
+        $response->assertSee('data-i18n="resources.ourToolsTitle"', false);
         $response->assertSee('data-i18n="resources.modelAll"', false);
         $response->assertSee('data-i18n="resources.modelLabel"', false);
         $response->assertSee('data-i18n="resources.residencyAll"', false);
         $response->assertSee('data-i18n="resources.complianceTitle"', false);
 
+        $response->assertSee('value="modern-data-stack"', false);
+        $response->assertSee('value="microsoft-fabric"', false);
+        $response->assertSee('value="databricks-lakehouse"', false);
+        $response->assertSee('value="gcp-analytics"', false);
+        $response->assertSee('value="open-source-stack"', false);
+        $response->assertSee('value="eu-sovereign"', false);
+        $response->assertSee('value="sap-enterprise"', false);
+        $response->assertSee('value="ai-assisted-delivery"', false);
+        $response->assertSee('data-stacks="', false);
+        $response->assertSee('data-product-id="dbt"', false);
+        $response->assertSee('data-product-id="fabric"', false);
         $response->assertSee('dbt');
         $response->assertSee('Databricks');
         $response->assertSee('Snowflake');
@@ -118,6 +135,14 @@ class VendorResourcesPageTest extends TestCase
         $response->assertSee('data-products="ai"', false);
         $response->assertSee('Cloud data warehouse', false);
         $response->assertSee('value="platforms"', false);
+
+        $response->assertSee('vendor-resources-group--our-tools', false);
+        $response->assertSee('vendor-resources-link--internal', false);
+        $response->assertSee(locale_route('tools.dbt-dq-macro-generator'), false);
+        $response->assertSee(locale_route('tools.pii-policy-generator'), false);
+        $response->assertSee(locale_route('tools.fabric-dq-pattern-generator'), false);
+        $response->assertSee(locale_route('tools.prompt-studio'), false);
+        $response->assertSee(locale_route('tools.governance-ai-sanitizer'), false);
     }
 
     public function test_localized_resources_route_is_available(): void
@@ -127,7 +152,9 @@ class VendorResourcesPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('vendor-resources-grid', false);
         $response->assertSee('data-overview-product', false);
+        $response->assertSee('data-overview-stack', false);
         $response->assertSee('data-i18n="resources.familyAll"', false);
+        $response->assertSee('data-i18n="resources.ourToolsTitle"', false);
     }
 
     public function test_landing_page_links_to_resources_overview(): void

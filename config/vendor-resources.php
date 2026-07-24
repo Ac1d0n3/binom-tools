@@ -47,6 +47,74 @@ return [
         'planning' => ['de' => 'Planung', 'en' => 'Planning'],
     ],
 
+
+    'stacks' => [
+        'modern-data-stack' => [
+            'label' => ['de' => 'Modern Data Stack', 'en' => 'Modern Data Stack'],
+            'description' => [
+                'de' => 'Cloud Warehouse, EL, dbt-Transformation, BI und aktiver Catalog — der klassische Analytics-Stack.',
+                'en' => 'Cloud warehouse, EL, dbt transformation, BI and an active catalog — the classic analytics stack.',
+            ],
+            'products' => ['snowflake', 'fivetran', 'dbt', 'tableau', 'powerbi', 'atlan'],
+        ],
+        'microsoft-fabric' => [
+            'label' => ['de' => 'Microsoft Fabric', 'en' => 'Microsoft Fabric'],
+            'description' => [
+                'de' => 'Azure-basiert: Fabric als Analytics-Plattform, Purview für Governance, Power BI und Copilot.',
+                'en' => 'Azure-based: Fabric as analytics platform, Purview for governance, Power BI and Copilot.',
+            ],
+            'products' => ['azure', 'fabric', 'pureview', 'powerbi', 'microsoft-copilot', 'microsoft-whiteboard', 'microsoft-planner'],
+        ],
+        'databricks-lakehouse' => [
+            'label' => ['de' => 'Databricks Lakehouse', 'en' => 'Databricks Lakehouse'],
+            'description' => [
+                'de' => 'Lakehouse mit Databricks, dbt, Catalog/Lineage und BI für Analytics Engineering.',
+                'en' => 'Lakehouse with Databricks, dbt, catalog/lineage and BI for analytics engineering.',
+            ],
+            'products' => ['databricks', 'dbt', 'atlan', 'openlineage', 'marquez', 'powerbi', 'tableau'],
+        ],
+        'gcp-analytics' => [
+            'label' => ['de' => 'GCP Analytics', 'en' => 'GCP Analytics'],
+            'description' => [
+                'de' => 'Google Cloud + BigQuery, dbt und Open-Source- oder Cloud-BI.',
+                'en' => 'Google Cloud + BigQuery, dbt, and open-source or cloud BI.',
+            ],
+            'products' => ['gcp', 'bigquery', 'dbt', 'metabase', 'superset', 'lightdash'],
+        ],
+        'open-source-stack' => [
+            'label' => ['de' => 'Open-Source Stack', 'en' => 'Open-source stack'],
+            'description' => [
+                'de' => 'Self-hosted / OSS: dbt Core, Metabase/Superset, DataHub/OpenMetadata und OpenLineage.',
+                'en' => 'Self-hosted / OSS: dbt Core, Metabase/Superset, DataHub/OpenMetadata, and OpenLineage.',
+            ],
+            'products' => ['dbt', 'metabase', 'superset', 'lightdash', 'datahub', 'openmetadata', 'openlineage', 'marquez'],
+        ],
+        'eu-sovereign' => [
+            'label' => ['de' => 'EU / Sovereign', 'en' => 'EU / sovereign'],
+            'description' => [
+                'de' => 'EU-/DE-Hosting und On-Prem-fähige Produkte für DSGVO- und Behördenkontexte.',
+                'en' => 'EU/DE hosting and on-prem-capable products for GDPR and public-sector contexts.',
+            ],
+            'products' => ['hetzner', 'ovhcloud', 'sap', 'qlik', 'dbt', 'metabase', 'superset', 'datahub', 'openmetadata', 'talend'],
+        ],
+        'sap-enterprise' => [
+            'label' => ['de' => 'SAP Enterprise', 'en' => 'SAP Enterprise'],
+            'description' => [
+                'de' => 'SAP im Zentrum, ergänzt um Microsoft-Cloud/Fabric oder On-Prem-Governance-Pfade.',
+                'en' => 'SAP at the center, complemented by Microsoft cloud/Fabric or on-prem governance paths.',
+            ],
+            'products' => ['sap', 'azure', 'fabric', 'pureview', 'powerbi', 'collibra'],
+        ],
+        'ai-assisted-delivery' => [
+            'label' => ['de' => 'AI-Assisted Delivery', 'en' => 'AI-assisted delivery'],
+            'description' => [
+                'de' => 'Coding-Agents, GitHub und Planungsboards für Delivery und Enablement.',
+                'en' => 'Coding agents, GitHub, and planning boards for delivery and enablement.',
+            ],
+            'products' => ['cursor', 'github-copilot', 'codex', 'claude', 'chatgpt', 'github', 'miro', 'microsoft-planner', 'microsoft-copilot'],
+        ],
+    ],
+
     'products' => [
         [
             'id' => 'aws',

@@ -27,6 +27,34 @@
                     />
                 </label>
                 <label class="tools-overview-product-filter">
+                    <span class="sr-only" data-i18n="resources.stackLabel">Stack</span>
+                    <span class="tools-overview-sort__field">
+                        <select class="tools-overview-sort__select" data-overview-stack>
+                            <option value="all" data-i18n="resources.stackAll">All stacks</option>
+                            @foreach ($stacks as $stackId => $stack)
+                                @php
+                                    $stackLabelEn = $stack['label']['en'] ?? $stackId;
+                                    $stackLabelDe = $stack['label']['de'] ?? $stackLabelEn;
+                                    $stackDescEn = $stack['description']['en'] ?? '';
+                                    $stackDescDe = $stack['description']['de'] ?? $stackDescEn;
+                                    $stackProducts = is_array($stack['products'] ?? null)
+                                        ? array_values(array_filter($stack['products'], static fn ($id) => is_string($id) && $id !== ''))
+                                        : [];
+                                @endphp
+                                <option
+                                    value="{{ $stackId }}"
+                                    data-text-de="{{ $stackLabelDe }}"
+                                    data-text-en="{{ $stackLabelEn }}"
+                                    data-description-de="{{ $stackDescDe }}"
+                                    data-description-en="{{ $stackDescEn }}"
+                                    data-products="{{ implode(',', $stackProducts) }}"
+                                >{{ $stackLabelEn }}</option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
+                    </span>
+                </label>
+                <label class="tools-overview-product-filter">
                     <span class="sr-only" data-i18n="resources.vendorLabel">Vendor</span>
                     <span class="tools-overview-sort__field">
                         <select class="tools-overview-sort__select" data-overview-vendor>
@@ -97,6 +125,13 @@
         </div>
 
         <div class="tools-overview-scroll vendor-resources-scroll">
+            <div class="vendor-resources-stack-banner" data-overview-stack-banner hidden>
+                <p class="vendor-resources-stack-banner__eyebrow" data-i18n="resources.stackBannerEyebrow">Suggested stack</p>
+                <h2 class="vendor-resources-stack-banner__title" data-overview-stack-banner-title></h2>
+                <p class="vendor-resources-stack-banner__desc" data-overview-stack-banner-desc></p>
+                <ul class="vendor-resources-stack-banner__chips" data-overview-stack-banner-chips aria-label="Stack products"></ul>
+            </div>
+
             <p class="tools-overview-empty" data-overview-empty hidden data-i18n="overview.noResults">
                 No matches for your search.
             </p>
@@ -115,6 +150,8 @@
                         $bundles = is_array($product['bundles'] ?? null) ? array_values(array_filter($product['bundles'], static fn ($m) => is_string($m) && $m !== '')) : [];
                         $residency = is_array($product['residency'] ?? null) ? array_values(array_filter($product['residency'], static fn ($m) => is_string($m) && $m !== '')) : [];
                         $compliance = is_array($product['compliance'] ?? null) ? $product['compliance'] : [];
+                        $ourTools = is_array($toolsByProduct[$productId] ?? null) ? $toolsByProduct[$productId] : [];
+                        $productStackIds = is_array($stacksByProduct[$productId] ?? null) ? $stacksByProduct[$productId] : [];
                         $brandColor = is_string($product['brandColor'] ?? null) ? $product['brandColor'] : null;
                         $logo = is_string($product['logo'] ?? null) ? $product['logo'] : null;
                         $useWordmark = $brandColor !== null || $logo !== null;
@@ -207,6 +244,16 @@
                                 'fallback' => 'Compliance',
                                 'links' => $compliance,
                                 'span' => true,
+                                'external' => true,
+                            ],
+                            [
+                                'key' => 'ourTools',
+                                'icon' => 'fa-screwdriver-wrench',
+                                'i18n' => 'resources.ourToolsTitle',
+                                'fallback' => 'Binom Tools',
+                                'links' => $ourTools,
+                                'span' => true,
+                                'external' => false,
                             ],
                         ];
                         $searchParts = [
@@ -224,6 +271,8 @@
                             'learning',
                             'certifications',
                             'compliance',
+                            'binom tools',
+                            'binom',
                             'hilfe',
                             'lernpfad',
                             'zertifizierung',
@@ -238,6 +287,12 @@
                             'miro',
                             'talend',
                         ];
+                        foreach ($ourTools as $toolLink) {
+                            $searchParts[] = $toolLink['label']['de'] ?? '';
+                            $searchParts[] = $toolLink['label']['en'] ?? '';
+                            $searchParts[] = $toolLink['description']['de'] ?? '';
+                            $searchParts[] = $toolLink['description']['en'] ?? '';
+                        }
                         foreach ($models as $modelId) {
                             $searchParts[] = $modelId;
                             foreach (($modelMeta[$modelId]['search'] ?? []) as $term) {
@@ -273,10 +328,12 @@
                         class="vendor-resources-card"
                         role="listitem"
                         data-overview-item
+                        data-product-id="{{ $productId }}"
                         data-products="{{ $familyId }}"
                         data-vendor="{{ $vendorId }}"
                         data-models="{{ implode(',', $models) }}"
                         data-residency="{{ implode(',', $residency) }}"
+                        data-stacks="{{ implode(',', $productStackIds) }}"
                         data-search-text="{{ $searchText }}"
                         data-sort-title-en="{{ $labelEn }}"
                         data-sort-title-de="{{ $labelDe }}"
@@ -383,10 +440,17 @@
                                 @if (($group['key'] ?? '') === 'compliance' && $compliance === [])
                                     @continue
                                 @endif
+                                @if (($group['key'] ?? '') === 'ourTools' && $ourTools === [])
+                                    @continue
+                                @endif
+                                @php
+                                    $isExternalGroup = ($group['external'] ?? true) !== false;
+                                @endphp
                                 <section
                                     @class([
                                         'vendor-resources-group',
                                         'vendor-resources-group--span' => ! empty($group['span']),
+                                        'vendor-resources-group--our-tools' => ($group['key'] ?? '') === 'ourTools',
                                     ])
                                     aria-labelledby="vendor-{{ $group['key'] }}-{{ $productId }}"
                                 >
@@ -397,17 +461,25 @@
                                     <ul class="vendor-resources-links">
                                         @forelse ($group['links'] as $link)
                                             @php
-                                                $linkLabelEn = $link['label']['en'] ?? ($link['href'] ?? 'Link');
+                                                $linkHref = $isExternalGroup
+                                                    ? (string) ($link['href'] ?? '#')
+                                                    : locale_route((string) ($link['route'] ?? 'tools.landing'));
+                                                $linkLabelEn = $link['label']['en'] ?? ($isExternalGroup ? ($link['href'] ?? 'Link') : ($link['route'] ?? 'Tool'));
                                                 $linkLabelDe = $link['label']['de'] ?? $linkLabelEn;
                                                 $linkDescEn = $link['description']['en'] ?? '';
                                                 $linkDescDe = $link['description']['de'] ?? $linkDescEn;
                                             @endphp
                                             <li>
                                                 <a
-                                                    class="vendor-resources-link"
-                                                    href="{{ $link['href'] }}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
+                                                    @class([
+                                                        'vendor-resources-link',
+                                                        'vendor-resources-link--internal' => ! $isExternalGroup,
+                                                    ])
+                                                    href="{{ $linkHref }}"
+                                                    @if ($isExternalGroup)
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    @endif
                                                     @if ($linkDescEn !== '') title="{{ $linkDescEn }}" @endif
                                                 >
                                                     <span
@@ -422,7 +494,15 @@
                                                             data-text-en="{{ $linkDescEn }}"
                                                         >{{ $linkDescEn }}</span>
                                                     @endif
-                                                    <i class="fa-solid fa-arrow-up-right-from-square vendor-resources-link__icon" aria-hidden="true"></i>
+                                                    <i
+                                                        @class([
+                                                            'fa-solid',
+                                                            'vendor-resources-link__icon',
+                                                            'fa-arrow-up-right-from-square' => $isExternalGroup,
+                                                            'fa-arrow-right' => ! $isExternalGroup,
+                                                        ])
+                                                        aria-hidden="true"
+                                                    ></i>
                                                 </a>
                                             </li>
                                         @empty

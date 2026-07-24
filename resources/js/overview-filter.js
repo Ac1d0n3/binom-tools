@@ -46,6 +46,13 @@ export function initOverviewFilters() {
     const vendorSelect = /** @type {HTMLSelectElement | null} */ (
         root.querySelector('[data-overview-vendor]')
     );
+    const stackSelect = /** @type {HTMLSelectElement | null} */ (
+        root.querySelector('[data-overview-stack]')
+    );
+    const stackBanner = root.querySelector('[data-overview-stack-banner]');
+    const stackBannerTitle = root.querySelector('[data-overview-stack-banner-title]');
+    const stackBannerDesc = root.querySelector('[data-overview-stack-banner-desc]');
+    const stackBannerChips = root.querySelector('[data-overview-stack-banner-chips]');
     const categoryButtons = root.querySelectorAll('[data-overview-category]');
     const tagButtons = root.querySelectorAll('[data-overview-tag]');
     const tagModeRoot = root.querySelector('[data-tag-match-mode]');
@@ -90,6 +97,9 @@ export function initOverviewFilters() {
 
     /** @returns {string} */
     const activeVendor = () => vendorSelect?.value || 'all';
+
+    /** @returns {string} */
+    const activeStack = () => stackSelect?.value || 'all';
 
     /**
      * @param {Element} grid
@@ -194,6 +204,72 @@ export function initOverviewFilters() {
     /** @param {string} vendor */
     const matchesVendorFilter = (vendor) => activeVendor() === 'all' || vendor === activeVendor();
 
+    /** @param {string[]} stacks */
+    const matchesStackFilter = (stacks) => activeStack() === 'all' || stacks.includes(activeStack());
+
+    const syncStackBanner = () => {
+        if (!(stackBanner instanceof HTMLElement) || !stackSelect) {
+            return;
+        }
+
+        const stackId = activeStack();
+        if (stackId === 'all') {
+            stackBanner.hidden = true;
+            if (stackBannerTitle instanceof HTMLElement) {
+                stackBannerTitle.textContent = '';
+            }
+            if (stackBannerDesc instanceof HTMLElement) {
+                stackBannerDesc.textContent = '';
+            }
+            if (stackBannerChips instanceof HTMLElement) {
+                stackBannerChips.replaceChildren();
+            }
+            return;
+        }
+
+        const option = stackSelect.selectedOptions[0] ?? null;
+        if (!(option instanceof HTMLOptionElement)) {
+            stackBanner.hidden = true;
+            return;
+        }
+
+        const loc = locale();
+        const title =
+            option.getAttribute(loc === 'de' ? 'data-text-de' : 'data-text-en') ||
+            option.textContent ||
+            stackId;
+        const description =
+            option.getAttribute(loc === 'de' ? 'data-description-de' : 'data-description-en') || '';
+        const productIds = (option.getAttribute('data-products') ?? '')
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean);
+
+        if (stackBannerTitle instanceof HTMLElement) {
+            stackBannerTitle.textContent = title;
+        }
+        if (stackBannerDesc instanceof HTMLElement) {
+            stackBannerDesc.textContent = description;
+            stackBannerDesc.hidden = description === '';
+        }
+        if (stackBannerChips instanceof HTMLElement) {
+            stackBannerChips.replaceChildren();
+            productIds.forEach((productId) => {
+                const card = root.querySelector(`[data-product-id="${CSS.escape(productId)}"]`);
+                const chipLabel =
+                    (card instanceof HTMLElement
+                        ? card.getAttribute(loc === 'de' ? 'data-sort-title-de' : 'data-sort-title-en')
+                        : null) || productId;
+                const li = document.createElement('li');
+                li.className = 'vendor-resources-stack-banner__chip';
+                li.textContent = chipLabel;
+                stackBannerChips.appendChild(li);
+            });
+        }
+
+        stackBanner.hidden = false;
+    };
+
     const syncTagAllChip = () => {
         tagButtons.forEach((button) => {
             const tag = button.getAttribute('data-overview-tag') ?? '';
@@ -215,7 +291,8 @@ export function initOverviewFilters() {
             activeProduct() !== 'all' ||
             activeModel() !== 'all' ||
             activeResidency() !== 'all' ||
-            activeVendor() !== 'all';
+            activeVendor() !== 'all' ||
+            activeStack() !== 'all';
         filterResetButton.disabled = !hasFilters;
         filterResetButton.setAttribute('aria-disabled', hasFilters ? 'false' : 'true');
     };
@@ -259,6 +336,10 @@ export function initOverviewFilters() {
                 .map((value) => value.trim())
                 .filter(Boolean);
             const vendor = item.getAttribute('data-vendor') ?? '';
+            const stacks = (item.getAttribute('data-stacks') ?? '')
+                .split(',')
+                .map((stack) => stack.trim())
+                .filter(Boolean);
             const slug = item.getAttribute('data-playbook-slug') ?? '';
             const categoryKey = item.getAttribute('data-category-key') ?? '';
             const matchesSearch = query === '' || text.includes(query);
@@ -268,6 +349,7 @@ export function initOverviewFilters() {
             const matchesModel = modelSelect === null || matchesModelFilter(models);
             const matchesResidency = residencySelect === null || matchesResidencyFilter(residencies);
             const matchesVendor = vendorSelect === null || matchesVendorFilter(vendor);
+            const matchesStack = stackSelect === null || matchesStackFilter(stacks);
             const read = isPlaybookRead(slug);
 
             if (
@@ -278,6 +360,7 @@ export function initOverviewFilters() {
                 matchesModel &&
                 matchesResidency &&
                 matchesVendor &&
+                matchesStack &&
                 hideRead &&
                 read
             ) {
@@ -292,6 +375,7 @@ export function initOverviewFilters() {
                 matchesModel &&
                 matchesResidency &&
                 matchesVendor &&
+                matchesStack &&
                 (!hideRead || !read);
 
             item.hidden = !show;
@@ -310,6 +394,7 @@ export function initOverviewFilters() {
 
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
         syncFilterReset();
+        syncStackBanner();
         applyWorkflowSections();
         sortStories();
     };
@@ -333,12 +418,23 @@ export function initOverviewFilters() {
                 .map((value) => value.trim())
                 .filter(Boolean);
             const vendor = item.getAttribute('data-vendor') ?? '';
+            const stacks = (item.getAttribute('data-stacks') ?? '')
+                .split(',')
+                .map((stack) => stack.trim())
+                .filter(Boolean);
             const matchesSearch = query === '' || text.includes(query);
             const matchesProduct = productSelect === null || matchesProductFilter(products);
             const matchesModel = modelSelect === null || matchesModelFilter(models);
             const matchesResidency = residencySelect === null || matchesResidencyFilter(residencies);
             const matchesVendor = vendorSelect === null || matchesVendorFilter(vendor);
-            const show = matchesSearch && matchesProduct && matchesModel && matchesResidency && matchesVendor;
+            const matchesStack = stackSelect === null || matchesStackFilter(stacks);
+            const show =
+                matchesSearch &&
+                matchesProduct &&
+                matchesModel &&
+                matchesResidency &&
+                matchesVendor &&
+                matchesStack;
 
             item.hidden = !show;
             if (show) visible += 1;
@@ -349,6 +445,7 @@ export function initOverviewFilters() {
         }
 
         syncFilterReset();
+        syncStackBanner();
         sortSeries();
     };
 
@@ -402,6 +499,10 @@ export function initOverviewFilters() {
             vendorSelect.value = 'all';
         }
 
+        if (stackSelect) {
+            stackSelect.value = 'all';
+        }
+
         categoryButtons.forEach((button) => {
             const key = button.getAttribute('data-overview-category') ?? '';
             button.classList.toggle('tools-filter-chip--active', key === 'all');
@@ -420,6 +521,7 @@ export function initOverviewFilters() {
     modelSelect?.addEventListener('change', apply);
     residencySelect?.addEventListener('change', apply);
     vendorSelect?.addEventListener('change', apply);
+    stackSelect?.addEventListener('change', apply);
 
     categoryButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -524,6 +626,9 @@ export function initOverviewFilters() {
     window.addEventListener('binom-tools:playbook-read', apply);
     window.addEventListener('binom-tools:playbook-read-reset', apply);
     window.addEventListener('pageshow', apply);
+    window.addEventListener('binom-tools:locale', () => {
+        syncStackBanner();
+    });
 
     initOverviewSort(root);
 
