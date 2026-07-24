@@ -1,5 +1,6 @@
 import { initPlaybookEngagement } from './engagement';
 import { initPlaybookImageLightbox } from './image-lightbox';
+import { initOfflineBanner, initPlaybookOfflineDetail } from './offline-ui';
 import { initPlaybookReadingPosition } from './reading-position';
 import { initPlaybookReadTracker } from './read-tracker';
 import { initPlaybookToc } from './toc';
@@ -77,6 +78,7 @@ export function initPlaybookDetail(root) {
     initPlaybookEngagement(root);
     schedulePlaybookPrism(root);
     initPlaybookVideoEmbeds(root);
+    void initPlaybookOfflineDetail(root);
 
     window.addEventListener('binom-tools:playbook-locale', () => {
         initActiveLocalePanel(root);
@@ -85,6 +87,8 @@ export function initPlaybookDetail(root) {
         initPlaybookVideoEmbeds(getActiveLocalePanel(root) ?? root);
     });
 }
+
+initOfflineBanner();
 
 document.querySelectorAll('[data-playbook-root]').forEach((root) => {
     initPlaybookDetail(root);

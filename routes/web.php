@@ -14,6 +14,7 @@ use App\Http\Controllers\Accounts\UsersController;
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
+use App\Http\Controllers\Playbooks\PlaybookOfflineController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
 use App\Http\Controllers\Tools\ArchitectureFitController;
@@ -52,6 +53,13 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/playbooks', [PlaybookController::class, 'index'])->name($name('playbooks.index'));
+    Route::get('/playbooks/offline-manifest', [PlaybookOfflineController::class, 'index'])
+        ->middleware('throttle:30,1')
+        ->name($name('playbooks.offline.manifest'));
+    Route::get('/playbooks/{slug}/offline-manifest', [PlaybookOfflineController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->middleware('throttle:60,1')
+        ->name($name('playbooks.offline.manifest.show'));
     Route::get('/playbooks/{slug}/engagement', [PlaybookStatsController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->middleware('throttle:60,1')

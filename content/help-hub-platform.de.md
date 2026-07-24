@@ -88,6 +88,16 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 ````
 
+**Lokales Video** (Datei unter `public/videos/playbooks/`, offline speicherbar):
+
+````markdown
+```video Intro
+/videos/playbooks/intro.mp4
+```
+````
+
+**Offline lesen:** Auf der Story-Seite **Offline speichern** tippen (einzeln) oder auf `/playbooks` **Alle offline speichern**. Es wird nichts im Hintergrund geladen. Externe Embeds brauchen Netz; lokale Videos und Bilder werden mit heruntergeladen.
+
 **Simple Flow Chart (Chevron — gleicher Stil wie Tool-Workflows):**
 
 ````markdown

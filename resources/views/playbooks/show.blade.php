@@ -36,6 +36,12 @@
 @endpush
 
 @section('content')
+    <div
+        class="playbook-offline-banner"
+        data-playbook-offline-banner
+        hidden
+        role="status"
+    ></div>
     <article
         class="playbook-detail"
         itemscope
@@ -87,6 +93,29 @@
                                     :likes="(int) ($engagementStats['likes'] ?? 0)"
                                     :share-enabled="(bool) config('playbooks.share_enabled', true)"
                                 />
+
+                                <div class="playbook-detail__actions playbook-offline" data-playbook-offline>
+                                    <button
+                                        type="button"
+                                        class="tools-btn tools-btn--secondary"
+                                        data-playbook-offline-save
+                                        data-i18n="playbooks.offline.save"
+                                    >Save offline</button>
+                                    <button
+                                        type="button"
+                                        class="tools-btn tools-btn--ghost"
+                                        data-playbook-offline-remove
+                                        hidden
+                                        data-i18n="playbooks.offline.remove"
+                                    >Remove offline</button>
+                                    <p
+                                        class="playbook-offline__status"
+                                        data-playbook-offline-status
+                                        hidden
+                                        role="status"
+                                        aria-live="polite"
+                                    ></p>
+                                </div>
 
                                 @if ($playbook->slug === 'help-hub-platform' && config('tools.links.repository'))
                                     <div class="playbook-detail__actions">

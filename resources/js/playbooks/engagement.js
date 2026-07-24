@@ -232,6 +232,75 @@ function wireWidget(widget, syncScope) {
 }
 
 /**
+ * @param {HTMLElement} card
+ * @param {{ views?: number, likes?: number, liked?: boolean }} data
+ */
+function renderCardStats(card, data) {
+    const viewsEl = card.querySelector('[data-playbook-card-views]');
+    const likesEl = card.querySelector('[data-playbook-card-likes]');
+    const likeBtn = card.querySelector('[data-playbook-card-like]');
+    const likeIcon = card.querySelector('[data-like-icon]');
+
+    if (viewsEl instanceof HTMLElement && typeof data.views === 'number') {
+        viewsEl.textContent = String(data.views);
+    }
+
+    if (likesEl instanceof HTMLElement && typeof data.likes === 'number') {
+        likesEl.textContent = String(data.likes);
+    }
+
+    if (likeBtn instanceof HTMLButtonElement && typeof data.liked === 'boolean') {
+        likeBtn.setAttribute('aria-pressed', data.liked ? 'true' : 'false');
+        likeBtn.classList.toggle('tools-card__story-like--active', data.liked);
+        if (likeIcon instanceof HTMLElement) {
+            likeIcon.classList.toggle('fa-solid', data.liked);
+            likeIcon.classList.toggle('fa-regular', !data.liked);
+        }
+    }
+}
+
+/**
+ * Wire like buttons on story overview cards (no view counting).
+ * @param {ParentNode} [root]
+ */
+export function initPlaybookCardEngagement(root = document) {
+    root.querySelectorAll('[data-playbook-index-card][data-stats-like-url]').forEach((card) => {
+        if (!(card instanceof HTMLElement) || card.dataset.likeWired === '1') {
+            return;
+        }
+
+        const likeBtn = card.querySelector('[data-playbook-card-like]');
+        const likeUrl = card.dataset.statsLikeUrl ?? '';
+        const showUrl = card.dataset.statsShowUrl ?? '';
+
+        if (!(likeBtn instanceof HTMLButtonElement) || likeUrl === '') {
+            return;
+        }
+
+        card.dataset.likeWired = '1';
+
+        if (showUrl !== '') {
+            jsonFetch(showUrl)
+                .then((data) => renderCardStats(card, data))
+                .catch(() => {});
+        }
+
+        likeBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            likeBtn.disabled = true;
+
+            jsonFetch(likeUrl, { method: 'POST' })
+                .then((data) => renderCardStats(card, data))
+                .catch(() => {})
+                .finally(() => {
+                    likeBtn.disabled = false;
+                });
+        });
+    });
+}
+
+/**
  * @param {HTMLElement} root
  */
 export function initPlaybookEngagement(root) {

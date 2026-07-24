@@ -49,6 +49,10 @@ final class PlaybookVideoFenceRenderer implements NodeRendererInterface
             return new HtmlElement('div', ['class' => 'playbook-video playbook-video--error'], Xml::escape($message));
         }
 
+        if (($resolved['platform'] ?? '') === 'local') {
+            return self::renderLocalVideo($resolved, $title);
+        }
+
         $embedSrc = $resolved['privacyEmbedUrl'] ?? $resolved['embedUrl'];
         $attrs = [
             'class' => 'playbook-video',
@@ -73,5 +77,45 @@ final class PlaybookVideoFenceRenderer implements NodeRendererInterface
         );
 
         return new HtmlElement('div', $attrs, $button);
+    }
+
+    /**
+     * @param  array{platform: string, id: string, srcUrl?: string, mimeType?: string, publicPath?: string}  $resolved
+     */
+    private static function renderLocalVideo(array $resolved, ?string $title): HtmlElement
+    {
+        $src = $resolved['srcUrl'] ?? '';
+        $mime = $resolved['mimeType'] ?? 'video/mp4';
+
+        $videoAttrs = [
+            'class' => 'playbook-video__player',
+            'controls' => 'controls',
+            'preload' => 'metadata',
+            'playsinline' => 'playsinline',
+        ];
+
+        if ($title !== null && $title !== '') {
+            $videoAttrs['title'] = $title;
+        }
+
+        $source = new HtmlElement('source', [
+            'src' => $src,
+            'type' => $mime,
+        ]);
+
+        $video = new HtmlElement('video', $videoAttrs, $source);
+
+        $attrs = [
+            'class' => 'playbook-video playbook-video--local',
+            'data-video-local' => 'true',
+            'data-platform' => 'local',
+            'data-video-src' => $src,
+        ];
+
+        if ($title !== null && $title !== '') {
+            $attrs['data-video-title'] = $title;
+        }
+
+        return new HtmlElement('div', $attrs, $video);
     }
 }

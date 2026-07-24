@@ -69,7 +69,10 @@ class PlaybookStatsController extends Controller
             unset($state['l'][$slug]);
 
             return response()
-                ->json($stats)
+                ->json([
+                    ...$stats,
+                    'liked' => false,
+                ])
                 ->cookie($this->engagementCookie($state));
         }
 
@@ -77,7 +80,10 @@ class PlaybookStatsController extends Controller
         $state['l'][$slug] = 1;
 
         return response()
-            ->json($stats)
+            ->json([
+                ...$stats,
+                'liked' => true,
+            ])
             ->cookie($this->engagementCookie($state));
     }
 

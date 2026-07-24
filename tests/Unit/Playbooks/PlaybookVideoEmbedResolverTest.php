@@ -49,4 +49,29 @@ class PlaybookVideoEmbedResolverTest extends TestCase
         $this->assertNull(PlaybookVideoEmbedResolver::resolve('not-a-url'));
         $this->assertNull(PlaybookVideoEmbedResolver::resolve(''));
     }
+
+    public function test_resolves_local_playbook_videos(): void
+    {
+        $resolved = PlaybookVideoEmbedResolver::resolve('/videos/playbooks/intro.mp4');
+
+        $this->assertNotNull($resolved);
+        $this->assertSame('local', $resolved['platform']);
+        $this->assertSame('intro.mp4', $resolved['id']);
+        $this->assertSame('videos/playbooks/intro.mp4', $resolved['publicPath'] ?? null);
+        $this->assertSame('video/mp4', $resolved['mimeType'] ?? null);
+        $this->assertNotEmpty($resolved['srcUrl'] ?? null);
+
+        $relative = PlaybookVideoEmbedResolver::resolve('videos/playbooks/demo.webm');
+        $this->assertNotNull($relative);
+        $this->assertSame('local', $relative['platform']);
+        $this->assertSame('video/webm', $relative['mimeType'] ?? null);
+    }
+
+    public function test_rejects_unsafe_local_video_paths(): void
+    {
+        $this->assertNull(PlaybookVideoEmbedResolver::resolve('/videos/playbooks/../secret.mp4'));
+        $this->assertNull(PlaybookVideoEmbedResolver::resolve('/videos/other/intro.mp4'));
+        $this->assertNull(PlaybookVideoEmbedResolver::resolve('/videos/playbooks/nested/dir/intro.mp4'));
+        $this->assertNull(PlaybookVideoEmbedResolver::resolve('/videos/playbooks/intro.avi'));
+    }
 }

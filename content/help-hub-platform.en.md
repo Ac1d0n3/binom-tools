@@ -88,6 +88,16 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 ````
 
+**Local video** (file under `public/videos/playbooks/`, included in offline packs):
+
+````markdown
+```video Intro
+/videos/playbooks/intro.mp4
+```
+````
+
+**Read offline:** On a story page tap **Save offline** (single story) or on `/playbooks` tap **Save all offline**. Nothing is downloaded in the background. External embeds need a network; local videos and images are included in the download.
+
 **Simple flow chart (chevron — same style as Tools workflows):**
 
 ````markdown

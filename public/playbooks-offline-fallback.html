@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Offline — Stories</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: system-ui, sans-serif;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1.5rem;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        main {
+            max-width: 28rem;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.35rem;
+            margin: 0 0 0.75rem;
+        }
+        p {
+            margin: 0 0 1.25rem;
+            line-height: 1.5;
+            color: #94a3b8;
+        }
+        a {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1 data-i18n-offline-title>Offline</h1>
+        <p data-i18n-offline-body>
+            This page is not available offline. Open Stories while online and tap
+            “Save offline” for the stories you want to read later.
+        </p>
+        <p>
+            <a href="../playbooks" data-i18n-offline-link>Back to Stories</a>
+        </p>
+    </main>
+    <script>
+        (function () {
+            var base = '';
+            try {
+                var path = location.pathname;
+                var idx = path.indexOf('/playbooks-offline-fallback.html');
+                if (idx > 0) {
+                    base = path.slice(0, idx);
+                }
+            } catch (e) {}
+            var link = document.querySelector('[data-i18n-offline-link]');
+            if (link) {
+                link.setAttribute('href', (base || '') + '/playbooks');
+            }
+            var isDe = /(?:^|\/)de(?:\/|$)/.test(location.pathname)
+                || (navigator.language || '').toLowerCase().indexOf('de') === 0;
+            if (isDe) {
+                document.documentElement.lang = 'de';
+                var title = document.querySelector('[data-i18n-offline-title]');
+                var body = document.querySelector('[data-i18n-offline-body]');
+                var a = document.querySelector('[data-i18n-offline-link]');
+                if (title) title.textContent = 'Offline';
+                if (body) {
+                    body.textContent =
+                        'Diese Seite ist offline nicht verfügbar. Öffne Stories online und tippe auf „Offline speichern“ für die Stories, die du später lesen willst.';
+                }
+                if (a) a.textContent = 'Zurück zu Stories';
+            }
+        })();
+    </script>
+</body>
+</html>

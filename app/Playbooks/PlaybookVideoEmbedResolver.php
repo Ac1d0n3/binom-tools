@@ -4,8 +4,24 @@ namespace App\Playbooks;
 
 final class PlaybookVideoEmbedResolver
 {
+    private const LOCAL_PREFIX = 'videos/playbooks/';
+
+    private const LOCAL_EXTENSIONS = [
+        'mp4' => 'video/mp4',
+        'webm' => 'video/webm',
+        'ogg' => 'video/ogg',
+    ];
+
     /**
-     * @return array{platform: string, id: string, embedUrl: string, privacyEmbedUrl: string|null}|null
+     * @return array{
+     *     platform: string,
+     *     id: string,
+     *     embedUrl?: string,
+     *     privacyEmbedUrl?: string|null,
+     *     srcUrl?: string,
+     *     mimeType?: string,
+     *     publicPath?: string
+     * }|null
      */
     public static function resolve(string $url): ?array
     {
@@ -13,6 +29,12 @@ final class PlaybookVideoEmbedResolver
 
         if ($url === '') {
             return null;
+        }
+
+        $local = self::resolveLocal($url);
+
+        if ($local !== null) {
+            return $local;
         }
 
         if (! filter_var($url, FILTER_VALIDATE_URL)) {
@@ -89,6 +111,59 @@ final class PlaybookVideoEmbedResolver
         }
 
         return null;
+    }
+
+    /**
+     * @return array{
+     *     platform: string,
+     *     id: string,
+     *     srcUrl: string,
+     *     mimeType: string,
+     *     publicPath: string
+     * }|null
+     */
+    public static function resolveLocal(string $raw): ?array
+    {
+        $path = trim($raw);
+
+        if ($path === '' || str_contains($path, '://') || str_contains($path, '..')) {
+            return null;
+        }
+
+        $relative = ltrim($path, '/');
+
+        if (! str_starts_with($relative, self::LOCAL_PREFIX)) {
+            return null;
+        }
+
+        $basename = basename($relative);
+
+        if ($basename === '' || $basename === '.' || $basename === '..') {
+            return null;
+        }
+
+        if (preg_match('/^[\w.-]+$/u', $basename) !== 1) {
+            return null;
+        }
+
+        $extension = strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+
+        if (! isset(self::LOCAL_EXTENSIONS[$extension])) {
+            return null;
+        }
+
+        // Only a single file under videos/playbooks/ (no nested folders).
+        if ($relative !== self::LOCAL_PREFIX.$basename) {
+            return null;
+        }
+
+        return [
+            'platform' => 'local',
+            'id' => $basename,
+            'srcUrl' => asset($relative),
+            'mimeType' => self::LOCAL_EXTENSIONS[$extension],
+            'publicPath' => $relative,
+        ];
     }
 
     private static function youtubeId(string $host, string $path, string $query): ?string
