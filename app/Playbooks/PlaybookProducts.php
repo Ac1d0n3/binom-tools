@@ -46,6 +46,9 @@ final class PlaybookProducts
         'dbt' => 'images/dbt-badge.svg',
         'fabric' => 'images/fabric-badge.svg',
         'databricks' => 'images/databricks-badge.svg',
+        'snowflake' => 'images/snowflake-badge.svg',
+        'powerbi' => 'images/powerbi-badge.svg',
+        'pureview' => 'images/pureview-badge.svg',
         'qlik' => 'images/qlik-badge.svg',
         'ai' => 'images/ai-badge.svg',
     ];

@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="44" height="16" viewBox="0 0 44 16" role="img" aria-label="Qlik">
-  <rect width="44" height="16" rx="3" fill="#009845"/>
-  <text x="22" y="11.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#fff">Qlik</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 16" role="img" aria-hidden="true">
+  <text
+    x="21.0"
+    y="8"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    fill="#009845"
+    font-family="Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+    font-size="13"
+    font-weight="700"
+    letter-spacing="-0.02em"
+  >Qlik</text>
 </svg>

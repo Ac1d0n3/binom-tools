@@ -200,7 +200,38 @@ const shellLabels = {
         'home.viewAllTools.description': 'Zur Governance-Übersicht mit Suche und allen Workflow-Beispielen.',
         'home.viewAllStories.title': 'Alle Stories',
         'home.viewAllStories.description': 'Zur Übersicht mit Suche, Tags und allen Governance-Guides.',
+        'home.resourcesTitle': 'Hersteller-Ressourcen',
+        'home.resourcesLead':
+            'Offizielle Hilfe, Governance, Lernpfade und Zertifizierungen — filterbar nach Produktfamilie.',
+        'home.viewAllResources.title': 'Alle Ressourcen',
+        'home.viewAllResources.description': 'Zur Link-Übersicht mit Suche und Produktfamilien-Filter.',
         'home.ecosystemTitle': 'Ökosystem',
+        'resources.indexTitle': 'Hersteller-Ressourcen',
+        'resources.indexLead':
+            'Offizielle Hilfe, Governance, Lernpfade, Cloud-Residenz (DSGVO) und Compliance — Filter nach Hersteller, Familie, SaaS/Open Source oder Residenz.',
+        'resources.searchPlaceholder': 'Produkte, DSGVO, C5, ISO, Miro… suchen',
+        'resources.helpTitle': 'Hilfe',
+        'resources.governanceTitle': 'Governance',
+        'resources.learningTitle': 'Lernpfade',
+        'resources.certificationsTitle': 'Zertifizierungen',
+        'resources.complianceTitle': 'Compliance',
+        'resources.noLinks': 'Noch keine Links.',
+        'resources.familyLabel': 'Produktfamilie',
+        'resources.familyAll': 'Alle Familien',
+        'resources.vendorLabel': 'Hersteller',
+        'resources.vendorAll': 'Alle Hersteller',
+        'resources.modelLabel': 'Lizenzmodell',
+        'resources.modelAll': 'Alle Modelle',
+        'resources.modelSaas': 'SaaS',
+        'resources.modelOpenSource': 'Open Source',
+        'resources.modelOnPrem': 'On-Prem',
+        'resources.bundleM365': 'Microsoft 365',
+        'resources.residencyLabel': 'Datenresidenz',
+        'resources.residencyAll': 'Alle Residenzen',
+        'resources.residencyEu': 'EU',
+        'resources.residencyDe': 'Deutschland',
+        'resources.residencyUs': 'USA',
+        'resources.residencyGlobal': 'Global',
         'tools.overviewTitle': 'Governance',
         'tools.overviewLead': 'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
         'overview.searchLabel': 'Suchen',
@@ -613,6 +644,8 @@ const shellLabels = {
         'nav.stories': 'Stories',
         'nav.storiesOverview': 'Übersicht',
         'nav.storiesMore': '+ {{count}} weitere Stories',
+        'nav.resources': 'Ressourcen',
+        'nav.resourcesOverview': 'Übersicht',
         'nav.sprintPlanner': 'Sprint Planner',
         'nav.sprintPlannerPlans': 'Meine Pläne',
         'nav.sprintPlannerTemplates': 'Vorlagen',
@@ -881,7 +914,38 @@ const shellLabels = {
         'home.viewAllTools.description': 'Go to the governance overview with search and all workflow examples.',
         'home.viewAllStories.title': 'All stories',
         'home.viewAllStories.description': 'Go to the overview with search, tags, and all governance guides.',
+        'home.resourcesTitle': 'Vendor resources',
+        'home.resourcesLead':
+            'Official help, governance, learning paths and certifications — filterable by product family.',
+        'home.viewAllResources.title': 'All resources',
+        'home.viewAllResources.description': 'Go to the link overview with search and product family filter.',
         'home.ecosystemTitle': 'Ecosystem',
+        'resources.indexTitle': 'Vendor resources',
+        'resources.indexLead':
+            'Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.',
+        'resources.searchPlaceholder': 'Search products, GDPR, C5, ISO, Miro…',
+        'resources.helpTitle': 'Help',
+        'resources.governanceTitle': 'Governance',
+        'resources.learningTitle': 'Learning paths',
+        'resources.certificationsTitle': 'Certifications',
+        'resources.complianceTitle': 'Compliance',
+        'resources.noLinks': 'No links yet.',
+        'resources.familyLabel': 'Product family',
+        'resources.familyAll': 'All families',
+        'resources.vendorLabel': 'Vendor',
+        'resources.vendorAll': 'All vendors',
+        'resources.modelLabel': 'Licensing model',
+        'resources.modelAll': 'All models',
+        'resources.modelSaas': 'SaaS',
+        'resources.modelOpenSource': 'Open Source',
+        'resources.modelOnPrem': 'On-prem',
+        'resources.bundleM365': 'Microsoft 365',
+        'resources.residencyLabel': 'Data residency',
+        'resources.residencyAll': 'All residencies',
+        'resources.residencyEu': 'EU',
+        'resources.residencyDe': 'Germany',
+        'resources.residencyUs': 'US',
+        'resources.residencyGlobal': 'Global',
         'tools.overviewTitle': 'Governance',
         'tools.overviewLead': 'Interactive reference workflows — step by step, copy-paste ready.',
         'overview.searchLabel': 'Search',
@@ -1294,6 +1358,8 @@ const shellLabels = {
         'nav.stories': 'Stories',
         'nav.storiesOverview': 'Overview',
         'nav.storiesMore': '+ {{count}} more stories',
+        'nav.resources': 'Resources',
+        'nav.resourcesOverview': 'Overview',
         'nav.sprintPlanner': 'Sprint Planner',
         'nav.sprintPlannerPlans': 'My plans',
         'nav.sprintPlannerTemplates': 'Templates',
@@ -1532,6 +1598,17 @@ export function applyShellLabels(locale) {
     });
 
     document.querySelectorAll('[data-sidenav-bilingual]').forEach((el) => {
+        const text = el.getAttribute(locale === 'de' ? 'data-text-de' : 'data-text-en');
+        if (text) {
+            el.textContent = text;
+        }
+    });
+
+    document.querySelectorAll('[data-text-de][data-text-en]').forEach((el) => {
+        if (el.hasAttribute('data-sidenav-bilingual')) {
+            return;
+        }
+
         const text = el.getAttribute(locale === 'de' ? 'data-text-de' : 'data-text-en');
         if (text) {
             el.textContent = text;

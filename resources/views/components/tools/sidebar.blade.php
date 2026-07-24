@@ -90,6 +90,21 @@
     </div>
 
     <div class="tools-sidenav__group">
+        <p class="tools-sidenav__section" data-i18n="nav.resources">Resources</p>
+        <ul class="tools-sidenav__list">
+            <li>
+                <a
+                    href="{{ locale_route('resources.index') }}"
+                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('resources.index') ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.resourcesOverview"
+                >
+                    Overview
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tools-sidenav__group">
         <p class="tools-sidenav__section" data-i18n="nav.sprintPlanner">Sprint Planner</p>
         <ul class="tools-sidenav__list">
             <li>

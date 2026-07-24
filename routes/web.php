@@ -16,6 +16,7 @@ use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookOfflineController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
+use App\Http\Controllers\Resources\VendorResourcesController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
 use App\Http\Controllers\Tools\ArchitectureFitController;
 use App\Http\Controllers\Tools\BiPythonToolkitController;
@@ -52,6 +53,7 @@ $registerRoutes = static function (bool $localized): void {
 
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
+    Route::get('/resources', [VendorResourcesController::class, 'index'])->name($name('resources.index'));
     Route::get('/playbooks', [PlaybookController::class, 'index'])->name($name('playbooks.index'));
     Route::get('/playbooks/offline-manifest', [PlaybookOfflineController::class, 'index'])
         ->middleware('throttle:60,1')

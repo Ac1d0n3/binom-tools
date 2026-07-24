@@ -99,6 +99,22 @@
                 </div>
             </section>
 
+            <section class="tools-section">
+                <h2 class="tools-section__title" data-i18n="home.resourcesTitle">Vendor resources</h2>
+                <p class="tools-section__lead" data-i18n="home.resourcesLead">
+                    Official help and governance docs from product vendors — filterable by product.
+                </p>
+                <div class="tools-card-grid">
+                    <x-tools.overview-card
+                        :href="locale_route('resources.index')"
+                        title-key="home.viewAllResources.title"
+                        description-key="home.viewAllResources.description"
+                        :count="count(config('vendor-resources.products', []))"
+                        icon="fa-link"
+                    />
+                </div>
+            </section>
+
             @if (count($ecosystemItems) > 0)
                 <section class="tools-section">
                     <h2 class="tools-section__title" data-i18n="home.ecosystemTitle">Ecosystem</h2>
