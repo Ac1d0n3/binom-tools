@@ -308,7 +308,15 @@ export function initOverviewFilters() {
                 .map((product) => product.trim())
                 .filter(Boolean);
 
-            section.hidden = !matchesProductFilter(products);
+            const childItems = section.querySelectorAll('[data-overview-item]');
+            const hasVisibleChild =
+                childItems.length === 0
+                    ? true
+                    : Array.from(childItems).some(
+                          (item) => item instanceof HTMLElement && !item.hidden,
+                      );
+
+            section.hidden = !matchesProductFilter(products) || !hasVisibleChild;
         });
     };
 

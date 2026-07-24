@@ -236,6 +236,39 @@ const shellLabels = {
         'resources.residencyDe': 'Deutschland',
         'resources.residencyUs': 'USA',
         'resources.residencyGlobal': 'Global',
+        'compliance.indexTitle': 'Compliance',
+        'compliance.indexLead':
+            'Frameworks und Richtlinien für Daten, Privacy, Security und AI — Zweck, wichtigste Regeln und offizielle Quellen.',
+        'compliance.searchPlaceholder': 'DSGVO, C5, AI Act, GoBD… suchen',
+        'compliance.categoryLabel': 'Kategorie',
+        'compliance.categoryAll': 'Alle Kategorien',
+        'compliance.regionLabel': 'Region',
+        'compliance.regionAll': 'Alle Regionen',
+        'compliance.disclaimer': 'Nur zur Orientierung und zum Lernen — kein Rechtsrat.',
+        'compliance.keyRulesPreview': 'Wichtigste Regeln',
+        'compliance.readMore': 'Übersicht lesen',
+        'compliance.depthShort': 'Kurz',
+        'compliance.backToIndex': '← Alle Compliance-Frameworks',
+        'compliance.whyItMatters': 'Warum das zählt',
+        'compliance.appliesTo': 'Für wen gilt es',
+        'compliance.keyRules': 'Wichtigste Regeln',
+        'compliance.platformImplications': 'Was das für Data Platforms heißt',
+        'compliance.officialSources': 'Offizielle Quellen',
+        'compliance.relatedPlaybooks': 'Verwandte Stories',
+        'compliance.prev': 'Zurück',
+        'compliance.next': 'Weiter',
+        'compliance.roadmapTitle': 'Zertifizierungs-Roadmap für Consultants',
+        'compliance.roadmapLead':
+            'Welche Nachweise als Data-/Governance-Consultant helfen — nach Region und Lernphase. Nur Orientierung.',
+        'compliance.roadmapDisclaimer':
+            'Nur Lernhilfe und Orientierung — keine Karriere-, Recruiting- oder Rechtsberatung. Anforderungen ändern sich; immer beim Anbieter prüfen.',
+        'compliance.roadmapSearchPlaceholder': 'CIPP/E, CDMP, ISO, AIGP… suchen',
+        'compliance.roadmapRegionLabel': 'Fokus-Region',
+        'compliance.roadmapRegionAll': 'Alle Regionen',
+        'compliance.roadmapTipsTitle': 'Vorgeschlagener Pfad',
+        'compliance.roadmapWhy': 'Warum das hilft',
+        'compliance.roadmapNeed': 'Was du brauchst',
+        'compliance.roadmapCta': 'Zertifizierungs-Roadmap für Consultants →',
         'tools.overviewTitle': 'Governance',
         'tools.overviewLead': 'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
         'overview.searchLabel': 'Suchen',
@@ -650,6 +683,9 @@ const shellLabels = {
         'nav.storiesMore': '+ {{count}} weitere Stories',
         'nav.resources': 'Ressourcen',
         'nav.resourcesOverview': 'Übersicht',
+        'nav.compliance': 'Compliance',
+        'nav.complianceOverview': 'Übersicht',
+        'nav.complianceRoadmap': 'Zertifizierungs-Roadmap',
         'nav.sprintPlanner': 'Sprint Planner',
         'nav.sprintPlannerPlans': 'Meine Pläne',
         'nav.sprintPlannerTemplates': 'Vorlagen',
@@ -954,6 +990,39 @@ const shellLabels = {
         'resources.residencyDe': 'Germany',
         'resources.residencyUs': 'US',
         'resources.residencyGlobal': 'Global',
+        'compliance.indexTitle': 'Compliance',
+        'compliance.indexLead':
+            'Frameworks and regulations for data, privacy, security and AI — purpose, key rules and official sources.',
+        'compliance.searchPlaceholder': 'Search GDPR, C5, AI Act, GoBD…',
+        'compliance.categoryLabel': 'Category',
+        'compliance.categoryAll': 'All categories',
+        'compliance.regionLabel': 'Region',
+        'compliance.regionAll': 'All regions',
+        'compliance.disclaimer': 'Learning and orientation only — not legal advice.',
+        'compliance.keyRulesPreview': 'Key rules',
+        'compliance.readMore': 'Read overview',
+        'compliance.depthShort': 'Short',
+        'compliance.backToIndex': '← All compliance frameworks',
+        'compliance.whyItMatters': 'Why it matters',
+        'compliance.appliesTo': 'Who it applies to',
+        'compliance.keyRules': 'Key rules',
+        'compliance.platformImplications': 'What it means for data platforms',
+        'compliance.officialSources': 'Official sources',
+        'compliance.relatedPlaybooks': 'Related stories',
+        'compliance.prev': 'Previous',
+        'compliance.next': 'Next',
+        'compliance.roadmapTitle': 'Consultant certification roadmap',
+        'compliance.roadmapLead':
+            'Which credentials help as a data/governance consultant — by region and learning phase. Orientation only.',
+        'compliance.roadmapDisclaimer':
+            'Learning and orientation only — not career, hiring or legal advice. Requirements change; always check the issuer.',
+        'compliance.roadmapSearchPlaceholder': 'Search CIPP/E, CDMP, ISO, AIGP…',
+        'compliance.roadmapRegionLabel': 'Focus region',
+        'compliance.roadmapRegionAll': 'All regions',
+        'compliance.roadmapTipsTitle': 'Suggested path',
+        'compliance.roadmapWhy': 'Why it helps',
+        'compliance.roadmapNeed': 'What you need',
+        'compliance.roadmapCta': 'Consultant certification roadmap →',
         'tools.overviewTitle': 'Governance',
         'tools.overviewLead': 'Interactive reference workflows — step by step, copy-paste ready.',
         'overview.searchLabel': 'Search',
@@ -1368,6 +1437,9 @@ const shellLabels = {
         'nav.storiesMore': '+ {{count}} more stories',
         'nav.resources': 'Resources',
         'nav.resourcesOverview': 'Overview',
+        'nav.compliance': 'Compliance',
+        'nav.complianceOverview': 'Overview',
+        'nav.complianceRoadmap': 'Certification roadmap',
         'nav.sprintPlanner': 'Sprint Planner',
         'nav.sprintPlannerPlans': 'My plans',
         'nav.sprintPlannerTemplates': 'Templates',
@@ -1622,6 +1694,15 @@ export function applyShellLabels(locale) {
             el.textContent = text;
         }
     });
+
+    const pageTitleRoot = document.querySelector('[data-page-title-root]');
+    if (pageTitleRoot) {
+        const pageTitle = pageTitleRoot.getAttribute(locale === 'de' ? 'data-title-de' : 'data-title-en');
+        if (pageTitle) {
+            const suffix = pageTitleRoot.getAttribute('data-title-suffix') || '';
+            document.title = `${pageTitle}${suffix}`;
+        }
+    }
 
     document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
         const key = el.getAttribute('data-i18n-aria');

@@ -105,6 +105,54 @@
     </div>
 
     <div class="tools-sidenav__group">
+        <p class="tools-sidenav__section" data-i18n="nav.compliance">Compliance</p>
+        <ul class="tools-sidenav__list">
+            <li>
+                <a
+                    href="{{ locale_route('compliance.index') }}"
+                    class="tools-sidenav__link tools-sidenav__link--overview {{ Locale::routeIs('compliance.index') ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.complianceOverview"
+                >
+                    Overview
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{{ locale_route('compliance.roadmap') }}"
+                    class="tools-sidenav__link {{ Locale::routeIs('compliance.roadmap') ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.complianceRoadmap"
+                >
+                    Certification roadmap
+                </a>
+            </li>
+            @if (Locale::routeIs('compliance.show') && is_string($currentSlug))
+                @php
+                    $complianceItems = config('compliance.items', []);
+                    $activeCompliance = collect($complianceItems)->first(
+                        static fn ($row) => is_array($row) && ($row['id'] ?? null) === $currentSlug
+                    );
+                    $activeComplianceLabelEn = is_array($activeCompliance)
+                        ? ($activeCompliance['label']['en'] ?? $currentSlug)
+                        : $currentSlug;
+                    $activeComplianceLabelDe = is_array($activeCompliance)
+                        ? ($activeCompliance['label']['de'] ?? $activeComplianceLabelEn)
+                        : $currentSlug;
+                @endphp
+                <li>
+                    <a
+                        href="{{ locale_route('compliance.show', ['slug' => $currentSlug]) }}"
+                        class="tools-sidenav__link tools-sidenav__link--active"
+                        data-text-de="{{ $activeComplianceLabelDe }}"
+                        data-text-en="{{ $activeComplianceLabelEn }}"
+                    >
+                        {{ $activeComplianceLabelEn }}
+                    </a>
+                </li>
+            @endif
+        </ul>
+    </div>
+
+    <div class="tools-sidenav__group">
         <p class="tools-sidenav__section" data-i18n="nav.sprintPlanner">Sprint Planner</p>
         <ul class="tools-sidenav__list">
             <li>
