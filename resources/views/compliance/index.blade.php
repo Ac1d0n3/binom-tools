@@ -102,8 +102,50 @@
                         $typeLabel = $types[$typeId] ?? ['de' => $typeId, 'en' => $typeId];
                         $keyRulesEn = is_array($item['keyRules']['en'] ?? null) ? $item['keyRules']['en'] : [];
                         $keyRulesDe = is_array($item['keyRules']['de'] ?? null) ? $item['keyRules']['de'] : $keyRulesEn;
-                        $previewEn = array_slice($keyRulesEn, 0, 3);
-                        $previewDe = array_slice($keyRulesDe, 0, 3);
+                        $ruleText = static function (mixed $rule, string $fallbackLocale = 'en'): string {
+                            if (is_string($rule)) {
+                                return $rule;
+                            }
+                            if (! is_array($rule)) {
+                                return '';
+                            }
+                            $title = $rule['title'] ?? '';
+                            $detail = $rule['detail'] ?? '';
+                            $ref = $rule['ref'] ?? '';
+
+                            return trim(implode(' ', array_filter([
+                                is_string($title) ? $title : '',
+                                is_string($detail) ? $detail : '',
+                                is_string($ref) ? $ref : '',
+                            ], static fn (string $v): bool => $v !== '')));
+                        };
+                        $ruleTitle = static function (mixed $rule): string {
+                            if (is_string($rule)) {
+                                return $rule;
+                            }
+                            if (is_array($rule) && is_string($rule['title'] ?? null)) {
+                                return $rule['title'];
+                            }
+
+                            return '';
+                        };
+                        $previewEn = array_values(array_filter(
+                            array_map($ruleTitle, array_slice($keyRulesEn, 0, 3)),
+                            static fn (string $v): bool => $v !== ''
+                        ));
+                        $previewDe = [];
+                        foreach (array_slice($keyRulesDe, 0, 3) as $i => $ruleDe) {
+                            $titleDe = $ruleTitle($ruleDe);
+                            $titleEn = $previewEn[$i] ?? $titleDe;
+                            $previewDe[] = $titleDe !== '' ? $titleDe : $titleEn;
+                        }
+                        $searchRuleParts = [];
+                        foreach ($keyRulesDe as $rule) {
+                            $searchRuleParts[] = $ruleText($rule);
+                        }
+                        foreach ($keyRulesEn as $rule) {
+                            $searchRuleParts[] = $ruleText($rule);
+                        }
                         $searchParts = [
                             $id,
                             $categoryId,
@@ -120,8 +162,7 @@
                             $regionLabel['en'] ?? '',
                             $typeLabel['de'] ?? '',
                             $typeLabel['en'] ?? '',
-                            implode(' ', $keyRulesDe),
-                            implode(' ', $keyRulesEn),
+                            ...$searchRuleParts,
                         ];
                         $searchText = strtolower(implode(' ', array_filter($searchParts, static fn ($v) => is_string($v) && $v !== '')));
                     @endphp

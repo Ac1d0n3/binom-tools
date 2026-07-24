@@ -4644,7 +4644,7 @@ html.bn-theme-blue-water-dark .vendor-resources-stack-banner {
     max-width: 48rem;
     font-size: 0.85rem;
     line-height: 1.45;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 62%, transparent);
+    color: var(--bn-color-text-secondary);
 }
 
 .tools-content--compliance .compliance-hub-sticky .tools-overview-toolbar {
@@ -4664,15 +4664,16 @@ html.bn-theme-blue-water-dark .vendor-resources-stack-banner {
 }
 
 .compliance-hub-card {
-    --compliance-accent: var(--theme-color-primary, #2563eb);
+    --compliance-accent: var(--theme-color-primary);
     display: grid !important;
     grid-template-columns: 9.5rem minmax(0, 1fr);
     align-items: stretch;
     gap: 0;
     overflow: hidden;
-    border: 1px solid var(--tools-card-border, var(--base-border-color, #cbd5e1));
+    border: 1px solid var(--tools-card-border, var(--base-border-color));
     border-radius: 14px;
     background: var(--tools-card-background, var(--content-background-color));
+    color: var(--content-font-color);
     box-shadow: 0 8px 24px color-mix(in srgb, #000 10%, transparent);
 }
 
@@ -4704,7 +4705,7 @@ html.bn-theme-blue-water-dark .vendor-resources-stack-banner {
     gap: 0.55rem;
     padding: 1.15rem 0.85rem;
     text-align: center;
-    border-right: 1px solid color-mix(in srgb, var(--base-border-color, #cbd5e1) 85%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--base-border-color) 85%, transparent);
     background: color-mix(in srgb, var(--compliance-accent) 12%, var(--content-background-color));
 }
 
@@ -4715,8 +4716,8 @@ html.bn-theme-blue-water-dark .vendor-resources-stack-banner {
     width: 3rem;
     height: 3rem;
     border-radius: 12px;
-    border: 1px solid color-mix(in srgb, var(--compliance-accent) 28%, var(--base-border-color, #cbd5e1));
-    background: color-mix(in srgb, #fff 70%, var(--content-background-color));
+    border: 1px solid color-mix(in srgb, var(--compliance-accent) 28%, var(--base-border-color));
+    background: color-mix(in srgb, var(--content-background-color) 70%, var(--surface-background-color));
     color: var(--compliance-accent);
     font-size: 1.2rem;
 }
@@ -4731,7 +4732,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     font-size: 0.78rem;
     font-weight: 700;
     line-height: 1.25;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 82%, transparent);
+    color: var(--content-font-color);
 }
 
 .compliance-hub-card__body {
@@ -4757,27 +4758,28 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     font-weight: 600;
     letter-spacing: 0.01em;
     line-height: 1.3;
-    border: 1px solid color-mix(in srgb, var(--base-border-color, #cbd5e1) 80%, transparent);
-    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 8%, var(--content-background-color));
-    color: var(--theme-color-text, #0f172a);
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 80%, transparent);
+    background: color-mix(in srgb, var(--theme-color-primary) 8%, var(--content-background-color));
+    color: var(--content-font-color);
 }
 
 .compliance-hub-chip--region {
-    background: color-mix(in srgb, #0f766e 12%, var(--content-background-color));
+    background: color-mix(in srgb, var(--theme-color-success) 14%, var(--content-background-color));
 }
 
 .compliance-hub-chip--type {
-    background: color-mix(in srgb, #64748b 12%, var(--content-background-color));
+    background: color-mix(in srgb, var(--theme-color-base) 16%, var(--content-background-color));
 }
 
 .compliance-hub-chip--short {
-    background: color-mix(in srgb, #b45309 14%, var(--content-background-color));
+    background: color-mix(in srgb, var(--theme-color-warn) 16%, var(--content-background-color));
 }
 
 .compliance-hub-card__title {
     margin: 0;
     font-size: 1.2rem;
     line-height: 1.3;
+    color: var(--content-font-color);
 }
 
 .compliance-hub-card__link {
@@ -4793,15 +4795,15 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     margin: 0;
     font-size: 0.94rem;
     line-height: 1.55;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 78%, transparent);
+    color: var(--bn-color-text-secondary);
 }
 
 .compliance-hub-card__rules {
     margin-top: 0.1rem;
     padding: 0.75rem 0.85rem;
     border-radius: 10px;
-    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 5%, var(--content-background-color));
-    border: 1px solid color-mix(in srgb, var(--base-border-color, #cbd5e1) 70%, transparent);
+    background: color-mix(in srgb, var(--theme-color-primary) 5%, var(--surface-background-color));
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 70%, transparent);
 }
 
 .compliance-hub-card__rules-label {
@@ -4810,7 +4812,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 55%, transparent);
+    color: var(--bn-color-text-secondary);
 }
 
 .compliance-hub-card__rules-list {
@@ -4818,7 +4820,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     padding-left: 1.1rem;
     font-size: 0.88rem;
     line-height: 1.45;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 86%, transparent);
+    color: var(--content-font-color);
 }
 
 .compliance-hub-card__rules-list li + li {
@@ -4871,8 +4873,55 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
 }
 
 .tools-content--compliance-detail {
-    max-width: 48rem;
+    --compliance-detail-accent: var(--theme-color-primary);
+    max-width: 64rem;
     padding-bottom: 2.5rem;
+    color: var(--content-font-color);
+}
+
+.compliance-detail--privacy {
+    --compliance-detail-accent: #0f766e;
+}
+
+.compliance-detail--security {
+    --compliance-detail-accent: #1d4ed8;
+}
+
+.compliance-detail--ai {
+    --compliance-detail-accent: #7c3aed;
+}
+
+.compliance-detail--retention {
+    --compliance-detail-accent: #b45309;
+}
+
+.compliance-detail--sector {
+    --compliance-detail-accent: #be123c;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--privacy,
+html.bn-theme-blue-water-dark .compliance-detail--privacy {
+    --compliance-detail-accent: #2dd4bf;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--security,
+html.bn-theme-blue-water-dark .compliance-detail--security {
+    --compliance-detail-accent: #93c5fd;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--ai,
+html.bn-theme-blue-water-dark .compliance-detail--ai {
+    --compliance-detail-accent: #c4b5fd;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--retention,
+html.bn-theme-blue-water-dark .compliance-detail--retention {
+    --compliance-detail-accent: #fbbf24;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--sector,
+html.bn-theme-blue-water-dark .compliance-detail--sector {
+    --compliance-detail-accent: #fb7185;
 }
 
 .compliance-detail__back {
@@ -4882,7 +4931,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
 .compliance-detail__back a {
     font-size: 0.92rem;
     font-weight: 600;
-    color: var(--theme-color-primary, #2563eb);
+    color: var(--compliance-detail-accent);
     text-decoration: none;
 }
 
@@ -4891,55 +4940,139 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
 }
 
 .compliance-detail__header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
 }
 
 .compliance-detail__header .tools-page-title {
     margin-top: 0.75rem;
+    color: var(--content-font-color);
+}
+
+.compliance-detail__header .tools-page-lead {
+    color: var(--bn-color-text-secondary);
 }
 
 .compliance-detail__sections {
     display: flex;
     flex-direction: column;
-    gap: 1.35rem;
+    gap: 1.75rem;
 }
 
 .compliance-detail__section h2 {
-    margin: 0 0 0.55rem;
-    font-size: 1.05rem;
+    margin: 0 0 0.85rem;
+    font-size: 1.08rem;
     line-height: 1.3;
+    color: var(--content-font-color);
 }
 
-.compliance-detail__section p {
-    margin: 0;
-    font-size: 0.98rem;
-    line-height: 1.6;
+.compliance-detail-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
 }
 
-.compliance-detail__list,
-.compliance-detail__sources,
-.compliance-detail__related {
-    margin: 0;
-    padding-left: 1.2rem;
-    font-size: 0.96rem;
-    line-height: 1.55;
+.compliance-detail-card-grid--intro {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.compliance-detail__list li + li,
-.compliance-detail__sources li + li,
-.compliance-detail__related li + li {
-    margin-top: 0.4rem;
+.compliance-detail-card-grid--scope {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.compliance-detail__sources a,
-.compliance-detail__related a {
-    color: var(--theme-color-primary, #2563eb);
+.compliance-detail-card-grid--links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compliance-detail-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.05rem 1.05rem;
+    border: 1px solid var(--tools-card-border, var(--base-border-color));
+    border-radius: 0.75rem;
+    background: var(--tools-card-overview-background, var(--surface-background-color));
+    border-left: 3px solid color-mix(in srgb, var(--compliance-detail-accent) 72%, var(--base-border-color));
+    color: var(--content-font-color);
     text-decoration: none;
 }
 
-.compliance-detail__sources a:hover,
-.compliance-detail__related a:hover {
-    text-decoration: underline;
+.compliance-detail-card--intro {
+    gap: 0.55rem;
+    padding: 1.15rem 1.2rem 1.2rem;
+}
+
+.compliance-detail-card--scope {
+    border-left-color: color-mix(in srgb, var(--compliance-detail-accent) 40%, var(--base-border-color));
+    background: var(--tools-card-background, var(--content-background-color));
+}
+
+.compliance-detail-card--pitfall {
+    border-left-color: var(--theme-color-warn);
+}
+
+.compliance-detail-card--checklist {
+    border-left-color: var(--theme-color-success);
+}
+
+.compliance-detail-card--link {
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.compliance-detail-card--link:hover {
+    border-color: color-mix(in srgb, var(--compliance-detail-accent) 45%, var(--base-border-color));
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--compliance-detail-accent) 12%, transparent);
+    transform: translateY(-1px);
+}
+
+.compliance-detail-card__title {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--content-font-color);
+}
+
+.compliance-detail-card--intro .compliance-detail-card__title {
+    font-size: 1.02rem;
+    color: var(--compliance-detail-accent);
+}
+
+.compliance-detail-card__ref {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    color: var(--bn-color-text-secondary);
+}
+
+.compliance-detail-card__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.compliance-detail-card__detail p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--content-font-color);
+}
+
+.compliance-detail-card__arrow {
+    margin-top: auto;
+    align-self: flex-end;
+    font-size: 0.85rem;
+    color: var(--compliance-detail-accent);
+}
+
+@media (max-width: 720px) {
+    .compliance-detail-card-grid,
+    .compliance-detail-card-grid--intro,
+    .compliance-detail-card-grid--scope,
+    .compliance-detail-card-grid--links {
+        grid-template-columns: 1fr;
+    }
 }
 
 .compliance-detail__pager {
@@ -4948,7 +5081,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     gap: 1rem;
     margin-top: 2rem;
     padding-top: 1.25rem;
-    border-top: 1px solid var(--base-border-color, #cbd5e1);
+    border-top: 1px solid var(--base-border-color);
 }
 
 .compliance-detail__pager-link {
@@ -4956,12 +5089,12 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     flex-direction: column;
     gap: 0.2rem;
     max-width: 45%;
-    color: inherit;
+    color: var(--content-font-color);
     text-decoration: none;
 }
 
 .compliance-detail__pager-link:hover {
-    color: var(--theme-color-primary, #2563eb);
+    color: var(--theme-color-primary);
 }
 
 .compliance-detail__pager-link--next {
@@ -4974,7 +5107,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 55%, transparent);
+    color: var(--bn-color-text-secondary);
 }
 
 @media (max-width: 640px) {
@@ -5056,7 +5189,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     max-width: 48rem;
     font-size: 0.94rem;
     line-height: 1.5;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 72%, transparent);
+    color: var(--bn-color-text-secondary);
 }
 
 .compliance-roadmap-grid {
@@ -5087,17 +5220,19 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
     margin: -0.25rem 0 0;
     font-size: 0.82rem;
     font-weight: 600;
-    color: color-mix(in srgb, var(--theme-color-text, #0f172a) 58%, transparent);
+    color: var(--bn-color-text-secondary);
 }
 
 .compliance-roadmap-card__why {
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.5;
+    color: var(--content-font-color);
 }
 
 .compliance-roadmap-card__need {
     margin-top: 0.15rem;
+    color: var(--content-font-color);
 }
 
 .compliance-roadmap-card__sources {
@@ -5108,7 +5243,7 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
 }
 
 .compliance-roadmap-card__sources a {
-    color: var(--compliance-accent, var(--theme-color-primary, #2563eb));
+    color: var(--compliance-accent, var(--theme-color-primary));
     text-decoration: none;
 }
 
@@ -5125,9 +5260,70 @@ html.bn-theme-blue-water-dark .compliance-hub-card__mark {
 
 .compliance-roadmap-card__links a {
     text-decoration: none;
-    color: inherit;
+    color: var(--content-font-color);
 }
 
 .compliance-roadmap-card__links a:hover {
-    border-color: var(--compliance-accent, var(--theme-color-primary, #2563eb));
+    border-color: var(--compliance-accent, var(--theme-color-primary));
+}
+
+/* Dark-mode accents last so they win over light category/phase colors */
+html[data-color-scheme='dark'] .compliance-hub-card--privacy,
+html.bn-theme-blue-water-dark .compliance-hub-card--privacy {
+    --compliance-accent: #93c5fd;
+}
+
+html[data-color-scheme='dark'] .compliance-hub-card--security,
+html.bn-theme-blue-water-dark .compliance-hub-card--security {
+    --compliance-accent: #fbbf24;
+}
+
+html[data-color-scheme='dark'] .compliance-hub-card--ai,
+html.bn-theme-blue-water-dark .compliance-hub-card--ai {
+    --compliance-accent: #c4b5fd;
+}
+
+html[data-color-scheme='dark'] .compliance-hub-card--retention,
+html.bn-theme-blue-water-dark .compliance-hub-card--retention {
+    --compliance-accent: #fbbf24;
+}
+
+html[data-color-scheme='dark'] .compliance-hub-card--sector,
+html.bn-theme-blue-water-dark .compliance-hub-card--sector {
+    --compliance-accent: #fb7185;
+}
+
+html[data-color-scheme='dark'] .compliance-hub-card--foundation,
+html.bn-theme-blue-water-dark .compliance-hub-card--foundation {
+    --compliance-accent: #2dd4bf;
+}
+
+html[data-color-scheme='dark'] .compliance-hub-card--platform,
+html.bn-theme-blue-water-dark .compliance-hub-card--platform {
+    --compliance-accent: #94a3b8;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--privacy,
+html.bn-theme-blue-water-dark .compliance-detail--privacy {
+    --compliance-detail-accent: #2dd4bf;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--security,
+html.bn-theme-blue-water-dark .compliance-detail--security {
+    --compliance-detail-accent: #93c5fd;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--ai,
+html.bn-theme-blue-water-dark .compliance-detail--ai {
+    --compliance-detail-accent: #c4b5fd;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--retention,
+html.bn-theme-blue-water-dark .compliance-detail--retention {
+    --compliance-detail-accent: #fbbf24;
+}
+
+html[data-color-scheme='dark'] .compliance-detail--sector,
+html.bn-theme-blue-water-dark .compliance-detail--sector {
+    --compliance-detail-accent: #fb7185;
 }
