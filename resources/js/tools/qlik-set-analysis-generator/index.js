@@ -3,7 +3,7 @@ import '../../../css/tools/qlik-set-analysis-generator.css';
 import { getLocale } from '../../locale';
 import { copyFromButton } from '../pii-shared/tool-utils.js';
 import { applyQlikSetLabels, t } from './labels.js';
-import { buildCurrentFormula, buildSetAnalysisOutputs, injectSetAnalysis, parseCsv, parseFields, parseVariables } from './set-analysis-builder.js';
+import { buildCurrentFormula, buildModifier, buildSetAnalysisOutputs, injectSetAnalysis, parseBaseMeasures, parseCsv, parseDefinitions, parseFields, parseVariables } from './set-analysis-builder.js';
 
 const app = document.getElementById('qlik-set-analysis-generator-app');
 if (!app) throw new Error('Qlik set analysis generator root element not found');
@@ -14,13 +14,35 @@ const els = {
     helpBody: document.getElementById('qlik-set-help-body'),
     paletteToggle: document.getElementById('qlik-set-palette-toggle'),
     paletteBody: document.getElementById('qlik-set-palette-body'),
+    descriptionToggle: document.getElementById('qlik-set-description-toggle'),
+    descriptionBody: document.getElementById('qlik-set-description-body'),
+    baseListToggle: document.getElementById('qlik-set-base-list-toggle'),
+    baseListBody: document.getElementById('qlik-set-base-list-body'),
     importModal: document.getElementById('qlik-set-import-modal'),
     workbench: document.querySelector('.qlik-set-workbench'),
+    workbenchToggle: document.getElementById('qlik-set-workbench-toggle'),
+    workbenchBody: document.getElementById('qlik-set-workbench-body'),
+    catalogRail: document.querySelector('[data-qlik-column="catalog"]'),
+    appName: document.getElementById('qlik-set-app-name'),
+    savedApps: document.getElementById('qlik-set-saved-apps'),
+    saveApp: document.getElementById('qlik-set-save-app'),
+    loadApp: document.getElementById('qlik-set-load-app'),
+    deleteApp: document.getElementById('qlik-set-delete-app'),
+    appMessage: document.getElementById('qlik-set-app-message'),
     importModalOpen: document.getElementById('qlik-set-import-modal-open'),
     importModalClose: document.getElementById('qlik-set-import-modal-close'),
     measureName: document.getElementById('qlik-set-measure-name'),
     baseDescription: document.getElementById('qlik-set-base-description'),
+    baseDescriptionEn: document.getElementById('qlik-set-base-description-en'),
+    descriptionLanguage: document.getElementById('qlik-set-description-language'),
+    childDescriptionTemplate: document.getElementById('qlik-set-child-description-template'),
+    childDescriptionTemplateEn: document.getElementById('qlik-set-child-description-template-en'),
     baseMeasure: document.getElementById('qlik-set-base-measure'),
+    baseMeasures: document.getElementById('qlik-set-base-measures'),
+    baseMeasureSelect: document.getElementById('qlik-set-base-measure-select'),
+    addCurrentBase: document.getElementById('qlik-set-add-current-base'),
+    loadBase: document.getElementById('qlik-set-load-base'),
+    newBase: document.getElementById('qlik-set-new-base'),
     undo: document.getElementById('qlik-set-undo'),
     redo: document.getElementById('qlik-set-redo'),
     kpiState: document.getElementById('qlik-set-kpi-state'),
@@ -35,29 +57,41 @@ const els = {
     csvFile: document.getElementById('qlik-set-csv-file'),
     fieldsFile: document.getElementById('qlik-set-fields-file'),
     varsFile: document.getElementById('qlik-set-vars-file'),
+    valueDimension: document.getElementById('qlik-set-value-dimension'),
+    valueValue: document.getElementById('qlik-set-value-value'),
+    valueLabel: document.getElementById('qlik-set-value-label'),
+    valueOperator: document.getElementById('qlik-set-value-operator'),
+    addValueRow: document.getElementById('qlik-set-add-value-row'),
+    valueList: document.getElementById('qlik-set-value-list'),
+    valueMessage: document.getElementById('qlik-set-value-message'),
     fields: document.getElementById('qlik-set-fields'),
     vars: document.getElementById('qlik-set-vars'),
     fieldOptions: document.getElementById('qlik-set-field-options'),
     variableOptions: document.getElementById('qlik-set-variable-options'),
-    fieldChips: document.getElementById('qlik-set-field-chips'),
+    dimensionChips: document.getElementById('qlik-set-dimension-chips'),
+    measureChips: document.getElementById('qlik-set-measure-chips'),
     variableChips: document.getElementById('qlik-set-variable-chips'),
+    generatedMeasures: document.getElementById('qlik-set-generated-measures'),
     aggregation: document.getElementById('qlik-set-aggregation'),
     measureField: document.getElementById('qlik-set-measure-field'),
-    variableUse: document.getElementById('qlik-set-variable-use'),
     applyBase: document.getElementById('qlik-set-apply-base'),
-    useVariableBase: document.getElementById('qlik-set-use-variable-base'),
-    addDimensionRow: document.getElementById('qlik-set-add-dimension-row'),
+    applySetFilter: document.getElementById('qlik-set-apply-set-filter'),
     addVariable: document.getElementById('qlik-set-add-variable'),
     addSetVariable: document.getElementById('qlik-set-add-set-variable'),
     addSearchFilter: document.getElementById('qlik-set-add-search-filter'),
     builderDimension: document.getElementById('qlik-set-builder-dimension'),
     builderValue: document.getElementById('qlik-set-builder-value'),
     builderLabel: document.getElementById('qlik-set-builder-label'),
+    builderMessage: document.getElementById('qlik-set-builder-message'),
+    definitions: document.getElementById('qlik-set-definitions'),
+    definitionName: document.getElementById('qlik-set-definition-name'),
+    definitionVariable: document.getElementById('qlik-set-definition-variable'),
+    definitionPreviewPre: document.getElementById('qlik-set-definition-preview-pre'),
+    definitionList: document.getElementById('qlik-set-definition-list'),
     searchExpression: document.getElementById('qlik-set-search-expression'),
     setVarName: document.getElementById('qlik-set-set-var-name'),
     setVarValues: document.getElementById('qlik-set-set-var-values'),
     filterDropzone: document.getElementById('qlik-set-filter-dropzone'),
-    filterPreview: document.getElementById('qlik-set-filter-preview'),
     treePreview: document.getElementById('qlik-set-tree-preview'),
     hierarchyLevels: document.getElementById('qlik-set-hierarchy-levels'),
     hierarchyPreview: document.getElementById('qlik-set-hierarchy-preview'),
@@ -66,7 +100,6 @@ const els = {
     rows: document.getElementById('qlik-set-rows'),
     measuresPre: document.getElementById('qlik-set-measures-pre'),
     variablesPre: document.getElementById('qlik-set-variables-pre'),
-    hierarchyPre: document.getElementById('qlik-set-hierarchy-pre'),
     timeVarsPre: document.getElementById('qlik-set-time-vars-pre'),
     modifiersPre: document.getElementById('qlik-set-modifiers-pre'),
     nestedIfPre: document.getElementById('qlik-set-nested-if-pre'),
@@ -74,31 +107,82 @@ const els = {
     csvPre: document.getElementById('qlik-set-csv-pre'),
     copyMeasures: document.getElementById('qlik-set-copy-measures'),
     copyVariables: document.getElementById('qlik-set-copy-variables'),
-    copyHierarchy: document.getElementById('qlik-set-copy-hierarchy'),
     copyTimeVars: document.getElementById('qlik-set-copy-time-vars'),
     copyModifiers: document.getElementById('qlik-set-copy-modifiers'),
     copyNestedIf: document.getElementById('qlik-set-copy-nested-if'),
     copyPickMatch: document.getElementById('qlik-set-copy-pick-match'),
     copyCsv: document.getElementById('qlik-set-copy-csv'),
+    downloadMeasuresXlsx: document.getElementById('qlik-set-download-measures-xlsx'),
+    downloadMeasuresCsv: document.getElementById('qlik-set-download-measures-csv'),
+    downloadVariablesXlsx: document.getElementById('qlik-set-download-variables-xlsx'),
+    downloadVariablesCsv: document.getElementById('qlik-set-download-variables-csv'),
+    outputTabbar: document.querySelector('.qlik-set-output-tabbar'),
+    outputTabsViewport: document.querySelector('.qlik-set-output-tabs'),
+    outputScrollPrev: document.querySelector('[data-qlik-output-scroll="prev"]'),
+    outputScrollNext: document.querySelector('[data-qlik-output-scroll="next"]'),
+    outputTabs: Array.from(document.querySelectorAll('[data-qlik-output-tab]')),
+    outputPanels: Array.from(document.querySelectorAll('[data-qlik-output-panel]')),
 };
 
 const formControls = Array.from(app.querySelectorAll('input, select, textarea'));
+const savedAppStorageKey = 'qlik-set-analysis-generator.apps.v1';
 const state = {
     activeKpi: null,
     kpiBaseMeasure: null,
+    definitionDraftTouched: false,
+    focusSnapshot: null,
     undoStack: [],
     redoStack: [],
 };
+const formulaHistoryControlIds = new Set([
+    'qlik-set-measure-name',
+    'qlik-set-base-description',
+    'qlik-set-base-description-en',
+    'qlik-set-description-language',
+    'qlik-set-child-description-template',
+    'qlik-set-child-description-template-en',
+    'qlik-set-base-measure',
+    'qlik-set-variable-prefix',
+    'qlik-set-aggregation',
+    'qlik-set-measure-field',
+]);
 
 function controlKey(control) {
     return control.id || control.name;
 }
 
-function snapshotForm() {
+function showBuilderMessage(message, type = 'info') {
+    if (!els.builderMessage) return;
+    els.builderMessage.textContent = message;
+    els.builderMessage.dataset.type = type;
+    els.builderMessage.hidden = false;
+}
+
+function clearBuilderMessage() {
+    if (!els.builderMessage) return;
+    els.builderMessage.textContent = '';
+    els.builderMessage.hidden = true;
+}
+
+function showAppMessage(message, type = 'info') {
+    if (!els.appMessage) return;
+    els.appMessage.textContent = message;
+    els.appMessage.dataset.type = type;
+    els.appMessage.hidden = false;
+}
+
+function clearAppMessage() {
+    if (!els.appMessage) return;
+    els.appMessage.textContent = '';
+    els.appMessage.hidden = true;
+}
+
+function snapshotForm(scope = 'all') {
     const values = {};
     formControls.forEach((control) => {
         const key = controlKey(control);
         if (!key || control.type === 'file') return;
+        if (scope === 'formula' && !formulaHistoryControlIds.has(key)) return;
         if (control.type === 'checkbox' || control.type === 'radio') {
             values[key] = control.checked;
         } else {
@@ -111,6 +195,30 @@ function snapshotForm() {
         activeKpi: state.activeKpi,
         kpiBaseMeasure: state.kpiBaseMeasure,
     };
+}
+
+function readSavedApps() {
+    try {
+        const savedApps = JSON.parse(localStorage.getItem(savedAppStorageKey) || '{}');
+        return savedApps && typeof savedApps === 'object' ? savedApps : {};
+    } catch {
+        return {};
+    }
+}
+
+function writeSavedApps(savedApps) {
+    localStorage.setItem(savedAppStorageKey, JSON.stringify(savedApps));
+}
+
+function refreshSavedAppsSelect(selected = '') {
+    if (!els.savedApps) return;
+    const savedApps = readSavedApps();
+    const names = Object.keys(savedApps).sort((a, b) => a.localeCompare(b));
+    els.savedApps.innerHTML = [
+        `<option value="">${escapeHtml(t(getLocale(), 'qlikSet.apps.none'))}</option>`,
+        ...names.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`),
+    ].join('');
+    if (selected && names.includes(selected)) els.savedApps.value = selected;
 }
 
 function snapshotEquals(a, b) {
@@ -132,8 +240,71 @@ function restoreSnapshot(snapshot) {
     state.kpiBaseMeasure = snapshot.kpiBaseMeasure;
 }
 
+function activateOutputTab(name) {
+    let activeTab = null;
+    els.outputTabs.forEach((tab) => {
+        const active = tab.dataset.qlikOutputTab === name;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        if (active) activeTab = tab;
+    });
+
+    els.outputPanels.forEach((panel) => {
+        const active = panel.dataset.qlikOutputPanel === name;
+        panel.classList.toggle('is-active', active);
+        panel.hidden = !active;
+    });
+
+    activeTab?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    window.requestAnimationFrame(updateOutputTabOverflow);
+}
+
+function updateOutputTabOverflow() {
+    const viewport = els.outputTabsViewport;
+    if (!viewport || !els.outputTabbar) return;
+    const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const hasOverflow = maxScroll > 1;
+    const atStart = viewport.scrollLeft <= 1;
+    const atEnd = viewport.scrollLeft >= maxScroll - 1;
+
+    els.outputTabbar.classList.toggle('has-overflow', hasOverflow);
+    if (els.outputScrollPrev) els.outputScrollPrev.disabled = !hasOverflow || atStart;
+    if (els.outputScrollNext) els.outputScrollNext.disabled = !hasOverflow || atEnd;
+}
+
+function scrollOutputTabs(direction) {
+    const viewport = els.outputTabsViewport;
+    if (!viewport) return;
+    const amount = Math.max(180, Math.floor(viewport.clientWidth * 0.65));
+    viewport.scrollBy({ left: direction * amount, behavior: 'smooth' });
+    window.setTimeout(updateOutputTabOverflow, 220);
+}
+
+function setBuilderDimension(value) {
+    if (!els.builderDimension || !value) return;
+    if (els.builderDimension.tagName === 'SELECT') {
+        const exists = Array.from(els.builderDimension.options).some((option) => option.value === value);
+        if (!exists) els.builderDimension.add(new Option(value, value));
+    }
+    els.builderDimension.value = value;
+}
+
+function selectedBuilderValues() {
+    if (!els.builderValue) return [];
+    if (els.builderValue.tagName === 'SELECT' && els.builderValue.multiple) {
+        return Array.from(els.builderValue.selectedOptions)
+            .map((option) => option.value.trim())
+            .filter(Boolean);
+    }
+    return [els.builderValue.value?.trim() || ''].filter(Boolean);
+}
+
 function rememberBeforeChange() {
-    const snapshot = snapshotForm();
+    const snapshot = snapshotForm('formula');
+    pushFormulaSnapshot(snapshot);
+}
+
+function pushFormulaSnapshot(snapshot) {
     const last = state.undoStack[state.undoStack.length - 1];
     if (!last || !snapshotEquals(last, snapshot)) {
         state.undoStack.push(snapshot);
@@ -184,7 +355,13 @@ function readState() {
     return {
         measureName: els.measureName?.value?.trim() || 'Sales',
         baseDescription: els.baseDescription?.value?.trim() || '',
+        baseDescriptionEn: els.baseDescriptionEn?.value?.trim() || '',
+        descriptionLanguage: els.descriptionLanguage?.value || 'de',
+        childDescriptionTemplate: els.childDescriptionTemplate?.value || '',
+        childDescriptionTemplateEn: els.childDescriptionTemplateEn?.value || '',
         baseMeasure: els.baseMeasure?.value?.trim() || 'Sum(Sales)',
+        baseMeasuresText: els.baseMeasures?.value || '',
+        definitionsText: els.definitions?.value || '',
         variablePrefix: els.variablePrefix?.value?.trim() || 'vSales',
         rowsText: els.rows?.value || '',
         mode: els.mode?.value || 'single',
@@ -221,6 +398,24 @@ function updatePaletteToggleLabel() {
     els.paletteToggle.textContent = t(getLocale(), expanded ? 'qlikSet.palette.hide' : 'qlikSet.palette.show');
 }
 
+function updateDescriptionToggleLabel() {
+    if (!els.descriptionToggle) return;
+    const expanded = els.descriptionToggle.getAttribute('aria-expanded') === 'true';
+    els.descriptionToggle.textContent = t(getLocale(), expanded ? 'qlikSet.descriptions.hide' : 'qlikSet.descriptions.show');
+}
+
+function updateBaseListToggleLabel() {
+    if (!els.baseListToggle) return;
+    const expanded = els.baseListToggle.getAttribute('aria-expanded') === 'true';
+    els.baseListToggle.textContent = t(getLocale(), expanded ? 'qlikSet.baseList.hide' : 'qlikSet.baseList.show');
+}
+
+function updateWorkbenchToggleLabel() {
+    if (!els.workbenchToggle) return;
+    const expanded = els.workbenchToggle.getAttribute('aria-expanded') !== 'false';
+    els.workbenchToggle.textContent = t(getLocale(), expanded ? 'qlikSet.workbench.hide' : 'qlikSet.workbench.show');
+}
+
 function escapeHtml(value) {
     return value.replace(/[&<>"']/g, (char) => ({
         '&': '&amp;',
@@ -243,6 +438,257 @@ function qlikSingleQuoted(value) {
 
 function csvCell(value) {
     return `"${value.replaceAll('"', '""')}"`;
+}
+
+function dimensionValueCsvLine(row) {
+    return [
+        row.dimension || '',
+        row.value || '',
+        row.label || row.value || '',
+        row.operator || '',
+        row.assignment || '',
+    ].map(csvCell).join(',');
+}
+
+function writeDimensionValues(rows) {
+    if (!els.rows) return;
+    els.rows.value = [
+        'dimension,value,label,operator,assignment',
+        ...rows.map(dimensionValueCsvLine),
+    ].join('\n');
+}
+
+function definitionCsvLine(definition) {
+    return [
+        definition.name || '',
+        definition.modifier || '',
+        definition.variableName || '',
+        definition.description || '',
+        definition.dimensions || '',
+        definition.values || '',
+    ].map(csvCell).join(',');
+}
+
+function writeDefinitions(definitions) {
+    if (!els.definitions) return;
+    els.definitions.value = [
+        'name,modifier,variable,description,dimensions,values',
+        ...definitions.map(definitionCsvLine),
+    ].join('\n');
+}
+
+function selectedDefinitionDraft() {
+    const dimension = els.builderDimension?.value?.trim() || '';
+    const values = selectedBuilderValues();
+    const label = values.join(' + ');
+    const name = els.definitionName?.value?.trim() || [dimension, label].filter(Boolean).join(' ');
+    const variableName = els.definitionVariable?.value?.trim() || `vDef${[dimension, label].join('_').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '')}`;
+    const modifier = dimension && values.length
+        ? buildModifier([{
+            dimension,
+            value: values.join('\u0000'),
+            label,
+        }], {
+            assignment: els.assignment?.value || '=',
+            valueMode: els.valueMode?.value || 'literal',
+            setIdentifier: els.identifier?.value ?? '$',
+        })
+        : '';
+    return {
+        name,
+        modifier,
+        variableName,
+        description: `Definition ${name}`,
+        dimensions: dimension,
+        values: values.join(' | '),
+    };
+}
+
+function suggestedDefinitionMeta() {
+    const dimension = els.builderDimension?.value?.trim() || '';
+    const values = selectedBuilderValues();
+    const valueLabel = values.join(' + ');
+    const name = [dimension, valueLabel].filter(Boolean).join(' ') || 'Definition';
+    const variableName = `vDef${name.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '').replace(/^./, (char) => char.toUpperCase()) || 'Definition'}`;
+    return { name, variableName };
+}
+
+function refreshDefinitionDraftFromSelection() {
+    if (state.definitionDraftTouched) return;
+    const suggestion = suggestedDefinitionMeta();
+    if (els.definitionName) els.definitionName.value = suggestion.name;
+    if (els.definitionVariable) els.definitionVariable.value = suggestion.variableName;
+}
+
+function showValueMessage(message, type = 'info') {
+    if (!els.valueMessage) return;
+    els.valueMessage.textContent = message;
+    els.valueMessage.dataset.type = type;
+    els.valueMessage.hidden = false;
+}
+
+function clearValueMessage() {
+    if (!els.valueMessage) return;
+    els.valueMessage.textContent = '';
+    els.valueMessage.hidden = true;
+}
+
+function baseMeasuresCsvLine(base) {
+    return [
+        base.measureName || 'Measure',
+        base.baseMeasure || 'Sum(Sales)',
+        base.variablePrefix || 'vMeasure',
+        base.baseDescription || '',
+        base.baseDescriptionEn || '',
+    ].map(csvCell).join(',');
+}
+
+function baseMeasureList() {
+    return parseBaseMeasures(els.baseMeasures?.value || '');
+}
+
+function writeBaseMeasureList(measures) {
+    if (!els.baseMeasures) return;
+    els.baseMeasures.value = [
+        'name,expression,prefix,description_de,description_en',
+        ...measures.map(baseMeasuresCsvLine),
+    ].join('\n');
+}
+
+function activeBaseFromForm() {
+    return {
+        measureName: els.measureName?.value?.trim() || els.measureField?.value?.trim() || 'Measure',
+        baseMeasure: els.baseMeasure?.value?.trim() || 'Sum(Sales)',
+        variablePrefix: els.variablePrefix?.value?.trim() || 'vMeasure',
+        baseDescription: els.baseDescription?.value?.trim() || '',
+        baseDescriptionEn: els.baseDescriptionEn?.value?.trim() || '',
+    };
+}
+
+function downloadBlob(filename, blob) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+function downloadText(filename, content, mime = 'text/csv;charset=utf-8') {
+    downloadBlob(filename, new Blob([`\uFEFF${content}`], { type: mime }));
+}
+
+function xmlEscape(value) {
+    return String(value ?? '').replace(/[<>&'"]/g, (char) => ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        "'": '&apos;',
+        '"': '&quot;',
+    })[char]);
+}
+
+function columnName(index) {
+    let name = '';
+    let value = index + 1;
+    while (value > 0) {
+        const remainder = (value - 1) % 26;
+        name = String.fromCharCode(65 + remainder) + name;
+        value = Math.floor((value - 1) / 26);
+    }
+    return name;
+}
+
+function sheetXml(rows) {
+    const body = rows.map((row, rowIndex) => {
+        const cells = row.map((cell, cellIndex) => {
+            const ref = `${columnName(cellIndex)}${rowIndex + 1}`;
+            return `<c r="${ref}" t="inlineStr"><is><t>${xmlEscape(cell)}</t></is></c>`;
+        }).join('');
+        return `<row r="${rowIndex + 1}">${cells}</row>`;
+    }).join('');
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${body}</sheetData></worksheet>`;
+}
+
+function crc32(bytes) {
+    let crc = -1;
+    for (const byte of bytes) {
+        crc ^= byte;
+        for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+    }
+    return (crc ^ -1) >>> 0;
+}
+
+function uint16(value) {
+    return [value & 255, (value >>> 8) & 255];
+}
+
+function uint32(value) {
+    return [value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255];
+}
+
+function zipStore(files) {
+    const encoder = new TextEncoder();
+    const chunks = [];
+    const central = [];
+    let offset = 0;
+
+    files.forEach(({ name, content }) => {
+        const nameBytes = encoder.encode(name);
+        const data = encoder.encode(content);
+        const crc = crc32(data);
+        const local = new Uint8Array([
+            ...uint32(0x04034b50), ...uint16(20), ...uint16(0), ...uint16(0), ...uint16(0), ...uint16(0),
+            ...uint32(crc), ...uint32(data.length), ...uint32(data.length), ...uint16(nameBytes.length), ...uint16(0),
+            ...nameBytes,
+        ]);
+        chunks.push(local, data);
+        central.push({ nameBytes, dataLength: data.length, crc, offset });
+        offset += local.length + data.length;
+    });
+
+    const centralStart = offset;
+    central.forEach((entry) => {
+        const directory = new Uint8Array([
+            ...uint32(0x02014b50), ...uint16(20), ...uint16(20), ...uint16(0), ...uint16(0), ...uint16(0), ...uint16(0),
+            ...uint32(entry.crc), ...uint32(entry.dataLength), ...uint32(entry.dataLength), ...uint16(entry.nameBytes.length),
+            ...uint16(0), ...uint16(0), ...uint16(0), ...uint16(0), ...uint32(0), ...uint32(entry.offset), ...entry.nameBytes,
+        ]);
+        chunks.push(directory);
+        offset += directory.length;
+    });
+
+    const centralSize = offset - centralStart;
+    chunks.push(new Uint8Array([
+        ...uint32(0x06054b50), ...uint16(0), ...uint16(0), ...uint16(central.length), ...uint16(central.length),
+        ...uint32(centralSize), ...uint32(centralStart), ...uint16(0),
+    ]));
+    return new Blob(chunks, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+
+function workbookBlob(sheetName, rows) {
+    const safeSheetName = xmlEscape(sheetName.slice(0, 31));
+    return zipStore([
+        {
+            name: '[Content_Types].xml',
+            content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>',
+        },
+        {
+            name: '_rels/.rels',
+            content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+        },
+        {
+            name: 'xl/workbook.xml',
+            content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${safeSheetName}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+        },
+        {
+            name: 'xl/_rels/workbook.xml.rels',
+            content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>',
+        },
+        { name: 'xl/worksheets/sheet1.xml', content: sheetXml(rows) },
+    ]);
 }
 
 function setVariableName(dimension, values) {
@@ -333,15 +779,11 @@ function activeFormulaTarget() {
 function appendFunctionSnippet(snippet) {
     const target = activeFormulaTarget();
     if (!target) return;
-    rememberBeforeChange();
-    if (target === els.baseMeasure) resetKpiLock();
+    if (target === els.baseMeasure) {
+        rememberBeforeChange();
+        resetKpiLock();
+    }
     insertAtCursor(target, snippet);
-}
-
-function appendFilterRow(dimension, value = '', label = '') {
-    if (!els.rows || !dimension) return;
-    const line = `${dimension},${value || 'VALUE'},${label || value || dimension}`;
-    els.rows.value = `${els.rows.value.trim()}\n${line}`;
 }
 
 function appendSearchFilter() {
@@ -355,101 +797,139 @@ function appendSearchFilter() {
 
 function appendHierarchyLevel(field) {
     if (!els.hierarchyLevels || !field) return;
-    const levels = els.hierarchyLevels.value
-        .split(/\r?\n|>|,/)
-        .map((value) => value.trim())
-        .filter(Boolean);
-    if (!levels.includes(field)) levels.push(field);
-    els.hierarchyLevels.value = levels.join('\n');
+    const tree = hierarchyTree();
+    if (findHierarchyNode(tree, field)) return;
+    tree.push({ name: field, children: [] });
+    writeHierarchyTree(tree);
+}
+
+function hierarchyTree() {
+    const root = [];
+    const stack = [{ depth: -1, children: root }];
+    return (els.hierarchyLevels?.value || '')
+        .split(/\r?\n/)
+        .map((line) => {
+            const name = line.trim();
+            if (!name) return null;
+            return { depth: Math.max(0, Math.floor((line.match(/^\s*/)?.[0].length || 0) / 2)), name };
+        })
+        .filter(Boolean)
+        .reduce((tree, item) => {
+            while (stack.length > 1 && stack[stack.length - 1].depth >= item.depth) stack.pop();
+            const node = { name: item.name, children: [] };
+            stack[stack.length - 1].children.push(node);
+            stack.push({ depth: item.depth, children: node.children });
+            return tree;
+        }, root);
+}
+
+function flattenHierarchyTree(nodes) {
+    return nodes.flatMap((node) => [node.name, ...flattenHierarchyTree(node.children || [])]);
 }
 
 function hierarchyLevels() {
-    return (els.hierarchyLevels?.value || '')
-        .split(/\r?\n|>|,/)
-        .map((value) => value.trim())
-        .filter(Boolean);
+    return flattenHierarchyTree(hierarchyTree());
 }
 
-function writeHierarchyLevels(levels) {
+function serializeHierarchyTree(nodes, depth = 0) {
+    return nodes.flatMap((node) => [
+        `${'  '.repeat(depth)}${node.name}`,
+        ...serializeHierarchyTree(node.children || [], depth + 1),
+    ]);
+}
+
+function writeHierarchyTree(nodes) {
     if (!els.hierarchyLevels) return;
-    els.hierarchyLevels.value = levels.filter(Boolean).join('\n');
+    els.hierarchyLevels.value = serializeHierarchyTree(nodes).join('\n');
 }
 
-function insertHierarchyLevelAfter(parentLevel = '', nextLevelOverride = '') {
+function findHierarchyNode(nodes, name) {
+    for (const node of nodes) {
+        if (node.name === name) return node;
+        const child = findHierarchyNode(node.children || [], name);
+        if (child) return child;
+    }
+    return null;
+}
+
+function removeHierarchyNode(nodes, name) {
+    const index = nodes.findIndex((node) => node.name === name);
+    if (index >= 0) return nodes.splice(index, 1)[0];
+    for (const node of nodes) {
+        const removed = removeHierarchyNode(node.children || [], name);
+        if (removed) return removed;
+    }
+    return null;
+}
+
+function addHierarchyNode(targetParent = '', nextLevelOverride = '') {
     const nextLevel = nextLevelOverride || els.builderDimension?.value?.trim() || '';
     if (!nextLevel || !els.hierarchyLevels) return;
 
-    const levels = hierarchyLevels().filter((level) => level !== nextLevel);
-    const parentIndex = parentLevel ? levels.indexOf(parentLevel) : -1;
-    const insertIndex = parentIndex >= 0 ? parentIndex + 1 : 0;
-    levels.splice(insertIndex, 0, nextLevel);
-    writeHierarchyLevels(levels);
+    const tree = hierarchyTree();
+    const movingNode = removeHierarchyNode(tree, nextLevel) || { name: nextLevel, children: [] };
+    if (targetParent && targetParent === movingNode.name) {
+        tree.push(movingNode);
+        writeHierarchyTree(tree);
+        return;
+    }
+    const parent = targetParent ? findHierarchyNode(tree, targetParent) : null;
+    (parent?.children || tree).push(movingNode);
+    writeHierarchyTree(tree);
 }
 
-function removeHierarchyLevelAt(index) {
-    const levels = hierarchyLevels();
-    if (index < 0 || index >= levels.length) return;
-    levels.splice(index, 1);
-    writeHierarchyLevels(levels);
-}
-
-function moveHierarchyLevel(index, direction) {
-    const levels = hierarchyLevels();
-    const nextIndex = index + direction;
-    if (index < 0 || nextIndex < 0 || index >= levels.length || nextIndex >= levels.length) return;
-    [levels[index], levels[nextIndex]] = [levels[nextIndex], levels[index]];
-    writeHierarchyLevels(levels);
+function removeHierarchyLevel(name) {
+    const tree = hierarchyTree();
+    removeHierarchyNode(tree, name);
+    writeHierarchyTree(tree);
 }
 
 function valueChipsForDimension(rows, dimension) {
     const values = rows
         .filter((row) => row.dimension === dimension)
         .map((row) => row.label || row.value)
-        .filter(Boolean)
-        .slice(0, 4);
-    if (values.length === 0) return '';
-    return `<div class="qlik-set-tree-values">${values.map((value) => `<span>${escapeHtml(value)}</span>`).join('')}</div>`;
-}
-
-function hierarchySlotLabel(previousLevel, nextLevel) {
-    const locale = getLocale();
-    if (nextLevel) {
-        return t(locale, 'qlikSet.tree.insertBetween')
-            .replace('{before}', previousLevel || t(locale, 'qlikSet.tree.base'))
-            .replace('{after}', nextLevel);
+        .filter(Boolean);
+    if (values.length === 0) {
+        return `<div class="qlik-set-tree-values qlik-set-tree-values--empty"><span>${escapeHtml(t(getLocale(), 'qlikSet.tree.noValues'))}</span></div>`;
     }
-    return t(locale, 'qlikSet.tree.insertUnder')
-        .replace('{level}', previousLevel || t(locale, 'qlikSet.tree.base'));
+    const previewLimit = 4;
+    const previewValues = values.slice(0, previewLimit);
+    const hiddenCount = values.length - previewValues.length;
+    const moreLabel = hiddenCount > 0
+        ? `<span class="qlik-set-tree-values__more">+${hiddenCount} ${escapeHtml(t(getLocale(), 'qlikSet.tree.moreValues'))}</span>`
+        : '';
+    return `<div class="qlik-set-tree-values">${previewValues.map((value) => `<span>${escapeHtml(value)}</span>`).join('')}${moreLabel}</div>`;
 }
 
-function renderHierarchySlot(previousLevel, nextLevel = '', extraClass = '') {
-    const label = previousLevel ? hierarchySlotLabel(previousLevel, nextLevel) : hierarchySlotLabel(previousLevel, '');
-    const rootAttribute = previousLevel ? '' : ' data-qlik-tree-insert-root';
-    return `<div class="qlik-set-tree-slot ${extraClass}" role="button" tabindex="0"${rootAttribute} data-qlik-tree-insert-after="${escapeHtml(previousLevel)}" data-qlik-tree-drop-after="${escapeHtml(previousLevel)}">${escapeHtml(label)}</div>`;
+function hierarchySlotLabel(parentLevel) {
+    const locale = getLocale();
+    return parentLevel
+        ? t(locale, 'qlikSet.tree.dropOnNode').replace('{level}', parentLevel)
+        : t(locale, 'qlikSet.tree.dropOnBase');
 }
 
-function renderHierarchyBranch(levels, rows, index = 0) {
-    if (index >= levels.length) return '';
-    const level = levels[index];
-    const nextLevel = levels[index + 1] || '';
-    const moveUpLabel = t(getLocale(), 'qlikSet.tree.moveUp');
-    const moveDownLabel = t(getLocale(), 'qlikSet.tree.moveDown');
+function renderHierarchySlot(parentLevel = '', extraClass = '') {
+    const label = hierarchySlotLabel(parentLevel);
+    return `<div class="qlik-set-tree-slot ${extraClass}" data-qlik-tree-parent="${escapeHtml(parentLevel)}"><span aria-hidden="true">+</span>${escapeHtml(label)}</div>`;
+}
+
+function renderHierarchyBranches(nodes, rows) {
+    if (nodes.length === 0) return '';
     const removeLabel = t(getLocale(), 'qlikSet.tree.remove');
     return `
         <ul>
-            <li>
-                <div class="qlik-set-tree-node" draggable="true" data-qlik-tree-level="${escapeHtml(level)}" data-qlik-tree-index="${index}">
-                    <span>${escapeHtml(level)}</span>
-                    <span class="qlik-set-tree-actions">
-                        <button type="button" class="qlik-set-tree-action" data-qlik-tree-move="${index}" data-qlik-tree-direction="-1" ${index === 0 ? 'disabled' : ''}>${escapeHtml(moveUpLabel)}</button>
-                        <button type="button" class="qlik-set-tree-action" data-qlik-tree-move="${index}" data-qlik-tree-direction="1" ${index === levels.length - 1 ? 'disabled' : ''}>${escapeHtml(moveDownLabel)}</button>
-                        <button type="button" class="qlik-set-tree-action" data-qlik-tree-remove="${index}">${escapeHtml(removeLabel)}</button>
-                    </span>
-                </div>
-                ${valueChipsForDimension(rows, level)}
-                ${renderHierarchySlot(level, nextLevel)}
-                ${renderHierarchyBranch(levels, rows, index + 1)}
-            </li>
+            ${nodes.map((node) => `
+                <li>
+                    <div class="qlik-set-tree-node" draggable="true" data-qlik-tree-level="${escapeHtml(node.name)}" data-qlik-tree-parent="${escapeHtml(node.name)}" title="${escapeHtml(hierarchySlotLabel(node.name))}">
+                        <span>${escapeHtml(node.name)}</span>
+                        <span class="qlik-set-tree-actions">
+                            <button type="button" class="qlik-set-tree-action" data-qlik-tree-remove="${escapeHtml(node.name)}">${escapeHtml(removeLabel)}</button>
+                        </span>
+                    </div>
+                    ${valueChipsForDimension(rows, node.name)}
+                    ${renderHierarchyBranches(node.children || [], rows)}
+                </li>
+            `).join('')}
         </ul>
     `;
 }
@@ -457,10 +937,11 @@ function renderHierarchyBranch(levels, rows, index = 0) {
 function appendSetVariable() {
     if (!els.vars) return;
     const dimension = els.builderDimension?.value?.trim() || 'Region';
-    const values = (els.setVarValues?.value || els.builderValue?.value || '')
+    const explicitValues = (els.setVarValues?.value || '')
         .split(/[,\n;]/)
         .map((value) => value.trim())
         .filter(Boolean);
+    const values = explicitValues.length ? explicitValues : selectedBuilderValues();
     if (values.length === 0) return;
 
     const name = els.setVarName?.value?.trim() || setVariableName(dimension, values);
@@ -468,14 +949,6 @@ function appendSetVariable() {
     const description = `Set modifier for ${dimension}: ${values.join(', ')}`;
     const line = [name, definition, description].map(csvCell).join(',');
     els.vars.value = `${els.vars.value.trim()}\n${line}`;
-    if (els.variableUse) els.variableUse.value = name;
-    if (els.builderValue) els.builderValue.value = values[0];
-    if (els.baseMeasure) {
-        els.baseMeasure.value = injectSetAnalysis(els.baseMeasure.value || 'Sum(Sales)', `$(${name})`, {
-            setIdentifier: els.identifier?.value ?? '$',
-            expressionStyle: els.expressionStyle?.value || 'inner',
-        });
-    }
 }
 
 function parseDragToken(event) {
@@ -525,11 +998,25 @@ function renderFieldGroup(type, fields) {
     `;
 }
 
+function renderGeneratedMeasureList(outputs) {
+    const rows = (outputs.measureRows || []).slice(1, 51);
+    if (rows.length === 0) {
+        return `<p class="qlik-set-small">${escapeHtml(t(getLocale(), 'qlikSet.catalog.noGenerated'))}</p>`;
+    }
+    return rows.map(([name, expression, description]) => `
+        <div class="qlik-set-generated-item">
+            <strong>${escapeHtml(name || 'Measure')}</strong>
+            <code>${escapeHtml(expression || '')}</code>
+            ${description ? `<span>${escapeHtml(description.split('\n')[0])}</span>` : ''}
+        </div>
+    `).join('');
+}
+
 function closestTreeDropSlot(event) {
-    const directSlot = event.target.closest?.('[data-qlik-tree-drop-after]');
+    const directSlot = event.target.closest?.('[data-qlik-tree-parent]');
     if (directSlot) return directSlot;
 
-    const slots = Array.from(els.treePreview?.querySelectorAll('[data-qlik-tree-drop-after]') || []);
+    const slots = Array.from(els.treePreview?.querySelectorAll('[data-qlik-tree-parent]') || []);
     if (slots.length === 0) return null;
 
     const y = event.clientY;
@@ -549,32 +1036,125 @@ function clearTreeDropHighlights() {
 function renderCatalog() {
     const fields = parseFields(els.fields?.value || '');
     const variables = parseVariables(els.vars?.value || '');
+    const rows = parseCsv(els.rows?.value || '');
 
     if (els.fieldOptions) {
         els.fieldOptions.innerHTML = fields.map((field) => `<option value="${escapeHtml(field.name)}"></option>`).join('');
     }
+    if (els.builderDimension && els.builderDimension.tagName === 'SELECT') {
+        const currentValue = els.builderDimension.value || '';
+        const dimensions = fields
+            .filter((field) => fieldCatalogType(field) === 'dimension')
+            .map((field) => field.name)
+            .filter((name, index, names) => names.indexOf(name) === index);
+        const options = currentValue && !dimensions.includes(currentValue) ? [currentValue, ...dimensions] : dimensions;
+        els.builderDimension.innerHTML = options
+            .map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`)
+            .join('');
+        els.builderDimension.value = options.includes(currentValue) ? currentValue : (options[0] || '');
+    }
+    if (els.builderValue && els.builderValue.tagName === 'SELECT') {
+        const selectedDimension = els.builderDimension?.value || 'Region';
+        const currentValues = selectedBuilderValues();
+        const values = rows
+            .filter((row) => row.dimension === selectedDimension)
+            .map((row) => row.value)
+            .filter((value, index, list) => list.indexOf(value) === index);
+        els.builderValue.innerHTML = (values.length ? values : [''])
+            .map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value || t(getLocale(), 'qlikSet.builder.noValues'))}</option>`)
+            .join('');
+        const validValues = currentValues.filter((value) => values.includes(value));
+        const nextValues = validValues.length ? validValues : values.slice(0, 1);
+        Array.from(els.builderValue.options).forEach((option) => {
+            option.selected = nextValues.includes(option.value);
+        });
+    }
+    refreshDefinitionDraftFromSelection();
+    if (els.valueDimension) {
+        const currentValue = els.valueDimension.value || els.builderDimension?.value || '';
+        const dimensions = fields
+            .filter((field) => fieldCatalogType(field) === 'dimension')
+            .map((field) => field.name)
+            .filter((name, index, names) => names.indexOf(name) === index);
+        const rowDimensions = rows
+            .map((row) => row.dimension)
+            .filter((name, index, names) => name && names.indexOf(name) === index);
+        const options = [...new Set([...dimensions, ...rowDimensions])];
+        els.valueDimension.innerHTML = options
+            .map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`)
+            .join('');
+        els.valueDimension.value = options.includes(currentValue) ? currentValue : (options[0] || '');
+    }
+    if (els.valueList) {
+        const groupedRows = rows.reduce((groups, row) => {
+            if (!groups[row.dimension]) groups[row.dimension] = [];
+            groups[row.dimension].push(row);
+            return groups;
+        }, {});
+        const dimensionNames = Object.keys(groupedRows).sort((a, b) => a.localeCompare(b));
+        els.valueList.innerHTML = dimensionNames.length
+            ? dimensionNames.map((dimension) => `
+                <section class="qlik-set-value-group">
+                    <h5>${escapeHtml(dimension)}</h5>
+                    <div class="qlik-set-value-group__chips">
+                        ${groupedRows[dimension].map((row) => `
+                            <span class="qlik-set-chip qlik-set-chip--dimension" title="${escapeHtml(row.label || row.value)}">
+                                <span class="qlik-set-chip__icon qlik-set-chip__icon--dimension" aria-hidden="true"></span>
+                                <span>${escapeHtml(row.value)}${row.label && row.label !== row.value ? ` · ${escapeHtml(row.label)}` : ''}</span>
+                            </span>
+                        `).join('')}
+                    </div>
+                </section>
+            `).join('')
+            : `<p class="qlik-set-small">${escapeHtml(t(getLocale(), 'qlikSet.values.empty'))}</p>`;
+    }
+    const definitionDraft = selectedDefinitionDraft();
+    if (els.definitionPreviewPre) {
+        els.definitionPreviewPre.textContent = definitionDraft.modifier || t(getLocale(), 'qlikSet.definitions.noPreview');
+    }
+    if (els.definitionList) {
+        const definitions = parseDefinitions(els.definitions?.value || '');
+        els.definitionList.innerHTML = definitions.length
+            ? definitions.map((definition) => `
+                <div class="qlik-set-generated-item">
+                    <strong>${escapeHtml(definition.name)}</strong>
+                    <code>${escapeHtml(definition.variableName ? `$(${definition.variableName})` : definition.modifier)}</code>
+                    <span>${escapeHtml(definition.modifier)}</span>
+                </div>
+            `).join('')
+            : `<p class="qlik-set-small">${escapeHtml(t(getLocale(), 'qlikSet.definitions.empty'))}</p>`;
+    }
     if (els.variableOptions) {
         els.variableOptions.innerHTML = variables.map((variable) => `<option value="${escapeHtml(variable.name)}"></option>`).join('');
     }
-    if (els.fieldChips) {
-        const groupedFields = fields.slice(0, 80).reduce((groups, field) => {
-            groups[fieldCatalogType(field)].push(field);
-            return groups;
-        }, { dimension: [], measure: [], date: [], other: [] });
-        els.fieldChips.innerHTML = ['dimension', 'measure', 'date', 'other']
-            .map((type) => renderFieldGroup(type, groupedFields[type]))
-            .join('');
+    if (els.baseMeasureSelect) {
+        const current = els.baseMeasureSelect.value || els.measureName?.value?.trim() || '';
+        const bases = baseMeasureList();
+        els.baseMeasureSelect.innerHTML = bases.length
+            ? bases.map((base) => `<option value="${escapeHtml(base.measureName)}">${escapeHtml(base.measureName)} - ${escapeHtml(base.baseMeasure)}</option>`).join('')
+            : `<option value="">${escapeHtml(t(getLocale(), 'qlikSet.baseList.empty'))}</option>`;
+        if (bases.some((base) => base.measureName === current)) els.baseMeasureSelect.value = current;
+    }
+    const groupedFields = fields.slice(0, 120).reduce((groups, field) => {
+        groups[fieldCatalogType(field)].push(field);
+        return groups;
+    }, { dimension: [], measure: [], date: [], other: [] });
+    if (els.dimensionChips) {
+        els.dimensionChips.innerHTML = [
+            renderFieldGroup('dimension', groupedFields.dimension),
+            renderFieldGroup('date', groupedFields.date),
+            renderFieldGroup('other', groupedFields.other),
+        ].join('');
+    }
+    if (els.measureChips) {
+        els.measureChips.innerHTML = renderFieldGroup('measure', groupedFields.measure);
     }
     if (els.variableChips) {
         els.variableChips.innerHTML = variables.slice(0, 40).map((variable) => `<button type="button" class="qlik-set-chip qlik-set-chip--variable" draggable="true" data-qlik-variable="${escapeHtml(variable.name)}" data-qlik-variable-definition="${escapeHtml(variable.definition)}"><span class="qlik-set-chip__icon qlik-set-chip__icon--variable" aria-hidden="true"></span><span>${escapeHtml(variable.name)}</span></button>`).join('');
     }
-    if (els.filterPreview) {
-        const rows = parseCsv(els.rows?.value || '');
-        els.filterPreview.innerHTML = rows.slice(0, 20).map((row) => `<span class="qlik-set-filter-pill">${escapeHtml(row.dimension)} = ${escapeHtml(row.value)}</span>`).join('');
-    }
     if (els.treePreview) {
         const rows = parseCsv(els.rows?.value || '');
-        const levels = hierarchyLevels();
+        const tree = hierarchyTree();
         const selectedDimension = els.builderDimension?.value?.trim() || 'Dimension';
         const currentDimensionLabel = t(getLocale(), 'qlikSet.tree.currentDimension');
         const baseLabel = t(getLocale(), 'qlikSet.tree.base');
@@ -586,8 +1166,8 @@ function renderCatalog() {
             <ul class="qlik-set-tree-list">
                 <li>
                     <div class="qlik-set-tree-node qlik-set-tree-node--root"><span>${escapeHtml(baseLabel)}</span></div>
-                    ${renderHierarchySlot('', levels[0] || '', 'qlik-set-tree-slot--root')}
-                    ${renderHierarchyBranch(levels, rows)}
+                    ${renderHierarchySlot('', 'qlik-set-tree-slot--root')}
+                    ${renderHierarchyBranches(tree, rows)}
                 </li>
             </ul>
         `;
@@ -604,6 +1184,7 @@ function renderCatalog() {
 function render() {
     renderCatalog();
     const outputs = buildOutputs();
+    if (els.generatedMeasures) els.generatedMeasures.innerHTML = renderGeneratedMeasureList(outputs);
     app.querySelectorAll('[data-qlik-kpi]').forEach((button) => {
         const active = button.getAttribute('data-qlik-kpi') === state.activeKpi;
         button.classList.toggle('is-active', active);
@@ -621,7 +1202,6 @@ function render() {
     if (els.currentFormulaPre) els.currentFormulaPre.textContent = currentFormula();
     if (els.measuresPre) els.measuresPre.textContent = outputs.measures;
     if (els.variablesPre) els.variablesPre.textContent = outputs.variables;
-    if (els.hierarchyPre) els.hierarchyPre.textContent = outputs.hierarchy;
     if (els.timeVarsPre) els.timeVarsPre.textContent = outputs.timeVariables;
     if (els.modifiersPre) els.modifiersPre.textContent = outputs.modifiers;
     if (els.nestedIfPre) els.nestedIfPre.textContent = outputs.nestedIf;
@@ -630,13 +1210,31 @@ function render() {
 }
 
 app.querySelectorAll('input, select, textarea').forEach((el) => {
+    el.addEventListener('focus', () => {
+        const key = controlKey(el);
+        if (formulaHistoryControlIds.has(key)) state.focusSnapshot = snapshotForm('formula');
+    });
     el.addEventListener('input', () => {
         if (el === els.baseMeasure) resetKpiLock();
+        if ([els.definitionName, els.definitionVariable].includes(el)) state.definitionDraftTouched = true;
+        if ([els.builderDimension, els.builderValue, els.builderLabel].includes(el)) clearBuilderMessage();
+        if ([els.valueDimension, els.valueValue, els.valueLabel, els.valueOperator].includes(el)) clearValueMessage();
         render();
     });
     el.addEventListener('change', () => {
         if (el === els.baseMeasure) resetKpiLock();
+        if ([els.builderDimension, els.builderValue].includes(el)) state.definitionDraftTouched = false;
+        if ([els.definitionName, els.definitionVariable].includes(el)) state.definitionDraftTouched = true;
+        if ([els.builderDimension, els.builderValue, els.builderLabel].includes(el)) clearBuilderMessage();
+        if ([els.valueDimension, els.valueValue, els.valueLabel, els.valueOperator].includes(el)) clearValueMessage();
         render();
+    });
+    el.addEventListener('blur', () => {
+        const key = controlKey(el);
+        if (!formulaHistoryControlIds.has(key) || !state.focusSnapshot) return;
+        const current = snapshotForm('formula');
+        if (!snapshotEquals(state.focusSnapshot, current)) pushFormulaSnapshot(state.focusSnapshot);
+        state.focusSnapshot = null;
     });
 });
 
@@ -668,6 +1266,38 @@ app.querySelectorAll('[data-qlik-builder-tab]').forEach((tab) => {
     });
 });
 
+app.querySelectorAll('[data-qlik-catalog-tab]').forEach((tab) => {
+    tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-qlik-catalog-tab');
+        app.querySelectorAll('[data-qlik-catalog-tab]').forEach((el) => {
+            const active = el === tab;
+            el.classList.toggle('is-active', active);
+            el.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        app.querySelectorAll('[data-qlik-catalog-panel]').forEach((panel) => {
+            const active = panel.getAttribute('data-qlik-catalog-panel') === target;
+            panel.classList.toggle('is-active', active);
+            panel.toggleAttribute('hidden', !active);
+        });
+    });
+});
+
+app.querySelectorAll('[data-qlik-import-tab]').forEach((tab) => {
+    tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-qlik-import-tab');
+        app.querySelectorAll('[data-qlik-import-tab]').forEach((el) => {
+            const active = el === tab;
+            el.classList.toggle('is-active', active);
+            el.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        app.querySelectorAll('[data-qlik-import-panel]').forEach((panel) => {
+            const active = panel.getAttribute('data-qlik-import-panel') === target;
+            panel.classList.toggle('is-active', active);
+            panel.toggleAttribute('hidden', !active);
+        });
+    });
+});
+
 els.helpToggle?.addEventListener('click', () => {
     const expanded = els.helpToggle.getAttribute('aria-expanded') === 'true';
     els.helpToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
@@ -681,6 +1311,70 @@ els.paletteToggle?.addEventListener('click', () => {
     els.paletteToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     els.paletteBody?.toggleAttribute('hidden', expanded);
     updatePaletteToggleLabel();
+});
+
+els.descriptionToggle?.addEventListener('click', () => {
+    const expanded = els.descriptionToggle.getAttribute('aria-expanded') === 'true';
+    els.descriptionToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    els.descriptionBody?.toggleAttribute('hidden', expanded);
+    updateDescriptionToggleLabel();
+});
+
+els.baseListToggle?.addEventListener('click', () => {
+    const expanded = els.baseListToggle.getAttribute('aria-expanded') === 'true';
+    els.baseListToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    els.baseListBody?.toggleAttribute('hidden', expanded);
+    updateBaseListToggleLabel();
+});
+
+els.workbenchToggle?.addEventListener('click', () => {
+    const expanded = els.workbenchToggle.getAttribute('aria-expanded') !== 'false';
+    els.workbenchToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    els.workbenchBody?.toggleAttribute('hidden', expanded);
+    updateWorkbenchToggleLabel();
+});
+
+els.saveApp?.addEventListener('click', () => {
+    const name = els.appName?.value?.trim() || '';
+    if (!name) {
+        showAppMessage(t(getLocale(), 'qlikSet.apps.missingName'), 'error');
+        return;
+    }
+    const savedApps = readSavedApps();
+    savedApps[name] = {
+        savedAt: new Date().toISOString(),
+        snapshot: snapshotForm(),
+    };
+    writeSavedApps(savedApps);
+    refreshSavedAppsSelect(name);
+    showAppMessage(t(getLocale(), 'qlikSet.apps.savedMessage').replace('{name}', name));
+});
+
+els.loadApp?.addEventListener('click', () => {
+    const name = els.savedApps?.value || '';
+    const savedApp = readSavedApps()[name];
+    if (!savedApp?.snapshot) {
+        showAppMessage(t(getLocale(), 'qlikSet.apps.missingSelection'), 'error');
+        return;
+    }
+    restoreSnapshot(savedApp.snapshot);
+    if (els.appName) els.appName.value = name;
+    refreshSavedAppsSelect(name);
+    clearAppMessage();
+    render();
+});
+
+els.deleteApp?.addEventListener('click', () => {
+    const name = els.savedApps?.value || '';
+    if (!name) {
+        showAppMessage(t(getLocale(), 'qlikSet.apps.missingSelection'), 'error');
+        return;
+    }
+    const savedApps = readSavedApps();
+    delete savedApps[name];
+    writeSavedApps(savedApps);
+    refreshSavedAppsSelect();
+    showAppMessage(t(getLocale(), 'qlikSet.apps.deletedMessage').replace('{name}', name));
 });
 
 app.querySelectorAll('[data-qlik-layout-toggle]').forEach((button) => {
@@ -737,14 +1431,12 @@ app.querySelectorAll('[data-qlik-dropzone]').forEach((dropzone) => {
         const token = parseDragToken(event);
         if (dropzone.getAttribute('data-qlik-dropzone') === 'filter') {
             if (token.kind === 'field') {
-                rememberBeforeChange();
-                if (els.builderDimension) els.builderDimension.value = token.value;
-                appendFilterRow(token.value);
+                setBuilderDimension(token.value);
+                clearBuilderMessage();
             }
         } else if (dropzone.getAttribute('data-qlik-dropzone') === 'hierarchy') {
             if (token.kind === 'field') {
-                rememberBeforeChange();
-                if (els.builderDimension) els.builderDimension.value = token.value;
+                setBuilderDimension(token.value);
                 appendHierarchyLevel(token.value);
             }
         } else {
@@ -789,7 +1481,6 @@ els.importModal?.addEventListener('click', (event) => {
 els.csvFile?.addEventListener('change', async () => {
     const file = els.csvFile.files?.[0];
     if (!file || !els.rows) return;
-    rememberBeforeChange();
     els.rows.value = await file.text();
     render();
 });
@@ -797,7 +1488,6 @@ els.csvFile?.addEventListener('change', async () => {
 els.fieldsFile?.addEventListener('change', async () => {
     const file = els.fieldsFile.files?.[0];
     if (!file || !els.fields) return;
-    rememberBeforeChange();
     els.fields.value = await file.text();
     render();
 });
@@ -805,8 +1495,31 @@ els.fieldsFile?.addEventListener('change', async () => {
 els.varsFile?.addEventListener('change', async () => {
     const file = els.varsFile.files?.[0];
     if (!file || !els.vars) return;
-    rememberBeforeChange();
     els.vars.value = await file.text();
+    render();
+});
+
+els.addValueRow?.addEventListener('click', () => {
+    if (!els.rows) return;
+    const dimension = els.valueDimension?.value?.trim() || '';
+    const value = els.valueValue?.value?.trim() || '';
+    const label = els.valueLabel?.value?.trim() || value;
+    const operator = els.valueOperator?.value?.trim() || '';
+    if (!dimension || !value) {
+        showValueMessage(t(getLocale(), 'qlikSet.values.missing'), 'error');
+        return;
+    }
+    const rows = parseCsv(els.rows.value || '');
+    const duplicate = rows.some((row) => row.dimension.toLowerCase() === dimension.toLowerCase() && row.value.toLowerCase() === value.toLowerCase());
+    if (duplicate) {
+        showValueMessage(t(getLocale(), 'qlikSet.builder.duplicate'), 'error');
+        return;
+    }
+    writeDimensionValues([...rows, { dimension, value, label, operator, assignment: '' }]);
+    if (els.builderDimension) setBuilderDimension(dimension);
+    if (els.valueValue) els.valueValue.value = '';
+    if (els.valueLabel) els.valueLabel.value = '';
+    showValueMessage(t(getLocale(), 'qlikSet.values.added'));
     render();
 });
 
@@ -821,62 +1534,65 @@ els.applyBase?.addEventListener('click', () => {
     render();
 });
 
-els.useVariableBase?.addEventListener('click', () => {
-    const variable = els.variableUse?.value?.trim() || 'vSales';
-    if (els.baseMeasure) {
-        rememberBeforeChange();
-        resetKpiLock();
-        els.baseMeasure.value = `$(${variable})`;
-    }
+els.addCurrentBase?.addEventListener('click', () => {
+    if (!els.baseMeasures) return;
+    const current = activeBaseFromForm();
+    const measures = baseMeasureList();
+    const nextMeasures = measures.filter((measure) => measure.measureName !== current.measureName);
+    nextMeasures.push(current);
+    writeBaseMeasureList(nextMeasures);
+    if (els.baseMeasureSelect) els.baseMeasureSelect.value = current.measureName;
     render();
 });
 
-els.addDimensionRow?.addEventListener('click', () => {
-    if (!els.rows) return;
+els.loadBase?.addEventListener('click', () => {
+    const selected = els.baseMeasureSelect?.value || '';
+    const base = baseMeasureList().find((measure) => measure.measureName === selected);
+    if (!base) return;
     rememberBeforeChange();
-    const dimension = els.builderDimension?.value?.trim() || 'Region';
-    const value = els.builderValue?.value?.trim() || 'DACH';
-    const label = els.builderLabel?.value?.trim() || value;
-    const line = `${dimension},${value},${label}`;
-    els.rows.value = `${els.rows.value.trim()}\n${line}`;
+    resetKpiLock();
+    if (els.measureName) els.measureName.value = base.measureName;
+    if (els.baseMeasure) els.baseMeasure.value = base.baseMeasure;
+    if (els.variablePrefix) els.variablePrefix.value = base.variablePrefix || `v${base.measureName}`;
+    if (els.baseDescription) els.baseDescription.value = base.baseDescription || '';
+    if (els.baseDescriptionEn) els.baseDescriptionEn.value = base.baseDescriptionEn || '';
+    render();
+});
+
+els.newBase?.addEventListener('click', () => {
+    rememberBeforeChange();
+    resetKpiLock();
+    if (els.measureName) els.measureName.value = 'Margin';
+    if (els.baseMeasure) els.baseMeasure.value = 'Sum(Margin)';
+    if (els.variablePrefix) els.variablePrefix.value = 'vMargin';
+    if (els.baseDescription) els.baseDescription.value = 'Marge basierend auf Sum(Margin).';
+    if (els.baseDescriptionEn) els.baseDescriptionEn.value = 'Margin based on Sum(Margin).';
+    render();
+});
+
+els.applySetFilter?.addEventListener('click', () => {
+    if (!els.definitions) return;
+    const draft = selectedDefinitionDraft();
+    if (!draft.name || !draft.modifier) {
+        showBuilderMessage(t(getLocale(), 'qlikSet.builder.missingSetFilter'), 'error');
+        return;
+    }
+    const definitions = parseDefinitions(els.definitions.value || '');
+    const nextDefinitions = definitions.filter((definition) => definition.name !== draft.name);
+    nextDefinitions.push(draft);
+    writeDefinitions(nextDefinitions);
+    state.definitionDraftTouched = false;
+    clearBuilderMessage();
+    showBuilderMessage(t(getLocale(), 'qlikSet.definitions.saved'));
     render();
 });
 
 els.treePreview?.addEventListener('click', (event) => {
     const removeButton = event.target.closest('[data-qlik-tree-remove]');
-    const moveButton = event.target.closest('[data-qlik-tree-move]');
-    const rootButton = event.target.closest('[data-qlik-tree-insert-root]');
-    const insertButton = event.target.closest('[data-qlik-tree-insert-after]');
     if (removeButton) {
-        rememberBeforeChange();
-        removeHierarchyLevelAt(Number(removeButton.getAttribute('data-qlik-tree-remove') || -1));
-        render();
-        return;
-    }
-    if (moveButton) {
-        rememberBeforeChange();
-        moveHierarchyLevel(
-            Number(moveButton.getAttribute('data-qlik-tree-move') || -1),
-            Number(moveButton.getAttribute('data-qlik-tree-direction') || 0),
-        );
-        render();
-        return;
-    }
-    if (rootButton || insertButton) {
-        rememberBeforeChange();
-        insertHierarchyLevelAfter(insertButton?.getAttribute('data-qlik-tree-insert-after') || '');
+        removeHierarchyLevel(removeButton.getAttribute('data-qlik-tree-remove') || '');
         render();
     }
-});
-
-els.treePreview?.addEventListener('keydown', (event) => {
-    if (event.key !== 'Enter' && event.key !== ' ') return;
-    const slot = event.target.closest('[data-qlik-tree-insert-after]');
-    if (!slot) return;
-    event.preventDefault();
-    rememberBeforeChange();
-    insertHierarchyLevelAfter(slot.getAttribute('data-qlik-tree-insert-after') || '');
-    render();
 });
 
 els.treePreview?.addEventListener('dragover', (event) => {
@@ -899,60 +1615,54 @@ els.treePreview?.addEventListener('drop', (event) => {
     clearTreeDropHighlights();
     const token = parseDragToken(event);
     if (token.kind !== 'field' && token.kind !== 'hierarchy-level') return;
-    rememberBeforeChange();
-    if (els.builderDimension) els.builderDimension.value = token.value;
-    insertHierarchyLevelAfter(slot.getAttribute('data-qlik-tree-drop-after') || '', token.value);
+    const parent = slot.getAttribute('data-qlik-tree-parent') || '';
+    if (parent && parent === token.value) return;
+    setBuilderDimension(token.value);
+    addHierarchyNode(parent, token.value);
     render();
 });
 
-els.fieldChips?.addEventListener('click', (event) => {
+els.catalogRail?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-qlik-field]');
-    if (!button) return;
-    const field = button.getAttribute('data-qlik-field') || '';
-    const type = (button.getAttribute('data-qlik-field-type') || '').toLowerCase();
+    const variableButton = event.target.closest('[data-qlik-variable]');
 
-    if (type.includes('measure') && els.measureField) {
-        rememberBeforeChange();
-        els.measureField.value = field;
-    } else if (type.includes('date')) {
-        rememberBeforeChange();
-        if (els.dateField) els.dateField.value = field;
-        if (els.yearField && /year|jahr/i.test(field)) els.yearField.value = field;
-        if (els.builderDimension) els.builderDimension.value = field;
-    } else if (els.builderDimension) {
-        rememberBeforeChange();
-        els.builderDimension.value = field;
-    }
-    if (els.baseMeasure && (type.includes('measure') || /sales|amount|margin|umsatz/i.test(field))) {
-        resetKpiLock();
-        els.baseMeasure.value = `${els.aggregation?.value || 'Sum'}(${qlikFieldName(field)})`;
-    }
-    if (event.altKey || event.metaKey) appendHierarchyLevel(field);
-    render();
-});
+    if (button) {
+        const field = button.getAttribute('data-qlik-field') || '';
+        const type = (button.getAttribute('data-qlik-field-type') || '').toLowerCase();
 
-els.variableChips?.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-qlik-variable]');
-    if (!button) return;
-    const variable = button.getAttribute('data-qlik-variable') || '';
-    const definition = button.getAttribute('data-qlik-variable-definition') || '';
-    rememberBeforeChange();
-    if (els.variableUse) els.variableUse.value = variable;
-    if (els.baseMeasure) {
-        resetKpiLock();
-        els.baseMeasure.value = definition.includes('={')
-            ? injectSetAnalysis(els.baseMeasure.value || 'Sum(Sales)', `$(${variable})`, {
-                setIdentifier: els.identifier?.value ?? '$',
-                expressionStyle: els.expressionStyle?.value || 'inner',
-            })
-            : `$(${variable})`;
+        if (type.includes('measure') && els.measureField) {
+            rememberBeforeChange();
+            els.measureField.value = field;
+        } else if (type.includes('date')) {
+            rememberBeforeChange();
+            if (els.dateField) els.dateField.value = field;
+            if (els.yearField && /year|jahr/i.test(field)) els.yearField.value = field;
+            setBuilderDimension(field);
+        } else {
+            return;
+        }
+        if (els.baseMeasure && (type.includes('measure') || /sales|amount|margin|umsatz/i.test(field))) {
+            resetKpiLock();
+            els.baseMeasure.value = `${els.aggregation?.value || 'Sum'}(${qlikFieldName(field)})`;
+        }
+        if (event.altKey || event.metaKey) appendHierarchyLevel(field);
+        render();
+        return;
     }
-    render();
+
+    if (variableButton) {
+        const variable = variableButton.getAttribute('data-qlik-variable') || '';
+        if (els.setVarName && /^vSet/i.test(variable)) {
+            els.setVarName.value = variable;
+            render();
+        }
+        return;
+    }
+
 });
 
 els.addVariable?.addEventListener('click', () => {
     if (!els.vars) return;
-    rememberBeforeChange();
     const prefix = els.variablePrefix?.value?.trim() || 'vMeasure';
     const definition = els.baseMeasure?.value?.trim() || 'Sum(Sales)';
     const name = `${prefix}_${parseVariables(els.vars.value).length + 1}`;
@@ -968,7 +1678,6 @@ els.addSetVariable?.addEventListener('click', () => {
 });
 
 els.addSearchFilter?.addEventListener('click', () => {
-    rememberBeforeChange();
     appendSearchFilter();
     render();
 });
@@ -976,7 +1685,7 @@ els.addSearchFilter?.addEventListener('click', () => {
 els.undo?.addEventListener('click', () => {
     const previous = state.undoStack.pop();
     if (!previous) return;
-    state.redoStack.push(snapshotForm());
+    state.redoStack.push(snapshotForm('formula'));
     restoreSnapshot(previous);
     render();
 });
@@ -984,27 +1693,57 @@ els.undo?.addEventListener('click', () => {
 els.redo?.addEventListener('click', () => {
     const next = state.redoStack.pop();
     if (!next) return;
-    state.undoStack.push(snapshotForm());
+    state.undoStack.push(snapshotForm('formula'));
     restoreSnapshot(next);
     render();
 });
 
 els.copyMeasures?.addEventListener('click', () => copyFromButton(els.copyMeasures, buildOutputs().measures, (key) => t(getLocale(), key)));
 els.copyVariables?.addEventListener('click', () => copyFromButton(els.copyVariables, buildOutputs().variables, (key) => t(getLocale(), key)));
-els.copyHierarchy?.addEventListener('click', () => copyFromButton(els.copyHierarchy, buildOutputs().hierarchy, (key) => t(getLocale(), key)));
 els.copyTimeVars?.addEventListener('click', () => copyFromButton(els.copyTimeVars, buildOutputs().timeVariables, (key) => t(getLocale(), key)));
 els.copyModifiers?.addEventListener('click', () => copyFromButton(els.copyModifiers, buildOutputs().modifiers, (key) => t(getLocale(), key)));
 els.copyNestedIf?.addEventListener('click', () => copyFromButton(els.copyNestedIf, buildOutputs().nestedIf, (key) => t(getLocale(), key)));
 els.copyPickMatch?.addEventListener('click', () => copyFromButton(els.copyPickMatch, buildOutputs().pickMatch, (key) => t(getLocale(), key)));
 els.copyCsv?.addEventListener('click', () => copyFromButton(els.copyCsv, buildOutputs().csv, (key) => t(getLocale(), key)));
+els.outputTabs.forEach((tab) => {
+    tab.addEventListener('click', () => activateOutputTab(tab.dataset.qlikOutputTab));
+});
+els.outputScrollPrev?.addEventListener('click', () => scrollOutputTabs(-1));
+els.outputScrollNext?.addEventListener('click', () => scrollOutputTabs(1));
+els.outputTabsViewport?.addEventListener('scroll', updateOutputTabOverflow, { passive: true });
+els.downloadMeasuresXlsx?.addEventListener('click', () => {
+    const outputs = buildOutputs();
+    downloadBlob('qlik-child-measures.xlsx', workbookBlob('Measures', outputs.measureRows || [[]]));
+});
+els.downloadMeasuresCsv?.addEventListener('click', () => {
+    downloadText('qlik-child-measures.csv', buildOutputs().measuresCsv || buildOutputs().csv);
+});
+els.downloadVariablesXlsx?.addEventListener('click', () => {
+    const outputs = buildOutputs();
+    downloadBlob('qlik-variables.xlsx', workbookBlob('Variables', outputs.variableRows || [[]]));
+});
+els.downloadVariablesCsv?.addEventListener('click', () => {
+    downloadText('qlik-variables.csv', buildOutputs().variablesCsv || '');
+});
 
 applyQlikSetLabels();
+refreshSavedAppsSelect();
 updateHelpToggleLabel();
 updatePaletteToggleLabel();
+updateDescriptionToggleLabel();
+updateBaseListToggleLabel();
+updateWorkbenchToggleLabel();
 render();
+updateOutputTabOverflow();
 window.addEventListener('binom-tools:locale', () => {
     applyQlikSetLabels();
+    refreshSavedAppsSelect(els.savedApps?.value || '');
     updateHelpToggleLabel();
     updatePaletteToggleLabel();
+    updateDescriptionToggleLabel();
+    updateBaseListToggleLabel();
+    updateWorkbenchToggleLabel();
     render();
+    window.requestAnimationFrame(updateOutputTabOverflow);
 });
+window.addEventListener('resize', updateOutputTabOverflow);

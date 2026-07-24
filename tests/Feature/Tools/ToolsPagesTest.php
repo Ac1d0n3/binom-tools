@@ -261,7 +261,9 @@ class ToolsPagesTest extends TestCase
 
     public function test_qlik_set_analysis_generator_renders(): void
     {
-        $this->get('/tools/qlik-set-analysis-generator')
+        $response = $this->get('/tools/qlik-set-analysis-generator');
+
+        $response
             ->assertOk()
             ->assertSee('qlik-set-analysis-generator-app', false)
             ->assertSee('qlik-set-workbench-title', false)
@@ -282,9 +284,9 @@ class ToolsPagesTest extends TestCase
             ->assertSee('qlik-set-import-modal-close', false)
             ->assertSee('qlikSet.catalog.rawDataHint', false)
             ->assertSee('qlik-set-field-options', false)
-            ->assertSee('qlik-set-variable-use', false)
-            ->assertSee('qlik-set-use-variable-base', false)
-            ->assertSee('qlik-set-field-chips', false)
+            ->assertSee('qlik-set-dimension-chips', false)
+            ->assertSee('qlik-set-measure-chips', false)
+            ->assertSee('qlik-set-generated-measures', false)
             ->assertSee('qlik-set-filter-dropzone', false)
             ->assertSee('qlik-set-set-var-name', false)
             ->assertSee('qlik-set-set-var-values', false)
@@ -298,7 +300,6 @@ class ToolsPagesTest extends TestCase
             ->assertSee('qlikSet.filter.dropTitle', false)
             ->assertSee('qlik-set-hierarchy-dropzone', false)
             ->assertSee('qlik-set-hierarchy-levels', false)
-            ->assertSee('qlik-set-hierarchy-pre', false)
             ->assertSee('qlikSet.hierarchy.title', false)
             ->assertSee('data-qlik-dropzone="formula"', false)
             ->assertSee('data-qlik-dropzone="hierarchy"', false)
@@ -309,6 +310,10 @@ class ToolsPagesTest extends TestCase
             ->assertSee('qlikSet.masterItems.summary', false)
             ->assertSee('qlikSet.useCases.summary', false)
             ->assertSee('qlikSet.fields.summary', false);
+
+        $this->assertStringNotContainsString('id="qlik-set-hierarchy-pre"', $response->getContent());
+        $this->assertStringNotContainsString('id="qlik-set-variable-use"', $response->getContent());
+        $this->assertStringNotContainsString('id="qlik-set-use-variable-base"', $response->getContent());
     }
 
     public function test_meta_export_generator_page_renders(): void

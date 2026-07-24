@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildCurrentFormula, buildModifier, buildSetAnalysisOutputs, buildTimeVariables, injectSetAnalysis, parseCsv, parseFields, parseHierarchyLevels, parseVariables } from './set-analysis-builder.js';
+import { buildCurrentFormula, buildModifier, buildSetAnalysisOutputs, buildTimeVariables, injectSetAnalysis, parseBaseMeasures, parseCsv, parseDefinitions, parseFields, parseHierarchyLevels, parseVariables } from './set-analysis-builder.js';
 
 describe('set analysis builder', () => {
     it('parses csv with quoted values', () => {
@@ -18,6 +18,28 @@ describe('set analysis builder', () => {
         ]);
         expect(parseVariables('name,definition,description\nvSetRegion,"[Region]={\'DACH\',\'AT\',\'CH\'}",Multi region set')).toEqual([
             { name: 'vSetRegion', definition: "[Region]={'DACH','AT','CH'}", description: 'Multi region set' },
+        ]);
+    });
+
+    it('parses multiple base measures from csv', () => {
+        expect(parseBaseMeasures('name,expression,prefix,description_de,description_en\nSales,Sum(Sales),vSales,Umsatz,Sales\nMargin,Sum(Margin),vMargin,Marge,Margin')).toEqual([
+            { measureName: 'Sales', baseMeasure: 'Sum(Sales)', variablePrefix: 'vSales', baseDescription: 'Umsatz', baseDescriptionEn: 'Sales' },
+            { measureName: 'Margin', baseMeasure: 'Sum(Margin)', variablePrefix: 'vMargin', baseDescription: 'Marge', baseDescriptionEn: 'Margin' },
+        ]);
+    });
+
+    it('parses reusable set-analysis definitions from csv', () => {
+        expect(parseDefinitions('name,modifier,variable,description,dimensions,values\nRegion DACH,[Region]={\'DACH\'},vDefRegionDACH,DACH filter,Region,DACH')).toEqual([
+            {
+                name: 'Region DACH',
+                modifier: "[Region]={'DACH'}",
+                variableName: 'vDefRegionDACH',
+                description: 'DACH filter',
+                dimensions: 'Region',
+                values: 'DACH',
+                items: [],
+                source: 'definition',
+            },
         ]);
     });
 
@@ -103,7 +125,8 @@ describe('set analysis builder', () => {
             valueMode: 'literal',
         });
 
-        expect(outputs.variables).toContain("SET vSales_Region_DACH = Sum({$<[Region]={'DACH'}>} Sales);");
+        expect(outputs.variables).toContain("SET vDefRegion_DACH = [Region]={'DACH'};");
+        expect(outputs.variables).toContain('SET vSales_Region_DACH = Sum({$<$(vDefRegion_DACH)>} Sales);');
         expect(outputs.variables).toContain('SET vBaseSales = Sum(Sales); // Imported base variable');
         expect(outputs.hierarchy).toContain('Type: Drill-down dimension');
         expect(outputs.hierarchy).toContain('Sales - Region / Salesperson / Customer');
@@ -116,7 +139,96 @@ describe('set analysis builder', () => {
         expect(outputs.timeVariables).toContain('SET vSetYTD');
         expect(outputs.nestedIf).toContain("If([Region]='DACH', Sum(Sales))");
         expect(outputs.pickMatch).toContain('Pick(');
-        expect(outputs.csv).toContain('measure_name,expression,description,set_modifier,dimensions,values');
+        expect(outputs.csv).toContain('measure_name,expression,description,definition_name,set_modifier,dimensions,values');
+    });
+
+    it('uses editable description templates with placeholders', () => {
+        const outputs = buildSetAnalysisOutputs({
+            measureName: 'Sales',
+            baseMeasure: 'Sum(Sales)',
+            baseDescription: 'Umsatz KPI.',
+            baseDescriptionEn: 'Sales KPI.',
+            childDescriptionTemplate: '{baseDescription} DE {measureName} {label} {dimensions} {values}',
+            childDescriptionTemplateEn: '{baseDescription} EN {baseMeasure} {modifier}',
+            descriptionLanguage: 'both',
+            variablePrefix: 'vSales',
+            rowsText: 'dimension,value,label\nRegion,DACH,DACH',
+            mode: 'single',
+            useVariables: false,
+            setIdentifier: '$',
+            assignment: '=',
+            expressionStyle: 'inner',
+            valueMode: 'literal',
+        });
+
+        expect(outputs.measures).toContain('DE:\nUmsatz KPI. DE Sales Region DACH Region DACH');
+        expect(outputs.measures).toContain("EN:\nSales KPI. EN Sum(Sales) [Region]={'DACH'}");
+        expect(outputs.csv).toContain('Umsatz KPI. DE Sales Region DACH Region DACH');
+        expect(outputs.measureRows[1][2]).toContain('Sales KPI. EN Sum(Sales)');
+    });
+
+    it('generates child measures for multiple base measures with the same filters', () => {
+        const outputs = buildSetAnalysisOutputs({
+            measureName: 'Sales',
+            baseMeasure: 'Sum(Sales)',
+            variablePrefix: 'vSales',
+            baseMeasuresText: 'name,expression,prefix,description_de,description_en\nSales,Sum(Sales),vSales,Umsatz,Sales\nMargin,Sum(Margin),vMargin,Marge,Margin',
+            rowsText: 'dimension,value,label\nRegion,DACH,DACH',
+            mode: 'single',
+            useVariables: true,
+            setIdentifier: '$',
+            assignment: '=',
+            expressionStyle: 'inner',
+            valueMode: 'literal',
+        });
+
+        expect(outputs.measures).toContain('Sales - Region DACH');
+        expect(outputs.measures).toContain('$(vSales_Region_DACH)');
+        expect(outputs.measures).toContain('Margin - Region DACH');
+        expect(outputs.measures).toContain('$(vMargin_Region_DACH)');
+        expect(outputs.variables).toContain('SET vMargin_Region_DACH = Sum({$<$(vDefRegion_DACH)>} Margin);');
+        expect(outputs.measureRows).toHaveLength(3);
+    });
+
+    it('uses saved definitions instead of raw dimension values when present', () => {
+        const outputs = buildSetAnalysisOutputs({
+            measureName: 'Sales',
+            baseMeasure: 'Sum(Sales)',
+            variablePrefix: 'vSales',
+            definitionsText: 'name,modifier,variable,description,dimensions,values\nCurrent Year,[Year]={$(vCurrentYear)},vDefCurrentYear,Current year,Year,$(vCurrentYear)',
+            rowsText: 'dimension,value,label\nRegion,DACH,DACH',
+            mode: 'single',
+            useVariables: false,
+            setIdentifier: '$',
+            assignment: '=',
+            expressionStyle: 'inner',
+            valueMode: 'literal',
+        });
+
+        expect(outputs.measures).toContain('Sales - Current Year');
+        expect(outputs.measures).toContain('Sum({$<$(vDefCurrentYear)>} Sales)');
+        expect(outputs.measures).not.toContain('Sales - Region DACH');
+    });
+
+    it('builds hierarchy output from sibling and child levels', () => {
+        const outputs = buildSetAnalysisOutputs({
+            measureName: 'Sales',
+            baseMeasure: 'Sum(Sales)',
+            variablePrefix: 'vSales',
+            rowsText: '',
+            hierarchyText: 'Region\nSalesperson\n  Customer',
+            mode: 'single',
+            useVariables: true,
+            setIdentifier: '$',
+            assignment: '=',
+            expressionStyle: 'inner',
+            valueMode: 'literal',
+        });
+
+        expect(outputs.hierarchy).toContain('Sales - Region');
+        expect(outputs.hierarchy).toContain('Sales - Salesperson');
+        expect(outputs.hierarchy).toContain('Sales - Salesperson / Customer');
+        expect(outputs.hierarchy).not.toContain('Sales - Region / Salesperson');
     });
 
     it('can combine dimensions into set variants', () => {

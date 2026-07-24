@@ -107,12 +107,96 @@ export function parseVariables(text) {
 }
 
 /** @param {string} text */
+export function parseBaseMeasures(text) {
+    const rows = csvRows(text);
+    if (rows.length === 0) return [];
+    const first = rows[0].map((value) => value.toLowerCase());
+    const hasHeader = first.includes('name') || first.includes('measure') || first.includes('expression');
+    const dataRows = hasHeader ? rows.slice(1) : rows;
+    const columnIndex = (...names) => {
+        for (const name of names) {
+            const index = first.indexOf(name);
+            if (index >= 0) return index;
+        }
+        return -1;
+    };
+    const nameIndex = hasHeader ? columnIndex('name', 'measure', 'measure_name') : 0;
+    const expressionIndex = hasHeader ? columnIndex('expression', 'formula', 'base_measure') : 1;
+    const prefixIndex = hasHeader ? columnIndex('prefix', 'variable_prefix', 'var_prefix') : 2;
+    const descriptionDeIndex = hasHeader ? columnIndex('description_de', 'description', 'beschreibung_de') : 3;
+    const descriptionEnIndex = hasHeader ? columnIndex('description_en', 'beschreibung_en') : 4;
+
+    return dataRows.map((cols) => ({
+        measureName: cols[nameIndex] || '',
+        baseMeasure: cols[expressionIndex] || '',
+        variablePrefix: prefixIndex >= 0 ? (cols[prefixIndex] || '') : '',
+        baseDescription: descriptionDeIndex >= 0 ? (cols[descriptionDeIndex] || '') : '',
+        baseDescriptionEn: descriptionEnIndex >= 0 ? (cols[descriptionEnIndex] || '') : '',
+    })).filter((item) => item.measureName && item.baseMeasure);
+}
+
+/** @param {string} text */
+export function parseDefinitions(text) {
+    const rows = csvRows(text);
+    if (rows.length === 0) return [];
+    const first = rows[0].map((value) => value.toLowerCase());
+    const hasHeader = first.includes('name') || first.includes('modifier') || first.includes('definition');
+    const dataRows = hasHeader ? rows.slice(1) : rows;
+    const columnIndex = (...names) => {
+        for (const name of names) {
+            const index = first.indexOf(name);
+            if (index >= 0) return index;
+        }
+        return -1;
+    };
+    const nameIndex = hasHeader ? columnIndex('name', 'definition') : 0;
+    const modifierIndex = hasHeader ? columnIndex('modifier', 'set_modifier', 'set') : 1;
+    const variableIndex = hasHeader ? columnIndex('variable', 'variable_name', 'var') : 2;
+    const descriptionIndex = hasHeader ? columnIndex('description', 'comment') : 3;
+    const dimensionsIndex = hasHeader ? columnIndex('dimensions', 'dimension') : 4;
+    const valuesIndex = hasHeader ? columnIndex('values', 'value') : 5;
+
+    return dataRows.map((cols) => ({
+        name: cols[nameIndex] || '',
+        modifier: cols[modifierIndex] || '',
+        variableName: variableIndex >= 0 ? (cols[variableIndex] || '') : '',
+        description: descriptionIndex >= 0 ? (cols[descriptionIndex] || '') : '',
+        dimensions: dimensionsIndex >= 0 ? (cols[dimensionsIndex] || '') : '',
+        values: valuesIndex >= 0 ? (cols[valuesIndex] || '') : '',
+        items: [],
+        source: 'definition',
+    })).filter((item) => item.name && item.modifier);
+}
+
+/** @param {string} text */
 export function parseHierarchyLevels(text) {
     return text
         .split(/\r?\n|>|,/)
         .map((value) => value.trim())
         .filter(Boolean)
         .filter((value, index, values) => values.indexOf(value) === index);
+}
+
+/** @param {string} text */
+function parseHierarchyPaths(text) {
+    const hasIndentedTree = /^\s{2,}\S/m.test(text || '');
+    if (!hasIndentedTree) {
+        const levels = parseHierarchyLevels(text);
+        return levels.map((_, index) => levels.slice(0, index + 1));
+    }
+
+    const stack = [];
+    return text
+        .split(/\r?\n/)
+        .map((line) => {
+            const name = line.trim();
+            if (!name) return null;
+            const depth = Math.max(0, Math.floor((line.match(/^\s*/)?.[0].length || 0) / 2));
+            stack.length = depth;
+            stack[depth] = name;
+            return stack.slice(0, depth + 1);
+        })
+        .filter(Boolean);
 }
 
 /** @param {string} value */
@@ -206,22 +290,51 @@ function variantsFromRows(rows, state) {
     return rows.map((item) => [item]);
 }
 
-/** @param {{ rowsText: string, baseMeasure: string, mode?: string, setIdentifier?: string, assignment?: string, expressionStyle?: string, valueMode?: string }} state */
-export function buildCurrentFormula(state) {
-    const rows = parseCsv(state.rowsText || '');
-    const variants = variantsFromRows(rows, {
-        mode: state.mode || 'single',
-        assignment: state.assignment || '=',
-        valueMode: state.valueMode || 'literal',
-    });
-    const first = variants[0];
-    if (!first) return state.baseMeasure || '';
-    const modifier = buildModifier(first, {
+function definitionNameFromVariant(variant) {
+    return variant.map((item) => `${item.dimension} ${item.label || item.value.replaceAll('\u0000', ' + ')}`).join(' + ');
+}
+
+function definitionVariableName(name) {
+    return `vDef${sanitizeName(name).replace(/^./, (char) => char.toUpperCase())}`;
+}
+
+function definitionFromVariant(variant, state) {
+    const name = definitionNameFromVariant(variant);
+    const modifier = buildModifier(variant, {
         setIdentifier: state.setIdentifier ?? '$',
         assignment: state.assignment || '=',
         valueMode: state.valueMode || 'literal',
     });
-    return injectSetAnalysis(state.baseMeasure || 'Sum(Sales)', modifier, {
+    return {
+        name,
+        modifier,
+        variableName: definitionVariableName(name),
+        description: `Set modifier for ${name}`,
+        dimensions: variant.map((item) => item.dimension).join(' | '),
+        values: variant.map((item) => item.value.replaceAll('\u0000', ' | ')).join(' | '),
+        items: variant,
+        source: 'dimension-values',
+    };
+}
+
+function stateDefinitions(state, normalized) {
+    const parsed = parseDefinitions(state.definitionsText || '');
+    if (parsed.length > 0) return parsed;
+    const rows = parseCsv(state.rowsText || '');
+    return variantsFromRows(rows, normalized).map((variant) => definitionFromVariant(variant, normalized));
+}
+
+/** @param {{ rowsText: string, baseMeasure: string, mode?: string, setIdentifier?: string, assignment?: string, expressionStyle?: string, valueMode?: string }} state */
+export function buildCurrentFormula(state) {
+    const normalized = {
+        mode: state.mode || 'single',
+        assignment: state.assignment || '=',
+        valueMode: state.valueMode || 'literal',
+        setIdentifier: state.setIdentifier ?? '$',
+    };
+    const first = stateDefinitions(state, normalized)[0];
+    if (!first) return state.baseMeasure || '';
+    return injectSetAnalysis(state.baseMeasure || 'Sum(Sales)', first.modifier, {
         setIdentifier: state.setIdentifier ?? '$',
         expressionStyle: state.expressionStyle || 'inner',
     });
@@ -431,16 +544,49 @@ function csvEscape(value) {
     return `"${value.replaceAll('"', '""')}"`;
 }
 
-/** @param {string} baseDescription @param {string} label @param {string} modifier */
-function childDescription(baseDescription, label, modifier) {
-    const base = baseDescription?.trim() || 'Generated child measure.';
-    return `${base}\nErweiterung: ${label}.\nSet Modifier: ${modifier}`;
+/** @param {string} template @param {Record<string, string>} values */
+function renderTemplate(template, values) {
+    return template.replace(/\{([A-Za-z0-9_]+)\}/g, (match, key) => values[key] ?? match);
+}
+
+/** @param {{ baseDescription?: string, baseDescriptionEn?: string, childDescriptionTemplate?: string, childDescriptionTemplateEn?: string, descriptionLanguage?: string, measureName?: string, baseMeasure?: string }} state @param {{ name: string, modifier: string, dimensions?: string, values?: string, description?: string, items?: Array<{ dimension: string, value: string }> }} definition */
+function childDescription(state, definition) {
+    const dimensions = definition.dimensions || definition.items?.map((item) => item.dimension).join(' | ') || '';
+    const values = definition.values || definition.items?.map((item) => item.value.replaceAll('\u0000', ' | ')).join(' | ') || '';
+    const baseValues = {
+        baseMeasure: state.baseMeasure || 'Sum(Sales)',
+        measureName: state.measureName || 'Measure',
+        label: definition.name,
+        definition: definition.name,
+        modifier: definition.modifier,
+        dimensions,
+        values,
+    };
+
+    const deTemplate = state.childDescriptionTemplate?.trim()
+        || '{baseDescription}\nErweiterung: {label}.\nSet Modifier: {modifier}';
+    const enTemplate = state.childDescriptionTemplateEn?.trim()
+        || '{baseDescription}\nExtension: {label}.\nSet modifier: {modifier}';
+
+    const de = renderTemplate(deTemplate, {
+        ...baseValues,
+        baseDescription: state.baseDescription?.trim() || 'Generiertes Child Measure.',
+    });
+    const en = renderTemplate(enTemplate, {
+        ...baseValues,
+        baseDescription: state.baseDescriptionEn?.trim() || 'Generated child measure.',
+    });
+
+    if (state.descriptionLanguage === 'en') return en;
+    if (state.descriptionLanguage === 'both') return `DE:\n${de}\n\nEN:\n${en}`;
+    return de;
 }
 
 /** @param {{ baseMeasure: string, measureName: string, setIdentifier?: string, expressionStyle?: string, hierarchyText?: string }} state */
 export function buildHierarchyOutput(state) {
-    const levels = parseHierarchyLevels(state.hierarchyText || '');
-    if (levels.length === 0) return '';
+    const paths = parseHierarchyPaths(state.hierarchyText || '');
+    if (paths.length === 0) return '';
+    const levels = paths.map((path) => path[path.length - 1]);
 
     const options = {
         setIdentifier: state.setIdentifier ?? '$',
@@ -455,8 +601,7 @@ export function buildHierarchyOutput(state) {
         ...levels.map((level, index) => `${index + 1}. ${fieldName(level)}`),
     ].join('\n');
 
-    const templates = levels.map((level, index) => {
-        const path = levels.slice(0, index + 1);
+    const templates = paths.map((path) => {
         const modifier = path.map((dimension) => `${fieldName(dimension)}={'<${dimension} value>'}`).join(', ');
         return [
             `${state.measureName || 'Measure'} - ${path.join(' / ')}`,
@@ -469,14 +614,34 @@ export function buildHierarchyOutput(state) {
         'HierarchyFields:',
         'LOAD * INLINE [',
         'level,parent,field,path',
-        ...levels.map((level, index) => `${index + 1},${index === 0 ? 'Base' : levels[index - 1]},${level},${levels.slice(0, index + 1).join(' > ')}`),
+        ...paths.map((path) => `${path.length},${path.length === 1 ? 'Base' : path[path.length - 2]},${path[path.length - 1]},${path.join(' > ')}`),
         '];',
     ].join('\n');
 
     return `${masterDimension}\n\n// Measure templates per hierarchy level\n${templates}\n\n${bridge}`;
 }
 
-/** @param {{ baseMeasure: string, baseDescription?: string, measureName: string, variablePrefix: string, rowsText: string, mode: string, useVariables: boolean, setIdentifier?: string, assignment?: string, expressionStyle?: string, valueMode?: string, hierarchyText?: string }} state */
+function stateBaseMeasures(state) {
+    const parsed = parseBaseMeasures(state.baseMeasuresText || '');
+    if (parsed.length > 0) {
+        return parsed.map((measure) => ({
+            measureName: measure.measureName,
+            baseMeasure: measure.baseMeasure,
+            variablePrefix: measure.variablePrefix || state.variablePrefix || `v${sanitizeName(measure.measureName)}`,
+            baseDescription: measure.baseDescription || state.baseDescription || '',
+            baseDescriptionEn: measure.baseDescriptionEn || state.baseDescriptionEn || '',
+        }));
+    }
+    return [{
+        measureName: state.measureName || 'Measure',
+        baseMeasure: state.baseMeasure || 'Sum(Sales)',
+        variablePrefix: state.variablePrefix || 'vMeasure',
+        baseDescription: state.baseDescription || '',
+        baseDescriptionEn: state.baseDescriptionEn || '',
+    }];
+}
+
+/** @param {{ baseMeasure: string, baseDescription?: string, baseDescriptionEn?: string, childDescriptionTemplate?: string, childDescriptionTemplateEn?: string, descriptionLanguage?: string, measureName: string, variablePrefix: string, rowsText: string, definitionsText?: string, mode: string, useVariables: boolean, setIdentifier?: string, assignment?: string, expressionStyle?: string, valueMode?: string, hierarchyText?: string, baseMeasuresText?: string }} state */
 export function buildSetAnalysisOutputs(state) {
     const normalized = {
         setIdentifier: state.setIdentifier ?? '$',
@@ -487,46 +652,81 @@ export function buildSetAnalysisOutputs(state) {
     };
     const rows = parseCsv(state.rowsText);
     const customVariables = parseVariables(state.variablesText || '');
-    const variants = variantsFromRows(rows, normalized);
-    const limited = variants.slice(0, 250);
+    const definitions = stateDefinitions(state, normalized);
+    const limited = definitions.slice(0, 250);
 
+    const baseMeasures = stateBaseMeasures(state);
     const measures = [];
     const modifiers = [];
     const nestedIfRows = [];
     const variables = [
         '// Custom/base variables',
         ...customVariables.map((variable) => `SET ${variable.name} = ${variable.definition};${variable.description ? ` // ${variable.description}` : ''}`),
-        `SET ${state.variablePrefix}_Base = ${state.baseMeasure};`,
+        ...baseMeasures.map((measure) => `SET ${measure.variablePrefix}_Base = ${measure.baseMeasure};`),
+        '',
+        '// Definition variables (reusable set modifiers)',
+        ...limited
+            .filter((definition) => definition.variableName)
+            .map((definition) => `SET ${definition.variableName} = ${definition.modifier};${definition.description ? ` // ${definition.description}` : ''}`),
         '',
         '// Generated child measure variables',
     ];
-    const csvOutput = [['measure_name', 'expression', 'description', 'set_modifier', 'dimensions', 'values'].join(',')];
+    const csvOutput = [['measure_name', 'expression', 'description', 'definition_name', 'set_modifier', 'dimensions', 'values'].join(',')];
+    const measureRows = [['measure_name', 'expression', 'description', 'definition_name', 'set_modifier', 'dimensions', 'values']];
+    const variableRows = [['variable_name', 'definition', 'description', 'source']];
 
-    limited.forEach((variant) => {
-        const suffix = variant.map((item) => `${sanitizeName(item.dimension)}_${sanitizeName(item.label || item.value.replaceAll('\u0000', '_'))}`).join('_');
-        const label = variant.map((item) => `${item.dimension} ${item.label || item.value.replaceAll('\u0000', ' + ')}`).join(' + ');
-        const modifier = buildModifier(variant, normalized);
-        const expression = injectSetAnalysis(state.baseMeasure, modifier, normalized);
-        const variableName = `${state.variablePrefix}_${suffix}`;
-        const measureName = `${state.measureName} - ${label}`;
-        const finalExpression = state.useVariables ? `$(${variableName})` : expression;
-        const description = childDescription(state.baseDescription || '', label, modifier);
+    customVariables.forEach((variable) => {
+        variableRows.push([variable.name, variable.definition, variable.description || '', 'custom']);
+    });
+    baseMeasures.forEach((base) => {
+        variableRows.push([`${base.variablePrefix}_Base`, base.baseMeasure, 'Base measure expression', 'base']);
+    });
+    limited
+        .filter((definition) => definition.variableName)
+        .forEach((definition) => {
+            variableRows.push([definition.variableName, definition.modifier, definition.description || `Definition ${definition.name}`, 'definition']);
+        });
 
-        variables.push(`SET ${variableName} = ${expression};`);
-        modifiers.push(`${measureName}\n{${setPrefix(normalized.setIdentifier)}${modifier}>}`);
-        measures.push(`${measureName}\n${finalExpression}\n\nDescription:\n${description}`);
-        nestedIfRows.push(nestedIfForVariant(variant.map((item) => ({
-            ...item,
-            value: item.value.split('\u0000')[0],
-        })), state.baseMeasure));
-        csvOutput.push([
-            csvEscape(measureName),
-            csvEscape(finalExpression),
-            csvEscape(description),
-            csvEscape(modifier),
-            csvEscape(variant.map((item) => item.dimension).join(' | ')),
-            csvEscape(variant.map((item) => item.value.replaceAll('\u0000', ' | ')).join(' | ')),
-        ].join(','));
+    baseMeasures.forEach((base) => {
+        const baseState = { ...state, ...base };
+        limited.forEach((definition) => {
+            const suffix = sanitizeName(definition.name);
+            const modifierForExpression = definition.variableName ? `$(${definition.variableName})` : definition.modifier;
+            const expression = injectSetAnalysis(base.baseMeasure, modifierForExpression, normalized);
+            const variableName = `${base.variablePrefix}_${suffix}`;
+            const measureName = `${base.measureName} - ${definition.name}`;
+            const finalExpression = state.useVariables ? `$(${variableName})` : expression;
+            const description = childDescription(baseState, definition);
+
+            variables.push(`SET ${variableName} = ${expression};`);
+            variableRows.push([variableName, expression, `Generated variable for ${base.measureName} / ${definition.name}`, 'generated']);
+            modifiers.push(`${definition.name}\n{${setPrefix(normalized.setIdentifier)}${definition.modifier}>}`);
+            measures.push(`${measureName}\n${finalExpression}\n\nDescription:\n${description}`);
+            if (definition.items?.length) {
+                nestedIfRows.push(nestedIfForVariant(definition.items.map((item) => ({
+                    ...item,
+                    value: item.value.split('\u0000')[0],
+                })), base.baseMeasure));
+            }
+            csvOutput.push([
+                csvEscape(measureName),
+                csvEscape(finalExpression),
+                csvEscape(description),
+                csvEscape(definition.name),
+                csvEscape(definition.modifier),
+                csvEscape(definition.dimensions || ''),
+                csvEscape(definition.values || ''),
+            ].join(','));
+            measureRows.push([
+                measureName,
+                finalExpression,
+                description,
+                definition.name,
+                definition.modifier,
+                definition.dimensions || '',
+                definition.values || '',
+            ]);
+        });
     });
 
     return {
@@ -538,8 +738,12 @@ export function buildSetAnalysisOutputs(state) {
         nestedIf: nestedIfRows.length
             ? `// Useful as a comparison or migration aid. Prefer set analysis for selection-style filters.\n${nestedIfRows.join(',\n')}`
             : '',
-        pickMatch: buildPickMatch(rows, state.baseMeasure),
+        pickMatch: buildPickMatch(rows, baseMeasures[0]?.baseMeasure || state.baseMeasure),
         csv: csvOutput.join('\n'),
+        measureRows,
+        variableRows,
+        measuresCsv: csvOutput.join('\n'),
+        variablesCsv: variableRows.map((row) => row.map(csvEscape).join(',')).join('\n'),
         count: limited.length,
     };
 }

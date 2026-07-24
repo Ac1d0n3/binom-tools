@@ -79,31 +79,62 @@ Channel,Retail,Retail</pre>
         <datalist id="qlik-set-variable-options"></datalist>
 
         <x-tools.panel heading-id="qlik-set-workbench-title" title-key="qlikSet.workbench.title" description-key="qlikSet.workbench.description">
-            <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
-                <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="catalog" data-i18n="qlikSet.layout.catalog"></button>
-                <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="composer" data-i18n="qlikSet.layout.composer"></button>
-                <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="builder" data-i18n="qlikSet.layout.builder"></button>
-                <button type="button" class="tools-btn tools-btn--secondary" data-qlik-layout-preset="focus-formula" data-i18n="qlikSet.layout.focusFormula"></button>
-                <button type="button" class="tools-btn tools-btn--secondary" data-qlik-layout-preset="all" data-i18n="qlikSet.layout.showAll"></button>
-            </div>
-            <div class="qlik-set-workbench" data-layout-catalog="open" data-layout-composer="open" data-layout-builder="open">
-                <aside class="qlik-set-rail" data-qlik-column="catalog" aria-labelledby="qlik-set-assets-title">
+            <div class="qlik-set-workbench-shell">
+                <div class="qlik-set-workbench-control">
+                    <div>
+                        <strong data-i18n="qlikSet.workbench.controlTitle"></strong>
+                        <span data-i18n="qlikSet.workbench.controlHint"></span>
+                    </div>
+                    <button type="button" id="qlik-set-workbench-toggle" class="tools-btn tools-btn--secondary" aria-expanded="true" data-i18n="qlikSet.workbench.hide"></button>
+                </div>
+                <div id="qlik-set-workbench-body" class="qlik-set-workbench-body">
+                    <div class="qlik-set-appbar" aria-label="Saved Qlik apps">
+                        <x-tools.field label-key="qlikSet.apps.name">
+                            <input id="qlik-set-app-name" class="pii-policy-input" type="text" value="Demo Sales App">
+                        </x-tools.field>
+                        <x-tools.field label-key="qlikSet.apps.saved">
+                            <select id="qlik-set-saved-apps" class="pii-policy-input">
+                                <option value="" data-i18n="qlikSet.apps.none"></option>
+                            </select>
+                        </x-tools.field>
+                        <div class="qlik-set-appbar__actions">
+                            <button type="button" id="qlik-set-save-app" class="tools-btn tools-btn--primary" data-i18n="qlikSet.apps.save"></button>
+                            <button type="button" id="qlik-set-load-app" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.apps.load"></button>
+                            <button type="button" id="qlik-set-delete-app" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.apps.delete"></button>
+                        </div>
+                        <p id="qlik-set-app-message" class="qlik-set-builder-message" aria-live="polite" hidden></p>
+                    </div>
+                    <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
+                        <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="catalog" data-i18n="qlikSet.layout.catalog"></button>
+                        <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="composer" data-i18n="qlikSet.layout.composer"></button>
+                        <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="builder" data-i18n="qlikSet.layout.builder"></button>
+                        <button type="button" class="tools-btn tools-btn--secondary" data-qlik-layout-preset="focus-formula" data-i18n="qlikSet.layout.focusFormula"></button>
+                        <button type="button" class="tools-btn tools-btn--secondary" data-qlik-layout-preset="all" data-i18n="qlikSet.layout.showAll"></button>
+                    </div>
+                    <div class="qlik-set-workbench" data-layout-catalog="open" data-layout-composer="open" data-layout-builder="open">
+                        <aside class="qlik-set-rail" data-qlik-column="catalog" aria-labelledby="qlik-set-assets-title">
                     <div class="qlik-set-rail__header">
                         <h3 id="qlik-set-assets-title" data-i18n="qlikSet.assets.title"></h3>
-                        <div class="qlik-set-upload-row">
-                            <label class="tools-btn tools-btn--secondary qlik-set-file-button">
-                                <span data-i18n="qlikSet.catalog.fieldsUpload"></span>
-                                <input id="qlik-set-fields-file" type="file" accept=".csv,text/csv,text/plain">
-                            </label>
-                            <label class="tools-btn tools-btn--secondary qlik-set-file-button">
-                                <span data-i18n="qlikSet.catalog.variableUpload"></span>
-                                <input id="qlik-set-vars-file" type="file" accept=".csv,text/csv,text/plain">
-                            </label>
-                        </div>
                     </div>
                     <p class="qlik-set-small" data-i18n="qlikSet.assets.hint"></p>
-                    <div class="qlik-set-chip-row qlik-set-chip-row--stacked" id="qlik-set-field-chips" aria-live="polite"></div>
-                    <div class="qlik-set-chip-row qlik-set-chip-row--stacked" id="qlik-set-variable-chips" aria-live="polite"></div>
+                    <div class="qlik-set-catalog-tabs" role="tablist" aria-label="Qlik app catalog">
+                        <button type="button" class="qlik-set-catalog-tab is-active" data-qlik-catalog-tab="dimensions" aria-selected="true"><span class="qlik-set-catalog-tab__icon" aria-hidden="true">D</span><span class="qlik-set-catalog-tab__label" data-i18n="qlikSet.catalog.tabs.dimensions"></span></button>
+                        <button type="button" class="qlik-set-catalog-tab" data-qlik-catalog-tab="measures" aria-selected="false"><span class="qlik-set-catalog-tab__icon" aria-hidden="true">#</span><span class="qlik-set-catalog-tab__label" data-i18n="qlikSet.catalog.tabs.measures"></span></button>
+                        <button type="button" class="qlik-set-catalog-tab" data-qlik-catalog-tab="variables" aria-selected="false"><span class="qlik-set-catalog-tab__icon" aria-hidden="true">v</span><span class="qlik-set-catalog-tab__label" data-i18n="qlikSet.catalog.tabs.variables"></span></button>
+                        <button type="button" class="qlik-set-catalog-tab" data-qlik-catalog-tab="generated" aria-selected="false"><span class="qlik-set-catalog-tab__icon" aria-hidden="true">fx</span><span class="qlik-set-catalog-tab__label" data-i18n="qlikSet.catalog.tabs.generated"></span></button>
+                    </div>
+                    <div class="qlik-set-catalog-panel is-active" data-qlik-catalog-panel="dimensions">
+                        <div class="qlik-set-chip-row qlik-set-chip-row--stacked" id="qlik-set-dimension-chips" aria-live="polite"></div>
+                    </div>
+                    <div class="qlik-set-catalog-panel" data-qlik-catalog-panel="measures" hidden>
+                        <div class="qlik-set-chip-row qlik-set-chip-row--stacked" id="qlik-set-measure-chips" aria-live="polite"></div>
+                    </div>
+                    <div class="qlik-set-catalog-panel" data-qlik-catalog-panel="variables" hidden>
+                        <div class="qlik-set-chip-row qlik-set-chip-row--stacked" id="qlik-set-variable-chips" aria-live="polite"></div>
+                    </div>
+                    <div class="qlik-set-catalog-panel" data-qlik-catalog-panel="generated" hidden>
+                        <div id="qlik-set-generated-measures" class="qlik-set-generated-list" aria-live="polite"></div>
+                    </div>
                     <button type="button" id="qlik-set-import-modal-open" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.catalog.rawData"></button>
                     <dialog id="qlik-set-import-modal" class="qlik-set-modal">
                         <div class="qlik-set-modal__form">
@@ -114,7 +145,16 @@ Channel,Retail,Retail</pre>
                                 </div>
                                 <button type="button" id="qlik-set-import-modal-close" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.modal.close"></button>
                             </div>
-                            <div class="qlik-set-mini-grid">
+                            <div class="qlik-set-modal-tabs" role="tablist" aria-label="Edit Qlik catalog data">
+                                <button type="button" class="qlik-set-modal-tab is-active" data-qlik-import-tab="fields" aria-selected="true" data-i18n="qlikSet.catalog.fields"></button>
+                                <button type="button" class="qlik-set-modal-tab" data-qlik-import-tab="variables" aria-selected="false" data-i18n="qlikSet.catalog.variables"></button>
+                                <button type="button" class="qlik-set-modal-tab" data-qlik-import-tab="values" aria-selected="false" data-i18n="qlikSet.catalog.values"></button>
+                            </div>
+                            <div class="qlik-set-modal-panel is-active" data-qlik-import-panel="fields">
+                                <label class="tools-btn tools-btn--secondary qlik-set-file-button">
+                                    <span data-i18n="qlikSet.catalog.fieldsUpload"></span>
+                                    <input id="qlik-set-fields-file" type="file" accept=".csv,text/csv,text/plain">
+                                </label>
                                 <x-tools.field label-key="qlikSet.catalog.fields">
                                     <textarea id="qlik-set-fields" class="pii-policy-input" rows="12">field,type,tags
 Region,dimension,geo
@@ -131,15 +171,84 @@ Order Date,date,calendar
 Year,date,calendar
 Month,date,calendar
 Sales,measure,currency
+Costs,measure,currency
+Margin,measure,currency
 Quantity,measure,number
 Discount,measure,percent</textarea>
                                 </x-tools.field>
+                            </div>
+                            <div class="qlik-set-modal-panel" data-qlik-import-panel="variables" hidden>
+                                <label class="tools-btn tools-btn--secondary qlik-set-file-button">
+                                    <span data-i18n="qlikSet.catalog.variableUpload"></span>
+                                    <input id="qlik-set-vars-file" type="file" accept=".csv,text/csv,text/plain">
+                                </label>
                                 <x-tools.field label-key="qlikSet.catalog.variables">
                                     <textarea id="qlik-set-vars" class="pii-policy-input" rows="12">name,definition,description
 vSales,Sum(Sales),Base sales measure
+vCosts,Sum(Costs),Base costs measure
 vQuantity,Sum(Quantity),Base quantity measure
 vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                                 </x-tools.field>
+                            </div>
+                            <div class="qlik-set-modal-panel" data-qlik-import-panel="values" hidden>
+                                <div class="qlik-set-modal__stack">
+                                    <x-tools.field label-key="qlikSet.input.csvUpload">
+                                        <input id="qlik-set-csv-file" class="pii-policy-input" type="file" accept=".csv,text/csv,text/plain">
+                                    </x-tools.field>
+                                    <div class="qlik-set-value-editor" aria-labelledby="qlik-set-value-editor-title">
+                                        <div class="qlik-set-section-title">
+                                            <h4 id="qlik-set-value-editor-title" data-i18n="qlikSet.values.editorTitle"></h4>
+                                            <p data-i18n="qlikSet.values.editorHint"></p>
+                                        </div>
+                                        <div class="qlik-set-mini-grid">
+                                            <x-tools.field label-key="qlikSet.builder.dimension">
+                                                <select id="qlik-set-value-dimension" class="pii-policy-input"></select>
+                                            </x-tools.field>
+                                            <x-tools.field label-key="qlikSet.values.value">
+                                                <input id="qlik-set-value-value" class="pii-policy-input" type="text" value="DACH">
+                                            </x-tools.field>
+                                            <x-tools.field label-key="qlikSet.builder.label">
+                                                <input id="qlik-set-value-label" class="pii-policy-input" type="text" value="DACH">
+                                            </x-tools.field>
+                                            <x-tools.field label-key="qlikSet.values.operator">
+                                                <select id="qlik-set-value-operator" class="pii-policy-input">
+                                                    <option value="">Literal</option>
+                                                    <option value="search">Search</option>
+                                                    <option value="numeric">Numeric</option>
+                                                    <option value="wildcard">Wildcard</option>
+                                                </select>
+                                            </x-tools.field>
+                                        </div>
+                                        <div class="qlik-set-action-row">
+                                            <button type="button" id="qlik-set-add-value-row" class="tools-btn tools-btn--primary" data-i18n="qlikSet.values.add"></button>
+                                            <p id="qlik-set-value-message" class="qlik-set-builder-message" aria-live="polite" hidden></p>
+                                        </div>
+                                        <div id="qlik-set-value-list" class="qlik-set-value-list" aria-live="polite"></div>
+                                    </div>
+                                    <details class="qlik-set-details">
+                                        <summary data-i18n="qlikSet.values.rawSummary"></summary>
+                                        <x-tools.field label-key="qlikSet.input.rows">
+                                            <textarea id="qlik-set-rows" class="pii-policy-input" rows="12">dimension,value,label,operator,assignment
+Region,DACH,DACH
+Region,North America,North America
+Country,DE,Germany
+Country,AT,Austria
+Country,CH,Switzerland
+Country,US,United States
+City,Berlin,Berlin
+City,Vienna,Vienna
+City,Zurich,Zurich
+City,New York,New York
+Channel,Online,Online
+Channel,Retail,Retail
+Salesperson,Alice Meyer,Alice Meyer
+Salesperson,Noah Smith,Noah Smith
+Customer,Contoso,Contoso
+Customer,Fabrikam,Fabrikam</textarea>
+                                        </x-tools.field>
+                                        <p class="qlik-set-small" data-i18n="qlikSet.input.rowsHint"></p>
+                                    </details>
+                                </div>
                             </div>
                         </div>
                     </dialog>
@@ -150,6 +259,7 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                         <h3 id="qlik-set-formula-title" data-i18n="qlikSet.formula.title"></h3>
                         <p data-i18n="qlikSet.formula.hint"></p>
                     </div>
+                    <p class="qlik-set-small qlik-set-base-flow-hint" data-i18n="qlikSet.formula.baseFlow"></p>
                     <textarea id="qlik-set-base-measure" class="pii-policy-input qlik-set-formula-dropzone" rows="5" data-qlik-dropzone="formula">Sum(Sales)</textarea>
                     <div class="qlik-set-history-bar" aria-label="Formula history">
                         <button type="button" id="qlik-set-undo" class="tools-btn tools-btn--secondary qlik-set-history-button" data-i18n="qlikSet.history.undo" disabled></button>
@@ -159,6 +269,14 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                     <div class="qlik-set-current-formula">
                         <div class="qlik-set-current-formula__label" data-i18n="qlikSet.formula.current"></div>
                         <pre id="qlik-set-current-formula-pre" class="qlik-set-current-formula__pre"></pre>
+                    </div>
+                    <div class="qlik-set-mini-grid">
+                        <x-tools.field label-key="qlikSet.input.measureName">
+                            <input id="qlik-set-measure-name" class="pii-policy-input" type="text" value="Sales">
+                        </x-tools.field>
+                        <x-tools.field label-key="qlikSet.input.variablePrefix">
+                            <input id="qlik-set-variable-prefix" class="pii-policy-input" type="text" value="vSales">
+                        </x-tools.field>
                     </div>
                     <div class="qlik-set-actions">
                         <select id="qlik-set-aggregation" class="pii-policy-input qlik-set-inline-control" aria-label="Aggregation">
@@ -170,8 +288,34 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                         </select>
                         <input id="qlik-set-measure-field" class="pii-policy-input qlik-set-inline-control" type="text" value="Sales" list="qlik-set-field-options" aria-label="Measure field">
                         <button type="button" id="qlik-set-apply-base" class="tools-btn tools-btn--primary" data-i18n="qlikSet.composer.apply"></button>
-                        <input id="qlik-set-variable-use" class="pii-policy-input qlik-set-inline-control" type="text" value="vSales" list="qlik-set-variable-options" aria-label="Variable">
-                        <button type="button" id="qlik-set-use-variable-base" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.composer.useVariable"></button>
+                    </div>
+                    <div class="qlik-set-palette qlik-set-base-list" aria-labelledby="qlik-set-base-list-title">
+                        <div class="qlik-set-palette__header">
+                            <div>
+                                <h4 id="qlik-set-base-list-title" data-i18n="qlikSet.baseList.title"></h4>
+                                <span class="qlik-set-palette__hint" data-i18n="qlikSet.baseList.hint"></span>
+                            </div>
+                            <button type="button" id="qlik-set-base-list-toggle" class="tools-btn tools-btn--secondary qlik-set-palette__toggle" aria-expanded="false" data-i18n="qlikSet.baseList.show"></button>
+                        </div>
+                        <div id="qlik-set-base-list-body" class="qlik-set-palette__scroll qlik-set-description-body" hidden>
+                            <div class="qlik-set-mini-grid qlik-set-mini-grid--one">
+                                <x-tools.field label-key="qlikSet.baseList.active">
+                                    <select id="qlik-set-base-measure-select" class="pii-policy-input"></select>
+                                </x-tools.field>
+                            </div>
+                            <div class="qlik-set-action-row">
+                                <button type="button" id="qlik-set-load-base" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.baseList.load"></button>
+                                <button type="button" id="qlik-set-add-current-base" class="tools-btn tools-btn--primary" data-i18n="qlikSet.baseList.saveCurrent"></button>
+                                <button type="button" id="qlik-set-new-base" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.baseList.newBase"></button>
+                            </div>
+                            <x-tools.field label-key="qlikSet.baseList.csv">
+                                <textarea id="qlik-set-base-measures" class="pii-policy-input qlik-set-template-text" rows="6">name,expression,prefix,description_de,description_en
+Sales,Sum(Sales),vSales,Umsatz basierend auf Sum(Sales).,Sales based on Sum(Sales).
+Costs,Sum(Costs),vCosts,Kosten basierend auf Sum(Costs).,Costs based on Sum(Costs).
+Quantity,Sum(Quantity),vQuantity,Menge basierend auf Sum(Quantity).,Quantity based on Sum(Quantity).</textarea>
+                            </x-tools.field>
+                            <p class="qlik-set-small" data-i18n="qlikSet.baseList.rawHint"></p>
+                        </div>
                     </div>
                     <div class="qlik-set-palette" aria-labelledby="qlik-set-palette-title">
                         <div class="qlik-set-palette__header">
@@ -215,6 +359,43 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                             </div>
                         </div>
                     </div>
+                    <div class="qlik-set-palette qlik-set-description-editor" aria-labelledby="qlik-set-description-title">
+                        <div class="qlik-set-palette__header">
+                            <div>
+                                <h4 id="qlik-set-description-title" data-i18n="qlikSet.descriptions.summary"></h4>
+                                <span class="qlik-set-palette__hint" data-i18n="qlikSet.descriptions.hint"></span>
+                            </div>
+                            <button type="button" id="qlik-set-description-toggle" class="tools-btn tools-btn--secondary qlik-set-palette__toggle" aria-expanded="false" data-i18n="qlikSet.descriptions.show"></button>
+                        </div>
+                        <div id="qlik-set-description-body" class="qlik-set-palette__scroll qlik-set-description-body" hidden>
+                            <div class="qlik-set-mini-grid">
+                                <x-tools.field label-key="qlikSet.descriptions.language">
+                                    <select id="qlik-set-description-language" class="pii-policy-input">
+                                        <option value="de">DE</option>
+                                        <option value="en">EN</option>
+                                        <option value="both">DE + EN</option>
+                                    </select>
+                                </x-tools.field>
+                                <x-tools.field label-key="qlikSet.input.baseDescriptionDe">
+                                    <textarea id="qlik-set-base-description" class="pii-policy-input" rows="4">Umsatz basierend auf Sum(Sales).</textarea>
+                                </x-tools.field>
+                                <x-tools.field label-key="qlikSet.input.baseDescriptionEn">
+                                    <textarea id="qlik-set-base-description-en" class="pii-policy-input" rows="4">Sales based on Sum(Sales).</textarea>
+                                </x-tools.field>
+                            </div>
+                            <x-tools.field label-key="qlikSet.descriptions.childTemplateDe">
+                                <textarea id="qlik-set-child-description-template" class="pii-policy-input qlik-set-template-text" rows="5">{baseDescription}
+Erweiterung: {label}.
+Set Modifier: {modifier}</textarea>
+                            </x-tools.field>
+                            <x-tools.field label-key="qlikSet.descriptions.childTemplateEn">
+                                <textarea id="qlik-set-child-description-template-en" class="pii-policy-input qlik-set-template-text" rows="5">{baseDescription}
+Extension: {label}.
+Set modifier: {modifier}</textarea>
+                            </x-tools.field>
+                            <p class="qlik-set-small" data-i18n="qlikSet.descriptions.placeholders"></p>
+                        </div>
+                    </div>
 
                 </section>
 
@@ -236,17 +417,45 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                         </div>
                         <div class="qlik-set-mini-grid qlik-set-mini-grid--one">
                             <x-tools.field label-key="qlikSet.builder.dimension">
-                                <input id="qlik-set-builder-dimension" class="pii-policy-input" type="text" value="Region" list="qlik-set-field-options">
+                                <select id="qlik-set-builder-dimension" class="pii-policy-input">
+                                    <option value="Region">Region</option>
+                                </select>
                             </x-tools.field>
                             <x-tools.field label-key="qlikSet.builder.value">
-                                <input id="qlik-set-builder-value" class="pii-policy-input" type="text" value="DACH">
-                            </x-tools.field>
-                            <x-tools.field label-key="qlikSet.builder.label">
-                                <input id="qlik-set-builder-label" class="pii-policy-input" type="text" value="DACH">
+                                <select id="qlik-set-builder-value" class="pii-policy-input qlik-set-multi-select" multiple size="7">
+                                    <option value="DACH">DACH</option>
+                                </select>
                             </x-tools.field>
                         </div>
-                        <button type="button" id="qlik-set-add-dimension-row" class="tools-btn tools-btn--primary" data-i18n="qlikSet.builder.addRow"></button>
-                        <div id="qlik-set-filter-preview" class="qlik-set-filter-preview" aria-live="polite"></div>
+                        <div class="qlik-set-action-row">
+                            <button type="button" id="qlik-set-apply-set-filter" class="tools-btn tools-btn--primary" data-i18n="qlikSet.builder.applySetFilter"></button>
+                        </div>
+                        <p id="qlik-set-builder-message" class="qlik-set-builder-message" aria-live="polite" hidden></p>
+                        <div class="qlik-set-definition-editor" aria-labelledby="qlik-set-definition-title">
+                            <div class="qlik-set-section-title">
+                                <h4 id="qlik-set-definition-title" data-i18n="qlikSet.definitions.title"></h4>
+                                <p data-i18n="qlikSet.definitions.hint"></p>
+                            </div>
+                            <div class="qlik-set-mini-grid">
+                                <x-tools.field label-key="qlikSet.definitions.name">
+                                    <input id="qlik-set-definition-name" class="pii-policy-input" type="text" value="Region DACH">
+                                </x-tools.field>
+                                <x-tools.field label-key="qlikSet.definitions.variable">
+                                    <input id="qlik-set-definition-variable" class="pii-policy-input" type="text" value="vDefRegionDACH">
+                                </x-tools.field>
+                            </div>
+                            <div id="qlik-set-definition-preview" class="qlik-set-current-formula">
+                                <div class="qlik-set-current-formula__label" data-i18n="qlikSet.definitions.preview"></div>
+                                <pre id="qlik-set-definition-preview-pre" class="qlik-set-current-formula__pre"></pre>
+                            </div>
+                            <div id="qlik-set-definition-list" class="qlik-set-generated-list" aria-live="polite"></div>
+                            <details class="qlik-set-details">
+                                <summary data-i18n="qlikSet.definitions.rawSummary"></summary>
+                                <x-tools.field label-key="qlikSet.definitions.raw">
+                                    <textarea id="qlik-set-definitions" class="pii-policy-input qlik-set-template-text" rows="6">name,modifier,variable,description,dimensions,values</textarea>
+                                </x-tools.field>
+                            </details>
+                        </div>
                     </div>
 
                     <div class="qlik-set-builder-panel" data-qlik-builder-panel="hierarchy" hidden>
@@ -260,7 +469,11 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                                 <span data-i18n="qlikSet.hierarchy.dropText"></span>
                             </div>
                             <div id="qlik-set-hierarchy-preview" class="qlik-set-hierarchy-preview" aria-live="polite"></div>
-                            <textarea id="qlik-set-hierarchy-levels" class="pii-policy-input qlik-set-hierarchy-text" rows="4"></textarea>
+                            <textarea id="qlik-set-hierarchy-levels" class="pii-policy-input qlik-set-hierarchy-text" rows="6">Region
+  Salesperson
+    Customer
+Product Category
+  Product</textarea>
                         </div>
                         <div class="qlik-set-child-tree" aria-labelledby="qlik-set-tree-title">
                             <div class="qlik-set-section-title">
@@ -306,15 +519,6 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                         <details class="qlik-set-details">
                             <summary data-i18n="qlikSet.input.advanced"></summary>
                             <div class="qlik-set-mini-grid">
-                                <x-tools.field label-key="qlikSet.input.measureName">
-                                    <input id="qlik-set-measure-name" class="pii-policy-input" type="text" value="Sales">
-                                </x-tools.field>
-                                <x-tools.field label-key="qlikSet.input.baseDescription">
-                                    <textarea id="qlik-set-base-description" class="pii-policy-input" rows="4">Umsatz basierend auf Sum(Sales).</textarea>
-                                </x-tools.field>
-                                <x-tools.field label-key="qlikSet.input.variablePrefix">
-                                    <input id="qlik-set-variable-prefix" class="pii-policy-input" type="text" value="vSales">
-                                </x-tools.field>
                                 <x-tools.field label-key="qlikSet.input.mode">
                                     <select id="qlik-set-mode" class="pii-policy-input">
                                         <option value="single">One child per dimension value</option>
@@ -357,9 +561,6 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                                         <option value="no">Generate direct expressions only</option>
                                     </select>
                                 </x-tools.field>
-                                <x-tools.field label-key="qlikSet.input.csvUpload">
-                                    <input id="qlik-set-csv-file" class="pii-policy-input" type="file" accept=".csv,text/csv,text/plain">
-                                </x-tools.field>
                                 <x-tools.field label-key="qlikSet.input.dateField">
                                     <input id="qlik-set-date-field" class="pii-policy-input" type="text" value="Date">
                                 </x-tools.field>
@@ -367,27 +568,82 @@ vAvgDiscount,Avg(Discount),Average discount measure</textarea>
                                     <input id="qlik-set-year-field" class="pii-policy-input" type="text" value="Year">
                                 </x-tools.field>
                             </div>
-                            <x-tools.field label-key="qlikSet.input.rows">
-                                <textarea id="qlik-set-rows" class="pii-policy-input" rows="8">dimension,value,label,operator,assignment
-Region,DACH,DACH
-Region,North America,North America
-Channel,Online,Online
-Channel,Retail,Retail</textarea>
-                            </x-tools.field>
                             <button type="button" id="qlik-set-add-variable" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.builder.addVariable"></button>
                         </details>
                     </div>
                 </aside>
+                    </div>
+                </div>
             </div>
         </x-tools.panel>
 
-        <x-tools.panel-code heading-id="qlik-set-measures-title" title-key="qlikSet.output.measures" pre-id="qlik-set-measures-pre" copy-btn-id="qlik-set-copy-measures" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-variables-title" title-key="qlikSet.output.variables" pre-id="qlik-set-variables-pre" copy-btn-id="qlik-set-copy-variables" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-hierarchy-output-title" title-key="qlikSet.output.hierarchy" pre-id="qlik-set-hierarchy-pre" copy-btn-id="qlik-set-copy-hierarchy" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-time-vars-title" title-key="qlikSet.output.timeVariables" pre-id="qlik-set-time-vars-pre" copy-btn-id="qlik-set-copy-time-vars" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-modifiers-title" title-key="qlikSet.output.modifiers" pre-id="qlik-set-modifiers-pre" copy-btn-id="qlik-set-copy-modifiers" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-nested-if-title" title-key="qlikSet.output.nestedIf" pre-id="qlik-set-nested-if-pre" copy-btn-id="qlik-set-copy-nested-if" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-pick-match-title" title-key="qlikSet.output.pickMatch" pre-id="qlik-set-pick-match-pre" copy-btn-id="qlik-set-copy-pick-match" copy-key="qlikSet.copy" />
-        <x-tools.panel-code heading-id="qlik-set-csv-title" title-key="qlikSet.output.csv" pre-id="qlik-set-csv-pre" copy-btn-id="qlik-set-copy-csv" copy-key="qlikSet.copy" />
+        <section class="pii-policy-panel pii-policy-panel--code qlik-set-output-panel-wrap" aria-label="Qlik output">
+            <div class="qlik-set-output-tabbar">
+                <button type="button" class="qlik-set-output-scroll qlik-set-output-scroll--prev" data-qlik-output-scroll="prev" aria-label="Previous output tab">&lt;</button>
+                <div class="qlik-set-output-tabs" role="tablist" aria-label="Qlik output">
+                    <button type="button" class="qlik-set-output-tab is-active" data-qlik-output-tab="measures" aria-controls="qlik-set-output-measures" aria-selected="true" data-i18n="qlikSet.output.measures"></button>
+                    <button type="button" class="qlik-set-output-tab" data-qlik-output-tab="variables" aria-controls="qlik-set-output-variables" aria-selected="false" data-i18n="qlikSet.output.variables"></button>
+                    <button type="button" class="qlik-set-output-tab" data-qlik-output-tab="timeVars" aria-controls="qlik-set-output-time-vars" aria-selected="false" data-i18n="qlikSet.output.timeVariables"></button>
+                    <button type="button" class="qlik-set-output-tab" data-qlik-output-tab="modifiers" aria-controls="qlik-set-output-modifiers" aria-selected="false" data-i18n="qlikSet.output.modifiers"></button>
+                    <button type="button" class="qlik-set-output-tab" data-qlik-output-tab="nestedIf" aria-controls="qlik-set-output-nested-if" aria-selected="false" data-i18n="qlikSet.output.nestedIf"></button>
+                    <button type="button" class="qlik-set-output-tab" data-qlik-output-tab="pickMatch" aria-controls="qlik-set-output-pick-match" aria-selected="false" data-i18n="qlikSet.output.pickMatch"></button>
+                    <button type="button" class="qlik-set-output-tab" data-qlik-output-tab="csv" aria-controls="qlik-set-output-csv" aria-selected="false" data-i18n="qlikSet.output.csv"></button>
+                </div>
+                <button type="button" class="qlik-set-output-scroll qlik-set-output-scroll--next" data-qlik-output-scroll="next" aria-label="Next output tab">&gt;</button>
+            </div>
+
+            <div id="qlik-set-output-measures" class="qlik-set-output-panel is-active" data-qlik-output-panel="measures">
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-measures" data-dq-copy="qlik-set-measures-pre" data-i18n="qlikSet.copy">Copy</button>
+                    <button type="button" id="qlik-set-download-measures-xlsx" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.download.measuresXlsx"></button>
+                    <button type="button" id="qlik-set-download-measures-csv" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.download.measuresCsv"></button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-measures-pre"></pre>
+            </div>
+
+            <div id="qlik-set-output-variables" class="qlik-set-output-panel" data-qlik-output-panel="variables" hidden>
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-variables" data-dq-copy="qlik-set-variables-pre" data-i18n="qlikSet.copy">Copy</button>
+                    <button type="button" id="qlik-set-download-variables-xlsx" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.download.variablesXlsx"></button>
+                    <button type="button" id="qlik-set-download-variables-csv" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.download.variablesCsv"></button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-variables-pre"></pre>
+            </div>
+
+            <div id="qlik-set-output-time-vars" class="qlik-set-output-panel" data-qlik-output-panel="timeVars" hidden>
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-time-vars" data-dq-copy="qlik-set-time-vars-pre" data-i18n="qlikSet.copy">Copy</button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-time-vars-pre"></pre>
+            </div>
+
+            <div id="qlik-set-output-modifiers" class="qlik-set-output-panel" data-qlik-output-panel="modifiers" hidden>
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-modifiers" data-dq-copy="qlik-set-modifiers-pre" data-i18n="qlikSet.copy">Copy</button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-modifiers-pre"></pre>
+            </div>
+
+            <div id="qlik-set-output-nested-if" class="qlik-set-output-panel" data-qlik-output-panel="nestedIf" hidden>
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-nested-if" data-dq-copy="qlik-set-nested-if-pre" data-i18n="qlikSet.copy">Copy</button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-nested-if-pre"></pre>
+            </div>
+
+            <div id="qlik-set-output-pick-match" class="qlik-set-output-panel" data-qlik-output-panel="pickMatch" hidden>
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-pick-match" data-dq-copy="qlik-set-pick-match-pre" data-i18n="qlikSet.copy">Copy</button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-pick-match-pre"></pre>
+            </div>
+
+            <div id="qlik-set-output-csv" class="qlik-set-output-panel" data-qlik-output-panel="csv" hidden>
+                <div class="qlik-set-output-actions">
+                    <button type="button" class="tools-btn" id="qlik-set-copy-csv" data-dq-copy="qlik-set-csv-pre" data-i18n="qlikSet.copy">Copy</button>
+                </div>
+                <pre class="pii-policy-code" id="qlik-set-csv-pre"></pre>
+            </div>
+        </section>
     </x-tools.generator-page>
 @endsection
