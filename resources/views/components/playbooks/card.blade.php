@@ -36,9 +36,13 @@
     );
 
     $tags = $item['tags'] ?? [];
+    $products = $item['products'] ?? [];
     $heroUrl = $item['heroUrl'] ?? null;
     $views = max(0, (int) ($item['stats']['views'] ?? 0));
     $likes = max(0, (int) ($item['stats']['likes'] ?? 0));
+    $productLabels = collect($products)
+        ->map(fn (string $id): string => \App\Playbooks\PlaybookProducts::label($id))
+        ->implode(' ');
     $searchText = strtolower(implode(' ', array_filter([
         $titleDe,
         $titleEn,
@@ -50,6 +54,8 @@
         $seriesBadgeEn ?? '',
         $item['slug'] ?? '',
         implode(' ', $tags),
+        $productLabels,
+        implode(' ', $products),
     ])));
 @endphp
 
@@ -73,6 +79,7 @@
     data-sort-series-part="{{ $seriesPart ?? 0 }}"
     @if ($categoryKey) data-category-key="{{ $categoryKey }}" @endif
     @if (count($tags) > 0) data-tags="{{ implode(',', $tags) }}" @endif
+    @if (count($products) > 0) data-products="{{ implode(',', $products) }}" @endif
 >
     <div class="tools-card__media">
         @if ($heroUrl)
@@ -104,6 +111,8 @@
                 <span>{{ $seriesBadgeEn }}</span>
             </span>
         @endif
+
+        <x-playbooks.product-marks :products="$products" />
     </div>
 
     <div class="tools-card__story-body">

@@ -6,6 +6,7 @@ final readonly class PlaybookLocaleVariant
 {
     /**
      * @param  list<string>  $tags
+     * @param  list<string>  $products
      * @param  list<PlaybookTocEntry>  $toc
      */
     public function __construct(
@@ -14,6 +15,7 @@ final readonly class PlaybookLocaleVariant
         public string $description,
         public ?string $category,
         public array $tags,
+        public array $products,
         public string $bodyHtml,
         public array $toc,
         public int $readingTimeMinutes,

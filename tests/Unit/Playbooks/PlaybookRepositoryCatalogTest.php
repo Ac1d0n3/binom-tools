@@ -83,4 +83,20 @@ class PlaybookRepositoryCatalogTest extends TestCase
 
         $this->assertSame($sorted, $parts);
     }
+
+    public function test_end_to_end_series_aggregates_products(): void
+    {
+        $repository = app(PlaybookRepository::class);
+        $series = collect($repository->allSeries())
+            ->first(fn ($overview): bool => $overview->id === 'end-to-end-data-governance');
+
+        $this->assertNotNull($series);
+        $this->assertSame(['snowflake', 'dbt', 'qlik'], $series->products);
+
+        $story = collect($repository->allForIndex())
+            ->first(fn (array $item): bool => ($item['slug'] ?? null) === 'end-to-end-governance-architecture');
+
+        $this->assertNotNull($story);
+        $this->assertSame(['snowflake', 'dbt', 'qlik'], $story['products']);
+    }
 }

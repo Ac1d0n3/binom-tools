@@ -256,7 +256,13 @@ export function initOverviewFilters() {
 
         seriesItems.forEach((item) => {
             const text = normalize(item.getAttribute('data-search-text') ?? '');
-            const show = query === '' || text.includes(query);
+            const products = (item.getAttribute('data-products') ?? '')
+                .split(',')
+                .map((product) => product.trim())
+                .filter(Boolean);
+            const matchesSearch = query === '' || text.includes(query);
+            const matchesProduct = productSelect === null || matchesProductFilter(products);
+            const show = matchesSearch && matchesProduct;
 
             item.hidden = !show;
             if (show) visible += 1;
@@ -266,6 +272,7 @@ export function initOverviewFilters() {
             seriesEmptyEl.hidden = visible > 0;
         }
 
+        syncFilterReset();
         sortSeries();
     };
 

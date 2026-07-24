@@ -7,6 +7,7 @@ use App\Accounts\AccountsConfig;
 use App\Accounts\ReadStateStore;
 use App\Accounts\StoryAclRepository;
 use App\Http\Controllers\Controller;
+use App\Playbooks\PlaybookProducts;
 use App\Playbooks\PlaybookRepository;
 use App\Playbooks\PlaybookStatsStore;
 use Illuminate\Http\Request;
@@ -76,11 +77,27 @@ class PlaybookController extends Controller
             ->values()
             ->all();
 
+        $seriesList = $this->playbooks->allSeries();
+
+        $availableProducts = collect($playbooks)
+            ->flatMap(fn (array $item): array => $item['products'] ?? [])
+            ->merge(
+                collect($seriesList)->flatMap(fn ($series): array => $series->products ?? [])
+            )
+            ->filter(fn (mixed $id): bool => is_string($id) && $id !== '')
+            ->unique()
+            ->sortBy(fn (string $id): int => array_search($id, PlaybookProducts::ORDERED_IDS, true) !== false
+                ? (int) array_search($id, PlaybookProducts::ORDERED_IDS, true)
+                : PHP_INT_MAX)
+            ->values()
+            ->all();
+
         return view('playbooks.index', [
             'playbooks' => $playbooks,
             'tagCounts' => $tagCounts,
             'categoryCounts' => $categoryCounts,
-            'seriesList' => $this->playbooks->allSeries(),
+            'availableProducts' => $availableProducts,
+            'seriesList' => $seriesList,
             'serverReadSlugs' => $this->serverReadSlugs(),
         ]);
     }

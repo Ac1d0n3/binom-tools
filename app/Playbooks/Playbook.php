@@ -63,6 +63,7 @@ final readonly class Playbook
     {
         $locales = [];
         $tags = [];
+        $products = [];
 
         foreach ($this->variants as $locale => $variant) {
             $locales[$locale] = [
@@ -71,11 +72,16 @@ final readonly class Playbook
                 'category' => $variant->category,
                 'readingTimeMinutes' => $variant->readingTimeMinutes,
                 'tags' => $variant->tags,
+                'products' => $variant->products,
                 'seriesTitle' => $variant->seriesTitle,
             ];
 
             if ($tags === [] && $variant->tags !== []) {
                 $tags = $variant->tags;
+            }
+
+            if ($products === [] && $variant->products !== []) {
+                $products = $variant->products;
             }
         }
 
@@ -88,6 +94,7 @@ final readonly class Playbook
             'indexSortTimestamp' => $this->indexSortTimestamp(),
             'locales' => $locales,
             'tags' => $tags,
+            'products' => $products,
             'seriesId' => $this->seriesId,
             'seriesPart' => $this->seriesPart,
         ];

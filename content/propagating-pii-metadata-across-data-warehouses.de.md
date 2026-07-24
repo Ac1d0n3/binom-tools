@@ -13,6 +13,8 @@ tags:
   - data-warehouse
   - datenschutz
   - ci
+products:
+  - dbt
 order: -1
 author: Thomas Lindackers
 series: end-to-end-data-governance

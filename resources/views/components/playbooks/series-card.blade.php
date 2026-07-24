@@ -1,11 +1,17 @@
 @props(['series'])
 
 @php
+    $products = $series->products ?? [];
+    $productLabels = collect($products)
+        ->map(fn (string $id): string => \App\Playbooks\PlaybookProducts::label($id))
+        ->all();
     $searchText = strtolower(implode(' ', array_filter([
         $series->titleDe,
         $series->titleEn,
         $series->id,
         ...collect($series->parts)->flatMap(fn ($part) => [$part->titleDe, $part->titleEn])->all(),
+        ...$productLabels,
+        ...$products,
     ])));
     $firstPart = $series->firstPart();
 @endphp
@@ -18,6 +24,7 @@
     data-sort-title-de="{{ $series->titleDe }}"
     data-sort-title-en="{{ $series->titleEn }}"
     data-sort-part-count="{{ $series->partCount() }}"
+    @if (count($products) > 0) data-products="{{ implode(',', $products) }}" @endif
 >
     @if ($series->heroUrl)
         <div class="tools-series-card__hero">
@@ -28,12 +35,14 @@
                 loading="lazy"
                 decoding="async"
             />
+            <x-playbooks.product-marks :products="$products" class="tools-card__purpose--on-series-hero" />
         </div>
     @else
         <div class="tools-series-card__hero tools-series-card__hero--placeholder" aria-hidden="true">
             <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
                 <i class="fa-solid fa-layer-group tools-card__icon"></i>
             </div>
+            <x-playbooks.product-marks :products="$products" class="tools-card__purpose--on-series-hero" />
         </div>
     @endif
 
@@ -54,6 +63,10 @@
         >
             {{ $series->partCount() }} parts · {{ $series->totalReadingTimeEn }} min total
         </p>
+
+        @if (count($productLabels) > 0)
+            <p class="tools-series-card__products">{{ implode(' · ', $productLabels) }}</p>
+        @endif
 
         <ol class="tools-series-card__parts">
             @foreach ($series->parts as $part)

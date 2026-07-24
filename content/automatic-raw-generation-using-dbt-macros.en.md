@@ -13,6 +13,9 @@ tags:
   - snowflake
   - analytics-engineering
   - pii
+products:
+  - snowflake
+  - dbt
 order: -1
 author: Thomas Lindackers
 series: end-to-end-data-governance

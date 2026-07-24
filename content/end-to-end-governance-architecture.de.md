@@ -13,6 +13,10 @@ tags:
   - masking
   - row-level-security
   - data-quality
+products:
+  - snowflake
+  - dbt
+  - qlik
 order: -1
 author: Thomas Lindackers
 series: end-to-end-data-governance

@@ -265,7 +265,10 @@ final class PlaybookRepository
         $files = [
             app_path('Playbooks/PlaybookFlowchartFenceExtension.php'),
             app_path('Playbooks/PlaybookFlowchartParser.php'),
+            app_path('Playbooks/PlaybookFrontmatterParser.php'),
+            app_path('Playbooks/PlaybookLocaleVariant.php'),
             app_path('Playbooks/PlaybookMarkdownRenderer.php'),
+            app_path('Playbooks/PlaybookProducts.php'),
             app_path('Playbooks/PlaybookVideoFenceExtension.php'),
         ];
 
@@ -486,6 +489,15 @@ final class PlaybookRepository
             $playbooks,
         ));
 
+        $products = PlaybookProducts::union(...array_map(
+            function (Playbook $playbook): array {
+                $variant = $playbook->variant('en') ?? $playbook->variant('de');
+
+                return $variant?->products ?? [];
+            },
+            $playbooks,
+        ));
+
         return new PlaybookSeriesOverview(
             id: $seriesId,
             titleDe: $titleDe,
@@ -495,6 +507,7 @@ final class PlaybookRepository
             totalReadingTimeDe: $totalReadingTimeDe,
             totalReadingTimeEn: $totalReadingTimeEn,
             parts: $parts,
+            products: $products,
         );
     }
 
@@ -526,6 +539,7 @@ final class PlaybookRepository
 
         /** @var list<string> $tags */
         $tags = is_array($meta['tags'] ?? null) ? $meta['tags'] : [];
+        $products = PlaybookProducts::resolve($meta['products'] ?? [], $tags);
 
         $hero = $meta['hero'] ?? null;
         $heroUrl = PlaybookImagePath::assetUrl(is_string($hero) ? $hero : null);
@@ -544,6 +558,7 @@ final class PlaybookRepository
             description: (string) ($meta['description'] ?? ''),
             category: is_string($meta['category'] ?? null) ? $meta['category'] : null,
             tags: $tags,
+            products: $products,
             bodyHtml: $rendered['html'],
             toc: $rendered['toc'],
             readingTimeMinutes: $this->markdownRenderer->readingTimeMinutes($parsed['body']),

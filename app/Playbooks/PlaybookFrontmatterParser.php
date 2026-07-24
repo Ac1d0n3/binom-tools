@@ -50,6 +50,7 @@ final class PlaybookFrontmatterParser
             'hero' => null,
             'category' => null,
             'tags' => [],
+            'products' => [],
             'order' => 0,
             'publishedAt' => null,
             'series' => null,
@@ -118,6 +119,13 @@ final class PlaybookFrontmatterParser
             )));
         }
 
+        if (isset($meta['products']) && is_string($meta['products'])) {
+            $meta['products'] = array_values(array_filter(array_map(
+                'trim',
+                preg_split('/\s*,\s*/', $meta['products']) ?: []
+            )));
+        }
+
         if (! isset($meta['title']) || $meta['title'] === '') {
             $meta['title'] = Str::headline(str_replace('-', ' ', $slug));
         }
@@ -143,7 +151,7 @@ final class PlaybookFrontmatterParser
             return (int) $value;
         }
 
-        if ($key === 'tags') {
+        if ($key === 'tags' || $key === 'products') {
             return array_values(array_filter(array_map(
                 'trim',
                 preg_split('/\s*,\s*/', $value) ?: []

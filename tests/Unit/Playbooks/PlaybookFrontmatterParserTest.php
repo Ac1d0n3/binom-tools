@@ -20,6 +20,9 @@ category: Platform
 tags:
   - alpha
   - beta
+products:
+  - snowflake
+  - dbt
 order: 5
 series: governance-pillars
 seriesPart: 2
@@ -36,6 +39,7 @@ MD;
         $this->assertSame('images/playbooks/example.svg', $parsed['meta']['hero']);
         $this->assertSame('Platform', $parsed['meta']['category']);
         $this->assertSame(['alpha', 'beta'], $parsed['meta']['tags']);
+        $this->assertSame(['snowflake', 'dbt'], $parsed['meta']['products']);
         $this->assertSame(5, $parsed['meta']['order']);
         $this->assertSame('governance-pillars', $parsed['meta']['series']);
         $this->assertSame(2, $parsed['meta']['seriespart']);
@@ -52,5 +56,6 @@ MD;
         $this->assertSame('My Governance Topic', $parsed['meta']['title']);
         $this->assertSame('', $parsed['meta']['description']);
         $this->assertSame([], $parsed['meta']['tags']);
+        $this->assertSame([], $parsed['meta']['products']);
     }
 }

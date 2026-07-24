@@ -6,6 +6,7 @@ final readonly class PlaybookSeriesOverview
 {
     /**
      * @param  list<PlaybookSeriesPart>  $parts
+     * @param  list<string>  $products
      */
     public function __construct(
         public string $id,
@@ -16,6 +17,7 @@ final readonly class PlaybookSeriesOverview
         public int $totalReadingTimeDe,
         public int $totalReadingTimeEn,
         public array $parts,
+        public array $products = [],
     ) {}
 
     public function title(string $locale = 'en'): string

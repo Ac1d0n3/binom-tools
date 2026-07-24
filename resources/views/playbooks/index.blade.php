@@ -139,6 +139,21 @@
                         </div>
                     </div>
 
+                    @if (count($availableProducts ?? []) > 0)
+                        <label class="tools-overview-product-filter">
+                            <span class="sr-only" data-i18n="overview.productLabel">Product</span>
+                            <span class="tools-overview-sort__field">
+                                <select class="tools-overview-sort__select" data-overview-product>
+                                    <option value="all" data-i18n="overview.productAll">All products</option>
+                                    @foreach ($availableProducts as $product)
+                                        <option value="{{ $product }}">{{ \App\Playbooks\PlaybookProducts::label($product) }}</option>
+                                    @endforeach
+                                </select>
+                                <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
+                            </span>
+                        </label>
+                    @endif
+
                     <label class="tools-overview-search">
                         <span class="sr-only" data-i18n="overview.searchLabel">Search</span>
                         <i class="fa-solid fa-magnifying-glass tools-overview-search__icon" aria-hidden="true"></i>
