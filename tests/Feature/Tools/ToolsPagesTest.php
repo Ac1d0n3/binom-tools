@@ -82,6 +82,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('PureView Glossary Generator');
         $response->assertSee('PureView Data Product Generator');
         $response->assertSee('Qlik Set Analysis Generator');
+        $response->assertSee('Tableau Calculation Generator');
         $response->assertSee('tools-card__platform-mark', false);
         $response->assertSee('images/fabric-badge.svg', false);
         $response->assertSee('images/databricks-badge.svg', false);
@@ -99,6 +100,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-products="databricks"', false);
         $response->assertSee('data-products="pureview"', false);
         $response->assertSee('data-products="qlik"', false);
+        $response->assertSee('data-products="tableau"', false);
         $response->assertSee('data-products="dbt"', false);
         $response->assertSee('data-overview-item', false);
         $response->assertSee('tools-overview-sticky-header', false);
@@ -314,6 +316,24 @@ class ToolsPagesTest extends TestCase
         $this->assertStringNotContainsString('id="qlik-set-hierarchy-pre"', $response->getContent());
         $this->assertStringNotContainsString('id="qlik-set-variable-use"', $response->getContent());
         $this->assertStringNotContainsString('id="qlik-set-use-variable-base"', $response->getContent());
+    }
+
+    public function test_tableau_calculation_generator_renders(): void
+    {
+        $response = $this->get('/tools/tableau-calculation-generator');
+
+        $response
+            ->assertOk()
+            ->assertSee('tableau-calculation-generator-app', false)
+            ->assertSee('data-tableau-calc-root', false)
+            ->assertSee('data-tableau-fields', false)
+            ->assertSee('data-tableau-values', false)
+            ->assertSee('data-tableau-definition-dimension', false)
+            ->assertSee('data-tableau-definition-values', false)
+            ->assertSee('data-tableau-definitions', false)
+            ->assertSee('data-tableau-base-measures', false)
+            ->assertSee('data-tableau-tab="calculations"', false)
+            ->assertSee('tableauCalc.pageTitle', false);
     }
 
     public function test_meta_export_generator_page_renders(): void

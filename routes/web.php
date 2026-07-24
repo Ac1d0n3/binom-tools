@@ -203,6 +203,8 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.bi-python-toolkit.download'));
     Route::view('/tools/qlik-set-analysis-generator', 'tools.qlik-set-analysis-generator.show')
         ->name($name('tools.qlik-set-analysis-generator'));
+    Route::view('/tools/tableau-calculation-generator', 'tools.tableau-calculation-generator.show')
+        ->name($name('tools.tableau-calculation-generator'));
     Route::get('/tools/architecture-fit', [ArchitectureFitController::class, 'show'])
         ->name($name('tools.architecture-fit'));
     Route::get('/tools/impact-effort', [ImpactEffortController::class, 'show'])

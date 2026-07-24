@@ -330,6 +330,19 @@ const shellLabels = {
         'card.qlik-set-analysis-generator.title': 'Qlik Set Analysis Generator',
         'card.qlik-set-analysis-generator.description':
             'Child Measures und Variablen aus einer Base Measure plus Dimension-Wert-CSV erzeugen.',
+        'nav.tableau-calculation-generator': 'Tableau Calculation Generator',
+        'card.tableau-calculation-generator.title': 'Tableau Calculation Generator',
+        'card.tableau-calculation-generator.description':
+            'Calculated Fields, LOD-Varianten und Dokumentations-CSV aus Base Measures plus Definitionen erzeugen.',
+        'tableauCalc.pageTitle': 'Tableau Calculation Generator',
+        'tableauCalc.pageLead':
+            'Erzeuge Tableau Calculated Fields, LOD-Varianten und Dokumentations-CSV aus Base Measures plus wiederverwendbaren Definitionen.',
+        'tableauCalc.definitions.dimension': 'Dimension',
+        'tableauCalc.definitions.values': 'Werte',
+        'tableauCalc.definitions.name': 'Name',
+        'tableauCalc.base.raw': 'Base Measures CSV',
+        'tableauCalc.description.de': 'Template DE',
+        'tableauCalc.description.en': 'Template EN',
         'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
         'biPythonToolkit.pageLead':
             'Lade Python-Tools herunter, führe sie lokal aus und nutze die Outputs als CSV, Markdown oder Plan-JSON.',
@@ -730,6 +743,19 @@ const shellLabels = {
         'card.qlik-set-analysis-generator.title': 'Qlik Set Analysis Generator',
         'card.qlik-set-analysis-generator.description':
             'Generate child measures and variables from a base measure plus dimension-value CSV.',
+        'nav.tableau-calculation-generator': 'Tableau Calculation Generator',
+        'card.tableau-calculation-generator.title': 'Tableau Calculation Generator',
+        'card.tableau-calculation-generator.description':
+            'Generate calculated fields, LOD variants, and documentation CSV from base measures plus definitions.',
+        'tableauCalc.pageTitle': 'Tableau Calculation Generator',
+        'tableauCalc.pageLead':
+            'Generate Tableau calculated fields, LOD variants and documentation CSV from base measures plus reusable definitions.',
+        'tableauCalc.definitions.dimension': 'Dimension',
+        'tableauCalc.definitions.values': 'Values',
+        'tableauCalc.definitions.name': 'Name',
+        'tableauCalc.base.raw': 'Base measures CSV',
+        'tableauCalc.description.de': 'Template DE',
+        'tableauCalc.description.en': 'Template EN',
         'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
         'biPythonToolkit.pageLead':
             'Download Python tools, run them locally, and use the outputs as CSV, Markdown or plan JSON.',

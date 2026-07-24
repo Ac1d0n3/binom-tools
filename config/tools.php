@@ -680,6 +680,22 @@ return [
             'for' => ['Qlik'],
         ],
         [
+            'id' => 'tableau-calculation-generator',
+            'route' => 'tools.tableau-calculation-generator',
+            'label' => [
+                'de' => 'Tableau Calculation Generator',
+                'en' => 'Tableau Calculation Generator',
+            ],
+            'description' => [
+                'de' => 'Calculated Fields, LOD-Varianten und Dokumentations-CSV aus Base Measures plus Definitionen erzeugen.',
+                'en' => 'Generate calculated fields, LOD variants, and documentation CSV from base measures plus definitions.',
+            ],
+            'example' => true,
+            'icon' => 'fa-chart-simple',
+            'accent' => 'primary',
+            'for' => ['Tableau'],
+        ],
+        [
             'id' => 'architecture-fit',
             'route' => 'tools.architecture-fit',
             'label' => [
