@@ -406,9 +406,9 @@ Set modifier: {modifier}</textarea>
 
                 <aside class="qlik-set-filter-builder" data-qlik-column="builder" aria-labelledby="qlik-set-filter-title">
                     <div class="qlik-set-builder-tabs" role="tablist" aria-label="Set builder sections">
-                        <button type="button" class="qlik-set-builder-tab is-active" data-qlik-builder-tab="filter" aria-selected="true" data-i18n="qlikSet.tabs.filter"></button>
-                        <button type="button" class="qlik-set-builder-tab" data-qlik-builder-tab="hierarchy" aria-selected="false" data-i18n="qlikSet.tabs.hierarchy"></button>
-                        <button type="button" class="qlik-set-builder-tab" data-qlik-builder-tab="extras" aria-selected="false" data-i18n="qlikSet.tabs.extras"></button>
+                        <button type="button" class="qlik-set-builder-tab is-active" data-qlik-builder-tab="filter" aria-selected="true" data-i18n="qlikSet.tabs.filter">Definitionen</button>
+                        <button type="button" class="qlik-set-builder-tab" data-qlik-builder-tab="hierarchy" aria-selected="false" data-i18n="qlikSet.tabs.hierarchy">Hierarchie</button>
+                        <button type="button" class="qlik-set-builder-tab" data-qlik-builder-tab="extras" aria-selected="false" data-i18n="qlikSet.tabs.extras">Extras</button>
                     </div>
 
                     <div class="qlik-set-builder-panel is-active" data-qlik-builder-panel="filter">

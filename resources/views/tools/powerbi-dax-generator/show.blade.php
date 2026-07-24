@@ -247,9 +247,9 @@ Quantity,SUM(Sales[Quantity]),Menge,Quantity</textarea>
 
                             <aside class="tableau-calc__column tableau-calc__column--rules qlik-set-filter-builder" data-powerbi-column="builder" data-qlik-column="builder">
                                 <div class="qlik-set-builder-tabs" role="tablist" aria-label="Power BI builder">
-                                    <button type="button" class="qlik-set-builder-tab is-active" data-powerbi-builder-tab="definitions" aria-selected="true" data-powerbi-i18n="powerbiDax.tabs.definitions"></button>
-                                    <button type="button" class="qlik-set-builder-tab" data-powerbi-builder-tab="hierarchy" aria-selected="false" data-powerbi-i18n="powerbiDax.tabs.hierarchy"></button>
-                                    <button type="button" class="qlik-set-builder-tab" data-powerbi-builder-tab="extras" aria-selected="false" data-powerbi-i18n="powerbiDax.tabs.extras"></button>
+                                    <button type="button" class="qlik-set-builder-tab is-active" data-powerbi-builder-tab="definitions" aria-selected="true" data-powerbi-i18n="powerbiDax.tabs.definitions">Definitionen</button>
+                                    <button type="button" class="qlik-set-builder-tab" data-powerbi-builder-tab="hierarchy" aria-selected="false" data-powerbi-i18n="powerbiDax.tabs.hierarchy">Hierarchie</button>
+                                    <button type="button" class="qlik-set-builder-tab" data-powerbi-builder-tab="extras" aria-selected="false" data-powerbi-i18n="powerbiDax.tabs.extras">Extras</button>
                                 </div>
 
                                 <div class="tableau-calc__builder-panel qlik-set-builder-panel is-active" data-powerbi-builder-panel="definitions">

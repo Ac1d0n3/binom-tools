@@ -1,4 +1,4 @@
-import '../../../css/tools/qlik-set-analysis-generator.css';
+import '../../../css/tools/bi-formula-workbench.css';
 import '../tableau-calculation-generator/style.css';
 import {
     buildDaxCondition,

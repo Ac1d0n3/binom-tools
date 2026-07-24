@@ -247,9 +247,9 @@ Quantity,SUM([Quantity]),Menge,Quantity</textarea>
 
                             <aside class="tableau-calc__column tableau-calc__column--rules qlik-set-filter-builder" data-tableau-column="builder" data-qlik-column="builder">
                                 <div class="qlik-set-builder-tabs" role="tablist" aria-label="Tableau builder">
-                                    <button type="button" class="qlik-set-builder-tab is-active" data-tableau-builder-tab="definitions" aria-selected="true" data-tableau-i18n="tableauCalc.tabs.definitions"></button>
-                                    <button type="button" class="qlik-set-builder-tab" data-tableau-builder-tab="hierarchy" aria-selected="false" data-tableau-i18n="tableauCalc.tabs.hierarchy"></button>
-                                    <button type="button" class="qlik-set-builder-tab" data-tableau-builder-tab="extras" aria-selected="false" data-tableau-i18n="tableauCalc.tabs.extras"></button>
+                                    <button type="button" class="qlik-set-builder-tab is-active" data-tableau-builder-tab="definitions" aria-selected="true" data-tableau-i18n="tableauCalc.tabs.definitions">Definitionen</button>
+                                    <button type="button" class="qlik-set-builder-tab" data-tableau-builder-tab="hierarchy" aria-selected="false" data-tableau-i18n="tableauCalc.tabs.hierarchy">Hierarchie</button>
+                                    <button type="button" class="qlik-set-builder-tab" data-tableau-builder-tab="extras" aria-selected="false" data-tableau-i18n="tableauCalc.tabs.extras">Extras</button>
                                 </div>
 
                                 <div class="tableau-calc__builder-panel qlik-set-builder-panel is-active" data-tableau-builder-panel="definitions">

@@ -1,5 +1,5 @@
 import '../../../css/tools/pii-policy-generator.css';
-import '../../../css/tools/qlik-set-analysis-generator.css';
+import '../../../css/tools/bi-formula-workbench.css';
 import { getLocale } from '../../locale';
 import { copyFromButton } from '../pii-shared/tool-utils.js';
 import { applyQlikSetLabels, t } from './labels.js';

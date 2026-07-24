@@ -88,6 +88,9 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100dvh;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
     max-width: 1400px;
     margin-inline: auto;
     width: 100%;
@@ -117,20 +120,8 @@ html[data-shell-full-width='true'] .tools-content--overview {
     border-bottom: 1px solid var(--base-border-color);
 }
 
-.tools-shell:has(.tools-shell__main--playbook),
-.tools-shell:has(.tools-shell__main--overview),
-.tools-shell:has(.tools-shell__main--sprint-planner) {
-    height: 100dvh;
-    max-height: 100dvh;
-    overflow: hidden;
-}
-
-html:has(.tools-shell__main--playbook),
-html:has(.tools-shell__main--overview),
-html:has(.tools-shell__main--sprint-planner),
-html:has(.tools-shell__main--playbook) body,
-html:has(.tools-shell__main--overview) body,
-html:has(.tools-shell__main--sprint-planner) body {
+html:has(.tools-shell),
+html:has(.tools-shell) body {
     height: 100%;
     max-height: 100dvh;
     overflow: hidden;
@@ -147,6 +138,7 @@ html:has(.tools-shell__main--sprint-planner) body {
 .tools-shell__sidebar {
     flex-shrink: 0;
     width: var(--tools-sidebar-width);
+    min-height: 0;
     background: color-mix(in srgb, var(--surface-background-color) 84%, transparent);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -154,11 +146,13 @@ html:has(.tools-shell__main--sprint-planner) body {
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .tools-shell__main {
     flex: 1 1 auto;
     min-width: 0;
+    min-height: 0;
     overflow-x: clip;
     overflow-y: auto;
     background: var(--content-background-color);
