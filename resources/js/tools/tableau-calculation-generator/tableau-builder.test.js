@@ -7,6 +7,8 @@ import {
     parseBaseMeasures,
     parseDefinitions,
     parseFields,
+    parseHierarchyLevels,
+    parseHierarchyPaths,
 } from './tableau-builder.js';
 
 describe('tableau calculation builder', () => {
@@ -55,6 +57,41 @@ describe('tableau calculation builder', () => {
             values: ['DACH'],
             expression: '',
         }, ['Region'])).toBe("{ FIXED [Region] : SUM(IF [Region] = 'DACH' THEN [Sales] END) }");
+    });
+
+    it('parses indented hierarchy paths and renders howto plus templates', () => {
+        expect(parseHierarchyLevels('Region\nCountry\nCity')).toEqual(['Region', 'Country', 'City']);
+        expect(parseHierarchyPaths('Region\n  Country\n    City')).toEqual([
+            ['Region'],
+            ['Region', 'Country'],
+            ['Region', 'Country', 'City'],
+        ]);
+
+        const outputs = buildTableauOutputs({
+            hierarchyText: 'Region\n  Country\n    City',
+            baseExpression: 'SUM([Sales])',
+            measureName: 'Sales',
+            definitionsText: 'name,dimensions,values,expression,description\nRegion DACH,Region,DACH,,DACH market',
+        });
+
+        expect(outputs.hierarchy).toContain('Name: Region / Country / City');
+        expect(outputs.hierarchy).toContain('[Region] > [Country] > [City]');
+        expect(outputs.hierarchy).toContain('// Measure templates per hierarchy level');
+        expect(outputs.hierarchy).toContain('Sales - Region / Country / City');
+        expect(outputs.hierarchy).toContain("[Region] = '<Region value>' AND [Country] = '<Country value>' AND [City] = '<City value>'");
+    });
+
+    it('falls back to values with generation mode when definitions are empty', () => {
+        const outputs = buildTableauOutputs({
+            definitionsText: '',
+            valuesText: 'dimension,value,label\nRegion,DACH,DACH\nCountry,DE,Germany',
+            mode: 'dimension-group',
+            baseExpression: 'SUM([Sales])',
+            measureName: 'Sales',
+        });
+
+        expect(outputs.calculations).toContain('Sales - Region DACH');
+        expect(outputs.calculations).toContain('Sales - Country Germany');
     });
 
     it('generates calculations from base measures and definitions', () => {

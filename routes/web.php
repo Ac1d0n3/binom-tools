@@ -205,6 +205,8 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.qlik-set-analysis-generator'));
     Route::view('/tools/tableau-calculation-generator', 'tools.tableau-calculation-generator.show')
         ->name($name('tools.tableau-calculation-generator'));
+    Route::view('/tools/powerbi-dax-generator', 'tools.powerbi-dax-generator.show')
+        ->name($name('tools.powerbi-dax-generator'));
     Route::get('/tools/architecture-fit', [ArchitectureFitController::class, 'show'])
         ->name($name('tools.architecture-fit'));
     Route::get('/tools/impact-effort', [ImpactEffortController::class, 'show'])

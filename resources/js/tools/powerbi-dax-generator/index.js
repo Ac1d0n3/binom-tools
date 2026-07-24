@@ -1,17 +1,17 @@
 import '../../../css/tools/qlik-set-analysis-generator.css';
-import './style.css';
+import '../tableau-calculation-generator/style.css';
 import {
-    buildTableauCondition,
-    buildTableauOutputs,
+    buildDaxCondition,
+    buildPowerBiOutputs,
     definitionFromDimensionValues,
     parseBaseMeasures,
     parseCsv,
     parseDefinitions,
     parseFields,
-} from './tableau-builder.js';
+} from './dax-builder.js';
 import { t } from './labels.js';
 
-const STORAGE_KEY = 'tableau-calculation-generator.apps.v1';
+const STORAGE_KEY = 'powerbi-dax-generator.apps.v1';
 const FORMULA_KEYS = new Set(['baseExpression', 'measureName', 'measureField', 'aggregation']);
 
 const els = {};
@@ -23,7 +23,7 @@ const state = {
 };
 
 function boot() {
-    const root = document.querySelector('[data-tableau-calc-root]');
+    const root = document.querySelector('[data-powerbi-dax-root]');
 
     if (!root) {
         return;
@@ -53,7 +53,7 @@ function collectElements() {
     [
         'fields',
         'values',
-        'definitionDimension',
+        'definitionColumn',
         'definitionValues',
         'definitionName',
         'definitionList',
@@ -77,7 +77,7 @@ function collectElements() {
         'descriptionDe',
         'descriptionEn',
         'mode',
-        'lodDimensions',
+        'dateColumn',
         'message',
         'appName',
         'savedApps',
@@ -93,7 +93,7 @@ function collectElements() {
         'fieldsFile',
         'valuesFile',
     ].forEach((id) => {
-        els[id] = document.querySelector(`[data-tableau-${camelToKebab(id)}]`);
+        els[id] = document.querySelector(`[data-powerbi-${camelToKebab(id)}]`);
     });
 }
 
@@ -102,12 +102,12 @@ function camelToKebab(value) {
 }
 
 function applyLabels() {
-    document.querySelectorAll('[data-tableau-i18n]').forEach((node) => {
-        node.textContent = t(node.dataset.tableauI18n);
+    document.querySelectorAll('[data-powerbi-i18n]').forEach((node) => {
+        node.textContent = t(node.dataset.powerbiI18n);
     });
     document.querySelectorAll('[data-i18n]').forEach((node) => {
         const key = node.getAttribute('data-i18n');
-        if (!key?.startsWith('tableauCalc.')) {
+        if (!key?.startsWith('powerbiDax.')) {
             return;
         }
         node.textContent = t(key);
@@ -116,7 +116,7 @@ function applyLabels() {
 
 function bindEvents() {
     document.addEventListener('input', (event) => {
-        if (!event.target.closest('[data-tableau-calc-root]')) {
+        if (!event.target.closest('[data-powerbi-dax-root]')) {
             return;
         }
         maybePushHistory(event.target);
@@ -124,62 +124,62 @@ function bindEvents() {
     });
 
     document.addEventListener('change', (event) => {
-        if (!event.target.closest('[data-tableau-calc-root]')) {
+        if (!event.target.closest('[data-powerbi-dax-root]')) {
             return;
         }
         maybePushHistory(event.target);
         render();
     });
 
-    document.querySelector('[data-tableau-add-definition]')?.addEventListener('click', addDefinition);
-    document.querySelector('[data-tableau-apply-base]')?.addEventListener('click', applyBaseMeasure);
-    document.querySelector('[data-tableau-load-base]')?.addEventListener('click', loadSelectedBase);
-    document.querySelector('[data-tableau-save-current-base]')?.addEventListener('click', () => {
+    document.querySelector('[data-powerbi-add-definition]')?.addEventListener('click', addDefinition);
+    document.querySelector('[data-powerbi-apply-base]')?.addEventListener('click', applyBaseMeasure);
+    document.querySelector('[data-powerbi-load-base]')?.addEventListener('click', loadSelectedBase);
+    document.querySelector('[data-powerbi-save-current-base]')?.addEventListener('click', () => {
         pushHistory();
         upsertBaseMeasure();
         render();
     });
-    document.querySelector('[data-tableau-new-base]')?.addEventListener('click', newBase);
+    document.querySelector('[data-powerbi-new-base]')?.addEventListener('click', newBase);
     els.baseListToggle?.addEventListener('click', toggleBaseList);
     els.undo?.addEventListener('click', undo);
     els.redo?.addEventListener('click', redo);
 
-    document.querySelectorAll('[data-tableau-function]').forEach((button) => {
+    document.querySelectorAll('[data-powerbi-function]').forEach((button) => {
         button.addEventListener('click', () => {
             pushHistory();
-            insertIntoFormula(button.dataset.tableauFunction || '');
+            insertIntoFormula(button.dataset.powerbiFunction || '');
         });
     });
 
-    document.querySelectorAll('[data-tableau-tab]').forEach((button) => {
-        button.addEventListener('click', () => activateTab(button.dataset.tableauTab));
+    document.querySelectorAll('[data-powerbi-tab]').forEach((button) => {
+        button.addEventListener('click', () => activateTab(button.dataset.powerbiTab));
     });
-    document.querySelectorAll('[data-tableau-catalog-tab]').forEach((button) => {
-        button.addEventListener('click', () => activateCatalogTab(button.dataset.tableauCatalogTab));
+    document.querySelectorAll('[data-powerbi-catalog-tab]').forEach((button) => {
+        button.addEventListener('click', () => activateCatalogTab(button.dataset.powerbiCatalogTab));
     });
-    document.querySelectorAll('[data-tableau-builder-tab]').forEach((button) => {
-        button.addEventListener('click', () => activateBuilderTab(button.dataset.tableauBuilderTab));
+    document.querySelectorAll('[data-powerbi-builder-tab]').forEach((button) => {
+        button.addEventListener('click', () => activateBuilderTab(button.dataset.powerbiBuilderTab));
     });
-    document.querySelectorAll('[data-tableau-import-tab]').forEach((button) => {
-        button.addEventListener('click', () => activateImportTab(button.dataset.tableauImportTab));
-    });
-
-    document.querySelector('[data-tableau-workbench-toggle]')?.addEventListener('click', toggleWorkbench);
-    document.querySelector('[data-tableau-help-toggle]')?.addEventListener('click', toggleHelp);
-    document.querySelectorAll('[data-tableau-layout-toggle]').forEach((button) => {
-        button.addEventListener('click', () => toggleLayoutColumn(button.dataset.tableauLayoutToggle));
-    });
-    document.querySelectorAll('[data-tableau-layout-preset]').forEach((button) => {
-        button.addEventListener('click', () => applyLayoutPreset(button.dataset.tableauLayoutPreset || 'all'));
+    document.querySelectorAll('[data-powerbi-import-tab]').forEach((button) => {
+        button.addEventListener('click', () => activateImportTab(button.dataset.powerbiImportTab));
     });
 
-    document.querySelectorAll('[data-tableau-copy]').forEach((button) => {
-        button.addEventListener('click', () => copyOutput(button.dataset.tableauCopy || 'calculations'));
+    document.querySelector('[data-powerbi-workbench-toggle]')?.addEventListener('click', toggleWorkbench);
+    document.querySelector('[data-powerbi-help-toggle]')?.addEventListener('click', toggleHelp);
+    document.querySelectorAll('[data-powerbi-layout-toggle]').forEach((button) => {
+        button.addEventListener('click', () => toggleLayoutColumn(button.dataset.powerbiLayoutToggle));
     });
-    document.querySelectorAll('[data-tableau-download-csv]').forEach((button) => {
+    document.querySelectorAll('[data-powerbi-layout-preset]').forEach((button) => {
+        button.addEventListener('click', () => applyLayoutPreset(button.dataset.powerbiLayoutPreset || 'all'));
+    });
+
+    document.querySelectorAll('[data-powerbi-copy]').forEach((button) => {
+        button.addEventListener('click', () => copyOutput(button.dataset.powerbiCopy || 'measures'));
+    });
+    document.querySelectorAll('[data-powerbi-download-csv]').forEach((button) => {
         button.addEventListener('click', downloadCsv);
     });
-    document.querySelectorAll('[data-tableau-download-xlsx]').forEach((button) => {
+    document.querySelectorAll('[data-powerbi-download-xlsx]').forEach((button) => {
         button.addEventListener('click', downloadXlsx);
     });
 
@@ -197,27 +197,27 @@ function bindEvents() {
     els.fieldsFile?.addEventListener('change', (event) => readFileInto(event.target, els.fields));
     els.valuesFile?.addEventListener('change', (event) => readFileInto(event.target, els.values));
 
-    bindDropzone(document.querySelector('[data-tableau-definition-dropzone]'), handleDefinitionDrop);
-    bindDropzone(document.querySelector('[data-tableau-hierarchy-dropzone]'), handleHierarchyDrop);
+    bindDropzone(document.querySelector('[data-powerbi-definition-dropzone]'), handleDefinitionDrop);
+    bindDropzone(document.querySelector('[data-powerbi-hierarchy-dropzone]'), handleHierarchyDrop);
 
     els.hierarchyList?.addEventListener('click', (event) => {
-        const removeButton = event.target.closest('[data-tableau-tree-remove]');
+        const removeButton = event.target.closest('[data-powerbi-tree-remove]');
         if (removeButton) {
             pushHistory();
-            removeHierarchyLevel(removeButton.dataset.tableauTreeRemove || '');
+            removeHierarchyLevel(removeButton.dataset.powerbiTreeRemove || '');
         }
     });
     els.hierarchyList?.addEventListener('dragover', (event) => {
-        if (event.target.closest('[data-tableau-tree-parent]')) {
+        if (event.target.closest('[data-powerbi-tree-parent]')) {
             event.preventDefault();
-            event.target.closest('[data-tableau-tree-parent]').classList.add('is-drag-over');
+            event.target.closest('[data-powerbi-tree-parent]').classList.add('is-drag-over');
         }
     });
     els.hierarchyList?.addEventListener('dragleave', (event) => {
-        event.target.closest?.('[data-tableau-tree-parent]')?.classList.remove('is-drag-over');
+        event.target.closest?.('[data-powerbi-tree-parent]')?.classList.remove('is-drag-over');
     });
     els.hierarchyList?.addEventListener('drop', (event) => {
-        const slot = event.target.closest('[data-tableau-tree-parent]');
+        const slot = event.target.closest('[data-powerbi-tree-parent]');
         if (!slot) {
             return;
         }
@@ -228,7 +228,7 @@ function bindEvents() {
             const data = JSON.parse(raw);
             if (data.kind === 'dimension') {
                 pushHistory();
-                addHierarchyLevel(data.name || '', slot.dataset.tableauTreeParent || '');
+                addHierarchyLevel(data.name || '', slot.dataset.powerbiTreeParent || '');
             }
         } catch {
             // Ignore drops that do not come from the app catalog.
@@ -236,12 +236,12 @@ function bindEvents() {
     });
 
     els.definitionList?.addEventListener('click', (event) => {
-        const removeButton = event.target.closest('[data-tableau-definition-remove]');
+        const removeButton = event.target.closest('[data-powerbi-definition-remove]');
         if (!removeButton) {
             return;
         }
         pushHistory();
-        removeDefinition(removeButton.dataset.tableauDefinitionRemove || '');
+        removeDefinition(removeButton.dataset.powerbiDefinitionRemove || '');
     });
 
     els.saveApp?.addEventListener('click', saveApp);
@@ -259,9 +259,9 @@ function render() {
     renderCurrentFormula();
     updateHistoryButtons();
 
-    const outputs = buildTableauOutputs(readState());
-    document.querySelectorAll('[data-tableau-output]').forEach((node) => {
-        const key = node.dataset.tableauOutput;
+    const outputs = buildPowerBiOutputs(readState());
+    document.querySelectorAll('[data-powerbi-output]').forEach((node) => {
+        const key = node.dataset.powerbiOutput;
         node.textContent = outputs[key] || '';
     });
 }
@@ -280,7 +280,7 @@ function readState() {
         descriptionTemplateDe: els.descriptionDe?.value || '',
         descriptionTemplateEn: els.descriptionEn?.value || '',
         mode: els.mode?.value || 'single',
-        lodDimensionsText: els.lodDimensions?.value || '',
+        dateColumn: els.dateColumn?.value || "'Date'[Date]",
     };
 }
 
@@ -298,7 +298,7 @@ function snapshotForm() {
         descriptionTemplateDe: els.descriptionDe?.value || '',
         descriptionTemplateEn: els.descriptionEn?.value || '',
         mode: els.mode?.value || 'single',
-        lodDimensionsText: els.lodDimensions?.value || '',
+        dateColumn: els.dateColumn?.value || "'Date'[Date]",
         appName: els.appName?.value || '',
     };
 }
@@ -321,7 +321,7 @@ function restoreSnapshot(snapshot) {
     if (els.descriptionDe) els.descriptionDe.value = snapshot.descriptionTemplateDe ?? els.descriptionDe.value;
     if (els.descriptionEn) els.descriptionEn.value = snapshot.descriptionTemplateEn ?? els.descriptionEn.value;
     if (els.mode) els.mode.value = snapshot.mode ?? els.mode.value;
-    if (els.lodDimensions) els.lodDimensions.value = snapshot.lodDimensionsText ?? els.lodDimensions.value;
+    if (els.dateColumn) els.dateColumn.value = snapshot.dateColumn ?? els.dateColumn.value;
     if (els.appName && snapshot.appName) els.appName.value = snapshot.appName;
     state.applyingHistory = false;
 }
@@ -429,15 +429,15 @@ function renderHierarchy() {
     }
 
     const tree = hierarchyTree();
-    const baseLabel = t('tableauCalc.tree.base');
-    const removeLabel = t('tableauCalc.tree.remove');
-    const rootLabel = t('tableauCalc.tree.dropOnBase');
+    const baseLabel = t('powerbiDax.tree.base');
+    const removeLabel = t('powerbiDax.tree.remove');
+    const rootLabel = t('powerbiDax.tree.dropOnBase');
 
     els.hierarchyList.innerHTML = `
         <ul class="qlik-set-tree-list">
             <li>
                 <div class="qlik-set-tree-node qlik-set-tree-node--root"><span>${escapeHtml(baseLabel)}</span></div>
-                <div class="qlik-set-tree-slot qlik-set-tree-slot--root" data-tableau-tree-parent="">${escapeHtml(rootLabel)}</div>
+                <div class="qlik-set-tree-slot qlik-set-tree-slot--root" data-powerbi-tree-parent="">${escapeHtml(rootLabel)}</div>
                 ${renderHierarchyBranches(tree, removeLabel)}
             </li>
         </ul>
@@ -472,16 +472,28 @@ function renderHierarchyBranches(nodes, removeLabel) {
 
     return `<ul>${nodes.map((node) => `
         <li>
-            <div class="qlik-set-tree-node" draggable="true" data-tableau-tree-level="${escapeAttr(node.name)}">
+            <div class="qlik-set-tree-node" draggable="true" data-powerbi-tree-level="${escapeAttr(node.name)}">
                 <span>${escapeHtml(node.name)}</span>
                 <span class="qlik-set-tree-actions">
-                    <button type="button" class="qlik-set-tree-action" data-tableau-tree-remove="${escapeAttr(node.name)}">${escapeHtml(removeLabel)}</button>
+                    <button type="button" class="qlik-set-tree-action" data-powerbi-tree-remove="${escapeAttr(node.name)}">${escapeHtml(removeLabel)}</button>
                 </span>
             </div>
-            <div class="qlik-set-tree-slot" data-tableau-tree-parent="${escapeAttr(node.name)}">${escapeHtml(t('tableauCalc.tree.dropOnNode').replace('{level}', node.name))}</div>
+            <div class="qlik-set-tree-slot" data-powerbi-tree-parent="${escapeAttr(node.name)}">${escapeHtml(t('powerbiDax.tree.dropOnNode').replace('{level}', node.name))}</div>
             ${renderHierarchyBranches(node.children, removeLabel)}
         </li>
     `).join('')}</ul>`;
+}
+
+function fieldRef(field) {
+    if (!field?.name) {
+        return '';
+    }
+
+    if (!field.table) {
+        return field.name.includes('[') ? field.name : `[${field.name}]`;
+    }
+
+    return `${field.table}[${field.name}]`;
 }
 
 function renderCatalogChips() {
@@ -491,24 +503,24 @@ function renderCatalogChips() {
     const baseMeasures = parseBaseMeasures(els.baseMeasures?.value || '');
 
     if (els.dimensionChips) {
-        els.dimensionChips.innerHTML = dimensions.map((field) => chipHtml('dimension', field.name, field.tags)).join('');
+        els.dimensionChips.innerHTML = dimensions.map((field) => chipHtml('dimension', fieldRef(field), field.tags, field.table, field.name)).join('');
     }
 
     if (els.measureChips) {
         els.measureChips.innerHTML = [
-            ...measures.map((field) => chipHtml('measure', field.name, field.tags)),
+            ...measures.map((field) => chipHtml('measure', fieldRef(field), field.tags, field.table, field.name)),
             ...baseMeasures.map((measure) => chipHtml('base', measure.name, measure.expression)),
         ].join('');
     }
 
-    document.querySelectorAll('[data-tableau-chip]').forEach((chip) => {
+    document.querySelectorAll('[data-powerbi-chip]').forEach((chip) => {
         chip.addEventListener('dragstart', (event) => {
             event.dataTransfer?.setData('application/json', JSON.stringify(chip.dataset));
             event.dataTransfer?.setData('text/plain', chip.dataset.name || '');
         });
         chip.addEventListener('click', () => {
             if (chip.dataset.kind === 'dimension') {
-                setDefinitionDimension(chip.dataset.name || '');
+                setDefinitionDimension(chip.dataset.column || chip.dataset.name || '', chip.dataset.table || '');
             } else if (chip.dataset.kind === 'measure') {
                 setMeasureField(chip.dataset.name || '');
             } else if (chip.dataset.kind === 'base') {
@@ -524,18 +536,26 @@ function renderCurrentFormula() {
     }
 }
 
-function renderDefinitionControls() {
-    const dimensions = parseFields(els.fields?.value || '')
-        .filter((field) => field.type === 'dimension' || field.type === 'date')
-        .map((field) => field.name);
-    const currentDimension = els.definitionDimension?.value || dimensions[0] || '';
+function selectedDefinitionField() {
+    const fields = parseFields(els.fields?.value || '').filter((field) => field.type === 'dimension' || field.type === 'date');
+    const current = els.definitionColumn?.value || '';
+    return fields.find((field) => fieldRef(field) === current || field.name === current) || fields[0] || null;
+}
 
-    if (els.definitionDimension) {
-        els.definitionDimension.innerHTML = dimensions.map((dimension) => `<option value="${escapeAttr(dimension)}"${dimension === currentDimension ? ' selected' : ''}>${escapeHtml(dimension)}</option>`).join('');
+function renderDefinitionControls() {
+    const fields = parseFields(els.fields?.value || '').filter((field) => field.type === 'dimension' || field.type === 'date');
+    const currentField = selectedDefinitionField();
+    const currentKey = currentField ? fieldRef(currentField) : '';
+
+    if (els.definitionColumn) {
+        els.definitionColumn.innerHTML = fields.map((field) => {
+            const key = fieldRef(field);
+            return `<option value="${escapeAttr(key)}"${key === currentKey ? ' selected' : ''}>${escapeHtml(key)}</option>`;
+        }).join('');
     }
 
     const values = parseCsv(els.values?.value || '')
-        .filter((row) => (row.dimension || '') === currentDimension)
+        .filter((row) => (row.dimension || row.column || '') === (currentField?.name || ''))
         .map((row) => row.label || row.value)
         .filter(Boolean);
 
@@ -545,9 +565,19 @@ function renderDefinitionControls() {
     }
 
     const selectedValues = Array.from(els.definitionValues?.selectedOptions || []).map((option) => option.value);
-    const draft = definitionFromDimensionValues(currentDimension, selectedValues, els.definitionName?.value || '');
+    const draft = definitionFromDimensionValues(
+        currentField?.table || 'Sales',
+        currentField?.name || '',
+        selectedValues,
+        els.definitionName?.value || '',
+    );
     if (els.definitionPreview) {
-        els.definitionPreview.textContent = draft.expression || buildTableauCondition(currentDimension, values.slice(0, 1));
+        els.definitionPreview.textContent = draft.expression || buildDaxCondition({
+            table: currentField?.table || 'Sales',
+            column: currentField?.name || '',
+            values: values.slice(0, 1),
+            expression: '',
+        });
     }
 }
 
@@ -557,26 +587,30 @@ function renderDefinitionList() {
     }
 
     const definitions = parseDefinitions(els.definitions?.value || '');
-    const removeLabel = t('tableauCalc.definitions.remove');
+    const removeLabel = t('powerbiDax.definitions.remove');
     els.definitionList.innerHTML = definitions.map((definition) => `
         <article class="qlik-set-generated-item">
             <div>
                 <strong>${escapeHtml(definition.name)}</strong>
-                <code>${escapeHtml(definition.expression || buildTableauCondition(definition.dimensions[0] || '', definition.values))}</code>
+                <code>${escapeHtml(definition.expression || buildDaxCondition(definition))}</code>
             </div>
-            <button type="button" class="tools-btn tools-btn--secondary" data-tableau-definition-remove="${escapeAttr(definition.name)}">${escapeHtml(removeLabel)}</button>
+            <button type="button" class="tools-btn tools-btn--secondary" data-powerbi-definition-remove="${escapeAttr(definition.name)}">${escapeHtml(removeLabel)}</button>
         </article>
     `).join('');
 }
 
-function setDefinitionDimension(dimension) {
-    if (!dimension || !els.definitionDimension) {
+function setDefinitionDimension(column, table = '') {
+    if (!column || !els.definitionColumn) {
         return;
     }
 
-    els.definitionDimension.value = dimension;
+    const fields = parseFields(els.fields?.value || '');
+    const match = fields.find((field) => field.name === column || fieldRef(field) === column)
+        || { table, name: column.replace(/^.*\[|\]$/g, '') };
+    const key = fieldRef({ table: match.table || table, name: match.name || column });
+    els.definitionColumn.value = key;
     if (els.definitionName && !els.definitionName.value.trim()) {
-        els.definitionName.value = dimension;
+        els.definitionName.value = match.name || column;
     }
     render();
 }
@@ -590,7 +624,7 @@ function setMeasureField(field) {
     if (els.measureField) {
         els.measureField.value = field;
     }
-    insertIntoFormula(`[${field}]`);
+    insertIntoFormula(field.includes('[') ? field : `[${field}]`);
 }
 
 function setBaseFromCatalog(name, expression) {
@@ -606,15 +640,15 @@ function setBaseFromCatalog(name, expression) {
 
 function applyBaseMeasure() {
     pushHistory();
-    const field = String(els.measureField?.value || 'Sales').trim().replace(/^\[|\]$/g, '');
+    const field = String(els.measureField?.value || 'Sales[Sales]').trim();
     const aggregation = String(els.aggregation?.value || 'SUM').trim() || 'SUM';
-    const expression = `${aggregation}([${field}])`;
+    const expression = `${aggregation}(${field.includes('[') ? field : `[${field}]`})`;
 
     if (els.baseExpression) {
         els.baseExpression.value = expression;
     }
     if (els.measureName && !els.measureName.value.trim()) {
-        els.measureName.value = field;
+        els.measureName.value = field.replace(/^.*\[|\]$/g, '') || 'Sales';
     }
     upsertBaseMeasure();
     render();
@@ -676,7 +710,7 @@ function handleDefinitionDrop(data) {
         return;
     }
 
-    setDefinitionDimension(data.name || '');
+    setDefinitionDimension(data.column || data.name || '', data.table || '');
 }
 
 function handleHierarchyDrop(data) {
@@ -738,9 +772,14 @@ function serializeHierarchyTree(nodes, depth = 0) {
 }
 
 function addDefinition() {
-    const dimension = els.definitionDimension?.value || '';
+    const field = selectedDefinitionField();
     const values = Array.from(els.definitionValues?.selectedOptions || []).map((option) => option.value);
-    const definition = definitionFromDimensionValues(dimension, values, els.definitionName?.value || '');
+    const definition = definitionFromDimensionValues(
+        field?.table || 'Sales',
+        field?.name || '',
+        values,
+        els.definitionName?.value || '',
+    );
 
     if (!definition.name || !definition.expression) {
         return;
@@ -750,7 +789,7 @@ function addDefinition() {
     const existing = parseDefinitions(els.definitions?.value || '').filter((item) => item.name !== definition.name);
     writeDefinitions([...existing, definition]);
     if (els.message) {
-        els.message.textContent = t('tableauCalc.saved');
+        els.message.textContent = t('powerbiDax.saved');
         els.message.hidden = false;
     }
     render();
@@ -767,10 +806,11 @@ function writeDefinitions(definitions) {
     }
 
     els.definitions.value = [
-        'name,dimensions,values,expression,description',
+        'name,table,column,values,expression,description',
         ...definitions.map((item) => csvLine([
             item.name,
-            item.dimensions.join('|'),
+            item.table,
+            item.column,
             item.values.join('|'),
             item.expression,
             item.description,
@@ -779,60 +819,60 @@ function writeDefinitions(definitions) {
 }
 
 function activateTab(tab) {
-    document.querySelectorAll('[data-tableau-tab]').forEach((button) => {
-        const active = button.dataset.tableauTab === tab;
+    document.querySelectorAll('[data-powerbi-tab]').forEach((button) => {
+        const active = button.dataset.powerbiTab === tab;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    document.querySelectorAll('[data-tableau-output-panel]').forEach((panel) => {
-        const active = panel.dataset.tableauOutputPanel === tab;
+    document.querySelectorAll('[data-powerbi-output-panel]').forEach((panel) => {
+        const active = panel.dataset.powerbiOutputPanel === tab;
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
     });
 }
 
 function activateCatalogTab(tab) {
-    document.querySelectorAll('[data-tableau-catalog-tab]').forEach((button) => {
-        const active = button.dataset.tableauCatalogTab === tab;
+    document.querySelectorAll('[data-powerbi-catalog-tab]').forEach((button) => {
+        const active = button.dataset.powerbiCatalogTab === tab;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    document.querySelectorAll('[data-tableau-catalog-panel]').forEach((panel) => {
-        const active = panel.dataset.tableauCatalogPanel === tab;
+    document.querySelectorAll('[data-powerbi-catalog-panel]').forEach((panel) => {
+        const active = panel.dataset.powerbiCatalogPanel === tab;
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
     });
 }
 
 function activateBuilderTab(tab) {
-    document.querySelectorAll('[data-tableau-builder-tab]').forEach((button) => {
-        const active = button.dataset.tableauBuilderTab === tab;
+    document.querySelectorAll('[data-powerbi-builder-tab]').forEach((button) => {
+        const active = button.dataset.powerbiBuilderTab === tab;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    document.querySelectorAll('[data-tableau-builder-panel]').forEach((panel) => {
-        const active = panel.dataset.tableauBuilderPanel === tab;
+    document.querySelectorAll('[data-powerbi-builder-panel]').forEach((panel) => {
+        const active = panel.dataset.powerbiBuilderPanel === tab;
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
     });
 }
 
 function activateImportTab(tab) {
-    document.querySelectorAll('[data-tableau-import-tab]').forEach((button) => {
-        const active = button.dataset.tableauImportTab === tab;
+    document.querySelectorAll('[data-powerbi-import-tab]').forEach((button) => {
+        const active = button.dataset.powerbiImportTab === tab;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    document.querySelectorAll('[data-tableau-import-panel]').forEach((panel) => {
-        const active = panel.dataset.tableauImportPanel === tab;
+    document.querySelectorAll('[data-powerbi-import-panel]').forEach((panel) => {
+        const active = panel.dataset.powerbiImportPanel === tab;
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
     });
 }
 
 function toggleWorkbench() {
-    const body = document.querySelector('[data-tableau-workbench-body]');
-    const button = document.querySelector('[data-tableau-workbench-toggle]');
+    const body = document.querySelector('[data-powerbi-workbench-body]');
+    const button = document.querySelector('[data-powerbi-workbench-toggle]');
 
     if (!body || !button) {
         return;
@@ -841,13 +881,13 @@ function toggleWorkbench() {
     const open = !body.hidden;
     body.hidden = open;
     button.setAttribute('aria-expanded', open ? 'false' : 'true');
-    button.textContent = t(open ? 'tableauCalc.workbench.show' : 'tableauCalc.workbench.hide');
+    button.textContent = t(open ? 'powerbiDax.workbench.show' : 'powerbiDax.workbench.hide');
 }
 
 function toggleHelp() {
-    const section = document.querySelector('[data-tableau-help]');
-    const body = document.querySelector('[data-tableau-help-body]');
-    const button = document.querySelector('[data-tableau-help-toggle]');
+    const section = document.querySelector('[data-powerbi-help]');
+    const body = document.querySelector('[data-powerbi-help-body]');
+    const button = document.querySelector('[data-powerbi-help-toggle]');
 
     if (!section || !body || !button) {
         return;
@@ -857,7 +897,7 @@ function toggleHelp() {
     button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     body.hidden = expanded;
     section.classList.toggle('is-collapsed', expanded);
-    button.textContent = t(expanded ? 'tableauCalc.help.show' : 'tableauCalc.help.hide');
+    button.textContent = t(expanded ? 'powerbiDax.help.show' : 'powerbiDax.help.hide');
 }
 
 function toggleBaseList() {
@@ -868,7 +908,7 @@ function toggleBaseList() {
     const expanded = els.baseListToggle.getAttribute('aria-expanded') === 'true';
     els.baseListToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     els.baseListBody.hidden = expanded;
-    els.baseListToggle.textContent = t(expanded ? 'tableauCalc.baseList.show' : 'tableauCalc.baseList.hide');
+    els.baseListToggle.textContent = t(expanded ? 'powerbiDax.baseList.show' : 'powerbiDax.baseList.hide');
 }
 
 function toggleLayoutColumn(column) {
@@ -892,7 +932,7 @@ function setLayoutColumn(column, open) {
 
     const key = `layout${column.charAt(0).toUpperCase()}${column.slice(1)}`;
     workbench.dataset[key] = open ? 'open' : 'closed';
-    document.querySelectorAll(`[data-tableau-layout-toggle="${column}"]`).forEach((button) => {
+    document.querySelectorAll(`[data-powerbi-layout-toggle="${column}"]`).forEach((button) => {
         button.classList.toggle('is-active', open);
     });
 }
@@ -934,8 +974,8 @@ function bindDropzone(dropzone, handler) {
     });
 }
 
-function chipHtml(kind, name, meta = '') {
-    return `<button type="button" class="tableau-calc__chip tableau-calc__chip--${escapeAttr(kind)} qlik-set-chip qlik-set-chip--${escapeAttr(kind === 'base' ? 'measure' : kind)}" draggable="true" data-tableau-chip data-kind="${escapeAttr(kind)}" data-name="${escapeAttr(name)}" data-meta="${escapeAttr(meta)}">
+function chipHtml(kind, name, meta = '', table = '', column = '') {
+    return `<button type="button" class="tableau-calc__chip tableau-calc__chip--${escapeAttr(kind)} qlik-set-chip qlik-set-chip--${escapeAttr(kind === 'base' ? 'measure' : kind)}" draggable="true" data-powerbi-chip data-kind="${escapeAttr(kind)}" data-name="${escapeAttr(name)}" data-meta="${escapeAttr(meta)}" data-table="${escapeAttr(table)}" data-column="${escapeAttr(column || name)}">
         <span class="tableau-calc__chip-icon qlik-set-chip__icon qlik-set-chip__icon--${escapeAttr(kind === 'base' ? 'measure' : kind)}" aria-hidden="true"></span>
         <span>${escapeHtml(name)}</span>
         ${meta ? `<small>${escapeHtml(meta)}</small>` : ''}
@@ -943,18 +983,18 @@ function chipHtml(kind, name, meta = '') {
 }
 
 async function copyOutput(tab) {
-    const node = document.querySelector(`[data-tableau-output="${tab}"]`);
+    const node = document.querySelector(`[data-powerbi-output="${tab}"]`);
     await navigator.clipboard?.writeText(node?.textContent || '');
 }
 
 function downloadCsv() {
-    const csv = buildTableauOutputs(readState()).csv;
-    downloadBlob('tableau-calculated-fields.csv', new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }));
+    const csv = buildPowerBiOutputs(readState()).csv;
+    downloadBlob('powerbi-dax-measures.csv', new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }));
 }
 
 function downloadXlsx() {
-    const outputs = buildTableauOutputs(readState());
-    downloadBlob('tableau-calculated-fields.xlsx', workbookBlob('Calculations', outputs.rows || [[]]));
+    const outputs = buildPowerBiOutputs(readState());
+    downloadBlob('powerbi-dax-measures.xlsx', workbookBlob('Measures', outputs.rows || [[]]));
 }
 
 function readSavedApps() {
@@ -977,7 +1017,7 @@ function refreshSavedAppsSelect(selected = '') {
 
     const names = Object.keys(readSavedApps()).sort((a, b) => a.localeCompare(b));
     els.savedApps.innerHTML = [
-        `<option value="">${escapeHtml(t('tableauCalc.apps.none'))}</option>`,
+        `<option value="">${escapeHtml(t('powerbiDax.apps.none'))}</option>`,
         ...names.map((name) => `<option value="${escapeAttr(name)}">${escapeHtml(name)}</option>`),
     ].join('');
     if (selected && names.includes(selected)) {
@@ -998,7 +1038,7 @@ function showAppMessage(message, type = 'info') {
 function saveApp() {
     const name = els.appName?.value?.trim() || '';
     if (!name) {
-        showAppMessage(t('tableauCalc.apps.missingName'), 'error');
+        showAppMessage(t('powerbiDax.apps.missingName'), 'error');
         return;
     }
 
@@ -1009,14 +1049,14 @@ function saveApp() {
     };
     writeSavedApps(savedApps);
     refreshSavedAppsSelect(name);
-    showAppMessage(t('tableauCalc.apps.savedMessage').replace('{name}', name));
+    showAppMessage(t('powerbiDax.apps.savedMessage').replace('{name}', name));
 }
 
 function loadApp() {
     const name = els.savedApps?.value || '';
     const savedApp = readSavedApps()[name];
     if (!savedApp?.snapshot) {
-        showAppMessage(t('tableauCalc.apps.missingSelection'), 'error');
+        showAppMessage(t('powerbiDax.apps.missingSelection'), 'error');
         return;
     }
 
@@ -1031,7 +1071,7 @@ function loadApp() {
 function deleteApp() {
     const name = els.savedApps?.value || '';
     if (!name) {
-        showAppMessage(t('tableauCalc.apps.missingSelection'), 'error');
+        showAppMessage(t('powerbiDax.apps.missingSelection'), 'error');
         return;
     }
 
@@ -1039,7 +1079,7 @@ function deleteApp() {
     delete savedApps[name];
     writeSavedApps(savedApps);
     refreshSavedAppsSelect();
-    showAppMessage(t('tableauCalc.apps.deletedMessage').replace('{name}', name));
+    showAppMessage(t('powerbiDax.apps.deletedMessage').replace('{name}', name));
 }
 
 function readFileInto(input, target) {

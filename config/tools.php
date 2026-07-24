@@ -696,6 +696,22 @@ return [
             'for' => ['Tableau'],
         ],
         [
+            'id' => 'powerbi-dax-generator',
+            'route' => 'tools.powerbi-dax-generator',
+            'label' => [
+                'de' => 'Power BI DAX Measure Generator',
+                'en' => 'Power BI DAX Measure Generator',
+            ],
+            'description' => [
+                'de' => 'DAX Measures, Time-Intelligence-Vorlagen und Dokumentations-CSV aus Base Measures plus Definitionen erzeugen.',
+                'en' => 'Generate DAX measures, time-intelligence snippets, and documentation CSV from base measures plus definitions.',
+            ],
+            'example' => true,
+            'icon' => 'fa-chart-column',
+            'accent' => 'primary',
+            'for' => ['PowerBI'],
+        ],
+        [
             'id' => 'architecture-fit',
             'route' => 'tools.architecture-fit',
             'label' => [

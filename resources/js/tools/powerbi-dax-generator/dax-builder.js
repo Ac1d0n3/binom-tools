@@ -60,6 +60,7 @@ export function parseCsv(text) {
 export function parseFields(text) {
     return parseCsv(text)
         .map((row) => ({
+            table: row.table || '',
             name: row.field || row.name || '',
             type: row.type || 'dimension',
             tags: row.tags || '',
@@ -82,127 +83,13 @@ export function parseDefinitions(text) {
     return parseCsv(text)
         .map((row) => ({
             name: row.name || '',
-            dimensions: splitList(row.dimensions || row.dimension || ''),
+            table: row.table || '',
+            column: row.column || row.dimension || '',
             values: splitList(row.values || row.value || ''),
             expression: row.expression || '',
-            parameter: row.parameter || '',
             description: row.description || '',
         }))
-        .filter((definition) => definition.name !== '' && (definition.expression !== '' || definition.dimensions.length > 0));
-}
-
-export function definitionFromDimensionValues(dimension, values, name = '') {
-    const cleanDimension = String(dimension ?? '').trim();
-    const cleanValues = values.map((value) => String(value ?? '').trim()).filter(Boolean);
-    const label = name || [cleanDimension, cleanValues.join(' + ')].filter(Boolean).join(' ');
-
-    return {
-        name: label,
-        dimensions: cleanDimension ? [cleanDimension] : [],
-        values: cleanValues,
-        expression: buildTableauCondition(cleanDimension, cleanValues),
-        parameter: '',
-        description: label,
-    };
-}
-
-export function buildTableauCondition(dimension, values) {
-    const cleanDimension = String(dimension ?? '').trim();
-    const cleanValues = values.map((value) => String(value ?? '').trim()).filter(Boolean);
-
-    if (cleanDimension === '' || cleanValues.length === 0) {
-        return '';
-    }
-
-    if (cleanValues.length === 1) {
-        return `[${cleanDimension}] = ${tableauLiteral(cleanValues[0])}`;
-    }
-
-    return `[${cleanDimension}] IN (${cleanValues.map(tableauLiteral).join(', ')})`;
-}
-
-export function buildCalculatedField(baseExpression, definition, options = {}) {
-    const expression = String(baseExpression ?? '').trim();
-    const condition = definition.expression || buildTableauCondition(definition.dimensions[0] || '', definition.values);
-
-    if (expression === '') {
-        return '';
-    }
-
-    if (condition === '') {
-        return expression;
-    }
-
-    const aggregation = detectAggregation(expression);
-    if (aggregation) {
-        return `${aggregation.fn}(IF ${condition} THEN ${aggregation.inner} END)`;
-    }
-
-    if (options.useCalculatedBoolean === true) {
-        return `IF ${condition} THEN ${expression} END`;
-    }
-
-    return `SUM(IF ${condition} THEN ${expression} END)`;
-}
-
-export function buildLodExpression(baseExpression, definition, dimensions = []) {
-    const calc = buildCalculatedField(baseExpression, definition);
-    const cleanDimensions = dimensions.map((dimension) => String(dimension ?? '').trim()).filter(Boolean);
-
-    if (cleanDimensions.length === 0) {
-        return `{ FIXED : ${calc} }`;
-    }
-
-    return `{ FIXED ${cleanDimensions.map((dimension) => `[${dimension}]`).join(', ')} : ${calc} }`;
-}
-
-export function buildTableauOutputs(state = {}) {
-    const bases = collectBaseMeasures(state);
-    const effectiveDefinitions = resolveDefinitions(state);
-    const descriptionTemplateDe = state.descriptionTemplateDe || DEFAULT_DESCRIPTION_DE;
-    const descriptionTemplateEn = state.descriptionTemplateEn || DEFAULT_DESCRIPTION_EN;
-    const lodDimensions = splitList(state.lodDimensionsText || '');
-    const rows = [['calculation_name', 'formula', 'description_de', 'description_en', 'definition', 'dimensions', 'values']];
-
-    const calculations = [];
-    const lod = [];
-    const paths = parseHierarchyPaths(state.hierarchyText || '');
-
-    bases.forEach((base) => {
-        effectiveDefinitions.forEach((definition) => {
-            const name = `${base.name} - ${definition.name}`;
-            const formula = buildCalculatedField(base.expression, definition);
-            const descriptionDe = renderTemplate(descriptionTemplateDe, base, definition);
-            const descriptionEn = renderTemplate(descriptionTemplateEn, base, definition);
-            const fixedDimensions = lodDimensions.length > 0 ? lodDimensions : definition.dimensions;
-
-            calculations.push(`${name}\n${formula}\n\nDE: ${descriptionDe}\nEN: ${descriptionEn}`);
-            lod.push(`${name} LOD\n${buildLodExpression(base.expression, definition, fixedDimensions)}`);
-            rows.push([
-                name,
-                formula,
-                descriptionDe,
-                descriptionEn,
-                definition.name,
-                definition.dimensions.join('|'),
-                definition.values.join('|'),
-            ]);
-        });
-    });
-
-    const primaryBase = bases[0] || {
-        name: state.measureName || 'Sales',
-        expression: state.baseExpression || 'SUM([Sales])',
-    };
-
-    return {
-        calculations: calculations.join('\n\n---\n\n'),
-        lod: lod.join('\n\n---\n\n'),
-        hierarchy: buildHierarchyOutput(paths, primaryBase),
-        definitions: effectiveDefinitions.map((definition) => `${definition.name}\n${definition.expression || buildTableauCondition(definition.dimensions[0] || '', definition.values)}`).join('\n\n---\n\n'),
-        csv: rows.map(csvLine).join('\n'),
-        rows,
-    };
+        .filter((definition) => definition.name !== '' && (definition.expression !== '' || definition.column !== ''));
 }
 
 export function parseHierarchyLevels(text) {
@@ -237,6 +124,114 @@ export function parseHierarchyPaths(text) {
         .filter(Boolean);
 }
 
+export function buildDaxCondition(definition) {
+    if (definition.expression) {
+        return definition.expression;
+    }
+
+    const column = daxColumn(definition.table, definition.column);
+    const values = definition.values.map((value) => String(value ?? '').trim()).filter(Boolean);
+
+    if (!column || values.length === 0) {
+        return '';
+    }
+
+    if (values.length === 1) {
+        return `${column} = ${daxLiteral(values[0])}`;
+    }
+
+    return `${column} IN { ${values.map(daxLiteral).join(', ')} }`;
+}
+
+export function definitionFromDimensionValues(table, column, values, name = '') {
+    const cleanValues = values.map((value) => String(value ?? '').trim()).filter(Boolean);
+    const label = name || [column, cleanValues.join(' + ')].filter(Boolean).join(' ');
+
+    return {
+        name: label,
+        table,
+        column,
+        values: cleanValues,
+        expression: buildDaxCondition({ table, column, values: cleanValues, expression: '' }),
+        description: label,
+    };
+}
+
+export function buildDaxMeasure(baseExpression, definition) {
+    const expression = String(baseExpression ?? '').trim();
+    const condition = buildDaxCondition(definition);
+
+    if (expression === '') {
+        return '';
+    }
+
+    if (condition === '') {
+        return expression;
+    }
+
+    return `CALCULATE(\n    ${expression},\n    ${condition}\n)`;
+}
+
+export function buildTimeMeasures(baseName, dateColumn = "'Date'[Date]") {
+    const name = String(baseName ?? '').trim() || 'Sales';
+
+    return [
+        `${name} YTD =\nCALCULATE(\n    [${name}],\n    DATESYTD(${dateColumn})\n)`,
+        `${name} PY =\nCALCULATE(\n    [${name}],\n    SAMEPERIODLASTYEAR(${dateColumn})\n)`,
+        `${name} YoY =\n[${name}] - [${name} PY]`,
+        `${name} YoY % =\nDIVIDE([${name} YoY], [${name} PY])`,
+    ].join('\n\n');
+}
+
+export function buildPowerBiOutputs(state = {}) {
+    const bases = collectBaseMeasures(state);
+    const effectiveDefinitions = resolveDefinitions(state);
+    const descriptionTemplateDe = state.descriptionTemplateDe || DEFAULT_DESCRIPTION_DE;
+    const descriptionTemplateEn = state.descriptionTemplateEn || DEFAULT_DESCRIPTION_EN;
+    const rows = [['measure_name', 'formula', 'description_de', 'description_en', 'definition', 'table', 'column', 'values']];
+
+    const measures = [];
+    const calculationGroups = [];
+    const paths = parseHierarchyPaths(state.hierarchyText || '');
+
+    bases.forEach((base) => {
+        effectiveDefinitions.forEach((definition) => {
+            const name = `${base.name} - ${definition.name}`;
+            const formula = `${name} =\n${indent(buildDaxMeasure(base.expression, definition))}`;
+            const descriptionDe = renderTemplate(descriptionTemplateDe, base, definition);
+            const descriptionEn = renderTemplate(descriptionTemplateEn, base, definition);
+
+            measures.push(`${formula}\n\n// DE: ${descriptionDe}\n// EN: ${descriptionEn}`);
+            rows.push([
+                name,
+                formula,
+                descriptionDe,
+                descriptionEn,
+                definition.name,
+                definition.table,
+                definition.column,
+                definition.values.join('|'),
+            ]);
+        });
+
+        calculationGroups.push(buildTimeMeasures(base.name, state.dateColumn || "'Date'[Date]"));
+    });
+
+    const primaryBase = bases[0] || {
+        name: state.measureName || 'Sales',
+        expression: state.baseExpression || 'SUM(Sales[Sales])',
+    };
+
+    return {
+        measures: measures.join('\n\n---\n\n'),
+        time: calculationGroups.join('\n\n---\n\n'),
+        hierarchy: buildHierarchyOutput(paths, primaryBase),
+        definitions: effectiveDefinitions.map((definition) => `${definition.name}\n${buildDaxCondition(definition)}`).join('\n\n---\n\n'),
+        csv: rows.map(csvLine).join('\n'),
+        rows,
+    };
+}
+
 function resolveDefinitions(state) {
     const definitions = parseDefinitions(state.definitionsText);
     if (definitions.length > 0) {
@@ -249,17 +244,18 @@ function resolveDefinitions(state) {
 function definitionsFromValues(rows, mode) {
     const items = rows
         .map((row) => ({
-            dimension: row.dimension || '',
+            table: row.table || 'Sales',
+            column: row.dimension || row.column || '',
             value: row.value || '',
             label: row.label || row.value || '',
         }))
-        .filter((item) => item.dimension && item.value);
+        .filter((item) => item.column && item.value);
 
     if (items.length === 0) {
         return [];
     }
 
-    const grouped = Object.values(groupByDimension(items));
+    const grouped = Object.values(groupByColumn(items));
 
     if (mode === 'combined') {
         return cartesian(grouped).map((variant) => definitionFromVariant(variant));
@@ -267,38 +263,37 @@ function definitionsFromValues(rows, mode) {
 
     if (mode === 'dimension-group') {
         return grouped.map((group) => definitionFromDimensionValues(
-            group[0].dimension,
+            group[0].table,
+            group[0].column,
             group.map((item) => item.value),
-            `${group[0].dimension} ${group.map((item) => item.label || item.value).join(' + ')}`,
+            `${group[0].column} ${group.map((item) => item.label || item.value).join(' + ')}`,
         ));
     }
 
-    return items.map((item) => definitionFromDimensionValues(item.dimension, [item.value], item.label || ''));
+    return items.map((item) => definitionFromDimensionValues(item.table, item.column, [item.value], item.label || ''));
 }
 
 function definitionFromVariant(variant) {
-    const name = variant.map((item) => `${item.dimension} ${item.label || item.value}`).join(' + ');
-    const dimensions = variant.map((item) => item.dimension);
-    const values = variant.map((item) => item.value);
-    const expression = variant
-        .map((item) => buildTableauCondition(item.dimension, [item.value]))
-        .filter(Boolean)
-        .join(' AND ');
+    const name = variant.map((item) => `${item.column} ${item.label || item.value}`).join(' + ');
+    const conditions = variant
+        .map((item) => buildDaxCondition({ table: item.table, column: item.column, values: [item.value], expression: '' }))
+        .filter(Boolean);
 
     return {
         name,
-        dimensions,
-        values,
-        expression,
-        parameter: '',
+        table: variant[0]?.table || '',
+        column: variant.map((item) => item.column).join('|'),
+        values: variant.map((item) => item.value),
+        expression: conditions.join(',\n    '),
         description: name,
     };
 }
 
-function groupByDimension(items) {
+function groupByColumn(items) {
     return items.reduce((groups, item) => {
-        groups[item.dimension] = groups[item.dimension] || [];
-        groups[item.dimension].push(item);
+        const key = `${item.table}|${item.column}`;
+        groups[key] = groups[key] || [];
+        groups[key].push(item);
         return groups;
     }, {});
 }
@@ -317,9 +312,9 @@ function collectBaseMeasures(state) {
             ? parsedBases
             : [{
                 name: 'Sales',
-                expression: 'SUM([Sales])',
-                descriptionDe: 'Umsatz basierend auf SUM([Sales]).',
-                descriptionEn: 'Sales based on SUM([Sales]).',
+                expression: 'SUM(Sales[Sales])',
+                descriptionDe: 'Umsatz basierend auf SUM(Sales[Sales]).',
+                descriptionEn: 'Sales based on SUM(Sales[Sales]).',
             }];
     }
 
@@ -336,73 +331,89 @@ function collectBaseMeasures(state) {
 function buildHierarchyOutput(paths, base) {
     if (!paths.length) {
         return [
-            'Tableau hierarchy',
+            'Power BI hierarchy',
             '',
             'No hierarchy levels configured.',
             'Add one field per line, for example:',
-            'Region',
-            '  Country',
-            '    City',
+            'Sales[Region]',
+            '  Sales[Country]',
+            '    Sales[City]',
         ].join('\n');
     }
 
     const uniqueLevels = [...new Set(paths.flat())];
     const measureName = base?.name || 'Measure';
-    const baseExpression = base?.expression || 'SUM([Sales])';
+    const baseExpression = base?.expression || 'SUM(Sales[Sales])';
 
     const howto = [
-        'Tableau hierarchy',
+        'Power BI hierarchy',
         '',
         `Name: ${uniqueLevels.join(' / ')}`,
-        `Levels: ${uniqueLevels.map((level) => `[${level}]`).join(' > ')}`,
+        `Levels: ${uniqueLevels.join(' > ')}`,
         '',
         'Where to create it:',
-        '1. In Tableau Desktop, go to the Data pane.',
-        '2. Drag the second level onto the first field and choose Hierarchy.',
-        '3. Add the remaining levels in order.',
-        '4. Use the hierarchy on rows, columns or marks for drill-down analysis.',
+        '1. In Power BI Desktop, open Model view or Data pane.',
+        '2. Right-click the first field and choose Create hierarchy.',
+        '3. Drag the remaining fields into the hierarchy in order.',
+        '4. Use the hierarchy on Axis, Rows, Columns or drill-down visuals.',
     ].join('\n');
 
     const templates = paths.map((path) => {
-        const condition = path
-            .map((dimension) => `[${dimension}] = '<${dimension} value>'`)
-            .join(' AND ');
-        const formula = buildCalculatedField(baseExpression, {
-            name: path.join(' / '),
-            dimensions: path,
-            values: path.map((dimension) => `<${dimension} value>`),
-            expression: condition,
-        });
+        const filters = path
+            .map((level) => {
+                const { table, column } = parseLevel(level);
+                return `${daxColumn(table, column)} = "<${column || level} value>"`;
+            })
+            .join(',\n    ');
 
-        return `${measureName} - ${path.join(' / ')}\n${formula}`;
+        return `${measureName} - ${path.join(' / ')} =\nCALCULATE(\n    ${baseExpression},\n    ${filters}\n)`;
     }).join('\n\n');
 
     return `${howto}\n\n// Measure templates per hierarchy level\n${templates}`;
 }
 
-function detectAggregation(expression) {
-    const match = String(expression).trim().match(/^(SUM|AVG|MIN|MAX|COUNT|COUNTD)\s*\(([\s\S]+)\)$/i);
-
-    if (!match) {
-        return null;
+function parseLevel(level) {
+    const match = String(level ?? '').trim().match(/^(?:'?([^'\[]+)'?)?\[([^\]]+)\]$/);
+    if (match) {
+        return { table: match[1] || '', column: match[2] };
     }
 
-    return {
-        fn: match[1].toUpperCase(),
-        inner: match[2].trim(),
-    };
+    return { table: '', column: String(level ?? '').trim() };
 }
 
-function tableauLiteral(value) {
+function daxColumn(table, column) {
+    const cleanColumn = String(column ?? '').trim();
+    const cleanTable = String(table ?? '').trim();
+
+    if (!cleanColumn) {
+        return '';
+    }
+
+    if (cleanColumn.includes('[')) {
+        return cleanColumn;
+    }
+
+    if (!cleanTable) {
+        return `[${cleanColumn}]`;
+    }
+
+    return `${cleanTable}[${cleanColumn}]`;
+}
+
+function daxLiteral(value) {
     if (/^-?\d+(\.\d+)?$/.test(value)) {
         return value;
     }
 
-    if (/^\[.+]$/.test(value) || /^\[.+ Parameter]$/.test(value)) {
+    if (/^(TRUE|FALSE)$/i.test(value)) {
+        return value.toUpperCase();
+    }
+
+    if (/^\[.+]$/.test(value)) {
         return value;
     }
 
-    return `'${value.replace(/'/g, "''")}'`;
+    return `"${value.replace(/"/g, '""')}"`;
 }
 
 function splitList(value) {
@@ -419,10 +430,15 @@ function renderTemplate(template, base, definition) {
         baseExpression: base.expression,
         baseDescription: base.descriptionDe || base.descriptionEn || '',
         definition: definition.name,
-        condition: definition.expression || buildTableauCondition(definition.dimensions[0] || '', definition.values),
-        dimensions: definition.dimensions.join(', '),
+        condition: buildDaxCondition(definition),
+        table: definition.table,
+        column: definition.column,
         values: definition.values.join(', '),
     })[key] ?? '');
+}
+
+function indent(text) {
+    return String(text ?? '').split('\n').map((line) => `    ${line}`).join('\n');
 }
 
 function csvLine(values) {

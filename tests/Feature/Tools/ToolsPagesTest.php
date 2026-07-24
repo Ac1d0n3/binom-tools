@@ -83,6 +83,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('PureView Data Product Generator');
         $response->assertSee('Qlik Set Analysis Generator');
         $response->assertSee('Tableau Calculation Generator');
+        $response->assertSee('Power BI DAX Measure Generator');
         $response->assertSee('tools-card__platform-mark', false);
         $response->assertSee('images/fabric-badge.svg', false);
         $response->assertSee('images/databricks-badge.svg', false);
@@ -101,6 +102,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-products="pureview"', false);
         $response->assertSee('data-products="qlik"', false);
         $response->assertSee('data-products="tableau"', false);
+        $response->assertSee('data-products="powerbi"', false);
         $response->assertSee('data-products="dbt"', false);
         $response->assertSee('data-overview-item', false);
         $response->assertSee('tools-overview-sticky-header', false);
@@ -271,6 +273,8 @@ class ToolsPagesTest extends TestCase
             ->assertSee('qlik-set-workbench-title', false)
             ->assertSee('qlik-set-help-toggle', false)
             ->assertSee('qlik-set-help-body', false)
+            ->assertSee('qlik-set-help__links', false)
+            ->assertSee('qlikSet.help.productLink', false)
             ->assertSee('qlikSet.help.show', false)
             ->assertSee('qlik-set-base-measure', false)
             ->assertSee('qlik-set-current-formula-pre', false)
@@ -330,10 +334,66 @@ class ToolsPagesTest extends TestCase
             ->assertSee('data-tableau-values', false)
             ->assertSee('data-tableau-definition-dimension', false)
             ->assertSee('data-tableau-definition-values', false)
+            ->assertSee('data-tableau-base-expression', false)
+            ->assertSee('data-tableau-current-formula', false)
+            ->assertSee('data-tableau-apply-base', false)
+            ->assertSee('data-tableau-function', false)
+            ->assertSee('data-tableau-definition-dropzone', false)
+            ->assertSee('data-tableau-hierarchy-dropzone', false)
+            ->assertSee('data-tableau-dimension-chips', false)
+            ->assertSee('data-tableau-measure-chips', false)
+            ->assertSee('data-tableau-base-list', false)
+            ->assertSee('data-tableau-hierarchy-list', false)
             ->assertSee('data-tableau-definitions', false)
             ->assertSee('data-tableau-base-measures', false)
             ->assertSee('data-tableau-tab="calculations"', false)
+            ->assertSee('data-tableau-delete-app', false)
+            ->assertSee('data-tableau-import-modal', false)
+            ->assertSee('data-tableau-undo', false)
+            ->assertSee('data-tableau-redo', false)
+            ->assertSee('data-tableau-hierarchy-preview', false)
+            ->assertSee('data-tableau-definition-list', false)
+            ->assertSee('data-tableau-download-xlsx', false)
+            ->assertSee('data-tableau-help-toggle', false)
+            ->assertSee('qlik-set-help__links', false)
             ->assertSee('tableauCalc.pageTitle', false);
+    }
+
+    public function test_powerbi_dax_generator_renders(): void
+    {
+        $response = $this->get('/tools/powerbi-dax-generator');
+
+        $response
+            ->assertOk()
+            ->assertSee('powerbi-dax-generator-app', false)
+            ->assertSee('data-powerbi-dax-root', false)
+            ->assertSee('data-powerbi-fields', false)
+            ->assertSee('data-powerbi-values', false)
+            ->assertSee('data-powerbi-definition-column', false)
+            ->assertSee('data-powerbi-definition-values', false)
+            ->assertSee('data-powerbi-base-expression', false)
+            ->assertSee('data-powerbi-current-formula', false)
+            ->assertSee('data-powerbi-apply-base', false)
+            ->assertSee('data-powerbi-function', false)
+            ->assertSee('data-powerbi-definition-dropzone', false)
+            ->assertSee('data-powerbi-hierarchy-dropzone', false)
+            ->assertSee('data-powerbi-dimension-chips', false)
+            ->assertSee('data-powerbi-measure-chips', false)
+            ->assertSee('data-powerbi-base-list', false)
+            ->assertSee('data-powerbi-hierarchy-list', false)
+            ->assertSee('data-powerbi-definitions', false)
+            ->assertSee('data-powerbi-base-measures', false)
+            ->assertSee('data-powerbi-tab="measures"', false)
+            ->assertSee('data-powerbi-delete-app', false)
+            ->assertSee('data-powerbi-import-modal', false)
+            ->assertSee('data-powerbi-undo', false)
+            ->assertSee('data-powerbi-redo', false)
+            ->assertSee('data-powerbi-hierarchy-preview', false)
+            ->assertSee('data-powerbi-definition-list', false)
+            ->assertSee('data-powerbi-download-xlsx', false)
+            ->assertSee('data-powerbi-help-toggle', false)
+            ->assertSee('qlik-set-help__links', false)
+            ->assertSee('powerbiDax.pageTitle', false);
     }
 
     public function test_meta_export_generator_page_renders(): void

@@ -46,6 +46,24 @@
     margin: 0.25rem 0 0;
 }
 
+.qlik-set-help__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.9rem;
+    margin-top: 0.65rem;
+}
+
+.qlik-set-help__link {
+    color: var(--qlik-accent);
+    font-size: 0.88rem;
+    text-decoration: none;
+}
+
+.qlik-set-help__link:hover,
+.qlik-set-help__link:focus-visible {
+    text-decoration: underline;
+}
+
 .qlik-set-help__toggle {
     flex: 0 0 auto;
 }
@@ -56,6 +74,10 @@
     gap: 0.85rem;
     margin-top: 0.9rem;
     padding-top: 0.9rem;
+}
+
+.qlik-set-help__body[hidden] {
+    display: none;
 }
 
 .qlik-set-help__tabs {

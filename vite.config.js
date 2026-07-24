@@ -61,6 +61,7 @@ export default defineConfig(({ command }) => ({
                 'resources/js/tools/bi-python-toolkit/index.js',
                 'resources/js/tools/qlik-set-analysis-generator/index.js',
                 'resources/js/tools/tableau-calculation-generator/index.js',
+                'resources/js/tools/powerbi-dax-generator/index.js',
                 'resources/js/tools/architecture-fit/index.js',
                 'resources/js/tools/impact-effort/index.js',
                 'resources/js/tools/dbt-dq-macro-generator/index.js',

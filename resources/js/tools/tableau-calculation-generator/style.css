@@ -1,114 +1,390 @@
 .tableau-calc {
+    --qlik-surface: var(--tools-card-background, var(--content-background-color));
+    --qlik-surface-muted: var(--surface-background-color, var(--content-background-color));
+    --qlik-surface-raised: color-mix(in srgb, var(--qlik-surface) 92%, var(--qlik-surface-muted));
+    --qlik-border: var(--tools-card-border, var(--base-border-color));
+    --qlik-border-strong: color-mix(in srgb, var(--theme-color-primary) 34%, var(--qlik-border));
+    --qlik-text: var(--content-font-color);
+    --qlik-text-muted: var(--bn-color-text-secondary);
+    --qlik-accent: var(--theme-color-primary);
+    --qlik-accent-contrast: var(--theme-color-primary-contrast, #fff);
+    --qlik-accent-soft: color-mix(in srgb, var(--qlik-accent) 11%, var(--qlik-surface));
+    --qlik-accent-softer: color-mix(in srgb, var(--qlik-accent) 7%, var(--qlik-surface));
+    --qlik-success: var(--theme-color-success, var(--theme-color-info, var(--qlik-accent)));
+    --qlik-success-soft: color-mix(in srgb, var(--qlik-success) 12%, var(--qlik-surface));
+    --qlik-warning: var(--theme-color-warning, #b7791f);
+    --qlik-warning-soft: color-mix(in srgb, var(--qlik-warning) 13%, var(--qlik-surface));
+    --qlik-focus-ring: color-mix(in srgb, var(--qlik-accent) 24%, transparent);
+    --qlik-radius-md: var(--tools-radius-md, 8px);
+    --qlik-radius-lg: var(--tools-radius-lg, 10px);
+    --qlik-space-sm: var(--tools-space-sm, 0.75rem);
+    --qlik-space-md: var(--tools-space-md, 1rem);
+    --qlik-space-lg: var(--tools-space-lg, 1.25rem);
     display: grid;
-    gap: var(--tools-space-5, 1.25rem);
+    gap: var(--qlik-space-md);
 }
 
 .tableau-calc__help {
-    padding: var(--tools-space-4, 1rem);
+    border-left: 4px solid var(--qlik-accent);
+    background: var(--qlik-accent-softer);
+    padding: 1rem 1.1rem;
+    overflow: hidden;
 }
 
-.tableau-calc__grid {
+.tableau-calc__help-details {
     display: grid;
-    grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.1fr) minmax(360px, 1.4fr);
     gap: var(--tools-space-4, 1rem);
-    align-items: start;
+}
+
+.tableau-calc__help-summary {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.85rem 1rem;
+    color: var(--qlik-text);
+    font-weight: 800;
+    cursor: pointer;
+    border-bottom: 1px solid var(--qlik-border);
+}
+
+.tableau-calc__help-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--qlik-space-sm);
+    padding: 0 var(--qlik-space-md);
+}
+
+.tableau-calc__help-card,
+.tableau-calc__help-note {
+    border: 1px solid var(--qlik-border);
+    border-radius: var(--qlik-radius-md);
+    background: var(--qlik-surface-raised);
+    padding: var(--qlik-space-sm);
+}
+
+.tableau-calc__help-card strong,
+.tableau-calc__help-note strong {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.tableau-calc__help-card p,
+.tableau-calc__help-note p {
+    margin: 0;
+    color: var(--qlik-text-muted);
+}
+
+.tableau-calc__help-note {
+    margin: 0 var(--qlik-space-md) var(--qlik-space-md);
 }
 
 .tableau-calc__column {
     display: grid;
     gap: var(--tools-space-4, 1rem);
+    min-width: 0;
+}
+
+.tableau-calc__column--catalog,
+.tableau-calc__column--rules {
+    align-self: start;
+}
+
+.tableau-calc__column--rules {
+    max-height: calc(100vh - 8rem);
+    overflow: auto;
+    padding-right: 0.15rem;
+    scrollbar-width: thin;
 }
 
 .tableau-calc__panel {
-    border: 1px solid var(--tools-border, rgba(118, 153, 180, 0.35));
-    border-radius: var(--tools-radius-md, 8px);
-    background: var(--tools-surface, rgba(18, 35, 48, 0.72));
-    padding: var(--tools-space-4, 1rem);
+    border: 1px solid var(--qlik-border);
+    border-radius: var(--qlik-radius-md);
+    background: var(--qlik-surface-raised);
+    padding: var(--qlik-space-md);
+    min-width: 0;
 }
 
 .tableau-calc__panel h3,
 .tableau-calc__panel h4 {
-    margin: 0 0 var(--tools-space-2, 0.5rem);
+    font-size: 0.98rem;
+    margin: 0 0 var(--qlik-space-sm);
 }
 
 .tableau-calc__small {
-    color: var(--tools-muted, #9fb0bd);
-    margin: 0 0 var(--tools-space-3, 0.75rem);
+    color: var(--qlik-text-muted);
+    font-size: 0.86rem;
+    margin: 0 0 var(--qlik-space-sm);
+}
+
+.tableau-calc__item-list {
+    display: grid;
+    gap: 0.65rem;
+    margin-bottom: var(--qlik-space-sm);
+}
+
+.tableau-calc__item {
+    display: grid;
+    gap: 0.35rem;
+    border: 1px solid var(--qlik-border);
+    border-radius: var(--qlik-radius-md);
+    background: var(--qlik-surface);
+    padding: 0.75rem;
+}
+
+.tableau-calc__item code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.tableau-calc__item span {
+    color: var(--qlik-text-muted);
+}
+
+.tableau-calc__hierarchy-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    margin: var(--qlik-space-sm) 0;
+}
+
+.tableau-calc__level {
+    font-weight: inherit;
+}
+
+.tableau-calc__level-arrow {
+    color: var(--qlik-text-muted);
+    font-weight: 900;
+}
+
+.tableau-calc .tools-field {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+}
+
+.tableau-calc .tools-field__label {
+    color: var(--qlik-text);
+    font-weight: 750;
+}
+
+.tableau-calc .pii-policy-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.tableau-calc textarea.pii-policy-input {
+    display: block;
+    resize: vertical;
+    overflow: auto;
+    font-family: var(--tools-font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.92rem;
+    line-height: 1.45;
+    white-space: pre;
+}
+
+.tableau-calc select.pii-policy-input {
+    min-height: 2.8rem;
+}
+
+.tableau-calc select[multiple].pii-policy-input {
+    min-height: 10rem;
+    padding: 0.35rem;
+}
+
+.tableau-calc select[multiple].pii-policy-input option {
+    border-radius: calc(var(--tools-radius-md, 8px) - 3px);
+    padding: 0.45rem 0.55rem;
+}
+
+.tableau-calc__formula-dropzone {
+    min-height: 9rem;
+    border-color: var(--qlik-border-strong);
+    background: var(--qlik-surface);
+    font-size: 1rem;
+}
+
+.tableau-calc__current-formula {
+    border: 1px solid color-mix(in srgb, var(--qlik-success) 34%, var(--qlik-border));
+    border-radius: var(--qlik-radius-md);
+    background: var(--qlik-success-soft);
+    padding: var(--qlik-space-sm);
+    margin-top: var(--qlik-space-sm);
+}
+
+.tableau-calc__mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--qlik-space-sm);
+    margin-top: var(--qlik-space-sm);
+}
+
+.tableau-calc__inline-control {
+    max-width: 12rem;
+}
+
+.tableau-calc__palette {
+    border-top: 1px solid var(--qlik-border);
+    display: grid;
+    gap: 0.65rem;
+    margin-top: var(--qlik-space-sm);
+    padding-top: 0.9rem;
+}
+
+.tableau-calc__palette-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--qlik-space-sm);
+    margin-bottom: var(--qlik-space-sm);
+}
+
+.tableau-calc__palette-header h4 {
+    margin: 0;
+}
+
+.tableau-calc__palette-header span {
+    color: var(--qlik-text-muted);
+    font-size: 0.86rem;
+}
+
+.tableau-calc__block-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.2rem, 1fr));
+    gap: 0.4rem;
+}
+
+.tableau-calc__block {
+    font-weight: inherit;
+}
+
+.tableau-calc__block:hover {
+    outline: none;
 }
 
 .tableau-calc__stack {
     display: grid;
-    gap: var(--tools-space-3, 0.75rem);
+    gap: var(--qlik-space-sm);
 }
 
 .tableau-calc__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--tools-space-2, 0.5rem);
+    gap: 0.5rem;
+}
+
+.tableau-calc__dropzone {
+    display: grid;
+}
+
+.tableau-calc__dropzone span {
+    color: var(--qlik-text-muted);
+}
+
+.tableau-calc__dropzone.is-dragover,
+.tableau-calc__dropzone.is-drag-over {
+    border-color: var(--qlik-accent);
+    box-shadow: 0 0 0 3px var(--qlik-focus-ring);
 }
 
 .tableau-calc__preview {
-    border: 1px solid var(--tools-border-strong, var(--tools-border, rgba(118, 153, 180, 0.35)));
-    border-radius: var(--tools-radius-md, 8px);
-    background: var(--tools-surface-raised, rgba(28, 55, 70, 0.72));
-    padding: var(--tools-space-3, 0.75rem);
+    border: 1px solid var(--qlik-border-strong);
+    border-radius: var(--qlik-radius-md);
+    background: var(--qlik-success-soft);
+    padding: var(--qlik-space-sm);
 }
 
 .tableau-calc__preview-label {
-    color: var(--tools-muted, #9fb0bd);
+    color: var(--qlik-text-muted);
     font-size: 0.78rem;
     font-weight: 800;
     text-transform: uppercase;
-    margin-bottom: var(--tools-space-2, 0.5rem);
+    margin-bottom: 0.5rem;
 }
 
 .tableau-calc__preview-code {
     margin: 0;
     white-space: pre-wrap;
-}
-
-.tableau-calc__tabs {
-    display: flex;
     overflow-x: auto;
-    border-bottom: 1px solid var(--tools-border, rgba(118, 153, 180, 0.35));
-}
-
-.tableau-calc__tab {
-    border: 0;
-    border-bottom: 3px solid transparent;
-    background: transparent;
-    color: var(--tools-muted, #9fb0bd);
-    padding: 0.75rem 1rem;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.tableau-calc__tab.is-active {
-    color: var(--tools-text, #dbe7ef);
-    border-bottom-color: var(--tools-accent, #5a91b8);
 }
 
 .tableau-calc__output-actions {
     display: flex;
-    gap: var(--tools-space-2, 0.5rem);
-    padding: var(--tools-space-3, 0.75rem) 0;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: var(--qlik-space-sm) 0;
 }
 
 .tableau-calc__code {
+    width: 100%;
+    box-sizing: border-box;
     min-height: 28rem;
     max-height: 48rem;
     overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.tableau-calc__output-panel {
+    border: 1px solid var(--qlik-border);
+    border-radius: var(--qlik-radius-lg);
+    background: var(--qlik-surface);
+    width: 100%;
+}
+
+.tableau-calc__output-panel .tableau-calc__code {
+    max-height: none;
 }
 
 .tableau-calc__message {
-    color: var(--tools-success, #5fd4a8);
+    color: var(--qlik-success);
     margin: 0;
 }
 
-@media (max-width: 1100px) {
-    .tableau-calc__grid {
+.tableau-calc__details {
+    border: 1px solid var(--qlik-border);
+    border-radius: var(--qlik-radius-md);
+    background: var(--qlik-surface);
+    overflow: hidden;
+}
+
+.tableau-calc__details + .tableau-calc__details {
+    margin-top: var(--qlik-space-sm);
+}
+
+.tableau-calc__details summary {
+    padding: 0.7rem 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: var(--qlik-text);
+}
+
+.tableau-calc__details textarea {
+    border-radius: 0;
+    border-inline: 0;
+    border-bottom: 0;
+}
+
+@media (max-width: 1280px) {
+    .tableau-calc__column--rules {
+        grid-column: 1 / -1;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .tableau-calc__help-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .tableau-calc__mini-grid,
+    .tableau-calc__block-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tableau-calc__help-grid {
         grid-template-columns: 1fr;
     }
 }

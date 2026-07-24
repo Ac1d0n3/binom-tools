@@ -17,8 +17,13 @@
                 <div>
                     <h2 id="qlik-set-help-title" class="tools-panel__title" data-i18n="qlikSet.help.title"></h2>
                     <p class="qlik-set-help__lead" data-i18n="qlikSet.help.lead"></p>
+                    <div class="qlik-set-help__links" aria-label="Qlik product links">
+                        <a class="qlik-set-help__link" href="https://www.qlik.com/" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.productLink">Qlik Produktseite</a>
+                        <a class="qlik-set-help__link" href="https://help.qlik.com/" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.productHelpLink">Qlik Hilfe-Portal</a>
+                        <a class="qlik-set-help__link" href="https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/SetAnalysis/set-analysis-expressions.htm" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.setAnalysisLink">Set Analysis Dokumentation</a>
+                    </div>
                 </div>
-                <button type="button" id="qlik-set-help-toggle" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-i18n="qlikSet.help.show"></button>
+                <button type="button" id="qlik-set-help-toggle" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-i18n="qlikSet.help.show">Hilfe anzeigen</button>
             </div>
             <div id="qlik-set-help-body" class="qlik-set-help__body" hidden>
                 <div class="qlik-set-help__tabs" role="tablist" aria-label="Qlik Set Analysis help">

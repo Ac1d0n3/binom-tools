@@ -40,6 +40,7 @@
                 'pureview' => 'PureView',
                 'qlik' => 'Qlik',
                 'tableau' => 'Tableau',
+                'powerbi' => 'Power BI',
                 'ai' => 'AI',
                 'other' => 'Other',
             ];
@@ -56,7 +57,7 @@
                     }
 
                     $key = strtolower(trim($target));
-                    if (in_array($key, ['fabric', 'databricks', 'pureview', 'qlik', 'tableau', 'ai'], true)) {
+                    if (in_array($key, ['fabric', 'databricks', 'pureview', 'qlik', 'tableau', 'powerbi', 'ai'], true)) {
                         $products[] = $key;
                     }
                 }
