@@ -23,13 +23,14 @@
     --qlik-space-sm: var(--tools-space-sm, 0.75rem);
     --qlik-space-md: var(--tools-space-md, 1rem);
     --qlik-space-lg: var(--tools-space-lg, 1.25rem);
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--qlik-space-md);
 }
 
 .tableau-calc__help-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--qlik-space-sm);
 }
 
@@ -38,6 +39,7 @@
     border: 1px solid var(--qlik-border);
     border-radius: var(--qlik-radius-md);
     background: var(--qlik-surface-raised);
+    flex: 1 1 12rem;
     padding: var(--qlik-space-sm);
 }
 
@@ -55,6 +57,7 @@
 
 .tableau-calc__column {
     min-width: 0;
+    width: 100%;
 }
 
 .tableau-calc__small {
@@ -64,14 +67,15 @@
 }
 
 .tableau-calc__item-list {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 0.65rem;
     margin-bottom: var(--qlik-space-sm);
 }
 
 .tableau-calc .tools-field {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 0.4rem;
 }
 
@@ -135,7 +139,8 @@
 }
 
 .tableau-calc__stack {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--qlik-space-sm);
 }
 
@@ -144,14 +149,9 @@
     margin: 0;
 }
 
-@media (max-width: 1280px) {
-    .tableau-calc__help-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
 @media (max-width: 760px) {
-    .tableau-calc__help-grid {
-        grid-template-columns: 1fr;
+    .tableau-calc__help-card,
+    .tableau-calc__help-note {
+        flex-basis: 100%;
     }
 }

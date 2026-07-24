@@ -88,9 +88,6 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100dvh;
-    height: 100dvh;
-    max-height: 100dvh;
-    overflow: hidden;
     max-width: 1400px;
     margin-inline: auto;
     width: 100%;
@@ -120,25 +117,20 @@ html[data-shell-full-width='true'] .tools-content--overview {
     border-bottom: 1px solid var(--base-border-color);
 }
 
-html:has(.tools-shell),
-html:has(.tools-shell) body {
-    height: 100%;
-    max-height: 100dvh;
-    overflow: hidden;
-}
-
 .tools-shell__body {
     display: flex;
+    align-items: flex-start;
     flex: 1 1 auto;
-    min-height: 0;
     min-width: 0;
-    overflow: hidden;
 }
 
 .tools-shell__sidebar {
-    flex-shrink: 0;
+    flex: 0 0 var(--tools-sidebar-width);
     width: var(--tools-sidebar-width);
-    min-height: 0;
+    position: sticky;
+    top: var(--tools-header-height);
+    align-self: flex-start;
+    max-height: calc(100dvh - var(--tools-header-height));
     background: color-mix(in srgb, var(--surface-background-color) 84%, transparent);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -152,10 +144,58 @@ html:has(.tools-shell) body {
 .tools-shell__main {
     flex: 1 1 auto;
     min-width: 0;
+    overflow: visible;
+    background: var(--content-background-color);
+}
+
+/* App-like pages keep a fixed viewport; regular tools use normal page scroll. */
+.tools-shell:has(.tools-shell__main--playbook),
+.tools-shell:has(.tools-shell__main--overview),
+.tools-shell:has(.tools-shell__main--sprint-planner) {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+}
+
+html:has(.tools-shell__main--playbook),
+html:has(.tools-shell__main--overview),
+html:has(.tools-shell__main--sprint-planner),
+html:has(.tools-shell__main--playbook) body,
+html:has(.tools-shell__main--overview) body,
+html:has(.tools-shell__main--sprint-planner) body {
+    height: 100%;
+    max-height: 100dvh;
+    overflow: hidden;
+}
+
+.tools-shell:has(.tools-shell__main--playbook) .tools-shell__body,
+.tools-shell:has(.tools-shell__main--overview) .tools-shell__body,
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__body {
+    align-items: stretch;
+    flex: 1 1 0;
     min-height: 0;
+    overflow: hidden;
+}
+
+.tools-shell:has(.tools-shell__main--playbook) .tools-shell__sidebar,
+.tools-shell:has(.tools-shell__main--overview) .tools-shell__sidebar,
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar {
+    position: relative;
+    top: auto;
+    max-height: none;
+    min-height: 0;
+    align-self: stretch;
+    height: auto;
+}
+
+.tools-shell:has(.tools-shell__main--playbook) .tools-shell__main,
+.tools-shell:has(.tools-shell__main--overview) .tools-shell__main,
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__main {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: 100%;
     overflow-x: clip;
     overflow-y: auto;
-    background: var(--content-background-color);
 }
 
 @media (min-width: 769px) {
@@ -3074,9 +3114,14 @@ html[data-color-scheme='dark'] .tools-hero {
         bottom: 0;
         z-index: 30;
         width: min(100vw, 20rem);
+        flex: none;
+        max-height: none;
+        height: auto;
+        align-self: auto;
         transform: translateX(-100%);
         transition: transform 0.2s ease;
         box-shadow: 0 12px 40px rgba(16, 39, 52, 0.18);
+        overflow-y: auto;
     }
 
     .tools-shell--sidebar-open .tools-shell__sidebar {
