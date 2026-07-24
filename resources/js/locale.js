@@ -233,6 +233,7 @@ const shellLabels = {
         'theme.toggleToLight': 'Hellmodus aktivieren',
         'settings.openMenu': 'Einstellungen',
         'settings.fullWidth': 'Volle Breite',
+        'settings.hideNavigation': 'Navigation ausblenden',
         'settings.hideSidebars': 'Sidebars ausblenden',
         'playbooks.focusExpand': 'Sidebars ausblenden',
         'playbooks.focusCollapse': 'Sidebars einblenden',
@@ -325,6 +326,10 @@ const shellLabels = {
         'card.bi-python-toolkit.title': 'BI Python Export Toolkit',
         'card.bi-python-toolkit.description':
             'Python-Dateien für Qlik KPI-Export, App-/Sheet-Inventar und BI-Formel-Inventare herunterladen.',
+        'nav.qlik-set-analysis-generator': 'Qlik Set Analysis Generator',
+        'card.qlik-set-analysis-generator.title': 'Qlik Set Analysis Generator',
+        'card.qlik-set-analysis-generator.description':
+            'Child Measures und Variablen aus einer Base Measure plus Dimension-Wert-CSV erzeugen.',
         'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
         'biPythonToolkit.pageLead':
             'Lade Python-Tools herunter, führe sie lokal aus und nutze die Outputs als CSV, Markdown oder Plan-JSON.',
@@ -628,6 +633,7 @@ const shellLabels = {
         'theme.toggleToLight': 'Activate light mode',
         'settings.openMenu': 'Settings',
         'settings.fullWidth': 'Full width',
+        'settings.hideNavigation': 'Hide navigation',
         'settings.hideSidebars': 'Hide sidebars',
         'playbooks.focusExpand': 'Hide sidebars',
         'playbooks.focusCollapse': 'Show sidebars',
@@ -720,6 +726,10 @@ const shellLabels = {
         'card.bi-python-toolkit.title': 'BI Python Export Toolkit',
         'card.bi-python-toolkit.description':
             'Download Python files for Qlik KPI export, app/sheet inventory and BI formula inventories.',
+        'nav.qlik-set-analysis-generator': 'Qlik Set Analysis Generator',
+        'card.qlik-set-analysis-generator.title': 'Qlik Set Analysis Generator',
+        'card.qlik-set-analysis-generator.description':
+            'Generate child measures and variables from a base measure plus dimension-value CSV.',
         'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
         'biPythonToolkit.pageLead':
             'Download Python tools, run them locally, and use the outputs as CSV, Markdown or plan JSON.',

@@ -39,6 +39,10 @@
                     <input type="checkbox" data-shell-full-width-toggle />
                     <span data-i18n="settings.fullWidth">Full width</span>
                 </label>
+                <label class="tools-header__settings-option" role="menuitemcheckbox">
+                    <input type="checkbox" data-shell-sidebar-toggle />
+                    <span data-i18n="settings.hideNavigation">Hide navigation</span>
+                </label>
                 <label
                     class="tools-header__settings-option"
                     role="menuitemcheckbox"

@@ -140,6 +140,18 @@ html[data-shell-full-width='true'] .tools-content--overview {
     background: var(--content-background-color);
 }
 
+@media (min-width: 769px) {
+    html[data-shell-sidebar-collapsed='true'] .tools-header,
+    .tools-shell--sidebar-collapsed .tools-header {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    html[data-shell-sidebar-collapsed='true'] .tools-shell__sidebar,
+    .tools-shell--sidebar-collapsed .tools-shell__sidebar {
+        display: none;
+    }
+}
+
 .tools-shell:has(.tools-shell__main--playbook),
 .tools-shell:has(.tools-shell__main--overview),
 .tools-shell:has(.tools-shell__main--sprint-planner) {
@@ -760,6 +772,29 @@ html[data-shell-full-width='true'] .tools-content--overview {
     font-size: 1.75rem;
     line-height: 1.2;
     color: var(--content-font-color);
+}
+
+.tools-page-title-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.tools-page-title-row .tools-page-title {
+    margin-bottom: 0.35rem;
+}
+
+.tools-page-title-badge {
+    border: 1px solid var(--bn-color-border);
+    border-radius: 999px;
+    background: var(--bn-color-surface-subtle);
+    color: var(--bn-color-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+    padding: 0.3rem 0.48rem;
 }
 
 .tools-page-lead {

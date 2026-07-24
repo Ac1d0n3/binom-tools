@@ -664,6 +664,22 @@ return [
             'workflowStep' => 4,
         ],
         [
+            'id' => 'qlik-set-analysis-generator',
+            'route' => 'tools.qlik-set-analysis-generator',
+            'label' => [
+                'de' => 'Qlik Set Analysis Generator',
+                'en' => 'Qlik Set Analysis Generator',
+            ],
+            'description' => [
+                'de' => 'Child Measures und Variablen aus einer Base Measure plus Dimension-Wert-CSV erzeugen.',
+                'en' => 'Generate child measures and variables from a base measure plus dimension-value CSV.',
+            ],
+            'example' => true,
+            'icon' => 'fa-filter',
+            'accent' => 'primary',
+            'for' => ['Qlik'],
+        ],
+        [
             'id' => 'architecture-fit',
             'route' => 'tools.architecture-fit',
             'label' => [

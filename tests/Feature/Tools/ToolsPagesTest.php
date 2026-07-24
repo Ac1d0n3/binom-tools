@@ -81,6 +81,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('PureView Classification Generator');
         $response->assertSee('PureView Glossary Generator');
         $response->assertSee('PureView Data Product Generator');
+        $response->assertSee('Qlik Set Analysis Generator');
         $response->assertSee('tools-card__platform-mark', false);
         $response->assertSee('images/fabric-badge.svg', false);
         $response->assertSee('images/databricks-badge.svg', false);
@@ -97,6 +98,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-products="fabric"', false);
         $response->assertSee('data-products="databricks"', false);
         $response->assertSee('data-products="pureview"', false);
+        $response->assertSee('data-products="qlik"', false);
         $response->assertSee('data-products="dbt"', false);
         $response->assertSee('data-overview-item', false);
         $response->assertSee('tools-overview-sticky-header', false);
@@ -257,6 +259,58 @@ class ToolsPagesTest extends TestCase
         }
     }
 
+    public function test_qlik_set_analysis_generator_renders(): void
+    {
+        $this->get('/tools/qlik-set-analysis-generator')
+            ->assertOk()
+            ->assertSee('qlik-set-analysis-generator-app', false)
+            ->assertSee('qlik-set-workbench-title', false)
+            ->assertSee('qlik-set-help-toggle', false)
+            ->assertSee('qlik-set-help-body', false)
+            ->assertSee('qlikSet.help.show', false)
+            ->assertSee('qlik-set-base-measure', false)
+            ->assertSee('qlik-set-current-formula-pre', false)
+            ->assertSee('qlikSet.formula.current', false)
+            ->assertSee('qlikSet.functions.title', false)
+            ->assertSee('data-qlik-function="Aggr(Sum([Sales]), [Region])"', false)
+            ->assertSee('qlik-set-base-description', false)
+            ->assertSee('qlik-set-csv-file', false)
+            ->assertSee('qlik-set-fields-file', false)
+            ->assertSee('qlik-set-vars-file', false)
+            ->assertSee('qlik-set-import-modal-open', false)
+            ->assertSee('qlik-set-import-modal', false)
+            ->assertSee('qlik-set-import-modal-close', false)
+            ->assertSee('qlikSet.catalog.rawDataHint', false)
+            ->assertSee('qlik-set-field-options', false)
+            ->assertSee('qlik-set-variable-use', false)
+            ->assertSee('qlik-set-use-variable-base', false)
+            ->assertSee('qlik-set-field-chips', false)
+            ->assertSee('qlik-set-filter-dropzone', false)
+            ->assertSee('qlik-set-set-var-name', false)
+            ->assertSee('qlik-set-set-var-values', false)
+            ->assertSee('qlik-set-add-set-variable', false)
+            ->assertSee('qlikSet.setVars.title', false)
+            ->assertSee('qlik-set-search-expression', false)
+            ->assertSee('qlik-set-add-search-filter', false)
+            ->assertSee('qlikSet.setSearch.title', false)
+            ->assertSee('qlik-set-tree-preview', false)
+            ->assertSee('qlikSet.tree.title', false)
+            ->assertSee('qlikSet.filter.dropTitle', false)
+            ->assertSee('qlik-set-hierarchy-dropzone', false)
+            ->assertSee('qlik-set-hierarchy-levels', false)
+            ->assertSee('qlik-set-hierarchy-pre', false)
+            ->assertSee('qlikSet.hierarchy.title', false)
+            ->assertSee('data-qlik-dropzone="formula"', false)
+            ->assertSee('data-qlik-dropzone="hierarchy"', false)
+            ->assertSee('data-qlik-kpi="yoyPct"', false)
+            ->assertSee('data-qlik-help-tab="quick"', false)
+            ->assertSee('qlik-set-measures-pre', false)
+            ->assertSee('qlik-set-time-vars-pre', false)
+            ->assertSee('qlikSet.masterItems.summary', false)
+            ->assertSee('qlikSet.useCases.summary', false)
+            ->assertSee('qlikSet.fields.summary', false);
+    }
+
     public function test_meta_export_generator_page_renders(): void
     {
         $response = $this->get('/tools/meta-export-generator');
@@ -343,6 +397,7 @@ class ToolsPagesTest extends TestCase
         $this->assertStringContainsString('data-sidenav-accordion="fabric"', $toolsNav);
         $this->assertStringContainsString('data-sidenav-accordion="databricks"', $toolsNav);
         $this->assertStringContainsString('data-sidenav-accordion="pureview"', $toolsNav);
+        $this->assertStringContainsString('data-sidenav-accordion="qlik"', $toolsNav);
         $this->assertLessThan(
             strpos($toolsNav, 'data-sidenav-accordion="dbt"'),
             strpos($toolsNav, 'data-sidenav-accordion="ai"'),
@@ -356,9 +411,11 @@ class ToolsPagesTest extends TestCase
         $this->assertStringContainsString('data-i18n-nav="dbt-governance-macro-generator"', $toolsNav);
         $this->assertStringContainsString('data-i18n-nav="fabric-dq-pattern-generator"', $toolsNav);
         $this->assertStringContainsString('data-i18n-nav="pureview-scan-generator"', $toolsNav);
+        $this->assertStringContainsString('data-i18n-nav="qlik-set-analysis-generator"', $toolsNav);
         $this->assertStringContainsString('PII Macro Generator', $toolsNav);
         $this->assertStringContainsString('Prompt Studio', $toolsNav);
         $this->assertStringContainsString('PureView Scan Generator', $toolsNav);
+        $this->assertStringContainsString('Qlik Set Analysis Generator', $toolsNav);
         $this->assertStringNotContainsString('tools-sidenav__step-num', $toolsNav);
 
         $storiesNav = (string) str($response->getContent())

@@ -3,10 +3,16 @@
     'toolId' => null,
     'appId',
     'leadKey' => null,
+    'titleBadge' => null,
 ])
 
 <div class="tools-content tools-content--wide">
-    <h1 class="tools-page-title" data-i18n="{{ $titleKey }}"></h1>
+    <div class="tools-page-title-row">
+        <h1 class="tools-page-title" data-i18n="{{ $titleKey }}"></h1>
+        @if ($titleBadge)
+            <span class="tools-page-title-badge">{{ $titleBadge }}</span>
+        @endif
+    </div>
 
     @if ($leadKey)
         <p class="tools-page-lead" data-i18n="{{ $leadKey }}"></p>

@@ -1,0 +1,955 @@
+#qlik-set-analysis-generator-app {
+    --qlik-surface: var(--tools-card-background, var(--content-background-color));
+    --qlik-surface-muted: var(--surface-background-color, var(--content-background-color));
+    --qlik-surface-raised: color-mix(in srgb, var(--qlik-surface) 92%, var(--qlik-surface-muted));
+    --qlik-border: var(--tools-card-border, var(--base-border-color));
+    --qlik-border-strong: color-mix(in srgb, var(--theme-color-primary) 34%, var(--qlik-border));
+    --qlik-text: var(--content-font-color);
+    --qlik-text-muted: var(--bn-color-text-secondary);
+    --qlik-accent: var(--theme-color-primary);
+    --qlik-accent-contrast: var(--theme-color-primary-contrast, #fff);
+    --qlik-accent-soft: color-mix(in srgb, var(--qlik-accent) 11%, var(--qlik-surface));
+    --qlik-accent-softer: color-mix(in srgb, var(--qlik-accent) 7%, var(--qlik-surface));
+    --qlik-success: var(--theme-color-success, var(--theme-color-info, var(--qlik-accent)));
+    --qlik-success-soft: color-mix(in srgb, var(--qlik-success) 12%, var(--qlik-surface));
+    --qlik-warning: var(--theme-color-warning, #b7791f);
+    --qlik-warning-soft: color-mix(in srgb, var(--qlik-warning) 13%, var(--qlik-surface));
+    --qlik-focus-ring: color-mix(in srgb, var(--qlik-accent) 24%, transparent);
+    --qlik-shadow: 0 18px 60px color-mix(in srgb, #000 22%, transparent);
+    --qlik-backdrop: color-mix(in srgb, #000 42%, transparent);
+}
+
+.qlik-set-help {
+    border-left: 4px solid var(--qlik-accent);
+    display: grid;
+    gap: 0;
+    padding: 1rem 1.1rem;
+}
+
+.qlik-set-help__header {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.qlik-set-help__lead {
+    color: var(--qlik-text-muted);
+    font-size: 0.9rem;
+    margin: 0.25rem 0 0;
+}
+
+.qlik-set-help__toggle {
+    flex: 0 0 auto;
+}
+
+.qlik-set-help__body {
+    border-top: 1px solid var(--qlik-border);
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+}
+
+.qlik-set-help__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.qlik-set-help__tab {
+    border: 1px solid var(--qlik-border);
+    border-radius: 999px;
+    background: var(--qlik-surface);
+    color: var(--qlik-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.88rem;
+    padding: 0.4rem 0.7rem;
+}
+
+.qlik-set-help__tab.is-active {
+    background: var(--qlik-accent);
+    border-color: var(--qlik-accent);
+    color: var(--qlik-accent-contrast);
+}
+
+.qlik-set-help__panel {
+    color: var(--qlik-text);
+    display: grid;
+    font-size: 0.95rem;
+    gap: 0.75rem;
+    line-height: 1.55;
+    max-width: 68rem;
+}
+
+.qlik-set-help__panel > p {
+    margin: 0;
+    max-width: 58rem;
+}
+
+.qlik-set-help__steps {
+    counter-reset: qlik-help-step;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.qlik-set-help__steps li {
+    align-items: flex-start;
+    border: 1px solid var(--qlik-border);
+    border-radius: 8px;
+    background: var(--qlik-surface-raised);
+    counter-increment: qlik-help-step;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: auto 1fr;
+    margin: 0;
+    padding: 0.72rem 0.8rem;
+}
+
+.qlik-set-help__steps li::before {
+    align-items: center;
+    border-radius: 999px;
+    background: var(--qlik-accent);
+    color: var(--qlik-accent-contrast);
+    content: counter(qlik-help-step);
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    height: 1.45rem;
+    justify-content: center;
+    line-height: 1;
+    width: 1.45rem;
+}
+
+.qlik-set-help__note {
+    border: 1px solid color-mix(in srgb, var(--qlik-warning) 28%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-warning-soft);
+    color: var(--qlik-text);
+    padding: 0.75rem 0.85rem;
+}
+
+.qlik-set-help__cases {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.qlik-set-help__cases li {
+    border-left: 3px solid var(--qlik-accent);
+    background: var(--qlik-accent-softer);
+    border-radius: 8px;
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+}
+
+.qlik-set-example-csv {
+    margin: 0;
+    max-height: 11rem;
+    overflow: auto;
+}
+
+.qlik-set-help__panel[hidden] {
+    display: none;
+}
+
+.qlik-set-help.is-collapsed {
+    background: var(--qlik-accent-softer);
+}
+
+.qlik-set-mini-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 1rem;
+}
+
+.qlik-set-mini-grid--one {
+    grid-template-columns: 1fr;
+}
+
+.qlik-set-workbench-toolbar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+}
+
+.qlik-set-layout-button {
+    opacity: 0.62;
+}
+
+.qlik-set-layout-button.is-active {
+    border-color: var(--qlik-accent);
+    box-shadow: 0 0 0 2px var(--qlik-focus-ring);
+    opacity: 1;
+}
+
+.qlik-set-workbench {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(210px, 0.8fr) minmax(420px, 1.6fr) minmax(280px, 1fr);
+    align-items: start;
+}
+
+.qlik-set-workbench[data-layout-catalog="closed"][data-layout-composer="open"][data-layout-builder="open"] {
+    grid-template-columns: minmax(520px, 1.45fr) minmax(320px, 1fr);
+}
+
+.qlik-set-workbench[data-layout-catalog="open"][data-layout-composer="closed"][data-layout-builder="open"] {
+    grid-template-columns: minmax(260px, 0.9fr) minmax(420px, 1.35fr);
+}
+
+.qlik-set-workbench[data-layout-catalog="open"][data-layout-composer="open"][data-layout-builder="closed"] {
+    grid-template-columns: minmax(260px, 0.75fr) minmax(620px, 1.8fr);
+}
+
+.qlik-set-workbench[data-layout-catalog="open"][data-layout-composer="closed"][data-layout-builder="closed"],
+.qlik-set-workbench[data-layout-catalog="closed"][data-layout-composer="open"][data-layout-builder="closed"],
+.qlik-set-workbench[data-layout-catalog="closed"][data-layout-composer="closed"][data-layout-builder="open"] {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.qlik-set-workbench[data-layout-catalog="closed"][data-layout-composer="closed"][data-layout-builder="closed"] {
+    display: none;
+}
+
+.qlik-set-workbench[data-layout-catalog="closed"] [data-qlik-column="catalog"],
+.qlik-set-workbench[data-layout-composer="closed"] [data-qlik-column="composer"],
+.qlik-set-workbench[data-layout-builder="closed"] [data-qlik-column="builder"] {
+    display: none;
+}
+
+.qlik-set-rail,
+.qlik-set-composer,
+.qlik-set-filter-builder {
+    border: 1px solid var(--qlik-border);
+    border-radius: 8px;
+    background: var(--qlik-surface-raised);
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+}
+
+.qlik-set-rail__header,
+.qlik-set-section-title {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.qlik-set-rail h3,
+.qlik-set-section-title h3 {
+    font-size: 0.98rem;
+    margin: 0;
+}
+
+.qlik-set-section-title p,
+.qlik-set-small {
+    color: var(--qlik-text-muted);
+    font-size: 0.86rem;
+    margin: 0;
+}
+
+.qlik-set-upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.qlik-set-file-button {
+    cursor: pointer;
+    font-size: 0.82rem;
+}
+
+.qlik-set-file-button input {
+    display: none;
+}
+
+.qlik-set-modal {
+    border: 1px solid var(--qlik-border);
+    border-radius: 10px;
+    box-shadow: var(--qlik-shadow);
+    max-width: min(980px, calc(100vw - 2rem));
+    padding: 0;
+    width: 72rem;
+}
+
+.qlik-set-modal::backdrop {
+    background: var(--qlik-backdrop);
+}
+
+.qlik-set-modal__form {
+    background: var(--qlik-surface);
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.qlik-set-modal__header {
+    align-items: start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.qlik-set-modal__title {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.qlik-set-formula-dropzone {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.96rem;
+    min-height: 8rem;
+    resize: vertical;
+}
+
+.qlik-set-current-formula {
+    border: 1px solid color-mix(in srgb, var(--qlik-success) 34%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-success-soft);
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.75rem;
+}
+
+.qlik-set-current-formula__label {
+    color: var(--qlik-text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.qlik-set-current-formula__pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.86rem;
+    margin: 0;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+.qlik-set-formula-dropzone.is-drag-over,
+.qlik-set-filter-dropzone.is-drag-over {
+    border-color: var(--qlik-accent);
+    box-shadow: 0 0 0 3px var(--qlik-focus-ring);
+}
+
+.qlik-set-inline-control {
+    max-width: 11rem;
+}
+
+.qlik-set-history-bar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.qlik-set-history-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+}
+
+.qlik-set-state-pill {
+    border: 1px solid color-mix(in srgb, var(--qlik-accent) 24%, var(--qlik-border));
+    border-radius: 999px;
+    background: var(--qlik-accent-softer);
+    color: var(--qlik-text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0.42rem 0.7rem;
+}
+
+.qlik-set-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 1rem;
+}
+
+.qlik-set-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+}
+
+.qlik-set-chip-row--stacked {
+    align-content: flex-start;
+    display: grid;
+    gap: 0.75rem;
+    max-height: 11rem;
+    overflow: auto;
+}
+
+.qlik-set-catalog-group {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.qlik-set-catalog-group h4 {
+    color: var(--qlik-text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.qlik-set-catalog-group__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.qlik-set-chip {
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--qlik-accent) 28%, var(--qlik-border));
+    border-radius: 999px;
+    background: var(--qlik-accent-soft);
+    color: var(--qlik-text);
+    cursor: pointer;
+    display: inline-flex;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font: inherit;
+    padding: 0.25rem 0.55rem;
+}
+
+.qlik-set-chip__icon {
+    align-items: center;
+    border-radius: 999px;
+    color: var(--qlik-accent-contrast);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 0.64rem;
+    font-weight: 800;
+    height: 1rem;
+    justify-content: center;
+    line-height: 1;
+    width: 1rem;
+}
+
+.qlik-set-chip__icon--dimension {
+    background: var(--qlik-accent);
+}
+
+.qlik-set-chip__icon--dimension::before {
+    content: "D";
+}
+
+.qlik-set-chip--measure {
+    background: var(--qlik-warning-soft);
+    border-color: color-mix(in srgb, var(--qlik-warning) 36%, var(--qlik-border));
+}
+
+.qlik-set-chip__icon--measure {
+    background: var(--qlik-warning);
+    color: var(--qlik-text);
+}
+
+.qlik-set-chip__icon--measure::before {
+    content: "#";
+}
+
+.qlik-set-chip--date {
+    background: var(--qlik-success-soft);
+    border-color: color-mix(in srgb, var(--qlik-success) 34%, var(--qlik-border));
+}
+
+.qlik-set-chip__icon--date {
+    background: var(--qlik-success);
+}
+
+.qlik-set-chip__icon--date::before {
+    content: "T";
+}
+
+.qlik-set-chip__icon--other {
+    background: var(--qlik-border-strong);
+    color: var(--qlik-text);
+}
+
+.qlik-set-chip__icon--other::before {
+    content: "?";
+}
+
+.qlik-set-chip:hover,
+.qlik-set-chip:focus-visible {
+    border-color: var(--qlik-accent);
+    box-shadow: 0 0 0 2px var(--qlik-focus-ring);
+}
+
+.qlik-set-chip--variable {
+    background: var(--qlik-success-soft);
+    border-color: color-mix(in srgb, var(--qlik-success) 32%, var(--qlik-border));
+}
+
+.qlik-set-chip__icon--variable {
+    background: var(--qlik-success);
+}
+
+.qlik-set-chip__icon--variable::before {
+    content: "v";
+}
+
+.qlik-set-palette {
+    border-top: 1px solid var(--qlik-border);
+    display: grid;
+    gap: 0.65rem;
+    padding-top: 0.9rem;
+}
+
+.qlik-set-palette__header {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.qlik-set-palette__header h4,
+.qlik-set-palette__group h5 {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.qlik-set-palette__hint {
+    color: var(--qlik-text-muted);
+    display: block;
+    font-size: 0.78rem;
+    max-width: 26rem;
+    margin-top: 0.2rem;
+}
+
+.qlik-set-palette__toggle {
+    flex: 0 0 auto;
+}
+
+.qlik-set-palette__scroll {
+    border: 1px solid var(--qlik-border);
+    border-radius: 8px;
+    background: var(--qlik-surface-muted);
+    display: grid;
+    gap: 0.8rem;
+    max-height: 15.5rem;
+    overflow: auto;
+    padding: 0.75rem;
+}
+
+.qlik-set-palette__scroll[hidden] {
+    display: none;
+}
+
+.qlik-set-palette__group {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.qlik-set-palette__group + .qlik-set-palette__group {
+    border-top: 1px solid var(--qlik-border);
+    padding-top: 0.75rem;
+}
+
+.qlik-set-hierarchy {
+    border-top: 1px solid var(--qlik-border);
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 0.9rem;
+}
+
+.qlik-set-builder-panel > .qlik-set-hierarchy:first-child,
+.qlik-set-builder-panel > .qlik-set-setvar-builder:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.qlik-set-hierarchy-dropzone {
+    border: 2px dashed color-mix(in srgb, var(--qlik-success) 58%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-success-soft);
+    display: grid;
+    gap: 0.25rem;
+    min-height: 4.8rem;
+    padding: 0.9rem;
+    place-content: center;
+    text-align: center;
+}
+
+.qlik-set-hierarchy-dropzone.is-drag-over {
+    border-color: var(--qlik-success);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--qlik-success) 24%, transparent);
+}
+
+.qlik-set-hierarchy-preview {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    min-height: 2rem;
+}
+
+.qlik-set-hierarchy-node {
+    border: 1px solid var(--qlik-border);
+    background: var(--qlik-surface);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+}
+
+.qlik-set-hierarchy-arrow {
+    color: var(--qlik-text-muted);
+    font-size: 0.8rem;
+}
+
+.qlik-set-hierarchy-text {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.qlik-set-block-grid {
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: repeat(auto-fit, minmax(6.4rem, 1fr));
+}
+
+.qlik-set-block-grid--dense {
+    grid-template-columns: repeat(auto-fit, minmax(6.2rem, 1fr));
+}
+
+.qlik-set-block {
+    border: 1px solid color-mix(in srgb, var(--qlik-warning) 32%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-warning-soft);
+    color: var(--qlik-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    min-height: 2.1rem;
+    padding: 0.38rem 0.48rem;
+    text-align: center;
+}
+
+.qlik-set-block--function {
+    min-height: 2.1rem;
+}
+
+.qlik-set-block:hover,
+.qlik-set-block:focus-visible {
+    border-color: var(--qlik-warning);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--qlik-warning) 20%, transparent);
+}
+
+.qlik-set-block.is-active {
+    background: var(--qlik-accent);
+    border-color: var(--qlik-accent);
+    color: var(--qlik-accent-contrast);
+    cursor: not-allowed;
+}
+
+.qlik-set-block:disabled {
+    opacity: 0.82;
+}
+
+.qlik-set-block:disabled:hover,
+.qlik-set-block:disabled:focus-visible {
+    box-shadow: none;
+}
+
+.qlik-set-builder-tabs {
+    border: 1px solid var(--qlik-border);
+    border-radius: 8px;
+    background: var(--qlik-surface-muted);
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 0.25rem;
+}
+
+.qlik-set-builder-tab {
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--qlik-text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    min-height: 2rem;
+    padding: 0.4rem 0.5rem;
+}
+
+.qlik-set-builder-tab:hover,
+.qlik-set-builder-tab:focus-visible {
+    border-color: var(--qlik-border-strong);
+    color: var(--qlik-text);
+}
+
+.qlik-set-builder-tab.is-active {
+    background: var(--qlik-accent);
+    border-color: var(--qlik-accent);
+    color: var(--qlik-accent-contrast);
+}
+
+.qlik-set-builder-panel {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.qlik-set-builder-panel[hidden] {
+    display: none;
+}
+
+.qlik-set-filter-dropzone {
+    border: 2px dashed color-mix(in srgb, var(--qlik-accent) 55%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-accent-soft);
+    color: var(--qlik-text);
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.88rem;
+    min-height: 5rem;
+    padding: 1rem;
+    place-content: center;
+    text-align: center;
+}
+
+.qlik-set-filter-dropzone strong {
+    font-size: 0.98rem;
+}
+
+.qlik-set-filter-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    min-height: 1.75rem;
+}
+
+.qlik-set-child-tree {
+    border-top: 1px solid var(--qlik-border);
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 0.9rem;
+}
+
+.qlik-set-tree-preview {
+    border: 1px solid var(--qlik-border);
+    border-radius: 8px;
+    background: var(--qlik-surface);
+    max-height: 18rem;
+    overflow: auto;
+    padding: 0.7rem;
+}
+
+.qlik-set-tree-context {
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--qlik-accent) 24%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-accent-softer);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: space-between;
+    margin-bottom: 0.65rem;
+    padding: 0.5rem 0.6rem;
+}
+
+.qlik-set-tree-context span {
+    color: var(--qlik-text-muted);
+    font-size: 0.76rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.qlik-set-tree-context strong {
+    color: var(--qlik-text);
+    font-size: 0.9rem;
+}
+
+.qlik-set-tree-list,
+.qlik-set-tree-list ul {
+    display: grid;
+    gap: 0.28rem;
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.qlik-set-tree-list ul {
+    border-left: 2px solid color-mix(in srgb, var(--qlik-accent) 28%, var(--qlik-border));
+    margin-left: 0.65rem;
+    padding-left: 0.65rem;
+}
+
+.qlik-set-tree-node {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.qlik-set-tree-node[draggable='true'] {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: grab;
+    margin-left: -0.35rem;
+    padding: 0.25rem 0.35rem;
+}
+
+.qlik-set-tree-node[draggable='true']:hover,
+.qlik-set-tree-node[draggable='true']:focus-visible {
+    background: var(--qlik-surface-muted);
+    border-color: var(--qlik-border);
+}
+
+.qlik-set-tree-node.is-dragging {
+    opacity: 0.48;
+}
+
+.qlik-set-tree-node--root {
+    font-weight: 700;
+}
+
+.qlik-set-tree-node span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.qlik-set-tree-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    justify-content: flex-end;
+    max-width: 9rem;
+}
+
+.qlik-set-tree-action {
+    border: 1px solid var(--qlik-border);
+    border-radius: 999px;
+    background: var(--qlik-surface-muted);
+    color: var(--qlik-text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1;
+    min-height: 1.45rem;
+    padding: 0.25rem 0.42rem;
+}
+
+.qlik-set-tree-action:hover,
+.qlik-set-tree-action:focus-visible {
+    border-color: var(--qlik-accent);
+    color: var(--qlik-text);
+}
+
+.qlik-set-tree-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+}
+
+.qlik-set-tree-slot {
+    border: 1px dashed color-mix(in srgb, var(--qlik-accent) 48%, var(--qlik-border));
+    border-radius: 8px;
+    background: var(--qlik-accent-softer);
+    color: var(--qlik-text-muted);
+    cursor: pointer;
+    display: block;
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0.16rem 0;
+    min-height: 2.1rem;
+    padding: 0.42rem 0.55rem;
+    text-align: center;
+    width: 100%;
+}
+
+.qlik-set-tree-slot--root {
+    margin-bottom: 0.35rem;
+}
+
+.qlik-set-tree-slot:hover,
+.qlik-set-tree-slot:focus-visible,
+.qlik-set-tree-slot.is-drag-over {
+    border-color: var(--qlik-accent);
+    background: var(--qlik-accent-soft);
+    box-shadow: 0 0 0 2px var(--qlik-focus-ring);
+    color: var(--qlik-text);
+}
+
+.qlik-set-tree-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0.2rem 0 0.25rem;
+}
+
+.qlik-set-tree-values span,
+.qlik-set-tree-leaf {
+    border: 1px solid var(--qlik-border);
+    border-radius: 999px;
+    background: var(--qlik-surface-muted);
+    color: var(--qlik-text-muted);
+    font-size: 0.74rem;
+    line-height: 1.2;
+    padding: 0.18rem 0.42rem;
+}
+
+.qlik-set-setvar-builder {
+    border-top: 1px solid var(--qlik-border);
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 0.9rem;
+}
+
+.qlik-set-filter-pill {
+    border: 1px solid var(--qlik-border);
+    border-radius: 999px;
+    background: var(--qlik-surface);
+    font-size: 0.78rem;
+    padding: 0.25rem 0.55rem;
+}
+
+.qlik-set-details {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.qlik-set-details summary {
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.qlik-set-row-builder {
+    margin-top: 1rem;
+}
+
+@media (max-width: 1100px) {
+    .qlik-set-workbench {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .qlik-set-mini-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .qlik-set-block-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

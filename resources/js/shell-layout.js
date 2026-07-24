@@ -1,12 +1,18 @@
 import { getLocale } from './locale.js';
 
 const FULL_WIDTH_STORAGE_KEY = 'binom-tools-shell-full-width';
+const SIDEBAR_COLLAPSED_STORAGE_KEY = 'binom-tools-shell-sidebar-collapsed';
 const PLAYBOOK_FOCUS_STORAGE_KEY = 'binom-tools-playbook-focus';
 const PLAYBOOK_TOC_OPEN_STORAGE_KEY = 'binom-tools-playbook-toc-open';
 
 /** @returns {boolean} */
 export function getShellFullWidth() {
     return localStorage.getItem(FULL_WIDTH_STORAGE_KEY) === 'true';
+}
+
+/** @returns {boolean} */
+export function getShellSidebarCollapsed() {
+    return localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === 'true';
 }
 
 /** @returns {boolean} */
@@ -43,6 +49,20 @@ export function applyShellFullWidth(enabled) {
     document.querySelectorAll('[data-shell-full-width-toggle]').forEach((input) => {
         if (input instanceof HTMLInputElement) {
             input.checked = enabled;
+        }
+    });
+}
+
+/** @param {boolean} collapsed */
+export function applyShellSidebarCollapsed(collapsed) {
+    document.documentElement.dataset.shellSidebarCollapsed = collapsed ? 'true' : 'false';
+
+    const shell = document.getElementById('tools-shell');
+    shell?.classList.toggle('tools-shell--sidebar-collapsed', collapsed);
+
+    document.querySelectorAll('[data-shell-sidebar-toggle]').forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+            input.checked = collapsed;
         }
     });
 }
@@ -142,6 +162,13 @@ export function setShellFullWidth(enabled) {
     window.dispatchEvent(new CustomEvent('binom-tools:shell-layout', { detail: { fullWidth: enabled } }));
 }
 
+/** @param {boolean} collapsed */
+export function setShellSidebarCollapsed(collapsed) {
+    localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, collapsed ? 'true' : 'false');
+    applyShellSidebarCollapsed(collapsed);
+    window.dispatchEvent(new CustomEvent('binom-tools:shell-layout', { detail: { sidebarCollapsed: collapsed } }));
+}
+
 /** @param {boolean} enabled */
 export function setPlaybookFocus(enabled) {
     localStorage.setItem(PLAYBOOK_FOCUS_STORAGE_KEY, enabled ? 'true' : 'false');
@@ -204,6 +231,7 @@ function toggleSettingsMenu() {
 
 export function initShellLayoutControls() {
     applyShellFullWidth(getShellFullWidth());
+    applyShellSidebarCollapsed(getShellSidebarCollapsed());
     // First visit: TOC open by default when preference was never stored.
     if (localStorage.getItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY) === null) {
         localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'true');
@@ -222,6 +250,15 @@ export function initShellLayoutControls() {
         }
 
         setShellFullWidth(input.checked);
+    });
+
+    document.querySelector('[data-shell-sidebar-toggle]')?.addEventListener('change', (event) => {
+        const input = event.currentTarget;
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+
+        setShellSidebarCollapsed(input.checked);
     });
 
     document.querySelectorAll('[data-playbook-focus-toggle]').forEach((input) => {
