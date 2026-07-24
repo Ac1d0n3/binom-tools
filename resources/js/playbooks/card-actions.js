@@ -62,28 +62,6 @@ function renderCardStats(card, data) {
 }
 
 /**
- * Prefetch liked state for visible cards.
- * @param {ParentNode} [root]
- */
-function hydrateCardLikeStates(root = document) {
-    root.querySelectorAll('[data-playbook-index-card][data-stats-show-url]').forEach((card) => {
-        if (!(card instanceof HTMLElement) || card.dataset.likeHydrated === '1') {
-            return;
-        }
-
-        const showUrl = card.dataset.statsShowUrl ?? '';
-        if (showUrl === '') {
-            return;
-        }
-
-        card.dataset.likeHydrated = '1';
-        jsonFetch(showUrl)
-            .then((data) => renderCardStats(card, data))
-            .catch(() => {});
-    });
-}
-
-/**
  * @param {HTMLButtonElement} button
  * @param {boolean} busy
  */
@@ -169,11 +147,64 @@ async function handleCardOfflineClick(button) {
 }
 
 /**
+ * @param {HTMLButtonElement} button
+ */
+async function handleSeriesOfflineClick(button) {
+    const seriesId = button.dataset.seriesId ?? '';
+    const slugs = (button.dataset.seriesSlugs ?? '')
+        .split(',')
+        .map((slug) => slug.trim())
+        .filter(Boolean);
+
+    if (seriesId === '' || slugs.length === 0) {
+        return;
+    }
+
+    setBusy(button, true);
+
+    try {
+        const {
+            downloadSeriesOffline,
+            getOfflineStory,
+            isOfflineSupported,
+            removeSeriesOffline,
+        } = await import('./offline.js');
+
+        if (!isOfflineSupported()) {
+            window.alert(
+                'Offline-Speichern braucht HTTPS oder localhost und einen Service Worker.',
+            );
+            return;
+        }
+
+        const savedFlags = await Promise.all(slugs.map((slug) => getOfflineStory(slug)));
+        const allSaved = savedFlags.every((meta) => meta !== null);
+
+        if (allSaved) {
+            await removeSeriesOffline(slugs);
+        } else {
+            await downloadSeriesOffline(seriesId);
+        }
+
+        window.dispatchEvent(new CustomEvent('binom-tools:playbook-offline-changed'));
+    } catch (error) {
+        console.warn('Series offline action failed', error);
+        const quota = error instanceof DOMException && error.name === 'QuotaExceededError';
+        window.alert(
+            quota
+                ? 'Nicht genug Speicherplatz. Speichere einzelne Stories statt alle.'
+                : 'Offline-Speichern fehlgeschlagen. Bitte online erneut versuchen.',
+        );
+    } finally {
+        setBusy(button, false);
+    }
+}
+
+/**
  * Install capture-phase click handlers for overview cards.
  */
 export function initPlaybookCardActions() {
     if (document.documentElement.dataset.cardActionsWired === '1') {
-        hydrateCardLikeStates(document);
         return;
     }
 
@@ -195,6 +226,14 @@ export function initPlaybookCardActions() {
                 return;
             }
 
+            const seriesOfflineBtn = target.closest('[data-playbook-series-offline]');
+            if (seriesOfflineBtn instanceof HTMLButtonElement) {
+                event.preventDefault();
+                event.stopPropagation();
+                void handleSeriesOfflineClick(seriesOfflineBtn);
+                return;
+            }
+
             const offlineBtn = target.closest('[data-playbook-card-offline]');
             if (offlineBtn instanceof HTMLButtonElement) {
                 event.preventDefault();
@@ -204,6 +243,4 @@ export function initPlaybookCardActions() {
         },
         true,
     );
-
-    hydrateCardLikeStates(document);
 }

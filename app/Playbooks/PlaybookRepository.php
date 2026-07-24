@@ -123,6 +123,21 @@ final class PlaybookRepository
             ->all();
     }
 
+    public function findSeries(string $seriesId): ?PlaybookSeriesOverview
+    {
+        if ($seriesId === '') {
+            return null;
+        }
+
+        foreach ($this->allSeries() as $series) {
+            if ($series->id === $seriesId) {
+                return $series;
+            }
+        }
+
+        return null;
+    }
+
     public function find(string $slug): ?Playbook
     {
         if (! $this->hasSlug($slug)) {

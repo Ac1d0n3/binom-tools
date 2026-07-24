@@ -1170,6 +1170,212 @@ html:has(.tools-shell__main--sprint-planner) body {
     color: var(--theme-color-primary);
 }
 
+.playbook-offline__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-color-primary) 18%, transparent);
+    color: var(--theme-color-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.playbook-offline-modal {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--tools-card-border, color-mix(in srgb, var(--bn-color-text) 14%, transparent));
+    border-radius: 14px;
+    width: min(32rem, calc(100vw - 2rem));
+    max-width: calc(100vw - 2rem);
+    height: fit-content;
+    max-height: min(40rem, calc(100dvh - 2rem));
+    overflow: hidden;
+    background: var(--tools-card-background, var(--bn-color-surface, #0f172a));
+    color: var(--bn-color-text, #e2e8f0);
+    box-shadow: 0 24px 64px color-mix(in srgb, #000 45%, transparent);
+}
+
+.playbook-offline-modal::backdrop {
+    background: color-mix(in srgb, #020617 72%, transparent);
+}
+
+.playbook-offline-modal__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    max-height: inherit;
+    padding: 1rem 1.1rem 1.1rem;
+    overflow: hidden;
+}
+
+.playbook-offline-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.playbook-offline-modal__title {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.3;
+}
+
+.playbook-offline-modal__close {
+    flex-shrink: 0;
+}
+
+.playbook-offline-modal__summary {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--bn-color-text-secondary, #94a3b8);
+}
+
+.playbook-offline-modal__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+}
+
+.playbook-offline-modal__actions .tools-btn {
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.playbook-offline-modal__size-hint {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--bn-color-text-secondary, #94a3b8);
+}
+
+.playbook-offline-modal__progress {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.playbook-offline-modal__progress-bar {
+    width: 100%;
+    height: 0.55rem;
+    border: 0;
+    border-radius: 999px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--theme-color-primary) 16%, transparent);
+}
+
+.playbook-offline-modal__progress-bar::-webkit-progress-bar {
+    background: color-mix(in srgb, var(--theme-color-primary) 16%, transparent);
+}
+
+.playbook-offline-modal__progress-bar::-webkit-progress-value {
+    background: var(--theme-color-primary);
+}
+
+.playbook-offline-modal__progress-bar::-moz-progress-bar {
+    background: var(--theme-color-primary);
+}
+
+.playbook-offline-modal__progress-label {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--bn-color-text-secondary, #94a3b8);
+}
+
+.playbook-offline-modal__empty {
+    margin: 0;
+    padding: 0.85rem 0.2rem;
+    font-size: 0.875rem;
+    color: var(--bn-color-text-secondary, #94a3b8);
+    text-align: center;
+}
+
+.playbook-offline-modal__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    min-height: 0;
+    flex: 1 1 auto;
+    border-top: 1px solid color-mix(in srgb, var(--bn-color-text) 10%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--bn-color-text) 10%, transparent);
+}
+
+.playbook-offline-modal__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.15rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--bn-color-text) 8%, transparent);
+}
+
+.playbook-offline-modal__item:last-child {
+    border-bottom: 0;
+}
+
+.playbook-offline-modal__item-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.playbook-offline-modal__item-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.playbook-offline-modal__item-size {
+    font-size: 0.75rem;
+    color: var(--bn-color-text-secondary, #94a3b8);
+}
+
+.playbook-offline-modal__item-remove {
+    flex-shrink: 0;
+    color: var(--theme-color-primary);
+}
+
+.playbook-offline-modal__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.playbook-offline-modal__footer > .tools-btn {
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.playbook-offline-modal__confirm {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.7rem 0.75rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--theme-color-secondary, #b45309) 10%, transparent);
+}
+
+.playbook-offline-modal__confirm p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.playbook-offline-modal__confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+}
+
 .playbook-offline-banner {
     margin: 0 0 0.75rem;
     padding: 0.65rem 0.9rem;
@@ -2687,7 +2893,6 @@ html[data-color-scheme='dark'] .tools-hero {
 
 .tools-series-card__start {
     align-self: flex-start;
-    margin-top: auto;
     padding: 0.45rem 0.75rem;
     border: 1px solid var(--base-border-color);
     border-radius: 8px;
@@ -2696,6 +2901,50 @@ html[data-color-scheme='dark'] .tools-hero {
     font-weight: 600;
     text-decoration: none;
     transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tools-series-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.tools-series-card__offline-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--theme-color-primary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.tools-series-card__offline-btn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--theme-color-primary) 28%, transparent);
+}
+
+.tools-series-card__offline-btn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.tools-series-card__offline-btn.is-saved {
+    color: var(--theme-color-secondary, #b45309);
+}
+
+.tools-series-card__offline-btn.is-saved:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--theme-color-secondary, #b45309) 10%, transparent);
+    border-color: color-mix(in srgb, var(--theme-color-secondary, #b45309) 28%, transparent);
 }
 
 .tools-series-card__start:hover {

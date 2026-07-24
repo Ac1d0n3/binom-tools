@@ -29,7 +29,7 @@ initExternalLinks();
 initCookieConsent();
 initPlaybookCardActions();
 
-if (document.querySelector('[data-playbook-offline-index], [data-playbook-card-offline]')) {
+if (document.querySelector('[data-playbook-offline-index], [data-playbook-card-offline], [data-playbook-series-offline]')) {
     void import('./playbooks/offline-ui')
         .then(({ initOfflineBanner, initPlaybookOfflineIndex }) => {
             initOfflineBanner();

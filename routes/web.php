@@ -54,8 +54,12 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/playbooks', [PlaybookController::class, 'index'])->name($name('playbooks.index'));
     Route::get('/playbooks/offline-manifest', [PlaybookOfflineController::class, 'index'])
-        ->middleware('throttle:30,1')
+        ->middleware('throttle:60,1')
         ->name($name('playbooks.offline.manifest'));
+    Route::get('/playbooks/series/{seriesId}/offline-manifest', [PlaybookOfflineController::class, 'series'])
+        ->where('seriesId', '[a-z0-9-]+')
+        ->middleware('throttle:60,1')
+        ->name($name('playbooks.offline.manifest.series'));
     Route::get('/playbooks/{slug}/offline-manifest', [PlaybookOfflineController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->middleware('throttle:60,1')

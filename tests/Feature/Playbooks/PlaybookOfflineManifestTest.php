@@ -56,4 +56,34 @@ class PlaybookOfflineManifestTest extends TestCase
     {
         $this->getJson('/playbooks/does-not-exist-story/offline-manifest')->assertNotFound();
     }
+
+    public function test_series_offline_manifest_lists_series_parts(): void
+    {
+        $response = $this->getJson('/playbooks/series/building-modern-data-warehouse/offline-manifest');
+
+        $response->assertOk();
+        $response->assertJsonPath('seriesId', 'building-modern-data-warehouse');
+        $response->assertJsonStructure([
+            'seriesId',
+            'title',
+            'titleDe',
+            'titleEn',
+            'bytesEstimate',
+            'shellUrls',
+            'indexUrls',
+            'stories',
+        ]);
+
+        $stories = $response->json('stories');
+        $this->assertIsArray($stories);
+        $this->assertNotEmpty($stories);
+
+        $slugs = collect($stories)->pluck('slug')->all();
+        $this->assertContains('beyond-bronze-silver-gold', $slugs);
+    }
+
+    public function test_unknown_series_manifest_is_not_found(): void
+    {
+        $this->getJson('/playbooks/series/does-not-exist-series/offline-manifest')->assertNotFound();
+    }
 }

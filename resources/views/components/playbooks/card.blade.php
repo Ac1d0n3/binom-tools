@@ -40,6 +40,7 @@
     $heroUrl = $item['heroUrl'] ?? null;
     $views = max(0, (int) ($item['stats']['views'] ?? 0));
     $likes = max(0, (int) ($item['stats']['likes'] ?? 0));
+    $liked = \App\Playbooks\PlaybookEngagementCookie::isLiked(request(), (string) $item['slug']);
     $productLabels = collect($products)
         ->map(fn (string $id): string => \App\Playbooks\PlaybookProducts::label($id))
         ->implode(' ');
@@ -70,7 +71,6 @@
     data-playbook-index-card
     data-overview-item
     data-playbook-slug="{{ $item['slug'] }}"
-    data-stats-show-url="{{ locale_route('playbooks.stats.show', ['slug' => $item['slug']]) }}"
     data-stats-like-url="{{ locale_route('playbooks.stats.like', ['slug' => $item['slug']]) }}"
     data-card-id="playbook-{{ $item['slug'] }}"
     data-search-text="{{ $searchText }}"
@@ -158,14 +158,18 @@
                 </span>
                 <button
                     type="button"
-                    class="tools-card__story-stat tools-card__story-like"
+                    @class([
+                        'tools-card__story-stat',
+                        'tools-card__story-like',
+                        'tools-card__story-like--active' => $liked,
+                    ])
                     data-playbook-card-like
-                    aria-pressed="false"
+                    aria-pressed="{{ $liked ? 'true' : 'false' }}"
                     data-i18n-aria="playbooks.like"
                     aria-label="Like"
                     title="Like"
                 >
-                    <i class="fa-regular fa-heart" aria-hidden="true" data-like-icon></i>
+                    <i @class(['fa-heart', 'fa-solid' => $liked, 'fa-regular' => ! $liked]) aria-hidden="true" data-like-icon></i>
                     <span data-playbook-card-likes>{{ number_format($likes) }}</span>
                 </button>
             </span>

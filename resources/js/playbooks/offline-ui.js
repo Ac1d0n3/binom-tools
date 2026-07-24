@@ -15,7 +15,7 @@ import {
 const OFFLINE_CHANGED_EVENT = 'binom-tools:playbook-offline-changed';
 
 /**
- * @param {HTMLElement} statusEl
+ * @param {HTMLElement | null} statusEl
  * @param {string} message
  * @param {'info' | 'success' | 'error' | 'progress'} [kind]
  */
@@ -90,7 +90,59 @@ async function syncAllCardOfflineStates() {
         applyCardOfflineState(card, slug !== null && slugs.has(slug));
     });
 
+    syncSeriesOfflineStates(slugs);
+
     return slugs;
+}
+
+/**
+ * @param {Set<string>} savedSlugs
+ */
+function syncSeriesOfflineStates(savedSlugs) {
+    document.querySelectorAll('[data-playbook-series-offline]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+
+        const partSlugs = (button.dataset.seriesSlugs ?? '')
+            .split(',')
+            .map((slug) => slug.trim())
+            .filter(Boolean);
+        const saved = partSlugs.length > 0 && partSlugs.every((slug) => savedSlugs.has(slug));
+
+        button.classList.toggle('is-saved', saved);
+
+        const saveIcon = button.querySelector('[data-offline-icon="save"]');
+        const removeIcon = button.querySelector('[data-offline-icon="remove"]');
+        if (saveIcon instanceof HTMLElement) {
+            saveIcon.hidden = saved;
+        }
+        if (removeIcon instanceof HTMLElement) {
+            removeIcon.hidden = !saved;
+        }
+
+        const labelEl = button.querySelector('[data-offline-label]');
+        const label = getShellLabel(saved ? 'playbooks.offline.removeSeriesShort' : 'playbooks.offline.saveSeriesShort');
+        if (labelEl instanceof HTMLElement) {
+            labelEl.textContent = label;
+        }
+
+        const aria = getShellLabel(saved ? 'playbooks.offline.removeSeries' : 'playbooks.offline.saveSeries');
+        button.setAttribute('aria-label', aria);
+        button.setAttribute('title', aria);
+    });
+}
+
+/**
+ * @param {{ title?: string, titleDe?: string, titleEn?: string, slug: string }} story
+ */
+function storyTitle(story) {
+    const locale = getLocale();
+    if (locale === 'de') {
+        return story.titleDe || story.title || story.titleEn || story.slug;
+    }
+
+    return story.titleEn || story.title || story.titleDe || story.slug;
 }
 
 /**
@@ -212,7 +264,6 @@ export async function initPlaybookOfflineDetail(root) {
 
 /**
  * Card offline clicks are handled by card-actions.js (capture delegation).
- * This only refreshes offline badges/icons after external changes.
  * @param {ParentNode} [root]
  */
 function wireCardOfflineButtons(root = document) {
@@ -228,13 +279,17 @@ function wireCardOfflineButtons(root = document) {
  */
 export async function initPlaybookOfflineIndex(root = document) {
     const controls = root.querySelector('[data-playbook-offline-index]');
+    const modal = root.querySelector('[data-playbook-offline-modal]')
+        ?? document.querySelector('[data-playbook-offline-modal]');
     const hasCards = root.querySelector('[data-playbook-card-offline]') !== null;
 
-    if (!(controls instanceof HTMLElement) && !hasCards) {
+    if (!(controls instanceof HTMLElement) && !hasCards && !(modal instanceof HTMLDialogElement)) {
         return;
     }
 
     const offlineOk = isOfflineSupported();
+    const openBtn = controls?.querySelector('[data-playbook-offline-open]');
+    const countEl = controls?.querySelector('[data-playbook-offline-count]');
 
     if (!offlineOk && controls instanceof HTMLElement) {
         controls.title = getShellLabel('playbooks.offline.unsupported');
@@ -245,121 +300,363 @@ export async function initPlaybookOfflineIndex(root = document) {
         });
     }
 
-    const saveAllBtn = controls?.querySelector('[data-playbook-offline-save-all]');
-    const removeAllBtn = controls?.querySelector('[data-playbook-offline-remove-all]');
-    const statusEl = document.querySelector('[data-playbook-offline-status]')
-        ?? controls?.querySelector('[data-playbook-offline-status]');
-    const sizeEl = controls?.querySelector('[data-playbook-offline-size]');
+    wireCardOfflineButtons(root);
 
-    const refreshToolbar = async () => {
-        const slugs = await syncAllCardOfflineStates();
+    /**
+     * @param {number} count
+     */
+    const updateToolbarCount = (count) => {
+        if (!(openBtn instanceof HTMLButtonElement)) {
+            return;
+        }
 
-        if (removeAllBtn instanceof HTMLButtonElement) {
-            removeAllBtn.hidden = slugs.size === 0;
-            const removeLabel = getShellLabel('playbooks.offline.removeAll')
-                .replace('{count}', String(slugs.size));
-            removeAllBtn.setAttribute('aria-label', removeLabel);
-            removeAllBtn.setAttribute('title', removeLabel);
+        const title = getShellLabel('playbooks.offline.manageTitle');
+        openBtn.setAttribute('aria-label', title);
+        openBtn.setAttribute('title', title);
+
+        if (countEl instanceof HTMLElement) {
+            if (count > 0) {
+                countEl.hidden = false;
+                countEl.textContent = String(count);
+            } else {
+                countEl.hidden = true;
+                countEl.textContent = '';
+            }
         }
     };
 
-    wireCardOfflineButtons(root);
+    const refreshCardsAndToolbar = async () => {
+        const slugs = await syncAllCardOfflineStates();
+        updateToolbarCount(slugs.size);
+        return slugs;
+    };
+
     window.addEventListener(OFFLINE_CHANGED_EVENT, () => {
-        void refreshToolbar();
+        void refreshCardsAndToolbar();
+        if (modal instanceof HTMLDialogElement && modal.open) {
+            void renderModalState();
+        }
     });
 
-    if (offlineOk && saveAllBtn instanceof HTMLButtonElement && removeAllBtn instanceof HTMLButtonElement) {
+    if (!(modal instanceof HTMLDialogElement) || !(openBtn instanceof HTMLButtonElement)) {
+        if (offlineOk) {
+            await refreshCardsAndToolbar();
+        }
+        return;
+    }
+
+    const closeBtn = modal.querySelector('[data-playbook-offline-close]');
+    const summaryEl = modal.querySelector('[data-playbook-offline-summary]');
+    const sizeHintEl = modal.querySelector('[data-playbook-offline-size-hint]');
+    const downloadBtn = modal.querySelector('[data-playbook-offline-download-all]');
+    const downloadLabel = modal.querySelector('[data-playbook-offline-download-label]');
+    const progressWrap = modal.querySelector('[data-playbook-offline-progress]');
+    const progressBar = modal.querySelector('[data-playbook-offline-progress-bar]');
+    const progressLabel = modal.querySelector('[data-playbook-offline-progress-label]');
+    const listEl = modal.querySelector('[data-playbook-offline-list]');
+    const emptyEl = modal.querySelector('[data-playbook-offline-empty]');
+    const removeAllBtn = modal.querySelector('[data-playbook-offline-remove-all]');
+    const confirmWrap = modal.querySelector('[data-playbook-offline-confirm-remove]');
+    const confirmYes = modal.querySelector('[data-playbook-offline-confirm-yes]');
+    const confirmNo = modal.querySelector('[data-playbook-offline-confirm-no]');
+
+    let busy = false;
+
+    /**
+     * @param {boolean} nextBusy
+     */
+    const setModalBusy = (nextBusy) => {
+        busy = nextBusy;
+        setBusy(openBtn, nextBusy);
+        if (downloadBtn instanceof HTMLButtonElement) {
+            setBusy(downloadBtn, nextBusy);
+        }
+        if (removeAllBtn instanceof HTMLButtonElement && !nextBusy) {
+            // enabled state refreshed in renderModalState
+        } else if (removeAllBtn instanceof HTMLButtonElement) {
+            removeAllBtn.disabled = true;
+        }
+        modal.querySelectorAll('[data-playbook-offline-remove-one]').forEach((btn) => {
+            if (btn instanceof HTMLButtonElement) {
+                btn.disabled = nextBusy;
+            }
+        });
+    };
+
+    /**
+     * @param {boolean} visible
+     * @param {number} [pct]
+     * @param {string} [message]
+     */
+    const setProgress = (visible, pct = 0, message = '') => {
+        if (progressWrap instanceof HTMLElement) {
+            progressWrap.hidden = !visible;
+        }
+        if (progressBar instanceof HTMLProgressElement) {
+            progressBar.value = Math.max(0, Math.min(100, pct));
+        }
+        if (progressLabel instanceof HTMLElement) {
+            progressLabel.textContent = message;
+        }
+    };
+
+    const hideConfirm = () => {
+        if (confirmWrap instanceof HTMLElement) {
+            confirmWrap.hidden = true;
+        }
+        if (removeAllBtn instanceof HTMLButtonElement) {
+            removeAllBtn.hidden = false;
+        }
+    };
+
+    const showConfirm = () => {
+        if (confirmWrap instanceof HTMLElement) {
+            confirmWrap.hidden = false;
+        }
+        if (removeAllBtn instanceof HTMLButtonElement) {
+            removeAllBtn.hidden = true;
+        }
+    };
+
+    const loadSizeHint = async () => {
+        if (!(sizeHintEl instanceof HTMLElement) || !(downloadBtn instanceof HTMLButtonElement)) {
+            return;
+        }
+
         try {
             const bulk = await fetchBulkManifest();
-            if (sizeEl instanceof HTMLElement) {
-                sizeEl.textContent = getShellLabel('playbooks.offline.allSize')
-                    .replace('{size}', formatBytes(bulk.bytesEstimate));
-                sizeEl.hidden = false;
-            }
             const sizeHint = getShellLabel('playbooks.offline.allSize')
                 .replace('{size}', formatBytes(bulk.bytesEstimate));
-            const saveLabel = `${getShellLabel('playbooks.offline.saveAll')} — ${sizeHint}`;
-            saveAllBtn.setAttribute('title', saveLabel);
-            saveAllBtn.setAttribute('aria-label', saveLabel);
+            sizeHintEl.textContent = sizeHint;
+            sizeHintEl.hidden = false;
+            downloadBtn.setAttribute('title', sizeHint);
         } catch {
-            if (sizeEl instanceof HTMLElement) {
-                sizeEl.hidden = true;
+            sizeHintEl.hidden = true;
+        }
+    };
+
+    const renderModalState = async () => {
+        const stories = await listOfflineStories();
+        stories.sort((a, b) => storyTitle(a).localeCompare(storyTitle(b), getLocale()));
+
+        const totalBytes = stories.reduce((sum, story) => sum + (story.bytesEstimate || 0), 0);
+
+        if (summaryEl instanceof HTMLElement) {
+            summaryEl.textContent = getShellLabel('playbooks.offline.manageSummary')
+                .replace('{count}', String(stories.length))
+                .replace('{size}', formatBytes(totalBytes));
+        }
+
+        if (downloadLabel instanceof HTMLElement) {
+            downloadLabel.textContent = getShellLabel('playbooks.offline.downloadAllAction');
+        }
+
+        if (emptyEl instanceof HTMLElement) {
+            emptyEl.hidden = stories.length > 0;
+            emptyEl.textContent = getShellLabel('playbooks.offline.manageEmpty');
+        }
+
+        if (listEl instanceof HTMLElement) {
+            listEl.replaceChildren();
+
+            for (const story of stories) {
+                const li = document.createElement('li');
+                li.className = 'playbook-offline-modal__item';
+                li.dataset.slug = story.slug;
+
+                const meta = document.createElement('div');
+                meta.className = 'playbook-offline-modal__item-meta';
+
+                const title = document.createElement('span');
+                title.className = 'playbook-offline-modal__item-title';
+                title.textContent = storyTitle(story);
+
+                const size = document.createElement('span');
+                size.className = 'playbook-offline-modal__item-size';
+                size.textContent = formatBytes(story.bytesEstimate);
+
+                meta.append(title, size);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'tools-btn tools-btn--ghost tools-btn--compact playbook-offline-modal__item-remove';
+                removeBtn.dataset.playbookOfflineRemoveOne = story.slug;
+                removeBtn.setAttribute('aria-label', getShellLabel('playbooks.offline.remove'));
+                removeBtn.title = getShellLabel('playbooks.offline.remove');
+                removeBtn.disabled = busy;
+                removeBtn.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+
+                li.append(meta, removeBtn);
+                listEl.append(li);
             }
         }
 
-        saveAllBtn.addEventListener('click', async () => {
-            let estimateLabel = '';
-            try {
-                const bulk = await fetchBulkManifest();
-                estimateLabel = formatBytes(bulk.bytesEstimate);
-            } catch {
-                estimateLabel = '';
+        if (removeAllBtn instanceof HTMLButtonElement) {
+            const label = getShellLabel('playbooks.offline.removeAll')
+                .replace('{count}', String(stories.length));
+            removeAllBtn.disabled = busy || stories.length === 0;
+            removeAllBtn.setAttribute('aria-label', label);
+            removeAllBtn.setAttribute('title', label);
+            if (!busy) {
+                removeAllBtn.hidden = false;
             }
+        }
 
-            const confirmed = window.confirm(
-                getShellLabel('playbooks.offline.confirmAll').replace('{size}', estimateLabel || '?'),
-            );
+        updateToolbarCount(stories.length);
+    };
 
-            if (!confirmed) {
+    const openModal = async () => {
+        if (!offlineOk) {
+            window.alert(getShellLabel('playbooks.offline.unsupported'));
+            return;
+        }
+
+        hideConfirm();
+        setProgress(false);
+        await renderModalState();
+        modal.showModal();
+        void loadSizeHint();
+    };
+
+    openBtn.addEventListener('click', () => {
+        void openModal();
+    });
+
+    closeBtn?.addEventListener('click', () => {
+        if (!busy) {
+            modal.close();
+        }
+    });
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal && !busy) {
+            modal.close();
+        }
+    });
+
+    modal.addEventListener('cancel', (event) => {
+        if (busy) {
+            event.preventDefault();
+        }
+    });
+
+    if (listEl instanceof HTMLElement) {
+        listEl.addEventListener('click', async (event) => {
+            const target = event.target;
+            if (!(target instanceof Element) || busy) {
                 return;
             }
 
-            setBusy(saveAllBtn, true);
-            setBusy(removeAllBtn, true);
-            setStatus(statusEl, getShellLabel('playbooks.offline.preparing'), 'progress');
-
-            try {
-                await downloadAllStoriesOffline((_done, _total, slug) => {
-                    setStatus(
-                        statusEl,
-                        slug
-                            ? getShellLabel('playbooks.offline.progressStory').replace('{slug}', slug)
-                            : getShellLabel('playbooks.offline.preparing'),
-                        'progress',
-                    );
-                });
-                setStatus(statusEl, getShellLabel('playbooks.offline.doneAll'), 'success');
-                notifyOfflineChanged();
-            } catch (error) {
-                console.warn('Offline bulk download failed', error);
-                const quota = error instanceof DOMException && error.name === 'QuotaExceededError';
-                setStatus(
-                    statusEl,
-                    getShellLabel(quota ? 'playbooks.offline.quota' : 'playbooks.offline.error'),
-                    'error',
-                );
-            } finally {
-                setBusy(saveAllBtn, false);
-                setBusy(removeAllBtn, false);
-                await refreshToolbar();
-            }
-        });
-
-        removeAllBtn.addEventListener('click', async () => {
-            if (!window.confirm(getShellLabel('playbooks.offline.confirmRemoveAll'))) {
+            const button = target.closest('[data-playbook-offline-remove-one]');
+            if (!(button instanceof HTMLButtonElement)) {
                 return;
             }
 
-            setBusy(saveAllBtn, true);
-            setBusy(removeAllBtn, true);
+            const slug = button.dataset.playbookOfflineRemoveOne ?? '';
+            if (slug === '') {
+                return;
+            }
 
+            setModalBusy(true);
             try {
-                await removeAllStoriesOffline();
-                setStatus(statusEl, getShellLabel('playbooks.offline.removedAll'), 'info');
+                await removeStoryOffline(slug);
                 notifyOfflineChanged();
+                await renderModalState();
+                setProgress(true, 100, getShellLabel('playbooks.offline.removed'));
             } catch (error) {
-                console.warn('Offline bulk remove failed', error);
-                setStatus(statusEl, getShellLabel('playbooks.offline.error'), 'error');
+                console.warn('Offline story remove failed', error);
+                setProgress(true, 0, getShellLabel('playbooks.offline.error'));
             } finally {
-                setBusy(saveAllBtn, false);
-                setBusy(removeAllBtn, false);
-                await refreshToolbar();
+                setModalBusy(false);
+                await renderModalState();
             }
         });
     }
 
+    downloadBtn?.addEventListener('click', async () => {
+        if (!(downloadBtn instanceof HTMLButtonElement) || busy) {
+            return;
+        }
+
+        setModalBusy(true);
+        hideConfirm();
+        setProgress(true, 0, getShellLabel('playbooks.offline.preparing'));
+
+        try {
+            let lastListedStory = -1;
+            await downloadAllStoriesOffline((done, total, slug) => {
+                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+                const message = slug
+                    ? getShellLabel('playbooks.offline.progressStory').replace('{slug}', slug)
+                    : getShellLabel('playbooks.offline.progress').replace('{pct}', String(pct));
+                setProgress(true, pct, message);
+
+                const storyIndex = Math.floor(done);
+                if (storyIndex !== lastListedStory) {
+                    lastListedStory = storyIndex;
+                    void renderModalState();
+                }
+            });
+
+            setProgress(true, 100, getShellLabel('playbooks.offline.doneAll'));
+            notifyOfflineChanged();
+            await renderModalState();
+        } catch (error) {
+            console.warn('Offline bulk download failed', error);
+            const quota = error instanceof DOMException && error.name === 'QuotaExceededError';
+            setProgress(
+                true,
+                0,
+                getShellLabel(quota ? 'playbooks.offline.quota' : 'playbooks.offline.error'),
+            );
+        } finally {
+            setModalBusy(false);
+            await renderModalState();
+        }
+    });
+
+    removeAllBtn?.addEventListener('click', () => {
+        if (busy) {
+            return;
+        }
+        showConfirm();
+    });
+
+    confirmNo?.addEventListener('click', () => {
+        hideConfirm();
+    });
+
+    confirmYes?.addEventListener('click', async () => {
+        if (busy) {
+            return;
+        }
+
+        setModalBusy(true);
+        hideConfirm();
+
+        try {
+            await removeAllStoriesOffline();
+            setProgress(true, 100, getShellLabel('playbooks.offline.removedAll'));
+            notifyOfflineChanged();
+            await renderModalState();
+        } catch (error) {
+            console.warn('Offline bulk remove failed', error);
+            setProgress(true, 0, getShellLabel('playbooks.offline.error'));
+        } finally {
+            setModalBusy(false);
+            await renderModalState();
+        }
+    });
+
+    window.addEventListener('binom-tools:locale', () => {
+        if (modal.open) {
+            void renderModalState();
+            void loadSizeHint();
+        }
+    });
+
     if (offlineOk) {
-        await refreshToolbar();
+        await refreshCardsAndToolbar();
     }
 }
 

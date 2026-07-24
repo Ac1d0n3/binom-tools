@@ -244,17 +244,8 @@ export async function downloadStoryOffline(manifest, onProgress) {
 export async function downloadAllStoriesOffline(onProgress) {
     await ensurePlaybookServiceWorker();
 
-    const response = await fetch(withAppBasePath('/playbooks/offline-manifest'), {
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-    });
-
-    if (!response.ok) {
-        throw new Error(getShellLabel('playbooks.offline.error'));
-    }
-
     /** @type {{ bytesEstimate: number, shellUrls: string[], indexUrls: string[], stories: Array<{ slug: string, title: string, titleDe?: string, titleEn?: string, modifiedAt: string, bytesEstimate: number, urls: string[] }> }} */
-    const bulk = await response.json();
+    const bulk = await fetchBulkManifest();
 
     await cacheUrls(SHELL_CACHE, [...(bulk.shellUrls ?? []), ...(bulk.indexUrls ?? [])], (done, total) => {
         onProgress?.(done, total + (bulk.stories?.length ?? 0));
@@ -269,6 +260,41 @@ export async function downloadAllStoriesOffline(onProgress) {
     }
 
     return bulk;
+}
+
+/**
+ * @param {string} seriesId
+ * @param {(done: number, total: number, slug?: string) => void} [onProgress]
+ */
+export async function downloadSeriesOffline(seriesId, onProgress) {
+    await ensurePlaybookServiceWorker();
+
+    const bulk = await fetchSeriesManifest(seriesId);
+
+    await cacheUrls(SHELL_CACHE, [...(bulk.shellUrls ?? []), ...(bulk.indexUrls ?? [])], (done, total) => {
+        onProgress?.(done, total + (bulk.stories?.length ?? 0));
+    });
+
+    let index = 0;
+    for (const story of bulk.stories ?? []) {
+        index += 1;
+        await downloadStoryOffline(story, (done, total) => {
+            onProgress?.(index - 1 + done / Math.max(total, 1), (bulk.stories?.length ?? 0), story.slug);
+        });
+    }
+
+    return bulk;
+}
+
+/**
+ * @param {string[]} slugs
+ */
+export async function removeSeriesOffline(slugs) {
+    for (const slug of slugs) {
+        if (typeof slug === 'string' && slug !== '') {
+            await removeStoryOffline(slug);
+        }
+    }
 }
 
 /**
@@ -336,11 +362,49 @@ export async function fetchStoryManifest(slug) {
     return response.json();
 }
 
-export async function fetchBulkManifest() {
-    const response = await fetch(withAppBasePath('/playbooks/offline-manifest'), {
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-    });
+/** @type {Promise<object> | null} */
+let bulkManifestPromise = null;
+
+/**
+ * @param {{ force?: boolean }} [options]
+ */
+export async function fetchBulkManifest(options = {}) {
+    if (options.force) {
+        bulkManifestPromise = null;
+    }
+
+    if (!bulkManifestPromise) {
+        bulkManifestPromise = (async () => {
+            const response = await fetch(withAppBasePath('/playbooks/offline-manifest'), {
+                credentials: 'same-origin',
+                headers: { Accept: 'application/json' },
+            });
+
+            if (!response.ok) {
+                throw new Error(getShellLabel('playbooks.offline.error'));
+            }
+
+            return response.json();
+        })().catch((error) => {
+            bulkManifestPromise = null;
+            throw error;
+        });
+    }
+
+    return bulkManifestPromise;
+}
+
+/**
+ * @param {string} seriesId
+ */
+export async function fetchSeriesManifest(seriesId) {
+    const response = await fetch(
+        withAppBasePath(`/playbooks/series/${encodeURIComponent(seriesId)}/offline-manifest`),
+        {
+            credentials: 'same-origin',
+            headers: { Accept: 'application/json' },
+        },
+    );
 
     if (!response.ok) {
         throw new Error(getShellLabel('playbooks.offline.error'));

@@ -178,31 +178,19 @@
                         <button
                             type="button"
                             class="tools-btn tools-btn--secondary playbook-offline__btn"
-                            data-playbook-offline-save-all
-                            data-i18n-aria="playbooks.offline.saveAll"
-                            aria-label="Save all offline"
-                            title="Save all offline"
+                            data-playbook-offline-open
+                            data-i18n-aria="playbooks.offline.manageTitle"
+                            aria-label="Offline stories"
+                            title="Offline stories"
                         >
                             <i class="fa-solid fa-download" aria-hidden="true"></i>
                             <span data-i18n="playbooks.offline.saveAllShort">Offline</span>
+                            <span
+                                class="playbook-offline__count"
+                                data-playbook-offline-count
+                                hidden
+                            ></span>
                         </button>
-                        <button
-                            type="button"
-                            class="tools-btn tools-btn--ghost playbook-offline__btn"
-                            data-playbook-offline-remove-all
-                            hidden
-                            data-i18n-aria="playbooks.offline.removeAll"
-                            aria-label="Remove offline copies"
-                            title="Remove offline copies"
-                        >
-                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-                            <span class="sr-only" data-i18n="playbooks.offline.removeAllShort">Remove</span>
-                        </button>
-                        <span
-                            class="playbook-offline__size sr-only"
-                            data-playbook-offline-size
-                            hidden
-                        ></span>
                     </div>
 
                     <label class="tools-overview-search">
@@ -217,14 +205,6 @@
                             placeholder="Search playbooks…"
                         />
                     </label>
-
-                    <p
-                        class="playbook-offline__status playbook-offline__status--toolbar"
-                        data-playbook-offline-status
-                        hidden
-                        role="status"
-                        aria-live="polite"
-                    ></p>
                 </div>
 
                 <div class="tools-overview-scroll">
@@ -271,4 +251,90 @@
             />
         </div>
     </div>
+
+    <dialog class="playbook-offline-modal" data-playbook-offline-modal aria-labelledby="playbook-offline-modal-title">
+        <div class="playbook-offline-modal__panel">
+            <header class="playbook-offline-modal__header">
+                <h2 id="playbook-offline-modal-title" class="playbook-offline-modal__title" data-i18n="playbooks.offline.manageTitle">
+                    Offline stories
+                </h2>
+                <button
+                    type="button"
+                    class="tools-btn tools-btn--ghost tools-btn--compact playbook-offline-modal__close"
+                    data-playbook-offline-close
+                    data-i18n-aria="playbooks.offline.close"
+                    aria-label="Close"
+                >
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <p class="playbook-offline-modal__summary" data-playbook-offline-summary></p>
+
+            <div class="playbook-offline-modal__actions">
+                <button
+                    type="button"
+                    class="tools-btn tools-btn--primary"
+                    data-playbook-offline-download-all
+                >
+                    <i class="fa-solid fa-download" aria-hidden="true"></i>
+                    <span data-playbook-offline-download-label data-i18n="playbooks.offline.downloadAllAction">Download all</span>
+                </button>
+                <p class="playbook-offline-modal__size-hint" data-playbook-offline-size-hint hidden></p>
+            </div>
+
+            <div class="playbook-offline-modal__progress" data-playbook-offline-progress hidden>
+                <progress
+                    class="playbook-offline-modal__progress-bar"
+                    data-playbook-offline-progress-bar
+                    max="100"
+                    value="0"
+                ></progress>
+                <p
+                    class="playbook-offline-modal__progress-label"
+                    data-playbook-offline-progress-label
+                    role="status"
+                    aria-live="polite"
+                ></p>
+            </div>
+
+            <p
+                class="playbook-offline-modal__empty"
+                data-playbook-offline-empty
+                hidden
+                data-i18n="playbooks.offline.manageEmpty"
+            >No stories saved offline yet.</p>
+
+            <ul class="playbook-offline-modal__list" data-playbook-offline-list></ul>
+
+            <footer class="playbook-offline-modal__footer">
+                <div class="playbook-offline-modal__confirm" data-playbook-offline-confirm-remove hidden>
+                    <p data-i18n="playbooks.offline.confirmRemoveAllInline">Remove all offline copies?</p>
+                    <div class="playbook-offline-modal__confirm-actions">
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--ghost tools-btn--sm"
+                            data-playbook-offline-confirm-no
+                            data-i18n="playbooks.offline.confirmNo"
+                        >Cancel</button>
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--accent tools-btn--sm"
+                            data-playbook-offline-confirm-yes
+                            data-i18n="playbooks.offline.confirmYes"
+                        >Remove</button>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="tools-btn tools-btn--ghost"
+                    data-playbook-offline-remove-all
+                    disabled
+                >
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                    <span data-i18n="playbooks.offline.removeAllShort">Remove all</span>
+                </button>
+            </footer>
+        </div>
+    </dialog>
 @endsection

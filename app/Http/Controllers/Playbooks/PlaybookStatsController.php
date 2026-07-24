@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Playbooks;
 
 use App\Http\Controllers\Controller;
+use App\Playbooks\PlaybookEngagementCookie;
 use App\Playbooks\PlaybookRepository;
 use App\Playbooks\PlaybookStatsStore;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class PlaybookStatsController extends Controller
 {
-    public const ENGAGEMENT_COOKIE = 'bn_playbook_engagement';
+    /** @deprecated Use PlaybookEngagementCookie::NAME */
+    public const ENGAGEMENT_COOKIE = PlaybookEngagementCookie::NAME;
 
     public function __construct(
         private readonly PlaybookRepository $playbooks,
@@ -22,7 +24,7 @@ class PlaybookStatsController extends Controller
     {
         $slug = $this->resolveSlug($request);
         $stats = $this->stats->get($slug);
-        $state = $this->readEngagement($request);
+        $state = PlaybookEngagementCookie::read($request);
 
         return response()->json([
             ...$stats,
@@ -33,7 +35,7 @@ class PlaybookStatsController extends Controller
     public function view(Request $request): JsonResponse
     {
         $slug = $this->resolveSlug($request);
-        $state = $this->readEngagement($request);
+        $state = PlaybookEngagementCookie::read($request);
         $today = gmdate('Y-m-d');
 
         if (($state['v'][$slug] ?? null) === $today) {
@@ -61,7 +63,7 @@ class PlaybookStatsController extends Controller
     public function like(Request $request): JsonResponse
     {
         $slug = $this->resolveSlug($request);
-        $state = $this->readEngagement($request);
+        $state = PlaybookEngagementCookie::read($request);
         $alreadyLiked = ! empty($state['l'][$slug]);
 
         if ($alreadyLiked) {
@@ -96,44 +98,20 @@ class PlaybookStatsController extends Controller
     }
 
     /**
-     * @return array{v: array<string, string>, l: array<string, int>}
-     */
-    private function readEngagement(Request $request): array
-    {
-        $raw = (string) $request->cookies->get(self::ENGAGEMENT_COOKIE, '');
-        if ($raw === '') {
-            return ['v' => [], 'l' => []];
-        }
-
-        try {
-            $decoded = json_decode(base64_decode($raw, true) ?: '', true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
-            return ['v' => [], 'l' => []];
-        }
-
-        if (! is_array($decoded)) {
-            return ['v' => [], 'l' => []];
-        }
-
-        $views = is_array($decoded['v'] ?? null) ? $decoded['v'] : [];
-        $likes = is_array($decoded['l'] ?? null) ? $decoded['l'] : [];
-
-        return [
-            'v' => array_filter($views, static fn ($value) => is_string($value)),
-            'l' => array_filter($likes, static fn ($value) => is_int($value) || is_string($value)),
-        ];
-    }
-
-    /**
      * @param  array{v: array<string, string>, l: array<string, int|string>}  $state
      */
     private function engagementCookie(array $state): Cookie
     {
-        $payload = base64_encode(json_encode([
-            'v' => $state['v'],
-            'l' => $state['l'],
-        ], JSON_THROW_ON_ERROR));
-
-        return cookie(self::ENGAGEMENT_COOKIE, $payload, 60 * 24 * 365, null, null, false, false, false, 'Lax');
+        return cookie(
+            PlaybookEngagementCookie::NAME,
+            PlaybookEngagementCookie::encode($state),
+            60 * 24 * 365,
+            null,
+            null,
+            false,
+            false,
+            false,
+            'Lax',
+        );
     }
 }
