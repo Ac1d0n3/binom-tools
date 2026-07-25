@@ -14,9 +14,18 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('data-overview-filter-root', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-product', false);
+        $response->assertSee('data-overview-result-count', false);
+        $response->assertSee('data-overview-count-mode="items"', false);
+        $response->assertSee('data-i18n="suppliers.visibleProductCount"', false);
+        $response->assertSee('data-overview-layout-toggle="grid"', false);
+        $response->assertSee('data-overview-layout-toggle="list"', false);
+        $response->assertSee('data-overview-stories-grid', false);
         $response->assertSee('supplier-hub-grid', false);
         $response->assertSee('data-i18n="suppliers.indexTitle"', false);
         $response->assertSee('data-product-id="salesforce"', false);
+        // Search index includes measure labels (e.g. ARR), not only title/purpose.
+        $response->assertSee('data-search-text="', false);
+        $response->assertSee('arr', false);
         $response->assertSee('data-product-id="hubspot"', false);
         $response->assertSee('data-product-id="ga4"', false);
         $response->assertSee('data-product-id="dynamics365"', false);
@@ -31,6 +40,14 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('data-product-id="confluence"', false);
         $response->assertSee('data-product-id="slack"', false);
         $response->assertSee('data-product-id="microsoft-teams"', false);
+        $response->assertSee('data-product-id="stripe"', false);
+        $response->assertSee('data-product-id="sap-concur"', false);
+        $response->assertSee('data-product-id="sap-ariba"', false);
+        $response->assertSee('data-product-id="coupa"', false);
+        $response->assertSee('data-product-id="entra-id"', false);
+        $response->assertSee('data-product-id="github"', false);
+        $response->assertSee('data-product-id="sharepoint"', false);
+        $response->assertSee('data-product-id="google-workspace"', false);
         $response->assertSee('Salesforce');
         $response->assertSee('HubSpot');
         $response->assertSee('Google Analytics 4');
@@ -41,6 +58,8 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('value="erp"', false);
         $response->assertSee('value="hcm"', false);
         $response->assertSee('value="collab"', false);
+        $response->assertSee('value="finance"', false);
+        $response->assertSee('value="workplace"', false);
         $response->assertSee('data-i18n="nav.suppliers"', false);
     }
 
@@ -72,6 +91,34 @@ class SupplierLibraryHubTest extends TestCase
     public function test_wave3_supplier_detail_pages_render(): void
     {
         foreach (['jira', 'confluence', 'slack', 'microsoft-teams'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave4_supplier_detail_pages_render(): void
+    {
+        foreach (['stripe', 'sap-concur', 'sap-ariba', 'coupa'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave5_supplier_detail_pages_render(): void
+    {
+        foreach (['entra-id', 'github', 'sharepoint', 'google-workspace'] as $slug) {
             $response = $this->get('/suppliers/'.$slug);
             $response->assertOk();
             $response->assertSee('data-supplier-library', false);
@@ -169,6 +216,14 @@ class SupplierLibraryHubTest extends TestCase
             'confluence' => ['space', 'page', 'attachment', 'supplier-pii-badge'],
             'slack' => ['channel', 'Message text', 'Conversations', 'supplier-pii-badge'],
             'microsoft-teams' => ['Graph', 'chat', 'Purview', 'supplier-pii-badge'],
+            'stripe' => ['Customer', 'Radar', 'Webhook', 'supplier-pii-badge'],
+            'sap-concur' => ['Employee', 'Receipt', 'allocation', 'supplier-pii-badge'],
+            'sap-ariba' => ['Supplier', 'commodity', 'attachment', 'supplier-pii-badge'],
+            'coupa' => ['User', 'Approval', 'Chart of accounts', 'supplier-pii-badge'],
+            'entra-id' => ['User', 'Conditional Access', 'Sign-in', 'supplier-pii-badge'],
+            'github' => ['pull_request', 'repository', 'Actions', 'supplier-pii-badge'],
+            'sharepoint' => ['site', 'drive', 'Purview', 'supplier-pii-badge'],
+            'google-workspace' => ['Admin SDK', 'org unit', 'Drive', 'supplier-pii-badge'],
         ];
 
         foreach ($expectations as $slug => $needles) {
@@ -201,6 +256,14 @@ class SupplierLibraryHubTest extends TestCase
             'confluence' => ['raw_confluence', 'space_key', 'curated_fct'],
             'slack' => ['raw_slack', 'message_count', 'channel_id', 'curated_fct'],
             'microsoft-teams' => ['raw_teams', 'message_count', 'Graph', 'curated_fct'],
+            'stripe' => ['raw_stripe', 'payment_intent', 'curated_fct', 'minor'],
+            'sap-concur' => ['raw_concur', 'expense', 'curated_fct'],
+            'sap-ariba' => ['raw_ariba', 'purchase_order', 'curated_fct'],
+            'coupa' => ['raw_coupa', 'purchase_order', 'curated_fct'],
+            'entra-id' => ['raw_entra', 'userPrincipalName', 'curated_fct'],
+            'github' => ['raw_github', 'pull_request', 'curated_fct'],
+            'sharepoint' => ['raw_sharepoint', 'drive', 'curated_fct'],
+            'google-workspace' => ['raw_gws', 'org_unit', 'curated_fct'],
         ];
 
         foreach ($expectations as $slug => $needles) {
@@ -309,6 +372,54 @@ class SupplierLibraryHubTest extends TestCase
                 'Chat without team/channel context',
                 'Microsoft Graph $metadata',
                 'Teams admin center',
+                'User duplicates',
+            ],
+            'stripe' => [
+                'Payment succeeded without amount/currency',
+                'Dashboard data / API objects',
+                'Sigma / SQL',
+                'Customer duplicates',
+            ],
+            'sap-concur' => [
+                'Approved report without cost center/allocation',
+                'Expense types config',
+                'Allocation fields',
+                'Employee duplicates',
+            ],
+            'sap-ariba' => [
+                'PO without supplier',
+                'Realm config',
+                'Commodity taxonomy',
+                'Supplier duplicates',
+            ],
+            'coupa' => [
+                'Invoice without PO when policy requires',
+                'Chart of accounts',
+                'Approval chains',
+                'Supplier duplicates',
+            ],
+            'entra-id' => [
+                'Disabled user still in groups/roles',
+                'Graph $metadata / directory objects',
+                'Conditional Access policies',
+                'User duplicates',
+            ],
+            'github' => [
+                'PR without repository',
+                'REST / GraphQL schema',
+                'Actions metadata',
+                'User duplicates',
+            ],
+            'sharepoint' => [
+                'DriveItem / ListItem without site',
+                'Graph sites / drives',
+                'Sharing / Purview labels',
+                'Site duplicates',
+            ],
+            'google-workspace' => [
+                'User without org unit',
+                'Admin SDK Directory',
+                'Reports API',
                 'User duplicates',
             ],
         ];

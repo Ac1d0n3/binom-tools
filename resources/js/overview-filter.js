@@ -209,16 +209,17 @@ export function initOverviewFilters() {
     /** @param {string[]} stacks */
     const matchesStackFilter = (stacks) => activeStack() === 'all' || stacks.includes(activeStack());
 
-    /** @param {number} vendorCount */
-    const syncResultCount = (vendorCount) => {
+    /** @param {number} count */
+    const syncResultCount = (count) => {
         if (!(resultCountEl instanceof HTMLElement)) {
             return;
         }
 
-        const count = String(vendorCount);
-        resultCountEl.setAttribute('data-i18n-count', count);
-        const template = getShellLabel('resources.visibleVendorCount', locale());
-        resultCountEl.textContent = template.replace(/\{\{count\}\}/g, count);
+        const countText = String(count);
+        resultCountEl.setAttribute('data-i18n-count', countText);
+        const key = resultCountEl.getAttribute('data-i18n') || 'resources.visibleVendorCount';
+        const template = getShellLabel(key, locale());
+        resultCountEl.textContent = template.replace(/\{\{count\}\}/g, countText);
     };
 
     /** @param {Element} item */
@@ -567,7 +568,12 @@ export function initOverviewFilters() {
             unreadEmptyEl.hidden = !showUnreadEmpty;
         }
 
-        syncResultCount(visibleVendors.size);
+        syncResultCount(
+            resultCountEl instanceof HTMLElement &&
+                resultCountEl.getAttribute('data-overview-count-mode') === 'items'
+                ? visible
+                : visibleVendors.size,
+        );
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
         syncFilterReset();
         syncStackBanner();

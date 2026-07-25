@@ -1102,22 +1102,38 @@ $products = array_merge([
     $crmTools,
     $relatedPlaybooks,
     $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave4.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave5.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
 ));
 
 $governance = array_merge(
     require __DIR__.'/suppliers-governance.php',
     require __DIR__.'/suppliers-governance-wave2.php',
     require __DIR__.'/suppliers-governance-wave3.php',
+    require __DIR__.'/suppliers-governance-wave4.php',
+    require __DIR__.'/suppliers-governance-wave5.php',
 );
 $quality = array_merge(
     require __DIR__.'/suppliers-quality.php',
     require __DIR__.'/suppliers-quality-wave2.php',
     require __DIR__.'/suppliers-quality-wave3.php',
+    require __DIR__.'/suppliers-quality-wave4.php',
+    require __DIR__.'/suppliers-quality-wave5.php',
 );
 $sql = array_merge(
     require __DIR__.'/suppliers-sql.php',
     require __DIR__.'/suppliers-sql-wave2.php',
     require __DIR__.'/suppliers-sql-wave3.php',
+    require __DIR__.'/suppliers-sql-wave4.php',
+    require __DIR__.'/suppliers-sql-wave5.php',
 );
 
 return array_map(static function (array $product) use ($governance, $quality, $sql): array {

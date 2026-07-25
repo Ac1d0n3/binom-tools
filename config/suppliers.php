@@ -15,6 +15,7 @@ return [
         'hcm' => ['de' => 'HCM', 'en' => 'HCM'],
         'collab' => ['de' => 'Collab', 'en' => 'Collab'],
         'finance' => ['de' => 'Finance', 'en' => 'Finance'],
+        'workplace' => ['de' => 'Workplace', 'en' => 'Workplace'],
         'analytics' => ['de' => 'Analytics', 'en' => 'Analytics'],
     ],
 

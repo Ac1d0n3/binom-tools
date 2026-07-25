@@ -8,7 +8,19 @@
 @section('content')
     <div class="tools-content tools-content--overview tools-content--suppliers" data-overview-filter-root>
         <div class="tools-overview-sticky-header supplier-hub-sticky">
-            <h1 class="tools-page-title" data-i18n="suppliers.indexTitle">Suppliers</h1>
+            @php
+                $initialProductCount = count($products);
+            @endphp
+            <div class="supplier-hub-sticky__heading">
+                <h1 class="tools-page-title" data-i18n="suppliers.indexTitle">Suppliers</h1>
+                <p
+                    class="supplier-hub-sticky__count"
+                    data-overview-result-count
+                    data-overview-count-mode="items"
+                    data-i18n="suppliers.visibleProductCount"
+                    data-i18n-count="{{ $initialProductCount }}"
+                >{{ $initialProductCount }} products</p>
+            </div>
             <p class="tools-page-lead supplier-hub-sticky__lead" data-hub-lead data-i18n="suppliers.indexLead">
                 Reusable core fields, dimensions, PII/DSDR hints and measure templates per source product — start here, then adapt per customer.
             </p>
@@ -50,6 +62,35 @@
                         <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
                     </span>
                 </label>
+                <div
+                    class="tools-overview-layout-toggle"
+                    role="group"
+                >
+                    <button
+                        type="button"
+                        class="tools-overview-layout-toggle__button tools-overview-layout-toggle__button--active"
+                        data-overview-layout-toggle="grid"
+                        aria-pressed="true"
+                        data-i18n-aria="overview.layoutGrid"
+                        aria-label="Grid view"
+                        title="Grid view"
+                    >
+                        <i class="fa-solid fa-grip" aria-hidden="true"></i>
+                        <span class="sr-only" data-i18n="overview.layoutGrid">Grid view</span>
+                    </button>
+                    <button
+                        type="button"
+                        class="tools-overview-layout-toggle__button"
+                        data-overview-layout-toggle="list"
+                        aria-pressed="false"
+                        data-i18n-aria="overview.layoutList"
+                        aria-label="List view"
+                        title="List view"
+                    >
+                        <i class="fa-solid fa-list" aria-hidden="true"></i>
+                        <span class="sr-only" data-i18n="overview.layoutList">List view</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -58,7 +99,7 @@
                 No matches for your search.
             </p>
 
-            <div class="supplier-hub-grid" role="list">
+            <div class="supplier-hub-grid" role="list" data-overview-stories-grid>
                 @foreach ($products as $product)
                     @php
                         $id = (string) ($product['id'] ?? '');
@@ -70,7 +111,74 @@
                         $domainLabel = $domains[$domainId] ?? ['de' => $domainId, 'en' => $domainId];
                         $domainEn = $domainLabel['en'] ?? $domainId;
                         $domainDe = $domainLabel['de'] ?? $domainEn;
-                        $searchText = strtolower($labelEn.' '.$labelDe.' '.$purposeEn.' '.$purposeDe.' '.$domainEn.' '.$domainDe.' '.$id);
+
+                        $searchParts = [$labelEn, $labelDe, $purposeEn, $purposeDe, $domainEn, $domainDe, $id];
+                        foreach (($product['measures'] ?? []) as $measure) {
+                            if (! is_array($measure)) {
+                                continue;
+                            }
+                            $searchParts[] = (string) ($measure['id'] ?? '');
+                            $searchParts[] = (string) ($measure['label']['en'] ?? '');
+                            $searchParts[] = (string) ($measure['label']['de'] ?? '');
+                            $searchParts[] = (string) ($measure['formula'] ?? '');
+                            $searchParts[] = (string) ($measure['question']['en'] ?? '');
+                            $searchParts[] = (string) ($measure['question']['de'] ?? '');
+                            $searchParts[] = (string) ($measure['sourceHints']['en'] ?? '');
+                            $searchParts[] = (string) ($measure['sourceHints']['de'] ?? '');
+                            foreach (($measure['fieldsUsed'] ?? []) as $fieldUsed) {
+                                if (is_string($fieldUsed) && $fieldUsed !== '') {
+                                    $searchParts[] = $fieldUsed;
+                                }
+                            }
+                        }
+                        foreach (($product['entities'] ?? []) as $entity) {
+                            if (! is_array($entity)) {
+                                continue;
+                            }
+                            $searchParts[] = (string) ($entity['id'] ?? '');
+                            $searchParts[] = (string) ($entity['label']['en'] ?? '');
+                            $searchParts[] = (string) ($entity['label']['de'] ?? '');
+                        }
+                        foreach (($product['fields'] ?? []) as $field) {
+                            if (! is_array($field)) {
+                                continue;
+                            }
+                            $searchParts[] = (string) ($field['entity'] ?? '');
+                            $searchParts[] = (string) ($field['name'] ?? '');
+                        }
+                        foreach (($product['dimensions'] ?? []) as $dim) {
+                            if (! is_array($dim)) {
+                                continue;
+                            }
+                            $searchParts[] = (string) ($dim['id'] ?? '');
+                            $searchParts[] = (string) ($dim['label']['en'] ?? '');
+                            $searchParts[] = (string) ($dim['label']['de'] ?? '');
+                        }
+                        foreach (($product['pii'] ?? []) as $piiRow) {
+                            if (! is_array($piiRow)) {
+                                continue;
+                            }
+                            $searchParts[] = (string) ($piiRow['entity'] ?? '');
+                            foreach (($piiRow['fields'] ?? []) as $piiField) {
+                                if (is_string($piiField) && $piiField !== '') {
+                                    $searchParts[] = $piiField;
+                                }
+                            }
+                        }
+                        foreach (($product['skip'] ?? []) as $skipRow) {
+                            if (is_array($skipRow)) {
+                                $searchParts[] = (string) ($skipRow['name'] ?? '');
+                            }
+                        }
+                        foreach (($product['skipTables'] ?? []) as $skipTable) {
+                            if (is_array($skipTable)) {
+                                $searchParts[] = (string) ($skipTable['name'] ?? '');
+                            }
+                        }
+                        $searchText = strtolower(implode(' ', array_filter(
+                            $searchParts,
+                            static fn ($v) => is_string($v) && trim($v) !== '',
+                        )));
                     @endphp
                     <a
                         href="{{ locale_route('suppliers.show', ['slug' => $id]) }}"
