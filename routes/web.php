@@ -12,6 +12,8 @@ use App\Http\Controllers\Accounts\StoryAclController;
 use App\Http\Controllers\Accounts\TeamsController;
 use App\Http\Controllers\Accounts\UserTemplateApiController;
 use App\Http\Controllers\Accounts\UsersController;
+use App\Http\Controllers\Calendar\CalendarApiController;
+use App\Http\Controllers\Calendar\CalendarController;
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
@@ -61,6 +63,11 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/compliance/{slug}', [ComplianceController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name($name('compliance.show'));
+    Route::get('/calendar', [CalendarController::class, 'index'])->name($name('calendar.index'));
+    if (! $localized) {
+        Route::get('/api/calendar/events', [CalendarApiController::class, 'events'])->name($name('calendar.events'));
+        Route::get('/api/calendar/holidays', [CalendarApiController::class, 'holidays'])->name($name('calendar.holidays'));
+    }
     Route::get('/playbooks', [PlaybookController::class, 'index'])->name($name('playbooks.index'));
     Route::get('/playbooks/offline-manifest', [PlaybookOfflineController::class, 'index'])
         ->middleware('throttle:60,1')

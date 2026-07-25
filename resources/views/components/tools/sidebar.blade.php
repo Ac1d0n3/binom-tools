@@ -33,6 +33,7 @@
     $resourcesActive = str_starts_with((string) $routeBase, 'resources.');
     $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
     $sprintPlannerActive = str_starts_with((string) $routeBase, 'sprint-planner.');
+    $calendarActive = str_starts_with((string) $routeBase, 'calendar.');
 @endphp
 
 <nav class="tools-sidenav">
@@ -121,6 +122,15 @@
                     data-i18n="nav.sprintPlanner"
                 >
                     Sprint Planner
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{{ locale_route('calendar.index') }}"
+                    class="tools-sidenav__link {{ $calendarActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.calendar"
+                >
+                    Calendar
                 </a>
             </li>
         </ul>

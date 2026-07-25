@@ -41,6 +41,7 @@ export default defineConfig(({ command }) => ({
                 'resources/css/playbooks.css',
                 'resources/js/playbooks/show.js',
                 'resources/css/sprint-planner.css',
+                'resources/js/calendar/calendar-public.js',
                 'resources/js/sprint-planner/index.js',
                 'resources/js/sprint-planner/show.js',
                 'resources/js/sprint-planner/people.js',

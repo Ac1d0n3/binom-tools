@@ -7,6 +7,7 @@
 ## What you get
 
 - **Stories (Playbooks)** — Markdown guides under `content/` (DE/EN) with tags, TOC, and hero art
+- **Calendar hub** — story publish dates, plan tasks, Feiertage + Schulferien NRW (`/calendar`)
 - **Governance workflows** — interactive, copy-paste-ready tools (PII chain, data quality, Prompt Studio, AI Sanitizer, …)
 - **Help hub shell** — search, theme (light/dark), locale, sidebar, overview filters
 - **Local SDKs** — `@binom/sdk-governance` shipped in `packages/sdk-governance`
@@ -46,9 +47,10 @@ BINOM_TOOLS_STORAGE_DRIVER=mysql
 ```bash
 php artisan migrate
 php artisan bn-tools:storage-import   # optional: copy existing JSON into MySQL
+php artisan calendar:holidays-sync --seed   # Feiertage + Schulferien NRW via iCal
 ```
 
-With accounts on, the Sprint Planner stays open for guests as a **demo**: start a local plan that never syncs to the server. Sign in to save and share plans. Individual governance tools can require login via `TOOL_*_LOGIN_REQUIRED` (default `false` / open).
+With accounts on, the Sprint Planner stays open for guests as a **demo**: start a local plan that never syncs to the server. Sign in to save and share plans. Individual governance tools can require login via `TOOL_*_LOGIN_REQUIRED` (default `false` / open). The Calendar hub shows stories and holidays for everyone; plan tasks appear after sign-in.
 
 ## Stack
 
