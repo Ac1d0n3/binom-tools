@@ -1,5 +1,6 @@
 /** Client-side search and tag filtering for overview index pages. */
 import { getLocale, getShellLabel } from './locale';
+import { syncSelectOptionAvailability } from './overview-filter.cascade.js';
 import { compareStoryItemsForSort } from './overview-filter.sort.js';
 import {
     clearAllPlaybookRead,
@@ -63,6 +64,7 @@ export function initOverviewFilters() {
     const emptyEl = root.querySelector('[data-overview-empty]');
     const unreadEmptyEl = root.querySelector('[data-overview-unread-empty]');
     const seriesEmptyEl = root.querySelector('[data-overview-series-empty]');
+    const resultCountEl = root.querySelector('[data-overview-result-count]');
     const hideReadToggle = root.querySelector('[data-overview-hide-read]');
     const readResetButton = root.querySelector('[data-overview-read-reset]');
 
@@ -206,6 +208,88 @@ export function initOverviewFilters() {
 
     /** @param {string[]} stacks */
     const matchesStackFilter = (stacks) => activeStack() === 'all' || stacks.includes(activeStack());
+
+    /** @param {number} vendorCount */
+    const syncResultCount = (vendorCount) => {
+        if (!(resultCountEl instanceof HTMLElement)) {
+            return;
+        }
+
+        const count = String(vendorCount);
+        resultCountEl.setAttribute('data-i18n-count', count);
+        const template = getShellLabel('resources.visibleVendorCount', locale());
+        resultCountEl.textContent = template.replace(/\{\{count\}\}/g, count);
+    };
+
+    /** @param {Element} item */
+    const itemFamilies = (item) =>
+        (item.getAttribute('data-products') ?? '')
+            .split(',')
+            .map((value) => value.trim())
+            .filter(Boolean);
+
+    /** @param {Element} item */
+    const itemStacks = (item) =>
+        (item.getAttribute('data-stacks') ?? '')
+            .split(',')
+            .map((value) => value.trim())
+            .filter(Boolean);
+
+    /**
+     * Filter Hersteller options by all upstream dropdowns
+     * (stack, family, model, residency) — not by the vendor itself.
+     */
+    const syncCascadingFilters = () => {
+        if (!vendorSelect || storyItems.length === 0) {
+            return;
+        }
+
+        /** @param {Element} item */
+        const itemModels = (item) =>
+            (item.getAttribute('data-models') ?? '')
+                .split(',')
+                .map((value) => value.trim())
+                .filter(Boolean);
+
+        /** @param {Element} item */
+        const itemResidencies = (item) =>
+            (item.getAttribute('data-residency') ?? '')
+                .split(',')
+                .map((value) => value.trim())
+                .filter(Boolean);
+
+        /** @param {Element} item */
+        const matchesUpstreamFilters = (item) =>
+            matchesProductFilter(itemFamilies(item)) &&
+            matchesStackFilter(itemStacks(item)) &&
+            matchesModelFilter(itemModels(item)) &&
+            matchesResidencyFilter(itemResidencies(item));
+
+        syncSelectOptionAvailability(vendorSelect, (vendorId) =>
+            Array.from(storyItems).some((item) => {
+                if ((item.getAttribute('data-vendor') ?? '') !== vendorId) {
+                    return false;
+                }
+
+                return matchesUpstreamFilters(item);
+            }),
+        );
+
+        // Re-apply locale labels after options were rebuilt.
+        const loc = locale();
+        Array.from(vendorSelect.options).forEach((option) => {
+            const i18nKey = option.getAttribute('data-i18n');
+            if (i18nKey) {
+                option.textContent = getShellLabel(i18nKey, loc);
+                return;
+            }
+
+            const text = option.getAttribute(loc === 'de' ? 'data-text-de' : 'data-text-en');
+            if (text) {
+                option.textContent = text;
+            }
+        });
+    };
 
     const syncStackBanner = () => {
         if (!(stackBanner instanceof HTMLElement) || !stackSelect) {
@@ -400,6 +484,8 @@ export function initOverviewFilters() {
         const query = normalize(searchInput?.value ?? '');
         let visible = 0;
         let wouldShowButRead = 0;
+        /** @type {Set<string>} */
+        const visibleVendors = new Set();
 
         storyItems.forEach((item) => {
             const text = normalize(item.getAttribute('data-search-text') ?? '');
@@ -463,7 +549,12 @@ export function initOverviewFilters() {
                 (!hideRead || !read);
 
             item.hidden = !show;
-            if (show) visible += 1;
+            if (show) {
+                visible += 1;
+                if (vendor !== '') {
+                    visibleVendors.add(vendor);
+                }
+            }
         });
 
         const showUnreadEmpty = hideRead && visible === 0 && wouldShowButRead > 0;
@@ -476,6 +567,7 @@ export function initOverviewFilters() {
             unreadEmptyEl.hidden = !showUnreadEmpty;
         }
 
+        syncResultCount(visibleVendors.size);
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
         syncFilterReset();
         syncStackBanner();
@@ -548,6 +640,8 @@ export function initOverviewFilters() {
                 activeSort = value;
             }
         }
+
+        syncCascadingFilters();
 
         if (activeView() === 'series') {
             if (emptyEl instanceof HTMLElement) {

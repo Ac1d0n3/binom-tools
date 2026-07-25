@@ -255,6 +255,7 @@ const shellLabels = {
         'resources.residencyDe': 'Deutschland',
         'resources.residencyUs': 'USA',
         'resources.residencyGlobal': 'Global',
+        'resources.visibleVendorCount': '{{count}} Hersteller',
         'compliance.indexTitle': 'Compliance',
         'compliance.indexLead':
             'Frameworks und Richtlinien für Daten, Privacy, Security und AI — Zweck, wichtigste Regeln und offizielle Quellen.',
@@ -1033,6 +1034,7 @@ const shellLabels = {
         'resources.residencyDe': 'Germany',
         'resources.residencyUs': 'US',
         'resources.residencyGlobal': 'Global',
+        'resources.visibleVendorCount': '{{count}} vendors',
         'compliance.indexTitle': 'Compliance',
         'compliance.indexLead':
             'Frameworks and regulations for data, privacy, security and AI — purpose, key rules and official sources.',

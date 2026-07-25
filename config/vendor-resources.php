@@ -34,10 +34,63 @@ return [
         'marquez' => ['de' => 'Marquez', 'en' => 'Marquez'],
         'miro' => ['de' => 'Miro', 'en' => 'Miro'],
         'talend' => ['de' => 'Talend (Qlik)', 'en' => 'Talend (Qlik)'],
+        'hubspot' => ['de' => 'HubSpot', 'en' => 'HubSpot'],
+        'servicenow' => ['de' => 'ServiceNow', 'en' => 'ServiceNow'],
+        'workday' => ['de' => 'Workday', 'en' => 'Workday'],
+        'oracle' => ['de' => 'Oracle', 'en' => 'Oracle'],
+        'atlassian' => ['de' => 'Atlassian', 'en' => 'Atlassian'],
+        'moodle' => ['de' => 'Moodle', 'en' => 'Moodle'],
+        'zendesk' => ['de' => 'Zendesk', 'en' => 'Zendesk'],
+        'shopify' => ['de' => 'Shopify', 'en' => 'Shopify'],
+        'adobe' => ['de' => 'Adobe', 'en' => 'Adobe'],
+        'temenos' => ['de' => 'Temenos', 'en' => 'Temenos'],
+        'avaloq' => ['de' => 'Avaloq', 'en' => 'Avaloq'],
+        'guidewire' => ['de' => 'Guidewire', 'en' => 'Guidewire'],
+        'fis' => ['de' => 'FIS', 'en' => 'FIS'],
+        'finastra' => ['de' => 'Finastra', 'en' => 'Finastra'],
+        'murex' => ['de' => 'Murex', 'en' => 'Murex'],
+        'duckcreek' => ['de' => 'Duck Creek', 'en' => 'Duck Creek'],
+        'thoughtmachine' => ['de' => 'Thought Machine', 'en' => 'Thought Machine'],
+        'opentext' => ['de' => 'OpenText', 'en' => 'OpenText'],
+        'datev' => ['de' => 'DATEV', 'en' => 'DATEV'],
+        'fabasoft' => ['de' => 'Fabasoft', 'en' => 'Fabasoft'],
+        'elo' => ['de' => 'ELO Digital Office', 'en' => 'ELO Digital Office'],
+        'docuware' => ['de' => 'DocuWare', 'en' => 'DocuWare'],
+        'pega' => ['de' => 'Pega', 'en' => 'Pega'],
+        'slack' => ['de' => 'Slack', 'en' => 'Slack'],
+        'personio' => ['de' => 'Personio', 'en' => 'Personio'],
+        'stripe' => ['de' => 'Stripe', 'en' => 'Stripe'],
+        'box' => ['de' => 'Box', 'en' => 'Box'],
+        'coupa' => ['de' => 'Coupa', 'en' => 'Coupa'],
+        'epic' => ['de' => 'Epic', 'en' => 'Epic'],
+        'monday' => ['de' => 'monday.com', 'en' => 'monday.com'],
+        'freshworks' => ['de' => 'Freshworks', 'en' => 'Freshworks'],
+        'sage' => ['de' => 'Sage', 'en' => 'Sage'],
+        'camunda' => ['de' => 'Camunda', 'en' => 'Camunda'],
+        'airbyte' => ['de' => 'Airbyte', 'en' => 'Airbyte'],
+        'matillion' => ['de' => 'Matillion', 'en' => 'Matillion'],
+        'informatica' => ['de' => 'Informatica', 'en' => 'Informatica'],
+        'tobikodata' => ['de' => 'Tobiko Data', 'en' => 'Tobiko Data'],
+        'coalesce' => ['de' => 'Coalesce', 'en' => 'Coalesce'],
+        'meltano' => ['de' => 'Meltano', 'en' => 'Meltano'],
+        'hevo' => ['de' => 'Hevo Data', 'en' => 'Hevo Data'],
+        'ibm' => ['de' => 'IBM', 'en' => 'IBM'],
+        'alteryx' => ['de' => 'Alteryx', 'en' => 'Alteryx'],
+        'knime' => ['de' => 'KNIME', 'en' => 'KNIME'],
+        'hitachi' => ['de' => 'Hitachi Vantara', 'en' => 'Hitachi Vantara'],
+        'boomi' => ['de' => 'Boomi', 'en' => 'Boomi'],
+        'rivery' => ['de' => 'Rivery', 'en' => 'Rivery'],
+        'estuary' => ['de' => 'Estuary', 'en' => 'Estuary'],
+        'hightouch' => ['de' => 'Hightouch', 'en' => 'Hightouch'],
+        'census' => ['de' => 'Census', 'en' => 'Census'],
+        'prophecy' => ['de' => 'Prophecy', 'en' => 'Prophecy'],
+        'dagster' => ['de' => 'Dagster', 'en' => 'Dagster'],
+        'prefect' => ['de' => 'Prefect', 'en' => 'Prefect'],
     ],
 
     'families' => [
         'platforms' => ['de' => 'Plattformen', 'en' => 'Platforms'],
+        'suppliers' => ['de' => 'Datenlieferanten', 'en' => 'Data suppliers'],
         'cloud' => ['de' => 'Cloud Hosting', 'en' => 'Cloud hosting'],
         'transformation' => ['de' => 'Transformation', 'en' => 'Transformation'],
         'bi' => ['de' => 'BI', 'en' => 'BI'],
@@ -3035,6 +3088,3867 @@ return [
                     ],
             ],
         ],
+
+        [
+            'id' => 'salesforce',
+            'family' => 'suppliers',
+            'vendor' => 'salesforce',
+            'label' => ['de' => 'Salesforce', 'en' => 'Salesforce'],
+            'purpose' => ['de' => 'CRM & Customer 360', 'en' => 'CRM & Customer 360'],
+            'models' => ['saas'],
+            'brandColor' => '#00A1E0',
+            'logo' => 'images/salesforce-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Salesforce Help', 'en' => 'Salesforce Help'],
+                    'href' => 'https://help.salesforce.com/',
+                    'description' => ['de' => 'Offizielle Produkthilfe.', 'en' => 'Official product help.'],
+                ],
+                [
+                    'label' => ['de' => 'Salesforce Developers', 'en' => 'Salesforce Developers'],
+                    'href' => 'https://developer.salesforce.com/docs',
+                    'description' => ['de' => 'API- und Integrations-Docs.', 'en' => 'API and integration docs.'],
+                ],
+                [
+                    'label' => ['de' => 'Data Cloud Docs', 'en' => 'Data Cloud docs'],
+                    'href' => 'https://help.salesforce.com/s/articleView?id=sf.c360_a_data_cloud.htm',
+                    'description' => ['de' => 'Customer Data Platform.', 'en' => 'Customer data platform.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust & Compliance', 'en' => 'Trust & compliance'],
+                    'href' => 'https://www.salesforce.com/company/legal/trust-and-compliance-documentation/',
+                    'description' => ['de' => 'Trust- und Compliance-Dokumente.', 'en' => 'Trust and compliance documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.salesforce.com/company/privacy/',
+                    'description' => ['de' => 'Datenschutz und Privacy.', 'en' => 'Privacy and data protection.'],
+                ],
+                [
+                    'label' => ['de' => 'Shield Platform Encryption', 'en' => 'Shield Platform Encryption'],
+                    'href' => 'https://help.salesforce.com/s/articleView?id=sf.security_pe_overview.htm',
+                    'description' => ['de' => 'Verschlüsselung im CRM.', 'en' => 'Encryption in CRM.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Trailhead', 'en' => 'Trailhead'],
+                    'href' => 'https://trailhead.salesforce.com/',
+                    'description' => ['de' => 'Offizielle Lernplattform.', 'en' => 'Official learning platform.'],
+                ],
+                [
+                    'label' => ['de' => 'Admin Beginner', 'en' => 'Admin Beginner'],
+                    'href' => 'https://trailhead.salesforce.com/content/learn/trails/force_com_admin_beginner',
+                    'description' => ['de' => 'Admin-Einstieg.', 'en' => 'Admin getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Salesforce Credentials', 'en' => 'Salesforce credentials'],
+                    'href' => 'https://trailhead.salesforce.com/credentials/administratoroverview',
+                    'description' => ['de' => 'Administrator und weitere Credentials.', 'en' => 'Administrator and other credentials.'],
+                ],
+                [
+                    'label' => ['de' => 'Certification Program', 'en' => 'Certification program'],
+                    'href' => 'https://trailhead.salesforce.com/help?article=Salesforce-Certification-Program',
+                    'description' => ['de' => 'Zertifizierungsprogramm.', 'en' => 'Certification program overview.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'dynamics365',
+            'family' => 'suppliers',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'Dynamics 365', 'en' => 'Dynamics 365'],
+            'purpose' => ['de' => 'CRM & ERP', 'en' => 'CRM & ERP'],
+            'models' => ['saas'],
+            'brandColor' => '#002050',
+            'logo' => 'images/dynamics365-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'bundles' => ['m365'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Dynamics 365 Docs', 'en' => 'Dynamics 365 docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/dynamics365/',
+                    'description' => ['de' => 'Offizielle Produktdokumentation.', 'en' => 'Official product documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Dataverse', 'en' => 'Dataverse'],
+                    'href' => 'https://learn.microsoft.com/en-us/power-apps/maker/data-platform/',
+                    'description' => ['de' => 'Datenplattform hinter Dynamics.', 'en' => 'Data platform behind Dynamics.'],
+                ],
+                [
+                    'label' => ['de' => 'Web API', 'en' => 'Web API'],
+                    'href' => 'https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/overview',
+                    'description' => ['de' => 'API für Integrationen.', 'en' => 'API for integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security Model', 'en' => 'Security model'],
+                    'href' => 'https://learn.microsoft.com/en-us/power-platform/admin/wp-security',
+                    'description' => ['de' => 'Rollen und Datenzugriff.', 'en' => 'Roles and data access.'],
+                ],
+                [
+                    'label' => ['de' => 'Compliance Offerings', 'en' => 'Compliance offerings'],
+                    'href' => 'https://learn.microsoft.com/en-us/compliance/regulatory/offering-home',
+                    'description' => ['de' => 'Microsoft Compliance.', 'en' => 'Microsoft compliance.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Dynamics 365 Learning', 'en' => 'Dynamics 365 learning'],
+                    'href' => 'https://learn.microsoft.com/en-us/training/dynamics365/',
+                    'description' => ['de' => 'Microsoft Learn Pfade.', 'en' => 'Microsoft Learn paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Dynamics 365 Certifications', 'en' => 'Dynamics 365 certifications'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/browse/?products=dynamics-365',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'hubspot',
+            'family' => 'suppliers',
+            'vendor' => 'hubspot',
+            'label' => ['de' => 'HubSpot', 'en' => 'HubSpot'],
+            'purpose' => ['de' => 'CRM & Marketing', 'en' => 'CRM & marketing'],
+            'models' => ['saas'],
+            'brandColor' => '#FF7A59',
+            'logo' => 'images/hubspot-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'HubSpot Knowledge Base', 'en' => 'HubSpot Knowledge Base'],
+                    'href' => 'https://knowledge.hubspot.com/',
+                    'description' => ['de' => 'Produkthilfe und How-tos.', 'en' => 'Product help and how-tos.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Docs', 'en' => 'Developer docs'],
+                    'href' => 'https://developers.hubspot.com/docs/api/overview',
+                    'description' => ['de' => 'API und Integrationen.', 'en' => 'API and integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Privacy & Security', 'en' => 'Privacy & security'],
+                    'href' => 'https://legal.hubspot.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutzrichtlinie.', 'en' => 'Privacy policy.'],
+                ],
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.hubspot.com/security',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'HubSpot Academy', 'en' => 'HubSpot Academy'],
+                    'href' => 'https://academy.hubspot.com/',
+                    'description' => ['de' => 'Kurse und Zertifikate.', 'en' => 'Courses and certificates.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Academy Certifications', 'en' => 'Academy certifications'],
+                    'href' => 'https://academy.hubspot.com/certification-overview',
+                    'description' => ['de' => 'Offizielle HubSpot-Zertifizierungen.', 'en' => 'Official HubSpot certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'servicenow',
+            'family' => 'suppliers',
+            'vendor' => 'servicenow',
+            'label' => ['de' => 'ServiceNow', 'en' => 'ServiceNow'],
+            'purpose' => ['de' => 'ITSM & Workflow', 'en' => 'ITSM & workflow'],
+            'models' => ['saas'],
+            'brandColor' => '#81B5A1',
+            'logo' => 'images/servicenow-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'ServiceNow Docs', 'en' => 'ServiceNow docs'],
+                    'href' => 'https://docs.servicenow.com/',
+                    'description' => ['de' => 'Offizielle Produktdokumentation.', 'en' => 'Official product documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Portal', 'en' => 'Developer portal'],
+                    'href' => 'https://developer.servicenow.com/',
+                    'description' => ['de' => 'APIs und Apps.', 'en' => 'APIs and apps.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust & Compliance', 'en' => 'Trust & compliance'],
+                    'href' => 'https://www.servicenow.com/company/trust.html',
+                    'description' => ['de' => 'Trust Center.', 'en' => 'Trust center.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy Statement', 'en' => 'Privacy statement'],
+                    'href' => 'https://www.servicenow.com/privacy-statement.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Now Learning', 'en' => 'Now Learning'],
+                    'href' => 'https://learning.servicenow.com/',
+                    'description' => ['de' => 'Offizielle Lernplattform.', 'en' => 'Official learning platform.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'ServiceNow Certification', 'en' => 'ServiceNow certification'],
+                    'href' => 'https://learning.servicenow.com/lxp/en/pages/certification-homepage',
+                    'description' => ['de' => 'Zertifizierungspfade.', 'en' => 'Certification paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'workday',
+            'family' => 'suppliers',
+            'vendor' => 'workday',
+            'label' => ['de' => 'Workday', 'en' => 'Workday'],
+            'purpose' => ['de' => 'HCM & Finance', 'en' => 'HCM & finance'],
+            'models' => ['saas'],
+            'brandColor' => '#0875E1',
+            'logo' => 'images/workday-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Workday Community', 'en' => 'Workday Community'],
+                    'href' => 'https://community.workday.com/',
+                    'description' => ['de' => 'Hilfe und Community.', 'en' => 'Help and community.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Docs', 'en' => 'Developer docs'],
+                    'href' => 'https://developer.workday.com/docs',
+                    'description' => ['de' => 'APIs und Integrationen.', 'en' => 'APIs and integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.workday.com/en-us/why-workday/trust.html',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.workday.com/en-us/privacy.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Workday Learning', 'en' => 'Workday Learning'],
+                    'href' => 'https://www.workday.com/en-us/company/education.html',
+                    'description' => ['de' => 'Training und Education.', 'en' => 'Training and education.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Workday Pro', 'en' => 'Workday Pro'],
+                    'href' => 'https://www.workday.com/en-us/company/education/certification.html',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'successfactors',
+            'family' => 'suppliers',
+            'vendor' => 'sap',
+            'label' => ['de' => 'SAP SuccessFactors', 'en' => 'SAP SuccessFactors'],
+            'purpose' => ['de' => 'HCM / HR', 'en' => 'HCM / HR'],
+            'models' => ['saas'],
+            'brandColor' => '#0FAAFF',
+            'logo' => 'images/successfactors-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'SuccessFactors Help', 'en' => 'SuccessFactors help'],
+                    'href' => 'https://help.sap.com/docs/SAP_SUCCESSFACTORS_PLATFORM',
+                    'description' => ['de' => 'Offizielle Produktdokumentation.', 'en' => 'Official product documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'SAP Help Portal', 'en' => 'SAP Help Portal'],
+                    'href' => 'https://help.sap.com/',
+                    'description' => ['de' => 'Gesamtes SAP Help Portal.', 'en' => 'Full SAP Help Portal.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security Guide', 'en' => 'Security guide'],
+                    'href' => 'https://help.sap.com/docs/SAP_SUCCESSFACTORS_PLATFORM',
+                    'description' => ['de' => 'Security und Zugriff.', 'en' => 'Security and access.'],
+                ],
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.sap.com/about/trust-center.html',
+                    'description' => ['de' => 'SAP Trust Center.', 'en' => 'SAP Trust Center.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SAP Learning', 'en' => 'SAP Learning'],
+                    'href' => 'https://learning.sap.com/products/human-resources/successfactors',
+                    'description' => ['de' => 'SuccessFactors Lernpfade.', 'en' => 'SuccessFactors learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'SAP Certification', 'en' => 'SAP certification'],
+                    'href' => 'https://learning.sap.com/certifications',
+                    'description' => ['de' => 'Offizielle SAP-Zertifizierungen.', 'en' => 'Official SAP certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'netsuite',
+            'family' => 'suppliers',
+            'vendor' => 'oracle',
+            'label' => ['de' => 'Oracle NetSuite', 'en' => 'Oracle NetSuite'],
+            'purpose' => ['de' => 'ERP & Finance', 'en' => 'ERP & finance'],
+            'models' => ['saas'],
+            'brandColor' => '#C74634',
+            'logo' => 'images/netsuite-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'NetSuite Help Center', 'en' => 'NetSuite Help Center'],
+                    'href' => 'https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/',
+                    'description' => ['de' => 'Offizielle Produkthilfe.', 'en' => 'Official product help.'],
+                ],
+                [
+                    'label' => ['de' => 'SuiteTalk / API', 'en' => 'SuiteTalk / API'],
+                    'href' => 'https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_N3415071.html',
+                    'description' => ['de' => 'Web Services und Integrationen.', 'en' => 'Web services and integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Oracle Cloud Security', 'en' => 'Oracle Cloud security'],
+                    'href' => 'https://www.oracle.com/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.oracle.com/legal/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'NetSuite University', 'en' => 'NetSuite University'],
+                    'href' => 'https://www.netsuite.com/portal/services/training.shtml',
+                    'description' => ['de' => 'Training und Kurse.', 'en' => 'Training and courses.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'SuiteTraining Certifications', 'en' => 'SuiteTraining certifications'],
+                    'href' => 'https://www.netsuite.com/portal/services/training/suite-training.shtml',
+                    'description' => ['de' => 'NetSuite-Zertifizierungen.', 'en' => 'NetSuite certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'jira',
+            'family' => 'suppliers',
+            'vendor' => 'atlassian',
+            'label' => ['de' => 'Jira', 'en' => 'Jira'],
+            'purpose' => ['de' => 'Work Management', 'en' => 'Work management'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#0052CC',
+            'logo' => 'images/jira-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Jira Cloud Docs', 'en' => 'Jira Cloud docs'],
+                    'href' => 'https://support.atlassian.com/jira-software-cloud/',
+                    'description' => ['de' => 'Offizielle Produkthilfe.', 'en' => 'Official product help.'],
+                ],
+                [
+                    'label' => ['de' => 'REST API', 'en' => 'REST API'],
+                    'href' => 'https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/',
+                    'description' => ['de' => 'API für Integrationen.', 'en' => 'API for integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Atlassian Trust Center', 'en' => 'Atlassian Trust Center'],
+                    'href' => 'https://www.atlassian.com/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy Policy', 'en' => 'Privacy policy'],
+                    'href' => 'https://www.atlassian.com/legal/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Atlassian University', 'en' => 'Atlassian University'],
+                    'href' => 'https://university.atlassian.com/',
+                    'description' => ['de' => 'Kurse und Lernpfade.', 'en' => 'Courses and learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Atlassian Certifications', 'en' => 'Atlassian certifications'],
+                    'href' => 'https://university.atlassian.com/student/activity/798517-atlassian-certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'sharepoint',
+            'family' => 'suppliers',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'SharePoint', 'en' => 'SharePoint'],
+            'purpose' => ['de' => 'Collaboration & Content', 'en' => 'Collaboration & content'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#038387',
+            'logo' => 'images/sharepoint-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'bundles' => ['m365'],
+            'help' => [
+                [
+                    'label' => ['de' => 'SharePoint Docs', 'en' => 'SharePoint docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/sharepoint/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Microsoft Graph', 'en' => 'Microsoft Graph'],
+                    'href' => 'https://learn.microsoft.com/en-us/graph/api/resources/sharepoint',
+                    'description' => ['de' => 'API für Sites und Listen.', 'en' => 'API for sites and lists.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'SharePoint Governance', 'en' => 'SharePoint governance'],
+                    'href' => 'https://learn.microsoft.com/en-us/sharepoint/governance-overview',
+                    'description' => ['de' => 'Governance Overview.', 'en' => 'Governance overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Data Loss Prevention', 'en' => 'Data loss prevention'],
+                    'href' => 'https://learn.microsoft.com/en-us/microsoft-365/compliance/dlp-learn-about-dlp',
+                    'description' => ['de' => 'DLP in Microsoft 365.', 'en' => 'DLP in Microsoft 365.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SharePoint Training', 'en' => 'SharePoint training'],
+                    'href' => 'https://learn.microsoft.com/en-us/training/sharepoint/',
+                    'description' => ['de' => 'Microsoft Learn Pfade.', 'en' => 'Microsoft Learn paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Microsoft 365 Certifications', 'en' => 'Microsoft 365 certifications'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/browse/?products=m365',
+                    'description' => ['de' => 'M365-Zertifizierungen.', 'en' => 'M365 certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'moodle',
+            'family' => 'suppliers',
+            'vendor' => 'moodle',
+            'label' => ['de' => 'Moodle', 'en' => 'Moodle'],
+            'purpose' => ['de' => 'LMS / Learning', 'en' => 'LMS / learning'],
+            'models' => ['opensource', 'saas', 'onprem'],
+            'brandColor' => '#F98012',
+            'logo' => 'images/moodle-badge.svg',
+            'help' => [
+                [
+                    'label' => ['de' => 'Moodle Docs', 'en' => 'Moodle docs'],
+                    'href' => 'https://docs.moodle.org/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Web Services API', 'en' => 'Web services API'],
+                    'href' => 'https://docs.moodle.org/dev/Web_services',
+                    'description' => ['de' => 'APIs für Integrationen.', 'en' => 'APIs for integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://docs.moodle.org/en/Security',
+                    'description' => ['de' => 'Security-Empfehlungen.', 'en' => 'Security recommendations.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy API', 'en' => 'Privacy API'],
+                    'href' => 'https://docs.moodle.org/dev/Privacy_API',
+                    'description' => ['de' => 'Datenschutz und GDPR.', 'en' => 'Privacy and GDPR.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Moodle Academy', 'en' => 'Moodle Academy'],
+                    'href' => 'https://moodle.academy/',
+                    'description' => ['de' => 'Kurse und Lernpfade.', 'en' => 'Courses and learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Moodle Educator Certification', 'en' => 'Moodle Educator Certification'],
+                    'href' => 'https://moodle.com/certification/',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'zendesk',
+            'family' => 'suppliers',
+            'vendor' => 'zendesk',
+            'label' => ['de' => 'Zendesk', 'en' => 'Zendesk'],
+            'purpose' => ['de' => 'Customer Support', 'en' => 'Customer support'],
+            'models' => ['saas'],
+            'brandColor' => '#03363D',
+            'logo' => 'images/zendesk-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Zendesk Help Center', 'en' => 'Zendesk Help Center'],
+                    'href' => 'https://support.zendesk.com/hc/en-us',
+                    'description' => ['de' => 'Offizielle Produkthilfe.', 'en' => 'Official product help.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Docs', 'en' => 'Developer docs'],
+                    'href' => 'https://developer.zendesk.com/api-reference/',
+                    'description' => ['de' => 'API-Referenz.', 'en' => 'API reference.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.zendesk.com/trust-center/',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy Policy', 'en' => 'Privacy policy'],
+                    'href' => 'https://www.zendesk.com/company/agreements-and-terms/privacy-notice/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Zendesk Training', 'en' => 'Zendesk training'],
+                    'href' => 'https://training.zendesk.com/',
+                    'description' => ['de' => 'Kurse und Training.', 'en' => 'Courses and training.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Zendesk Certifications', 'en' => 'Zendesk certifications'],
+                    'href' => 'https://training.zendesk.com/page/certifications',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'shopify',
+            'family' => 'suppliers',
+            'vendor' => 'shopify',
+            'label' => ['de' => 'Shopify', 'en' => 'Shopify'],
+            'purpose' => ['de' => 'E-Commerce', 'en' => 'E-commerce'],
+            'models' => ['saas'],
+            'brandColor' => '#96BF48',
+            'logo' => 'images/shopify-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Shopify Help Center', 'en' => 'Shopify Help Center'],
+                    'href' => 'https://help.shopify.com/',
+                    'description' => ['de' => 'Offizielle Produkthilfe.', 'en' => 'Official product help.'],
+                ],
+                [
+                    'label' => ['de' => 'Admin API', 'en' => 'Admin API'],
+                    'href' => 'https://shopify.dev/docs/api/admin',
+                    'description' => ['de' => 'API für Shop-Daten.', 'en' => 'API for store data.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.shopify.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy Policy', 'en' => 'Privacy policy'],
+                    'href' => 'https://www.shopify.com/legal/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Shopify Academy', 'en' => 'Shopify Academy'],
+                    'href' => 'https://www.shopify.com/academy',
+                    'description' => ['de' => 'Kurse und Lernpfade.', 'en' => 'Courses and learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Shopify Academy Certificates', 'en' => 'Shopify Academy certificates'],
+                    'href' => 'https://www.shopify.com/academy',
+                    'description' => ['de' => 'Academy-Zertifikate.', 'en' => 'Academy certificates.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'google-workspace',
+            'family' => 'suppliers',
+            'vendor' => 'google',
+            'label' => ['de' => 'Google Workspace', 'en' => 'Google Workspace'],
+            'purpose' => ['de' => 'Collaboration & Directory', 'en' => 'Collaboration & directory'],
+            'models' => ['saas'],
+            'brandColor' => '#4285F4',
+            'logo' => 'images/google-workspace-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Workspace Admin Help', 'en' => 'Workspace Admin Help'],
+                    'href' => 'https://support.google.com/a/',
+                    'description' => ['de' => 'Admin-Hilfe.', 'en' => 'Admin help.'],
+                ],
+                [
+                    'label' => ['de' => 'Admin SDK', 'en' => 'Admin SDK'],
+                    'href' => 'https://developers.google.com/admin-sdk',
+                    'description' => ['de' => 'Directory und Admin APIs.', 'en' => 'Directory and admin APIs.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust & Security', 'en' => 'Trust & security'],
+                    'href' => 'https://workspace.google.com/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://workspace.google.com/security/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Workspace Learning Center', 'en' => 'Workspace Learning Center'],
+                    'href' => 'https://workspace.google.com/learning/',
+                    'description' => ['de' => 'Training und Tipps.', 'en' => 'Training and tips.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Google Cloud Skills', 'en' => 'Google Cloud skills'],
+                    'href' => 'https://cloud.google.com/learn/training',
+                    'description' => ['de' => 'Verwandte Google-Lernpfade.', 'en' => 'Related Google learning paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'adobe-experience-cloud',
+            'family' => 'suppliers',
+            'vendor' => 'adobe',
+            'label' => ['de' => 'Adobe Experience Cloud', 'en' => 'Adobe Experience Cloud'],
+            'purpose' => ['de' => 'Marketing & Experience', 'en' => 'Marketing & experience'],
+            'models' => ['saas'],
+            'brandColor' => '#FF0000',
+            'logo' => 'images/adobe-experience-cloud-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Experience League Docs', 'en' => 'Experience League docs'],
+                    'href' => 'https://experienceleague.adobe.com/docs/home.html',
+                    'description' => ['de' => 'Offizielle Produktdokumentation.', 'en' => 'Official product documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Docs', 'en' => 'Developer docs'],
+                    'href' => 'https://developer.adobe.com/docs/',
+                    'description' => ['de' => 'APIs und Integrationen.', 'en' => 'APIs and integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Adobe Trust Center', 'en' => 'Adobe Trust Center'],
+                    'href' => 'https://www.adobe.com/trust.html',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.adobe.com/privacy.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Experience League', 'en' => 'Experience League'],
+                    'href' => 'https://experienceleague.adobe.com/',
+                    'description' => ['de' => 'Lernen und Tutorials.', 'en' => 'Learning and tutorials.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Adobe Credentials', 'en' => 'Adobe credentials'],
+                    'href' => 'https://learning.adobe.com/certification.html',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+
+        [
+            'id' => 'sap-s4hana',
+            'family' => 'suppliers',
+            'vendor' => 'sap',
+            'label' => ['de' => 'SAP S/4HANA', 'en' => 'SAP S/4HANA'],
+            'purpose' => ['de' => 'ERP / Kernsysteme', 'en' => 'ERP / core systems'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#0FAAFF',
+            'logo' => 'images/sap-s4hana-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'S/4HANA Help', 'en' => 'S/4HANA help'],
+                    'href' => 'https://help.sap.com/docs/SAP_S4HANA_CLOUD',
+                    'description' => ['de' => 'Cloud-Dokumentation.', 'en' => 'Cloud documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'S/4HANA On-Premise', 'en' => 'S/4HANA on-premise'],
+                    'href' => 'https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE',
+                    'description' => ['de' => 'On-Prem-Docs.', 'en' => 'On-prem docs.'],
+                ],
+                [
+                    'label' => ['de' => 'SAP API Business Hub', 'en' => 'SAP API Business Hub'],
+                    'href' => 'https://api.sap.com/',
+                    'description' => ['de' => 'APIs und Integrationen.', 'en' => 'APIs and integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'SAP Trust Center', 'en' => 'SAP Trust Center'],
+                    'href' => 'https://www.sap.com/about/trust-center.html',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Security Guide', 'en' => 'Security guide'],
+                    'href' => 'https://help.sap.com/docs/SAP_S4HANA_CLOUD',
+                    'description' => ['de' => 'Security-Dokumentation.', 'en' => 'Security documentation.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SAP Learning', 'en' => 'SAP Learning'],
+                    'href' => 'https://learning.sap.com/products/s4hana',
+                    'description' => ['de' => 'S/4HANA Lernpfade.', 'en' => 'S/4HANA learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'SAP Certification', 'en' => 'SAP certification'],
+                    'href' => 'https://learning.sap.com/certifications',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'temenos',
+            'family' => 'suppliers',
+            'vendor' => 'temenos',
+            'label' => ['de' => 'Temenos', 'en' => 'Temenos'],
+            'purpose' => ['de' => 'Core Banking', 'en' => 'Core banking'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#00A3E0',
+            'logo' => 'images/temenos-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Temenos Docs', 'en' => 'Temenos docs'],
+                    'href' => 'https://www.temenos.com/products/',
+                    'description' => ['de' => 'Produktübersicht und Docs.', 'en' => 'Product overview and docs.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Hub', 'en' => 'Developer hub'],
+                    'href' => 'https://www.temenos.com/developers/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust & Security', 'en' => 'Trust & security'],
+                    'href' => 'https://www.temenos.com/about-us/trust-and-security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.temenos.com/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Temenos Learning', 'en' => 'Temenos Learning'],
+                    'href' => 'https://www.temenos.com/services/learning/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Temenos Academy', 'en' => 'Temenos Academy'],
+                    'href' => 'https://www.temenos.com/services/learning/',
+                    'description' => ['de' => 'Zertifizierungsangebote.', 'en' => 'Certification offerings.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'avaloq',
+            'family' => 'suppliers',
+            'vendor' => 'avaloq',
+            'label' => ['de' => 'Avaloq', 'en' => 'Avaloq'],
+            'purpose' => ['de' => 'Core Banking / Wealth', 'en' => 'Core banking / wealth'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#1B3A5F',
+            'logo' => 'images/avaloq-badge.svg',
+            'residency' => ['eu', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Avaloq Platform', 'en' => 'Avaloq platform'],
+                    'href' => 'https://www.avaloq.com/platform',
+                    'description' => ['de' => 'Banking-Plattform-Übersicht.', 'en' => 'Banking platform overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Community', 'en' => 'Community'],
+                    'href' => 'https://community.avaloq.com/',
+                    'description' => ['de' => 'Hilfe und Community.', 'en' => 'Help and community.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.avaloq.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.avaloq.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Avaloq Academy', 'en' => 'Avaloq Academy'],
+                    'href' => 'https://www.avaloq.com/academy',
+                    'description' => ['de' => 'Training und Kurse.', 'en' => 'Training and courses.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Avaloq Certification', 'en' => 'Avaloq certification'],
+                    'href' => 'https://www.avaloq.com/academy',
+                    'description' => ['de' => 'Zertifizierungspfade.', 'en' => 'Certification paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'guidewire',
+            'family' => 'suppliers',
+            'vendor' => 'guidewire',
+            'label' => ['de' => 'Guidewire', 'en' => 'Guidewire'],
+            'purpose' => ['de' => 'Insurance Core', 'en' => 'Insurance core'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#00A0DC',
+            'logo' => 'images/guidewire-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Guidewire Docs', 'en' => 'Guidewire docs'],
+                    'href' => 'https://docs.guidewire.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.guidewire.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.guidewire.com/trust-center',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.guidewire.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Guidewire Education', 'en' => 'Guidewire Education'],
+                    'href' => 'https://www.guidewire.com/education',
+                    'description' => ['de' => 'Training und Kurse.', 'en' => 'Training and courses.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Guidewire Certifications', 'en' => 'Guidewire certifications'],
+                    'href' => 'https://www.guidewire.com/education',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'fis',
+            'family' => 'suppliers',
+            'vendor' => 'fis',
+            'label' => ['de' => 'FIS', 'en' => 'FIS'],
+            'purpose' => ['de' => 'Banking & Payments', 'en' => 'Banking & payments'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#FF6600',
+            'logo' => 'images/fis-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'FIS Solutions', 'en' => 'FIS solutions'],
+                    'href' => 'https://www.fisglobal.com/en/products',
+                    'description' => ['de' => 'Produktübersicht.', 'en' => 'Product overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.fisglobal.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.fisglobal.com/en/about-us/corporate-responsibility/trust',
+                    'description' => ['de' => 'Trust und Security.', 'en' => 'Trust and security.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.fisglobal.com/en/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'FIS Learning', 'en' => 'FIS Learning'],
+                    'href' => 'https://www.fisglobal.com/',
+                    'description' => ['de' => 'Produkt- und Lernressourcen.', 'en' => 'Product and learning resources.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'FIS Training', 'en' => 'FIS training'],
+                    'href' => 'https://www.fisglobal.com/',
+                    'description' => ['de' => 'Training und Enablement.', 'en' => 'Training and enablement.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'finastra',
+            'family' => 'suppliers',
+            'vendor' => 'finastra',
+            'label' => ['de' => 'Finastra', 'en' => 'Finastra'],
+            'purpose' => ['de' => 'Banking Platforms', 'en' => 'Banking platforms'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#6C2EB9',
+            'logo' => 'images/finastra-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Finastra Docs', 'en' => 'Finastra docs'],
+                    'href' => 'https://www.finastra.com/solutions',
+                    'description' => ['de' => 'Lösungsübersicht.', 'en' => 'Solutions overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Portal', 'en' => 'Developer portal'],
+                    'href' => 'https://developer.finastra.com/',
+                    'description' => ['de' => 'APIs und Apps.', 'en' => 'APIs and apps.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.finastra.com/trust-center',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.finastra.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Finastra Learning', 'en' => 'Finastra Learning'],
+                    'href' => 'https://www.finastra.com/',
+                    'description' => ['de' => 'Lernressourcen.', 'en' => 'Learning resources.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Finastra Academy', 'en' => 'Finastra Academy'],
+                    'href' => 'https://www.finastra.com/',
+                    'description' => ['de' => 'Training und Zertifizierung.', 'en' => 'Training and certification.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'murex',
+            'family' => 'suppliers',
+            'vendor' => 'murex',
+            'label' => ['de' => 'Murex', 'en' => 'Murex'],
+            'purpose' => ['de' => 'Capital Markets', 'en' => 'Capital markets'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#E31C23',
+            'logo' => 'images/murex-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Murex Platform', 'en' => 'Murex platform'],
+                    'href' => 'https://www.murex.com/solutions',
+                    'description' => ['de' => 'Trading- und Risk-Plattform.', 'en' => 'Trading and risk platform.'],
+                ],
+                [
+                    'label' => ['de' => 'Support', 'en' => 'Support'],
+                    'href' => 'https://www.murex.com/',
+                    'description' => ['de' => 'Produkt- und Support-Infos.', 'en' => 'Product and support info.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.murex.com/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.murex.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Murex Academy', 'en' => 'Murex Academy'],
+                    'href' => 'https://www.murex.com/services/academy',
+                    'description' => ['de' => 'Training und Academy.', 'en' => 'Training and academy.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Murex Certification', 'en' => 'Murex certification'],
+                    'href' => 'https://www.murex.com/services/academy',
+                    'description' => ['de' => 'Zertifizierungspfade.', 'en' => 'Certification paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'duck-creek',
+            'family' => 'suppliers',
+            'vendor' => 'duckcreek',
+            'label' => ['de' => 'Duck Creek', 'en' => 'Duck Creek'],
+            'purpose' => ['de' => 'Insurance Platforms', 'en' => 'Insurance platforms'],
+            'models' => ['saas'],
+            'brandColor' => '#00B5E2',
+            'logo' => 'images/duck-creek-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Duck Creek Docs', 'en' => 'Duck Creek docs'],
+                    'href' => 'https://www.duckcreek.com/products/',
+                    'description' => ['de' => 'Produktübersicht.', 'en' => 'Product overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.duckcreek.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.duckcreek.com/trust-center/',
+                    'description' => ['de' => 'Trust Center.', 'en' => 'Trust center.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.duckcreek.com/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Duck Creek University', 'en' => 'Duck Creek University'],
+                    'href' => 'https://www.duckcreek.com/services/duck-creek-university/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Duck Creek Certifications', 'en' => 'Duck Creek certifications'],
+                    'href' => 'https://www.duckcreek.com/services/duck-creek-university/',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'thought-machine',
+            'family' => 'suppliers',
+            'vendor' => 'thoughtmachine',
+            'label' => ['de' => 'Thought Machine', 'en' => 'Thought Machine'],
+            'purpose' => ['de' => 'Cloud Core Banking', 'en' => 'Cloud core banking'],
+            'models' => ['saas'],
+            'brandColor' => '#111111',
+            'logo' => 'images/thought-machine-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Vault Core', 'en' => 'Vault Core'],
+                    'href' => 'https://www.thoughtmachine.net/vault',
+                    'description' => ['de' => 'Core-Banking-Plattform.', 'en' => 'Core banking platform.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://www.thoughtmachine.net/',
+                    'description' => ['de' => 'Produkt- und Dev-Infos.', 'en' => 'Product and developer info.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.thoughtmachine.net/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.thoughtmachine.net/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Thought Machine Resources', 'en' => 'Thought Machine resources'],
+                    'href' => 'https://www.thoughtmachine.net/resources',
+                    'description' => ['de' => 'Ressourcen und Guides.', 'en' => 'Resources and guides.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Enablement', 'en' => 'Enablement'],
+                    'href' => 'https://www.thoughtmachine.net/',
+                    'description' => ['de' => 'Partner- und Enablement-Infos.', 'en' => 'Partner and enablement info.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'opentext',
+            'family' => 'suppliers',
+            'vendor' => 'opentext',
+            'label' => ['de' => 'OpenText', 'en' => 'OpenText'],
+            'purpose' => ['de' => 'ECM / DMS', 'en' => 'ECM / DMS'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#000000',
+            'logo' => 'images/opentext-badge.svg',
+            'residency' => ['eu', 'us', 'de', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'OpenText Docs', 'en' => 'OpenText docs'],
+                    'href' => 'https://www.opentext.com/products',
+                    'description' => ['de' => 'Produktübersicht.', 'en' => 'Product overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.opentext.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.opentext.com/about/trust-center',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.opentext.com/about/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'OpenText Learning', 'en' => 'OpenText Learning'],
+                    'href' => 'https://www.opentext.com/about/training',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'OpenText Certifications', 'en' => 'OpenText certifications'],
+                    'href' => 'https://www.opentext.com/about/training',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'datev',
+            'family' => 'suppliers',
+            'vendor' => 'datev',
+            'label' => ['de' => 'DATEV', 'en' => 'DATEV'],
+            'purpose' => ['de' => 'Buchhaltung & Steuer (DACH)', 'en' => 'Accounting & tax (DACH)'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#8B1C2C',
+            'logo' => 'images/datev-badge.svg',
+            'residency' => ['de', 'eu'],
+            'help' => [
+                [
+                    'label' => ['de' => 'DATEV Hilfe', 'en' => 'DATEV help'],
+                    'href' => 'https://www.datev.de/web/de/service-und-support/hilfe/',
+                    'description' => ['de' => 'Hilfe und Support.', 'en' => 'Help and support.'],
+                ],
+                [
+                    'label' => ['de' => 'DATEV Developer', 'en' => 'DATEV Developer'],
+                    'href' => 'https://developer.datev.de/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Datenschutz', 'en' => 'Privacy'],
+                    'href' => 'https://www.datev.de/web/de/datenschutz/',
+                    'description' => ['de' => 'Datenschutzhinweise.', 'en' => 'Privacy notices.'],
+                ],
+                [
+                    'label' => ['de' => 'Sicherheit', 'en' => 'Security'],
+                    'href' => 'https://www.datev.de/web/de/ueber-datev/sicherheit/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'DATEV Lernen', 'en' => 'DATEV learning'],
+                    'href' => 'https://www.datev.de/web/de/service-und-support/seminare-und-schulungen/',
+                    'description' => ['de' => 'Seminare und Schulungen.', 'en' => 'Seminars and training.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'DATEV Zertifikate', 'en' => 'DATEV certificates'],
+                    'href' => 'https://www.datev.de/web/de/service-und-support/seminare-und-schulungen/',
+                    'description' => ['de' => 'Schulungsnachweise.', 'en' => 'Training certificates.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'fabasoft',
+            'family' => 'suppliers',
+            'vendor' => 'fabasoft',
+            'label' => ['de' => 'Fabasoft', 'en' => 'Fabasoft'],
+            'purpose' => ['de' => 'DMS & Collaboration (DACH Public)', 'en' => 'DMS & collaboration (DACH public)'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#E30613',
+            'logo' => 'images/fabasoft-badge.svg',
+            'residency' => ['eu', 'de'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Fabasoft Docs', 'en' => 'Fabasoft docs'],
+                    'href' => 'https://help.fabasoft.com/',
+                    'description' => ['de' => 'Offizielle Hilfe.', 'en' => 'Official help.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://www.fabasoft.com/en/products',
+                    'description' => ['de' => 'Produkte und Integration.', 'en' => 'Products and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.fabasoft.com/en/company/trust',
+                    'description' => ['de' => 'Trust und Compliance.', 'en' => 'Trust and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.fabasoft.com/en/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Fabasoft Academy', 'en' => 'Fabasoft Academy'],
+                    'href' => 'https://www.fabasoft.com/en/services/academy',
+                    'description' => ['de' => 'Training und Academy.', 'en' => 'Training and academy.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Fabasoft Certification', 'en' => 'Fabasoft certification'],
+                    'href' => 'https://www.fabasoft.com/en/services/academy',
+                    'description' => ['de' => 'Zertifizierungspfade.', 'en' => 'Certification paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'elo',
+            'family' => 'suppliers',
+            'vendor' => 'elo',
+            'label' => ['de' => 'ELO', 'en' => 'ELO'],
+            'purpose' => ['de' => 'DMS / ECM (DACH)', 'en' => 'DMS / ECM (DACH)'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#009FE3',
+            'logo' => 'images/elo-badge.svg',
+            'residency' => ['de', 'eu'],
+            'help' => [
+                [
+                    'label' => ['de' => 'ELO Docs', 'en' => 'ELO docs'],
+                    'href' => 'https://www.elo.com/en/support/',
+                    'description' => ['de' => 'Support und Docs.', 'en' => 'Support and docs.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://www.elo.com/en/products/',
+                    'description' => ['de' => 'Produkte und APIs.', 'en' => 'Products and APIs.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.elo.com/en/company/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.elo.com/en/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'ELO Academy', 'en' => 'ELO Academy'],
+                    'href' => 'https://www.elo.com/en/services/training/',
+                    'description' => ['de' => 'Training und Kurse.', 'en' => 'Training and courses.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'ELO Certification', 'en' => 'ELO certification'],
+                    'href' => 'https://www.elo.com/en/services/training/',
+                    'description' => ['de' => 'Zertifizierungen.', 'en' => 'Certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'docuware',
+            'family' => 'suppliers',
+            'vendor' => 'docuware',
+            'label' => ['de' => 'DocuWare', 'en' => 'DocuWare'],
+            'purpose' => ['de' => 'Document Management', 'en' => 'Document management'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#F5A623',
+            'logo' => 'images/docuware-badge.svg',
+            'residency' => ['eu', 'us', 'de', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'DocuWare Knowledge Center', 'en' => 'DocuWare Knowledge Center'],
+                    'href' => 'https://www.docuware.com/support',
+                    'description' => ['de' => 'Hilfe und Knowledge Base.', 'en' => 'Help and knowledge base.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://start.docuware.com/developer',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://start.docuware.com/trust-center',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://start.docuware.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'DocuWare University', 'en' => 'DocuWare University'],
+                    'href' => 'https://www.docuware.com/learn',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'DocuWare Certifications', 'en' => 'DocuWare certifications'],
+                    'href' => 'https://www.docuware.com/learn',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'pega',
+            'family' => 'suppliers',
+            'vendor' => 'pega',
+            'label' => ['de' => 'Pega', 'en' => 'Pega'],
+            'purpose' => ['de' => 'Case Management & BPM', 'en' => 'Case management & BPM'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#1F2C5C',
+            'logo' => 'images/pega-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Pega Docs', 'en' => 'Pega docs'],
+                    'href' => 'https://docs.pega.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Community', 'en' => 'Community'],
+                    'href' => 'https://community.pega.com/',
+                    'description' => ['de' => 'Community und Hilfe.', 'en' => 'Community and help.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.pega.com/about/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.pega.com/about/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Pega Academy', 'en' => 'Pega Academy'],
+                    'href' => 'https://academy.pega.com/',
+                    'description' => ['de' => 'Kurse und Lernpfade.', 'en' => 'Courses and learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Pega Certifications', 'en' => 'Pega certifications'],
+                    'href' => 'https://academy.pega.com/page/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'entra-id',
+            'family' => 'suppliers',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'Microsoft Entra ID', 'en' => 'Microsoft Entra ID'],
+            'purpose' => ['de' => 'Identity & Directory', 'en' => 'Identity & directory'],
+            'models' => ['saas'],
+            'brandColor' => '#0078D4',
+            'logo' => 'images/entra-id-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'bundles' => ['m365'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Entra ID Docs', 'en' => 'Entra ID docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/entra/identity/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Graph API', 'en' => 'Graph API'],
+                    'href' => 'https://learn.microsoft.com/en-us/graph/api/resources/identity-network-access-overview',
+                    'description' => ['de' => 'Directory- und Identity-APIs.', 'en' => 'Directory and identity APIs.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Conditional Access', 'en' => 'Conditional access'],
+                    'href' => 'https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview',
+                    'description' => ['de' => 'Zugriffssteuerung.', 'en' => 'Access control.'],
+                ],
+                [
+                    'label' => ['de' => 'Compliance', 'en' => 'Compliance'],
+                    'href' => 'https://learn.microsoft.com/en-us/compliance/regulatory/offering-home',
+                    'description' => ['de' => 'Microsoft Compliance.', 'en' => 'Microsoft compliance.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Entra Learning', 'en' => 'Entra learning'],
+                    'href' => 'https://learn.microsoft.com/en-us/training/browse/?products=entra',
+                    'description' => ['de' => 'Microsoft Learn Pfade.', 'en' => 'Microsoft Learn paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Identity Certifications', 'en' => 'Identity certifications'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/',
+                    'description' => ['de' => 'Identity-Zertifizierungen.', 'en' => 'Identity certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'exchange',
+            'family' => 'suppliers',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'Microsoft Exchange', 'en' => 'Microsoft Exchange'],
+            'purpose' => ['de' => 'Mail & Kalender', 'en' => 'Mail & calendar'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#0078D4',
+            'logo' => 'images/exchange-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'bundles' => ['m365'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Exchange Docs', 'en' => 'Exchange docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/exchange/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Graph Mail API', 'en' => 'Graph Mail API'],
+                    'href' => 'https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview',
+                    'description' => ['de' => 'Mail-APIs.', 'en' => 'Mail APIs.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Exchange Online Protection', 'en' => 'Exchange Online Protection'],
+                    'href' => 'https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/exchange-online-protection-overview',
+                    'description' => ['de' => 'Mail-Security.', 'en' => 'Mail security.'],
+                ],
+                [
+                    'label' => ['de' => 'DLP', 'en' => 'DLP'],
+                    'href' => 'https://learn.microsoft.com/en-us/microsoft-365/compliance/dlp-learn-about-dlp',
+                    'description' => ['de' => 'Data Loss Prevention.', 'en' => 'Data loss prevention.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Exchange Training', 'en' => 'Exchange training'],
+                    'href' => 'https://learn.microsoft.com/en-us/training/browse/?products=exchange',
+                    'description' => ['de' => 'Microsoft Learn Pfade.', 'en' => 'Microsoft Learn paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Messaging Certifications', 'en' => 'Messaging certifications'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/browse/?products=m365',
+                    'description' => ['de' => 'M365-Zertifizierungen.', 'en' => 'M365 certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'microsoft-teams',
+            'family' => 'suppliers',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'Microsoft Teams', 'en' => 'Microsoft Teams'],
+            'purpose' => ['de' => 'Collaboration & Chat', 'en' => 'Collaboration & chat'],
+            'models' => ['saas'],
+            'brandColor' => '#6264A7',
+            'logo' => 'images/microsoft-teams-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'bundles' => ['m365'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Teams Docs', 'en' => 'Teams docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/microsoftteams/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Graph Teams API', 'en' => 'Graph Teams API'],
+                    'href' => 'https://learn.microsoft.com/en-us/graph/api/resources/teams-api-overview',
+                    'description' => ['de' => 'Teams-APIs.', 'en' => 'Teams APIs.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Teams Admin', 'en' => 'Teams admin'],
+                    'href' => 'https://learn.microsoft.com/en-us/microsoftteams/teams-overview',
+                    'description' => ['de' => 'Admin und Governance.', 'en' => 'Admin and governance.'],
+                ],
+                [
+                    'label' => ['de' => 'Retention', 'en' => 'Retention'],
+                    'href' => 'https://learn.microsoft.com/en-us/microsoftteams/retention-policies',
+                    'description' => ['de' => 'Aufbewahrungsrichtlinien.', 'en' => 'Retention policies.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Teams Training', 'en' => 'Teams training'],
+                    'href' => 'https://support.microsoft.com/en-us/teams',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Teams Admin', 'en' => 'Teams admin'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/teams-administrator-associate/',
+                    'description' => ['de' => 'Teams-Zertifizierung.', 'en' => 'Teams certification.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'oracle-fusion',
+            'family' => 'suppliers',
+            'vendor' => 'oracle',
+            'label' => ['de' => 'Oracle Fusion Cloud', 'en' => 'Oracle Fusion Cloud'],
+            'purpose' => ['de' => 'ERP / HCM / CX', 'en' => 'ERP / HCM / CX'],
+            'models' => ['saas'],
+            'brandColor' => '#C74634',
+            'logo' => 'images/oracle-fusion-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Fusion Help', 'en' => 'Fusion help'],
+                    'href' => 'https://docs.oracle.com/en/cloud/saas/',
+                    'description' => ['de' => 'Offizielle Cloud-Docs.', 'en' => 'Official cloud docs.'],
+                ],
+                [
+                    'label' => ['de' => 'REST APIs', 'en' => 'REST APIs'],
+                    'href' => 'https://docs.oracle.com/en/cloud/saas/applications-common/faapi/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Oracle Cloud Security', 'en' => 'Oracle Cloud security'],
+                    'href' => 'https://www.oracle.com/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.oracle.com/legal/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Oracle University', 'en' => 'Oracle University'],
+                    'href' => 'https://education.oracle.com/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Oracle Certifications', 'en' => 'Oracle certifications'],
+                    'href' => 'https://education.oracle.com/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'sap-concur',
+            'family' => 'suppliers',
+            'vendor' => 'sap',
+            'label' => ['de' => 'SAP Concur', 'en' => 'SAP Concur'],
+            'purpose' => ['de' => 'Travel & Expense', 'en' => 'Travel & expense'],
+            'models' => ['saas'],
+            'brandColor' => '#0FAAFF',
+            'logo' => 'images/sap-concur-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Concur Help', 'en' => 'Concur help'],
+                    'href' => 'https://www.concurtraining.com/',
+                    'description' => ['de' => 'Hilfe und Training.', 'en' => 'Help and training.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.concur.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.concur.com/en-us/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.concur.com/en-us/legal/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Concur Training', 'en' => 'Concur training'],
+                    'href' => 'https://www.concurtraining.com/',
+                    'description' => ['de' => 'Schulungen.', 'en' => 'Training.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Concur Certification', 'en' => 'Concur certification'],
+                    'href' => 'https://www.concurtraining.com/',
+                    'description' => ['de' => 'Zertifizierungen.', 'en' => 'Certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'sap-ariba',
+            'family' => 'suppliers',
+            'vendor' => 'sap',
+            'label' => ['de' => 'SAP Ariba', 'en' => 'SAP Ariba'],
+            'purpose' => ['de' => 'Procurement', 'en' => 'Procurement'],
+            'models' => ['saas'],
+            'brandColor' => '#0FAAFF',
+            'logo' => 'images/sap-ariba-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Ariba Help', 'en' => 'Ariba help'],
+                    'href' => 'https://help.sap.com/docs/ARIBA',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://help.sap.com/docs/ARIBA_CONNECTIVITY',
+                    'description' => ['de' => 'APIs und Connectivity.', 'en' => 'APIs and connectivity.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.sap.com/about/trust-center.html',
+                    'description' => ['de' => 'SAP Trust Center.', 'en' => 'SAP Trust Center.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.sap.com/about/legal/privacy.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SAP Learning Ariba', 'en' => 'SAP Learning Ariba'],
+                    'href' => 'https://learning.sap.com/products/ariba',
+                    'description' => ['de' => 'Lernpfade.', 'en' => 'Learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'SAP Certification', 'en' => 'SAP certification'],
+                    'href' => 'https://learning.sap.com/certifications',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'confluence',
+            'family' => 'suppliers',
+            'vendor' => 'atlassian',
+            'label' => ['de' => 'Confluence', 'en' => 'Confluence'],
+            'purpose' => ['de' => 'Knowledge & Wiki', 'en' => 'Knowledge & wiki'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#172B4D',
+            'logo' => 'images/confluence-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Confluence Docs', 'en' => 'Confluence docs'],
+                    'href' => 'https://support.atlassian.com/confluence-cloud/',
+                    'description' => ['de' => 'Offizielle Produkthilfe.', 'en' => 'Official product help.'],
+                ],
+                [
+                    'label' => ['de' => 'REST API', 'en' => 'REST API'],
+                    'href' => 'https://developer.atlassian.com/cloud/confluence/rest/v2/intro/',
+                    'description' => ['de' => 'APIs für Integrationen.', 'en' => 'APIs for integrations.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Atlassian Trust', 'en' => 'Atlassian Trust'],
+                    'href' => 'https://www.atlassian.com/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.atlassian.com/legal/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Atlassian University', 'en' => 'Atlassian University'],
+                    'href' => 'https://university.atlassian.com/',
+                    'description' => ['de' => 'Kurse und Lernpfade.', 'en' => 'Courses and learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Atlassian Certifications', 'en' => 'Atlassian certifications'],
+                    'href' => 'https://university.atlassian.com/student/activity/798517-atlassian-certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'slack',
+            'family' => 'suppliers',
+            'vendor' => 'slack',
+            'label' => ['de' => 'Slack', 'en' => 'Slack'],
+            'purpose' => ['de' => 'Team Messaging', 'en' => 'Team messaging'],
+            'models' => ['saas'],
+            'brandColor' => '#4A154B',
+            'logo' => 'images/slack-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Slack Help Center', 'en' => 'Slack Help Center'],
+                    'href' => 'https://slack.com/help',
+                    'description' => ['de' => 'Offizielle Hilfe.', 'en' => 'Official help.'],
+                ],
+                [
+                    'label' => ['de' => 'API', 'en' => 'API'],
+                    'href' => 'https://api.slack.com/',
+                    'description' => ['de' => 'APIs und Apps.', 'en' => 'APIs and apps.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://slack.com/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://slack.com/trust/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Slack Tutorials', 'en' => 'Slack tutorials'],
+                    'href' => 'https://slack.com/help/categories/360000048386',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Slack Certified', 'en' => 'Slack Certified'],
+                    'href' => 'https://www.salesforce.com/trailhead/trailmixes/slack-certified-admin',
+                    'description' => ['de' => 'Slack Certified Admin.', 'en' => 'Slack Certified Admin.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'personio',
+            'family' => 'suppliers',
+            'vendor' => 'personio',
+            'label' => ['de' => 'Personio', 'en' => 'Personio'],
+            'purpose' => ['de' => 'HR / People Ops (EU)', 'en' => 'HR / people ops (EU)'],
+            'models' => ['saas'],
+            'brandColor' => '#0A66C2',
+            'logo' => 'images/personio-badge.svg',
+            'residency' => ['eu', 'de'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Personio Help', 'en' => 'Personio Help'],
+                    'href' => 'https://support.personio.de/',
+                    'description' => ['de' => 'Hilfe-Center.', 'en' => 'Help center.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.personio.de/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.personio.com/trust-center/',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.personio.com/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Personio Academy', 'en' => 'Personio Academy'],
+                    'href' => 'https://www.personio.com/resources/',
+                    'description' => ['de' => 'Ressourcen und Guides.', 'en' => 'Resources and guides.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Personio Enablement', 'en' => 'Personio enablement'],
+                    'href' => 'https://www.personio.com/resources/',
+                    'description' => ['de' => 'Enablement-Material.', 'en' => 'Enablement material.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'stripe',
+            'family' => 'suppliers',
+            'vendor' => 'stripe',
+            'label' => ['de' => 'Stripe', 'en' => 'Stripe'],
+            'purpose' => ['de' => 'Payments', 'en' => 'Payments'],
+            'models' => ['saas'],
+            'brandColor' => '#635BFF',
+            'logo' => 'images/stripe-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Stripe Docs', 'en' => 'Stripe docs'],
+                    'href' => 'https://docs.stripe.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'API Reference', 'en' => 'API reference'],
+                    'href' => 'https://docs.stripe.com/api',
+                    'description' => ['de' => 'API-Referenz.', 'en' => 'API reference.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://stripe.com/docs/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://stripe.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Stripe Learning', 'en' => 'Stripe learning'],
+                    'href' => 'https://stripe.com/docs',
+                    'description' => ['de' => 'Guides und Tutorials.', 'en' => 'Guides and tutorials.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Stripe Certifications', 'en' => 'Stripe certifications'],
+                    'href' => 'https://stripe.com/docs/development/certifications',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'box',
+            'family' => 'suppliers',
+            'vendor' => 'box',
+            'label' => ['de' => 'Box', 'en' => 'Box'],
+            'purpose' => ['de' => 'Content Cloud / DMS', 'en' => 'Content cloud / DMS'],
+            'models' => ['saas'],
+            'brandColor' => '#0061D5',
+            'logo' => 'images/box-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Box Support', 'en' => 'Box Support'],
+                    'href' => 'https://support.box.com/',
+                    'description' => ['de' => 'Hilfe-Center.', 'en' => 'Help center.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.box.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.box.com/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.box.com/legal/privacypolicy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Box Skills', 'en' => 'Box Skills'],
+                    'href' => 'https://support.box.com/hc/en-us/categories/360003221973',
+                    'description' => ['de' => 'Guides und Training.', 'en' => 'Guides and training.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Box Certification', 'en' => 'Box certification'],
+                    'href' => 'https://www.box.com/resources/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'coupa',
+            'family' => 'suppliers',
+            'vendor' => 'coupa',
+            'label' => ['de' => 'Coupa', 'en' => 'Coupa'],
+            'purpose' => ['de' => 'Procurement & Spend', 'en' => 'Procurement & spend'],
+            'models' => ['saas'],
+            'brandColor' => '#1A1F71',
+            'logo' => 'images/coupa-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Coupa Docs', 'en' => 'Coupa docs'],
+                    'href' => 'https://compass.coupa.com/',
+                    'description' => ['de' => 'Hilfe und Compass.', 'en' => 'Help and Compass.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.coupa.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.coupa.com/company/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.coupa.com/company/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Coupa University', 'en' => 'Coupa University'],
+                    'href' => 'https://university.coupa.com/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Coupa Certifications', 'en' => 'Coupa certifications'],
+                    'href' => 'https://university.coupa.com/',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'epic',
+            'family' => 'suppliers',
+            'vendor' => 'epic',
+            'label' => ['de' => 'Epic', 'en' => 'Epic'],
+            'purpose' => ['de' => 'Healthcare EHR', 'en' => 'Healthcare EHR'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#C8102E',
+            'logo' => 'images/epic-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Epic UserWeb', 'en' => 'Epic UserWeb'],
+                    'href' => 'https://userweb.epic.com/',
+                    'description' => ['de' => 'Kunden-Dokumentation.', 'en' => 'Customer documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'open.epic', 'en' => 'open.epic'],
+                    'href' => 'https://open.epic.com/',
+                    'description' => ['de' => 'APIs und Interoperabilität.', 'en' => 'APIs and interoperability.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.epic.com/software/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.epic.com/about/',
+                    'description' => ['de' => 'Datenschutz-Infos.', 'en' => 'Privacy info.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Epic Training', 'en' => 'Epic training'],
+                    'href' => 'https://www.epic.com/',
+                    'description' => ['de' => 'Training über UserWeb.', 'en' => 'Training via UserWeb.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Epic Certifications', 'en' => 'Epic certifications'],
+                    'href' => 'https://www.epic.com/',
+                    'description' => ['de' => 'Zertifizierung über UserWeb.', 'en' => 'Certification via UserWeb.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'monday',
+            'family' => 'suppliers',
+            'vendor' => 'monday',
+            'label' => ['de' => 'monday.com', 'en' => 'monday.com'],
+            'purpose' => ['de' => 'Work OS / Projects', 'en' => 'Work OS / projects'],
+            'models' => ['saas'],
+            'brandColor' => '#FF3D57',
+            'logo' => 'images/monday-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'monday Help', 'en' => 'monday Help'],
+                    'href' => 'https://support.monday.com/',
+                    'description' => ['de' => 'Hilfe-Center.', 'en' => 'Help center.'],
+                ],
+                [
+                    'label' => ['de' => 'API', 'en' => 'API'],
+                    'href' => 'https://developer.monday.com/',
+                    'description' => ['de' => 'APIs und Apps.', 'en' => 'APIs and apps.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://monday.com/trustcenter',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://monday.com/l/privacy/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'monday Academy', 'en' => 'monday Academy'],
+                    'href' => 'https://monday.com/blog/academy/',
+                    'description' => ['de' => 'Kurse und Guides.', 'en' => 'Courses and guides.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'monday Certifications', 'en' => 'monday certifications'],
+                    'href' => 'https://monday.com/blog/academy/',
+                    'description' => ['de' => 'Academy-Zertifikate.', 'en' => 'Academy certificates.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'freshdesk',
+            'family' => 'suppliers',
+            'vendor' => 'freshworks',
+            'label' => ['de' => 'Freshdesk', 'en' => 'Freshdesk'],
+            'purpose' => ['de' => 'Customer Support', 'en' => 'Customer support'],
+            'models' => ['saas'],
+            'brandColor' => '#25C16F',
+            'logo' => 'images/freshdesk-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Freshdesk Docs', 'en' => 'Freshdesk docs'],
+                    'href' => 'https://support.freshdesk.com/',
+                    'description' => ['de' => 'Hilfe-Center.', 'en' => 'Help center.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developers.freshdesk.com/',
+                    'description' => ['de' => 'APIs und Apps.', 'en' => 'APIs and apps.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.freshworks.com/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.freshworks.com/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Freshworks Academy', 'en' => 'Freshworks Academy'],
+                    'href' => 'https://www.freshworks.com/academy/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Freshworks Certifications', 'en' => 'Freshworks certifications'],
+                    'href' => 'https://www.freshworks.com/academy/',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'sage',
+            'family' => 'suppliers',
+            'vendor' => 'sage',
+            'label' => ['de' => 'Sage', 'en' => 'Sage'],
+            'purpose' => ['de' => 'Accounting & ERP', 'en' => 'Accounting & ERP'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#00DC00',
+            'logo' => 'images/sage-badge.svg',
+            'residency' => ['eu', 'us', 'de', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Sage Help', 'en' => 'Sage Help'],
+                    'href' => 'https://www.sage.com/en-us/support/',
+                    'description' => ['de' => 'Hilfe und Support.', 'en' => 'Help and support.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.sage.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.sage.com/en-us/legal/privacy-and-cookies/',
+                    'description' => ['de' => 'Privacy und Trust.', 'en' => 'Privacy and trust.'],
+                ],
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.sage.com/en-us/trust-security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Sage University', 'en' => 'Sage University'],
+                    'href' => 'https://www.sage.com/en-us/training/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Sage Certifications', 'en' => 'Sage certifications'],
+                    'href' => 'https://www.sage.com/en-us/training/',
+                    'description' => ['de' => 'Zertifizierungen.', 'en' => 'Certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'camunda',
+            'family' => 'suppliers',
+            'vendor' => 'camunda',
+            'label' => ['de' => 'Camunda', 'en' => 'Camunda'],
+            'purpose' => ['de' => 'Process Orchestration', 'en' => 'Process orchestration'],
+            'models' => ['saas', 'opensource', 'onprem'],
+            'brandColor' => '#FC5D0D',
+            'logo' => 'images/camunda-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Camunda Docs', 'en' => 'Camunda docs'],
+                    'href' => 'https://docs.camunda.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'API', 'en' => 'API'],
+                    'href' => 'https://docs.camunda.io/docs/apis-tools/camunda-api-java-client/',
+                    'description' => ['de' => 'APIs und Clients.', 'en' => 'APIs and clients.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://camunda.com/trust-center/',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://camunda.com/legal/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Camunda Academy', 'en' => 'Camunda Academy'],
+                    'href' => 'https://academy.camunda.com/',
+                    'description' => ['de' => 'Kurse und Lernpfade.', 'en' => 'Courses and learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Camunda Certifications', 'en' => 'Camunda certifications'],
+                    'href' => 'https://academy.camunda.com/',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+
+        [
+            'id' => 'airbyte',
+            'family' => 'transformation',
+            'vendor' => 'airbyte',
+            'label' => ['de' => 'Airbyte', 'en' => 'Airbyte'],
+            'purpose' => ['de' => 'EL / Open-Source Data Movement', 'en' => 'EL / open-source data movement'],
+            'models' => ['saas', 'opensource', 'onprem'],
+            'brandColor' => '#615EFF',
+            'logo' => 'images/airbyte-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Airbyte Docs', 'en' => 'Airbyte docs'],
+                    'href' => 'https://docs.airbyte.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Connectors', 'en' => 'Connectors'],
+                    'href' => 'https://docs.airbyte.com/integrations/',
+                    'description' => ['de' => 'Source- und Destination-Connectors.', 'en' => 'Source and destination connectors.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://docs.airbyte.com/operator-guides/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://airbyte.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Airbyte Tutorials', 'en' => 'Airbyte tutorials'],
+                    'href' => 'https://docs.airbyte.com/using-airbyte/getting-started/',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Airbyte Certification', 'en' => 'Airbyte certification'],
+                    'href' => 'https://airbyte.com/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'matillion',
+            'family' => 'transformation',
+            'vendor' => 'matillion',
+            'label' => ['de' => 'Matillion', 'en' => 'Matillion'],
+            'purpose' => ['de' => 'Cloud ETL / ELT', 'en' => 'Cloud ETL / ELT'],
+            'models' => ['saas'],
+            'brandColor' => '#00A4E4',
+            'logo' => 'images/matillion-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Matillion Docs', 'en' => 'Matillion docs'],
+                    'href' => 'https://docs.matillion.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Support', 'en' => 'Support'],
+                    'href' => 'https://support.matillion.com/',
+                    'description' => ['de' => 'Hilfe und Support.', 'en' => 'Help and support.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.matillion.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.matillion.com/privacy-policy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Matillion Academy', 'en' => 'Matillion Academy'],
+                    'href' => 'https://academy.matillion.com/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Matillion Certifications', 'en' => 'Matillion certifications'],
+                    'href' => 'https://academy.matillion.com/',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'informatica',
+            'family' => 'transformation',
+            'vendor' => 'informatica',
+            'label' => ['de' => 'Informatica', 'en' => 'Informatica'],
+            'purpose' => ['de' => 'Enterprise Data Integration', 'en' => 'Enterprise data integration'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#FF4D00',
+            'logo' => 'images/informatica-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Informatica Docs', 'en' => 'Informatica docs'],
+                    'href' => 'https://docs.informatica.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://network.informatica.com/',
+                    'description' => ['de' => 'Network und Developer.', 'en' => 'Network and developer.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.informatica.com/trust-center.html',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.informatica.com/privacy-policy.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Informatica University', 'en' => 'Informatica University'],
+                    'href' => 'https://www.informatica.com/services-and-training/informatica-university.html',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Informatica Certifications', 'en' => 'Informatica certifications'],
+                    'href' => 'https://www.informatica.com/services-and-training/informatica-university/certification.html',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'sqlmesh',
+            'family' => 'transformation',
+            'vendor' => 'tobikodata',
+            'label' => ['de' => 'SQLMesh', 'en' => 'SQLMesh'],
+            'purpose' => ['de' => 'SQL Transformation Framework', 'en' => 'SQL transformation framework'],
+            'models' => ['opensource', 'saas', 'onprem'],
+            'brandColor' => '#1B9C85',
+            'logo' => 'images/sqlmesh-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'SQLMesh Docs', 'en' => 'SQLMesh docs'],
+                    'href' => 'https://sqlmesh.readthedocs.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'GitHub', 'en' => 'GitHub'],
+                    'href' => 'https://github.com/TobikoData/sqlmesh',
+                    'description' => ['de' => 'Open-Source Repository.', 'en' => 'Open-source repository.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://sqlmesh.com/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://sqlmesh.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SQLMesh Guides', 'en' => 'SQLMesh guides'],
+                    'href' => 'https://sqlmesh.readthedocs.io/en/stable/guides/',
+                    'description' => ['de' => 'Guides und Tutorials.', 'en' => 'Guides and tutorials.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Tobiko Learning', 'en' => 'Tobiko learning'],
+                    'href' => 'https://sqlmesh.com/',
+                    'description' => ['de' => 'Lernressourcen.', 'en' => 'Learning resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'coalesce',
+            'family' => 'transformation',
+            'vendor' => 'coalesce',
+            'label' => ['de' => 'Coalesce', 'en' => 'Coalesce'],
+            'purpose' => ['de' => 'Columnar Transformation UI', 'en' => 'Columnar transformation UI'],
+            'models' => ['saas'],
+            'brandColor' => '#6C5CE7',
+            'logo' => 'images/coalesce-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Coalesce Docs', 'en' => 'Coalesce docs'],
+                    'href' => 'https://docs.coalesce.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Support', 'en' => 'Support'],
+                    'href' => 'https://docs.coalesce.io/docs/get-started',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://coalesce.io/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://coalesce.io/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Coalesce Academy', 'en' => 'Coalesce Academy'],
+                    'href' => 'https://coalesce.io/resources/',
+                    'description' => ['de' => 'Ressourcen und Lernen.', 'en' => 'Resources and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Coalesce Enablement', 'en' => 'Coalesce enablement'],
+                    'href' => 'https://coalesce.io/resources/',
+                    'description' => ['de' => 'Enablement-Material.', 'en' => 'Enablement material.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'dataform',
+            'family' => 'transformation',
+            'vendor' => 'google',
+            'label' => ['de' => 'Dataform', 'en' => 'Dataform'],
+            'purpose' => ['de' => 'SQL Transformation in BigQuery', 'en' => 'SQL transformation in BigQuery'],
+            'models' => ['saas'],
+            'brandColor' => '#4285F4',
+            'logo' => 'images/dataform-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Dataform Docs', 'en' => 'Dataform docs'],
+                    'href' => 'https://cloud.google.com/dataform/docs',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'API', 'en' => 'API'],
+                    'href' => 'https://cloud.google.com/dataform/docs/reference',
+                    'description' => ['de' => 'API-Referenz.', 'en' => 'API reference.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Google Cloud Security', 'en' => 'Google Cloud security'],
+                    'href' => 'https://cloud.google.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://cloud.google.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Dataform Learning', 'en' => 'Dataform learning'],
+                    'href' => 'https://cloud.google.com/dataform/docs/quickstart',
+                    'description' => ['de' => 'Quickstart.', 'en' => 'Quickstart.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Google Cloud Skills', 'en' => 'Google Cloud skills'],
+                    'href' => 'https://cloud.google.com/learn/training',
+                    'description' => ['de' => 'Verwandte Lernpfade.', 'en' => 'Related learning paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'azure-data-factory',
+            'family' => 'transformation',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'Azure Data Factory', 'en' => 'Azure Data Factory'],
+            'purpose' => ['de' => 'Cloud ETL / Pipelines', 'en' => 'Cloud ETL / pipelines'],
+            'models' => ['saas'],
+            'brandColor' => '#0078D4',
+            'logo' => 'images/azure-data-factory-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'ADF Docs', 'en' => 'ADF docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/azure/data-factory/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Pipelines', 'en' => 'Pipelines'],
+                    'href' => 'https://learn.microsoft.com/en-us/azure/data-factory/concepts-pipelines-activities',
+                    'description' => ['de' => 'Pipelines und Activities.', 'en' => 'Pipelines and activities.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://learn.microsoft.com/en-us/azure/data-factory/data-factory-security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Compliance', 'en' => 'Compliance'],
+                    'href' => 'https://learn.microsoft.com/en-us/compliance/regulatory/offering-home',
+                    'description' => ['de' => 'Microsoft Compliance.', 'en' => 'Microsoft compliance.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'ADF Learning', 'en' => 'ADF learning'],
+                    'href' => 'https://learn.microsoft.com/en-us/training/browse/?products=azure-data-factory',
+                    'description' => ['de' => 'Microsoft Learn Pfade.', 'en' => 'Microsoft Learn paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Azure Data Engineer', 'en' => 'Azure Data Engineer'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/azure-data-engineer/',
+                    'description' => ['de' => 'Azure Data Engineer.', 'en' => 'Azure Data Engineer.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'aws-glue',
+            'family' => 'transformation',
+            'vendor' => 'amazon',
+            'label' => ['de' => 'AWS Glue', 'en' => 'AWS Glue'],
+            'purpose' => ['de' => 'Serverless ETL', 'en' => 'Serverless ETL'],
+            'models' => ['saas'],
+            'brandColor' => '#FF9900',
+            'logo' => 'images/aws-glue-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Glue Docs', 'en' => 'Glue docs'],
+                    'href' => 'https://docs.aws.amazon.com/glue/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer Guide', 'en' => 'Developer guide'],
+                    'href' => 'https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html',
+                    'description' => ['de' => 'Developer Guide.', 'en' => 'Developer guide.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://docs.aws.amazon.com/glue/latest/dg/security.html',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Compliance', 'en' => 'Compliance'],
+                    'href' => 'https://aws.amazon.com/compliance/',
+                    'description' => ['de' => 'AWS Compliance.', 'en' => 'AWS compliance.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Glue Workshops', 'en' => 'Glue workshops'],
+                    'href' => 'https://docs.aws.amazon.com/glue/latest/dg/getting-started.html',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'AWS Data Analytics', 'en' => 'AWS Data Analytics'],
+                    'href' => 'https://aws.amazon.com/certification/certified-data-analytics-specialty/',
+                    'description' => ['de' => 'AWS Zertifizierungen.', 'en' => 'AWS certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'google-dataflow',
+            'family' => 'transformation',
+            'vendor' => 'google',
+            'label' => ['de' => 'Google Cloud Dataflow', 'en' => 'Google Cloud Dataflow'],
+            'purpose' => ['de' => 'Stream & Batch Pipelines', 'en' => 'Stream & batch pipelines'],
+            'models' => ['saas'],
+            'brandColor' => '#4285F4',
+            'logo' => 'images/google-dataflow-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Dataflow Docs', 'en' => 'Dataflow docs'],
+                    'href' => 'https://cloud.google.com/dataflow/docs',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Apache Beam', 'en' => 'Apache Beam'],
+                    'href' => 'https://beam.apache.org/documentation/',
+                    'description' => ['de' => 'Beam Programming Model.', 'en' => 'Beam programming model.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://cloud.google.com/dataflow/docs/guides/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://cloud.google.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Dataflow Learning', 'en' => 'Dataflow learning'],
+                    'href' => 'https://cloud.google.com/dataflow/docs/quickstarts',
+                    'description' => ['de' => 'Quickstarts.', 'en' => 'Quickstarts.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Google Cloud Skills', 'en' => 'Google Cloud skills'],
+                    'href' => 'https://cloud.google.com/learn/training',
+                    'description' => ['de' => 'Verwandte Lernpfade.', 'en' => 'Related learning paths.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'stitch',
+            'family' => 'transformation',
+            'vendor' => 'talend',
+            'label' => ['de' => 'Stitch', 'en' => 'Stitch'],
+            'purpose' => ['de' => 'EL / SaaS Data Pipelines', 'en' => 'EL / SaaS data pipelines'],
+            'models' => ['saas'],
+            'brandColor' => '#FF7A59',
+            'logo' => 'images/stitch-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Stitch Docs', 'en' => 'Stitch docs'],
+                    'href' => 'https://www.stitchdata.com/docs/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Integrations', 'en' => 'Integrations'],
+                    'href' => 'https://www.stitchdata.com/integrations/',
+                    'description' => ['de' => 'Connectors und Sources.', 'en' => 'Connectors and sources.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.stitchdata.com/platform/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.stitchdata.com/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Stitch Guides', 'en' => 'Stitch guides'],
+                    'href' => 'https://www.stitchdata.com/docs/getting-started',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Talend Academy', 'en' => 'Talend Academy'],
+                    'href' => 'https://learn.qlik.com/',
+                    'description' => ['de' => 'Qlik/Talend Learning.', 'en' => 'Qlik/Talend learning.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'meltano',
+            'family' => 'transformation',
+            'vendor' => 'meltano',
+            'label' => ['de' => 'Meltano', 'en' => 'Meltano'],
+            'purpose' => ['de' => 'EL + Transformation CLI', 'en' => 'EL + transformation CLI'],
+            'models' => ['opensource', 'onprem'],
+            'brandColor' => '#311B92',
+            'logo' => 'images/meltano-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Meltano Docs', 'en' => 'Meltano docs'],
+                    'href' => 'https://docs.meltano.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Hub', 'en' => 'Hub'],
+                    'href' => 'https://hub.meltano.com/',
+                    'description' => ['de' => 'Plugins und Connectors.', 'en' => 'Plugins and connectors.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://docs.meltano.com/guide/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://meltano.com/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Meltano Tutorials', 'en' => 'Meltano tutorials'],
+                    'href' => 'https://docs.meltano.com/getting-started/',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Meltano Community', 'en' => 'Meltano community'],
+                    'href' => 'https://meltano.com/',
+                    'description' => ['de' => 'Community und Lernen.', 'en' => 'Community and learning.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'hevo',
+            'family' => 'transformation',
+            'vendor' => 'hevo',
+            'label' => ['de' => 'Hevo Data', 'en' => 'Hevo Data'],
+            'purpose' => ['de' => 'No-Code EL Pipelines', 'en' => 'No-code EL pipelines'],
+            'models' => ['saas'],
+            'brandColor' => '#FF6B35',
+            'logo' => 'images/hevo-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Hevo Docs', 'en' => 'Hevo docs'],
+                    'href' => 'https://docs.hevodata.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Pipelines', 'en' => 'Pipelines'],
+                    'href' => 'https://docs.hevodata.com/pipelines/',
+                    'description' => ['de' => 'Pipeline-Konfiguration.', 'en' => 'Pipeline configuration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://hevodata.com/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://hevodata.com/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Hevo Academy', 'en' => 'Hevo Academy'],
+                    'href' => 'https://docs.hevodata.com/getting-started/',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Hevo Enablement', 'en' => 'Hevo enablement'],
+                    'href' => 'https://hevodata.com/resources/',
+                    'description' => ['de' => 'Ressourcen.', 'en' => 'Resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'ibm-datastage',
+            'family' => 'transformation',
+            'vendor' => 'ibm',
+            'label' => ['de' => 'IBM DataStage', 'en' => 'IBM DataStage'],
+            'purpose' => ['de' => 'Enterprise ETL', 'en' => 'Enterprise ETL'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#0530AD',
+            'logo' => 'images/ibm-datastage-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'DataStage Docs', 'en' => 'DataStage docs'],
+                    'href' => 'https://www.ibm.com/docs/en/datastage',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Cloud Pak', 'en' => 'Cloud Pak'],
+                    'href' => 'https://www.ibm.com/products/datastage',
+                    'description' => ['de' => 'Produktübersicht.', 'en' => 'Product overview.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'IBM Trust', 'en' => 'IBM Trust'],
+                    'href' => 'https://www.ibm.com/trust',
+                    'description' => ['de' => 'Trust Center.', 'en' => 'Trust center.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.ibm.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'IBM Training', 'en' => 'IBM Training'],
+                    'href' => 'https://www.ibm.com/training/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'IBM Certifications', 'en' => 'IBM certifications'],
+                    'href' => 'https://www.ibm.com/training/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'ssis',
+            'family' => 'transformation',
+            'vendor' => 'microsoft',
+            'label' => ['de' => 'SSIS', 'en' => 'SSIS'],
+            'purpose' => ['de' => 'SQL Server Integration Services', 'en' => 'SQL Server Integration Services'],
+            'models' => ['onprem', 'saas'],
+            'brandColor' => '#0078D4',
+            'logo' => 'images/ssis-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'SSIS Docs', 'en' => 'SSIS docs'],
+                    'href' => 'https://learn.microsoft.com/en-us/sql/integration-services/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Packages', 'en' => 'Packages'],
+                    'href' => 'https://learn.microsoft.com/en-us/sql/integration-services/integration-services-ssis-packages',
+                    'description' => ['de' => 'Packages und Projekte.', 'en' => 'Packages and projects.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://learn.microsoft.com/en-us/sql/integration-services/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Compliance', 'en' => 'Compliance'],
+                    'href' => 'https://learn.microsoft.com/en-us/compliance/regulatory/offering-home',
+                    'description' => ['de' => 'Microsoft Compliance.', 'en' => 'Microsoft compliance.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SSIS Learning', 'en' => 'SSIS learning'],
+                    'href' => 'https://learn.microsoft.com/en-us/training/browse/?terms=ssis',
+                    'description' => ['de' => 'Microsoft Learn.', 'en' => 'Microsoft Learn.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Data Engineering Certs', 'en' => 'Data engineering certs'],
+                    'href' => 'https://learn.microsoft.com/en-us/credentials/certifications/browse/?products=sql-server',
+                    'description' => ['de' => 'SQL-/Data-Zertifizierungen.', 'en' => 'SQL/data certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'sap-data-services',
+            'family' => 'transformation',
+            'vendor' => 'sap',
+            'label' => ['de' => 'SAP Data Services', 'en' => 'SAP Data Services'],
+            'purpose' => ['de' => 'Enterprise ETL / Data Quality', 'en' => 'Enterprise ETL / data quality'],
+            'models' => ['onprem', 'saas'],
+            'brandColor' => '#0FAAFF',
+            'logo' => 'images/sap-data-services-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Data Services Help', 'en' => 'Data Services help'],
+                    'href' => 'https://help.sap.com/docs/SAP_DATA_SERVICES',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'SAP Help Portal', 'en' => 'SAP Help Portal'],
+                    'href' => 'https://help.sap.com/',
+                    'description' => ['de' => 'SAP Help Portal.', 'en' => 'SAP Help Portal.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.sap.com/about/trust-center.html',
+                    'description' => ['de' => 'SAP Trust Center.', 'en' => 'SAP Trust Center.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.sap.com/about/legal/privacy.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'SAP Learning', 'en' => 'SAP Learning'],
+                    'href' => 'https://learning.sap.com/',
+                    'description' => ['de' => 'Lernpfade.', 'en' => 'Learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'SAP Certification', 'en' => 'SAP certification'],
+                    'href' => 'https://learning.sap.com/certifications',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'oracle-data-integrator',
+            'family' => 'transformation',
+            'vendor' => 'oracle',
+            'label' => ['de' => 'Oracle Data Integrator', 'en' => 'Oracle Data Integrator'],
+            'purpose' => ['de' => 'Enterprise ELT', 'en' => 'Enterprise ELT'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#C74634',
+            'logo' => 'images/oracle-data-integrator-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'ODI Docs', 'en' => 'ODI docs'],
+                    'href' => 'https://docs.oracle.com/en/middleware/fusion-middleware/data-integrator/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Cloud', 'en' => 'Cloud'],
+                    'href' => 'https://docs.oracle.com/en/cloud/paas/data-integration/',
+                    'description' => ['de' => 'Oracle Cloud Data Integration.', 'en' => 'Oracle Cloud Data Integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.oracle.com/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.oracle.com/legal/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Oracle University', 'en' => 'Oracle University'],
+                    'href' => 'https://education.oracle.com/',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Oracle Certifications', 'en' => 'Oracle certifications'],
+                    'href' => 'https://education.oracle.com/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'apache-nifi',
+            'family' => 'transformation',
+            'vendor' => 'apache',
+            'label' => ['de' => 'Apache NiFi', 'en' => 'Apache NiFi'],
+            'purpose' => ['de' => 'Data Flow Automation', 'en' => 'Data flow automation'],
+            'models' => ['opensource', 'onprem'],
+            'brandColor' => '#728E9B',
+            'logo' => 'images/apache-nifi-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'NiFi Docs', 'en' => 'NiFi docs'],
+                    'href' => 'https://nifi.apache.org/documentation/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Getting Started', 'en' => 'Getting started'],
+                    'href' => 'https://nifi.apache.org/docs/nifi-docs/html/getting-started.html',
+                    'description' => ['de' => 'Einstieg.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#security_configuration',
+                    'description' => ['de' => 'Security Configuration.', 'en' => 'Security configuration.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://privacy.apache.org/policies/privacy-policy-public.html',
+                    'description' => ['de' => 'ASF Privacy.', 'en' => 'ASF privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'NiFi Guides', 'en' => 'NiFi guides'],
+                    'href' => 'https://nifi.apache.org/documentation/',
+                    'description' => ['de' => 'Guides und Docs.', 'en' => 'Guides and docs.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Cloudera / NiFi Training', 'en' => 'Cloudera / NiFi training'],
+                    'href' => 'https://www.cloudera.com/about/training.html',
+                    'description' => ['de' => 'Verwandte Trainings.', 'en' => 'Related training.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'apache-airflow',
+            'family' => 'transformation',
+            'vendor' => 'apache',
+            'label' => ['de' => 'Apache Airflow', 'en' => 'Apache Airflow'],
+            'purpose' => ['de' => 'Workflow Orchestration', 'en' => 'Workflow orchestration'],
+            'models' => ['opensource', 'saas', 'onprem'],
+            'brandColor' => '#017CEE',
+            'logo' => 'images/apache-airflow-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Airflow Docs', 'en' => 'Airflow docs'],
+                    'href' => 'https://airflow.apache.org/docs/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Astronomer Docs', 'en' => 'Astronomer docs'],
+                    'href' => 'https://docs.astronomer.io/',
+                    'description' => ['de' => 'Managed Airflow Docs.', 'en' => 'Managed Airflow docs.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://airflow.apache.org/docs/apache-airflow/stable/security/index.html',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://privacy.apache.org/policies/privacy-policy-public.html',
+                    'description' => ['de' => 'ASF Privacy.', 'en' => 'ASF privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Airflow Tutorials', 'en' => 'Airflow tutorials'],
+                    'href' => 'https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html',
+                    'description' => ['de' => 'Tutorials.', 'en' => 'Tutorials.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Astronomer Certification', 'en' => 'Astronomer certification'],
+                    'href' => 'https://www.astronomer.io/certification/',
+                    'description' => ['de' => 'Airflow-Zertifizierungen.', 'en' => 'Airflow certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'dagster',
+            'family' => 'transformation',
+            'vendor' => 'dagster',
+            'label' => ['de' => 'Dagster', 'en' => 'Dagster'],
+            'purpose' => ['de' => 'Data Orchestration', 'en' => 'Data orchestration'],
+            'models' => ['opensource', 'saas', 'onprem'],
+            'brandColor' => '#4F43DD',
+            'logo' => 'images/dagster-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Dagster Docs', 'en' => 'Dagster docs'],
+                    'href' => 'https://docs.dagster.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Guides', 'en' => 'Guides'],
+                    'href' => 'https://docs.dagster.io/guides',
+                    'description' => ['de' => 'Guides und Patterns.', 'en' => 'Guides and patterns.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://dagster.io/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://dagster.io/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Dagster University', 'en' => 'Dagster University'],
+                    'href' => 'https://courses.dagster.io/',
+                    'description' => ['de' => 'Kurse und Lernen.', 'en' => 'Courses and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Dagster Certifications', 'en' => 'Dagster certifications'],
+                    'href' => 'https://courses.dagster.io/',
+                    'description' => ['de' => 'Lernpfade und Zertifikate.', 'en' => 'Learning paths and certificates.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'prefect',
+            'family' => 'transformation',
+            'vendor' => 'prefect',
+            'label' => ['de' => 'Prefect', 'en' => 'Prefect'],
+            'purpose' => ['de' => 'Workflow Orchestration', 'en' => 'Workflow orchestration'],
+            'models' => ['opensource', 'saas'],
+            'brandColor' => '#070E10',
+            'logo' => 'images/prefect-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Prefect Docs', 'en' => 'Prefect docs'],
+                    'href' => 'https://docs.prefect.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'API', 'en' => 'API'],
+                    'href' => 'https://docs.prefect.io/latest/api-ref/',
+                    'description' => ['de' => 'API-Referenz.', 'en' => 'API reference.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.prefect.io/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.prefect.io/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Prefect Tutorials', 'en' => 'Prefect tutorials'],
+                    'href' => 'https://docs.prefect.io/latest/tutorial/',
+                    'description' => ['de' => 'Tutorials.', 'en' => 'Tutorials.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Prefect Certify', 'en' => 'Prefect Certify'],
+                    'href' => 'https://www.prefect.io/certify',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'alteryx',
+            'family' => 'transformation',
+            'vendor' => 'alteryx',
+            'label' => ['de' => 'Alteryx', 'en' => 'Alteryx'],
+            'purpose' => ['de' => 'Analytic Process Automation', 'en' => 'Analytic process automation'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#0078C0',
+            'logo' => 'images/alteryx-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Alteryx Help', 'en' => 'Alteryx Help'],
+                    'href' => 'https://help.alteryx.com/',
+                    'description' => ['de' => 'Offizielle Hilfe.', 'en' => 'Official help.'],
+                ],
+                [
+                    'label' => ['de' => 'Community', 'en' => 'Community'],
+                    'href' => 'https://community.alteryx.com/',
+                    'description' => ['de' => 'Community und Knowledge.', 'en' => 'Community and knowledge.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://www.alteryx.com/trust',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.alteryx.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Alteryx Academy', 'en' => 'Alteryx Academy'],
+                    'href' => 'https://community.alteryx.com/t5/Alteryx-Academy/ct-p/alteryx-academy',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Alteryx Certifications', 'en' => 'Alteryx certifications'],
+                    'href' => 'https://community.alteryx.com/t5/Certification/ct-p/alteryx-certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'knime',
+            'family' => 'transformation',
+            'vendor' => 'knime',
+            'label' => ['de' => 'KNIME', 'en' => 'KNIME'],
+            'purpose' => ['de' => 'Open Analytics Platform', 'en' => 'Open analytics platform'],
+            'models' => ['opensource', 'saas', 'onprem'],
+            'brandColor' => '#FDD800',
+            'logo' => 'images/knime-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'KNIME Docs', 'en' => 'KNIME docs'],
+                    'href' => 'https://docs.knime.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Hub', 'en' => 'Hub'],
+                    'href' => 'https://hub.knime.com/',
+                    'description' => ['de' => 'Workflows und Extensions.', 'en' => 'Workflows and extensions.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.knime.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.knime.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'KNIME Learn', 'en' => 'KNIME Learn'],
+                    'href' => 'https://www.knime.com/learning',
+                    'description' => ['de' => 'Kurse und Lernen.', 'en' => 'Courses and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'KNIME Certification', 'en' => 'KNIME certification'],
+                    'href' => 'https://www.knime.com/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'pentaho',
+            'family' => 'transformation',
+            'vendor' => 'hitachi',
+            'label' => ['de' => 'Pentaho', 'en' => 'Pentaho'],
+            'purpose' => ['de' => 'Data Integration & Analytics', 'en' => 'Data integration & analytics'],
+            'models' => ['opensource', 'onprem', 'saas'],
+            'brandColor' => '#EF4123',
+            'logo' => 'images/pentaho-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Pentaho Docs', 'en' => 'Pentaho docs'],
+                    'href' => 'https://help.hitachivantara.com/Documentation/Pentaho',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Kettle / PDI', 'en' => 'Kettle / PDI'],
+                    'href' => 'https://www.hitachivantara.com/en-us/products/pentaho-plus-platform.html',
+                    'description' => ['de' => 'Produktübersicht.', 'en' => 'Product overview.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.hitachivantara.com/en-us/company/legal.html',
+                    'description' => ['de' => 'Legal und Security.', 'en' => 'Legal and security.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.hitachivantara.com/en-us/company/legal.privacy.html',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Hitachi Learning', 'en' => 'Hitachi Learning'],
+                    'href' => 'https://www.hitachivantara.com/en-us/services/education-services.html',
+                    'description' => ['de' => 'Training.', 'en' => 'Training.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Pentaho Certification', 'en' => 'Pentaho certification'],
+                    'href' => 'https://www.hitachivantara.com/en-us/services/education-services.html',
+                    'description' => ['de' => 'Zertifizierungen.', 'en' => 'Certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'boomi',
+            'family' => 'transformation',
+            'vendor' => 'boomi',
+            'label' => ['de' => 'Boomi', 'en' => 'Boomi'],
+            'purpose' => ['de' => 'iPaaS / Integration', 'en' => 'iPaaS / integration'],
+            'models' => ['saas'],
+            'brandColor' => '#00A9CE',
+            'logo' => 'images/boomi-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Boomi Docs', 'en' => 'Boomi docs'],
+                    'href' => 'https://help.boomi.com/',
+                    'description' => ['de' => 'Offizielle Hilfe.', 'en' => 'Official help.'],
+                ],
+                [
+                    'label' => ['de' => 'Developer', 'en' => 'Developer'],
+                    'href' => 'https://developer.boomi.com/',
+                    'description' => ['de' => 'APIs und Integration.', 'en' => 'APIs and integration.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust Center', 'en' => 'Trust Center'],
+                    'href' => 'https://boomi.com/trust/',
+                    'description' => ['de' => 'Security und Compliance.', 'en' => 'Security and compliance.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://boomi.com/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Boomi Learn', 'en' => 'Boomi Learn'],
+                    'href' => 'https://community.boomi.com/s/learning',
+                    'description' => ['de' => 'Training und Lernen.', 'en' => 'Training and learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Boomi Certifications', 'en' => 'Boomi certifications'],
+                    'href' => 'https://community.boomi.com/s/learning',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'mulesoft',
+            'family' => 'transformation',
+            'vendor' => 'salesforce',
+            'label' => ['de' => 'MuleSoft', 'en' => 'MuleSoft'],
+            'purpose' => ['de' => 'API-led Integration', 'en' => 'API-led integration'],
+            'models' => ['saas', 'onprem'],
+            'brandColor' => '#00A0DF',
+            'logo' => 'images/mulesoft-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'MuleSoft Docs', 'en' => 'MuleSoft docs'],
+                    'href' => 'https://docs.mulesoft.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Anypoint', 'en' => 'Anypoint'],
+                    'href' => 'https://www.mulesoft.com/platform/anypoint-platform',
+                    'description' => ['de' => 'Anypoint Platform.', 'en' => 'Anypoint Platform.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Trust', 'en' => 'Trust'],
+                    'href' => 'https://www.mulesoft.com/trust',
+                    'description' => ['de' => 'Trust Center.', 'en' => 'Trust center.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.salesforce.com/company/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Trailhead MuleSoft', 'en' => 'Trailhead MuleSoft'],
+                    'href' => 'https://trailhead.salesforce.com/en/content/learn/trails/get-started-with-mulesoft',
+                    'description' => ['de' => 'Trailhead Learning.', 'en' => 'Trailhead learning.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'MuleSoft Certifications', 'en' => 'MuleSoft certifications'],
+                    'href' => 'https://training.mulesoft.com/certification',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'rivery',
+            'family' => 'transformation',
+            'vendor' => 'rivery',
+            'label' => ['de' => 'Rivery', 'en' => 'Rivery'],
+            'purpose' => ['de' => 'EL / Data Pipelines', 'en' => 'EL / data pipelines'],
+            'models' => ['saas'],
+            'brandColor' => '#5B4DFF',
+            'logo' => 'images/rivery-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Rivery Docs', 'en' => 'Rivery docs'],
+                    'href' => 'https://docs.rivery.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Rivers', 'en' => 'Rivers'],
+                    'href' => 'https://docs.rivery.io/docs/rivers',
+                    'description' => ['de' => 'Pipeline-Konzepte.', 'en' => 'Pipeline concepts.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://rivery.io/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://rivery.io/privacy-policy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Rivery Academy', 'en' => 'Rivery Academy'],
+                    'href' => 'https://docs.rivery.io/docs/getting-started',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Rivery Enablement', 'en' => 'Rivery enablement'],
+                    'href' => 'https://rivery.io/resources/',
+                    'description' => ['de' => 'Ressourcen.', 'en' => 'Resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'estuary',
+            'family' => 'transformation',
+            'vendor' => 'estuary',
+            'label' => ['de' => 'Estuary', 'en' => 'Estuary'],
+            'purpose' => ['de' => 'Real-time ELT', 'en' => 'Real-time ELT'],
+            'models' => ['saas', 'opensource'],
+            'brandColor' => '#FF6F3C',
+            'logo' => 'images/estuary-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Estuary Docs', 'en' => 'Estuary docs'],
+                    'href' => 'https://docs.estuary.dev/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Connectors', 'en' => 'Connectors'],
+                    'href' => 'https://docs.estuary.dev/reference/Connectors/',
+                    'description' => ['de' => 'Connectors.', 'en' => 'Connectors.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://estuary.dev/security/',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://estuary.dev/privacy/',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Estuary Guides', 'en' => 'Estuary guides'],
+                    'href' => 'https://docs.estuary.dev/guides/',
+                    'description' => ['de' => 'Guides.', 'en' => 'Guides.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Estuary Learning', 'en' => 'Estuary learning'],
+                    'href' => 'https://docs.estuary.dev/',
+                    'description' => ['de' => 'Lernressourcen.', 'en' => 'Learning resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'hightouch',
+            'family' => 'transformation',
+            'vendor' => 'hightouch',
+            'label' => ['de' => 'Hightouch', 'en' => 'Hightouch'],
+            'purpose' => ['de' => 'Reverse ETL', 'en' => 'Reverse ETL'],
+            'models' => ['saas'],
+            'brandColor' => '#164CFF',
+            'logo' => 'images/hightouch-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Hightouch Docs', 'en' => 'Hightouch docs'],
+                    'href' => 'https://hightouch.com/docs',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Syncs', 'en' => 'Syncs'],
+                    'href' => 'https://hightouch.com/docs/syncs/overview',
+                    'description' => ['de' => 'Sync-Konzepte.', 'en' => 'Sync concepts.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://hightouch.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://hightouch.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Hightouch Guides', 'en' => 'Hightouch guides'],
+                    'href' => 'https://hightouch.com/docs/getting-started/quickstart',
+                    'description' => ['de' => 'Quickstart.', 'en' => 'Quickstart.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Hightouch Academy', 'en' => 'Hightouch Academy'],
+                    'href' => 'https://hightouch.com/resources',
+                    'description' => ['de' => 'Ressourcen.', 'en' => 'Resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'census',
+            'family' => 'transformation',
+            'vendor' => 'census',
+            'label' => ['de' => 'Census', 'en' => 'Census'],
+            'purpose' => ['de' => 'Reverse ETL', 'en' => 'Reverse ETL'],
+            'models' => ['saas'],
+            'brandColor' => '#7C3AED',
+            'logo' => 'images/census-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Census Docs', 'en' => 'Census docs'],
+                    'href' => 'https://docs.getcensus.com/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Syncs', 'en' => 'Syncs'],
+                    'href' => 'https://docs.getcensus.com/syncs',
+                    'description' => ['de' => 'Sync-Konzepte.', 'en' => 'Sync concepts.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.getcensus.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.getcensus.com/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Census Guides', 'en' => 'Census guides'],
+                    'href' => 'https://docs.getcensus.com/getting-started',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Census University', 'en' => 'Census University'],
+                    'href' => 'https://www.getcensus.com/resources',
+                    'description' => ['de' => 'Ressourcen.', 'en' => 'Resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'prophecy',
+            'family' => 'transformation',
+            'vendor' => 'prophecy',
+            'label' => ['de' => 'Prophecy', 'en' => 'Prophecy'],
+            'purpose' => ['de' => 'Low-code Spark / Data Pipelines', 'en' => 'Low-code Spark / data pipelines'],
+            'models' => ['saas'],
+            'brandColor' => '#6B4EFF',
+            'logo' => 'images/prophecy-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Prophecy Docs', 'en' => 'Prophecy docs'],
+                    'href' => 'https://docs.prophecy.io/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'Spark', 'en' => 'Spark'],
+                    'href' => 'https://docs.prophecy.io/Spark/',
+                    'description' => ['de' => 'Spark Pipelines.', 'en' => 'Spark pipelines.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.prophecy.io/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://www.prophecy.io/privacy',
+                    'description' => ['de' => 'Datenschutz.', 'en' => 'Privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Prophecy Academy', 'en' => 'Prophecy Academy'],
+                    'href' => 'https://docs.prophecy.io/getting-started/',
+                    'description' => ['de' => 'Getting Started.', 'en' => 'Getting started.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Prophecy Enablement', 'en' => 'Prophecy enablement'],
+                    'href' => 'https://www.prophecy.io/resources',
+                    'description' => ['de' => 'Ressourcen.', 'en' => 'Resources.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'apache-spark',
+            'family' => 'transformation',
+            'vendor' => 'apache',
+            'label' => ['de' => 'Apache Spark', 'en' => 'Apache Spark'],
+            'purpose' => ['de' => 'Distributed Data Processing', 'en' => 'Distributed data processing'],
+            'models' => ['opensource', 'onprem'],
+            'brandColor' => '#E25A1C',
+            'logo' => 'images/apache-spark-badge.svg',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'Spark Docs', 'en' => 'Spark docs'],
+                    'href' => 'https://spark.apache.org/docs/latest/',
+                    'description' => ['de' => 'Offizielle Dokumentation.', 'en' => 'Official documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'SQL Guide', 'en' => 'SQL guide'],
+                    'href' => 'https://spark.apache.org/docs/latest/sql-programming-guide.html',
+                    'description' => ['de' => 'Spark SQL.', 'en' => 'Spark SQL.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://spark.apache.org/docs/latest/security.html',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Privacy', 'en' => 'Privacy'],
+                    'href' => 'https://privacy.apache.org/policies/privacy-policy-public.html',
+                    'description' => ['de' => 'ASF Privacy.', 'en' => 'ASF privacy.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Spark Tutorials', 'en' => 'Spark tutorials'],
+                    'href' => 'https://spark.apache.org/examples.html',
+                    'description' => ['de' => 'Examples.', 'en' => 'Examples.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Databricks / Spark Certs', 'en' => 'Databricks / Spark certs'],
+                    'href' => 'https://www.databricks.com/learn/training/certification',
+                    'description' => ['de' => 'Verwandte Zertifizierungen.', 'en' => 'Related certifications.'],
+                ],
+            ],
+        ],
+        [
+            'id' => 'dbt-cloud',
+            'family' => 'transformation',
+            'vendor' => 'dbt',
+            'label' => ['de' => 'dbt Cloud', 'en' => 'dbt Cloud'],
+            'purpose' => ['de' => 'Managed dbt Platform', 'en' => 'Managed dbt platform'],
+            'models' => ['saas'],
+            'brandColor' => '#FF694B',
+            'logo' => 'images/dbt-cloud-badge.svg',
+            'residency' => ['eu', 'us'],
+            'help' => [
+                [
+                    'label' => ['de' => 'dbt Cloud Docs', 'en' => 'dbt Cloud docs'],
+                    'href' => 'https://docs.getdbt.com/docs/cloud/about-cloud',
+                    'description' => ['de' => 'Cloud-Dokumentation.', 'en' => 'Cloud documentation.'],
+                ],
+                [
+                    'label' => ['de' => 'IDE', 'en' => 'IDE'],
+                    'href' => 'https://docs.getdbt.com/docs/cloud/dbt-cloud-ide/develop-in-the-cloud',
+                    'description' => ['de' => 'Cloud IDE.', 'en' => 'Cloud IDE.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Security', 'en' => 'Security'],
+                    'href' => 'https://www.getdbt.com/security',
+                    'description' => ['de' => 'Security Overview.', 'en' => 'Security overview.'],
+                ],
+                [
+                    'label' => ['de' => 'Access', 'en' => 'Access'],
+                    'href' => 'https://docs.getdbt.com/docs/cloud/manage-access/about-user-access',
+                    'description' => ['de' => 'User Access.', 'en' => 'User access.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'dbt Learn', 'en' => 'dbt Learn'],
+                    'href' => 'https://learn.getdbt.com/',
+                    'description' => ['de' => 'Lernpfade.', 'en' => 'Learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'dbt Certification', 'en' => 'dbt certification'],
+                    'href' => 'https://www.getdbt.com/certifications',
+                    'description' => ['de' => 'Offizielle Zertifizierungen.', 'en' => 'Official certifications.'],
+                ],
+            ],
+        ],
+
+
 
     ],
 ];

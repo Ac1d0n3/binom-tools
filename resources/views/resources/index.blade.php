@@ -8,7 +8,21 @@
 @section('content')
     <div class="tools-content tools-content--overview tools-content--resources" data-overview-filter-root>
         <div class="tools-overview-sticky-header vendor-resources-sticky">
-            <h1 class="tools-page-title" data-i18n="resources.indexTitle">Vendor resources</h1>
+            @php
+                $initialVendorCount = count(array_unique(array_values(array_filter(array_map(
+                    static fn ($product) => is_string($product['vendor'] ?? null) ? $product['vendor'] : '',
+                    $products,
+                )))));
+            @endphp
+            <div class="vendor-resources-sticky__heading">
+                <h1 class="tools-page-title" data-i18n="resources.indexTitle">Vendor resources</h1>
+                <p
+                    class="vendor-resources-sticky__count"
+                    data-overview-result-count
+                    data-i18n="resources.visibleVendorCount"
+                    data-i18n-count="{{ $initialVendorCount }}"
+                >{{ $initialVendorCount }} vendors</p>
+            </div>
             <p class="tools-page-lead vendor-resources-sticky__lead" data-hub-lead data-i18n="resources.indexLead">
                 Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.
             </p>
@@ -77,27 +91,6 @@
                     </span>
                 </label>
                 <label class="tools-overview-product-filter">
-                    <span class="sr-only" data-i18n="resources.vendorLabel">Vendor</span>
-                    <span class="tools-overview-sort__field">
-                        <select class="tools-overview-sort__select" data-overview-vendor>
-                            <option value="all" data-i18n="resources.vendorAll">All vendors</option>
-                            @foreach ($availableVendors as $vendorId)
-                                @php
-                                    $vendorLabel = $vendors[$vendorId] ?? ['de' => $vendorId, 'en' => $vendorId];
-                                    $vLabelEn = $vendorLabel['en'] ?? $vendorId;
-                                    $vLabelDe = $vendorLabel['de'] ?? $vLabelEn;
-                                @endphp
-                                <option
-                                    value="{{ $vendorId }}"
-                                    data-text-de="{{ $vLabelDe }}"
-                                    data-text-en="{{ $vLabelEn }}"
-                                >{{ $vLabelEn }}</option>
-                            @endforeach
-                        </select>
-                        <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
-                    </span>
-                </label>
-                <label class="tools-overview-product-filter">
                     <span class="sr-only" data-i18n="resources.familyLabel">Product family</span>
                     <span class="tools-overview-sort__field">
                         <select class="tools-overview-sort__select" data-overview-product>
@@ -139,6 +132,27 @@
                             <option value="de" data-i18n="resources.residencyDe">Germany</option>
                             <option value="us" data-i18n="resources.residencyUs">US</option>
                             <option value="global" data-i18n="resources.residencyGlobal">Global</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
+                    </span>
+                </label>
+                <label class="tools-overview-product-filter">
+                    <span class="sr-only" data-i18n="resources.vendorLabel">Vendor</span>
+                    <span class="tools-overview-sort__field">
+                        <select class="tools-overview-sort__select" data-overview-vendor>
+                            <option value="all" data-i18n="resources.vendorAll">All vendors</option>
+                            @foreach ($availableVendors as $vendorId)
+                                @php
+                                    $vendorLabel = $vendors[$vendorId] ?? ['de' => $vendorId, 'en' => $vendorId];
+                                    $vLabelEn = $vendorLabel['en'] ?? $vendorId;
+                                    $vLabelDe = $vendorLabel['de'] ?? $vLabelEn;
+                                @endphp
+                                <option
+                                    value="{{ $vendorId }}"
+                                    data-text-de="{{ $vLabelDe }}"
+                                    data-text-en="{{ $vLabelEn }}"
+                                >{{ $vLabelEn }}</option>
+                            @endforeach
                         </select>
                         <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
                     </span>

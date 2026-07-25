@@ -4124,7 +4124,24 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-content--resources .vendor-resources-sticky .tools-page-title {
+    margin-bottom: 0;
+}
+
+.tools-content--resources .vendor-resources-sticky__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem 0.85rem;
     margin-bottom: 0.25rem;
+}
+
+.tools-content--resources .vendor-resources-sticky__count {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--base-text-color-secondary, #64748b);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
 }
 
 .tools-content--resources .vendor-resources-sticky__lead {
