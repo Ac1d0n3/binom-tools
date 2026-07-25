@@ -10,8 +10,12 @@ import { TemplateStore } from './template-store.js';
 import {
     renderSplitParameterFields,
     bindParameterFields,
+    readParameterValues,
     validateRequiredParameters,
 } from './field-renderer.js';
+import { bindStructureEditors } from './structure-editor.js';
+import { bindLyricsMeters } from './lyrics-meter-ui.js';
+import { getSyllablesPerBarForGenre } from './music-structures.js';
 import { renderSectionsHtml, bindSectionEditors } from './prompt-sections.js';
 import { PiiPreview } from './pii-preview.js';
 import { postProcessCompiledPrompt } from './artist-name-stripper.js';
@@ -643,8 +647,9 @@ function renderBuilder() {
             draft.parameterValues,
             currentLocale(),
             tr('promptStudio.advancedFields'),
+            { musicStructures: config.musicStructures },
         );
-        bindParameterFields(dynamicFields, allParameters, (values) => {
+        const emitFieldChange = (values) => {
             if (!stateManager) return;
             stateManager.setParameterValues(values);
             if (values.forbiddenLyricsWords && Array.isArray(values.forbiddenLyricsWords)) {
@@ -661,6 +666,36 @@ function renderBuilder() {
             }
             renderPreview();
             renderVariantsPanel();
+        };
+        bindParameterFields(dynamicFields, allParameters, emitFieldChange);
+        bindStructureEditors(dynamicFields, {
+            musicStructures: config.musicStructures,
+            getGenre: () => String(stateManager?.getDraft().parameterValues?.genre ?? 'pop'),
+            locale: currentLocale(),
+            onChange: () => {
+                const map = new Map(allParameters.map((def) => [def.id, def]));
+                emitFieldChange(readParameterValues(dynamicFields, map));
+            },
+        });
+        bindLyricsMeters(dynamicFields, {
+            locale: currentLocale(),
+            getSyllablesPerBar: () =>
+                getSyllablesPerBarForGenre(
+                    String(stateManager?.getDraft().parameterValues?.genre ?? 'pop'),
+                    config.musicStructures,
+                ),
+            onChange: () => {
+                const map = new Map(allParameters.map((def) => [def.id, def]));
+                emitFieldChange(readParameterValues(dynamicFields, map));
+            },
+            onApplyToStory: (draftText) => {
+                if (!stateManager || !draftText.trim()) return;
+                const current = stateManager.getDraft().parameterValues ?? {};
+                const story = String(current.story ?? '').trim();
+                const nextStory = story ? `${story}\n\n${draftText.trim()}` : draftText.trim();
+                emitFieldChange({ ...current, story: nextStory, lyricsDraft: draftText });
+                renderBuilder();
+            },
         });
     }
 

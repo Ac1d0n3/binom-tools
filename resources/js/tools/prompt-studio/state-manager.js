@@ -3,7 +3,7 @@ import { resolveLocalizedLabel, localizeParameterValues } from './localized-labe
 import { debouncedSaveSession } from './session-store.js';
 import { HistoryStack } from './history-stack.js';
 import { PromptSections } from './prompt-sections.js';
-import { buildPrompt, formatForModel } from './prompt-builder.js';
+import { buildPrompt, formatForModel, filterPromptParameterValues } from './prompt-builder.js';
 import { createDefaultParameterValues } from './field-renderer.js';
 import { getParametersForTask, getTemplate, getTasksForRole } from './config-loader.js';
 import { getTaskOutputKind } from './md-export.js';
@@ -217,19 +217,22 @@ export class StateManager {
             modelLabel: resolveLocalizedLabel(model?.label, promptLocale, this.draft.modelId),
         };
 
+        const localizedValues = localizeParameterValues(this.draft.parameterValues, parameterDefs, promptLocale);
+        const promptValues = filterPromptParameterValues(localizedValues, parameterDefs);
         const built = buildPrompt({
             template,
-            parameterValues: localizeParameterValues(this.draft.parameterValues, parameterDefs, promptLocale),
+            parameterValues: localizedValues,
             model,
             extraContext,
             locale: promptLocale,
+            parameterDefs,
         });
 
         this.sections.applyCompiled(built.compiledList, { preserveOverrides: true });
 
         const sections = this.sections.toMap();
         const compiled = formatForModel(sections, model, {
-            parameterValues: this.draft.parameterValues,
+            parameterValues: promptValues,
         });
 
         this.patchDraft(
@@ -287,8 +290,9 @@ export class StateManager {
 
     getCompiledPrompt() {
         const model = this.config.models.find((m) => m.id === this.draft.modelId);
+        const parameterDefs = getParametersForTask(this.draft.taskId, this.config);
         return formatForModel(this.sections.toMap(), model, {
-            parameterValues: this.draft.parameterValues,
+            parameterValues: filterPromptParameterValues(this.draft.parameterValues, parameterDefs),
         });
     }
 
@@ -316,6 +320,7 @@ export class StateManager {
                 modelLabel: resolveLocalizedLabel(model?.label, promptLocale, this.draft.modelId),
             },
             locale: promptLocale,
+            parameterDefs,
         });
 
         return built.compiledList.map((section) => ({

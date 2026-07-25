@@ -10,6 +10,7 @@ import {
     validateMetaPrompts,
 } from './config-validator.js';
 import { getTaskOutputKind } from './md-export.js';
+import { normalizeMusicStructures } from './music-structures.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./config-validator.js').PromptRoleDef} PromptRoleDef */
@@ -123,6 +124,24 @@ async function loadArtistBlocklist(baseUrl, manifestFiles) {
         return normalizeArtistBlocklist(raw);
     } catch {
         return [];
+    }
+}
+
+/**
+ * @param {string} baseUrl
+ * @param {Record<string, unknown>} [manifestFiles]
+ * @returns {Promise<import('./music-structures.js').MusicStructuresConfig>}
+ */
+async function loadMusicStructures(baseUrl, manifestFiles) {
+    const path =
+        typeof manifestFiles?.musicStructures === 'string'
+            ? manifestFiles.musicStructures
+            : 'music-structures.json';
+    try {
+        const raw = await fetchJson(resolveConfigUrl(baseUrl, path));
+        return normalizeMusicStructures(raw);
+    } catch {
+        return normalizeMusicStructures(null);
     }
 }
 
@@ -338,8 +357,9 @@ export async function loadConfig(baseUrl) {
     }
 
     const artistBlocklist = await loadArtistBlocklist(baseUrl, files);
+    const musicStructures = await loadMusicStructures(baseUrl, files);
 
-    return loadAndMergePlugins(baseUrl, { ...validated.config, artistBlocklist });
+    return loadAndMergePlugins(baseUrl, { ...validated.config, artistBlocklist, musicStructures });
 }
 
 /**

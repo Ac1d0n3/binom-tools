@@ -1,0 +1,254 @@
+{
+  "defaultFamily": "pop",
+  "genreToFamily": {
+    "pop": "pop",
+    "k-pop": "pop",
+    "indie": "pop",
+    "rock": "rock",
+    "metal": "rock",
+    "punk": "rock",
+    "hip-hop": "hip-hop",
+    "boom-bap": "hip-hop",
+    "trap": "hip-hop",
+    "drill": "hip-hop",
+    "soul": "soul",
+    "rnb": "soul",
+    "funk": "soul",
+    "gospel": "soul",
+    "reggae": "reggae",
+    "dancehall": "reggae",
+    "electronic": "edm",
+    "house": "edm",
+    "techno": "edm",
+    "drum-and-bass": "edm",
+    "ambient": "edm",
+    "lo-fi": "edm",
+    "jazz": "jazz",
+    "blues": "jazz",
+    "latin": "latin",
+    "salsa": "latin",
+    "bossa-nova": "latin",
+    "country": "folk",
+    "folk": "folk",
+    "classical": "cinematic",
+    "cinematic": "cinematic",
+    "epic": "cinematic",
+    "orchestral": "cinematic",
+    "afrobeats": "afro"
+  },
+  "families": {
+    "pop": {
+      "label": { "de": "Pop", "en": "Pop" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Vor dem Refrain: Prefchorus oder kurzes Build-up (Filter öffnen, Vocals dichter), dann Chorus drop.",
+        "en": "Before the chorus: pre-chorus or short build-up (open filter, denser vocals), then chorus drop."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 4 },
+        { "id": "verse-1", "label": { "de": "Strophe 1", "en": "Verse 1" }, "bars": 16 },
+        { "id": "pre-chorus", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 8 },
+        { "id": "chorus", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Strophe 2", "en": "Verse 2" }, "bars": 16 },
+        { "id": "pre-chorus-2", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 8 },
+        { "id": "chorus-2", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge", "en": "Bridge" }, "bars": 8 },
+        { "id": "chorus-final", "label": { "de": "Finaler Refrain", "en": "Final chorus" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    },
+    "hip-hop": {
+      "label": { "de": "Hip-Hop / Boom Bap", "en": "Hip-Hop / Boom Bap" },
+      "syllablesPerBar": 6,
+      "buildUpTip": {
+        "de": "Vor dem Hook oft 2–4 Bars Break oder Drop-out (Drums raus), dann Hook voll rein. Verse länger halten (16–24 Bars).",
+        "en": "Before the hook: often a 2–4 bar break or drop-out (drums out), then full hook. Keep verses longer (16–24 bars)."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "verse-1", "label": { "de": "Verse 1", "en": "Verse 1" }, "bars": 16 },
+        { "id": "hook", "label": { "de": "Hook", "en": "Hook" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Verse 2", "en": "Verse 2" }, "bars": 16 },
+        { "id": "hook-2", "label": { "de": "Hook", "en": "Hook" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge / Break", "en": "Bridge / Break" }, "bars": 8 },
+        { "id": "verse-3", "label": { "de": "Verse 3", "en": "Verse 3" }, "bars": 16 },
+        { "id": "hook-final", "label": { "de": "Final Hook", "en": "Final hook" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    },
+    "soul": {
+      "label": { "de": "Soul / R&B", "en": "Soul / R&B" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Emotion aufbauen: Pre-Chorus mit Background-Harmonien, dann Chorus mit call-and-response. Bridge oft gospel-nah öffnen.",
+        "en": "Build emotion: pre-chorus with background harmonies, then chorus with call-and-response. Bridge often opens gospel-like."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "verse-1", "label": { "de": "Strophe 1", "en": "Verse 1" }, "bars": 12 },
+        { "id": "pre-chorus", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 4 },
+        { "id": "chorus", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Strophe 2", "en": "Verse 2" }, "bars": 12 },
+        { "id": "pre-chorus-2", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 4 },
+        { "id": "chorus-2", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge", "en": "Bridge" }, "bars": 8 },
+        { "id": "chorus-final", "label": { "de": "Finaler Refrain", "en": "Final chorus" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro / Fade", "en": "Outro / Fade" }, "bars": 8 }
+      ]
+    },
+    "reggae": {
+      "label": { "de": "Reggae / Dancehall", "en": "Reggae / Dancehall" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Offbeat steuern: vor dem Chorus oft Riddim strippen (nur Bass/Drums), dann Vocals + Keys voll. Dancehall: kürzere Verses, längere Hooks.",
+        "en": "Control the offbeat: before the chorus strip the riddim (bass/drums only), then full vocals + keys. Dancehall: shorter verses, longer hooks."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "verse-1", "label": { "de": "Verse 1", "en": "Verse 1" }, "bars": 16 },
+        { "id": "chorus", "label": { "de": "Chorus / Hook", "en": "Chorus / Hook" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Verse 2", "en": "Verse 2" }, "bars": 16 },
+        { "id": "chorus-2", "label": { "de": "Chorus / Hook", "en": "Chorus / Hook" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge / Toast", "en": "Bridge / Toast" }, "bars": 8 },
+        { "id": "chorus-final", "label": { "de": "Final Chorus", "en": "Final chorus" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    },
+    "edm": {
+      "label": { "de": "EDM / Electronic", "en": "EDM / Electronic" },
+      "syllablesPerBar": 3,
+      "buildUpTip": {
+        "de": "Klassisch: Build-up mit Riser/Filter-Sweep (8–16 Bars), dann Drop. Optional Breakdown vor dem zweiten Drop.",
+        "en": "Classic: build-up with riser/filter sweep (8–16 bars), then drop. Optional breakdown before the second drop."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 16 },
+        { "id": "verse", "label": { "de": "Verse / Groove", "en": "Verse / Groove" }, "bars": 16 },
+        { "id": "build-up", "label": { "de": "Build-up", "en": "Build-up" }, "bars": 8 },
+        { "id": "drop", "label": { "de": "Drop", "en": "Drop" }, "bars": 16 },
+        { "id": "breakdown", "label": { "de": "Breakdown", "en": "Breakdown" }, "bars": 8 },
+        { "id": "build-up-2", "label": { "de": "Build-up 2", "en": "Build-up 2" }, "bars": 8 },
+        { "id": "drop-2", "label": { "de": "Drop 2", "en": "Drop 2" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 8 }
+      ]
+    },
+    "rock": {
+      "label": { "de": "Rock / Metal / Punk", "en": "Rock / Metal / Punk" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Vor dem Chorus oft Pre-Chorus oder Half-time Break; Metal: Build mit Snare-Rolls. Punk: kürzere Abschnitte, schneller Wechsel.",
+        "en": "Before the chorus often a pre-chorus or half-time break; metal: snare-roll build. Punk: shorter sections, faster changes."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "verse-1", "label": { "de": "Strophe 1", "en": "Verse 1" }, "bars": 8 },
+        { "id": "pre-chorus", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 4 },
+        { "id": "chorus", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Strophe 2", "en": "Verse 2" }, "bars": 8 },
+        { "id": "chorus-2", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge / Solo", "en": "Bridge / Solo" }, "bars": 8 },
+        { "id": "chorus-final", "label": { "de": "Finaler Refrain", "en": "Final chorus" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    },
+    "jazz": {
+      "label": { "de": "Jazz / Blues", "en": "Jazz / Blues" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Kopf → Solos → Kopf. Dynamik über Instrumentation und Dynamik, weniger über EDM-Build-ups.",
+        "en": "Head → solos → head. Dynamics via instrumentation and volume, less via EDM-style build-ups."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "head", "label": { "de": "Thema (Head)", "en": "Head" }, "bars": 32 },
+        { "id": "solo-1", "label": { "de": "Solo 1", "en": "Solo 1" }, "bars": 32 },
+        { "id": "solo-2", "label": { "de": "Solo 2", "en": "Solo 2" }, "bars": 16 },
+        { "id": "head-out", "label": { "de": "Thema Out", "en": "Head out" }, "bars": 32 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 8 }
+      ]
+    },
+    "latin": {
+      "label": { "de": "Latin / Salsa / Bossa", "en": "Latin / Salsa / Bossa" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Spannung über Percussion und Montuno; Break vor dem Chorus, dann Coro voll. Bossa: weichere Übergänge.",
+        "en": "Tension via percussion and montuno; break before chorus, then full coro. Bossa: softer transitions."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "verse-1", "label": { "de": "Verso 1", "en": "Verse 1" }, "bars": 16 },
+        { "id": "coro", "label": { "de": "Coro / Chorus", "en": "Coro / Chorus" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Verso 2", "en": "Verse 2" }, "bars": 16 },
+        { "id": "coro-2", "label": { "de": "Coro / Chorus", "en": "Coro / Chorus" }, "bars": 8 },
+        { "id": "montuno", "label": { "de": "Montuno / Bridge", "en": "Montuno / Bridge" }, "bars": 16 },
+        { "id": "coro-final", "label": { "de": "Final Coro", "en": "Final coro" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    },
+    "folk": {
+      "label": { "de": "Folk / Country", "en": "Folk / Country" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Narrative Steigerung: Verse erzählen, Chorus verdichtet. Optional Instrumental-Break vor dem letzten Chorus.",
+        "en": "Narrative build: verses tell the story, chorus condenses. Optional instrumental break before the last chorus."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 4 },
+        { "id": "verse-1", "label": { "de": "Strophe 1", "en": "Verse 1" }, "bars": 16 },
+        { "id": "chorus", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Strophe 2", "en": "Verse 2" }, "bars": 16 },
+        { "id": "chorus-2", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge", "en": "Bridge" }, "bars": 8 },
+        { "id": "chorus-final", "label": { "de": "Finaler Refrain", "en": "Final chorus" }, "bars": 8 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    },
+    "cinematic": {
+      "label": { "de": "Cinematic / Epic / Klassik", "en": "Cinematic / Epic / Classical" },
+      "syllablesPerBar": 3,
+      "buildUpTip": {
+        "de": "Spannungsbogen über Dynamik und Orchestrierung: leise Exposition, Crescendo, epischer Höhepunkt, Ausklang. Epic: Brass/Choir zum Climax aufbauen.",
+        "en": "Arc via dynamics and orchestration: quiet exposition, crescendo, epic climax, resolution. Epic: build brass/choir into the climax."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Exposition", "en": "Exposition" }, "bars": 16 },
+        { "id": "theme-a", "label": { "de": "Thema A", "en": "Theme A" }, "bars": 16 },
+        { "id": "development", "label": { "de": "Durchführung / Build", "en": "Development / Build" }, "bars": 16 },
+        { "id": "climax", "label": { "de": "Höhepunkt / Epic Peak", "en": "Climax / Epic peak" }, "bars": 16 },
+        { "id": "theme-b", "label": { "de": "Thema B / Resolution", "en": "Theme B / Resolution" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Coda", "en": "Coda" }, "bars": 8 }
+      ]
+    },
+    "afro": {
+      "label": { "de": "Afrobeats", "en": "Afrobeats" },
+      "syllablesPerBar": 4,
+      "buildUpTip": {
+        "de": "Groove halten; vor dem Chorus oft Percussion-Fill und Vocal ad-libs, dann Hook mit Call-and-Response.",
+        "en": "Keep the groove; before the chorus often a percussion fill and vocal ad-libs, then hook with call-and-response."
+      },
+      "preset": [
+        { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 8 },
+        { "id": "verse-1", "label": { "de": "Verse 1", "en": "Verse 1" }, "bars": 16 },
+        { "id": "pre-chorus", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 4 },
+        { "id": "chorus", "label": { "de": "Chorus / Hook", "en": "Chorus / Hook" }, "bars": 8 },
+        { "id": "verse-2", "label": { "de": "Verse 2", "en": "Verse 2" }, "bars": 16 },
+        { "id": "chorus-2", "label": { "de": "Chorus / Hook", "en": "Chorus / Hook" }, "bars": 8 },
+        { "id": "bridge", "label": { "de": "Bridge / Dance Break", "en": "Bridge / Dance break" }, "bars": 8 },
+        { "id": "chorus-final", "label": { "de": "Final Chorus", "en": "Final chorus" }, "bars": 16 },
+        { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+      ]
+    }
+  },
+  "sectionCatalog": [
+    { "id": "intro", "label": { "de": "Intro", "en": "Intro" }, "bars": 4 },
+    { "id": "verse", "label": { "de": "Strophe", "en": "Verse" }, "bars": 16 },
+    { "id": "pre-chorus", "label": { "de": "Pre-Chorus", "en": "Pre-Chorus" }, "bars": 8 },
+    { "id": "chorus", "label": { "de": "Refrain", "en": "Chorus" }, "bars": 8 },
+    { "id": "hook", "label": { "de": "Hook", "en": "Hook" }, "bars": 8 },
+    { "id": "bridge", "label": { "de": "Bridge", "en": "Bridge" }, "bars": 8 },
+    { "id": "break", "label": { "de": "Break", "en": "Break" }, "bars": 4 },
+    { "id": "build-up", "label": { "de": "Build-up", "en": "Build-up" }, "bars": 8 },
+    { "id": "drop", "label": { "de": "Drop", "en": "Drop" }, "bars": 16 },
+    { "id": "outro", "label": { "de": "Outro", "en": "Outro" }, "bars": 4 }
+  ]
+}

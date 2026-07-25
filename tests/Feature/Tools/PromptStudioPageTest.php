@@ -62,6 +62,21 @@ class PromptStudioPageTest extends TestCase
         $response->assertHeader('content-type', 'application/json; charset=UTF-8');
     }
 
+    public function test_prompt_studio_music_structures_config_is_public(): void
+    {
+        $response = $this->get('/tools/prompt-studio/config/music-structures.json');
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/json; charset=UTF-8');
+
+        $path = public_path('prompt-studio/config/music-structures.json');
+        $this->assertFileExists($path);
+        $data = json_decode((string) file_get_contents($path), true);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('families', $data);
+        $this->assertArrayHasKey('genreToFamily', $data);
+    }
+
     public function test_governance_sanitizer_has_workflow_and_back_button(): void
     {
         $response = $this->get('/tools/governance-ai-sanitizer');

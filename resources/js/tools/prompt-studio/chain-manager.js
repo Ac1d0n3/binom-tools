@@ -1,4 +1,4 @@
-import { buildPrompt, formatForModel } from './prompt-builder.js';
+import { buildPrompt, formatForModel, filterPromptParameterValues } from './prompt-builder.js';
 import { getParametersForTask, getTemplate } from './config-loader.js';
 import { t } from './labels.js';
 import { resolveLocalizedLabel, localizeParameterValues } from './localized-label.js';
@@ -259,9 +259,12 @@ export class ChainManager {
                 modelLabel: resolveLocalizedLabel(model?.label, locale, model?.id ?? ''),
             },
             locale,
+            parameterDefs,
         });
 
-        return formatForModel(built.sections, model, { parameterValues });
+        return formatForModel(built.sections, model, {
+            parameterValues: filterPromptParameterValues(parameterValues, parameterDefs),
+        });
     }
 
     /**

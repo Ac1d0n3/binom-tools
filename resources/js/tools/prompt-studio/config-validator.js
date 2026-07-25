@@ -33,13 +33,16 @@ import { normalizeCategory } from './categories.js';
 /**
  * @typedef {Object} PromptParameterDef
  * @property {string} id
- * @property {'text' | 'textarea' | 'select' | 'multiselect' | 'number' | 'chips' | 'color' | 'aspect-ratio'} type
+ * @property {'text' | 'textarea' | 'select' | 'multiselect' | 'number' | 'chips' | 'color' | 'aspect-ratio' | 'structure-editor' | 'lyrics-meter'} type
  * @property {string} [group]
  * @property {Record<ToolsLocale, string>} label
  * @property {unknown[]} [options]
  * @property {unknown} [default]
  * @property {boolean} [required]
+ * @property {boolean} [includeInPrompt] Default true; false = UI helper only, never in copy prompt
  * @property {Record<ToolsLocale, string>} [placeholder]
+ * @property {Record<ToolsLocale, string>} [help]
+ * @property {unknown[]} [suggestions]
  */
 
 /**
@@ -86,6 +89,7 @@ import { normalizeCategory } from './categories.js';
  * @property {PromptChainDef[]} chains
  * @property {PromptMetaPromptDef[]} metaPrompts
  * @property {string[]} [artistBlocklist]
+ * @property {import('./music-structures.js').MusicStructuresConfig} [musicStructures]
  */
 
 /**
@@ -229,7 +233,18 @@ export function validateTasks(raw) {
     return { valid: issues.length === 0, issues, tasks };
 }
 
-const PARAM_TYPES = new Set(['text', 'textarea', 'select', 'multiselect', 'number', 'chips', 'color', 'aspect-ratio']);
+const PARAM_TYPES = new Set([
+    'text',
+    'textarea',
+    'select',
+    'multiselect',
+    'number',
+    'chips',
+    'color',
+    'aspect-ratio',
+    'structure-editor',
+    'lyrics-meter',
+]);
 
 /**
  * @param {unknown} raw

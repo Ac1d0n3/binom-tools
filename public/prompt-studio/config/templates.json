@@ -368,12 +368,12 @@
           "de": "Entwickle ein vollständiges Songkonzept für {{taskLabel}}."
         },
         "parameters": {
-          "en": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
-          "de": "Genre: {{genre}}\nBPM: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\nStimme: {{voice}}\n{{#if story}}Geschichte / Thema:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nVerwende diese Wörter NICHT im Songtext: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler NICHT: {{forbiddenArtistNames}}{{/if}}\nNenne keine echten Künstler oder Bands. Beschreibe den Sound nur über Genre, Stimmung, Instrumente und Stimmcharakter."
+          "en": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}{{#if vocalTimbre}}\nVocal timbre: {{vocalTimbre}}{{/if}}{{#if vocalEffects}}\nVocal effects: {{vocalEffects}}{{/if}}{{#if productionEffects}}\nProduction effects: {{productionEffects}}{{/if}}\n{{#if songStructure}}Song structure:\n{{songStructure}}\n{{/if}}{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
+          "de": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nBPM: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\nStimme: {{voice}}{{#if vocalTimbre}}\nStimmfarbe: {{vocalTimbre}}{{/if}}{{#if vocalEffects}}\nVocal-Effekte: {{vocalEffects}}{{/if}}{{#if productionEffects}}\nProduktionseffekte: {{productionEffects}}{{/if}}\n{{#if songStructure}}Songstruktur:\n{{songStructure}}\n{{/if}}{{#if story}}Geschichte / Thema:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nVerwende diese Wörter NICHT im Songtext: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler NICHT: {{forbiddenArtistNames}}{{/if}}\nNenne keine echten Künstler oder Bands. Beschreibe den Sound nur über Genre, Stimmung, Instrumente und Stimmcharakter."
         },
         "output": {
-          "en": "Deliver:\n1. Song title and concept\n2. Verse/chorus/bridge structure\n3. Lyrical themes and hook ideas\n4. Production notes",
-          "de": "Liefere:\n1. Songtitel und Konzept\n2. Strophe/Refrain/Bridge-Struktur\n3. Lyrische Themen und Hook-Ideen\n4. Produktionshinweise"
+          "en": "Deliver:\n1. Song title and concept\n2. Structure following the sections above (or Verse/Chorus/Bridge if none given)\n3. Lyrical themes and hook ideas\n4. Production notes{{#if vocalTimbre}} including vocal timbre{{/if}}",
+          "de": "Liefere:\n1. Songtitel und Konzept\n2. Struktur gemäß den Abschnitten oben (oder Strophe/Refrain/Bridge falls keine angegeben)\n3. Lyrische Themen und Hook-Ideen\n4. Produktionshinweise{{#if vocalTimbre}} inkl. Stimmfarbe{{/if}}"
         }
       }
     },
@@ -397,12 +397,12 @@
           "de": "Schreibe Lyrics für {{taskLabel}}."
         },
         "parameters": {
-          "en": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
-          "de": "Genre: {{genre}}\nStimmung: {{mood}}\nStimme: {{voice}}\n{{#if story}}Geschichte / Thema:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nVerwende diese Wörter NICHT im Songtext: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler NICHT: {{forbiddenArtistNames}}{{/if}}\nNenne keine echten Künstler oder Bands. Beschreibe den Sound nur über Genre, Stimmung, Instrumente und Stimmcharakter."
+          "en": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nMood: {{mood}}\nVoice: {{voice}}{{#if vocalTimbre}}\nVocal timbre: {{vocalTimbre}}{{/if}}\n{{#if songStructure}}Song structure:\n{{songStructure}}\n{{/if}}{{#if story}}Story / theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
+          "de": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nStimmung: {{mood}}\nStimme: {{voice}}{{#if vocalTimbre}}\nStimmfarbe: {{vocalTimbre}}{{/if}}\n{{#if songStructure}}Songstruktur:\n{{songStructure}}\n{{/if}}{{#if story}}Geschichte / Thema:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nVerwende diese Wörter NICHT im Songtext: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler NICHT: {{forbiddenArtistNames}}{{/if}}\nNenne keine echten Künstler oder Bands. Beschreibe den Sound nur über Genre, Stimmung, Instrumente und Stimmcharakter."
         },
         "output": {
-          "en": "Deliver complete lyrics with:\n1. Verse 1\n2. Pre-chorus (if applicable)\n3. Chorus\n4. Verse 2\n5. Bridge\n6. Final chorus / outro\nRespect the target length limit when writing for Suno (Free ~3000 characters, Paid ~5000).",
-          "de": "Liefere vollständige Lyrics mit:\n1. Strophe 1\n2. Pre-Chorus (falls zutreffend)\n3. Refrain\n4. Strophe 2\n5. Bridge\n6. Schluss-Refrain / Outro\nBeachte das Längenlimit für Suno (Free ~3000 Zeichen, Paid ~5000)."
+          "en": "Deliver complete lyrics.{{#if songStructure}}\nFollow this structure exactly:\n{{songStructure}}\n{{/if}}If no structure was provided, use: Verse 1, Pre-chorus (optional), Chorus, Verse 2, Bridge, Final chorus / outro.\nRespect the target length limit when writing for Suno (Free ~3000 characters, Paid ~5000).",
+          "de": "Liefere vollständige Lyrics.{{#if songStructure}}\nFolge genau dieser Struktur:\n{{songStructure}}\n{{/if}}Falls keine Struktur angegeben wurde: Strophe 1, Pre-Chorus (optional), Refrain, Strophe 2, Bridge, Schluss-Refrain / Outro.\nBeachte das Längenlimit für Suno (Free ~3000 Zeichen, Paid ~5000)."
         }
       }
     },
@@ -426,8 +426,8 @@
           "de": "Erstelle einen Hook für {{taskLabel}}."
         },
         "parameters": {
-          "en": "Genre: {{genre}}\nMood: {{mood}}\nVoice: {{voice}}\n{{#if story}}Theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
-          "de": "Genre: {{genre}}\nStimmung: {{mood}}\nStimme: {{voice}}\n{{#if story}}Thema:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nVerwende diese Wörter NICHT im Songtext: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler NICHT: {{forbiddenArtistNames}}{{/if}}\nNenne keine echten Künstler oder Bands. Beschreibe den Sound nur über Genre, Stimmung, Instrumente und Stimmcharakter."
+          "en": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nMood: {{mood}}\nVoice: {{voice}}{{#if vocalTimbre}}\nVocal timbre: {{vocalTimbre}}{{/if}}\n{{#if songStructure}}Song structure context:\n{{songStructure}}\n{{/if}}{{#if story}}Theme:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nDo NOT use these words in lyrics: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nDo NOT reference these artists: {{forbiddenArtistNames}}{{/if}}\nDo NOT name real artists or bands. Describe sound with genre, mood, instruments, and vocal character only.",
+          "de": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nStimmung: {{mood}}\nStimme: {{voice}}{{#if vocalTimbre}}\nStimmfarbe: {{vocalTimbre}}{{/if}}\n{{#if songStructure}}Songstruktur-Kontext:\n{{songStructure}}\n{{/if}}{{#if story}}Thema:\n{{story}}{{/if}}{{#if forbiddenLyricsWords}}\nVerwende diese Wörter NICHT im Songtext: {{forbiddenLyricsWords}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler NICHT: {{forbiddenArtistNames}}{{/if}}\nNenne keine echten Künstler oder Bands. Beschreibe den Sound nur über Genre, Stimmung, Instrumente und Stimmcharakter."
         },
         "output": {
           "en": "Deliver:\n1. Three hook variations (melodic + lyrical)\n2. Recommended primary hook with rationale\n3. Suggested placement in song structure",
@@ -455,8 +455,8 @@
           "de": "Erstelle einen Style-Prompt für {{modelLabel}} ({{taskLabel}})."
         },
         "parameters": {
-          "en": "Genre: {{genre}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}{{#if forbiddenArtistNames}}\nNever reference these artists: {{forbiddenArtistNames}}{{/if}}\nUse descriptive tags only — no real artist or band names.",
-          "de": "Genre: {{genre}}\nBPM: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\nStimme: {{voice}}{{#if forbiddenArtistNames}}\nNenne diese Künstler niemals: {{forbiddenArtistNames}}{{/if}}\nVerwende nur beschreibende Tags — keine echten Künstler- oder Bandnamen."
+          "en": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nBPM: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\nVoice: {{voice}}{{#if vocalTimbre}}\nVocal timbre: {{vocalTimbre}}{{/if}}{{#if vocalEffects}}\nVocal effects: {{vocalEffects}}{{/if}}{{#if productionEffects}}\nProduction effects: {{productionEffects}}{{/if}}{{#if forbiddenArtistNames}}\nNever reference these artists: {{forbiddenArtistNames}}{{/if}}\nUse descriptive tags only — no real artist or band names.",
+          "de": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nBPM: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\nStimme: {{voice}}{{#if vocalTimbre}}\nStimmfarbe: {{vocalTimbre}}{{/if}}{{#if vocalEffects}}\nVocal-Effekte: {{vocalEffects}}{{/if}}{{#if productionEffects}}\nProduktionseffekte: {{productionEffects}}{{/if}}{{#if forbiddenArtistNames}}\nNenne diese Künstler niemals: {{forbiddenArtistNames}}{{/if}}\nVerwende nur beschreibende Tags — keine echten Künstler- oder Bandnamen."
         },
         "output": {
           "en": "Deliver ONE {{modelLabel}} style prompt string (respect the tool limit). Prefer a compact tag-style line first. Never include real artist or band names.",
@@ -484,8 +484,8 @@
           "de": "Entwickle ein Albumkonzept für {{taskLabel}}."
         },
         "parameters": {
-          "en": "Genre: {{genre}}\nBPM range: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\n{{#if story}}Album narrative:\n{{story}}{{/if}}",
-          "de": "Genre: {{genre}}\nBPM-Bereich: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\n{{#if story}}Album-Narrativ:\n{{story}}{{/if}}"
+          "en": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nBPM range: {{bpm}}\nMood: {{mood}}\nInstruments: {{instruments}}\n{{#if story}}Album narrative:\n{{story}}{{/if}}",
+          "de": "Genre: {{genre}}{{#if genreSecondary}} + {{genreSecondary}} (multi-genre hybrid){{/if}}\nBPM-Bereich: {{bpm}}\nStimmung: {{mood}}\nInstrumente: {{instruments}}\n{{#if story}}Album-Narrativ:\n{{story}}{{/if}}"
         },
         "output": {
           "en": "Deliver:\n1. Album title and concept\n2. Track listing (8–12 tracks) with brief descriptions\n3. Sonic palette and production direction\n4. Visual / branding direction",

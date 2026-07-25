@@ -239,6 +239,30 @@ export function formatForModel(sections, model, options = {}) {
 }
 
 /**
+ * Drop UI-only parameters (includeInPrompt: false) before template render / copy.
+ * @param {Record<string, unknown>} parameterValues
+ * @param {Array<{ id: string, includeInPrompt?: boolean }> | undefined} parameterDefs
+ * @returns {Record<string, unknown>}
+ */
+export function filterPromptParameterValues(parameterValues, parameterDefs) {
+    if (!parameterDefs?.length) {
+        return { ...parameterValues };
+    }
+
+    const exclude = new Set(
+        parameterDefs.filter((def) => def.includeInPrompt === false).map((def) => def.id),
+    );
+
+    /** @type {Record<string, unknown>} */
+    const filtered = {};
+    for (const [key, value] of Object.entries(parameterValues ?? {})) {
+        if (exclude.has(key)) continue;
+        filtered[key] = value;
+    }
+    return filtered;
+}
+
+/**
  * @param {Record<string, unknown>} parameterValues
  * @param {Record<string, string>} [extra]
  * @returns {TemplateContext}
@@ -258,15 +282,17 @@ export function buildTemplateContext(parameterValues, extra = {}) {
  *   model?: PromptModelDef,
  *   extraContext?: Record<string, unknown>,
  *   locale?: import('./config-validator.js').ToolsLocale,
+ *   parameterDefs?: Array<{ id: string, includeInPrompt?: boolean }>,
  * }} options
  * @returns {{ sections: Record<string, string>, compiled: string, compiledList: CompiledSection[] }}
  */
 export function buildPrompt(options) {
-    const { template, parameterValues, model, extraContext = {}, locale = 'en' } = options;
-    const context = buildTemplateContext(parameterValues, extraContext);
+    const { template, parameterValues, model, extraContext = {}, locale = 'en', parameterDefs } = options;
+    const promptValues = filterPromptParameterValues(parameterValues, parameterDefs);
+    const context = buildTemplateContext(promptValues, extraContext);
     const compiledList = compileSections(template.sections, context, locale);
     const sections = sectionsToMap(compiledList);
-    const compiled = formatForModel(sections, model, { parameterValues });
+    const compiled = formatForModel(sections, model, { parameterValues: promptValues });
 
     return { sections, compiled, compiledList };
 }

@@ -1,6 +1,6 @@
 import { loadSeries, saveSeries } from './storage.js';
-import { buildPrompt, formatForModel } from './prompt-builder.js';
-import { getTemplate } from './config-loader.js';
+import { buildPrompt, formatForModel, filterPromptParameterValues } from './prompt-builder.js';
+import { getParametersForTask, getTemplate } from './config-loader.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
 /** @typedef {import('./storage.js').PromptDraftState} PromptDraftState */
@@ -66,6 +66,7 @@ export class SeriesManager {
 
             let compiled = '';
             if (template) {
+                const parameterDefs = task ? getParametersForTask(task.id, this.config) : [];
                 const built = buildPrompt({
                     template,
                     parameterValues,
@@ -75,9 +76,12 @@ export class SeriesManager {
                         taskId: series.baseDraft.taskId,
                         modelId: series.baseDraft.modelId,
                     },
+                    parameterDefs,
                 });
                 const sections = { ...built.sections, ...series.baseDraft.sections };
-                compiled = formatForModel(sections, model, { parameterValues });
+                compiled = formatForModel(sections, model, {
+                    parameterValues: filterPromptParameterValues(parameterValues, parameterDefs),
+                });
             }
 
             return {

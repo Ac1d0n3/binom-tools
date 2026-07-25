@@ -1,5 +1,5 @@
-import { buildPrompt, formatForModel } from './prompt-builder.js';
-import { getTemplate } from './config-loader.js';
+import { buildPrompt, formatForModel, filterPromptParameterValues } from './prompt-builder.js';
+import { getParametersForTask, getTemplate } from './config-loader.js';
 import { createDefaultVariants, debouncedSaveSession, loadSession, normalizeSession } from './session-store.js';
 
 /** @typedef {import('./config-validator.js').PromptStudioConfig} PromptStudioConfig */
@@ -124,10 +124,14 @@ export class VariantsManager {
                 modelId: draft.modelId,
                 roleLabel: role?.label?.en ?? draft.roleId,
             },
+            parameterDefs: getParametersForTask(task.id, this.config),
         });
 
         const sections = { ...built.sections, ...draft.sections };
-        return formatForModel(sections, model, { parameterValues: draft.parameterValues });
+        const parameterDefs = getParametersForTask(task.id, this.config);
+        return formatForModel(sections, model, {
+            parameterValues: filterPromptParameterValues(draft.parameterValues, parameterDefs),
+        });
     }
 
     /**
@@ -159,14 +163,16 @@ export class VariantsManager {
         const template = getTemplate(task.templateId, this.config);
         if (!template) return '';
         const model = this.config.models.find((m) => m.id === draft.modelId) ?? this.config.models[0];
+        const parameterDefs = getParametersForTask(task.id, this.config);
         const built = buildPrompt({
             template,
             parameterValues: draft.parameterValues,
             model,
             extraContext: { roleId: draft.roleId, taskId: draft.taskId },
+            parameterDefs,
         });
         return formatForModel({ ...built.sections, ...draft.sections }, model, {
-            parameterValues: draft.parameterValues,
+            parameterValues: filterPromptParameterValues(draft.parameterValues, parameterDefs),
         });
     }
 }

@@ -1,8 +1,11 @@
 /** @typedef {import('./config-validator.js').PromptParameterDef} PromptParameterDef */
 /** @typedef {import('./config-validator.js').ToolsLocale} ToolsLocale */
+/** @typedef {import('./music-structures.js').MusicStructuresConfig} MusicStructuresConfig */
 
 import { resolveLocalizedLabel } from './localized-label.js';
 import { t } from './labels.js';
+import { renderStructureEditor } from './structure-editor.js';
+import { renderLyricsMeterField } from './lyrics-meter-ui.js';
 
 /**
  * @param {string} value
@@ -56,6 +59,24 @@ function optionLabel(opt, locale) {
 }
 
 /**
+ * @param {PromptParameterDef} def
+ * @param {ToolsLocale} locale
+ * @returns {string}
+ */
+function renderChipSuggestions(def, locale) {
+    const suggestions = def.suggestions ?? [];
+    if (!suggestions.length) return '';
+    const buttons = suggestions
+        .map((opt) => {
+            const optValue = typeof opt === 'object' && opt !== null && 'value' in opt ? String(opt.value) : String(opt);
+            const optLabel = optionLabel(opt, locale);
+            return `<button type="button" class="tools-btn tools-btn--sm prompt-studio__chip-suggestion" data-chip-add="${escapeAttr(optValue)}">${escapeHtml(optLabel)}</button>`;
+        })
+        .join('');
+    return `<div class="prompt-studio__chip-suggestions">${buttons}</div>`;
+}
+
+/**
  * @param {unknown} value
  * @param {import('./config-validator.js').PromptParameterDef} def
  * @returns {unknown}
@@ -89,21 +110,34 @@ export function normalizeParameterValue(value, def) {
  * @param {import('./config-validator.js').PromptParameterDef} def
  * @param {unknown} value
  * @param {ToolsLocale} [locale]
+ * @param {{ musicStructures?: MusicStructuresConfig | null, genre?: string }} [extras]
  * @returns {string}
  */
-export function renderParameterField(def, value, locale = 'en') {
+export function renderParameterField(def, value, locale = 'en', extras = {}) {
     const normalized = normalizeParameterValue(value, def);
     const label = labelFor(def, locale);
     const placeholder = placeholderFor(def, locale);
     const help = helpFor(def, locale);
     const required = def.required ? ' required' : '';
     const fieldId = `ps-param-${def.id}`;
+    const uiOnlyBadge =
+        def.includeInPrompt === false
+            ? `<span class="prompt-studio__ui-only-badge">${escapeHtml(t(locale, 'promptStudio.field.uiOnly'))}</span>`
+            : '';
 
     let control = '';
 
     switch (def.type) {
         case 'textarea':
             control = `<textarea id="${fieldId}" class="tools-textarea ps-param-input" data-param-id="${escapeAttr(def.id)}" rows="3"${required} placeholder="${escapeAttr(placeholder)}">${escapeHtml(String(normalized ?? ''))}</textarea>`;
+            break;
+
+        case 'structure-editor':
+            control = renderStructureEditor(def, normalized, locale, extras.musicStructures, extras.genre);
+            break;
+
+        case 'lyrics-meter':
+            control = renderLyricsMeterField(def, normalized, locale);
             break;
 
         case 'select': {
@@ -130,7 +164,10 @@ export function renderParameterField(def, value, locale = 'en') {
         }
 
         case 'chips':
-            control = `<input id="${fieldId}" class="tools-input ps-param-input" type="text" data-param-id="${escapeAttr(def.id)}" data-param-type="chips" value="${escapeAttr((Array.isArray(normalized) ? normalized : []).join(', '))}" placeholder="${escapeAttr(placeholder || t(locale, 'promptStudio.field.chipsPlaceholder'))}"${required} />`;
+            control = `<div class="prompt-studio__chips-wrap">
+                <input id="${fieldId}" class="tools-input ps-param-input" type="text" data-param-id="${escapeAttr(def.id)}" data-param-type="chips" value="${escapeAttr((Array.isArray(normalized) ? normalized : []).join(', '))}" placeholder="${escapeAttr(placeholder || t(locale, 'promptStudio.field.chipsPlaceholder'))}"${required} />
+                ${renderChipSuggestions(def, locale)}
+            </div>`;
             break;
 
         case 'number':
@@ -156,22 +193,36 @@ export function renderParameterField(def, value, locale = 'en') {
     }
 
     const helpHtml = help ? `<p class="tools-field__help prompt-studio__param-help">${escapeHtml(help)}</p>` : '';
+    const useDiv =
+        def.type === 'structure-editor' ||
+        def.type === 'lyrics-meter' ||
+        def.type === 'multiselect' ||
+        def.type === 'chips';
+    const tag = useDiv ? 'div' : 'label';
 
-    return `<label class="tools-field prompt-studio__param-field prompt-studio__param-field--${escapeAttr(def.type)}" data-param-id="${escapeAttr(def.id)}">
-        <span class="tools-field__label">${escapeHtml(label)}${def.required ? ' *' : ''}</span>
+    return `<${tag} class="tools-field prompt-studio__param-field prompt-studio__param-field--${escapeAttr(def.type)}" data-param-id="${escapeAttr(def.id)}">
+        <span class="tools-field__label">${escapeHtml(label)}${def.required ? ' *' : ''}${uiOnlyBadge}</span>
         ${control}
         ${helpHtml}
-    </label>`;
+    </${tag}>`;
 }
 
 /**
  * @param {PromptParameterDef[]} parameters
  * @param {Record<string, unknown>} values
  * @param {ToolsLocale} [locale]
+ * @param {{ musicStructures?: MusicStructuresConfig | null }} [extras]
  * @returns {string}
  */
-export function renderParameterFields(parameters, values, locale = 'en') {
-    return parameters.map((def) => renderParameterField(def, values[def.id], locale)).join('');
+export function renderParameterFields(parameters, values, locale = 'en', extras = {}) {
+    return parameters
+        .map((def) =>
+            renderParameterField(def, values[def.id], locale, {
+                ...extras,
+                genre: String(values.genre ?? 'pop'),
+            }),
+        )
+        .join('');
 }
 
 /**
@@ -180,13 +231,22 @@ export function renderParameterFields(parameters, values, locale = 'en') {
  * @param {Record<string, unknown>} values
  * @param {ToolsLocale} [locale]
  * @param {string} [advancedLabel]
+ * @param {{ musicStructures?: MusicStructuresConfig | null }} [extras]
  * @returns {string}
  */
-export function renderSplitParameterFields(primary, advanced, values, locale = 'en', advancedLabel = 'More options') {
-    const primaryHtml = primary.map((def) => renderParameterField(def, values[def.id], locale)).join('');
+export function renderSplitParameterFields(
+    primary,
+    advanced,
+    values,
+    locale = 'en',
+    advancedLabel = 'More options',
+    extras = {},
+) {
+    const fieldExtras = { ...extras, genre: String(values.genre ?? 'pop') };
+    const primaryHtml = primary.map((def) => renderParameterField(def, values[def.id], locale, fieldExtras)).join('');
     if (advanced.length === 0) return primaryHtml;
 
-    const advancedHtml = advanced.map((def) => renderParameterField(def, values[def.id], locale)).join('');
+    const advancedHtml = advanced.map((def) => renderParameterField(def, values[def.id], locale, fieldExtras)).join('');
     return `${primaryHtml}
         <details class="prompt-studio__advanced-fields">
             <summary class="prompt-studio__advanced-summary">${escapeHtml(advancedLabel)}</summary>
@@ -272,6 +332,23 @@ export function createDefaultParameterValues(parameters, existing = {}) {
 }
 
 /**
+ * Append a chip value to a comma-separated chips input.
+ * @param {HTMLInputElement} input
+ * @param {string} chip
+ */
+export function addChipValue(input, chip) {
+    const next = String(chip || '').trim();
+    if (!next) return;
+    const current = input.value
+        .split(',')
+        .map((v) => v.trim())
+        .filter(Boolean);
+    if (current.map((v) => v.toLowerCase()).includes(next.toLowerCase())) return;
+    current.push(next);
+    input.value = current.join(', ');
+}
+
+/**
  * @param {HTMLElement} container
  * @param {PromptParameterDef[]} parameters
  * @param {(values: Record<string, unknown>) => void} onChange
@@ -289,6 +366,17 @@ export function bindParameterFields(container, parameters, onChange) {
     });
     container.querySelectorAll('.prompt-studio__multiselect input').forEach((el) => {
         el.addEventListener('change', handler);
+    });
+    container.querySelectorAll('.prompt-studio__chip-suggestion').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const wrap = btn.closest('.prompt-studio__chips-wrap');
+            const input = /** @type {HTMLInputElement | null} */ (wrap?.querySelector('input.ps-param-input'));
+            const chip = btn.getAttribute('data-chip-add') || '';
+            if (!input || !chip) return;
+            addChipValue(input, chip);
+            handler();
+        });
     });
 }
 

@@ -145,15 +145,74 @@
       "label": { "de": "Genre", "en": "Genre" },
       "options": [
         { "value": "pop", "label": { "de": "Pop", "en": "Pop" } },
+        { "value": "k-pop", "label": { "de": "K-Pop", "en": "K-Pop" } },
         { "value": "rock", "label": { "de": "Rock", "en": "Rock" } },
-        { "value": "electronic", "label": { "de": "Electronic", "en": "Electronic" } },
+        { "value": "indie", "label": { "de": "Indie", "en": "Indie" } },
+        { "value": "punk", "label": { "de": "Punk", "en": "Punk" } },
+        { "value": "metal", "label": { "de": "Metal", "en": "Metal" } },
         { "value": "hip-hop", "label": { "de": "Hip-Hop", "en": "Hip-Hop" } },
-        { "value": "jazz", "label": { "de": "Jazz", "en": "Jazz" } },
-        { "value": "classical", "label": { "de": "Klassik", "en": "Classical" } },
+        { "value": "boom-bap", "label": { "de": "Boom Bap", "en": "Boom Bap" } },
+        { "value": "trap", "label": { "de": "Trap", "en": "Trap" } },
+        { "value": "drill", "label": { "de": "Drill", "en": "Drill" } },
+        { "value": "rnb", "label": { "de": "R&B", "en": "R&B" } },
+        { "value": "soul", "label": { "de": "Soul", "en": "Soul" } },
+        { "value": "funk", "label": { "de": "Funk", "en": "Funk" } },
+        { "value": "gospel", "label": { "de": "Gospel", "en": "Gospel" } },
+        { "value": "reggae", "label": { "de": "Reggae", "en": "Reggae" } },
+        { "value": "dancehall", "label": { "de": "Dancehall", "en": "Dancehall" } },
+        { "value": "afrobeats", "label": { "de": "Afrobeats", "en": "Afrobeats" } },
+        { "value": "electronic", "label": { "de": "Electronic", "en": "Electronic" } },
+        { "value": "house", "label": { "de": "House", "en": "House" } },
+        { "value": "techno", "label": { "de": "Techno", "en": "Techno" } },
+        { "value": "drum-and-bass", "label": { "de": "Drum & Bass", "en": "Drum & Bass" } },
+        { "value": "lo-fi", "label": { "de": "Lo-Fi", "en": "Lo-Fi" } },
         { "value": "ambient", "label": { "de": "Ambient", "en": "Ambient" } },
-        { "value": "cinematic", "label": { "de": "Cinematic", "en": "Cinematic" } }
+        { "value": "jazz", "label": { "de": "Jazz", "en": "Jazz" } },
+        { "value": "blues", "label": { "de": "Blues", "en": "Blues" } },
+        { "value": "latin", "label": { "de": "Latin", "en": "Latin" } },
+        { "value": "salsa", "label": { "de": "Salsa", "en": "Salsa" } },
+        { "value": "bossa-nova", "label": { "de": "Bossa Nova", "en": "Bossa Nova" } },
+        { "value": "country", "label": { "de": "Country", "en": "Country" } },
+        { "value": "folk", "label": { "de": "Folk", "en": "Folk" } },
+        { "value": "classical", "label": { "de": "Klassik", "en": "Classical" } },
+        { "value": "cinematic", "label": { "de": "Cinematic", "en": "Cinematic" } },
+        { "value": "epic", "label": { "de": "Epic", "en": "Epic" } }
       ],
       "default": "pop"
+    },
+    {
+      "id": "genreSecondary",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Hybrid-Genres", "en": "Hybrid genres" },
+      "placeholder": { "de": "beliebig viele: epic, soul, jazz…", "en": "as many as you like: epic, soul, jazz…" },
+      "help": {
+        "de": "Beliebig viele Zusatz-Genres für Hybride (z. B. Cinematic + Epic + Orchestral, oder Hip-Hop + Soul + Jazz).",
+        "en": "Add as many hybrid genres as you like (e.g. Cinematic + Epic + Orchestral, or Hip-Hop + Soul + Jazz)."
+      },
+      "suggestions": [
+        { "value": "cinematic", "label": { "de": "Cinematic", "en": "Cinematic" } },
+        { "value": "epic", "label": { "de": "Epic", "en": "Epic" } },
+        { "value": "orchestral", "label": { "de": "Orchestral", "en": "Orchestral" } },
+        { "value": "ambient", "label": { "de": "Ambient", "en": "Ambient" } },
+        { "value": "soul", "label": { "de": "Soul", "en": "Soul" } },
+        { "value": "jazz", "label": { "de": "Jazz", "en": "Jazz" } },
+        { "value": "funk", "label": { "de": "Funk", "en": "Funk" } },
+        { "value": "rnb", "label": { "de": "R&B", "en": "R&B" } },
+        { "value": "electronic", "label": { "de": "Electronic", "en": "Electronic" } },
+        { "value": "trap", "label": { "de": "Trap", "en": "Trap" } },
+        { "value": "gospel", "label": { "de": "Gospel", "en": "Gospel" } },
+        { "value": "indie", "label": { "de": "Indie", "en": "Indie" } },
+        { "value": "lo-fi", "label": { "de": "Lo-Fi", "en": "Lo-Fi" } },
+        { "value": "afrobeats", "label": { "de": "Afrobeats", "en": "Afrobeats" } },
+        { "value": "latin", "label": { "de": "Latin", "en": "Latin" } },
+        { "value": "rock", "label": { "de": "Rock", "en": "Rock" } },
+        { "value": "metal", "label": { "de": "Metal", "en": "Metal" } },
+        { "value": "pop", "label": { "de": "Pop", "en": "Pop" } },
+        { "value": "hip-hop", "label": { "de": "Hip-Hop", "en": "Hip-Hop" } },
+        { "value": "house", "label": { "de": "House", "en": "House" } }
+      ],
+      "default": []
     },
     {
       "id": "bpm",
@@ -182,7 +241,11 @@
         { "value": "melancholic", "label": { "de": "Melancholisch", "en": "Melancholic" } },
         { "value": "uplifting", "label": { "de": "Erhebend", "en": "Uplifting" } },
         { "value": "dark", "label": { "de": "Düster", "en": "Dark" } },
-        { "value": "romantic", "label": { "de": "Romantisch", "en": "Romantic" } }
+        { "value": "romantic", "label": { "de": "Romantisch", "en": "Romantic" } },
+        { "value": "epic", "label": { "de": "Episch", "en": "Epic" } },
+        { "value": "cinematic", "label": { "de": "Cinematic", "en": "Cinematic" } },
+        { "value": "heroic", "label": { "de": "Heroisch", "en": "Heroic" } },
+        { "value": "dramatic", "label": { "de": "Dramatisch", "en": "Dramatic" } }
       ]
     },
     {
@@ -213,6 +276,83 @@
         { "value": "instrumental", "label": { "de": "Instrumental", "en": "Instrumental" } }
       ],
       "default": "male"
+    },
+    {
+      "id": "vocalTimbre",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Stimmfarbe", "en": "Vocal timbre" },
+      "placeholder": { "de": "warm, bright…", "en": "warm, bright…" },
+      "help": {
+        "de": "Suno-freundlich: Stimmcharakter ohne Künstler-Namen.",
+        "en": "Suno-friendly: vocal character without artist names."
+      },
+      "suggestions": [
+        { "value": "warm", "label": { "de": "warm", "en": "warm" } },
+        { "value": "bright", "label": { "de": "hell", "en": "bright" } },
+        { "value": "airy", "label": { "de": "luftig", "en": "airy" } },
+        { "value": "raspy", "label": { "de": "rau", "en": "raspy" } },
+        { "value": "smoky", "label": { "de": "rauchig", "en": "smoky" } },
+        { "value": "soft", "label": { "de": "weich", "en": "soft" } },
+        { "value": "powerful", "label": { "de": "kräftig", "en": "powerful" } },
+        { "value": "intimate", "label": { "de": "intim", "en": "intimate" } }
+      ],
+      "default": []
+    },
+    {
+      "id": "vocalEffects",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Vocal-Effekte", "en": "Vocal effects" },
+      "placeholder": { "de": "reverb, delay…", "en": "reverb, delay…" },
+      "suggestions": [
+        { "value": "reverb", "label": { "de": "Reverb", "en": "reverb" } },
+        { "value": "delay", "label": { "de": "Delay", "en": "delay" } },
+        { "value": "autotune-light", "label": { "de": "Autotune light", "en": "autotune-light" } },
+        { "value": "harmony doubles", "label": { "de": "Harmony doubles", "en": "harmony doubles" } },
+        { "value": "whisper", "label": { "de": "Whisper", "en": "whisper" } },
+        { "value": "call-and-response", "label": { "de": "Call-and-response", "en": "call-and-response" } }
+      ],
+      "default": []
+    },
+    {
+      "id": "productionEffects",
+      "type": "chips",
+      "group": "music",
+      "label": { "de": "Produktionseffekte", "en": "Production effects" },
+      "placeholder": { "de": "sidechain, riser…", "en": "sidechain, riser…" },
+      "suggestions": [
+        { "value": "sidechain", "label": { "de": "Sidechain", "en": "sidechain" } },
+        { "value": "vinyl crackle", "label": { "de": "Vinyl crackle", "en": "vinyl crackle" } },
+        { "value": "tape saturation", "label": { "de": "Tape saturation", "en": "tape saturation" } },
+        { "value": "filter sweep", "label": { "de": "Filter sweep", "en": "filter sweep" } },
+        { "value": "riser/build-up FX", "label": { "de": "Riser / Build-up FX", "en": "riser/build-up FX" } },
+        { "value": "drop impact", "label": { "de": "Drop impact", "en": "drop impact" } }
+      ],
+      "default": []
+    },
+    {
+      "id": "songStructure",
+      "type": "structure-editor",
+      "group": "music",
+      "label": { "de": "Songstruktur", "en": "Song structure" },
+      "help": {
+        "de": "Abschnitte und Bars für den Prompt. Preset hängt vom Genre ab.",
+        "en": "Sections and bars for the prompt. Preset depends on genre."
+      },
+      "default": ""
+    },
+    {
+      "id": "lyricsDraft",
+      "type": "lyrics-meter",
+      "group": "music",
+      "includeInPrompt": false,
+      "label": { "de": "Lyrics-Entwurf (Zähler)", "en": "Lyrics draft (meter)" },
+      "help": {
+        "de": "Nur lokal: Silben- und Bars-Schätzung. Wird nicht in den Copy-Prompt übernommen.",
+        "en": "Local only: syllable and bar estimate. Never included in the copied prompt."
+      },
+      "default": ""
     },
     {
       "id": "motiv",
