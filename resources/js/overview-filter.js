@@ -625,6 +625,74 @@ export function initOverviewFilters() {
         sortSeries();
     };
 
+    /**
+     * @param {HTMLSelectElement | null} select
+     * @param {string} value
+     */
+    const selectHasOption = (select, value) => {
+        if (!select) {
+            return false;
+        }
+
+        return Array.from(select.options).some((option) => option.value === value);
+    };
+
+    const readFiltersFromUrl = () => {
+        const params = new URLSearchParams(window.location.search);
+        const vendor = params.get('vendor');
+        const product = params.get('product');
+        const query = params.get('q') ?? params.get('search');
+
+        if (vendor && selectHasOption(vendorSelect, vendor) && vendorSelect) {
+            vendorSelect.value = vendor;
+        }
+
+        if (product && selectHasOption(productSelect, product) && productSelect) {
+            productSelect.value = product;
+        }
+
+        if (query !== null && searchInput) {
+            searchInput.value = query;
+        }
+    };
+
+    const syncFiltersToUrl = () => {
+        const url = new URL(window.location.href);
+
+        /**
+         * @param {string} key
+         * @param {string} value
+         * @param {string[]} emptyValues
+         */
+        const setOrDelete = (key, value, emptyValues = ['', 'all']) => {
+            if (emptyValues.includes(value)) {
+                url.searchParams.delete(key);
+            } else {
+                url.searchParams.set(key, value);
+            }
+        };
+
+        if (vendorSelect) {
+            setOrDelete('vendor', vendorSelect.value);
+        }
+
+        if (productSelect) {
+            setOrDelete('product', productSelect.value);
+        }
+
+        if (searchInput) {
+            setOrDelete('q', searchInput.value.trim(), ['']);
+            url.searchParams.delete('search');
+        }
+
+        const next = `${url.pathname}${url.search}${url.hash}`;
+        const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+        if (next !== current) {
+            window.history.replaceState(null, '', next);
+        }
+    };
+
     const apply = () => {
         const sortSelect = root.querySelector('[data-overview-sort]');
 
@@ -648,6 +716,7 @@ export function initOverviewFilters() {
                 emptyEl.hidden = true;
             }
             applySeries();
+            syncFiltersToUrl();
             return;
         }
 
@@ -655,6 +724,7 @@ export function initOverviewFilters() {
             seriesEmptyEl.hidden = true;
         }
         applyStories();
+        syncFiltersToUrl();
     };
 
     const resetFilters = () => {
@@ -814,6 +884,7 @@ export function initOverviewFilters() {
         setTagMatchMode(tagModeRoot, tagMatchMode);
     }
 
+    readFiltersFromUrl();
     apply();
 }
 

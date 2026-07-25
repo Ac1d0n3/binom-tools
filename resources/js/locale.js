@@ -777,6 +777,10 @@ const shellLabels = {
         'suppliers.skipTitle': 'Default skippen',
         'suppliers.skipTablesTitle': 'Skip-Tabellen / Objekte',
         'suppliers.skipFieldsTitle': 'Skip-Felder / Inhalte',
+        'suppliers.resourcesCardTitle': 'Vendor-Hilfe unter Ressourcen',
+        'suppliers.resourcesCardLead':
+            'Offizielle Docs, Governance und Lernpfade für diese Quelle.',
+        'suppliers.resourcesCardCta': 'Ressourcen öffnen →',
         'suppliers.resourcesLink': 'Vendor-Help-Links unter Ressourcen →',
         'suppliers.prev': 'Zurück',
         'suppliers.next': 'Weiter',
@@ -1639,6 +1643,10 @@ const shellLabels = {
         'suppliers.skipTitle': 'Skip by default',
         'suppliers.skipTablesTitle': 'Skip tables / objects',
         'suppliers.skipFieldsTitle': 'Skip fields / content',
+        'suppliers.resourcesCardTitle': 'Vendor help on Resources',
+        'suppliers.resourcesCardLead':
+            'Official docs, governance and learning paths for this source.',
+        'suppliers.resourcesCardCta': 'Open Resources →',
         'suppliers.resourcesLink': 'Vendor help links on Resources →',
         'suppliers.prev': 'Previous',
         'suppliers.next': 'Next',

@@ -49,8 +49,10 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertDontSee('supplier-tool-chip', false);
         $response->assertSee('supplier-link-list', false);
         $response->assertSee('data-i18n="suppliers.categorySystem"', false);
-        $response->assertSee('data-i18n="suppliers.toolsBlockTitle"', false);
-        $response->assertSee('data-i18n="suppliers.playbooksBlockTitle"', false);
+        $response->assertSee('supplier-resources-card', false);
+        $response->assertSee('vendor=salesforce', false);
+        $response->assertSee('data-i18n="suppliers.resourcesCardTitle"', false);
+        $response->assertDontSee('supplier-detail__resources', false);
         $response->assertSee('Revenue (Won)');
         $response->assertSee('ARR');
         $response->assertSee('SUM(amount) WHERE is_won = true', false);
@@ -66,6 +68,17 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('data-i18n="suppliers.sectionTables"', false);
         $response->assertSee('data-i18n="suppliers.sectionSkip"', false);
         $response->assertSee('data-i18n="suppliers.skipTablesTitle"', false);
+        $response->assertSee('data-i18n="suppliers.toolsBlockTitle"', false);
+        $response->assertSee('data-i18n="suppliers.playbooksBlockTitle"', false);
+    }
+
+    public function test_suppliers_show_resources_card_falls_back_to_search_for_ga4(): void
+    {
+        $response = $this->get('/suppliers/ga4');
+
+        $response->assertOk();
+        $response->assertSee('supplier-resources-card', false);
+        $response->assertSee('q=GA4', false);
     }
 
     public function test_suppliers_show_returns_404_for_unknown_slug(): void

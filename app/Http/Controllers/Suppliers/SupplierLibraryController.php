@@ -73,6 +73,7 @@ class SupplierLibraryController extends Controller
             'domains' => $domains,
             'relatedPlaybooks' => $relatedPlaybooks,
             'toolLinks' => $toolLinks,
+            'resourcesUrl' => $this->resourcesDeepLink($slug, $product),
             'prev' => $neighbors['prev'],
             'next' => $neighbors['next'],
         ]);
@@ -215,5 +216,29 @@ class SupplierLibraryController extends Controller
             'prev' => $mapNeighbor($ids[$index - 1] ?? null),
             'next' => $mapNeighbor($ids[$index + 1] ?? null),
         ];
+    }
+
+    /**
+     * Deep-link into Vendor Resources with vendor filter or search fallback.
+     *
+     * @param  array<string, mixed>  $product
+     */
+    private function resourcesDeepLink(string $slug, array $product): string
+    {
+        /** @var array<string, mixed> $vendors */
+        $vendors = config('vendor-resources.vendors', []);
+
+        if (isset($vendors[$slug])) {
+            return locale_route('resources.index', ['vendor' => $slug]);
+        }
+
+        if ($slug === 'ga4') {
+            return locale_route('resources.index', ['q' => 'GA4']);
+        }
+
+        $label = is_array($product['label'] ?? null) ? $product['label'] : [];
+        $query = (string) ($label['en'] ?? $slug);
+
+        return locale_route('resources.index', ['q' => $query]);
     }
 }

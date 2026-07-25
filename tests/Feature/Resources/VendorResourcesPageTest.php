@@ -17,6 +17,8 @@ class VendorResourcesPageTest extends TestCase
         $response->assertSee('data-overview-model', false);
         $response->assertSee('data-overview-residency', false);
         $response->assertSee('data-overview-vendor', false);
+        $response->assertSee('value="salesforce"', false);
+        $response->assertSee('value="hubspot"', false);
         $response->assertSee('data-overview-stack', false);
         $response->assertSee('data-overview-stack-banner', false);
         $response->assertSee('data-overview-item', false);

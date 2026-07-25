@@ -392,11 +392,6 @@
                             @endforeach
                         </ul>
                     @endif
-                    <p class="supplier-detail__resources">
-                        <a href="{{ locale_route('resources.index') }}" data-i18n="suppliers.resourcesLink">
-                            Vendor help links on Resources →
-                        </a>
-                    </p>
                 </div>
 
                 <div class="supplier-detail__block">
@@ -419,6 +414,18 @@
                         </ul>
                     @endif
                 </div>
+
+                <a class="supplier-resources-card" href="{{ $resourcesUrl }}">
+                    <span class="supplier-resources-card__body">
+                        <span class="supplier-resources-card__title" data-i18n="suppliers.resourcesCardTitle">
+                            Vendor help on Resources
+                        </span>
+                        <span class="supplier-resources-card__lead" data-i18n="suppliers.resourcesCardLead">
+                            Official docs, governance and learning paths for this source.
+                        </span>
+                    </span>
+                    <span class="supplier-resources-card__cta" data-i18n="suppliers.resourcesCardCta">Open Resources →</span>
+                </a>
             </section>
         </div>
 
