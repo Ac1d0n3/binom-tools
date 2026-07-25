@@ -13,6 +13,8 @@ return [
         'commerce' => ['de' => 'Commerce', 'en' => 'Commerce'],
         'erp' => ['de' => 'ERP', 'en' => 'ERP'],
         'hcm' => ['de' => 'HCM', 'en' => 'HCM'],
+        'collab' => ['de' => 'Collab', 'en' => 'Collab'],
+        'finance' => ['de' => 'Finance', 'en' => 'Finance'],
         'analytics' => ['de' => 'Analytics', 'en' => 'Analytics'],
     ],
 

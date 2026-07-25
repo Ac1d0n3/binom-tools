@@ -163,7 +163,7 @@ $crmMeasures = static function (array $fieldMaps): array {
     return $out;
 };
 
-return array_merge([
+$products = array_merge([
     [
         'id' => 'salesforce',
         'domain' => 'crm',
@@ -1092,4 +1092,65 @@ return array_merge([
     $crmTools,
     $relatedPlaybooks,
     $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave2.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave3.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
 ));
+
+$governance = array_merge(
+    require __DIR__.'/suppliers-governance.php',
+    require __DIR__.'/suppliers-governance-wave2.php',
+    require __DIR__.'/suppliers-governance-wave3.php',
+);
+$quality = array_merge(
+    require __DIR__.'/suppliers-quality.php',
+    require __DIR__.'/suppliers-quality-wave2.php',
+    require __DIR__.'/suppliers-quality-wave3.php',
+);
+$sql = array_merge(
+    require __DIR__.'/suppliers-sql.php',
+    require __DIR__.'/suppliers-sql-wave2.php',
+    require __DIR__.'/suppliers-sql-wave3.php',
+);
+
+return array_map(static function (array $product) use ($governance, $quality, $sql): array {
+    $id = (string) ($product['id'] ?? '');
+    if ($id === '') {
+        return $product;
+    }
+
+    if (isset($governance[$id]) && is_array($governance[$id])) {
+        $product = array_merge($product, $governance[$id]);
+    }
+
+    if (isset($quality[$id]) && is_array($quality[$id])) {
+        $overlay = $quality[$id];
+        $appendTools = is_array($overlay['tools'] ?? null) ? $overlay['tools'] : [];
+        unset($overlay['tools']);
+        $product = array_merge($product, $overlay);
+
+        $tools = is_array($product['tools'] ?? null) ? $product['tools'] : [];
+        foreach ($appendTools as $toolId) {
+            if (! is_string($toolId) || $toolId === '') {
+                continue;
+            }
+            if (! in_array($toolId, $tools, true)) {
+                $tools[] = $toolId;
+            }
+        }
+        $product['tools'] = $tools;
+    }
+
+    if (isset($sql[$id]) && is_array($sql[$id])) {
+        $product = array_merge($product, $sql[$id]);
+    }
+
+    return $product;
+}, $products);

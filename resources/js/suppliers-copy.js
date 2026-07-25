@@ -15,9 +15,11 @@ export function initSupplierLibraryCopy() {
             const source =
                 prev instanceof HTMLElement && prev.hasAttribute('data-supplier-copy-source')
                     ? prev
-                    : button.closest('td, .supplier-measure-card__formula-row')?.querySelector(
-                          '[data-supplier-copy-source]',
-                      );
+                    : button
+                          .closest(
+                              'td, .supplier-measure-card__formula-row, .supplier-sql-example__code-row',
+                          )
+                          ?.querySelector('[data-supplier-copy-source]');
 
             const text = (source?.textContent || '').trim();
             if (!text || !navigator.clipboard?.writeText) {
