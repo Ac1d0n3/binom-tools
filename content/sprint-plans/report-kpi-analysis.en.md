@@ -121,6 +121,15 @@ tasks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
         description: Use the tool to capture KPI name, formula, grain, filters, owner, and open definition questions.
+      - label: Power BI DAX Generator
+        href: /tools/powerbi-dax-generator
+        description: Derive DAX measures from a base measure and dimension list once the KPI contract is clear.
+      - label: Qlik Set Analysis Generator
+        href: /tools/qlik-set-analysis-generator
+        description: Derive Qlik child measures from a base measure and dimension list.
+      - label: Tableau Calculation Generator
+        href: /tools/tableau-calculation-generator
+        description: Derive Tableau calculated fields / LOD expressions from a base measure and dimensions.
       - label: Tableau - Visualize Key Progress Indicators
         href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
         description: Use the examples to design understandable KPI display and thresholds.
@@ -133,8 +142,6 @@ tasks:
     helpText: |
       Document numerator, denominator, filters, exclusions, time zone, rounding, and validity scope.
       Write definitions so business and data teams can reproduce the same value.
-      Name known gray areas instead of hiding them, for example cancellations, test data, backdating, or manual corrections.
-      A definition is good enough only when someone can test and accept it.
 
 deliverables:
   - id: w2-kpi-catalog

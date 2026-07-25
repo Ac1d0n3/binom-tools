@@ -38,6 +38,16 @@
                         card-id="hub-resources"
                     />
                     <x-tools.card
+                        :href="locale_route('suppliers.index')"
+                        title="Suppliers"
+                        description="Core fields, dimensions, PII/DSDR and standard measure templates per source — Salesforce, HubSpot, GA4."
+                        title-key="home.hub.suppliers.title"
+                        description-key="home.hub.suppliers.description"
+                        icon="fa-database"
+                        accent="primary"
+                        card-id="hub-suppliers"
+                    />
+                    <x-tools.card
                         :href="locale_route('compliance.index')"
                         title="Compliance"
                         description="Frameworks and regulations for data, privacy, security and AI — plus a consultant certification roadmap."

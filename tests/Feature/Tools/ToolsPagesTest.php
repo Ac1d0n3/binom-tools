@@ -566,10 +566,12 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-i18n="home.hubsTitle"', false);
         $response->assertSee('data-i18n="home.hub.stories.title"', false);
         $response->assertSee('data-i18n="home.hub.resources.title"', false);
+        $response->assertSee('data-i18n="home.hub.suppliers.title"', false);
         $response->assertSee('data-i18n="home.hub.compliance.title"', false);
         $response->assertSee('data-i18n="home.hub.sprintPlanner.title"', false);
         $response->assertSee('data-i18n="home.hub.tools.title"', false);
         $response->assertSee(route('resources.index'), false);
+        $response->assertSee(route('suppliers.index'), false);
         $response->assertSee(route('compliance.index'), false);
         $response->assertSee(route('sprint-planner.index'), false);
     }

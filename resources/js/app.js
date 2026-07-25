@@ -8,6 +8,7 @@ import { initThemeControls } from './theme';
 import { initExternalLinks } from './external-links';
 import { initCookieConsent } from './cookie-consent';
 import { initPlaybookCardActions } from './playbooks/card-actions';
+import { initSupplierLibraryCopy, initSupplierLibraryTabs } from './suppliers-copy';
 
 try {
     const raw = document.documentElement.dataset.accountsReadSlugs;
@@ -28,6 +29,8 @@ initOverviewFilters();
 initExternalLinks();
 initCookieConsent();
 initPlaybookCardActions();
+initSupplierLibraryCopy();
+initSupplierLibraryTabs();
 
 if (document.querySelector('[data-playbook-offline-index], [data-playbook-card-offline], [data-playbook-series-offline]')) {
     void import('./playbooks/offline-ui')

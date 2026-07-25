@@ -31,6 +31,7 @@
     $toolGroups = \App\Support\ToolsNav::groupByProduct($navItems);
     $routeBase = Locale::routeBaseName(request()->route()?->getName());
     $resourcesActive = str_starts_with((string) $routeBase, 'resources.');
+    $suppliersActive = str_starts_with((string) $routeBase, 'suppliers.');
     $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
     $sprintPlannerActive = str_starts_with((string) $routeBase, 'sprint-planner.');
     $calendarActive = str_starts_with((string) $routeBase, 'calendar.');
@@ -104,6 +105,15 @@
                     data-i18n="nav.resources"
                 >
                     Resources
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{{ locale_route('suppliers.index') }}"
+                    class="tools-sidenav__link {{ $suppliersActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.suppliers"
+                >
+                    Suppliers
                 </a>
             </li>
             <li>

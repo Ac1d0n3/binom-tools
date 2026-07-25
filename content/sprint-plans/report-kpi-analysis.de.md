@@ -121,6 +121,15 @@ tasks:
       - label: KPI Definition Card
         href: /tools/kpi-definition
         description: Nutze das Tool, um KPI-Name, Formel, Grain, Filter, Owner und offene Definitionen sauber festzuhalten.
+      - label: Power BI DAX Generator
+        href: /tools/powerbi-dax-generator
+        description: Leite DAX-Measures aus Base Measure und Dimensionsliste ab, sobald der KPI-Vertrag klar ist.
+      - label: Qlik Set Analysis Generator
+        href: /tools/qlik-set-analysis-generator
+        description: Leite Qlik Child Measures aus Base Measure und Dimensionsliste ab.
+      - label: Tableau Calculation Generator
+        href: /tools/tableau-calculation-generator
+        description: Leite Tableau Calculated Fields / LOD aus Base Measure und Dimensionen ab.
       - label: Tableau - Visualize Key Progress Indicators
         href: https://help.tableau.com/current/pro/desktop/en-us/kpi.htm
         description: Nutze die Beispiele, um KPI-Darstellung und Schwellenwerte verständlich zu gestalten.
