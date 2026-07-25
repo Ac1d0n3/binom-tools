@@ -40,6 +40,27 @@
                                     $stackProducts = is_array($stack['products'] ?? null)
                                         ? array_values(array_filter($stack['products'], static fn ($id) => is_string($id) && $id !== ''))
                                         : [];
+                                    $stackSlots = [];
+                                    if (is_array($stack['slots'] ?? null)) {
+                                        foreach ($stack['slots'] as $slot) {
+                                            if (! is_array($slot)) {
+                                                continue;
+                                            }
+                                            $slotProducts = is_array($slot['products'] ?? null)
+                                                ? array_values(array_filter($slot['products'], static fn ($id) => is_string($id) && $id !== ''))
+                                                : [];
+                                            if ($slotProducts === []) {
+                                                continue;
+                                            }
+                                            $roleEn = is_string($slot['role']['en'] ?? null) ? $slot['role']['en'] : '';
+                                            $roleDe = is_string($slot['role']['de'] ?? null) ? $slot['role']['de'] : $roleEn;
+                                            $stackSlots[] = [
+                                                'role' => ['de' => $roleDe, 'en' => $roleEn],
+                                                'products' => $slotProducts,
+                                                'chooseOne' => (bool) ($slot['chooseOne'] ?? false),
+                                            ];
+                                        }
+                                    }
                                 @endphp
                                 <option
                                     value="{{ $stackId }}"
@@ -48,6 +69,7 @@
                                     data-description-de="{{ $stackDescDe }}"
                                     data-description-en="{{ $stackDescEn }}"
                                     data-products="{{ implode(',', $stackProducts) }}"
+                                    data-slots="{{ json_encode($stackSlots, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) }}"
                                 >{{ $stackLabelEn }}</option>
                             @endforeach
                         </select>
@@ -126,9 +148,11 @@
 
         <div class="tools-overview-scroll vendor-resources-scroll">
             <div class="vendor-resources-stack-banner" data-overview-stack-banner hidden>
-                <p class="vendor-resources-stack-banner__eyebrow" data-i18n="resources.stackBannerEyebrow">Suggested stack</p>
-                <h2 class="vendor-resources-stack-banner__title" data-overview-stack-banner-title></h2>
-                <p class="vendor-resources-stack-banner__desc" data-overview-stack-banner-desc></p>
+                <div class="vendor-resources-stack-banner__hero">
+                    <p class="vendor-resources-stack-banner__eyebrow" data-i18n="resources.stackBannerEyebrow">Suggested stack</p>
+                    <h2 class="vendor-resources-stack-banner__title" data-overview-stack-banner-title></h2>
+                    <p class="vendor-resources-stack-banner__desc" data-overview-stack-banner-desc></p>
+                </div>
                 <ul class="vendor-resources-stack-banner__chips" data-overview-stack-banner-chips aria-label="Stack products"></ul>
             </div>
 

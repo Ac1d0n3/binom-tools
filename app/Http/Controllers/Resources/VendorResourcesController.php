@@ -18,7 +18,7 @@ class VendorResourcesController extends Controller
         /** @var array<string, array{de: string, en: string}> $vendors */
         $vendors = config('vendor-resources.vendors', []);
 
-        /** @var array<string, array{label: array{de: string, en: string}, description: array{de: string, en: string}, products: list<string>}> $stacks */
+        /** @var array<string, array{label: array{de: string, en: string}, description: array{de: string, en: string}, products: list<string>, slots?: list<array{role: array{de: string, en: string}, products: list<string>, chooseOne?: bool}>}> $stacks */
         $stacks = config('vendor-resources.stacks', []);
 
         /** @var list<array<string, mixed>> $products */

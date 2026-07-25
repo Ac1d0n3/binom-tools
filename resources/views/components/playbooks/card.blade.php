@@ -118,8 +118,6 @@
                     <span>{{ $seriesBadgeEn }}</span>
                 </span>
             @endif
-
-            <x-playbooks.product-marks :products="$products" />
         </div>
 
         <div class="tools-card__story-body">
@@ -150,58 +148,62 @@
     </a>
 
     <div class="tools-card__story-footer">
-        <span class="tools-card__story-meta-row">
-            <span class="tools-card__story-stats">
-                <span class="tools-card__story-stat" title="Views">
-                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                    <span data-playbook-card-views>{{ number_format($views) }}</span>
+        <x-playbooks.product-marks :products="$products" />
+
+        <div class="tools-card__story-footer-controls">
+            <span class="tools-card__story-meta-row">
+                <span class="tools-card__story-stats">
+                    <span class="tools-card__story-stat" title="Views">
+                        <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                        <span data-playbook-card-views>{{ number_format($views) }}</span>
+                    </span>
+                    <button
+                        type="button"
+                        @class([
+                            'tools-card__story-stat',
+                            'tools-card__story-like',
+                            'tools-card__story-like--active' => $liked,
+                        ])
+                        data-playbook-card-like
+                        aria-pressed="{{ $liked ? 'true' : 'false' }}"
+                        data-i18n-aria="playbooks.like"
+                        aria-label="Like"
+                        title="Like"
+                    >
+                        <i @class(['fa-heart', 'fa-solid' => $liked, 'fa-regular' => ! $liked]) aria-hidden="true" data-like-icon></i>
+                        <span data-playbook-card-likes>{{ number_format($likes) }}</span>
+                    </button>
                 </span>
-                <button
-                    type="button"
-                    @class([
-                        'tools-card__story-stat',
-                        'tools-card__story-like',
-                        'tools-card__story-like--active' => $liked,
-                    ])
-                    data-playbook-card-like
-                    aria-pressed="{{ $liked ? 'true' : 'false' }}"
-                    data-i18n-aria="playbooks.like"
-                    aria-label="Like"
-                    title="Like"
-                >
-                    <i @class(['fa-heart', 'fa-solid' => $liked, 'fa-regular' => ! $liked]) aria-hidden="true" data-like-icon></i>
-                    <span data-playbook-card-likes>{{ number_format($likes) }}</span>
-                </button>
+
+                <span class="tools-card__offline-actions">
+                    <span
+                        class="tools-card__offline-badge"
+                        data-playbook-offline-badge
+                        hidden
+                        data-i18n="playbooks.offline.badge"
+                    >Offline</span>
+                    <button
+                        type="button"
+                        class="tools-card__offline-btn"
+                        data-playbook-card-offline
+                        data-i18n-aria="playbooks.offline.save"
+                        aria-label="Save offline"
+                        title="Save offline"
+                    >
+                        <i class="fa-solid fa-download" data-offline-icon="save" aria-hidden="true"></i>
+                        <i class="fa-solid fa-trash-can" data-offline-icon="remove" hidden aria-hidden="true"></i>
+                    </button>
+                </span>
             </span>
 
-            <span class="tools-card__offline-actions">
-                <span
-                    class="tools-card__offline-badge"
-                    data-playbook-offline-badge
-                    hidden
-                    data-i18n="playbooks.offline.badge"
-                >Offline</span>
-                <button
-                    type="button"
-                    class="tools-card__offline-btn"
-                    data-playbook-card-offline
-                    data-i18n-aria="playbooks.offline.save"
-                    aria-label="Save offline"
-                    title="Save offline"
-                >
-                    <i class="fa-solid fa-download" data-offline-icon="save" aria-hidden="true"></i>
-                    <i class="fa-solid fa-trash-can" data-offline-icon="remove" hidden aria-hidden="true"></i>
-                </button>
-            </span>
-        </span>
-
-        <a
-            href="{{ locale_route('playbooks.show', ['slug' => $item['slug']]) }}"
-            class="tools-card__arrow-link"
-            aria-label="{{ $titleEn }}"
-            data-i18n-aria="playbooks.openStory"
-        >
-            <i class="fa-solid fa-arrow-right tools-card__arrow" aria-hidden="true"></i>
-        </a>
+            <a
+                href="{{ locale_route('playbooks.show', ['slug' => $item['slug']]) }}"
+                class="tools-card__arrow-link"
+                aria-label="{{ $titleEn }}"
+                data-i18n-aria="playbooks.openStory"
+            >
+                <i class="fa-solid fa-arrow-right tools-card__arrow" aria-hidden="true"></i>
+            </a>
+        </div>
     </div>
 </article>

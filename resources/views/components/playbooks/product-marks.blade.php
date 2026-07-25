@@ -11,7 +11,7 @@
 @endphp
 
 @if (count($products) > 0)
-    <div {{ $attributes->class(['tools-card__purpose tools-card__purpose--story-products']) }} aria-label="Products">
+    <div {{ $attributes->class(['tools-card__story-products']) }} aria-label="Products">
         <span class="tools-card__platform-marks">
             @foreach ($products as $productId)
                 @php

@@ -223,6 +223,7 @@ export function initOverviewFilters() {
             }
             if (stackBannerChips instanceof HTMLElement) {
                 stackBannerChips.replaceChildren();
+                stackBannerChips.classList.remove('vendor-resources-stack-banner__chips--slots');
             }
             return;
         }
@@ -245,6 +246,20 @@ export function initOverviewFilters() {
             .map((id) => id.trim())
             .filter(Boolean);
 
+        /** @type {Array<{role?: {de?: string, en?: string}, products?: string[], chooseOne?: boolean}>} */
+        let slots = [];
+        const slotsRaw = option.getAttribute('data-slots') ?? '';
+        if (slotsRaw !== '') {
+            try {
+                const parsed = JSON.parse(slotsRaw);
+                if (Array.isArray(parsed)) {
+                    slots = parsed;
+                }
+            } catch {
+                slots = [];
+            }
+        }
+
         if (stackBannerTitle instanceof HTMLElement) {
             stackBannerTitle.textContent = title;
         }
@@ -254,17 +269,78 @@ export function initOverviewFilters() {
         }
         if (stackBannerChips instanceof HTMLElement) {
             stackBannerChips.replaceChildren();
-            productIds.forEach((productId) => {
+
+            /**
+             * @param {string} productId
+             * @returns {string}
+             */
+            const labelForProduct = (productId) => {
                 const card = root.querySelector(`[data-product-id="${CSS.escape(productId)}"]`);
-                const chipLabel =
+                return (
                     (card instanceof HTMLElement
                         ? card.getAttribute(loc === 'de' ? 'data-sort-title-de' : 'data-sort-title-en')
-                        : null) || productId;
-                const li = document.createElement('li');
-                li.className = 'vendor-resources-stack-banner__chip';
-                li.textContent = chipLabel;
-                stackBannerChips.appendChild(li);
-            });
+                        : null) || productId
+                );
+            };
+
+            if (slots.length > 0) {
+                stackBannerChips.classList.add('vendor-resources-stack-banner__chips--slots');
+                const orLabel = getShellLabel('resources.stackChooseOr', loc);
+
+                slots.forEach((slot) => {
+                    const slotProducts = Array.isArray(slot.products)
+                        ? slot.products.filter((id) => typeof id === 'string' && id !== '')
+                        : [];
+                    if (slotProducts.length === 0) {
+                        return;
+                    }
+
+                    const roleLabel =
+                        (loc === 'de' ? slot.role?.de : slot.role?.en) ||
+                        slot.role?.en ||
+                        slot.role?.de ||
+                        '';
+                    const chooseOne = Boolean(slot.chooseOne);
+
+                    const group = document.createElement('li');
+                    group.className = 'vendor-resources-stack-banner__slot';
+
+                    if (roleLabel !== '') {
+                        const roleEl = document.createElement('span');
+                        roleEl.className = 'vendor-resources-stack-banner__slot-role';
+                        roleEl.textContent = roleLabel;
+                        group.appendChild(roleEl);
+                    }
+
+                    const productsWrap = document.createElement('span');
+                    productsWrap.className = 'vendor-resources-stack-banner__slot-products';
+
+                    slotProducts.forEach((productId, index) => {
+                        if (chooseOne && index > 0) {
+                            const sep = document.createElement('span');
+                            sep.className = 'vendor-resources-stack-banner__or';
+                            sep.textContent = orLabel;
+                            productsWrap.appendChild(sep);
+                        }
+
+                        const chip = document.createElement('span');
+                        chip.className = 'vendor-resources-stack-banner__chip';
+                        chip.textContent = labelForProduct(productId);
+                        productsWrap.appendChild(chip);
+                    });
+
+                    group.appendChild(productsWrap);
+                    stackBannerChips.appendChild(group);
+                });
+            } else {
+                stackBannerChips.classList.remove('vendor-resources-stack-banner__chips--slots');
+                productIds.forEach((productId) => {
+                    const li = document.createElement('li');
+                    li.className = 'vendor-resources-stack-banner__chip';
+                    li.textContent = labelForProduct(productId);
+                    stackBannerChips.appendChild(li);
+                });
+            }
         }
 
         stackBanner.hidden = false;

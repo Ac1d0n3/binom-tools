@@ -52,66 +52,272 @@ return [
         'modern-data-stack' => [
             'label' => ['de' => 'Modern Data Stack', 'en' => 'Modern Data Stack'],
             'description' => [
-                'de' => 'Cloud Warehouse, EL, dbt-Transformation, BI und aktiver Catalog — der klassische Analytics-Stack.',
-                'en' => 'Cloud warehouse, EL, dbt transformation, BI and an active catalog — the classic analytics stack.',
+                'de' => 'Klassischer Analytics-Stack: Snowflake, Fivetran, dbt, Atlan. BI: Tableau oder Power BI (eines wählen).',
+                'en' => 'Classic analytics stack: Snowflake, Fivetran, dbt, Atlan. BI: Tableau or Power BI (pick one).',
             ],
             'products' => ['snowflake', 'fivetran', 'dbt', 'tableau', 'powerbi', 'atlan'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Warehouse', 'en' => 'Warehouse'],
+                    'products' => ['snowflake'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'EL', 'en' => 'EL'],
+                    'products' => ['fivetran'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Transformation', 'en' => 'Transformation'],
+                    'products' => ['dbt'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['tableau', 'powerbi'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'Catalog', 'en' => 'Catalog'],
+                    'products' => ['atlan'],
+                    'chooseOne' => false,
+                ],
+            ],
         ],
         'microsoft-fabric' => [
             'label' => ['de' => 'Microsoft Fabric', 'en' => 'Microsoft Fabric'],
             'description' => [
-                'de' => 'Azure-basiert: Fabric als Analytics-Plattform, Purview für Governance, Power BI und Copilot.',
-                'en' => 'Azure-based: Fabric as analytics platform, Purview for governance, Power BI and Copilot.',
+                'de' => 'Azure-basiert: Fabric als Analytics-Plattform, Purview für Governance, Power BI, Copilot und Planungs-/Whiteboard-Tools.',
+                'en' => 'Azure-based: Fabric as analytics platform, Purview for governance, Power BI, Copilot, and planning/whiteboard tools.',
             ],
             'products' => ['azure', 'fabric', 'pureview', 'powerbi', 'microsoft-copilot', 'microsoft-whiteboard', 'microsoft-planner'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Cloud', 'en' => 'Cloud'],
+                    'products' => ['azure'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Plattform', 'en' => 'Platform'],
+                    'products' => ['fabric'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Governance', 'en' => 'Governance'],
+                    'products' => ['pureview'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['powerbi'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'AI', 'en' => 'AI'],
+                    'products' => ['microsoft-copilot'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Planung', 'en' => 'Planning'],
+                    'products' => ['microsoft-whiteboard', 'microsoft-planner'],
+                    'chooseOne' => false,
+                ],
+            ],
         ],
         'databricks-lakehouse' => [
             'label' => ['de' => 'Databricks Lakehouse', 'en' => 'Databricks Lakehouse'],
             'description' => [
-                'de' => 'Lakehouse mit Databricks, dbt, Catalog/Lineage und BI für Analytics Engineering.',
-                'en' => 'Lakehouse with Databricks, dbt, catalog/lineage and BI for analytics engineering.',
+                'de' => 'Lakehouse mit Databricks, dbt, Atlan und Lineage. BI: Power BI oder Tableau (eines wählen).',
+                'en' => 'Lakehouse with Databricks, dbt, Atlan and lineage. BI: Power BI or Tableau (pick one).',
             ],
             'products' => ['databricks', 'dbt', 'atlan', 'openlineage', 'marquez', 'powerbi', 'tableau'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Plattform', 'en' => 'Platform'],
+                    'products' => ['databricks'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Transformation', 'en' => 'Transformation'],
+                    'products' => ['dbt'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Catalog', 'en' => 'Catalog'],
+                    'products' => ['atlan'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Lineage', 'en' => 'Lineage'],
+                    'products' => ['openlineage', 'marquez'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['powerbi', 'tableau'],
+                    'chooseOne' => true,
+                ],
+            ],
         ],
         'gcp-analytics' => [
             'label' => ['de' => 'GCP Analytics', 'en' => 'GCP Analytics'],
             'description' => [
-                'de' => 'Google Cloud + BigQuery, dbt und Open-Source- oder Cloud-BI.',
-                'en' => 'Google Cloud + BigQuery, dbt, and open-source or cloud BI.',
+                'de' => 'Google Cloud + BigQuery und dbt. BI: Metabase, Superset oder Lightdash (eines wählen).',
+                'en' => 'Google Cloud + BigQuery and dbt. BI: Metabase, Superset or Lightdash (pick one).',
             ],
             'products' => ['gcp', 'bigquery', 'dbt', 'metabase', 'superset', 'lightdash'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Cloud', 'en' => 'Cloud'],
+                    'products' => ['gcp'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Warehouse', 'en' => 'Warehouse'],
+                    'products' => ['bigquery'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Transformation', 'en' => 'Transformation'],
+                    'products' => ['dbt'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['metabase', 'superset', 'lightdash'],
+                    'chooseOne' => true,
+                ],
+            ],
         ],
         'open-source-stack' => [
             'label' => ['de' => 'Open-Source Stack', 'en' => 'Open-source stack'],
             'description' => [
-                'de' => 'Self-hosted / OSS: dbt Core, Metabase/Superset, DataHub/OpenMetadata und OpenLineage.',
-                'en' => 'Self-hosted / OSS: dbt Core, Metabase/Superset, DataHub/OpenMetadata, and OpenLineage.',
+                'de' => 'Self-hosted / OSS mit dbt. Catalog: DataHub oder OpenMetadata; BI: Metabase, Superset oder Lightdash (jeweils eines wählen). Lineage: OpenLineage und Marquez ergänzen sich.',
+                'en' => 'Self-hosted / OSS with dbt. Catalog: DataHub or OpenMetadata; BI: Metabase, Superset or Lightdash (pick one each). Lineage: OpenLineage and Marquez are complementary.',
             ],
             'products' => ['dbt', 'metabase', 'superset', 'lightdash', 'datahub', 'openmetadata', 'openlineage', 'marquez'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Transformation', 'en' => 'Transformation'],
+                    'products' => ['dbt'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['metabase', 'superset', 'lightdash'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'Catalog', 'en' => 'Catalog'],
+                    'products' => ['datahub', 'openmetadata'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'Lineage', 'en' => 'Lineage'],
+                    'products' => ['openlineage', 'marquez'],
+                    'chooseOne' => false,
+                ],
+            ],
         ],
         'eu-sovereign' => [
             'label' => ['de' => 'EU / Sovereign', 'en' => 'EU / sovereign'],
             'description' => [
-                'de' => 'EU-/DE-Hosting und On-Prem-fähige Produkte für DSGVO- und Behördenkontexte.',
-                'en' => 'EU/DE hosting and on-prem-capable products for GDPR and public-sector contexts.',
+                'de' => 'EU-/DE-Hosting und On-Prem-fähige Produkte für DSGVO- und Behördenkontexte. Hosting: Hetzner oder OVH; Catalog: DataHub oder OpenMetadata; BI: Metabase oder Superset (jeweils eines wählen).',
+                'en' => 'EU/DE hosting and on-prem-capable products for GDPR and public-sector contexts. Hosting: Hetzner or OVH; catalog: DataHub or OpenMetadata; BI: Metabase or Superset (pick one each).',
             ],
             'products' => ['hetzner', 'ovhcloud', 'sap', 'qlik', 'dbt', 'metabase', 'superset', 'datahub', 'openmetadata', 'talend'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Hosting', 'en' => 'Hosting'],
+                    'products' => ['hetzner', 'ovhcloud'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'Enterprise', 'en' => 'Enterprise'],
+                    'products' => ['sap', 'qlik', 'talend'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Transformation', 'en' => 'Transformation'],
+                    'products' => ['dbt'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['metabase', 'superset'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'Catalog', 'en' => 'Catalog'],
+                    'products' => ['datahub', 'openmetadata'],
+                    'chooseOne' => true,
+                ],
+            ],
         ],
         'sap-enterprise' => [
             'label' => ['de' => 'SAP Enterprise', 'en' => 'SAP Enterprise'],
             'description' => [
-                'de' => 'SAP im Zentrum, ergänzt um Microsoft-Cloud/Fabric oder On-Prem-Governance-Pfade.',
-                'en' => 'SAP at the center, complemented by Microsoft cloud/Fabric or on-prem governance paths.',
+                'de' => 'SAP im Zentrum, ergänzt um Azure/Fabric, Purview, Power BI und Collibra für Governance.',
+                'en' => 'SAP at the center, complemented by Azure/Fabric, Purview, Power BI and Collibra for governance.',
             ],
             'products' => ['sap', 'azure', 'fabric', 'pureview', 'powerbi', 'collibra'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'ERP', 'en' => 'ERP'],
+                    'products' => ['sap'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Cloud', 'en' => 'Cloud'],
+                    'products' => ['azure'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Plattform', 'en' => 'Platform'],
+                    'products' => ['fabric'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Governance', 'en' => 'Governance'],
+                    'products' => ['pureview', 'collibra'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'BI', 'en' => 'BI'],
+                    'products' => ['powerbi'],
+                    'chooseOne' => false,
+                ],
+            ],
         ],
         'ai-assisted-delivery' => [
             'label' => ['de' => 'AI-Assisted Delivery', 'en' => 'AI-assisted delivery'],
             'description' => [
-                'de' => 'Coding-Agents, GitHub und Planungsboards für Delivery und Enablement.',
-                'en' => 'Coding agents, GitHub, and planning boards for delivery and enablement.',
+                'de' => 'Delivery und Enablement mit GitHub. Coding-Agent: Cursor, Copilot, Codex, Claude oder ChatGPT (eines wählen). Board: Miro oder Planner (eines wählen); Microsoft Copilot optional ergänzend.',
+                'en' => 'Delivery and enablement with GitHub. Coding agent: Cursor, Copilot, Codex, Claude or ChatGPT (pick one). Board: Miro or Planner (pick one); Microsoft Copilot optional alongside.',
             ],
             'products' => ['cursor', 'github-copilot', 'codex', 'claude', 'chatgpt', 'github', 'miro', 'microsoft-planner', 'microsoft-copilot'],
+            'slots' => [
+                [
+                    'role' => ['de' => 'Coding', 'en' => 'Coding'],
+                    'products' => ['cursor', 'github-copilot', 'codex', 'claude', 'chatgpt'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'Repo', 'en' => 'Repo'],
+                    'products' => ['github'],
+                    'chooseOne' => false,
+                ],
+                [
+                    'role' => ['de' => 'Board', 'en' => 'Board'],
+                    'products' => ['miro', 'microsoft-planner'],
+                    'chooseOne' => true,
+                ],
+                [
+                    'role' => ['de' => 'AI (optional)', 'en' => 'AI (optional)'],
+                    'products' => ['microsoft-copilot'],
+                    'chooseOne' => false,
+                ],
+            ],
         ],
     ],
 

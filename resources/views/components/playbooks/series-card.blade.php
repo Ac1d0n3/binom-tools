@@ -35,14 +35,12 @@
                 loading="lazy"
                 decoding="async"
             />
-            <x-playbooks.product-marks :products="$products" class="tools-card__purpose--on-series-hero" />
         </div>
     @else
         <div class="tools-series-card__hero tools-series-card__hero--placeholder" aria-hidden="true">
             <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
                 <i class="fa-solid fa-layer-group tools-card__icon"></i>
             </div>
-            <x-playbooks.product-marks :products="$products" class="tools-card__purpose--on-series-hero" />
         </div>
     @endif
 
@@ -63,10 +61,6 @@
         >
             {{ $series->partCount() }} parts · {{ $series->totalReadingTimeEn }} min total
         </p>
-
-        @if (count($productLabels) > 0)
-            <p class="tools-series-card__products">{{ implode(' · ', $productLabels) }}</p>
-        @endif
 
         <ol class="tools-series-card__parts">
             @foreach ($series->parts as $part)
@@ -89,28 +83,33 @@
         </ol>
 
         @if ($firstPart)
-            <div class="tools-series-card__actions">
-                <a
-                    href="{{ locale_route('playbooks.show', ['slug' => $firstPart->slug]) }}"
-                    class="tools-series-card__start"
-                    data-i18n="overview.seriesStart"
-                >Start series</a>
-                <button
-                    type="button"
-                    class="tools-series-card__offline-btn"
-                    data-playbook-series-offline
-                    data-series-id="{{ $series->id }}"
-                    data-series-slugs="{{ collect($series->parts)->pluck('slug')->implode(',') }}"
-                    data-series-manifest-url="{{ locale_route('playbooks.offline.manifest.series', ['seriesId' => $series->id]) }}"
-                    data-i18n-aria="playbooks.offline.saveSeries"
-                    aria-label="Save series offline"
-                    title="Save series offline"
-                >
-                    <i class="fa-solid fa-download" data-offline-icon="save" aria-hidden="true"></i>
-                    <i class="fa-solid fa-trash-can" data-offline-icon="remove" hidden aria-hidden="true"></i>
-                    <span class="tools-series-card__offline-label" data-offline-label data-i18n="playbooks.offline.saveSeriesShort">Offline</span>
-                </button>
+            <div class="tools-series-card__footer">
+                <x-playbooks.product-marks :products="$products" />
+                <div class="tools-series-card__actions">
+                    <a
+                        href="{{ locale_route('playbooks.show', ['slug' => $firstPart->slug]) }}"
+                        class="tools-series-card__start"
+                        data-i18n="overview.seriesStart"
+                    >Start series</a>
+                    <button
+                        type="button"
+                        class="tools-series-card__offline-btn"
+                        data-playbook-series-offline
+                        data-series-id="{{ $series->id }}"
+                        data-series-slugs="{{ collect($series->parts)->pluck('slug')->implode(',') }}"
+                        data-series-manifest-url="{{ locale_route('playbooks.offline.manifest.series', ['seriesId' => $series->id]) }}"
+                        data-i18n-aria="playbooks.offline.saveSeries"
+                        aria-label="Save series offline"
+                        title="Save series offline"
+                    >
+                        <i class="fa-solid fa-download" data-offline-icon="save" aria-hidden="true"></i>
+                        <i class="fa-solid fa-trash-can" data-offline-icon="remove" hidden aria-hidden="true"></i>
+                        <span class="tools-series-card__offline-label" data-offline-label data-i18n="playbooks.offline.saveSeriesShort">Offline</span>
+                    </button>
+                </div>
             </div>
+        @else
+            <x-playbooks.product-marks :products="$products" />
         @endif
     </div>
 </article>

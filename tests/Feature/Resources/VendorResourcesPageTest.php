@@ -46,6 +46,12 @@ class VendorResourcesPageTest extends TestCase
         $response->assertSee('value="databricks-lakehouse"', false);
         $response->assertSee('value="gcp-analytics"', false);
         $response->assertSee('value="open-source-stack"', false);
+        $response->assertDontSee('value="open-source-stack-a"', false);
+        $response->assertDontSee('value="open-source-stack-b"', false);
+        $response->assertSee('data-slots="', false);
+        $response->assertSee('"chooseOne":true');
+        $response->assertSee('DataHub or OpenMetadata', false);
+        $response->assertSee('pick one', false);
         $response->assertSee('value="eu-sovereign"', false);
         $response->assertSee('value="sap-enterprise"', false);
         $response->assertSee('value="ai-assisted-delivery"', false);
