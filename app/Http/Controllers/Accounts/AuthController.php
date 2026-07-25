@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
-use App\Accounts\UserRepository;
+use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Support\AccentColors;
 use App\Support\AvatarIcons;
@@ -19,7 +19,7 @@ class AuthController extends Controller
     public function __construct(
         private readonly AccountsConfig $config,
         private readonly AccountAuth $auth,
-        private readonly UserRepository $users,
+        private readonly UserRepositoryInterface $users,
     ) {}
 
     public function showLogin(): View|RedirectResponse

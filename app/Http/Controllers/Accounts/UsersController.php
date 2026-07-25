@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\MembershipSync;
-use App\Accounts\TeamRepository;
-use App\Accounts\UserRepository;
+use App\Accounts\Contracts\TeamRepositoryInterface;
+use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Mail\AccountWelcomeMail;
 use App\Support\AccentColors;
@@ -23,8 +23,8 @@ class UsersController extends Controller
 {
     public function __construct(
         private readonly AccountAuth $auth,
-        private readonly UserRepository $users,
-        private readonly TeamRepository $teams,
+        private readonly UserRepositoryInterface $users,
+        private readonly TeamRepositoryInterface $teams,
         private readonly MembershipSync $membership,
     ) {}
 
@@ -224,6 +224,38 @@ class UsersController extends Controller
         return redirect()
             ->to(locale_route('accounts.users'))
             ->with('status', 'user-deleted');
+    }
+
+    public function approve(string $userId): RedirectResponse
+    {
+        $this->assertCanManage();
+        $user = $this->users->findById($userId);
+        abort_if($user === null, 404);
+
+        $this->users->upsert([
+            ...$user->toArray(),
+            'active' => true,
+            'pendingApproval' => false,
+        ]);
+
+        return redirect()
+            ->to(locale_route('accounts.users'))
+            ->with('status', 'user-approved');
+    }
+
+    public function reject(string $userId): RedirectResponse
+    {
+        $this->assertCanManage();
+        abort_if($this->auth->id() === $userId, 422);
+        $user = $this->users->findById($userId);
+        abort_if($user === null, 404);
+
+        $this->users->delete($userId);
+        $this->membership->removeUserFromTeams($userId);
+
+        return redirect()
+            ->to(locale_route('accounts.users'))
+            ->with('status', 'user-rejected');
     }
 
     /**

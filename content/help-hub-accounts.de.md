@@ -1,6 +1,6 @@
 ---
 title: Help Hub — Logins & Rechte
-description: Optionale Accounts ohne Datenbank — Session-Login, User-Flags, Story-ACL und Plan-Rechte im Sprint Planner.
+description: Optionale Accounts — File- oder MySQL-Storage, Session-Login, Registrierung mit Freigabe, Story-ACL und Plan-Rechte.
 author: Thomas Lindackers
 category: Help Hub
 tags:
@@ -17,7 +17,9 @@ seriesTitle: Governance Help Hub
 
 ## Überblick
 
-Der Help Hub läuft standardmäßig **ohne Login**. Für interne Deployments kannst du optionale Accounts aktivieren: Session-Login, dateibasierte Benutzer und Teams, Story-Zugriffskontrolle und geteilte Sprint-Pläne — weiterhin **ohne relationale Datenbank**.
+Der Help Hub läuft standardmäßig **ohne Login**. Für interne Deployments kannst du optionale Accounts aktivieren: Session-Login, Benutzer und Teams, Story-Zugriffskontrolle und geteilte Sprint-Pläne.
+
+**Standard-Storage ist dateibasiert** (JSON unter `storage/app/bn-tools/`) — keine Datenbank nötig. Runtime-Daten lassen sich später auf MySQL umstellen, ohne Markdown-Stories oder Repo-Sprint-Vorlagen zu ändern.
 
 Diese Story ist **Teil 2** der Serie *Governance Help Hub*. Teil 1 beschreibt die [Plattform-Architektur](/playbooks/help-hub-platform), Teil 3 den [Sprint Planner](/playbooks/help-hub-sprint-planner).
 
@@ -30,9 +32,14 @@ In `.env`:
 ```env
 BINOM_TOOLS_ACCOUNTS_ENABLED=true
 SESSION_DRIVER=file
+BINOM_TOOLS_STORAGE_DRIVER=file
 # Optional: self-service avatar on /account (default true)
 # BINOM_TOOLS_ACCOUNTS_PROFILE_AVATAR_ENABLED=false
+# Optional: Self-Registration (Admin-Freigabe nötig)
+# BINOM_TOOLS_REGISTRATION_ENABLED=true
 ```
+
+### File-Storage (Default)
 
 Laufzeitdaten liegen unter `storage/app/bn-tools/` (**nicht in Git**; lokal + im FTP-Bundle `deploy-ftp/`, das ebenfalls gitignored ist):
 
@@ -51,17 +58,32 @@ Laufzeitdaten liegen unter `storage/app/bn-tools/` (**nicht in Git**; lokal + im
 
 Server-`.env`: `BINOM_TOOLS_ACCOUNTS_ENABLED=true` und `SESSION_DRIVER=file`.
 
+### MySQL-Storage (optionaler Switch)
+
+Stories und Repo-Vorlagen bleiben Markup. Runtime-Daten nach MySQL:
+
+1. `DB_CONNECTION=mysql` und `DB_*` setzen
+2. `php artisan migrate`
+3. Optional: `php artisan bn-tools:storage-import` (bestehende JSON-Daten)
+4. `BINOM_TOOLS_STORAGE_DRIVER=mysql`
+
+Tabellen nutzen das Präfix `bn_*` (`bn_users`, `bn_plans`, `bn_playbook_stats`, …).
+
 ## Login
 
 - Route: `/login` (lokalisiert z. B. `/de/login`)
 - Session-Key: `bn_tools_account_user_id`
 - Passwörter nur als Hash — Klartext in JSON ist verboten
 
-Passwort setzen (Benutzer muss bereits in `users.json` existieren):
+Passwort setzen (Benutzer muss bereits existieren):
 
 ```bash
 php artisan bn-tools:user-password you@example.com
 ```
+
+## Self-Registration (optional)
+
+Mit `BINOM_TOOLS_REGISTRATION_ENABLED=true` (und Accounts an) können Besucher `/register` öffnen. Neue Konten sind **inaktiv** mit `pendingApproval`, bis ein Admin sie unter **Konto → Benutzer** freigibt. Ablehnen löscht die Registrierung. Funktioniert mit File- und MySQL-Storage.
 
 ## Leute einladen (Benutzer hinzufügen)
 
@@ -118,8 +140,10 @@ User-Templates speichern und teilen setzt Login voraus. Ohne Accounts bleibt der
 
 ## Setup-Checkliste
 
-- [ ] `BINOM_TOOLS_ACCOUNTS_ENABLED=true` und `SESSION_DRIVER=file`
-- [ ] Seeds / `users.json`, `teams.json`, `story-acl.json` vorhanden
+- [ ] `BINOM_TOOLS_ACCOUNTS_ENABLED=true` und `SESSION_DRIVER=file` (bei File-Storage)
+- [ ] `BINOM_TOOLS_STORAGE_DRIVER=file` (Default) — oder MySQL-Switch nach migrate/import
+- [ ] Optional: `BINOM_TOOLS_REGISTRATION_ENABLED=true`
+- [ ] Seeds / `users.json`, `teams.json`, `story-acl.json` vorhanden (File) bzw. importiert (MySQL)
 - [ ] Mindestens ein Admin mit `canManageUsers: true`
 - [ ] Passwort per `php artisan bn-tools:user-password …` gesetzt
 - [ ] Story-ACL für interne Playbooks geprüft

@@ -2,6 +2,7 @@
 
 namespace App\Playbooks;
 
+use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -10,7 +11,7 @@ use RuntimeException;
  * Runtime: storage/app/playbook-stats/{slug}.json
  * Packaged seed (FTP-safe): app/Playbooks/stats-seed/{slug}.json
  */
-final class PlaybookStatsStore
+final class PlaybookStatsStore implements PlaybookStatsStoreInterface
 {
     public function __construct(
         private readonly string $directory,

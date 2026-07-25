@@ -2,9 +2,10 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\PromptStudioLibraryStoreInterface;
 use InvalidArgumentException;
 
-final class PromptStudioLibraryStore
+final class PromptStudioLibraryStore implements PromptStudioLibraryStoreInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,

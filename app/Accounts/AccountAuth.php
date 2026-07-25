@@ -2,6 +2,7 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\UserRepositoryInterface;
 use Illuminate\Support\Facades\Session;
 
 final class AccountAuth
@@ -9,7 +10,7 @@ final class AccountAuth
     public const SESSION_KEY = 'bn_tools_account_user_id';
 
     public function __construct(
-        private readonly UserRepository $users,
+        private readonly UserRepositoryInterface $users,
         private readonly AccountsConfig $config,
     ) {}
 

@@ -18,6 +18,10 @@ final class PlaybookStatsTest extends TestCase
             \App\Playbooks\PlaybookStatsStore::class,
             new \App\Playbooks\PlaybookStatsStore($this->statsDir),
         );
+        $this->app->instance(
+            \App\Playbooks\Contracts\PlaybookStatsStoreInterface::class,
+            $this->app->make(\App\Playbooks\PlaybookStatsStore::class),
+        );
     }
 
     protected function tearDown(): void

@@ -14,6 +14,11 @@ final class AccountsConfig
         return (bool) config('accounts.profile_avatar_enabled', true);
     }
 
+    public function registrationEnabled(): bool
+    {
+        return $this->enabled() && (bool) config('accounts.registration_enabled', false);
+    }
+
     public function basePath(): string
     {
         $path = (string) config('accounts.path', storage_path('app/bn-tools'));

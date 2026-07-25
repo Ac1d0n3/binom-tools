@@ -2,7 +2,9 @@
 
 namespace App\Accounts;
 
-final class StoryAclRepository
+use App\Accounts\Contracts\StoryAclRepositoryInterface;
+
+final class StoryAclRepository implements StoryAclRepositoryInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,

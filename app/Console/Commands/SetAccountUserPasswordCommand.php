@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Accounts\AccountsConfig;
-use App\Accounts\UserRepository;
+use App\Accounts\Contracts\UserRepositoryInterface;
 use Illuminate\Console\Command;
 
 class SetAccountUserPasswordCommand extends Command
@@ -14,7 +14,7 @@ class SetAccountUserPasswordCommand extends Command
 
     protected $description = 'Set a hashed password for a bn-tools file-based account user (never stores plaintext)';
 
-    public function handle(AccountsConfig $config, UserRepository $users): int
+    public function handle(AccountsConfig $config, UserRepositoryInterface $users): int
     {
         if (! $config->enabled()) {
             $this->warn('Accounts are disabled (BINOM_TOOLS_ACCOUNTS_ENABLED=false). Password will still be written to users.json.');

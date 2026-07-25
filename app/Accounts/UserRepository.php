@@ -2,9 +2,10 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\UserRepositoryInterface;
 use InvalidArgumentException;
 
-final class UserRepository
+final class UserRepository implements UserRepositoryInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,
@@ -46,6 +47,7 @@ final class UserRepository
      *   canManageUsers?: bool,
      *   canManageTeams?: bool,
      *   active?: bool,
+     *   pendingApproval?: bool,
      *   shortName?: string,
      *   colorToken?: string,
      *   avatarIcon?: string
@@ -93,6 +95,9 @@ final class UserRepository
             'canManageUsers' => $input['canManageUsers'] ?? $current?->canManageUsers ?? false,
             'canManageTeams' => $input['canManageTeams'] ?? $current?->canManageTeams ?? false,
             'active' => $input['active'] ?? $current?->active ?? true,
+            'pendingApproval' => array_key_exists('pendingApproval', $input)
+                ? (bool) $input['pendingApproval']
+                : ($current?->pendingApproval ?? false),
             'shortName' => $input['shortName'] ?? $current?->shortName ?? '',
             'colorToken' => $input['colorToken'] ?? $current?->colorToken ?? 'accent-1',
             'avatarIcon' => array_key_exists('avatarIcon', $input)

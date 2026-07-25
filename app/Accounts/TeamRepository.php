@@ -2,9 +2,10 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\TeamRepositoryInterface;
 use InvalidArgumentException;
 
-final class TeamRepository
+final class TeamRepository implements TeamRepositoryInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,

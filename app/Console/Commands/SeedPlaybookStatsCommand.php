@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Playbooks\PlaybookRepository;
-use App\Playbooks\PlaybookStatsStore;
+use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use Illuminate\Console\Command;
 
 class SeedPlaybookStatsCommand extends Command
@@ -13,7 +13,7 @@ class SeedPlaybookStatsCommand extends Command
 
     protected $description = 'Seed plausible random view/like counts for all playbooks';
 
-    public function handle(PlaybookRepository $playbooks, PlaybookStatsStore $stats): int
+    public function handle(PlaybookRepository $playbooks, PlaybookStatsStoreInterface $stats): int
     {
         $force = (bool) $this->option('force');
         $seeded = 0;

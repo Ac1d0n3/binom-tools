@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
-use App\Accounts\PlanStore;
-use App\Accounts\StoryAclRepository;
-use App\Accounts\TeamRepository;
-use App\Accounts\UserRepository;
+use App\Accounts\Contracts\PlanStoreInterface;
+use App\Accounts\Contracts\StoryAclRepositoryInterface;
+use App\Accounts\Contracts\TeamRepositoryInterface;
+use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
 use Illuminate\Http\JsonResponse;
@@ -16,10 +16,10 @@ class PlanApiController extends Controller
 {
     public function __construct(
         private readonly AccountAuth $auth,
-        private readonly PlanStore $plans,
-        private readonly UserRepository $users,
-        private readonly TeamRepository $teams,
-        private readonly StoryAclRepository $storyAcl,
+        private readonly PlanStoreInterface $plans,
+        private readonly UserRepositoryInterface $users,
+        private readonly TeamRepositoryInterface $teams,
+        private readonly StoryAclRepositoryInterface $storyAcl,
         private readonly PlaybookRepository $playbooks,
     ) {}
 

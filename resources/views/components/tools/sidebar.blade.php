@@ -11,7 +11,7 @@
     $allIndex = $playbookRepository->allForIndex();
 
     if (! empty($accountsEnabled)) {
-        $acl = app(\App\Accounts\StoryAclRepository::class);
+        $acl = app(\App\Accounts\Contracts\StoryAclRepositoryInterface::class);
         $account = ! empty($accountUser)
             ? app(\App\Accounts\AccountAuth::class)->user()
             : null;

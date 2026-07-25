@@ -6,10 +6,11 @@ use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Accounts\AuthController;
 use App\Http\Controllers\Accounts\PlanApiController;
 use App\Http\Controllers\Accounts\PlanAttachmentController;
-use App\Http\Controllers\Accounts\UserTemplateApiController;
 use App\Http\Controllers\Accounts\PromptStudioLibraryApiController;
+use App\Http\Controllers\Accounts\RegistrationController;
 use App\Http\Controllers\Accounts\StoryAclController;
 use App\Http\Controllers\Accounts\TeamsController;
+use App\Http\Controllers\Accounts\UserTemplateApiController;
 use App\Http\Controllers\Accounts\UsersController;
 use App\Http\Controllers\Legal\ImpressumController;
 use App\Http\Controllers\Legal\PrivacyController;
@@ -94,6 +95,10 @@ $registerRoutes = static function (bool $localized): void {
             ->middleware('throttle:10,1')
             ->name($name('accounts.login.submit'));
         Route::post('/logout', [AuthController::class, 'logout'])->name($name('accounts.logout'));
+        Route::get('/register', [RegistrationController::class, 'show'])->name($name('accounts.register'));
+        Route::post('/register', [RegistrationController::class, 'store'])
+            ->middleware('throttle:5,1')
+            ->name($name('accounts.register.submit'));
     });
 
     Route::middleware(['accounts.enabled', 'accounts.auth'])->group(static function () use ($name, $localized): void {
@@ -111,6 +116,12 @@ $registerRoutes = static function (bool $localized): void {
         Route::delete('/account/users/{userId}', [UsersController::class, 'destroy'])
             ->where('userId', '[a-zA-Z0-9_-]+')
             ->name($name('accounts.users.destroy'));
+        Route::post('/account/users/{userId}/approve', [UsersController::class, 'approve'])
+            ->where('userId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.users.approve'));
+        Route::post('/account/users/{userId}/reject', [UsersController::class, 'reject'])
+            ->where('userId', '[a-zA-Z0-9_-]+')
+            ->name($name('accounts.users.reject'));
         Route::get('/account/teams', [TeamsController::class, 'index'])->name($name('accounts.teams'));
         Route::get('/account/teams/create', [TeamsController::class, 'create'])->name($name('accounts.teams.create'));
         Route::post('/account/teams', [TeamsController::class, 'store'])->name($name('accounts.teams.store'));

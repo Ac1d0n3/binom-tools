@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Playbooks;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
-use App\Accounts\StoryAclRepository;
+use App\Accounts\Contracts\StoryAclRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Playbooks\Playbook;
 use App\Playbooks\PlaybookOfflineManifestBuilder;
@@ -19,7 +19,7 @@ class PlaybookOfflineController extends Controller
         private readonly PlaybookOfflineManifestBuilder $manifests,
         private readonly AccountsConfig $accountsConfig,
         private readonly AccountAuth $accountAuth,
-        private readonly StoryAclRepository $storyAcl,
+        private readonly StoryAclRepositoryInterface $storyAcl,
     ) {}
 
     public function show(Request $request): JsonResponse

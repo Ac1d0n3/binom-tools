@@ -1159,11 +1159,11 @@ Nicht implementieren:
 - Cloud-Synchronisierung über Geräte hinweg (außer Accounts-Pläne auf derselben Instanz)
 - E-Mail-Benachrichtigungen
 - Kalenderintegration
-- relationale Datenbank
+- relationale Datenbank als Pflicht (optional via `BINOM_TOOLS_STORAGE_DRIVER=mysql`)
 - komplexes Kanban
 - Drag-and-drop, falls es zusätzliche große Dependencies erfordert
 
-**Hinweis:** Accounts-Modus (Login, geteilte Pläne, Datei-Upload für Anhänge, User-Templates) existiert als optionale Server-Erweiterung. Der lokale Modus ohne Login bleibt vollständig nutzbar; Dateianhänge liegen dann in IndexedDB. Der Plan Creator kann lokal einen Plan mit `templateSnapshot` starten; Speichern als wiederverwendbare Vorlage erfordert Login.
+**Hinweis:** Accounts-Modus (Login, geteilte Pläne, Datei-Upload für Anhänge, User-Templates) existiert als optionale Server-Erweiterung. Persistenz ist standardmäßig **dateibasiert** (`storage/app/bn-tools/`); optional `BINOM_TOOLS_STORAGE_DRIVER=mysql` für relationale Runtime-Tabellen (`bn_*`). Repo-Vorlagen unter `content/sprint-plans/` bleiben Markup. Der lokale Modus ohne Login bleibt vollständig nutzbar; Dateianhänge liegen dann in IndexedDB. Der Plan Creator kann lokal einen Plan mit `templateSnapshot` starten; Speichern als wiederverwendbare Vorlage erfordert Login.
 
 ### Zuletzt geöffneter Plan
 

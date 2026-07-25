@@ -13,15 +13,40 @@
 
 Live paths (unchanged technically): `/`, `/playbooks`, `/tools`, individual tool routes under `/tools/…`.
 
-## Optional accounts (file-based, no DB)
+## Optional accounts
 
-Set `BINOM_TOOLS_ACCOUNTS_ENABLED=true` and keep `SESSION_DRIVER=file`. Copy example JSON from `storage/app/bn-tools/*.example.json` to `users.json` / `teams.json` / `story-acl.json`, then set passwords with:
+Default storage is **file-based** (no database required). Set `BINOM_TOOLS_ACCOUNTS_ENABLED=true` and keep `SESSION_DRIVER=file`. Copy example JSON from `storage/app/bn-tools/*.example.json` to `users.json` / `teams.json` / `story-acl.json`, then set passwords with:
 
 ```bash
 php artisan bn-tools:user-password you@example.com
 ```
 
 Passwords are stored only as `password_hash` digests. Plans, story ACL, and read-state live under `storage/app/bn-tools/` (gitignored).
+
+Optional self-registration (admin must approve before login):
+
+```env
+BINOM_TOOLS_REGISTRATION_ENABLED=true
+```
+
+### Switch to MySQL (flip-ready)
+
+Stories and repo sprint templates stay Markdown. Runtime data (users, teams, plans, likes/views, …) can use MySQL:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=binom_tools
+DB_USERNAME=...
+DB_PASSWORD=...
+
+BINOM_TOOLS_STORAGE_DRIVER=mysql
+```
+
+```bash
+php artisan migrate
+php artisan bn-tools:storage-import   # optional: copy existing JSON into MySQL
+```
 
 With accounts on, the Sprint Planner stays open for guests as a **demo**: start a local plan that never syncs to the server. Sign in to save and share plans. Individual governance tools can require login via `TOOL_*_LOGIN_REQUIRED` (default `false` / open).
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
-use App\Accounts\UserTemplateStore;
+use App\Accounts\Contracts\UserTemplateStoreInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class UserTemplateApiController extends Controller
 {
     public function __construct(
         private readonly AccountAuth $auth,
-        private readonly UserTemplateStore $templates,
+        private readonly UserTemplateStoreInterface $templates,
     ) {}
 
     public function index(): JsonResponse

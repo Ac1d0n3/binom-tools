@@ -2,9 +2,10 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\UserTemplateStoreInterface;
 use InvalidArgumentException;
 
-final class UserTemplateStore
+final class UserTemplateStore implements UserTemplateStoreInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,

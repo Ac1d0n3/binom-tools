@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
-use App\Accounts\ReadStateStore;
-use App\Accounts\StoryAclRepository;
-use App\Accounts\TeamRepository;
-use App\Accounts\UserRepository;
+use App\Accounts\Contracts\ReadStateStoreInterface;
+use App\Accounts\Contracts\StoryAclRepositoryInterface;
+use App\Accounts\Contracts\TeamRepositoryInterface;
+use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
 use Illuminate\Http\RedirectResponse;
@@ -17,11 +17,11 @@ class StoryAclController extends Controller
 {
     public function __construct(
         private readonly AccountAuth $auth,
-        private readonly StoryAclRepository $acl,
+        private readonly StoryAclRepositoryInterface $acl,
         private readonly PlaybookRepository $playbooks,
-        private readonly UserRepository $users,
-        private readonly TeamRepository $teams,
-        private readonly ReadStateStore $readState,
+        private readonly UserRepositoryInterface $users,
+        private readonly TeamRepositoryInterface $teams,
+        private readonly ReadStateStoreInterface $readState,
     ) {}
 
     public function index(): View

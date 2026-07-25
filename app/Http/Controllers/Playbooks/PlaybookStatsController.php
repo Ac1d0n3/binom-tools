@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Playbooks;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookEngagementCookie;
 use App\Playbooks\PlaybookRepository;
-use App\Playbooks\PlaybookStatsStore;
+use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -17,7 +17,7 @@ class PlaybookStatsController extends Controller
 
     public function __construct(
         private readonly PlaybookRepository $playbooks,
-        private readonly PlaybookStatsStore $stats,
+        private readonly PlaybookStatsStoreInterface $stats,
     ) {}
 
     public function show(Request $request): JsonResponse

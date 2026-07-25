@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
-use App\Accounts\AccountsConfig;
-use App\Accounts\JsonFileStore;
-use App\Accounts\PlanStore;
+use App\Accounts\Contracts\PlanAttachmentStoreInterface;
+use App\Accounts\Contracts\PlanStoreInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,9 +34,8 @@ class PlanAttachmentController extends Controller
 
     public function __construct(
         private readonly AccountAuth $auth,
-        private readonly PlanStore $plans,
-        private readonly AccountsConfig $config,
-        private readonly JsonFileStore $store,
+        private readonly PlanStoreInterface $plans,
+        private readonly PlanAttachmentStoreInterface $attachments,
     ) {}
 
     public function store(Request $request, string $planId): JsonResponse
@@ -68,8 +66,7 @@ class PlanAttachmentController extends Controller
             return response()->json(['error' => 'attachment-invalid-id'], 422);
         }
 
-        $dir = $this->config->planAttachmentsDirectory($planId);
-        $this->store->ensureDirectory($dir);
+        $dir = $this->attachments->ensureDirectory($planId);
         $safeName = $this->safeFileName($originalName);
         $storedName = $attachmentId.'__'.$safeName;
         $path = $dir.DIRECTORY_SEPARATOR.$storedName;
@@ -88,9 +85,7 @@ class PlanAttachmentController extends Controller
             'storedName' => $storedName,
         ];
 
-        $index = $this->readIndex($planId);
-        $index[$attachmentId] = $meta;
-        $this->writeIndex($planId, $index);
+        $this->attachments->put($planId, $attachmentId, $meta);
 
         return response()->json(['attachment' => $meta]);
     }
@@ -104,10 +99,10 @@ class PlanAttachmentController extends Controller
         abort_if($plan === null, 404);
         abort_unless($this->plans->canAccess($user, $plan), 403);
 
-        $meta = $this->readIndex($planId)[$attachmentId] ?? null;
+        $meta = $this->attachments->index($planId)[$attachmentId] ?? null;
         abort_if($meta === null, 404);
 
-        $path = $this->config->planAttachmentsDirectory($planId).DIRECTORY_SEPARATOR.(string) ($meta['storedName'] ?? '');
+        $path = $this->attachments->filePath($planId, (string) ($meta['storedName'] ?? ''));
         abort_unless(is_file($path), 404);
 
         return response()->file($path, [
@@ -125,47 +120,9 @@ class PlanAttachmentController extends Controller
         abort_if($plan === null, 404);
         abort_unless($this->plans->canAccess($user, $plan), 403);
 
-        $index = $this->readIndex($planId);
-        $meta = $index[$attachmentId] ?? null;
-        if ($meta !== null) {
-            $path = $this->config->planAttachmentsDirectory($planId).DIRECTORY_SEPARATOR.(string) ($meta['storedName'] ?? '');
-            if (is_file($path)) {
-                @unlink($path);
-            }
-            unset($index[$attachmentId]);
-            $this->writeIndex($planId, $index);
-        }
+        $this->attachments->remove($planId, $attachmentId);
 
         return response()->json(['ok' => true]);
-    }
-
-    /**
-     * @return array<string, array<string, mixed>>
-     */
-    private function readIndex(string $planId): array
-    {
-        $path = $this->indexPath($planId);
-        if (! is_file($path)) {
-            return [];
-        }
-        $data = $this->store->read($path, []);
-
-        return is_array($data) ? $data : [];
-    }
-
-    /**
-     * @param  array<string, array<string, mixed>>  $index
-     */
-    private function writeIndex(string $planId, array $index): void
-    {
-        $dir = $this->config->planAttachmentsDirectory($planId);
-        $this->store->ensureDirectory($dir);
-        $this->store->write($this->indexPath($planId), $index);
-    }
-
-    private function indexPath(string $planId): string
-    {
-        return $this->config->planAttachmentsDirectory($planId).DIRECTORY_SEPARATOR.'index.json';
     }
 
     private function isAllowed(string $mime, string $fileName): bool

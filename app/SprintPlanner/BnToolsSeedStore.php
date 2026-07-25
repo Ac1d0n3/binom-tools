@@ -3,7 +3,9 @@
 namespace App\SprintPlanner;
 
 use App\Accounts\AccountsConfig;
+use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Accounts\JsonFileStore;
+use App\Support\StorageDriver;
 use RuntimeException;
 
 /**
@@ -36,9 +38,16 @@ final class BnToolsSeedStore
 
     /**
      * Copy seed files into runtime storage when targets are missing.
+     * When STORAGE_DRIVER=mysql, upserts into DB if users table is empty.
      */
     public function hydrateRuntimeFromSeeds(): void
     {
+        if (StorageDriver::isMysql()) {
+            $this->hydrateMysqlFromSeeds();
+
+            return;
+        }
+
         $seedRoot = $this->seedDirectory();
         if (! is_dir($seedRoot)) {
             return;
@@ -72,6 +81,49 @@ final class BnToolsSeedStore
             );
         } catch (\Throwable) {
             // Storage may be missing/unwritable after FTP deploy — ignore.
+        }
+    }
+
+    private function hydrateMysqlFromSeeds(): void
+    {
+        $seedRoot = $this->seedDirectory();
+        if (! is_dir($seedRoot)) {
+            return;
+        }
+
+        try {
+            if (! \Illuminate\Support\Facades\Schema::hasTable('bn_users')) {
+                return;
+            }
+            if (\App\Models\BnTools\BnUser::query()->exists()) {
+                return;
+            }
+
+            $users = app(UserRepositoryInterface::class);
+            $raw = $this->store->read($seedRoot.DIRECTORY_SEPARATOR.'users.json', ['users' => []]);
+            foreach ($raw['users'] ?? [] as $row) {
+                if (is_array($row) && isset($row['email'], $row['passwordHash'])) {
+                    $users->upsert($row);
+                }
+            }
+
+            $teams = app(\App\Accounts\Contracts\TeamRepositoryInterface::class);
+            $teamsRaw = $this->store->read($seedRoot.DIRECTORY_SEPARATOR.'teams.json', ['teams' => []]);
+            foreach ($teamsRaw['teams'] ?? [] as $row) {
+                if (is_array($row)) {
+                    $teams->upsert($row);
+                }
+            }
+
+            $acl = app(\App\Accounts\Contracts\StoryAclRepositoryInterface::class);
+            $aclRaw = $this->store->read($seedRoot.DIRECTORY_SEPARATOR.'story-acl.json', ['stories' => []]);
+            foreach ($aclRaw['stories'] ?? [] as $slug => $entry) {
+                if (is_string($slug) && is_array($entry)) {
+                    $acl->set($slug, $entry);
+                }
+            }
+        } catch (\Throwable) {
+            // Ignore seed hydration failures during migrate/boot.
         }
     }
 

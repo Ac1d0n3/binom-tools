@@ -2,7 +2,9 @@
 
 namespace App\Accounts;
 
-final class ReadStateStore
+use App\Accounts\Contracts\ReadStateStoreInterface;
+
+final class ReadStateStore implements ReadStateStoreInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,

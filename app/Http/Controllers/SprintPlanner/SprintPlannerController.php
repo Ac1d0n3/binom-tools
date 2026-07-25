@@ -4,11 +4,11 @@ namespace App\Http\Controllers\SprintPlanner;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
-use App\Accounts\PlanStore;
-use App\Accounts\ReadStateStore;
-use App\Accounts\TeamRepository;
-use App\Accounts\UserRepository;
-use App\Accounts\UserTemplateStore;
+use App\Accounts\Contracts\PlanStoreInterface;
+use App\Accounts\Contracts\ReadStateStoreInterface;
+use App\Accounts\Contracts\TeamRepositoryInterface;
+use App\Accounts\Contracts\UserRepositoryInterface;
+use App\Accounts\Contracts\UserTemplateStoreInterface;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
 use App\SprintPlanner\SprintPlanRepository;
@@ -22,12 +22,12 @@ class SprintPlannerController extends Controller
         private readonly SprintPlanRepository $plans,
         private readonly AccountsConfig $accountsConfig,
         private readonly AccountAuth $accountAuth,
-        private readonly UserRepository $users,
-        private readonly TeamRepository $teams,
-        private readonly PlanStore $planStore,
-        private readonly ReadStateStore $readState,
+        private readonly UserRepositoryInterface $users,
+        private readonly TeamRepositoryInterface $teams,
+        private readonly PlanStoreInterface $planStore,
+        private readonly ReadStateStoreInterface $readState,
         private readonly PlaybookRepository $playbooks,
-        private readonly UserTemplateStore $userTemplates,
+        private readonly UserTemplateStoreInterface $userTemplates,
     ) {}
 
     public function index(): View

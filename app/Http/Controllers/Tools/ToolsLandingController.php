@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Tools;
 
 use App\Catalog\LandingCatalog;
 use App\Http\Controllers\Controller;
-use App\Playbooks\PlaybookStatsStore;
+use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use Illuminate\View\View;
 
 class ToolsLandingController extends Controller
 {
     public function __construct(
         private readonly LandingCatalog $catalog,
-        private readonly PlaybookStatsStore $stats,
+        private readonly PlaybookStatsStoreInterface $stats,
     ) {}
 
     public function index(): View

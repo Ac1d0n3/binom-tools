@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Playbooks;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
-use App\Accounts\ReadStateStore;
-use App\Accounts\StoryAclRepository;
+use App\Accounts\Contracts\ReadStateStoreInterface;
+use App\Accounts\Contracts\StoryAclRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookProducts;
 use App\Playbooks\PlaybookRepository;
-use App\Playbooks\PlaybookStatsStore;
+use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,11 +17,11 @@ class PlaybookController extends Controller
 {
     public function __construct(
         private readonly PlaybookRepository $playbooks,
-        private readonly PlaybookStatsStore $stats,
+        private readonly PlaybookStatsStoreInterface $stats,
         private readonly AccountsConfig $accountsConfig,
         private readonly AccountAuth $accountAuth,
-        private readonly StoryAclRepository $storyAcl,
-        private readonly ReadStateStore $readState,
+        private readonly StoryAclRepositoryInterface $storyAcl,
+        private readonly ReadStateStoreInterface $readState,
     ) {}
 
     public function index(): View

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
-use App\Accounts\PromptStudioLibraryStore;
+use App\Accounts\Contracts\PromptStudioLibraryStoreInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class PromptStudioLibraryApiController extends Controller
 {
     public function __construct(
         private readonly AccountAuth $auth,
-        private readonly PromptStudioLibraryStore $library,
+        private readonly PromptStudioLibraryStoreInterface $library,
     ) {}
 
     public function show(): JsonResponse

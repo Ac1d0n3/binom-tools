@@ -2,14 +2,17 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\TeamRepositoryInterface;
+use App\Accounts\Contracts\UserRepositoryInterface;
+
 /**
  * Keep teams.memberIds and users.teamIds bidirectional.
  */
 final class MembershipSync
 {
     public function __construct(
-        private readonly UserRepository $users,
-        private readonly TeamRepository $teams,
+        private readonly UserRepositoryInterface $users,
+        private readonly TeamRepositoryInterface $teams,
     ) {}
 
     /**

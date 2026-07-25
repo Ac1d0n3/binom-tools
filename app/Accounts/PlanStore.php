@@ -2,14 +2,16 @@
 
 namespace App\Accounts;
 
+use App\Accounts\Contracts\PlanStoreInterface;
+use App\Accounts\Contracts\TeamRepositoryInterface;
 use InvalidArgumentException;
 
-final class PlanStore
+final class PlanStore implements PlanStoreInterface
 {
     public function __construct(
         private readonly AccountsConfig $config,
         private readonly JsonFileStore $store,
-        private readonly TeamRepository $teams,
+        private readonly TeamRepositoryInterface $teams,
     ) {}
 
     /**

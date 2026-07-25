@@ -24,6 +24,7 @@ final class AccountUser
         public readonly string $colorToken = 'accent-1',
         public readonly string $avatarIcon = '',
         public readonly bool $mustChangePassword = false,
+        public readonly bool $pendingApproval = false,
     ) {}
 
     /**
@@ -71,6 +72,7 @@ final class AccountUser
             colorToken: AccentColors::normalize($data['colorToken'] ?? null),
             avatarIcon: AvatarIcons::normalize($data['avatarIcon'] ?? null),
             mustChangePassword: (bool) ($data['mustChangePassword'] ?? false),
+            pendingApproval: (bool) ($data['pendingApproval'] ?? false),
         );
     }
 
@@ -92,6 +94,7 @@ final class AccountUser
             'colorToken' => $this->colorToken,
             'avatarIcon' => $this->avatarIcon,
             'mustChangePassword' => $this->mustChangePassword,
+            'pendingApproval' => $this->pendingApproval,
         ];
     }
 
@@ -114,6 +117,7 @@ final class AccountUser
             'colorToken' => $this->colorToken,
             'avatarIcon' => $this->avatarIcon,
             'mustChangePassword' => $this->mustChangePassword,
+            'pendingApproval' => $this->pendingApproval,
         ];
     }
 }
