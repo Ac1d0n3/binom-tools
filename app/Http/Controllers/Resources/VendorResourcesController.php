@@ -66,6 +66,7 @@ class VendorResourcesController extends Controller
         }
 
         $toolsByProduct = $this->toolsByProduct($products);
+        $supplierLibraryByProduct = $this->supplierLibraryByProduct($products);
 
         return view('resources.index', [
             'products' => $products,
@@ -74,6 +75,7 @@ class VendorResourcesController extends Controller
             'stacks' => $stacks,
             'stacksByProduct' => $stacksByProduct,
             'toolsByProduct' => $toolsByProduct,
+            'supplierLibraryByProduct' => $supplierLibraryByProduct,
             'availableFamilies' => $availableFamilies,
             'availableVendors' => $availableVendors,
         ]);
@@ -186,6 +188,53 @@ class VendorResourcesController extends Controller
             if ($links !== []) {
                 $map[$productId] = $links;
             }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Map vendor product id → Supplier Library link when a catalogue entry exists.
+     *
+     * @param  list<array<string, mixed>>  $products
+     * @return array<string, list<array{href: string, label: array{de: string, en: string}, description: array{de: string, en: string}}>>
+     */
+    private function supplierLibraryByProduct(array $products): array
+    {
+        /** @var list<array<string, mixed>> $libraryProducts */
+        $libraryProducts = config('suppliers.products', []);
+        $libraryIds = [];
+        foreach ($libraryProducts as $entry) {
+            $id = is_string($entry['id'] ?? null) ? $entry['id'] : '';
+            if ($id !== '') {
+                $libraryIds[$id] = true;
+            }
+        }
+
+        $map = [];
+        foreach ($products as $product) {
+            $productId = is_string($product['id'] ?? null) ? $product['id'] : '';
+            if ($productId === '' || ! isset($libraryIds[$productId])) {
+                continue;
+            }
+
+            $label = is_array($product['label'] ?? null) ? $product['label'] : [];
+            $labelEn = (string) ($label['en'] ?? $productId);
+            $labelDe = (string) ($label['de'] ?? $labelEn);
+
+            $map[$productId] = [
+                [
+                    'href' => locale_route('suppliers.show', ['slug' => $productId]),
+                    'label' => [
+                        'de' => 'Supplier Library öffnen',
+                        'en' => 'Open Supplier Library',
+                    ],
+                    'description' => [
+                        'de' => "Kernfelder, Measures und PII/DSDR-Vorlagen für {$labelDe}.",
+                        'en' => "Core fields, measures and PII/DSDR templates for {$labelEn}.",
+                    ],
+                ],
+            ];
         }
 
         return $map;

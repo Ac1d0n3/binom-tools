@@ -3263,6 +3263,62 @@ return [
             ],
         ],
         [
+            'id' => 'ga4',
+            'family' => 'suppliers',
+            'vendor' => 'google',
+            'label' => ['de' => 'Google Analytics 4', 'en' => 'Google Analytics 4'],
+            'purpose' => [
+                'de' => 'Event-Analytics: Sessions, Nutzer, Conversions und Kaufumsatz.',
+                'en' => 'Event analytics: sessions, users, conversions and purchase revenue.',
+            ],
+            'models' => ['saas'],
+            'brandColor' => '#E37400',
+            'residency' => ['eu', 'us', 'global'],
+            'help' => [
+                [
+                    'label' => ['de' => 'GA4 Hilfe', 'en' => 'GA4 Help'],
+                    'href' => 'https://support.google.com/analytics/',
+                    'description' => ['de' => 'Offizielle Google Analytics Hilfe.', 'en' => 'Official Google Analytics help.'],
+                ],
+                [
+                    'label' => ['de' => 'GA4 Developer Docs', 'en' => 'GA4 developer docs'],
+                    'href' => 'https://developers.google.com/analytics',
+                    'description' => ['de' => 'Measurement Protocol, APIs und Export.', 'en' => 'Measurement Protocol, APIs and export.'],
+                ],
+                [
+                    'label' => ['de' => 'BigQuery Export', 'en' => 'BigQuery export'],
+                    'href' => 'https://support.google.com/analytics/answer/9358801',
+                    'description' => ['de' => 'Rohdaten-Export nach BigQuery.', 'en' => 'Raw event export to BigQuery.'],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => ['de' => 'Google Privacy', 'en' => 'Google privacy'],
+                    'href' => 'https://policies.google.com/privacy',
+                    'description' => ['de' => 'Datenschutzrichtlinie.', 'en' => 'Privacy policy.'],
+                ],
+                [
+                    'label' => ['de' => 'Analytics Data Retention', 'en' => 'Analytics data retention'],
+                    'href' => 'https://support.google.com/analytics/answer/7667196',
+                    'description' => ['de' => 'Aufbewahrung und Löschung in GA4.', 'en' => 'Retention and deletion in GA4.'],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => ['de' => 'Analytics Academy / Skillshop', 'en' => 'Analytics Academy / Skillshop'],
+                    'href' => 'https://skillshop.exceedlms.com/student/catalog/list?category_id=53',
+                    'description' => ['de' => 'Offizielle Lernpfade.', 'en' => 'Official learning paths.'],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => ['de' => 'Google Analytics Certification', 'en' => 'Google Analytics certification'],
+                    'href' => 'https://skillshop.exceedlms.com/student/path/2945-google-analytics-certification',
+                    'description' => ['de' => 'Offizielle GA-Zertifizierung.', 'en' => 'Official GA certification.'],
+                ],
+            ],
+        ],
+        [
             'id' => 'servicenow',
             'family' => 'suppliers',
             'vendor' => 'servicenow',

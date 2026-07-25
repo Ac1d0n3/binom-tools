@@ -19,12 +19,29 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('data-product-id="salesforce"', false);
         $response->assertSee('data-product-id="hubspot"', false);
         $response->assertSee('data-product-id="ga4"', false);
+        $response->assertSee('data-product-id="dynamics365"', false);
+        $response->assertSee('data-product-id="servicenow"', false);
+        $response->assertSee('data-product-id="zendesk"', false);
+        $response->assertSee('data-product-id="shopify"', false);
         $response->assertSee('Salesforce');
         $response->assertSee('HubSpot');
         $response->assertSee('Google Analytics 4');
         $response->assertSee('value="crm"', false);
         $response->assertSee('value="analytics"', false);
+        $response->assertSee('value="service"', false);
+        $response->assertSee('value="commerce"', false);
         $response->assertSee('data-i18n="nav.suppliers"', false);
+    }
+
+    public function test_wave1_supplier_detail_pages_render(): void
+    {
+        foreach (['dynamics365', 'servicenow', 'zendesk', 'shopify'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('supplier-resources-card', false);
+        }
     }
 
     public function test_suppliers_show_renders_sections_and_examples(): void

@@ -163,7 +163,7 @@ $crmMeasures = static function (array $fieldMaps): array {
     return $out;
 };
 
-return [
+return array_merge([
     [
         'id' => 'salesforce',
         'domain' => 'crm',
@@ -695,34 +695,113 @@ return [
                 ],
             ],
         ],
-        'measures' => $crmMeasures([
-            'revenue-won' => [
-                'fieldsUsed' => ['Deals.amount', 'Deals.hs_is_closed_won / dealstage', 'Deals.closedate'],
+        'measures' => [
+            [
+                'id' => 'closed-won-amount',
+                'example' => true,
+                'label' => ['de' => 'Closed Won Amount', 'en' => 'Closed won amount'],
+                'question' => [
+                    'de' => 'Wie viel Deal-amount ist in der Periode closed-won?',
+                    'en' => 'How much deal amount closed-won in the period?',
+                ],
+                'formula' => 'SUM(deals.amount) WHERE deals.hs_is_closed_won = true AND deals.closedate IN period',
+                'grain' => ['de' => 'deal', 'en' => 'deal'],
+                'dimensions' => ['owner', 'region', 'stage'],
+                'fieldsUsed' => ['deals.amount', 'deals.hs_is_closed_won', 'deals.dealstage', 'deals.closedate', 'deals.hubspot_owner_id'],
                 'sourceHints' => [
-                    'de' => 'Won-Logik über Stage oder hs_is_closed_won — Portal-Properties prüfen.',
-                    'en' => 'Won logic via stage or hs_is_closed_won — verify portal properties.',
+                    'de' => 'Portal: hs_is_closed_won und Pipeline-Stages prüfen — nicht jedes Portal nutzt die Property gleich.',
+                    'en' => 'Portal: verify hs_is_closed_won and pipeline stages — not every portal uses the property the same way.',
+                ],
+                'adapt' => [
+                    'de' => 'Multi-Currency (deal_currency_code) und Storno-Stages klären.',
+                    'en' => 'Clarify multi-currency (deal_currency_code) and reverse stages.',
                 ],
             ],
-            'arr' => [
-                'fieldsUsed' => ['Recurring revenue / subscription custom properties'],
+            [
+                'id' => 'open-pipeline-amount',
+                'example' => true,
+                'label' => ['de' => 'Open Pipeline Amount', 'en' => 'Open pipeline amount'],
+                'question' => [
+                    'de' => 'Wie viel amount steckt in offenen Deal-Stages?',
+                    'en' => 'How much amount sits in open deal stages?',
+                ],
+                'formula' => 'SUM(deals.amount) WHERE deals.hs_is_closed = false',
+                'grain' => ['de' => 'deal', 'en' => 'deal'],
+                'dimensions' => ['owner', 'stage', 'source'],
+                'fieldsUsed' => ['deals.amount', 'deals.hs_is_closed', 'deals.dealstage', 'deals.pipeline'],
                 'sourceHints' => [
-                    'de' => 'Oft Custom Properties — nicht Deal Amount als ARR verwenden.',
-                    'en' => 'Often custom properties — do not use deal amount as ARR.',
+                    'de' => 'Optional × hs_deal_stage_probability für Weighted Pipeline.',
+                    'en' => 'Optionally × hs_deal_stage_probability for weighted pipeline.',
+                ],
+                'adapt' => [
+                    'de' => 'Offene Stages je Pipeline listen; archived deals ausschließen.',
+                    'en' => 'List open stages per pipeline; exclude archived deals.',
                 ],
             ],
-            'pipeline-amount' => [
-                'fieldsUsed' => ['Deals.amount', 'open dealstage / pipeline'],
-                'sourceHints' => ['de' => 'Offene Stages definieren', 'en' => 'Define open stages'],
+            [
+                'id' => 'win-rate-deals',
+                'example' => false,
+                'label' => ['de' => 'Win Rate (Deals)', 'en' => 'Win rate (deals)'],
+                'question' => [
+                    'de' => 'Welcher Anteil closed Deals ist hs_is_closed_won?',
+                    'en' => 'What share of closed deals is hs_is_closed_won?',
+                ],
+                'formula' => 'COUNT(hs_is_closed_won) / COUNT(hs_is_closed)',
+                'grain' => ['de' => 'deal', 'en' => 'deal'],
+                'dimensions' => ['owner', 'source'],
+                'fieldsUsed' => ['deals.hs_is_closed_won', 'deals.hs_is_closed', 'deals.dealstage'],
+                'sourceHints' => [
+                    'de' => 'Closed-Lost Stages explizit halten.',
+                    'en' => 'Keep closed-lost stages explicit.',
+                ],
+                'adapt' => [
+                    'de' => 'Disqualified/Deleted Stages aus dem Nenner nehmen.',
+                    'en' => 'Exclude disqualified/deleted stages from the denominator.',
+                ],
             ],
-            'win-rate' => [
-                'fieldsUsed' => ['dealstage / closed won vs closed lost'],
-                'sourceHints' => ['de' => 'Closed Stages listen', 'en' => 'List closed stages'],
+            [
+                'id' => 'avg-won-deal-amount',
+                'example' => false,
+                'label' => ['de' => 'Avg Won Deal Amount', 'en' => 'Avg won deal amount'],
+                'question' => [
+                    'de' => 'Was ist der typische amount gewonnener Deals?',
+                    'en' => 'What is the typical amount of won deals?',
+                ],
+                'formula' => 'SUM(amount WHERE hs_is_closed_won) / COUNT(hs_is_closed_won)',
+                'grain' => ['de' => 'deal', 'en' => 'deal'],
+                'dimensions' => ['owner', 'region'],
+                'fieldsUsed' => ['deals.amount', 'deals.hs_is_closed_won'],
+                'sourceHints' => [
+                    'de' => 'Nur closed-won; Währung normalisieren.',
+                    'en' => 'Closed-won only; normalize currency.',
+                ],
+                'adapt' => [
+                    'de' => 'Median vs. Mean festlegen.',
+                    'en' => 'Lock median vs mean.',
+                ],
             ],
-            'avg-deal-size' => [
-                'fieldsUsed' => ['Deals.amount', 'won filter'],
-                'sourceHints' => ['de' => 'Nur Won Deals', 'en' => 'Won deals only'],
+            [
+                'id' => 'mrr-custom',
+                'example' => false,
+                'label' => ['de' => 'MRR (Custom Property)', 'en' => 'MRR (custom property)'],
+                'question' => [
+                    'de' => 'Wie hoch ist monatlich wiederkehrender Umsatz aus Deal-/Line-Properties?',
+                    'en' => 'What is monthly recurring revenue from deal/line properties?',
+                ],
+                'formula' => 'SUM(deals.hs_mrr OR custom_mrr_property) WHERE subscription_active',
+                'grain' => ['de' => 'deal / line item', 'en' => 'deal / line item'],
+                'dimensions' => ['owner', 'region'],
+                'fieldsUsed' => ['deals.hs_mrr', 'line_items.quantity', 'line_items.price', 'custom subscription properties'],
+                'sourceHints' => [
+                    'de' => 'hs_mrr existiert nicht in jedem Portal — Custom Properties mappingen.',
+                    'en' => 'hs_mrr does not exist in every portal — map custom properties.',
+                ],
+                'adapt' => [
+                    'de' => 'Nicht deals.amount als MRR missbrauchen.',
+                    'en' => 'Do not misuse deals.amount as MRR.',
+                ],
             ],
-        ]),
+        ],
         'tools' => $crmTools,
         'relatedPlaybooks' => $relatedPlaybooks,
     ],
@@ -1008,4 +1087,9 @@ return [
         ],
         'relatedPlaybooks' => $relatedPlaybooks,
     ],
-];
+], (require __DIR__.'/suppliers-catalog-wave1.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+));

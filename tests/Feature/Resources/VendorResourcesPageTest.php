@@ -47,6 +47,13 @@ class VendorResourcesPageTest extends TestCase
         $response->assertSee('data-i18n="resources.governanceTitle"', false);
         $response->assertSee('data-i18n="resources.learningTitle"', false);
         $response->assertSee('data-i18n="resources.certificationsTitle"', false);
+        $response->assertSee('data-i18n="resources.supplierLibraryTitle"', false);
+        $response->assertSee('Open Supplier Library');
+        $response->assertSee('/suppliers/salesforce', false);
+        $response->assertSee('/suppliers/hubspot', false);
+        $response->assertSee('/suppliers/ga4', false);
+        $response->assertSee('/suppliers/dynamics365', false);
+        $response->assertSee('Google Analytics 4');
         $response->assertSee('data-i18n="resources.familyAll"', false);
         $response->assertSee('data-i18n="resources.familyLabel"', false);
         $response->assertSee('data-i18n="resources.stackAll"', false);

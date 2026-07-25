@@ -189,6 +189,7 @@
                         $residency = is_array($product['residency'] ?? null) ? array_values(array_filter($product['residency'], static fn ($m) => is_string($m) && $m !== '')) : [];
                         $compliance = is_array($product['compliance'] ?? null) ? $product['compliance'] : [];
                         $ourTools = is_array($toolsByProduct[$productId] ?? null) ? $toolsByProduct[$productId] : [];
+                        $supplierLibrary = is_array($supplierLibraryByProduct[$productId] ?? null) ? $supplierLibraryByProduct[$productId] : [];
                         $productStackIds = is_array($stacksByProduct[$productId] ?? null) ? $stacksByProduct[$productId] : [];
                         $brandColor = is_string($product['brandColor'] ?? null) ? $product['brandColor'] : null;
                         $logo = is_string($product['logo'] ?? null) ? $product['logo'] : null;
@@ -293,6 +294,15 @@
                                 'span' => true,
                                 'external' => false,
                             ],
+                            [
+                                'key' => 'supplierLibrary',
+                                'icon' => 'fa-database',
+                                'i18n' => 'resources.supplierLibraryTitle',
+                                'fallback' => 'Supplier Library',
+                                'links' => $supplierLibrary,
+                                'span' => true,
+                                'external' => false,
+                            ],
                         ];
                         $searchParts = [
                             $productId,
@@ -330,6 +340,14 @@
                             $searchParts[] = $toolLink['label']['en'] ?? '';
                             $searchParts[] = $toolLink['description']['de'] ?? '';
                             $searchParts[] = $toolLink['description']['en'] ?? '';
+                        }
+                        foreach ($supplierLibrary as $libraryLink) {
+                            $searchParts[] = $libraryLink['label']['de'] ?? '';
+                            $searchParts[] = $libraryLink['label']['en'] ?? '';
+                            $searchParts[] = $libraryLink['description']['de'] ?? '';
+                            $searchParts[] = $libraryLink['description']['en'] ?? '';
+                            $searchParts[] = 'supplier library';
+                            $searchParts[] = 'supplier';
                         }
                         foreach ($models as $modelId) {
                             $searchParts[] = $modelId;
@@ -481,6 +499,9 @@
                                 @if (($group['key'] ?? '') === 'ourTools' && $ourTools === [])
                                     @continue
                                 @endif
+                                @if (($group['key'] ?? '') === 'supplierLibrary' && $supplierLibrary === [])
+                                    @continue
+                                @endif
                                 @php
                                     $isExternalGroup = ($group['external'] ?? true) !== false;
                                 @endphp
@@ -499,9 +520,13 @@
                                     <ul class="vendor-resources-links">
                                         @forelse ($group['links'] as $link)
                                             @php
-                                                $linkHref = $isExternalGroup
-                                                    ? (string) ($link['href'] ?? '#')
-                                                    : locale_route((string) ($link['route'] ?? 'tools.landing'));
+                                                if (! empty($link['href'])) {
+                                                    $linkHref = (string) $link['href'];
+                                                } elseif (! $isExternalGroup) {
+                                                    $linkHref = locale_route((string) ($link['route'] ?? 'tools.landing'));
+                                                } else {
+                                                    $linkHref = (string) ($link['href'] ?? '#');
+                                                }
                                                 $linkLabelEn = $link['label']['en'] ?? ($isExternalGroup ? ($link['href'] ?? 'Link') : ($link['route'] ?? 'Tool'));
                                                 $linkLabelDe = $link['label']['de'] ?? $linkLabelEn;
                                                 $linkDescEn = $link['description']['en'] ?? '';

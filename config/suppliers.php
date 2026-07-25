@@ -9,6 +9,10 @@
 return [
     'domains' => [
         'crm' => ['de' => 'CRM', 'en' => 'CRM'],
+        'service' => ['de' => 'Service', 'en' => 'Service'],
+        'commerce' => ['de' => 'Commerce', 'en' => 'Commerce'],
+        'erp' => ['de' => 'ERP', 'en' => 'ERP'],
+        'hcm' => ['de' => 'HCM', 'en' => 'HCM'],
         'analytics' => ['de' => 'Analytics', 'en' => 'Analytics'],
     ],
 
