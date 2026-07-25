@@ -18,7 +18,7 @@
     >
         @include('components.sprint-planner.bootstrap-json')
         <h1 class="tools-page-title" data-i18n="sp.templatesTitle">Plan templates</h1>
-        <p class="tools-page-lead" data-i18n="sp.templatesLead">
+        <p class="tools-page-lead" data-hub-lead data-i18n="sp.templatesLead">
             Markdown templates define reusable sprint structures. Starting a plan creates a local instance.
         </p>
 

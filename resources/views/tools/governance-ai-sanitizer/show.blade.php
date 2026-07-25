@@ -7,7 +7,7 @@
 @section('content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-i18n="governance.pageTitle">Governance AI Sanitizer</h1>
-        <p class="tools-page-lead" data-i18n="governance.pageLead">
+        <p class="tools-page-lead" data-hub-lead data-i18n="governance.pageLead">
             Walk through prompt sanitization, copy the outbound message to your LLM, then restore mapped PII from the AI reply.
         </p>
 

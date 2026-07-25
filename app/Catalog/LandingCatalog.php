@@ -53,15 +53,148 @@ final class LandingCatalog
      */
     public function latestStories(): array
     {
-        return collect($this->playbooks->allForIndexCatalog())
+        return collect($this->allForIndexCatalog())
             ->take(self::STORIES_PREVIEW_LIMIT)
             ->values()
             ->all();
+    }
+
+    /**
+     * Full catalog index entries (standalone + first series parts), newest first.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function allForIndexCatalog(): array
+    {
+        return $this->playbooks->allForIndexCatalog();
     }
 
     /** Total stories in the full overview (all series parts included). */
     public function storyCount(): int
     {
         return count($this->playbooks->allForIndex());
+    }
+
+    /**
+     * KPI counts for landing hub cards.
+     *
+     * @return array{
+     *   stories: int,
+     *   resources: int,
+     *   suppliers: int,
+     *   compliance: int,
+     *   sprintPlanner: int,
+     *   tools: int
+     * }
+     */
+    public function hubCounts(): array
+    {
+        return [
+            'stories' => $this->storyCount(),
+            'resources' => count(config('vendor-resources.products', [])),
+            'suppliers' => count(config('suppliers.products', [])),
+            'compliance' => count(config('compliance.items', [])),
+            'sprintPlanner' => $this->sprintTemplateCount(),
+            'tools' => $this->toolCount(),
+        ];
+    }
+
+    /**
+     * Top stories by likes, then views (catalog entries: series first parts only).
+     *
+     * @param  list<array<string, mixed>>  $itemsWithStats
+     * @return list<array<string, mixed>>
+     */
+    public function topStories(array $itemsWithStats, int $limit = 3): array
+    {
+        $ranked = $itemsWithStats;
+
+        usort($ranked, static function (array $a, array $b): int {
+            $likesA = max(0, (int) ($a['stats']['likes'] ?? 0));
+            $likesB = max(0, (int) ($b['stats']['likes'] ?? 0));
+            if ($likesA !== $likesB) {
+                return $likesB <=> $likesA;
+            }
+
+            $viewsA = max(0, (int) ($a['stats']['views'] ?? 0));
+            $viewsB = max(0, (int) ($b['stats']['views'] ?? 0));
+            if ($viewsA !== $viewsB) {
+                return $viewsB <=> $viewsA;
+            }
+
+            $dateA = $a['indexSortTimestamp'] ?? ($a['sortDate']?->getTimestamp() ?? 0);
+            $dateB = $b['indexSortTimestamp'] ?? ($b['sortDate']?->getTimestamp() ?? 0);
+
+            return (int) $dateB <=> (int) $dateA;
+        });
+
+        return array_values(array_slice($ranked, 0, max(0, $limit)));
+    }
+
+    private function sprintTemplateCount(): int
+    {
+        $path = config('sprint-planner.content_path');
+
+        if (! is_string($path) || $path === '' || ! is_dir($path)) {
+            return 0;
+        }
+
+        $files = glob(rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'*.en.md');
+
+        return is_array($files) ? count($files) : 0;
+    }
+
+    /**
+     * Pick a random landing quote filler from the configured pool.
+     *
+     * @return array{quote: array{de: string, en: string}, attribution: array{de: string, en: string}}|null
+     */
+    public function landingQuote(): ?array
+    {
+        $quotes = config('tools.landing_quotes', []);
+
+        if (! is_array($quotes) || $quotes === []) {
+            return null;
+        }
+
+        /** @var list<array{quote?: array{de?: string, en?: string}, attribution?: array{de?: string, en?: string}}> $quotes */
+        $quotes = array_values(array_filter($quotes, 'is_array'));
+
+        if ($quotes === []) {
+            return null;
+        }
+
+        $quote = $quotes[array_rand($quotes)];
+
+        if (! is_array($quote)) {
+            return null;
+        }
+
+        $quoteText = $quote['quote'] ?? null;
+        $attribution = $quote['attribution'] ?? null;
+
+        if (! is_array($quoteText) || ! is_array($attribution)) {
+            return null;
+        }
+
+        $quoteEn = trim((string) ($quoteText['en'] ?? ''));
+        $quoteDe = trim((string) ($quoteText['de'] ?? $quoteEn));
+        $attrEn = trim((string) ($attribution['en'] ?? ''));
+        $attrDe = trim((string) ($attribution['de'] ?? $attrEn));
+
+        if ($quoteEn === '' && $quoteDe === '') {
+            return null;
+        }
+
+        return [
+            'quote' => [
+                'en' => $quoteEn !== '' ? $quoteEn : $quoteDe,
+                'de' => $quoteDe !== '' ? $quoteDe : $quoteEn,
+            ],
+            'attribution' => [
+                'en' => $attrEn,
+                'de' => $attrDe !== '' ? $attrDe : $attrEn,
+            ],
+        ];
     }
 }

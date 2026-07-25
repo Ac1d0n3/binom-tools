@@ -7,7 +7,7 @@
 @section('content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-i18n="promptStudio.pageTitle">Prompt Studio</h1>
-        <p class="tools-page-lead" data-i18n="promptStudio.pageLead">
+        <p class="tools-page-lead" data-hub-lead data-i18n="promptStudio.pageLead">
             Build professional AI prompts in seconds — role, task, and model-aware.
         </p>
 

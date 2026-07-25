@@ -13,7 +13,7 @@
         <div class="tools-content">
             <section class="tools-section">
                 <h2 class="tools-section__title" data-i18n="home.hubsTitle">Hubs</h2>
-                <p class="tools-section__lead" data-i18n="home.hubsLead">
+                <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
                     Entry points for stories, vendor resources, compliance, sprint planning, and interactive governance workflows.
                 </p>
                 <div class="tools-card-grid">
@@ -26,6 +26,9 @@
                         icon="fa-book-open"
                         accent="primary"
                         card-id="hub-stories"
+                        :hub="true"
+                        :count="$hubCounts['stories']"
+                        count-label-key="home.hub.stories.countLabel"
                     />
                     <x-tools.card
                         :href="locale_route('resources.index')"
@@ -36,6 +39,9 @@
                         icon="fa-link"
                         accent="accent"
                         card-id="hub-resources"
+                        :hub="true"
+                        :count="$hubCounts['resources']"
+                        count-label-key="home.hub.resources.countLabel"
                     />
                     <x-tools.card
                         :href="locale_route('suppliers.index')"
@@ -46,6 +52,9 @@
                         icon="fa-database"
                         accent="primary"
                         card-id="hub-suppliers"
+                        :hub="true"
+                        :count="$hubCounts['suppliers']"
+                        count-label-key="home.hub.suppliers.countLabel"
                     />
                     <x-tools.card
                         :href="locale_route('compliance.index')"
@@ -56,6 +65,9 @@
                         icon="fa-scale-balanced"
                         accent="accent"
                         card-id="hub-compliance"
+                        :hub="true"
+                        :count="$hubCounts['compliance']"
+                        count-label-key="home.hub.compliance.countLabel"
                     />
                     <x-tools.card
                         :href="locale_route('sprint-planner.index')"
@@ -66,6 +78,9 @@
                         icon="fa-list-check"
                         accent="primary"
                         card-id="hub-sprint-planner"
+                        :hub="true"
+                        :count="$hubCounts['sprintPlanner']"
+                        count-label-key="home.hub.sprintPlanner.countLabel"
                     />
                     <x-tools.card
                         :href="locale_route('tools.overview')"
@@ -76,13 +91,16 @@
                         icon="fa-screwdriver-wrench"
                         accent="primary"
                         card-id="hub-tools"
+                        :hub="true"
+                        :count="$hubCounts['tools']"
+                        count-label-key="home.hub.tools.countLabel"
                     />
                 </div>
             </section>
 
             <section class="tools-section">
                 <h2 class="tools-section__title" data-i18n="home.storiesTitle">Governance stories</h2>
-                <p class="tools-section__lead" data-i18n="home.storiesLead">
+                <p class="tools-section__lead" data-hub-lead data-i18n="home.storiesLead">
                     Playbooks on data governance topics — step by step, from idea to implementation.
                 </p>
                 <div class="tools-card-grid">
@@ -96,13 +114,14 @@
                         :count="$storyCount"
                         icon="fa-book-open"
                     />
+                    <x-tools.top-stories-card :stories="$topStories" />
                 </div>
             </section>
 
             @if (count($featuredAiTools) > 0)
                 <section class="tools-section">
                     <h2 class="tools-section__title" data-i18n="home.aiTitle">AI tools</h2>
-                    <p class="tools-section__lead" data-i18n="home.aiLead">
+                    <p class="tools-section__lead" data-hub-lead data-i18n="home.aiLead">
                         Build prompts and sanitize them before sending to external AI tools.
                     </p>
                     <div class="tools-card-grid">
@@ -119,13 +138,19 @@
                                 :platform-marks="\App\Support\ToolsNav::platformMarks($item)"
                             />
                         @endforeach
+                        @if (! empty($landingQuote))
+                            <x-tools.quote-card
+                                :quote="$landingQuote['quote']"
+                                :attribution="$landingQuote['attribution']"
+                            />
+                        @endif
                     </div>
                 </section>
             @endif
 
             <section class="tools-section">
                 <h2 class="tools-section__title" data-i18n="home.toolsTitle">Binom-Tools</h2>
-                <p class="tools-section__lead" data-i18n="home.workflowsLead">
+                <p class="tools-section__lead" data-hub-lead data-i18n="home.workflowsLead">
                     Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
                 </p>
                 <div class="tools-card-grid">

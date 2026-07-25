@@ -15,7 +15,7 @@
     </div>
 
     @if ($leadKey)
-        <p class="tools-page-lead" data-i18n="{{ $leadKey }}"></p>
+        <p class="tools-page-lead" data-hub-lead data-i18n="{{ $leadKey }}"></p>
     @endif
 
     <div class="tools-page-stack">

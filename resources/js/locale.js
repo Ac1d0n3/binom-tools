@@ -195,21 +195,29 @@ const shellLabels = {
         'home.hub.stories.title': 'Stories',
         'home.hub.stories.description':
             'Schrittweise Governance-Playbooks — von der Idee bis zur Umsetzung.',
+        'home.hub.stories.countLabel': 'Stories',
         'home.hub.resources.title': 'Ressourcen',
         'home.hub.resources.description':
             'Offizielle Hilfe, Governance, Lernpfade, Cloud-Residenz (DSGVO) und Compliance — Filter nach Hersteller, Familie, SaaS/Open Source oder Residenz.',
+        'home.hub.resources.countLabel': 'Produkte',
         'home.hub.suppliers.title': 'Suppliers',
         'home.hub.suppliers.description':
             'Kernfelder, Dimensionen, PII/DSDR und Standard-Measure-Vorlagen je Quelle — Salesforce, HubSpot, GA4.',
+        'home.hub.suppliers.countLabel': 'Produkte',
         'home.hub.compliance.title': 'Compliance',
         'home.hub.compliance.description':
             'Frameworks und Regeln zu Daten, Privacy, Security und KI — plus Zertifizierungs-Roadmap für Consultants.',
+        'home.hub.compliance.countLabel': 'Frameworks',
         'home.hub.sprintPlanner.title': 'Sprint Planner',
         'home.hub.sprintPlanner.description':
             'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Funde in nachvollziehbare Aufgaben überführen.',
+        'home.hub.sprintPlanner.countLabel': 'Vorlagen',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
+        'home.hub.tools.countLabel': 'Tools',
+        'home.topStories.title': 'Top Stories',
+        'home.topStories.lead': 'Aktuell am beliebtesten',
         'home.sprintPlannerTitle': 'Sprint Planner',
         'home.sprintPlannerLead':
             'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
@@ -330,7 +338,7 @@ const shellLabels = {
         'settings.openMenu': 'Einstellungen',
         'settings.fullWidth': 'Volle Breite',
         'settings.hideNavigation': 'Navigation ausblenden',
-        'settings.hideHubLeads': 'Hub-Infos ausblenden',
+        'settings.hideHubLeads': 'Infos ausblenden',
         'settings.hideSidebars': 'Sidebars ausblenden',
         'playbooks.focusExpand': 'Sidebars ausblenden',
         'playbooks.focusCollapse': 'Sidebars einblenden',
@@ -707,6 +715,10 @@ const shellLabels = {
         'card.binom-ngx.title': 'binom-ngx',
         'card.binom-ngx.description': 'Angular UI Libraries, SDKs und interaktive Dokumentation.',
         'card.binom-ngx.meta': 'Docs & Demos',
+        'card.qlik-binom.title': 'qlik.binom.net',
+        'card.qlik-binom.description':
+            'Altes Qlik-Training-Projekt — Demos, Übungen und Referenzen rund um Qlik.',
+        'card.qlik-binom.meta': 'Training (Archiv)',
         'nav.stories': 'Stories',
         'nav.storiesOverview': 'Übersicht',
         'nav.storiesMore': '+ {{count}} weitere Stories',
@@ -1111,21 +1123,29 @@ const shellLabels = {
         'home.hub.stories.title': 'Stories',
         'home.hub.stories.description':
             'Step-by-step governance playbooks — from idea to implementation.',
+        'home.hub.stories.countLabel': 'stories',
         'home.hub.resources.title': 'Resources',
         'home.hub.resources.description':
             'Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.',
+        'home.hub.resources.countLabel': 'products',
         'home.hub.suppliers.title': 'Suppliers',
         'home.hub.suppliers.description':
             'Core fields, dimensions, PII/DSDR and standard measure templates per source — Salesforce, HubSpot, GA4.',
+        'home.hub.suppliers.countLabel': 'products',
         'home.hub.compliance.title': 'Compliance',
         'home.hub.compliance.description':
             'Frameworks and regulations for data, privacy, security and AI — plus a consultant certification roadmap.',
+        'home.hub.compliance.countLabel': 'frameworks',
         'home.hub.sprintPlanner.title': 'Sprint Planner',
         'home.hub.sprintPlanner.description':
             'Plan BI and governance work from templates, attach tool exports, and turn findings into trackable tasks.',
+        'home.hub.sprintPlanner.countLabel': 'templates',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
             'Interactive reference workflows — step by step, copy-paste ready.',
+        'home.hub.tools.countLabel': 'tools',
+        'home.topStories.title': 'Top stories',
+        'home.topStories.lead': 'Most liked right now',
         'home.sprintPlannerTitle': 'Sprint Planner',
         'home.sprintPlannerLead':
             'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
@@ -1246,7 +1266,7 @@ const shellLabels = {
         'settings.openMenu': 'Settings',
         'settings.fullWidth': 'Full width',
         'settings.hideNavigation': 'Hide navigation',
-        'settings.hideHubLeads': 'Hide hub intros',
+        'settings.hideHubLeads': 'Hide infos',
         'settings.hideSidebars': 'Hide sidebars',
         'playbooks.focusExpand': 'Hide sidebars',
         'playbooks.focusCollapse': 'Show sidebars',
@@ -1623,6 +1643,10 @@ const shellLabels = {
         'card.binom-ngx.title': 'binom-ngx',
         'card.binom-ngx.description': 'Angular UI libraries, SDKs, and interactive documentation.',
         'card.binom-ngx.meta': 'Docs & Demos',
+        'card.qlik-binom.title': 'qlik.binom.net',
+        'card.qlik-binom.description':
+            'Old Qlik training project — demos, exercises, and Qlik reference material.',
+        'card.qlik-binom.meta': 'Training (archive)',
         'nav.stories': 'Stories',
         'nav.storiesOverview': 'Overview',
         'nav.storiesMore': '+ {{count}} more stories',

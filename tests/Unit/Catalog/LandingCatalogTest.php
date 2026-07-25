@@ -67,4 +67,53 @@ class LandingCatalogTest extends TestCase
         $this->assertSame(count(config('tools.nav', [])), $catalog->toolCount());
         $this->assertSame(count(app(PlaybookRepository::class)->allForIndex()), $catalog->storyCount());
     }
+
+    public function test_landing_quote_returns_configured_bilingual_entry(): void
+    {
+        $catalog = app(LandingCatalog::class);
+        $quote = $catalog->landingQuote();
+
+        $this->assertIsArray($quote);
+        $this->assertArrayHasKey('quote', $quote);
+        $this->assertArrayHasKey('attribution', $quote);
+        $this->assertNotSame('', $quote['quote']['en']);
+        $this->assertNotSame('', $quote['quote']['de']);
+    }
+
+    public function test_hub_counts_include_products_and_catalog_sizes(): void
+    {
+        $catalog = app(LandingCatalog::class);
+        $counts = $catalog->hubCounts();
+
+        $this->assertSame($catalog->storyCount(), $counts['stories']);
+        $this->assertSame($catalog->toolCount(), $counts['tools']);
+        $this->assertSame(count(config('suppliers.products', [])), $counts['suppliers']);
+        $this->assertSame(count(config('vendor-resources.products', [])), $counts['resources']);
+        $this->assertSame(count(config('compliance.items', [])), $counts['compliance']);
+        $this->assertGreaterThan(0, $counts['sprintPlanner']);
+    }
+
+    public function test_top_stories_ranks_by_likes_then_views(): void
+    {
+        $catalog = app(LandingCatalog::class);
+        $ranked = $catalog->topStories([
+            [
+                'slug' => 'a',
+                'stats' => ['likes' => 1, 'views' => 100],
+                'indexSortTimestamp' => 1,
+            ],
+            [
+                'slug' => 'b',
+                'stats' => ['likes' => 5, 'views' => 10],
+                'indexSortTimestamp' => 2,
+            ],
+            [
+                'slug' => 'c',
+                'stats' => ['likes' => 5, 'views' => 50],
+                'indexSortTimestamp' => 3,
+            ],
+        ], 2);
+
+        $this->assertSame(['c', 'b'], array_column($ranked, 'slug'));
+    }
 }

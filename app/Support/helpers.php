@@ -3,6 +3,7 @@
 use App\Support\AppBase;
 use App\Support\Locale;
 use App\Support\LocaleUrl;
+use App\Support\ReadingTime;
 
 if (! function_exists('app_base_path')) {
     function app_base_path(): string
@@ -45,6 +46,16 @@ if (! function_exists('playbook_category_key')) {
         $key = \Illuminate\Support\Str::slug($label);
 
         return $key !== '' ? $key : null;
+    }
+}
+
+if (! function_exists('format_reading_time')) {
+    /**
+     * Format reading time minutes for display (e.g. "12 min", "1 Std 5 min", "1 h 5 min").
+     */
+    function format_reading_time(int $minutes, string $locale = 'en'): string
+    {
+        return ReadingTime::format($minutes, $locale);
     }
 }
 

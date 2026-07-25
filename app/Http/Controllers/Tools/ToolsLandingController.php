@@ -16,6 +16,9 @@ class ToolsLandingController extends Controller
 
     public function index(): View
     {
+        $catalogStories = $this->stats->attachToItems($this->catalog->latestStories());
+        $allCatalogForRanking = $this->stats->attachToItems($this->catalog->allForIndexCatalog());
+
         return view('tools.landing', [
             'ecosystemItems' => config('tools.ecosystem', []),
             'links' => config('tools.links', []),
@@ -23,8 +26,11 @@ class ToolsLandingController extends Controller
             'featuredAiTools' => $this->catalog->featuredAiTools(),
             'latestTools' => $this->catalog->latestTools(),
             'toolCount' => $this->catalog->toolCount(),
-            'latestStories' => $this->stats->attachToItems($this->catalog->latestStories()),
+            'latestStories' => $catalogStories,
+            'topStories' => $this->catalog->topStories($allCatalogForRanking, 3),
             'storyCount' => $this->catalog->storyCount(),
+            'hubCounts' => $this->catalog->hubCounts(),
+            'landingQuote' => $this->catalog->landingQuote(),
         ]);
     }
 }

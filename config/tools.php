@@ -801,12 +801,218 @@ return [
             'external' => true,
             'href' => ToolLinks::BINOM_NGX_DOCS,
         ],
+        [
+            'id' => 'qlik-binom',
+            'title' => 'qlik.binom.net',
+            'description' => [
+                'de' => 'Altes Qlik-Training-Projekt — Demos, Übungen und Referenzen rund um Qlik.',
+                'en' => 'Old Qlik training project — demos, exercises, and Qlik reference material.',
+            ],
+            'meta' => [
+                'de' => 'Training (Archiv)',
+                'en' => 'Training (archive)',
+            ],
+            'icon' => 'fa-graduation-cap',
+            'accent' => 'primary',
+            'featured' => false,
+            'external' => true,
+            'href' => ToolLinks::QLIK_BINOM,
+        ],
     ],
 
     'links' => [
         'website' => env('BINOM_WEBSITE_URL', 'https://binom.net'),
         'binom_ngx_docs' => ToolLinks::BINOM_NGX_DOCS,
+        'qlik_binom' => ToolLinks::QLIK_BINOM,
         'repository' => env('BINOM_TOOLS_REPO_URL', 'https://github.com/Ac1d0n3/binom-tools'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Landing page quote fillers (punny data-governance one-liners)
+    |--------------------------------------------------------------------------
+    */
+    'landing_quotes' => [
+        [
+            'quote' => [
+                'en' => "I'm data gover me well.",
+                'de' => 'Ich bin data-governt — mir geht’s gut.',
+            ],
+            'attribution' => [
+                'en' => '— Anonymous steward',
+                'de' => '— Anonymer Steward',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Keep calm and govern on.',
+                'de' => 'Ruhe bewahren und weiter governen.',
+            ],
+            'attribution' => [
+                'en' => '— A catalog whisperer',
+                'de' => '— Ein Katalog-Flüsterer',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Metadata: because vibes are not lineage.',
+                'de' => 'Metadaten: Weil Vibes keine Lineage sind.',
+            ],
+            'attribution' => [
+                'en' => '— A slightly tired architect',
+                'de' => '— Ein leicht müder Architekt',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'No PII, no cry.',
+                'de' => 'Kein PII, kein Drama.',
+            ],
+            'attribution' => [
+                'en' => '— Privacy with a smile',
+                'de' => '— Privacy mit Augenzwinkern',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Trust, but verify — then document.',
+                'de' => 'Vertrauen ist gut, Verify und Dokumentieren besser.',
+            ],
+            'attribution' => [
+                'en' => '— A cautious data owner',
+                'de' => '— Ein vorsichtiger Data Owner',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Bronze, silver, gold — still needs a steward.',
+                'de' => 'Bronze, Silver, Gold — ohne Steward glänzt nichts.',
+            ],
+            'attribution' => [
+                'en' => '— Medallion realist',
+                'de' => '— Medallion-Realist',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Schema first, regrets later — or never.',
+                'de' => 'Schema first, Reue later — oder nie.',
+            ],
+            'attribution' => [
+                'en' => '— A YAML romantic',
+                'de' => '— Ein YAML-Romantiker',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'If it isn’t in the catalog, it doesn’t exist.',
+                'de' => 'Was nicht im Katalog steht, existiert nicht.',
+            ],
+            'attribution' => [
+                'en' => '— Catalog absolutist',
+                'de' => '— Katalog-Absolutist',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'dq_rule > “it looked fine yesterday”.',
+                'de' => 'dq_rule > „Gestern sah’s noch gut aus.“',
+            ],
+            'attribution' => [
+                'en' => '— Quality with receipts',
+                'de' => '— Qualität mit Belegen',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Access denied is a love language.',
+                'de' => 'Access denied ist eine Liebessprache.',
+            ],
+            'attribution' => [
+                'en' => '— Security softie',
+                'de' => '— Security-Softie',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Owners own. Stewards steward. Spreadsheets panic.',
+                'de' => 'Owner ownen. Stewards stewarden. Spreadsheets paniken.',
+            ],
+            'attribution' => [
+                'en' => '— RACI with humor',
+                'de' => '— RACI mit Humor',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Fresh data, stale excuses.',
+                'de' => 'Frische Daten, abgestandene Ausreden.',
+            ],
+            'attribution' => [
+                'en' => '— Pipeline poet',
+                'de' => '— Pipeline-Poet',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Tag it, bag it, don’t drag it.',
+                'de' => 'Tag it, bag it, don’t drag it.',
+            ],
+            'attribution' => [
+                'en' => '— Classification coach',
+                'de' => '— Klassifikations-Coach',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Lineage is just gossip with receipts.',
+                'de' => 'Lineage ist Klatsch — mit Belegen.',
+            ],
+            'attribution' => [
+                'en' => '— Impact analyst',
+                'de' => '— Impact-Analyst',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Null is fine. Silent null is not.',
+                'de' => 'Null ist okay. Stilles Null ist es nicht.',
+            ],
+            'attribution' => [
+                'en' => '— Honest warehouse',
+                'de' => '— Ehrliches Warehouse',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'Govern once, reuse forever.',
+                'de' => 'Einmal governen, ewig wiederverwenden.',
+            ],
+            'attribution' => [
+                'en' => '— Platform minimalist',
+                'de' => '— Platform-Minimalist',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'PII is personal. Treat it that way.',
+                'de' => 'PII ist persönlich. Behandel es so.',
+            ],
+            'attribution' => [
+                'en' => '— Empathetic DPO',
+                'de' => '— Empathischer DPO',
+            ],
+        ],
+        [
+            'quote' => [
+                'en' => 'docs > tribal knowledge.',
+                'de' => 'docs > Stammeswissen.',
+            ],
+            'attribution' => [
+                'en' => '— Onboarding survivor',
+                'de' => '— Onboarding-Überlebender',
+            ],
+        ],
     ],
 
     /*

@@ -18,9 +18,16 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('AI Sanitizer');
         $response->assertSee('Prompt Studio');
         $response->assertSee('tools-card--overview', false);
+        $response->assertSee('tools-card--quote', false);
+        $response->assertSee('tools-card__quote-binary', false);
+        $response->assertSee('tools-card--hub', false);
+        $response->assertSee('tools-card--top-stories', false);
+        $response->assertSee('data-i18n="home.topStories.title"', false);
         $response->assertSee(route('tools.overview'), false);
         $response->assertSee(route('playbooks.index'), false);
         $response->assertSee('binom-ngx', false);
+        $response->assertSee('qlik.binom.net', false);
+        $response->assertSee('https://qlik.binom.net', false);
         $response->assertSee('https://ngx-docs.binom.net', false);
         $response->assertDontSee('http://localhost:4200', false);
         $response->assertSee('Git-Repo klonen', false);

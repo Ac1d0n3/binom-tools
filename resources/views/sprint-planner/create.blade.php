@@ -23,7 +23,7 @@
         <header class="sp-plan-header">
             <div class="sp-plan-header__main">
                 <h1 class="tools-page-title" data-i18n="sp.creator.title">Plan Creator</h1>
-                <p class="tools-page-lead" data-i18n="sp.creator.lead">
+                <p class="tools-page-lead" data-hub-lead data-i18n="sp.creator.lead">
                     Build a plan with sprints, tasks, help text, external links and optional data tables.
                 </p>
             </div>

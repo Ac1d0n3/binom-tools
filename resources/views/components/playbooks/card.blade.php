@@ -9,8 +9,12 @@
     $descEn = $en['description'] ?? $descDe;
     $categoryDe = $de['category'] ?? null;
     $categoryEn = $en['category'] ?? $categoryDe;
-    $readingDe = ($de['readingTimeMinutes'] ?? null) ? ($de['readingTimeMinutes'] . ' min') : null;
-    $readingEn = ($en['readingTimeMinutes'] ?? null) ? ($en['readingTimeMinutes'] . ' min') : null;
+    $readingDe = isset($de['readingTimeMinutes'])
+        ? format_reading_time((int) $de['readingTimeMinutes'], 'de')
+        : null;
+    $readingEn = isset($en['readingTimeMinutes'])
+        ? format_reading_time((int) $en['readingTimeMinutes'], 'en')
+        : null;
     $seriesId = $item['seriesId'] ?? null;
     $seriesPart = $item['seriesPart'] ?? null;
     $seriesTitleDe = $de['seriesTitle'] ?? null;

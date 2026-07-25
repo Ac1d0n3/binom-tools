@@ -7,7 +7,7 @@
 @section('content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-i18n="schema.pageTitle">Schema YML Editor</h1>
-        <p class="tools-page-lead" data-i18n="schema.pageLead"></p>
+        <p class="tools-page-lead" data-hub-lead data-i18n="schema.pageLead"></p>
 
         <div class="tools-page-stack">
             <p class="tools-standalone-notice" data-i18n="schema.standaloneNotice"></p>

@@ -31,7 +31,7 @@
 
         <header class="sp-page-header">
             <h1 class="tools-page-title" data-i18n="sp.peopleTitle">Teams &amp; people</h1>
-            <p class="tools-page-lead" data-i18n="{{ $accountsOn ? 'sp.peopleLeadAccounts' : 'sp.peopleLead' }}">
+            <p class="tools-page-lead" data-hub-lead data-i18n="{{ $accountsOn ? 'sp.peopleLeadAccounts' : 'sp.peopleLead' }}">
                 @if ($accountsOn)
                     People and teams come from shared accounts. Manage them under Account when you have permission.
                 @else

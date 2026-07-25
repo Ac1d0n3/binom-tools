@@ -31,7 +31,7 @@
 
     <div class="playbook-meta__item">
         <dt class="playbook-meta__label" data-i18n="playbooks.readingTime">Reading time</dt>
-        <dd class="playbook-meta__value">{{ $variant->readingTimeMinutes }} min</dd>
+        <dd class="playbook-meta__value">{{ format_reading_time($variant->readingTimeMinutes, $variant->locale ?? current_locale()) }}</dd>
     </div>
 
     <div class="playbook-meta__item">

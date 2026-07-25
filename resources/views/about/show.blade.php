@@ -6,7 +6,7 @@
 @section('content')
     <div class="tools-content">
         <h1 class="tools-page-title" data-i18n="about.title">About binom-tools</h1>
-        <p class="tools-page-lead" data-i18n="about.lead">
+        <p class="tools-page-lead" data-hub-lead data-i18n="about.lead">
             Background on the project — what it is and where content and visuals come from.
         </p>
 

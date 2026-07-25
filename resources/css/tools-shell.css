@@ -458,7 +458,9 @@ html:has(.tools-shell__main--sprint-planner) body {
     color: var(--theme-color-danger, #b91c1c);
 }
 
-html[data-hide-hub-leads="true"] [data-hub-lead] {
+html[data-hide-hub-leads="true"] [data-hub-lead],
+html[data-hide-hub-leads="true"] .tools-section > .tools-section__lead,
+html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead {
     display: none !important;
 }
 
@@ -1068,6 +1070,10 @@ html[data-hide-hub-leads="true"] [data-hub-lead] {
 .tools-home .tools-card-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--tools-stack-gap, 1.5rem);
+}
+
+.tools-home .tools-card-grid > .tools-card--top-stories {
+    grid-column: span 2;
 }
 
 .tools-home .tools-card-grid--wide-feature {
@@ -1759,14 +1765,216 @@ html[data-color-scheme='dark'] .tools-card__series-badge {
     box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
 }
 
+.tools-card--hub {
+    padding: 1.25rem 1.2rem 1.35rem;
+    overflow: hidden;
+}
+
+.tools-card--hub-primary {
+    border-color: color-mix(in srgb, var(--theme-color-primary) 16%, var(--tools-card-background));
+    background:
+        radial-gradient(
+            120% 90% at 0% 0%,
+            color-mix(in srgb, var(--theme-color-primary) 18%, transparent),
+            transparent 55%
+        ),
+        linear-gradient(
+            155deg,
+            color-mix(in srgb, var(--theme-color-primary) 12%, var(--tools-card-background)) 0%,
+            var(--tools-card-background) 62%
+        );
+}
+
+.tools-card--hub-accent {
+    border-color: color-mix(in srgb, var(--theme-color-accent) 18%, var(--tools-card-background));
+    background:
+        radial-gradient(
+            120% 90% at 0% 0%,
+            color-mix(in srgb, var(--theme-color-accent) 20%, transparent),
+            transparent 55%
+        ),
+        linear-gradient(
+            155deg,
+            color-mix(in srgb, var(--theme-color-accent) 14%, var(--tools-card-background)) 0%,
+            var(--tools-card-background) 62%
+        );
+}
+
+.tools-card--hub-primary:hover {
+    border-color: color-mix(in srgb, var(--theme-color-primary) 26%, var(--tools-card-background));
+    background:
+        radial-gradient(
+            120% 90% at 0% 0%,
+            color-mix(in srgb, var(--theme-color-primary) 24%, transparent),
+            transparent 58%
+        ),
+        linear-gradient(
+            155deg,
+            color-mix(in srgb, var(--theme-color-primary) 16%, var(--tools-card-background)) 0%,
+            var(--tools-card-background) 62%
+        );
+}
+
+.tools-card--hub-accent:hover {
+    border-color: color-mix(in srgb, var(--theme-color-accent) 28%, var(--tools-card-background));
+    background:
+        radial-gradient(
+            120% 90% at 0% 0%,
+            color-mix(in srgb, var(--theme-color-accent) 26%, transparent),
+            transparent 58%
+        ),
+        linear-gradient(
+            155deg,
+            color-mix(in srgb, var(--theme-color-accent) 18%, var(--tools-card-background)) 0%,
+            var(--tools-card-background) 62%
+        );
+}
+
+.tools-card__meta--kpi {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin: 0.15rem 0 0.35rem;
+}
+
+.tools-card--hub .tools-card__count,
+.tools-card__meta--kpi .tools-card__count {
+    font-size: 1.35rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--theme-color-primary);
+}
+
+.tools-card--hub-accent .tools-card__count {
+    color: var(--theme-color-accent);
+}
+
+.tools-card--hub .tools-card__meta--kpi span:not(.tools-card__count) {
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--theme-color-accent) 70%, var(--text-color));
+}
+
+.tools-card--top-stories {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    padding: 0.85rem 1.1rem;
+    border-color: color-mix(in srgb, var(--theme-color-accent) 32%, var(--tools-card-border));
+    background:
+        linear-gradient(
+            155deg,
+            color-mix(in srgb, var(--theme-color-accent) 10%, var(--tools-card-background)),
+            var(--tools-card-background) 55%
+        );
+    cursor: default;
+}
+
+.tools-card--top-stories:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.tools-card__top-stories-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 0 0 auto;
+    max-width: 11.5rem;
+}
+
+.tools-card__top-stories-header .tools-card__icon-wrap {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.05rem;
+}
+
+.tools-card__top-stories-header .tools-card__title {
+    font-size: 0.98rem;
+    margin: 0;
+}
+
+.tools-card__top-stories-header .tools-card__meta {
+    margin: 0.1rem 0 0;
+    font-size: 0.75rem;
+    color: color-mix(in srgb, var(--theme-color-accent) 75%, var(--text-color));
+}
+
+.tools-card__top-stories-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem 0.85rem;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.tools-card__top-stories-item {
+    display: grid;
+    grid-template-columns: 1.35rem minmax(0, 1fr);
+    gap: 0.45rem;
+    align-items: start;
+}
+
+.tools-card__top-stories-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--theme-color-primary-contrast);
+    background: var(--theme-color-primary);
+}
+
+.tools-card__top-stories-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.tools-card__top-stories-link:hover .tools-card__top-stories-title {
+    color: var(--theme-color-primary);
+}
+
+.tools-card__top-stories-title {
+    font-size: 0.84rem;
+    font-weight: 650;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tools-card__top-stories-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    font-size: 0.7rem;
+    color: color-mix(in srgb, var(--text-color) 62%, transparent);
+}
+
+.tools-card__top-stories-stats i {
+    margin-right: 0.2rem;
+}
+
 .tools-card--overview {
     border-style: dashed;
-    border-color: color-mix(in srgb, var(--theme-color-accent) 35%, var(--border-color));
+    border-color: color-mix(in srgb, var(--theme-color-accent) 35%, var(--tools-card-border));
     background: var(--tools-card-overview-background);
 }
 
 .tools-card--overview:hover {
-    border-color: color-mix(in srgb, var(--theme-color-accent) 55%, var(--border-color));
+    border-color: color-mix(in srgb, var(--theme-color-accent) 55%, var(--tools-card-border));
     background: color-mix(in srgb, var(--theme-color-accent) 10%, var(--tools-card-overview-background));
 }
 
@@ -1779,6 +1987,118 @@ html[data-color-scheme='dark'] .tools-card__series-badge {
     display: flex;
     align-items: baseline;
     gap: 0.35rem;
+}
+
+.tools-card--quote {
+    container-type: inline-size;
+    container-name: quote-card;
+    overflow: hidden;
+    padding: 1.25rem 1.2rem;
+    cursor: default;
+    border-color: color-mix(in srgb, var(--theme-color-accent) 38%, var(--tools-card-border));
+    background:
+        linear-gradient(
+            160deg,
+            color-mix(in srgb, var(--theme-color-primary) 12%, var(--tools-card-background)),
+            color-mix(in srgb, var(--theme-color-accent) 8%, var(--tools-card-background)) 55%,
+            var(--tools-card-background)
+        );
+}
+
+.tools-card--quote:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: color-mix(in srgb, var(--theme-color-accent) 55%, var(--tools-card-border));
+}
+
+.tools-card__quote-binary {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0.18;
+    color: var(--theme-color-primary);
+    user-select: none;
+}
+
+.tools-card__quote-binary-text {
+    position: absolute;
+    inset: -8%;
+    margin: 0;
+    width: 116%;
+    height: 116%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    /* Scale with card width so density stays even across breakpoints */
+    font-size: clamp(0.45rem, 2.6cqi, 0.72rem);
+    line-height: 1.55;
+    letter-spacing: 0.08em;
+    white-space: pre;
+    overflow: hidden;
+    animation: tools-quote-binary-drift 40s linear infinite;
+}
+
+.tools-card__quote-body {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0.75rem 0.85rem;
+    min-height: 7.5rem;
+}
+
+.tools-card__quote-mark-col {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 0.1rem;
+}
+
+.tools-card__quote-mark {
+    font-size: 1.65rem;
+    line-height: 1;
+    color: var(--theme-color-primary);
+}
+
+.tools-card__quote-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.tools-card__quote-text {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 650;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--text-color);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--tools-card-background) 85%, transparent);
+    overflow-wrap: anywhere;
+}
+
+.tools-card__quote-attribution {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--theme-color-accent);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--tools-card-background) 85%, transparent);
+}
+
+@keyframes tools-quote-binary-drift {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        transform: translate3d(-6%, -8%, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tools-card__quote-binary-text {
+        animation: none;
+    }
 }
 
 .tools-card__icon-wrap {
@@ -3720,6 +4040,20 @@ html[data-color-scheme='dark'] .tools-hero {
     }
 
     .tools-home .tools-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tools-home .tools-card-grid > .tools-card--top-stories {
+        grid-column: auto;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tools-card__top-stories-header {
+        max-width: none;
+    }
+
+    .tools-card__top-stories-list {
         grid-template-columns: 1fr;
     }
 

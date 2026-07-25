@@ -164,7 +164,7 @@
                         <span>{{ $workflow['label']['en'] ?? $workflowId }}</span>
                     </h2>
                     @if (! empty($workflow['description']['en']))
-                        <p class="tools-section__lead">{{ $workflow['description']['en'] }}</p>
+                        <p class="tools-section__lead" data-hub-lead>{{ $workflow['description']['en'] }}</p>
                     @endif
                     <ol class="tools-workflow-steps">
                         @foreach ($steps as $index => $stepId)

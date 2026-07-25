@@ -59,7 +59,7 @@
             data-reading-time-de="{{ $series->totalReadingTimeDe }}"
             data-reading-time-en="{{ $series->totalReadingTimeEn }}"
         >
-            {{ $series->partCount() }} parts · {{ $series->totalReadingTimeEn }} min total
+            {{ $series->partCount() }} parts · {{ format_reading_time($series->totalReadingTimeEn, 'en') }} total
         </p>
 
         <ol class="tools-series-card__parts">
@@ -68,6 +68,10 @@
                     <a
                         href="{{ locale_route('playbooks.show', ['slug' => $part->slug]) }}"
                         class="tools-series-card__part-link"
+                        data-playbook-series-part
+                        data-slug="{{ $part->slug }}"
+                        data-reading-time-de="{{ $part->readingTimeDe }}"
+                        data-reading-time-en="{{ $part->readingTimeEn }}"
                     >
                         <span class="tools-series-card__part-index">{{ $part->part }}.</span>
                         <span

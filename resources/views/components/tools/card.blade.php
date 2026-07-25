@@ -5,9 +5,13 @@
     'titleKey' => null,
     'descriptionKey' => null,
     'meta' => null,
+    'metaKey' => null,
+    'count' => null,
+    'countLabelKey' => null,
     'icon' => '🔧',
     'accent' => 'primary',
     'featured' => false,
+    'hub' => false,
     'external' => false,
     'cardId' => null,
     'example' => false,
@@ -26,11 +30,19 @@
         'Qlik' => 'images/qlik-badge.svg',
         'AI' => 'images/ai-badge.svg',
     ];
+    $hasCount = $count !== null && $count !== '';
 @endphp
 
 <a
     href="{{ $href }}"
-    class="tools-card {{ $featured ? 'tools-card--featured' : '' }} {{ $dbtBadge ? 'tools-card--dbt' : '' }}"
+    @class([
+        'tools-card',
+        'tools-card--featured' => $featured,
+        'tools-card--hub' => $hub,
+        'tools-card--hub-primary' => $hub && $accent === 'primary',
+        'tools-card--hub-accent' => $hub && $accent === 'accent',
+        'tools-card--dbt' => $dbtBadge,
+    ])
     @if ($cardId) data-card-id="{{ $cardId }}" @endif
     @if ($overviewItem) data-overview-item @endif
     @if ($searchText) data-search-text="{{ $searchText }}" @endif
@@ -53,8 +65,15 @@
                     <span class="tools-card__badge" data-i18n="card.exampleBadge">Example</span>
                 @endif
             </div>
-            @if ($meta)
-                <p class="tools-card__meta">{{ $meta }}</p>
+            @if ($hasCount)
+                <p class="tools-card__meta tools-card__meta--kpi">
+                    <span class="tools-card__count">{{ $count }}</span>
+                    @if ($countLabelKey)
+                        <span data-i18n="{{ $countLabelKey }}">items</span>
+                    @endif
+                </p>
+            @elseif ($meta)
+                <p class="tools-card__meta" @if ($metaKey) data-i18n="{{ $metaKey }}" @endif>{{ $meta }}</p>
             @endif
             <p class="tools-card__desc" @if ($descriptionKey) data-i18n="{{ $descriptionKey }}" @endif>{{ $description }}</p>
         </div>

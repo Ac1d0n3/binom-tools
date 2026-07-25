@@ -42,7 +42,7 @@
         @include('components.sprint-planner.bootstrap-json')
         <h1 class="tools-page-title">Sprint Planner</h1>
         @if ($pageLeadText)
-            <p class="tools-page-lead">{{ $pageLeadText }}</p>
+            <p class="tools-page-lead" data-hub-lead>{{ $pageLeadText }}</p>
         @endif
 
         @if ($showDemoBanner)
