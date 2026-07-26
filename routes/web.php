@@ -20,6 +20,7 @@ use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookOfflineController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\Compliance\ComplianceController;
+use App\Http\Controllers\Governance\GovernanceHubController;
 use App\Http\Controllers\Resources\VendorResourcesController;
 use App\Http\Controllers\Suppliers\SupplierLibraryController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
@@ -58,6 +59,7 @@ $registerRoutes = static function (bool $localized): void {
 
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
+    Route::get('/governance', [GovernanceHubController::class, 'index'])->name($name('governance.index'));
     Route::get('/resources', [VendorResourcesController::class, 'index'])->name($name('resources.index'));
     Route::get('/suppliers', [SupplierLibraryController::class, 'index'])->name($name('suppliers.index'));
     Route::get('/suppliers/{slug}', [SupplierLibraryController::class, 'show'])

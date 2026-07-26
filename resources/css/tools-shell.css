@@ -1015,6 +1015,516 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     line-height: 1.5;
 }
 
+.governance-hub {
+    max-width: 1180px;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.governance-hub__hero,
+.governance-hub__section {
+    border: 1px solid var(--tools-card-border, var(--base-border-color));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--content-background-color) 88%, var(--surface-background-color));
+    color: var(--content-font-color);
+}
+
+.governance-hub__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.34fr);
+    gap: 1rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border-color: color-mix(in srgb, var(--theme-color-primary) 28%, var(--base-border-color));
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--theme-color-primary) 12%, var(--content-background-color)),
+            color-mix(in srgb, var(--theme-color-accent) 8%, var(--surface-background-color))
+        );
+}
+
+.governance-hub__hero-copy,
+.governance-hub__section,
+.governance-hub__panel {
+    min-width: 0;
+}
+
+.governance-hub__eyebrow {
+    margin: 0 0 0.55rem;
+    color: var(--theme-color-primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.governance-hub__title {
+    max-width: 48rem;
+    font-size: clamp(1.9rem, 3.6vw, 3.1rem);
+}
+
+.governance-hub__lead {
+    max-width: 50rem;
+    margin-bottom: 1rem;
+}
+
+.governance-hub__actions,
+.governance-hub__chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.governance-hub__button,
+.governance-hub__chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.35rem;
+    border-radius: 7px;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 24%, var(--base-border-color));
+    background: var(--content-background-color);
+    color: var(--content-font-color);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.governance-hub__button {
+    padding: 0.6rem 0.85rem;
+}
+
+.governance-hub__button--primary {
+    border-color: var(--theme-color-primary);
+    background: var(--theme-color-primary);
+    color: var(--theme-color-primary-contrast);
+}
+
+.governance-hub__button:hover,
+.governance-hub__chip:hover,
+.governance-hub__journey a:hover,
+.governance-hub__decision-links a:hover,
+.governance-hub__tool:hover,
+.governance-hub__supplier-list a:hover {
+    border-color: color-mix(in srgb, var(--theme-color-primary) 60%, var(--base-border-color));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
+}
+
+.governance-hub__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.governance-hub__stat {
+    min-width: 0;
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 70%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--content-background-color) 86%, transparent);
+    padding: 0.85rem;
+}
+
+.governance-hub__stat strong {
+    display: block;
+    color: var(--theme-color-primary);
+    font-size: 1.55rem;
+    line-height: 1;
+}
+
+.governance-hub__stat span {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.governance-hub__section {
+    padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.governance-hub__section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.governance-hub__section-heading .tools-section__title,
+.governance-hub__section-heading .tools-section__lead,
+.governance-hub__workflow .tools-section__title,
+.governance-hub__workflow .tools-section__lead,
+.governance-hub__split .tools-section__title,
+.governance-hub__split .tools-section__lead {
+    margin-bottom: 0;
+}
+
+.governance-hub__journey-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.governance-hub__journey,
+.governance-hub__panel,
+.governance-hub__tool {
+    border: 1px solid var(--tools-card-border, var(--base-border-color));
+    border-radius: 8px;
+    background: var(--tools-card-background, var(--content-background-color));
+}
+
+.governance-hub__journey {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    padding: 1rem;
+}
+
+.governance-hub__journey-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--surface-background-color));
+    color: var(--theme-color-primary);
+}
+
+.governance-hub__journey h3,
+.governance-hub__panel h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.governance-hub__journey p {
+    margin: 0;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.governance-hub__link-list,
+.governance-hub__supplier-list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.governance-hub__link-list a,
+.governance-hub__supplier-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    min-width: 0;
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 72%, transparent);
+    border-radius: 7px;
+    padding: 0.48rem 0.58rem;
+    background: color-mix(in srgb, var(--surface-background-color) 66%, transparent);
+    color: var(--content-font-color);
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.governance-hub__workflow,
+.governance-hub__split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 1fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.governance-hub__decision-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.48fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.governance-hub__decision-main {
+    min-width: 0;
+}
+
+.governance-hub__decision-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.governance-hub__decision-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    min-width: 0;
+    border: 1px solid var(--tools-card-border, var(--base-border-color));
+    border-radius: 8px;
+    background: var(--tools-card-background, var(--content-background-color));
+    padding: 0.9rem;
+}
+
+.governance-hub__decision-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--surface-background-color));
+    color: var(--theme-color-primary);
+}
+
+.governance-hub__decision-copy,
+.governance-hub__decision-copy h3,
+.governance-hub__decision-facts,
+.governance-hub__decision-facts div,
+.governance-hub__decision-links {
+    min-width: 0;
+}
+
+.governance-hub__decision-label {
+    margin: 0 0 0.2rem;
+    color: var(--theme-color-primary);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.governance-hub__decision-copy h3 {
+    margin: 0 0 0.65rem;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.governance-hub__decision-facts {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+}
+
+.governance-hub__decision-facts dt {
+    color: color-mix(in srgb, var(--content-font-color) 82%, transparent);
+    font-size: 0.73rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.governance-hub__decision-facts dd {
+    margin: 0.12rem 0 0;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.38;
+}
+
+.governance-hub__decision-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+}
+
+.governance-hub__decision-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    min-height: 2rem;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 24%, var(--base-border-color));
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--surface-background-color) 66%, transparent);
+    color: var(--content-font-color);
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 0.38rem 0.52rem;
+    text-decoration: none;
+}
+
+.governance-hub__steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.governance-hub__steps li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 76%, transparent);
+    border-radius: 7px;
+    padding: 0.62rem 0.7rem;
+    background: color-mix(in srgb, var(--surface-background-color) 72%, transparent);
+}
+
+.governance-hub__steps span {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 1.55rem;
+    width: 1.55rem;
+    height: 1.55rem;
+    border-radius: 50%;
+    background: var(--theme-color-primary);
+    color: var(--theme-color-primary-contrast);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.governance-hub__steps strong {
+    min-width: 0;
+    font-size: 0.9rem;
+    line-height: 1.25;
+}
+
+.governance-hub__chip {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.86rem;
+}
+
+.governance-hub__panel {
+    padding: 1rem;
+}
+
+.governance-hub__panel h3 {
+    margin-bottom: 0.85rem;
+}
+
+.governance-hub__panel-lead {
+    margin: 0 0 0.85rem;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.governance-hub__supplier-list a {
+    align-items: start;
+    flex-direction: column;
+}
+
+.governance-hub__supplier-list span {
+    color: var(--bn-color-text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+.governance-hub__supplier-list em {
+    color: var(--theme-color-primary);
+    font-size: 0.76rem;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.governance-hub__tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.governance-hub__tool {
+    display: flex;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.85rem;
+    color: var(--content-font-color);
+    text-decoration: none;
+}
+
+.governance-hub__tool > i {
+    flex: 0 0 auto;
+    color: var(--theme-color-primary);
+    padding-top: 0.1rem;
+}
+
+.governance-hub__tool span,
+.governance-hub__tool small {
+    display: block;
+    min-width: 0;
+}
+
+.governance-hub__tool strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    line-height: 1.25;
+}
+
+.governance-hub__tool small {
+    color: var(--bn-color-text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+    .governance-hub__journey-grid,
+    .governance-hub__decision-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .governance-hub__tool-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 820px) {
+    .governance-hub__hero,
+    .governance-hub__workflow,
+    .governance-hub__split,
+    .governance-hub__decision-section {
+        grid-template-columns: 1fr;
+    }
+
+    .governance-hub__stats,
+    .governance-hub__steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .governance-hub__section-heading {
+        display: block;
+    }
+
+    .governance-hub__section-heading .tools-section__title {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .governance-hub {
+        gap: 1rem;
+    }
+
+    .governance-hub__journey-grid,
+    .governance-hub__decision-list,
+    .governance-hub__tool-grid,
+    .governance-hub__stats,
+    .governance-hub__steps {
+        grid-template-columns: 1fr;
+    }
+
+    .governance-hub__decision-card {
+        grid-template-columns: 1fr;
+    }
+
+    .governance-hub__actions,
+    .governance-hub__chip-row,
+    .governance-hub__decision-links {
+        flex-direction: column;
+    }
+
+    .governance-hub__button,
+    .governance-hub__chip,
+    .governance-hub__decision-links a {
+        width: 100%;
+    }
+}
+
 .tools-card__title-row {
     display: flex;
     flex-wrap: wrap;

@@ -30,6 +30,7 @@
 
     $toolGroups = \App\Support\ToolsNav::groupByProduct($navItems);
     $routeBase = Locale::routeBaseName(request()->route()?->getName());
+    $governanceActive = str_starts_with((string) $routeBase, 'governance.');
     $resourcesActive = str_starts_with((string) $routeBase, 'resources.');
     $suppliersActive = str_starts_with((string) $routeBase, 'suppliers.');
     $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
@@ -98,6 +99,16 @@
     <div class="tools-sidenav__group">
         <p class="tools-sidenav__section" data-i18n="nav.hubs">Hubs</p>
         <ul class="tools-sidenav__list">
+            <li>
+                <a
+                    href="{{ locale_route('governance.index') }}"
+                    class="tools-sidenav__link {{ $governanceActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-text-de="Governance"
+                    data-text-en="Governance"
+                >
+                    Governance
+                </a>
+            </li>
             <li>
                 <a
                     href="{{ locale_route('resources.index') }}"
