@@ -4831,6 +4831,55 @@ html[data-color-scheme='dark'] .governance-radar__item-icon--editorial {
     box-sizing: border-box;
 }
 
+.tools-home .tools-section {
+    margin-bottom: 2.35rem;
+}
+
+.tools-home .tools-section:last-child {
+    margin-bottom: 0.75rem;
+}
+
+.tools-home .tools-section__head {
+    margin: 0 0 1.1rem;
+    padding: 0 0 0.85rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--theme-color-primary) 14%, var(--base-border-color));
+}
+
+.tools-home .tools-section__title {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    color: var(--content-font-color);
+}
+
+.tools-home .tools-section__title::before {
+    content: '';
+    flex: 0 0 0.28rem;
+    align-self: stretch;
+    min-height: 1.15em;
+    border-radius: 999px;
+    background: linear-gradient(
+        180deg,
+        var(--theme-color-accent) 0%,
+        var(--theme-color-primary) 100%
+    );
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-color-accent) 16%, transparent);
+}
+
+.tools-home .tools-section__lead {
+    margin: 0.45rem 0 0;
+    padding-left: calc(0.28rem + 0.7rem);
+    max-width: 44rem;
+    color: var(--bn-color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+}
+
 .tools-home .tools-card-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--tools-stack-gap, 1.5rem);

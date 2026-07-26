@@ -15,10 +15,12 @@
 
         <div class="tools-content">
             <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.hubsTitle">Hubs</h2>
-                <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
-                    Entry points for governance, stories, vendor resources, compliance, sprint planning, and the news radar.
-                </p>
+                <header class="tools-section__head">
+                    <h2 class="tools-section__title" data-i18n="home.hubsTitle">Hubs</h2>
+                    <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
+                        Entry points for governance, stories, vendor resources, compliance, sprint planning, and the news radar.
+                    </p>
+                </header>
                 <div class="tools-card-grid">
                     <x-tools.card
                         :href="locale_route('governance.index')"
@@ -126,10 +128,12 @@
             </section>
 
             <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.storiesTitle">Governance stories</h2>
-                <p class="tools-section__lead" data-hub-lead data-i18n="home.storiesLead">
-                    Playbooks on data governance topics — step by step, from idea to implementation.
-                </p>
+                <header class="tools-section__head">
+                    <h2 class="tools-section__title" data-i18n="home.storiesTitle">Governance stories</h2>
+                    <p class="tools-section__lead" data-hub-lead data-i18n="home.storiesLead">
+                        Playbooks on data governance topics — step by step, from idea to implementation.
+                    </p>
+                </header>
                 <div class="tools-card-grid">
                     @foreach ($latestStories as $item)
                         <x-playbooks.card :item="$item" />
@@ -147,10 +151,12 @@
 
             @if (count($featuredAiTools) > 0)
                 <section class="tools-section">
-                    <h2 class="tools-section__title" data-i18n="home.aiTitle">AI tools</h2>
-                    <p class="tools-section__lead" data-hub-lead data-i18n="home.aiLead">
-                        Build prompts and sanitize them before sending to external AI tools.
-                    </p>
+                    <header class="tools-section__head">
+                        <h2 class="tools-section__title" data-i18n="home.aiTitle">AI tools</h2>
+                        <p class="tools-section__lead" data-hub-lead data-i18n="home.aiLead">
+                            Build prompts and sanitize them before sending to external AI tools.
+                        </p>
+                    </header>
                     <div class="tools-card-grid">
                         @foreach ($featuredAiTools as $item)
                             <x-tools.card
@@ -176,10 +182,12 @@
             @endif
 
             <section class="tools-section">
-                <h2 class="tools-section__title" data-i18n="home.toolsTitle">Binom-Tools</h2>
-                <p class="tools-section__lead" data-hub-lead data-i18n="home.workflowsLead">
-                    Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
-                </p>
+                <header class="tools-section__head">
+                    <h2 class="tools-section__title" data-i18n="home.toolsTitle">Binom-Tools</h2>
+                    <p class="tools-section__lead" data-hub-lead data-i18n="home.workflowsLead">
+                        Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
+                    </p>
+                </header>
                 <div class="tools-card-grid">
                     @foreach ($latestTools as $item)
                         <x-tools.card
@@ -206,7 +214,9 @@
 
             @if (count($ecosystemItems) > 0)
                 <section class="tools-section">
-                    <h2 class="tools-section__title" data-i18n="home.ecosystemTitle">Ecosystem</h2>
+                    <header class="tools-section__head">
+                        <h2 class="tools-section__title" data-i18n="home.ecosystemTitle">Ecosystem</h2>
+                    </header>
                     <div class="tools-card-grid">
                         @foreach ($ecosystemItems as $item)
                             @php
