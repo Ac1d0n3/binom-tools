@@ -123,6 +123,8 @@ const shellLabels = {
         'nav.overview': 'Übersicht',
         'nav.openMenu': 'Navigation öffnen',
         'nav.closeMenu': 'Navigation schließen',
+        'header.mission':
+            'Geführte Governance: von der Entscheidung bis zum Report — Hub, Stories, Radar und Tools.',
         'footer.copyright': `© ${new Date().getFullYear()} Binom Governance`,
         'footer.website': 'binom.net',
         'footer.binomNgx': 'binom-ngx Docs',
@@ -179,9 +181,10 @@ const shellLabels = {
         'home.hero.headline': 'Governance Help Hub',
         'home.hero.headlineAccent': 'für Data-, BI- und Analytics-Teams.',
         'home.hero.tagline':
-            'Stories zu Data Governance — von PII, Qualität und Lineage bis KPIs und Ownership. Plus interaktive Governance-Workflows, versionierbar wie Code.',
+            'Vom Governance Hub aus Entscheidungen, Stack, Quellen und Risiken klären — Stories, Radar, Ressourcen und Tools greifen ineinander.',
         'home.hero.notice':
-            'Klonbar als Starter-Template: eigene Stories, Workflows und Branding für euren internen Help Hub.',
+            'Open Source & klonbar für euren internen Hub.',
+        'home.hero.ctaGovernance': 'Governance Hub öffnen',
         'home.hero.ctaWorkflows': 'Binom-Tools öffnen',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Design-Konzept von',
@@ -197,7 +200,7 @@ const shellLabels = {
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
         'home.hubsTitle': 'Hubs',
         'home.hubsLead':
-            'Einstiege für Stories, Hersteller-Ressourcen, Compliance, Sprint-Planung und interaktive Governance-Workflows.',
+            'Einstiege für Governance, Stories, Hersteller-Ressourcen, Compliance, Sprint-Planung und den News-Radar.',
         'home.hub.stories.title': 'Stories',
         'home.hub.stories.description':
             'Schrittweise Governance-Playbooks — von der Idee bis zur Umsetzung.',
@@ -218,6 +221,10 @@ const shellLabels = {
         'home.hub.sprintPlanner.description':
             'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Funde in nachvollziehbare Aufgaben überführen.',
         'home.hub.sprintPlanner.countLabel': 'Vorlagen',
+        'home.hub.radar.title': 'Radar',
+        'home.hub.radar.description':
+            'Kuratierter Monitor für Governance-News, Richtlinienänderungen, Standards und Vendor-Updates.',
+        'home.hub.radar.countLabel': 'Quellen',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
@@ -227,6 +234,12 @@ const shellLabels = {
         'home.sprintPlannerTitle': 'Sprint Planner',
         'home.sprintPlannerLead':
             'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
+        'home.featuredGovernance.title': 'Governance Hub',
+        'home.featuredGovernance.description':
+            'Verbindet die anderen Hubs zu einer geführten Discovery: Entscheidung, Stack, Quellen und Risiken klären — und in Plan, Workflow oder Report überführen.',
+        'card.featured-governance.title': 'Governance Hub',
+        'card.featured-governance.description':
+            'Verbindet die anderen Hubs zu einer geführten Discovery: Entscheidung, Stack, Quellen und Risiken klären — und in Plan, Workflow oder Report überführen.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Inventare, KPI-Funde und offene Entscheidungen in nachvollziehbare Aufgaben überführen.',
@@ -1060,6 +1073,8 @@ const shellLabels = {
         'nav.overview': 'Overview',
         'nav.openMenu': 'Open navigation',
         'nav.closeMenu': 'Close navigation',
+        'header.mission':
+            'Guided governance: from decision to report — hub, stories, radar, and tools.',
         'footer.copyright': `© ${new Date().getFullYear()} Binom Governance`,
         'footer.website': 'binom.net',
         'footer.binomNgx': 'binom-ngx Docs',
@@ -1116,9 +1131,10 @@ const shellLabels = {
         'home.hero.headline': 'Governance help hub',
         'home.hero.headlineAccent': 'for data, BI, and analytics teams.',
         'home.hero.tagline':
-            'Stories on data governance — from PII, quality, and lineage to KPIs and ownership. Plus interactive governance workflows, versioned like code.',
+            'Start from the Governance Hub to clarify decisions, stack, sources, and risks — stories, radar, resources, and tools work together.',
         'home.hero.notice':
-            'Clone as a starter template: your own stories, workflows, and branding for an internal help hub.',
+            'Open source and cloneable for your internal hub.',
+        'home.hero.ctaGovernance': 'Open Governance Hub',
         'home.hero.ctaWorkflows': 'Open Binom-Tools',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Design concept by',
@@ -1134,7 +1150,7 @@ const shellLabels = {
             'Playbooks on data governance topics — step by step, from idea to implementation.',
         'home.hubsTitle': 'Hubs',
         'home.hubsLead':
-            'Entry points for stories, vendor resources, compliance, sprint planning, and interactive governance workflows.',
+            'Entry points for governance, stories, vendor resources, compliance, sprint planning, and the news radar.',
         'home.hub.stories.title': 'Stories',
         'home.hub.stories.description':
             'Step-by-step governance playbooks — from idea to implementation.',
@@ -1155,6 +1171,10 @@ const shellLabels = {
         'home.hub.sprintPlanner.description':
             'Plan BI and governance work from templates, attach tool exports, and turn findings into trackable tasks.',
         'home.hub.sprintPlanner.countLabel': 'templates',
+        'home.hub.radar.title': 'Radar',
+        'home.hub.radar.description':
+            'Curated monitor for governance news, policy changes, standards, and vendor updates.',
+        'home.hub.radar.countLabel': 'sources',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
             'Interactive reference workflows — step by step, copy-paste ready.',
@@ -1164,6 +1184,12 @@ const shellLabels = {
         'home.sprintPlannerTitle': 'Sprint Planner',
         'home.sprintPlannerLead':
             'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
+        'home.featuredGovernance.title': 'Governance Hub',
+        'home.featuredGovernance.description':
+            'Connects the other hubs into a guided discovery: clarify the decision, stack, sources, and risks — then turn them into plan, workflow, or report.',
+        'card.featured-governance.title': 'Governance Hub',
+        'card.featured-governance.description':
+            'Connects the other hubs into a guided discovery: clarify the decision, stack, sources, and risks — then turn them into plan, workflow, or report.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks.',

@@ -84,6 +84,7 @@ final class LandingCatalog
      *   suppliers: int,
      *   compliance: int,
      *   sprintPlanner: int,
+     *   radar: int,
      *   tools: int
      * }
      */
@@ -95,6 +96,7 @@ final class LandingCatalog
             'suppliers' => count(config('suppliers.products', [])),
             'compliance' => count(config('compliance.items', [])),
             'sprintPlanner' => $this->sprintTemplateCount(),
+            'radar' => count(config('governance-radar.sources', [])),
             'tools' => $this->toolCount(),
         ];
     }

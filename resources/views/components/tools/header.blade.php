@@ -87,6 +87,10 @@
         <x-tools.brand />
     </div>
 
+    <p class="tools-header__mission" data-i18n="header.mission">
+        Guided governance: from decision to report — hub, stories, radar, and tools.
+    </p>
+
     <div class="tools-header__actions">
         <div class="tools-header__settings" data-header-settings>
             <button

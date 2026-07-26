@@ -1,22 +1,49 @@
 @extends('layouts.tools')
 
 @section('title', config('app.name'))
-@section('meta_description', 'Governance help hub with Markdown stories, interactive tools, and i18n — cloneable and CMS-free.')
+@section('meta_description', 'Governance help hub with hub advisor, radar, Markdown stories, resources, suppliers, compliance, sprint planner, and interactive tools — cloneable and CMS-free.')
+
+@push('head')
+    @if (count($metaKeywords) > 0)
+        <meta name="keywords" content="{{ implode(', ', $metaKeywords) }}">
+    @endif
+@endpush
 
 @section('content')
     <div class="tools-home">
-        <x-tools.hero
-            :hero-pills="$heroPills"
-            :tools-overview-url="locale_route('tools.overview')"
-        />
+        <x-tools.hero />
 
         <div class="tools-content">
             <section class="tools-section">
                 <h2 class="tools-section__title" data-i18n="home.hubsTitle">Hubs</h2>
                 <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
-                    Entry points for stories, vendor resources, compliance, sprint planning, and interactive governance workflows.
+                    Entry points for governance, stories, vendor resources, compliance, sprint planning, and the news radar.
                 </p>
                 <div class="tools-card-grid">
+                    <x-tools.card
+                        :href="locale_route('governance.index')"
+                        title="Governance Hub"
+                        description="Connects the other hubs into a guided discovery: clarify the decision, stack, sources, and risks — then turn them into plan, workflow, or report."
+                        title-key="home.featuredGovernance.title"
+                        description-key="home.featuredGovernance.description"
+                        icon="fa-shield-halved"
+                        accent="primary"
+                        card-id="featured-governance"
+                        :featured="true"
+                    />
+                    <x-tools.card
+                        :href="locale_route('tools.overview')"
+                        title="Binom-Tools"
+                        description="Interactive reference workflows — step by step, copy-paste ready."
+                        title-key="home.hub.tools.title"
+                        description-key="home.hub.tools.description"
+                        icon="fa-screwdriver-wrench"
+                        accent="primary"
+                        card-id="hub-tools"
+                        :hub="true"
+                        :count="$hubCounts['tools']"
+                        count-label-key="home.hub.tools.countLabel"
+                    />
                     <x-tools.card
                         :href="locale_route('playbooks.index')"
                         title="Stories"
@@ -83,17 +110,17 @@
                         count-label-key="home.hub.sprintPlanner.countLabel"
                     />
                     <x-tools.card
-                        :href="locale_route('tools.overview')"
-                        title="Binom-Tools"
-                        description="Interactive reference workflows — step by step, copy-paste ready."
-                        title-key="home.hub.tools.title"
-                        description-key="home.hub.tools.description"
-                        icon="fa-screwdriver-wrench"
+                        :href="locale_route('governance.radar')"
+                        title="Radar"
+                        description="Curated monitor for governance news, policy changes, standards, and vendor updates."
+                        title-key="home.hub.radar.title"
+                        description-key="home.hub.radar.description"
+                        icon="fa-satellite-dish"
                         accent="primary"
-                        card-id="hub-tools"
+                        card-id="hub-radar"
                         :hub="true"
-                        :count="$hubCounts['tools']"
-                        count-label-key="home.hub.tools.countLabel"
+                        :count="$hubCounts['radar']"
+                        count-label-key="home.hub.radar.countLabel"
                     />
                 </div>
             </section>

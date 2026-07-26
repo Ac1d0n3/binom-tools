@@ -22,7 +22,7 @@ class ToolsLandingController extends Controller
         return view('tools.landing', [
             'ecosystemItems' => config('tools.ecosystem', []),
             'links' => config('tools.links', []),
-            'heroPills' => config('tools.hero_pills', []),
+            'metaKeywords' => config('tools.meta_keywords', []),
             'featuredAiTools' => $this->catalog->featuredAiTools(),
             'latestTools' => $this->catalog->latestTools(),
             'toolCount' => $this->catalog->toolCount(),

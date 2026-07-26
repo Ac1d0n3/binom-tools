@@ -1,8 +1,3 @@
-@props([
-    'heroPills' => [],
-    'toolsOverviewUrl' => '#',
-])
-
 <section class="tools-hero">
     <div class="tools-hero__artwork" aria-hidden="true">
         <div class="tools-hero-artwork-wrap">
@@ -17,35 +12,16 @@
                 <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">für Data-, BI- und Analytics-Teams.</span>
             </h1>
             <p class="tools-hero__tagline" data-i18n="home.hero.tagline">
-                Stories zu Data Governance — von PII, Qualität und Lineage bis KPIs und Ownership. Plus interaktive Referenz-Tools, versionierbar wie Code.
-            </p>
-            <p class="tools-hero__notice" data-i18n="home.hero.notice">
-                Klonbar als Starter-Template: eigene Stories, Tools und Branding für euren internen Help Hub.
+                Vom Governance Hub aus Entscheidungen, Stack, Quellen und Risiken klären — Stories, Radar, Ressourcen und Tools greifen ineinander.
             </p>
 
             <div class="tools-hero__actions">
-                <a href="{{ $toolsOverviewUrl }}" class="tools-btn tools-btn--primary" data-i18n="home.hero.ctaWorkflows">
-                    Binom-Tools öffnen
-                </a>
-                <a
-                    href="{{ \App\Support\ToolLinks::BINOM_NGX_DOCS }}"
-                    class="tools-btn tools-btn--accent"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-i18n="home.hero.ctaSdk"
-                >
-                    binom-ngx SDKs
-                </a>
-                <x-tools.repo-clone-link />
+                <x-tools.repo-clone-link variant="primary" />
             </div>
 
-            @if (count($heroPills) > 0)
-                <ul class="tools-hero__pills" aria-label="Features">
-                    @foreach ($heroPills as $pill)
-                        <li class="tools-hero__pill">{{ $pill }}</li>
-                    @endforeach
-                </ul>
-            @endif
+            <p class="tools-hero__hint" data-i18n="home.hero.notice">
+                Open Source &amp; klonbar für euren internen Hub.
+            </p>
 
             <p class="tools-hero__attribution">
                 <span data-i18n="home.hero.attribution">Design concept by</span>

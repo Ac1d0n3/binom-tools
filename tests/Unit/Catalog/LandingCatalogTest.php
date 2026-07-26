@@ -86,6 +86,7 @@ class LandingCatalogTest extends TestCase
         $counts = $catalog->hubCounts();
 
         $this->assertSame($catalog->storyCount(), $counts['stories']);
+        $this->assertSame(count(config('governance-radar.sources', [])), $counts['radar']);
         $this->assertSame($catalog->toolCount(), $counts['tools']);
         $this->assertSame(count(config('suppliers.products', [])), $counts['suppliers']);
         $this->assertSame(count(config('vendor-resources.products', [])), $counts['resources']);

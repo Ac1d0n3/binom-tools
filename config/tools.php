@@ -15,14 +15,15 @@ return [
     'version' => env('BINOM_TOOLS_VERSION', '0.1.0'),
     'beta' => filter_var(env('BINOM_TOOLS_BETA', true), FILTER_VALIDATE_BOOL),
 
-    'hero_pills' => [
-        'dbt-ready',
-        'PII Governance',
-        'Data Quality',
-        'SDK Examples',
-        'No Gateway',
-        'Reference Workflows',
-        'Laravel + Vite',
+    'meta_keywords' => [
+        'Governance Hub',
+        'Stories',
+        'Radar',
+        'Resources',
+        'Suppliers',
+        'Compliance',
+        'Sprint Planner',
+        'Binom-Tools',
     ],
 
     'workflows' => [

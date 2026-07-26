@@ -17,10 +17,6 @@
         rel="noopener noreferrer"
     >
         <i class="fa-brands fa-github" aria-hidden="true"></i>
-        @if ($variant === 'primary')
-            <span>{{ $slot->isEmpty() ? 'Git-Repo klonen' : $slot }}</span>
-        @else
-            <span data-i18n="playbooks.downloadStarter">Git-Repo klonen</span>
-        @endif
+        <span data-i18n="playbooks.downloadStarter">{{ $slot->isEmpty() ? 'Git-Repo klonen' : $slot }}</span>
     </a>
 @endif
