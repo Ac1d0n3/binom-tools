@@ -35,6 +35,7 @@ final class SearchIndex
             $this->radarEntries(),
             $this->glossaryEntries(),
             $this->learningPathEntries(),
+            $this->roleEntries(),
         ));
     }
 
@@ -109,7 +110,7 @@ final class SearchIndex
      */
     public function types(): array
     {
-        return ['story', 'series', 'tool', 'resource', 'supplier', 'compliance', 'radar', 'glossary', 'path'];
+        return ['story', 'series', 'tool', 'resource', 'supplier', 'compliance', 'radar', 'glossary', 'path', 'role'];
     }
 
     private function normalize(string $value): string
@@ -523,6 +524,48 @@ final class SearchIndex
                     (string) ($path['audience']['de'] ?? ''),
                 ]),
                 'icon' => 'fa-route',
+            ];
+        }
+
+        return $entries;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function roleEntries(): array
+    {
+        $entries = [];
+        foreach (config('roles.roles', []) as $role) {
+            if (! is_array($role)) {
+                continue;
+            }
+            $id = (string) ($role['id'] ?? '');
+            if ($id === '') {
+                continue;
+            }
+
+            $title = $this->bilingual($role['title'] ?? null, $id);
+            $description = $this->bilingual($role['lead'] ?? null);
+
+            $entries[] = [
+                'type' => 'role',
+                'id' => $id,
+                'title' => $title,
+                'description' => $description,
+                'route' => 'roles.show',
+                'params' => ['slug' => $id],
+                'query' => null,
+                'search_text' => $this->searchText([
+                    $title['en'],
+                    $title['de'],
+                    $description['en'],
+                    $description['de'],
+                    $id,
+                    (string) ($role['persona'] ?? ''),
+                    (string) ($role['glossaryId'] ?? ''),
+                ]),
+                'icon' => 'fa-user-group',
             ];
         }
 

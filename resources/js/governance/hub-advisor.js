@@ -8,7 +8,7 @@ const texts = {
         },
         groups: {
             tools: 'Empfohlene Tools',
-            suppliers: 'Supplier & Quellen',
+            suppliers: 'Quellen',
             resources: 'Wissen, Stories & Nachweise',
         },
         priority: 'Warum passend',
@@ -44,7 +44,7 @@ const texts = {
         },
         groups: {
             tools: 'Recommended tools',
-            suppliers: 'Suppliers & sources',
+            suppliers: 'Sources',
             resources: 'Knowledge, stories & evidence',
         },
         priority: 'Why it fits',

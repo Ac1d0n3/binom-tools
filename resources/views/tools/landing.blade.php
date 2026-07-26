@@ -94,6 +94,19 @@
                             count-label-key="home.hub.glossary.countLabel"
                         />
                         <x-tools.card
+                            :href="locale_route('roles.index')"
+                            title="Roles"
+                            description="Steward, Owner, Architect, Custodian, Consumer — with glossary, stories, paths, and tools."
+                            title-key="home.hub.roles.title"
+                            description-key="home.hub.roles.description"
+                            icon="fa-user-group"
+                            accent="primary"
+                            card-id="hub-roles"
+                            :hub="true"
+                            :count="$hubCounts['roles']"
+                            count-label-key="home.hub.roles.countLabel"
+                        />
+                        <x-tools.card
                             :href="locale_route('governance.radar')"
                             title="Radar"
                             description="Curated monitor for governance news, policy changes, standards, and vendor updates."
@@ -111,7 +124,7 @@
                         />
                         <x-tools.card
                             :href="locale_route('resources.index')"
-                            title="Resources"
+                            title="Vendor Resources"
                             description="Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency."
                             title-key="home.hub.resources.title"
                             description-key="home.hub.resources.description"
@@ -124,7 +137,7 @@
                         />
                         <x-tools.card
                             :href="locale_route('suppliers.index')"
-                            title="Suppliers"
+                            title="Sources"
                             description="Core fields, dimensions, PII/DSDR and standard measure templates per source — Salesforce, HubSpot, GA4."
                             title-key="home.hub.suppliers.title"
                             description-key="home.hub.suppliers.description"

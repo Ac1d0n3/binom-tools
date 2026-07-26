@@ -2,7 +2,7 @@
     'mainClass' => 'tools-shell__main--overview',
 ])
 
-@section('title', 'Suppliers — ' . config('app.name'))
+@section('title', 'Sources — ' . config('app.name'))
 @section('meta_description', 'Supplier library — core fields, dimensions, PII/DSDR and standard measure templates for Salesforce, HubSpot and GA4.')
 
 @section('content')
@@ -12,7 +12,7 @@
                 $initialProductCount = count($products);
             @endphp
             <div class="supplier-hub-sticky__heading">
-                <h1 class="tools-page-title" data-i18n="suppliers.indexTitle">Suppliers</h1>
+                <h1 class="tools-page-title" data-i18n="suppliers.indexTitle">Sources</h1>
                 <p
                     class="supplier-hub-sticky__count"
                     data-overview-result-count

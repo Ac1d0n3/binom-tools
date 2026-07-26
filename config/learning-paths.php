@@ -18,6 +18,7 @@ return [
             'id' => 'pii-in-five-steps',
             'order' => 10,
             'audienceId' => 'privacy',
+            'sprintTemplateSlug' => 'governance-learning-path-certification',
             'audience' => [
                 'de' => 'Privacy, Stewardship, Plattform',
                 'en' => 'Privacy, stewardship, platform',
@@ -112,6 +113,7 @@ return [
             'id' => 'dq-with-dbt',
             'order' => 20,
             'audienceId' => 'engineering',
+            'sprintTemplateSlug' => 'change-tests',
             'audience' => [
                 'de' => 'Analytics Engineers, DQ-Owner',
                 'en' => 'Analytics engineers, DQ owners',
@@ -192,6 +194,7 @@ return [
             'id' => 'modernize-warehouse',
             'order' => 30,
             'audienceId' => 'platform',
+            'sprintTemplateSlug' => 'database-model',
             'audience' => [
                 'de' => 'Platform, Architecture, BI Leads',
                 'en' => 'Platform, architecture, BI leads',
@@ -270,6 +273,7 @@ return [
             'id' => 'governance-foundations',
             'order' => 40,
             'audienceId' => 'governance',
+            'sprintTemplateSlug' => 'governance-learning-path-certification',
             'audience' => [
                 'de' => 'Governance Leads, CoE, Consultants',
                 'en' => 'Governance leads, CoE, consultants',
@@ -328,7 +332,7 @@ return [
                     ],
                     'links' => [
                         ['type' => 'route', 'route' => 'governance.index', 'label' => ['de' => 'Governance Hub', 'en' => 'Governance hub']],
-                        ['type' => 'route', 'route' => 'governance.radar', 'label' => ['de' => 'Governance Radar', 'en' => 'Governance radar']],
+                        ['type' => 'route', 'route' => 'governance.radar', 'label' => ['de' => 'Radar', 'en' => 'Radar']],
                         ['type' => 'route', 'route' => 'compliance.index', 'label' => ['de' => 'Compliance', 'en' => 'Compliance']],
                     ],
                 ],

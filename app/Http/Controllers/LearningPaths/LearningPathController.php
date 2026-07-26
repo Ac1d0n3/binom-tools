@@ -86,7 +86,21 @@ class LearningPathController extends Controller
             'item' => $item,
             'audiences' => $audiences,
             'steps' => $steps,
+            'sprintPlanHref' => $this->sprintPlanHref($item),
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function sprintPlanHref(array $item): ?string
+    {
+        $slug = trim((string) ($item['sprintTemplateSlug'] ?? ''));
+        if ($slug === '') {
+            return null;
+        }
+
+        return locale_route('sprint-planner.templates').'?start='.rawurlencode($slug);
     }
 
     /**

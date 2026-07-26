@@ -242,7 +242,7 @@
                     </a>
                     <a class="governance-hub__button" href="{{ locale_route('governance.radar') }}">
                         <i class="fa-solid fa-rss" aria-hidden="true"></i>
-                        <span data-text-de="Governance Radar" data-text-en="Governance Radar">Governance Radar</span>
+                        <span data-text-de="Radar" data-text-en="Radar">Radar</span>
                     </a>
                 </div>
             </div>

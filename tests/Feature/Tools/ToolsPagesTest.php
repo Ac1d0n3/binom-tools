@@ -592,12 +592,17 @@ class ToolsPagesTest extends TestCase
         $hubsNav = (string) str($response->getContent())
             ->after('data-i18n="nav.hubs">Hubs</p>')
             ->before('data-i18n="nav.tools">Binom-Tools</p>');
+        $this->assertStringContainsString('data-i18n="nav.radar"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.resources"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.suppliers"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.compliance"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.glossary"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.learningPaths"', $hubsNav);
-        $this->assertStringContainsString('data-i18n="nav.search"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.roles"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.sprintPlanner"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.calendar"', $hubsNav);
+        $this->assertStringNotContainsString('data-i18n="nav.search"', $hubsNav);
+        $this->assertStringNotContainsString('data-i18n="nav.workspace"', $hubsNav);
         $this->assertStringNotContainsString('data-i18n="nav.sprintPlannerPlans"', $hubsNav);
         $this->assertStringNotContainsString('data-i18n="nav.account"', $hubsNav);
     }
@@ -647,6 +652,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-i18n="home.hub.stories.title"', false);
         $response->assertSee('data-i18n="home.hub.learningPaths.title"', false);
         $response->assertSee('data-i18n="home.hub.glossary.title"', false);
+        $response->assertSee('data-i18n="home.hub.roles.title"', false);
         $response->assertSee('data-i18n="home.hub.resources.title"', false);
         $response->assertSee('data-i18n="home.hub.suppliers.title"', false);
         $response->assertSee('data-i18n="home.hub.compliance.title"', false);
@@ -656,6 +662,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-card-id="hub-tools"', false);
         $response->assertSee('data-card-id="hub-learning-paths"', false);
         $response->assertSee('data-card-id="hub-glossary"', false);
+        $response->assertSee('data-card-id="hub-roles"', false);
         $response->assertSee('data-card-id="hub-radar"', false);
         $response->assertSee('tools-card__badge--date', false);
         $response->assertSee('fa-arrows-rotate', false);
@@ -667,6 +674,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee(route('tools.overview'), false);
         $response->assertSee(route('learning-paths.index'), false);
         $response->assertSee(route('glossary.index'), false);
+        $response->assertSee(route('roles.index'), false);
         $response->assertSee(route('resources.index'), false);
         $response->assertSee(route('suppliers.index'), false);
         $response->assertSee(route('compliance.index'), false);

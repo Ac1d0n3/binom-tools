@@ -108,6 +108,7 @@ final class LandingCatalog
      *   compliance: int,
      *   glossary: int,
      *   learningPaths: int,
+     *   roles: int,
      *   sprintPlanner: int,
      *   radar: int,
      *   tools: int
@@ -122,6 +123,7 @@ final class LandingCatalog
             'compliance' => count(config('compliance.items', [])),
             'glossary' => count(config('glossary.terms', [])),
             'learningPaths' => count(config('learning-paths.paths', [])),
+            'roles' => count(config('roles.roles', [])),
             'sprintPlanner' => $this->sprintTemplateCount(),
             'radar' => count(config('governance-radar.sources', [])),
             'tools' => $this->toolCount(),

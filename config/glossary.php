@@ -28,6 +28,7 @@ return [
             ],
             'related' => [
                 ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
+                ['type' => 'glossary', 'id' => 'data-architect', 'label' => ['de' => 'Data Architect', 'en' => 'Data Architect']],
                 ['type' => 'series', 'id' => 'governance-pillars', 'label' => ['de' => '8 Säulen der Governance', 'en' => '8 pillars of governance']],
                 ['type' => 'path', 'id' => 'governance-foundations', 'label' => ['de' => 'Governance Foundations', 'en' => 'Governance foundations']],
             ],
@@ -44,7 +45,59 @@ return [
             ],
             'related' => [
                 ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
+                ['type' => 'glossary', 'id' => 'data-consumer', 'label' => ['de' => 'Data Consumer', 'en' => 'Data Consumer']],
                 ['type' => 'glossary', 'id' => 'raci', 'label' => ['de' => 'RACI', 'en' => 'RACI']],
+            ],
+        ],
+        [
+            'id' => 'data-architect',
+            'order' => 25,
+            'category' => 'roles',
+            'term' => ['de' => 'Data Architect', 'en' => 'Data Architect'],
+            'aliases' => ['Architect', 'Analytics Architect', 'Solution Architect (Data)'],
+            'definition' => [
+                'de' => 'Verantwortet Grain, Modellkonsistenz und Contracts — damit Domänen und Marts zusammenpassen, ohne Owner oder Steward zu ersetzen.',
+                'en' => 'Owns grain, model consistency, and contracts — so domains and marts fit together without replacing owner or steward.',
+            ],
+            'related' => [
+                ['type' => 'glossary', 'id' => 'grain', 'label' => ['de' => 'Grain', 'en' => 'Grain']],
+                ['type' => 'glossary', 'id' => 'data-contract', 'label' => ['de' => 'Data Contract', 'en' => 'Data Contract']],
+                ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
+                ['type' => 'story', 'id' => 'define-kpi', 'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition']],
+                ['type' => 'story', 'id' => 'operating-and-governing-the-platform', 'label' => ['de' => 'Platform betreiben', 'en' => 'Operating the platform']],
+                ['type' => 'path', 'id' => 'modernize-warehouse', 'label' => ['de' => 'Warehouse modernisieren', 'en' => 'Modernize the warehouse']],
+            ],
+        ],
+        [
+            'id' => 'data-custodian',
+            'order' => 26,
+            'category' => 'roles',
+            'term' => ['de' => 'Data Custodian', 'en' => 'Data Custodian'],
+            'aliases' => ['Custodian', 'Technical Custodian'],
+            'definition' => [
+                'de' => 'Technische Obhut über Systeme und Speicherorte — Zugriffspflege, Backups, Laufzeit — meist Platform/IT, nicht fachliche Definition.',
+                'en' => 'Technical custody of systems and storage — access upkeep, backups, runtime — usually platform/IT, not business definition.',
+            ],
+            'related' => [
+                ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
+                ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
+                ['type' => 'story', 'id' => 'data-ownership-stewardship', 'label' => ['de' => 'Ownership & Stewardship', 'en' => 'Ownership & stewardship']],
+            ],
+        ],
+        [
+            'id' => 'data-consumer',
+            'order' => 27,
+            'category' => 'roles',
+            'term' => ['de' => 'Data Consumer', 'en' => 'Data Consumer'],
+            'aliases' => ['Consumer', 'Analyst', 'Report User'],
+            'definition' => [
+                'de' => 'Nutzt Datenprodukte für Entscheidungen oder Reports — meldet Qualitätsprobleme, entscheidet aber nicht allein über Definition und Zugriff.',
+                'en' => 'Uses data products for decisions or reports — raises quality issues but does not alone decide definition and access.',
+            ],
+            'related' => [
+                ['type' => 'glossary', 'id' => 'data-product', 'label' => ['de' => 'Data Product', 'en' => 'Data Product']],
+                ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
+                ['type' => 'story', 'id' => 'data-ownership-stewardship', 'label' => ['de' => 'Ownership & Stewardship', 'en' => 'Ownership & stewardship']],
             ],
         ],
         [
@@ -197,6 +250,8 @@ return [
             'related' => [
                 ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
                 ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
+                ['type' => 'tool', 'route' => 'tools.stakeholder-matrix', 'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
                 ['type' => 'route', 'route' => 'governance.index', 'label' => ['de' => 'Governance Hub', 'en' => 'Governance hub']],
             ],
         ],

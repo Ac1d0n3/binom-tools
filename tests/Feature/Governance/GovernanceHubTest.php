@@ -26,7 +26,7 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-panel-toggle="governance-tools-panel"', false);
         $response->assertSee('data-governance-panel-toggle="governance-save-panel"', false);
         $response->assertSee('Workspace Report', false);
-        $response->assertSee('Governance Radar', false);
+        $response->assertSee('>Radar</span>', false);
         $response->assertSee('/governance/radar', false);
         $response->assertSee('data-governance-tabs', false);
         $response->assertSee('data-governance-tab-toggle="advisor"', false);
@@ -206,7 +206,7 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('binom');
         $response->assertSee('Richtlinien');
         $response->assertSee('Vendor Update');
-        $response->assertSee('Eigene News');
+        $response->assertSee('Binom News');
         $response->assertSee('data-governance-radar-advisor', false);
         $response->assertSee('data-impact="Orientierung"', false);
         $response->assertSee('data-impact="Handlungsbedarf"', false);

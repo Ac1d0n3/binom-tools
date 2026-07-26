@@ -16,7 +16,7 @@ class SearchIndexTest extends TestCase
             $entries,
         )));
 
-        foreach (['story', 'series', 'tool', 'resource', 'supplier', 'compliance', 'radar', 'glossary', 'path'] as $type) {
+        foreach (['story', 'series', 'tool', 'resource', 'supplier', 'compliance', 'radar', 'glossary', 'path', 'role'] as $type) {
             $this->assertContains($type, $types);
         }
 

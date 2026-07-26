@@ -18,6 +18,8 @@ class LearningPathPagesTest extends TestCase
         $show->assertOk();
         $show->assertSee('DQ with dbt', false);
         $show->assertSee('learning-path-detail__steps', false);
+        $show->assertSee('learningPaths.startSprintPlan', false);
+        $show->assertSee('start=change-tests', false);
         $show->assertSee(route('playbooks.series', ['seriesId' => 'operational-data-quality']), false);
 
         $this->get('/de/learning-paths')->assertOk();

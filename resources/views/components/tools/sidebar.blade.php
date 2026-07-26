@@ -62,7 +62,7 @@
     $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
     $glossaryActive = str_starts_with((string) $routeBase, 'glossary.');
     $learningPathsActive = str_starts_with((string) $routeBase, 'learning-paths.');
-    $searchActive = str_starts_with((string) $routeBase, 'search.');
+    $rolesActive = str_starts_with((string) $routeBase, 'roles.');
     $sprintPlannerActive = str_starts_with((string) $routeBase, 'sprint-planner.');
     $calendarActive = str_starts_with((string) $routeBase, 'calendar.');
 @endphp
@@ -162,10 +162,9 @@
                 <a
                     href="{{ locale_route('governance.radar') }}"
                     class="tools-sidenav__link {{ Locale::routeIs('governance.radar') ? 'tools-sidenav__link--active' : '' }}"
-                    data-text-de="Governance Radar"
-                    data-text-en="Governance Radar"
+                    data-i18n="nav.radar"
                 >
-                    Governance Radar
+                    Radar
                 </a>
             </li>
             <li>
@@ -174,7 +173,7 @@
                     class="tools-sidenav__link {{ $resourcesActive ? 'tools-sidenav__link--active' : '' }}"
                     data-i18n="nav.resources"
                 >
-                    Resources
+                    Vendor Resources
                 </a>
             </li>
             <li>
@@ -183,7 +182,7 @@
                     class="tools-sidenav__link {{ $suppliersActive ? 'tools-sidenav__link--active' : '' }}"
                     data-i18n="nav.suppliers"
                 >
-                    Suppliers
+                    Sources
                 </a>
             </li>
             <li>
@@ -215,11 +214,11 @@
             </li>
             <li>
                 <a
-                    href="{{ locale_route('search.index') }}"
-                    class="tools-sidenav__link {{ $searchActive ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.search"
+                    href="{{ locale_route('roles.index') }}"
+                    class="tools-sidenav__link {{ $rolesActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.roles"
                 >
-                    Search
+                    Roles
                 </a>
             </li>
             <li>

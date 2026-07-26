@@ -34,6 +34,16 @@
             </p>
             <h1 class="tools-page-title" data-text-de="{{ $titleDe }}" data-text-en="{{ $titleEn }}">{{ $titleEn }}</h1>
             <p class="tools-page-lead" data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</p>
+            @if (! empty($sprintPlanHref))
+                <p class="learning-path-detail__sprint-cta">
+                    <a href="{{ $sprintPlanHref }}" class="tools-button tools-button--primary" data-i18n="learningPaths.startSprintPlan">
+                        Start as sprint plan
+                    </a>
+                    <span class="learning-path-detail__sprint-hint" data-i18n="learningPaths.startSprintPlanHint">
+                        Opens the Sprint Planner with a matching template.
+                    </span>
+                </p>
+            @endif
         </header>
 
         <ol class="learning-path-detail__steps">

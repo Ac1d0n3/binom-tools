@@ -26,6 +26,7 @@ use App\Http\Controllers\Governance\GovernanceHubController;
 use App\Http\Controllers\Governance\GovernanceSessionController;
 use App\Http\Controllers\LearningPaths\LearningPathController;
 use App\Http\Controllers\Resources\VendorResourcesController;
+use App\Http\Controllers\Roles\RolesController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Suppliers\SupplierLibraryController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
@@ -87,6 +88,10 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/learning-paths/{slug}', [LearningPathController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name($name('learning-paths.show'));
+    Route::get('/roles', [RolesController::class, 'index'])->name($name('roles.index'));
+    Route::get('/roles/{slug}', [RolesController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name($name('roles.show'));
     Route::get('/search', [SearchController::class, 'index'])->name($name('search.index'));
     Route::get('/calendar', [CalendarController::class, 'index'])->name($name('calendar.index'));
     if (! $localized) {

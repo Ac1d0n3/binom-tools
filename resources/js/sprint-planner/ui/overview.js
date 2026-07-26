@@ -115,6 +115,10 @@ export function initOverviewPage({ templatesOnly = false } = {}) {
     setupStartDialog(render);
     render();
 
+    if (templatesOnly) {
+        maybeAutoOpenStartDialog();
+    }
+
     function render() {
         const locale = getLocale();
         const templates = readTemplatesFromDom();
@@ -128,6 +132,28 @@ export function initOverviewPage({ templatesOnly = false } = {}) {
         } else {
             renderPlanCards(workspace, templates, locale);
         }
+    }
+
+    function maybeAutoOpenStartDialog() {
+        const params = new URLSearchParams(window.location.search);
+        const startSlug = String(params.get('start') || '').trim();
+        if (startSlug === '') {
+            return;
+        }
+
+        const templates = readTemplatesFromDom();
+        const template = templates.find((item) => item.slug === startSlug);
+        if (!template) {
+            showToast(spT('sp.toast.templateMissing'));
+            return;
+        }
+
+        const { data: workspace } = loadWorkspace();
+        openStartDialog(template, workspace);
+
+        params.delete('start');
+        const next = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash || ''}`;
+        window.history.replaceState({}, '', next);
     }
 }
 

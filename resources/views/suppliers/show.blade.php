@@ -55,7 +55,7 @@
     ];
 @endphp
 
-@section('title', $labelEn . ' — Suppliers — ' . config('app.name'))
+@section('title', $labelEn . ' — Sources — ' . config('app.name'))
 @section('meta_description', $purposeEn)
 
 @section('content')
@@ -64,7 +64,7 @@
         data-page-title-root
         data-title-de="{{ $labelDe }}"
         data-title-en="{{ $labelEn }}"
-        data-title-suffix=" — Suppliers — {{ config('app.name') }}"
+        data-title-suffix=" — Sources — {{ config('app.name') }}"
         data-supplier-library
     >
         <p class="supplier-detail__back">
