@@ -33,12 +33,14 @@ class GovernanceAdvisoryToolsTest extends TestCase
         $response->assertSee('governance-advisory-tool', false);
         $response->assertSee('Decision question');
         $response->assertSee('How to use this tool');
-        $response->assertSee('Help, overview, structure');
+        $response->assertSee('Options');
         $response->assertSee('data-governance-tool-drawer-toggle', false);
         $response->assertSee('data-governance-tool-header-drawer', false);
         $response->assertSee('data-governance-tool-panel-toggle', false);
         $response->assertSee('data-governance-tool-panel', false);
-        $response->assertSee('View report');
+        if ($path !== '/tools/kpi-requirements-intake') {
+            $response->assertSee('View report');
+        }
         $response->assertSee('Overview');
         $response->assertSee('Structure');
         $response->assertSee('What does this tool help decide?');
@@ -52,7 +54,20 @@ class GovernanceAdvisoryToolsTest extends TestCase
         $response->assertSee('Back to plan');
         $response->assertSee('Copy report');
         $response->assertSee('Print/PDF');
-        $response->assertSee('Save demo');
+        if ($path === '/tools/kpi-requirements-intake') {
+            $response->assertSee('KPI workspace');
+            $response->assertSee('View report');
+            $response->assertSee('Save intake');
+            $response->assertSee('Accept to register');
+            $response->assertDontSee('Save demo');
+        } else {
+            $response->assertSee('Workspace');
+            $response->assertSee('data-governance-record-manager', false);
+            $response->assertSee('data-governance-record-new', false);
+            $response->assertSee('data-governance-record-save', false);
+            $response->assertSee('Manage saved items');
+            $response->assertSee('Save');
+        }
         $response->assertSee('data-governance-tool-workbench', false);
         $response->assertSee('data-apply-to-plan', false);
         $response->assertSee('data-governance-tool-print', false);
@@ -73,5 +88,18 @@ class GovernanceAdvisoryToolsTest extends TestCase
             ->assertSee('Net Revenue')
             ->assertSee('Welche Umsatzentwicklung soll im Monatsabschluss wirklich entschieden werden?', false)
             ->assertSee('demoPrefill', false);
+    }
+
+    public function test_kpi_requirements_intake_renders_workspace_handoff_controls(): void
+    {
+        $this->get('/tools/kpi-requirements-intake')
+            ->assertOk()
+            ->assertSee('data-kpi-intake-manager', false)
+            ->assertSee('KPI-Intakes verwalten', false)
+            ->assertSee('data-kpi-intake-save', false)
+            ->assertSee('data-kpi-intake-accept', false)
+            ->assertSee('data-kpi-intake-new', false)
+            ->assertSee('Ins Register übernehmen', false)
+            ->assertSee('/tools/kpi-definition', false);
     }
 }

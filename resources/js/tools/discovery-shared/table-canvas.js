@@ -28,6 +28,7 @@ import { newRowId, purgeLegacyDraftKeys } from './storage.js';
  * @param {(key: string) => string} options.t
  * @param {() => void} options.applyLabels
  * @param {string} [options.exportTitle]
+ * @param {Record<string, unknown>[]} [options.initialRows]
  * @param {string[]} [options.legacyStorageKeys] Keys to remove if an older build stored drafts
  * @param {(rows: Record<string, unknown>[]) => void} [options.onChange]
  * @param {(host: HTMLElement, rows: Record<string, unknown>[], api: { syncUi: () => void, render: () => void }) => void} [options.renderExtra]
@@ -39,6 +40,7 @@ export function mountTableCanvas(options) {
         t,
         applyLabels,
         exportTitle = '',
+        initialRows = [],
         legacyStorageKeys = [],
         onChange,
         renderExtra,
@@ -47,7 +49,9 @@ export function mountTableCanvas(options) {
     purgeLegacyDraftKeys(legacyStorageKeys);
 
     /** @type {{ rows: Record<string, unknown>[] }} */
-    let state = { rows: [] };
+    let state = {
+        rows: Array.isArray(initialRows) ? initialRows.map((row) => ({ ...row })) : [],
+    };
     /** After copy/download, skip leave warning until content changes again. */
     let transferred = false;
 

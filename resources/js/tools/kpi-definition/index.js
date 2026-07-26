@@ -1,6 +1,7 @@
 import '../../../css/tools/discovery-canvas.css';
 import { createLabelApi, mergeDiscoveryLabels } from '../discovery-shared/labels.js';
 import { mountTableCanvas } from '../discovery-shared/table-canvas.js';
+import { loadKpiWorkspace, replaceKpiRegisterRows } from '../kpi-workspace-store.js';
 
 const labels = mergeDiscoveryLabels({
     de: {
@@ -8,12 +9,12 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.pageLead':
             'KPIs mit Formel, Grain, Filtern und Owner erfassen. Status tracken und Inventar plus Definitions-Backlog exportieren.',
         'kpiDefinition.howto.intro':
-            'Für Woche 6 im First-Quarter-Plan: Kennzahlen sammeln, Synonyme deduplizieren und Konflikte sichtbar machen.',
+            'Das KPI-Register ist die Tabelle nach dem Intake: geprüfte KPI-Klärungen landen hier als Zeilen, weitere KPIs kannst du direkt ergänzen.',
         'kpiDefinition.howto.step1': 'KPI-Namen und Synonyme aus Reports und Interviews eintragen.',
         'kpiDefinition.howto.step2': 'Formel, Grain, Filter und Owner dokumentieren.',
-        'kpiDefinition.howto.step3': 'Status setzen, dann Markdown kopieren/herunterladen und wo nötig ablegen.',
+        'kpiDefinition.howto.step3': 'Status setzen, dann Report prüfen, kopieren, laden oder in den Plan übernehmen.',
         'kpiDefinition.howto.tip':
-            'Nichts wird im Tool gespeichert. Konflikte als Status „Konflikt“ belassen, bis ein Owner entscheidet.',
+            'KPI-Intakes werden im lokalen Workspace mit dem Register verbunden. Beim späteren DB-Store bleibt dieselbe Struktur nutzbar.',
         'kpiDefinition.col.name': 'KPI',
         'kpiDefinition.col.synonyms': 'Synonyme',
         'kpiDefinition.col.formula': 'Formel',
@@ -53,6 +54,7 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.result.ownerHint': 'Mindestens eine KPI hat noch keinen Owner.',
         'kpiDefinition.result.grainHint': 'Mindestens eine KPI hat noch keinen Grain. Ohne Grain ist das Mart-Design unsicher.',
         'kpiDefinition.result.readyHint': 'Alle KPI-Karten haben Owner und Grain; der Stand kann in Mart Design oder Decision Brief übernommen werden.',
+        'kpiDefinition.result.intakeHint': 'Einträge aus dem KPI Intake bleiben als Quelle verknüpft und können im Register weiter verfeinert werden.',
         'discovery.exportTitle': 'KPI-Inventar',
     },
     en: {
@@ -60,12 +62,12 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.pageLead':
             'Capture KPIs with formula, grain, filters, and owner. Track status and export inventory plus definition backlog.',
         'kpiDefinition.howto.intro':
-            'For week 6 in the first-quarter plan: collect metrics, dedupe synonyms, and surface conflicts.',
+            'The KPI register is the table after intake: reviewed KPI clarifications become rows, and more KPIs can be added directly.',
         'kpiDefinition.howto.step1': 'Add KPI names and synonyms from reports and interviews.',
         'kpiDefinition.howto.step2': 'Document formula, grain, filters, and owner.',
-        'kpiDefinition.howto.step3': 'Set status, then copy/download Markdown and keep it where you need it.',
+        'kpiDefinition.howto.step3': 'Set status, then review, copy, download, or move the report into the plan.',
         'kpiDefinition.howto.tip':
-            'Nothing is stored in the tool. Keep conflicts as “Conflict” until an owner decides.',
+            'KPI intakes are connected to the register through the local workspace. The same shape can move to the database store later.',
         'kpiDefinition.col.name': 'KPI',
         'kpiDefinition.col.synonyms': 'Synonyms',
         'kpiDefinition.col.formula': 'Formula',
@@ -105,6 +107,7 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.result.ownerHint': 'At least one KPI has no owner yet.',
         'kpiDefinition.result.grainHint': 'At least one KPI has no grain yet. Without grain, mart design is uncertain.',
         'kpiDefinition.result.readyHint': 'All KPI cards have owner and grain; this can move into mart design or decision brief.',
+        'kpiDefinition.result.intakeHint': 'Rows from KPI Intake stay linked as a source and can be refined in the register.',
         'discovery.exportTitle': 'KPI inventory',
     },
 });
@@ -177,6 +180,9 @@ function renderKpiSummary(host, rows) {
     if (ready) {
         messages.push(t('kpiDefinition.result.readyHint'));
     }
+    if (rows.some((row) => row.intakeId)) {
+        messages.push(t('kpiDefinition.result.intakeHint'));
+    }
     messages.forEach((message) => {
         const item = document.createElement('li');
         item.textContent = message;
@@ -187,11 +193,33 @@ function renderKpiSummary(host, rows) {
     host.appendChild(section);
 }
 
+function normalizeRegisterRowForStore(row) {
+    return {
+        id: String(row.id || ''),
+        name: String(row.name || ''),
+        synonyms: String(row.synonyms || ''),
+        formula: String(row.formula || ''),
+        grain: String(row.grain || ''),
+        filters: String(row.filters || ''),
+        owner: String(row.owner || ''),
+        source: String(row.source || ''),
+        status: row.status === 'agreed' || row.status === 'conflict' ? row.status : 'draft',
+        intakeId: row.intakeId ? String(row.intakeId) : undefined,
+        updatedAt: new Date().toISOString(),
+    };
+}
+
+const workspaceRows = loadKpiWorkspace().registerRows.map(normalizeRegisterRowForStore);
+
 mountTableCanvas({
     root: app,
+    initialRows: workspaceRows,
     legacyStorageKeys: ['bn-tools:kpi-definition:v1'],
     t,
     applyLabels,
+    onChange: (rows) => {
+        replaceKpiRegisterRows(rows.map(normalizeRegisterRowForStore));
+    },
     columns: [
         { id: 'name', labelKey: 'kpiDefinition.col.name', type: 'text', placeholderKey: 'kpiDefinition.placeholder.name', helpKey: 'kpiDefinition.help.name' },
         { id: 'synonyms', labelKey: 'kpiDefinition.col.synonyms', type: 'text', placeholderKey: 'kpiDefinition.placeholder.synonyms', helpKey: 'kpiDefinition.help.synonyms' },

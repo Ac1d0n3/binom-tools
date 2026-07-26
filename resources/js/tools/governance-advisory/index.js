@@ -1,8 +1,8 @@
 import { copyTextToClipboard } from '../pii-shared/tool-utils.js';
 import { downloadTextFile } from '../discovery-shared/download.js';
 import { bindPlanTransferUi } from '../discovery-shared/plan-transfer-ui.js';
-
-const demoKey = 'bn-tools:governance-tool-demos:v1';
+import { deleteGovernanceToolRecord, recordsForTool, upsertGovernanceToolRecord } from '../governance-tool-workspace-store.js';
+import { acceptKpiIntake, deleteKpiIntake, loadKpiWorkspace, upsertKpiIntake } from '../kpi-workspace-store.js';
 
 const texts = {
     'discovery.applyEmpty': 'Bitte erst Eingaben erfassen.',
@@ -10,9 +10,20 @@ const texts = {
     'discovery.planWarnTitle': 'Plan-Kontext',
     'discovery.planWarnBody': 'Dieser Report kann in die Plan-Aufgabe übernommen werden.',
     'discovery.planExportHint': 'Im Plan speichern schreibt Report und strukturierte Felder zurück.',
-    savedDemo: 'Demo gespeichert.',
+    savedDemo: 'Gespeichert.',
     copied: 'Report kopiert.',
     downloaded: 'Markdown geladen.',
+    kpiSaved: 'KPI-Intake gespeichert.',
+    kpiAccepted: 'KPI-Intake ins Register übernommen.',
+    kpiDeleted: 'KPI-Intake gelöscht.',
+    kpiOpened: 'KPI-Intake geöffnet.',
+    kpiNew: 'Neue KPI-Klärung gestartet.',
+    kpiEmpty: 'Noch kein Intake gespeichert.',
+    recordSaved: 'Arbeitsstand gespeichert.',
+    recordDeleted: 'Arbeitsstand gelöscht.',
+    recordOpened: 'Arbeitsstand geöffnet.',
+    recordNew: 'Neuer Arbeitsstand gestartet.',
+    recordEmpty: 'Noch nichts gespeichert.',
 };
 
 function t(key) {
@@ -53,11 +64,17 @@ function safeFilename(value) {
 
 function collect(root, config) {
     const note = root.querySelector('[data-governance-tool-note]')?.value?.trim() || '';
-    const fields = Array.from(root.querySelectorAll('[data-governance-tool-field]')).map((input) => ({
-        label: input.dataset[currentLocale() === 'de' ? 'fieldLabelDe' : 'fieldLabelEn'] || input.dataset.fieldLabel || input.name,
-        help: input.dataset.fieldHelp || '',
-        value: input.value.trim(),
-    }));
+    const fields = Array.from(root.querySelectorAll('[data-governance-tool-field]')).map((input) => {
+        const labelEn = input.dataset.fieldLabelEn || input.dataset.fieldLabel || input.name;
+        const labelDe = input.dataset.fieldLabelDe || labelEn;
+        return {
+            label: currentLocale() === 'de' ? labelDe : labelEn,
+            labelDe,
+            labelEn,
+            help: input.dataset.fieldHelp || '',
+            value: input.value.trim(),
+        };
+    });
     const filled = fields.filter((field) => field.value !== '');
     const open = fields.filter((field) => field.value === '');
     const score = fields.length === 0 ? 0 : Math.round((filled.length / fields.length) * 100);
@@ -142,21 +159,6 @@ function planRows(state) {
     return rows;
 }
 
-function saveDemo(state) {
-    const raw = sessionStorage.getItem(demoKey);
-    let entries = [];
-    try {
-        entries = raw ? JSON.parse(raw) : [];
-    } catch {
-        entries = [];
-    }
-    entries.unshift({
-        ...state,
-        savedAt: new Date().toISOString(),
-    });
-    sessionStorage.setItem(demoKey, JSON.stringify(entries.slice(0, 20)));
-}
-
 function applyPrefill(root, config) {
     const prefill = config.demoPrefill;
     if (!prefill || typeof prefill !== 'object') {
@@ -174,6 +176,404 @@ function applyPrefill(root, config) {
             input.value = String(values[index]);
         }
     });
+}
+
+function fieldValueByLabel(state, labelEn) {
+    return state.fields.find((field) => field.labelEn === labelEn)?.value || '';
+}
+
+function intakeTitle(state) {
+    return fieldValueByLabel(state, 'KPI') || state.note || state.title || 'KPI Intake';
+}
+
+function recordTitle(state) {
+    const filledField = state.fields.find((field) => field.value);
+    return filledField?.value || state.note || state.title || 'Governance Arbeitsstand';
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '';
+    }
+    try {
+        return new Intl.DateTimeFormat(currentLocale() === 'de' ? 'de-DE' : 'en-US', {
+            dateStyle: 'short',
+            timeStyle: 'short',
+        }).format(new Date(value));
+    } catch {
+        return String(value);
+    }
+}
+
+function fillIntakeForm(root, intake) {
+    const note = root.querySelector('[data-governance-tool-note]');
+    if (note) {
+        note.value = intake.note || '';
+    }
+
+    const fields = Array.isArray(intake.fields) ? intake.fields : [];
+    root.querySelectorAll('[data-governance-tool-field]').forEach((input, index) => {
+        const labelEn = input.dataset.fieldLabelEn || input.dataset.fieldLabel || input.name;
+        const match = fields.find((field) => field.labelEn === labelEn) || fields[index];
+        input.value = match?.value || '';
+    });
+}
+
+function clearIntakeForm(root) {
+    const note = root.querySelector('[data-governance-tool-note]');
+    if (note) {
+        note.value = '';
+    }
+    root.querySelectorAll('[data-governance-tool-field]').forEach((input) => {
+        input.value = '';
+    });
+}
+
+function initKpiIntakeManager(root, getState, render, setStatus) {
+    const manager = root.querySelector('[data-kpi-intake-manager]');
+    const list = root.querySelector('[data-kpi-intake-list]');
+    const managerStatus = root.querySelector('[data-kpi-intake-status]');
+    const btnNew = Array.from(root.querySelectorAll('[data-kpi-intake-new]'));
+    const btnSave = Array.from(root.querySelectorAll('[data-kpi-intake-save]'));
+    const btnAccept = Array.from(root.querySelectorAll('[data-kpi-intake-accept]'));
+    if (!manager || !list) {
+        return null;
+    }
+
+    let activeId = null;
+    let lastSavedSignature = '';
+
+    const currentSignature = () => {
+        const state = getState();
+        return JSON.stringify({
+            note: state.note,
+            fields: state.fields.map((field) => [field.labelEn || field.label, field.value]),
+        });
+    };
+
+    const hasCurrentContent = () => {
+        const state = getState();
+        return state.note !== '' || state.filled.length > 0;
+    };
+
+    const syncActions = () => {
+        const hasContent = hasCurrentContent();
+        const hasUnsavedChanges = hasContent && currentSignature() !== lastSavedSignature;
+        btnSave.forEach((button) => {
+            const isHeaderAction = button.dataset.kpiSavePlacement === 'header';
+            button.disabled = !hasUnsavedChanges;
+            button.setAttribute('aria-disabled', String(!hasUnsavedChanges));
+        });
+        btnAccept.forEach((button) => {
+            button.disabled = !hasContent;
+            button.setAttribute('aria-disabled', String(!hasContent));
+        });
+    };
+
+    const status = (message) => {
+        if (managerStatus) {
+            managerStatus.textContent = message;
+        }
+        setStatus(message);
+    };
+
+    const saveCurrent = () => {
+        const state = getState();
+        const saved = upsertKpiIntake({
+            id: activeId || undefined,
+            title: intakeTitle(state),
+            note: state.note,
+            fields: state.fields,
+        });
+        activeId = saved.id;
+        lastSavedSignature = currentSignature();
+        renderList();
+        syncActions();
+        status(t('kpiSaved'));
+        return saved;
+    };
+
+    const openIntake = (id) => {
+        const intake = loadKpiWorkspace().intakes.find((item) => item.id === id);
+        if (!intake) {
+            return;
+        }
+        activeId = intake.id;
+        fillIntakeForm(root, intake);
+        render();
+        lastSavedSignature = currentSignature();
+        renderList();
+        syncActions();
+        status(t('kpiOpened'));
+    };
+
+    const deleteIntake = (id) => {
+        deleteKpiIntake(id);
+        if (activeId === id) {
+            activeId = null;
+            lastSavedSignature = '';
+        }
+        renderList();
+        syncActions();
+        status(t('kpiDeleted'));
+    };
+
+    const acceptCurrent = () => {
+        const saved = saveCurrent();
+        acceptKpiIntake(saved);
+        renderList();
+        syncActions();
+        status(t('kpiAccepted'));
+    };
+
+    function renderList() {
+        const workspace = loadKpiWorkspace();
+        list.innerHTML = '';
+        if (workspace.intakes.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'governance-advisory-tool__kpi-empty';
+            empty.textContent = t('kpiEmpty');
+            list.appendChild(empty);
+            syncActions();
+            return;
+        }
+
+        workspace.intakes.slice(0, 6).forEach((intake) => {
+            const title = intake.title || 'KPI Intake';
+            const done = intake.acceptedAt ? 'Übernommen' : 'Entwurf';
+            const card = document.createElement('article');
+            card.className = 'governance-advisory-tool__kpi-card';
+            card.classList.toggle('governance-advisory-tool__kpi-card--active', intake.id === activeId);
+            const body = document.createElement('div');
+            const heading = document.createElement('strong');
+            heading.textContent = title;
+            const meta = document.createElement('span');
+            meta.textContent = `${done} · ${formatDate(intake.updatedAt)}`;
+            body.append(heading, meta);
+
+            const actions = document.createElement('div');
+            actions.className = 'governance-advisory-tool__kpi-card-actions';
+            [
+                ['kpiOpen', 'Öffnen'],
+                ['kpiAccept', 'Übernehmen'],
+                ['kpiDelete', 'Löschen'],
+            ].forEach(([key, label]) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.dataset[key] = intake.id;
+                button.textContent = label;
+                actions.appendChild(button);
+            });
+
+            card.append(body, actions);
+            list.appendChild(card);
+        });
+        syncActions();
+    }
+
+    btnNew.forEach((button) => button.addEventListener('click', () => {
+        activeId = null;
+        lastSavedSignature = '';
+        clearIntakeForm(root);
+        render();
+        renderList();
+        syncActions();
+        status(t('kpiNew'));
+    }));
+
+    btnSave.forEach((button) => button.addEventListener('click', saveCurrent));
+    btnAccept.forEach((button) => button.addEventListener('click', acceptCurrent));
+    list.addEventListener('click', (event) => {
+        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null;
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+        if (button.dataset.kpiOpen) {
+            openIntake(button.dataset.kpiOpen);
+        }
+        if (button.dataset.kpiAccept) {
+            openIntake(button.dataset.kpiAccept);
+            acceptCurrent();
+        }
+        if (button.dataset.kpiDelete && window.confirm('Diesen KPI-Intake löschen?')) {
+            deleteIntake(button.dataset.kpiDelete);
+        }
+    });
+
+    renderList();
+    syncActions();
+    return { renderList, syncActions };
+}
+
+function initGovernanceRecordManager(root, config, getState, render, setStatus) {
+    const manager = root.querySelector('[data-governance-record-manager]');
+    const list = root.querySelector('[data-governance-record-list]');
+    const managerStatus = root.querySelector('[data-governance-record-status]');
+    const btnNew = Array.from(root.querySelectorAll('[data-governance-record-new]'));
+    const btnSave = Array.from(root.querySelectorAll('[data-governance-record-save]'));
+
+    if (!manager || !list) {
+        return null;
+    }
+
+    let activeId = null;
+    let lastSavedSignature = '';
+
+    const currentSignature = () => {
+        const state = getState();
+        return JSON.stringify({
+            note: state.note,
+            fields: state.fields.map((field) => [field.labelEn || field.label, field.value]),
+        });
+    };
+
+    const hasCurrentContent = () => {
+        const state = getState();
+        return state.note !== '' || state.filled.length > 0;
+    };
+
+    const syncActions = () => {
+        const state = getState();
+        const hasContent = state.note !== '' || state.filled.length > 0;
+        const hasUnsavedChanges = hasContent && currentSignature() !== lastSavedSignature;
+        btnSave.forEach((button) => {
+            button.disabled = !hasUnsavedChanges;
+            button.setAttribute('aria-disabled', String(!hasUnsavedChanges));
+        });
+    };
+
+    const status = (message) => {
+        if (managerStatus) {
+            managerStatus.textContent = message;
+        }
+        setStatus(message);
+    };
+
+    const saveCurrent = () => {
+        const state = getState();
+        if (!hasCurrentContent()) {
+            syncActions();
+            return null;
+        }
+
+        const saved = upsertGovernanceToolRecord({
+            id: activeId || undefined,
+            toolId: config.id || state.toolId,
+            title: recordTitle(state),
+            note: state.note,
+            fields: state.fields,
+            reportMarkdown: markdown(state),
+            score: state.score,
+        });
+        activeId = saved.id;
+        lastSavedSignature = currentSignature();
+        renderList();
+        syncActions();
+        status(t('recordSaved'));
+        return saved;
+    };
+
+    const openRecord = (id) => {
+        const record = recordsForTool(config.id || 'governance-tool').find((item) => item.id === id);
+        if (!record) {
+            return;
+        }
+
+        activeId = record.id;
+        fillIntakeForm(root, record);
+        render();
+        lastSavedSignature = currentSignature();
+        renderList();
+        syncActions();
+        status(t('recordOpened'));
+    };
+
+    const deleteRecord = (id) => {
+        deleteGovernanceToolRecord(config.id || 'governance-tool', id);
+        if (activeId === id) {
+            activeId = null;
+            lastSavedSignature = '';
+            clearIntakeForm(root);
+            render();
+        }
+        renderList();
+        syncActions();
+        status(t('recordDeleted'));
+    };
+
+    function renderList() {
+        const records = recordsForTool(config.id || 'governance-tool');
+        list.innerHTML = '';
+        if (records.length === 0) {
+            const empty = document.createElement('p');
+            empty.className = 'governance-advisory-tool__kpi-empty';
+            empty.textContent = t('recordEmpty');
+            list.appendChild(empty);
+            syncActions();
+            return;
+        }
+
+        records.slice(0, 8).forEach((record) => {
+            const card = document.createElement('article');
+            card.className = 'governance-advisory-tool__kpi-card';
+            card.classList.toggle('governance-advisory-tool__kpi-card--active', record.id === activeId);
+
+            const body = document.createElement('div');
+            const heading = document.createElement('strong');
+            heading.textContent = record.title || 'Governance Arbeitsstand';
+            const meta = document.createElement('span');
+            meta.textContent = `${record.score || 0}% · ${formatDate(record.updatedAt)}`;
+            body.append(heading, meta);
+
+            const actions = document.createElement('div');
+            actions.className = 'governance-advisory-tool__kpi-card-actions';
+            [
+                ['governanceOpen', 'Öffnen'],
+                ['governanceDelete', 'Löschen'],
+            ].forEach(([key, label]) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.dataset[key] = record.id;
+                button.textContent = label;
+                actions.appendChild(button);
+            });
+
+            card.append(body, actions);
+            list.appendChild(card);
+        });
+        syncActions();
+    }
+
+    btnNew.forEach((button) => button.addEventListener('click', () => {
+        activeId = null;
+        lastSavedSignature = '';
+        clearIntakeForm(root);
+        render();
+        renderList();
+        syncActions();
+        status(t('recordNew'));
+    }));
+
+    btnSave.forEach((button) => button.addEventListener('click', () => {
+        saveCurrent();
+    }));
+
+    list.addEventListener('click', (event) => {
+        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null;
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+        if (button.dataset.governanceOpen) {
+            openRecord(button.dataset.governanceOpen);
+        }
+        if (button.dataset.governanceDelete && window.confirm('Diesen Arbeitsstand löschen?')) {
+            deleteRecord(button.dataset.governanceDelete);
+        }
+    });
+
+    renderList();
+    syncActions();
+    return { renderList, syncActions };
 }
 
 function initHeaderDrawer(root) {
@@ -291,6 +691,8 @@ function mount(root) {
             score.textContent = String(current.score);
         }
         transferred = false;
+        kpiManager?.syncActions();
+        standardSave?.syncActions();
     }
 
     const ctx = bindPlanTransferUi({
@@ -315,6 +717,13 @@ function mount(root) {
         returnLink.href = ctx.returnUrl;
     }
 
+    let kpiManager = config.id === 'kpi-requirements-intake'
+        ? initKpiIntakeManager(root, () => current, render, setStatus)
+        : null;
+    let standardSave = config.id !== 'kpi-requirements-intake'
+        ? initGovernanceRecordManager(root, config, () => current, render, setStatus)
+        : null;
+
     root.querySelectorAll('input, textarea, select').forEach((input) => {
         input.addEventListener('input', render);
         input.addEventListener('change', render);
@@ -337,12 +746,6 @@ function mount(root) {
         window.print();
     }));
 
-    root.querySelectorAll('[data-governance-tool-save-demo]').forEach((button) => button.addEventListener('click', () => {
-        saveDemo(current);
-        transferred = true;
-        setStatus(t('savedDemo'));
-    }));
-
     window.addEventListener('beforeunload', (event) => {
         if (transferred || (current.note === '' && current.filled.length === 0)) {
             return;
@@ -352,6 +755,7 @@ function mount(root) {
     });
 
     render();
+    kpiManager?.renderList();
 }
 
 document.querySelectorAll('[data-governance-tool-root]').forEach(mount);
