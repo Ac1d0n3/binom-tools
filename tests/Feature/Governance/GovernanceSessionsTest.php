@@ -56,8 +56,31 @@ class GovernanceSessionsTest extends TestCase
             ->assertSee('SAP S/4HANA')
             ->assertSee('Executive Finance Dashboard')
             ->assertSee('Decision brief')
+            ->assertSee('Zurück zum Hub', false)
+            ->assertSee('/governance', false)
             ->assertSee('Eigene Session starten', false)
             ->assertDontSee('data-session-id="demo_finance_governance"', false);
+    }
+
+    public function test_demo_workspace_shows_connected_plan_learning_kpis_and_generators(): void
+    {
+        $this->get('/governance/demo-workspace')
+            ->assertOk()
+            ->assertSee('Governance Demo Workspace')
+            ->assertSee('Aktiver Hauptplan', false)
+            ->assertSee('Finance Mart Governance Implementation')
+            ->assertSee('Paralleler Lernplan', false)
+            ->assertSee('dbt + Fabric Enablement &amp; Certification', false)
+            ->assertSee('Microsoft DP-600')
+            ->assertSee('KPI Cards mit echten Werten', false)
+            ->assertSee('Net Revenue')
+            ->assertSee('Offene Forderungen')
+            ->assertSee('Invoice Count')
+            ->assertSee('Gefüllte Tools öffnen', false)
+            ->assertSee('KPI Requirements Intake')
+            ->assertSee('/tools/kpi-requirements-intake?demo=finance', false)
+            ->assertSee('/tools/source-scope-builder?demo=finance', false)
+            ->assertSee('/governance/demo-report', false);
     }
 
     public function test_signed_in_user_can_save_manage_report_and_create_workflow(): void

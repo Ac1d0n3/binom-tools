@@ -58,4 +58,14 @@ class GovernanceAdvisoryToolsTest extends TestCase
         $response->assertSee('/governance', false);
         $response->assertSee('rel="canonical"', false);
     }
+
+    public function test_governance_advisory_tool_can_render_filled_demo_values(): void
+    {
+        $this->get('/tools/kpi-requirements-intake?demo=finance')
+            ->assertOk()
+            ->assertSee('Demo-Daten geladen', false)
+            ->assertSee('Net Revenue')
+            ->assertSee('Welche Umsatzentwicklung soll im Monatsabschluss wirklich entschieden werden?', false)
+            ->assertSee('demoPrefill', false);
+    }
 }

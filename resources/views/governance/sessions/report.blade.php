@@ -28,6 +28,10 @@
                 </p>
             </div>
             <div class="governance-report__actions">
+                <a class="governance-hub__button" href="{{ locale_route('governance.index') }}">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    <span data-text-de="Zurück zum Hub" data-text-en="Back to hub">Back to hub</span>
+                </a>
                 @if (empty($isDemo))
                     <button
                         type="button"

@@ -18,6 +18,7 @@
         'template' => $tool['template'] ?? [],
         'templateGuides' => $templateGuides ?? [],
         'reportSummary' => $reportSummary ?? '',
+        'demoPrefill' => $demoPrefill ?? null,
     ];
 @endphp
 
@@ -158,6 +159,12 @@
                         <div class="governance-advisory-tool__summary">
                             <span data-text-de="Report-Zusammenfassung" data-text-en="Report summary">Report summary</span>
                             <p>{{ $reportSummary }}</p>
+                        </div>
+                    @endif
+                    @if (! empty($demoPrefill))
+                        <div class="governance-advisory-tool__summary governance-advisory-tool__summary--demo">
+                            <span data-text-de="Demo-Daten geladen" data-text-en="Demo data loaded">Demo data loaded</span>
+                            <p data-text-de="Diese Ansicht ist mit Beispielwerten aus dem Finance Governance Workspace gefüllt. Du siehst dadurch direkt, wie Eingaben, Ergebnisreport und Plan-Übergabe zusammenarbeiten." data-text-en="This view is filled with example values from the Finance Governance Workspace. It shows how inputs, result report, and plan handoff work together.">This view is filled with example values from the Finance Governance Workspace. It shows how inputs, result report, and plan handoff work together.</p>
                         </div>
                     @endif
                     <label>

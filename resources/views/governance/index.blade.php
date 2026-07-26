@@ -29,7 +29,173 @@
 @endpush
 
 @section('content')
-    <div class="tools-content governance-hub">
+    @php
+        $advisorLinks = [
+            'tools' => [
+                'governance-stack-advisor' => locale_route('tools.governance-stack-advisor'),
+                'source-scope-builder' => locale_route('tools.source-scope-builder'),
+                'kpi-requirements-intake' => locale_route('tools.kpi-requirements-intake'),
+                'mart-design-brief-generator' => locale_route('tools.mart-design-brief-generator'),
+                'pii-dsdr-readiness-checker' => locale_route('tools.pii-dsdr-readiness-checker'),
+                'decision-brief-generator' => locale_route('tools.decision-brief-generator'),
+                'vendor-learning-path-builder' => locale_route('tools.vendor-learning-path-builder'),
+                'architecture-fit' => locale_route('tools.architecture-fit'),
+                'impact-effort' => locale_route('tools.impact-effort'),
+                'meta-export-generator' => locale_route('tools.meta-export-generator'),
+                'report-inventory' => locale_route('tools.report-inventory'),
+                'kpi-definition' => locale_route('tools.kpi-definition'),
+                'pii-policy-generator' => locale_route('tools.pii-policy-generator'),
+                'pii-recommend-generator' => locale_route('tools.pii-recommend-generator'),
+                'schema-yml-editor' => locale_route('tools.schema-yml-editor'),
+                'dbt-dq-macro-generator' => locale_route('tools.dbt-dq-macro-generator'),
+                'dbt-dq-rules-generator' => locale_route('tools.dbt-dq-rules-generator'),
+                'dbt-dq-history-generator' => locale_route('tools.dbt-dq-history-generator'),
+                'fabric-pii-governance-pattern-generator' => locale_route('tools.fabric-pii-governance-pattern-generator'),
+                'databricks-pii-governance-pattern-generator' => locale_route('tools.databricks-pii-governance-pattern-generator'),
+                'unity-catalog-governance-generator' => locale_route('tools.unity-catalog-governance-generator'),
+            ],
+            'hubs' => [
+                'resources' => locale_route('resources.index'),
+                'suppliers' => locale_route('suppliers.index'),
+                'compliance' => locale_route('compliance.index'),
+                'playbooks' => locale_route('playbooks.index'),
+            ],
+            'session' => [
+                'accountsEnabled' => ! empty($accountsEnabled),
+                'loggedIn' => ! empty($accountUser),
+                'apiUrl' => ! empty($accountUser) ? url('/api/governance/sessions') : null,
+                'sessionsUrl' => ! empty($accountUser) ? locale_route('governance.sessions.index') : null,
+                'loginUrl' => ! empty($accountsEnabled) && empty($accountUser) ? locale_route('accounts.login') : null,
+            ],
+        ];
+    @endphp
+
+    <div class="tools-content governance-hub" data-governance-advisor>
+        <script type="application/json" data-governance-advisor-config>
+            {!! json_encode(['links' => $advisorLinks], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+        </script>
+
+        <section class="governance-hub__top-controls" aria-label="Governance Hub Hinweise und Session" data-governance-top-controls hidden>
+            <article class="governance-advisor__helpbox" id="governance-help-panel" data-governance-panel hidden>
+                <div class="governance-advisor__helpbox-head">
+                    <span class="governance-advisor__helpbox-icon">
+                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <span class="governance-hub__eyebrow" data-text-de="So nutzt du den Advisor" data-text-en="How to use the advisor">How to use the advisor</span>
+                        <strong data-text-de="Erst die Lage klären, dann passende Tools, Supplier und Nachweise öffnen." data-text-en="Clarify the situation first, then open matching tools, suppliers, and evidence.">Clarify the situation first, then open matching tools, suppliers, and evidence.</strong>
+                    </span>
+                </div>
+                <div class="governance-advisor__helpbox-content">
+                    <p
+                        data-text-de="Der Governance Hub ist keine Linkliste. Er soll dich durch eine Discovery führen: Welche Entscheidung steht an, welcher Stack ist betroffen, welche Quelle liefert Daten, welche Risiken müssen vor Umsetzung geprüft werden und welche Artefakte sollen später in Plan, Workflow oder Report landen?"
+                        data-text-en="The Governance Hub is not just a link list. It guides a discovery: what decision is pending, which stack is affected, which source supplies data, which risks must be checked before implementation, and which artifacts should later move into a plan, workflow, or report?"
+                    >The Governance Hub is not just a link list. It guides a discovery: what decision is pending, which stack is affected, which source supplies data, which risks must be checked before implementation, and which artifacts should later move into a plan, workflow, or report?</p>
+                    <ol>
+                        <li data-text-de="Wähle zuerst die Ausgangslage: neu aufbauen, vorhandene Umgebung ergänzen oder Hilfe in einer bestehenden Landschaft finden." data-text-en="First choose the starting point: build new, extend an existing environment, or find help in an existing landscape.">First choose the starting point: build new, extend an existing environment, or find help in an existing landscape.</li>
+                        <li data-text-de="Lege fest, was entschieden werden soll. Bei Datenqualität kannst du zusätzlich Ziel, Schicht und Fehlerklasse eingrenzen." data-text-en="Define what needs a decision. For data quality, you can also narrow down goal, layer, and issue class.">Define what needs a decision. For data quality, you can also narrow down goal, layer, and issue class.</li>
+                        <li data-text-de="Nutze die Empfehlungen rechts als Arbeitsreihenfolge: erst die passenden Tools, dann Supplier/Resources, dann Nachweise und Stories." data-text-en="Use the recommendations on the right as a working order: matching tools first, then suppliers/resources, then evidence and stories.">Use the recommendations on the right as a working order: matching tools first, then suppliers/resources, then evidence and stories.</li>
+                        <li data-text-de="Speichere die Session, wenn daraus ein Report, eine Plan-Aufgabe, ein Workflow-Schritt oder später ein Change Request entstehen soll." data-text-en="Save the session when it should become a report, plan task, workflow step, or later change request.">Save the session when it should become a report, plan task, workflow step, or later change request.</li>
+                    </ol>
+                </div>
+            </article>
+
+            <article class="governance-advisor__helpbox" id="governance-tools-panel" data-governance-panel hidden>
+                <div class="governance-advisor__helpbox-head">
+                    <span class="governance-advisor__helpbox-icon">
+                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <span class="governance-hub__eyebrow" data-text-de="Zusammenspiel der Tools" data-text-en="How the tools connect">How the tools connect</span>
+                        <strong data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report." data-text-en="Each tool works standalone, but contributes a block to the same governance report.">Each tool works standalone, but contributes a block to the same governance report.</strong>
+                    </span>
+                </div>
+                <div class="governance-advisor__helpbox-content">
+                    <p
+                        data-text-de="Die Empfehlungen rechts sind nicht zufällig: Sie zeigen die nächste sinnvolle Arbeitsfläche für deine Auswahl. KPI Intake erzeugt KPI-Karten, Source Scope erzeugt Ladeumfang und PII-Fragen, Mart Design macht daraus Tabellenentscheidungen, Data Quality ergänzt Regeln und Gates, Decision Brief fasst alles für Freigabe oder Change Request zusammen."
+                        data-text-en="The recommendations on the right are not random: they show the next useful workspace for your selection. KPI Intake creates KPI cards, Source Scope creates load scope and PII questions, Mart Design turns this into table decisions, Data Quality adds rules and gates, and Decision Brief summarizes everything for approval or change request."
+                    >The recommendations on the right are not random: they show the next useful workspace for your selection. KPI Intake creates KPI cards, Source Scope creates load scope and PII questions, Mart Design turns this into table decisions, Data Quality adds rules and gates, and Decision Brief summarizes everything for approval or change request.</p>
+                    <ol>
+                        <li data-text-de="Standalone: Du kannst ein Tool öffnen, Eingaben erfassen, den Report-Baustein ansehen und kopieren oder als Demo speichern." data-text-en="Standalone: open a tool, capture inputs, review the report block, then copy it or save a demo.">Standalone: open a tool, capture inputs, review the report block, then copy it or save a demo.</li>
+                        <li data-text-de="Aus einem Plan: Der Tool-Report kann in die passende Aufgabe zurückgeschrieben werden, ohne dass die ganze Session ersetzt wird." data-text-en="From a plan: the tool report can be written back into the matching task without replacing the whole session.">From a plan: the tool report can be written back into the matching task without replacing the whole session.</li>
+                        <li data-text-de="Mit Login: Die Governance Session bleibt dauerhaft verfügbar und kann später als Report, Workflow-Grundlage oder Change-Request-Ausgangspunkt weitergeführt werden." data-text-en="With sign-in: the governance session stays permanently available and can later continue as a report, workflow basis, or change request starting point.">With sign-in: the governance session stays permanently available and can later continue as a report, workflow basis, or change request starting point.</li>
+                    </ol>
+                </div>
+            </article>
+
+            <section class="governance-advisor__save-disclosure governance-advisor__save-disclosure--hub" id="governance-save-panel" data-governance-save-panel data-governance-panel hidden>
+                <div class="governance-advisor__save-head">
+                    <span>
+                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                        <strong data-text-de="Session speichern oder Demo anlegen" data-text-en="Save session or create demo">Save session or create demo</strong>
+                    </span>
+                    <small data-text-de="Gilt für den gesamten Governance Hub: Report, Workflow, Demo Workspace und spätere Änderungen vorbereiten." data-text-en="Applies to the whole Governance Hub: prepare report, workflow, demo workspace, and later changes.">Applies to the whole Governance Hub: prepare report, workflow, demo workspace, and later changes.</small>
+                </div>
+                <div class="governance-advisor__save">
+                    <label>
+                        <span data-text-de="Session Titel" data-text-en="Session title">Session title</span>
+                        <input type="text" name="title" value="Governance Discovery" data-governance-session-title>
+                    </label>
+                    <div class="governance-advisor__save-grid">
+                        <label>
+                            <span data-text-de="Firma" data-text-en="Company">Company</span>
+                            <input type="text" name="companyName" placeholder="Acme GmbH" data-governance-session-company>
+                        </label>
+                        <label>
+                            <span data-text-de="Projekt" data-text-en="Project">Project</span>
+                            <input type="text" name="projectName" placeholder="Data Platform 2026" data-governance-session-project>
+                        </label>
+                    </div>
+                    <div class="governance-advisor__save-actions">
+                        <div class="governance-advisor__save-primary">
+                            <button type="button" class="governance-hub__button governance-hub__button--primary" data-governance-save-session>
+                                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                                <span data-text-de="Session speichern" data-text-en="Save session">Save session</span>
+                            </button>
+                        </div>
+                        <div class="governance-advisor__save-secondary">
+                            <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-workspace') }}">
+                                <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                                <span data-text-de="Demo Workspace ansehen" data-text-en="View demo workspace">View demo workspace</span>
+                            </a>
+                            <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-report') }}">
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                <span data-text-de="Beispiel-Report ansehen" data-text-en="View example report">View example report</span>
+                            </a>
+                            <button type="button" class="governance-hub__button" data-governance-save-demo>
+                                <i class="fa-solid fa-vial" aria-hidden="true"></i>
+                                <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
+                            </button>
+                            <a class="governance-hub__button" href="#" data-governance-view-report hidden>
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                <span data-text-de="Report ansehen" data-text-en="View report">View report</span>
+                            </a>
+                        @if (! empty($accountUser))
+                            <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
+                                <i class="fa-solid fa-table-list" aria-hidden="true"></i>
+                                <span data-text-de="Sessions verwalten" data-text-en="Manage sessions">Manage sessions</span>
+                            </a>
+                        @elseif (! empty($accountsEnabled))
+                            <a class="governance-hub__button" href="{{ locale_route('accounts.login') }}">
+                                <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                                <span data-text-de="Login für permanent" data-text-en="Sign in for permanent">Sign in for permanent</span>
+                            </a>
+                        @endif
+                        </div>
+                    </div>
+                    <p class="governance-advisor__save-status" data-governance-save-status>
+                        @if (! empty($accountUser))
+                            <span data-text-de="Eingeloggt: Sessions werden dauerhaft gespeichert." data-text-en="Signed in: sessions are stored permanently.">Signed in: sessions are stored permanently.</span>
+                        @elseif (! empty($accountsEnabled))
+                            <span data-text-de="Demo-Sessions bleiben nur in dieser Browser-Sitzung. Login speichert permanent." data-text-en="Demo sessions stay in this browser session only. Sign in to store permanently.">Demo sessions stay in this browser session only. Sign in to store permanently.</span>
+                        @else
+                            <span data-text-de="Accounts sind deaktiviert. Demo-Sessions bleiben lokal in dieser Sitzung." data-text-en="Accounts are disabled. Demo sessions stay local to this session.">Accounts are disabled. Demo sessions stay local to this session.</span>
+                        @endif
+                    </p>
+                </div>
+            </section>
+        </section>
+
         <header class="governance-hub__hero">
             <div class="governance-hub__hero-copy">
                 <p class="governance-hub__eyebrow" data-text-de="Governance Schaltzentrale" data-text-en="Governance control hub">Governance control hub</p>
@@ -44,6 +210,24 @@
                     data-text-de="Dieser Hub verbindet Playbooks, Tools, Vendor Resources, Supplier Library und Compliance zu einem geführten Startpunkt: erst die richtige Frage, dann der passende Weg."
                     data-text-en="This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path."
                 >This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path.</p>
+                <div class="governance-hub__hero-actions" aria-label="Governance Hub Panels">
+                    <button type="button" class="governance-hub__button" data-governance-panel-toggle="governance-help-panel" aria-controls="governance-help-panel" aria-expanded="false">
+                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                        <span data-text-de="Hilfe" data-text-en="Help">Help</span>
+                    </button>
+                    <button type="button" class="governance-hub__button" data-governance-panel-toggle="governance-tools-panel" aria-controls="governance-tools-panel" aria-expanded="false">
+                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                        <span data-text-de="Tools" data-text-en="Tools">Tools</span>
+                    </button>
+                    <button type="button" class="governance-hub__button" data-governance-panel-toggle="governance-save-panel" aria-controls="governance-save-panel" aria-expanded="false">
+                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                        <span data-text-de="Speichern" data-text-en="Save">Save</span>
+                    </button>
+                    <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-report') }}">
+                        <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                        <span data-text-de="Workspace Report" data-text-en="Workspace report">Workspace report</span>
+                    </a>
+                </div>
             </div>
 
             <aside class="governance-hub__stats" aria-label="Hub coverage">
@@ -66,51 +250,26 @@
             </aside>
         </header>
 
-        @php
-            $advisorLinks = [
-                'tools' => [
-                    'governance-stack-advisor' => locale_route('tools.governance-stack-advisor'),
-                    'source-scope-builder' => locale_route('tools.source-scope-builder'),
-                    'kpi-requirements-intake' => locale_route('tools.kpi-requirements-intake'),
-                    'mart-design-brief-generator' => locale_route('tools.mart-design-brief-generator'),
-                    'pii-dsdr-readiness-checker' => locale_route('tools.pii-dsdr-readiness-checker'),
-                    'decision-brief-generator' => locale_route('tools.decision-brief-generator'),
-                    'vendor-learning-path-builder' => locale_route('tools.vendor-learning-path-builder'),
-                    'architecture-fit' => locale_route('tools.architecture-fit'),
-                    'impact-effort' => locale_route('tools.impact-effort'),
-                    'meta-export-generator' => locale_route('tools.meta-export-generator'),
-                    'report-inventory' => locale_route('tools.report-inventory'),
-                    'kpi-definition' => locale_route('tools.kpi-definition'),
-                    'pii-policy-generator' => locale_route('tools.pii-policy-generator'),
-                    'pii-recommend-generator' => locale_route('tools.pii-recommend-generator'),
-                    'schema-yml-editor' => locale_route('tools.schema-yml-editor'),
-                    'dbt-dq-macro-generator' => locale_route('tools.dbt-dq-macro-generator'),
-                    'dbt-dq-rules-generator' => locale_route('tools.dbt-dq-rules-generator'),
-                    'dbt-dq-history-generator' => locale_route('tools.dbt-dq-history-generator'),
-                    'fabric-pii-governance-pattern-generator' => locale_route('tools.fabric-pii-governance-pattern-generator'),
-                    'databricks-pii-governance-pattern-generator' => locale_route('tools.databricks-pii-governance-pattern-generator'),
-                    'unity-catalog-governance-generator' => locale_route('tools.unity-catalog-governance-generator'),
-                ],
-                'hubs' => [
-                    'resources' => locale_route('resources.index'),
-                    'suppliers' => locale_route('suppliers.index'),
-                    'compliance' => locale_route('compliance.index'),
-                    'playbooks' => locale_route('playbooks.index'),
-                ],
-                'session' => [
-                    'accountsEnabled' => ! empty($accountsEnabled),
-                    'loggedIn' => ! empty($accountUser),
-                    'apiUrl' => ! empty($accountUser) ? url('/api/governance/sessions') : null,
-                    'sessionsUrl' => ! empty($accountUser) ? locale_route('governance.sessions.index') : null,
-                    'loginUrl' => ! empty($accountsEnabled) && empty($accountUser) ? locale_route('accounts.login') : null,
-                ],
-            ];
-        @endphp
+        <nav class="governance-hub__tabs" aria-label="Governance Hub Bereiche" data-governance-tabs role="tablist">
+            <button type="button" class="governance-hub__tab governance-hub__tab--active" id="governance-tab-button-advisor" data-governance-tab-toggle="advisor" role="tab" aria-controls="governance-tab-advisor" aria-selected="true">
+                <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                <span data-text-de="Advisor" data-text-en="Advisor">Advisor</span>
+            </button>
+            <button type="button" class="governance-hub__tab" id="governance-tab-button-workflows" data-governance-tab-toggle="workflows" role="tab" aria-controls="governance-tab-workflows" aria-selected="false" tabindex="-1">
+                <i class="fa-solid fa-route" aria-hidden="true"></i>
+                <span data-text-de="Workflows" data-text-en="Workflows">Workflows</span>
+            </button>
+            <button type="button" class="governance-hub__tab" id="governance-tab-button-decisions" data-governance-tab-toggle="decisions" role="tab" aria-controls="governance-tab-decisions" aria-selected="false" tabindex="-1">
+                <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                <span data-text-de="Entscheidungen" data-text-en="Decisions">Decisions</span>
+            </button>
+            <button type="button" class="governance-hub__tab" id="governance-tab-button-tools" data-governance-tab-toggle="tools" role="tab" aria-controls="governance-tab-tools" aria-selected="false" tabindex="-1">
+                <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
+                <span data-text-de="Tools" data-text-en="Tools">Tools</span>
+            </button>
+        </nav>
 
-        <section class="governance-hub__section governance-advisor" id="governance-advisor" data-governance-advisor aria-labelledby="governance-advisor-title">
-            <script type="application/json" data-governance-advisor-config>
-                {!! json_encode(['links' => $advisorLinks], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
-            </script>
+        <section class="governance-hub__section governance-advisor" id="governance-tab-advisor" aria-labelledby="governance-tab-button-advisor" data-governance-tab-panel="advisor" role="tabpanel">
 
             <div class="governance-hub__section-heading governance-advisor__heading">
                 <div>
@@ -129,53 +288,6 @@
                     data-text-en="Built for three real starting points: build new, extend an existing environment, or find orientation in a landscape that already exists."
                 >Built for three real starting points: build new, extend an existing environment, or find orientation in a landscape that already exists.</p>
             </div>
-
-            <details class="governance-advisor__helpbox" open>
-                <summary>
-                    <span class="governance-advisor__helpbox-icon">
-                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
-                    </span>
-                    <span>
-                        <span class="governance-hub__eyebrow" data-text-de="So nutzt du den Advisor" data-text-en="How to use the advisor">How to use the advisor</span>
-                        <strong data-text-de="Erst die Lage klären, dann passende Tools, Supplier und Nachweise öffnen." data-text-en="Clarify the situation first, then open matching tools, suppliers, and evidence.">Clarify the situation first, then open matching tools, suppliers, and evidence.</strong>
-                    </span>
-                </summary>
-                <div class="governance-advisor__helpbox-content">
-                    <p
-                        data-text-de="Der Governance Hub ist keine Linkliste. Er soll dich durch eine Discovery führen: Welche Entscheidung steht an, welcher Stack ist betroffen, welche Quelle liefert Daten, welche Risiken müssen vor Umsetzung geprüft werden und welche Artefakte sollen später in Plan, Workflow oder Report landen?"
-                        data-text-en="The Governance Hub is not just a link list. It guides a discovery: what decision is pending, which stack is affected, which source supplies data, which risks must be checked before implementation, and which artifacts should later move into a plan, workflow, or report?"
-                    >The Governance Hub is not just a link list. It guides a discovery: what decision is pending, which stack is affected, which source supplies data, which risks must be checked before implementation, and which artifacts should later move into a plan, workflow, or report?</p>
-                    <ol>
-                        <li data-text-de="Wähle zuerst die Ausgangslage: neu aufbauen, vorhandene Umgebung ergänzen oder Hilfe in einer bestehenden Landschaft finden." data-text-en="First choose the starting point: build new, extend an existing environment, or find help in an existing landscape.">First choose the starting point: build new, extend an existing environment, or find help in an existing landscape.</li>
-                        <li data-text-de="Lege fest, was entschieden werden soll. Bei Datenqualität kannst du zusätzlich Ziel, Schicht und Fehlerklasse eingrenzen." data-text-en="Define what needs a decision. For data quality, you can also narrow down goal, layer, and issue class.">Define what needs a decision. For data quality, you can also narrow down goal, layer, and issue class.</li>
-                        <li data-text-de="Nutze die Empfehlungen rechts als Arbeitsreihenfolge: erst die passenden Tools, dann Supplier/Resources, dann Nachweise und Stories." data-text-en="Use the recommendations on the right as a working order: matching tools first, then suppliers/resources, then evidence and stories.">Use the recommendations on the right as a working order: matching tools first, then suppliers/resources, then evidence and stories.</li>
-                        <li data-text-de="Speichere die Session, wenn daraus ein Report, eine Plan-Aufgabe, ein Workflow-Schritt oder später ein Change Request entstehen soll." data-text-en="Save the session when it should become a report, plan task, workflow step, or later change request.">Save the session when it should become a report, plan task, workflow step, or later change request.</li>
-                    </ol>
-                </div>
-            </details>
-
-            <details class="governance-advisor__helpbox">
-                <summary>
-                    <span class="governance-advisor__helpbox-icon">
-                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    </span>
-                    <span>
-                        <span class="governance-hub__eyebrow" data-text-de="Zusammenspiel der Tools" data-text-en="How the tools connect">How the tools connect</span>
-                        <strong data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report." data-text-en="Each tool works standalone, but contributes a block to the same governance report.">Each tool works standalone, but contributes a block to the same governance report.</strong>
-                    </span>
-                </summary>
-                <div class="governance-advisor__helpbox-content">
-                    <p
-                        data-text-de="Die Empfehlungen rechts sind nicht zufällig: Sie zeigen die nächste sinnvolle Arbeitsfläche für deine Auswahl. KPI Intake erzeugt KPI-Karten, Source Scope erzeugt Ladeumfang und PII-Fragen, Mart Design macht daraus Tabellenentscheidungen, Data Quality ergänzt Regeln und Gates, Decision Brief fasst alles für Freigabe oder Change Request zusammen."
-                        data-text-en="The recommendations on the right are not random: they show the next useful workspace for your selection. KPI Intake creates KPI cards, Source Scope creates load scope and PII questions, Mart Design turns this into table decisions, Data Quality adds rules and gates, and Decision Brief summarizes everything for approval or change request."
-                    >The recommendations on the right are not random: they show the next useful workspace for your selection. KPI Intake creates KPI cards, Source Scope creates load scope and PII questions, Mart Design turns this into table decisions, Data Quality adds rules and gates, and Decision Brief summarizes everything for approval or change request.</p>
-                    <ol>
-                        <li data-text-de="Standalone: Du kannst ein Tool öffnen, Eingaben erfassen, den Report-Baustein ansehen und kopieren oder als Demo speichern." data-text-en="Standalone: open a tool, capture inputs, review the report block, then copy it or save a demo.">Standalone: open a tool, capture inputs, review the report block, then copy it or save a demo.</li>
-                        <li data-text-de="Aus einem Plan: Der Tool-Report kann in die passende Aufgabe zurückgeschrieben werden, ohne dass die ganze Session ersetzt wird." data-text-en="From a plan: the tool report can be written back into the matching task without replacing the whole session.">From a plan: the tool report can be written back into the matching task without replacing the whole session.</li>
-                        <li data-text-de="Mit Login: Die Governance Session bleibt dauerhaft verfügbar und kann später als Report, Workflow-Grundlage oder Change-Request-Ausgangspunkt weitergeführt werden." data-text-en="With sign-in: the governance session stays permanently available and can later continue as a report, workflow basis, or change request starting point.">With sign-in: the governance session stays permanently available and can later continue as a report, workflow basis, or change request starting point.</li>
-                    </ol>
-                </div>
-            </details>
 
             <div class="governance-advisor__layout">
                 <form class="governance-advisor__form" aria-label="Governance advisor questions" data-governance-advisor-form>
@@ -329,73 +441,6 @@
                 </form>
 
                 <aside class="governance-advisor__results" aria-live="polite">
-                    <details class="governance-advisor__save-disclosure" data-governance-save-panel>
-                        <summary>
-                            <span>
-                                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
-                                <strong data-text-de="Session speichern oder Demo anlegen" data-text-en="Save session or create demo">Save session or create demo</strong>
-                            </span>
-                            <small data-text-de="Report, Workflow und spätere Änderungen vorbereiten" data-text-en="Prepare report, workflow, and later changes">Prepare report, workflow, and later changes</small>
-                        </summary>
-                        <div class="governance-advisor__save">
-                            <label>
-                                <span data-text-de="Session Titel" data-text-en="Session title">Session title</span>
-                                <input type="text" name="title" value="Governance Discovery" data-governance-session-title>
-                            </label>
-                            <div class="governance-advisor__save-grid">
-                                <label>
-                                    <span data-text-de="Firma" data-text-en="Company">Company</span>
-                                    <input type="text" name="companyName" placeholder="Acme GmbH" data-governance-session-company>
-                                </label>
-                                <label>
-                                    <span data-text-de="Projekt" data-text-en="Project">Project</span>
-                                    <input type="text" name="projectName" placeholder="Data Platform 2026" data-governance-session-project>
-                                </label>
-                            </div>
-                            <div class="governance-advisor__save-actions">
-                                <div class="governance-advisor__save-primary">
-                                    <button type="button" class="governance-hub__button governance-hub__button--primary" data-governance-save-session>
-                                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
-                                        <span data-text-de="Session speichern" data-text-en="Save session">Save session</span>
-                                    </button>
-                                </div>
-                                <div class="governance-advisor__save-secondary">
-                                    <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-report') }}">
-                                        <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                                        <span data-text-de="Beispiel-Report ansehen" data-text-en="View example report">View example report</span>
-                                    </a>
-                                    <button type="button" class="governance-hub__button" data-governance-save-demo>
-                                        <i class="fa-solid fa-vial" aria-hidden="true"></i>
-                                        <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
-                                    </button>
-                                    <a class="governance-hub__button" href="#" data-governance-view-report hidden>
-                                        <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                                        <span data-text-de="Report ansehen" data-text-en="View report">View report</span>
-                                    </a>
-                                @if (! empty($accountUser))
-                                    <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
-                                        <i class="fa-solid fa-table-list" aria-hidden="true"></i>
-                                        <span data-text-de="Sessions verwalten" data-text-en="Manage sessions">Manage sessions</span>
-                                    </a>
-                                @elseif (! empty($accountsEnabled))
-                                    <a class="governance-hub__button" href="{{ locale_route('accounts.login') }}">
-                                        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
-                                        <span data-text-de="Login für permanent" data-text-en="Sign in for permanent">Sign in for permanent</span>
-                                    </a>
-                                @endif
-                                </div>
-                            </div>
-                            <p class="governance-advisor__save-status" data-governance-save-status>
-                                @if (! empty($accountUser))
-                                    <span data-text-de="Eingeloggt: Sessions werden dauerhaft gespeichert." data-text-en="Signed in: sessions are stored permanently.">Signed in: sessions are stored permanently.</span>
-                                @elseif (! empty($accountsEnabled))
-                                    <span data-text-de="Demo-Sessions bleiben nur in dieser Browser-Sitzung. Login speichert permanent." data-text-en="Demo sessions stay in this browser session only. Sign in to store permanently.">Demo sessions stay in this browser session only. Sign in to store permanently.</span>
-                                @else
-                                    <span data-text-de="Accounts sind deaktiviert. Demo-Sessions bleiben lokal in dieser Sitzung." data-text-en="Accounts are disabled. Demo sessions stay local to this session.">Accounts are disabled. Demo sessions stay local to this session.</span>
-                                @endif
-                            </p>
-                        </div>
-                    </details>
                     <div class="governance-advisor__result-header">
                         <p class="governance-hub__eyebrow" data-text-de="Empfehlung" data-text-en="Recommendation">Recommendation</p>
                         <h3 data-governance-advisor-summary>Start with the stack decision, then validate sources and governance gates.</h3>
@@ -405,7 +450,7 @@
             </div>
         </section>
 
-        <section class="governance-hub__section" id="governance-journeys" aria-labelledby="governance-journeys-title">
+        <section class="governance-hub__section" id="governance-tab-workflows" aria-labelledby="governance-tab-button-workflows" data-governance-tab-panel="workflows" role="tabpanel" hidden>
             <div class="governance-hub__section-heading">
                 <h2
                     id="governance-journeys-title"
@@ -454,7 +499,7 @@
             </div>
         </section>
 
-        <section class="governance-hub__section governance-hub__workflow" aria-labelledby="governance-workflow-title">
+        <section class="governance-hub__section governance-hub__workflow" aria-labelledby="governance-tab-button-workflows" data-governance-tab-panel="workflows" role="tabpanel" hidden>
             <div>
                 <p class="governance-hub__eyebrow" data-text-de="Collect Infos Workflow" data-text-en="Collect infos workflow">Collect infos workflow</p>
                 <h2
@@ -490,7 +535,7 @@
             </ol>
         </section>
 
-        <section class="governance-hub__section governance-hub__decision-section" aria-labelledby="governance-stacks-title">
+        <section class="governance-hub__section governance-hub__decision-section" id="governance-tab-decisions" aria-labelledby="governance-tab-button-decisions" data-governance-tab-panel="decisions" role="tabpanel" hidden>
             <div class="governance-hub__decision-main">
                 <h2
                     id="governance-stacks-title"
@@ -640,7 +685,7 @@
             </div>
         </section>
 
-        <section class="governance-hub__section" aria-labelledby="governance-tools-title">
+        <section class="governance-hub__section" id="governance-tab-tools" aria-labelledby="governance-tab-button-tools" data-governance-tab-panel="tools" role="tabpanel" hidden>
             <div class="governance-hub__section-heading">
                 <h2
                     id="governance-tools-title"

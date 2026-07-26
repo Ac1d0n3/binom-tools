@@ -143,6 +143,25 @@ function saveDemo(state) {
     sessionStorage.setItem(demoKey, JSON.stringify(entries.slice(0, 20)));
 }
 
+function applyPrefill(root, config) {
+    const prefill = config.demoPrefill;
+    if (!prefill || typeof prefill !== 'object') {
+        return;
+    }
+
+    const note = root.querySelector('[data-governance-tool-note]');
+    if (note && !note.value) {
+        note.value = String(prefill.note || '');
+    }
+
+    const values = Array.isArray(prefill.fields) ? prefill.fields : [];
+    root.querySelectorAll('[data-governance-tool-field]').forEach((input, index) => {
+        if (!input.value && values[index]) {
+            input.value = String(values[index]);
+        }
+    });
+}
+
 function mount(root) {
     const config = readConfig(root);
     const preview = root.querySelector('[data-governance-tool-preview]');
@@ -151,6 +170,7 @@ function mount(root) {
     const returnLink = root.querySelector('[data-return-to-plan]');
 
     let transferred = false;
+    applyPrefill(root, config);
     let current = collect(root, config);
 
     function setStatus(message) {

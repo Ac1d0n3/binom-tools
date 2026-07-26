@@ -25,6 +25,10 @@
                     <i class="fa-solid fa-eye" aria-hidden="true"></i>
                     <span data-text-de="Beispiel-Report ansehen" data-text-en="View example report">View example report</span>
                 </a>
+                <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-workspace') }}">
+                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                    <span data-text-de="Demo Workspace ansehen" data-text-en="View demo workspace">View demo workspace</span>
+                </a>
                 <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index', $showArchived ? [] : ['archived' => 1]) }}">
                     <i class="fa-solid fa-box-archive" aria-hidden="true"></i>
                     <span data-text-de="{{ $showArchived ? 'Aktive anzeigen' : 'Archiv anzeigen' }}" data-text-en="{{ $showArchived ? 'Show active' : 'Show archive' }}">{{ $showArchived ? 'Show active' : 'Show archive' }}</span>
@@ -41,9 +45,9 @@
                 <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
                 <h2 data-text-de="Noch keine Sessions" data-text-en="No sessions yet">No sessions yet</h2>
                 <p data-text-de="Starte im Governance Hub den Advisor und speichere die Ergebnisse als permanente Session." data-text-en="Start the advisor in the Governance Hub and save the results as a persistent session.">Start the advisor in the Governance Hub and save the results as a persistent session.</p>
-                <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-report') }}">
-                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                    <span data-text-de="Gefüllte Beispiel-Session ansehen" data-text-en="View filled example session">View filled example session</span>
+                <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-workspace') }}">
+                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                    <span data-text-de="Gefüllten Demo Workspace ansehen" data-text-en="View filled demo workspace">View filled demo workspace</span>
                 </a>
             </section>
         @else

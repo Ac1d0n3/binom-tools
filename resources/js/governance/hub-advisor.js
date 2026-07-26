@@ -931,6 +931,71 @@ function render(root, config) {
     });
 }
 
+function initPanelToggles(root) {
+    const controls = root.querySelector('[data-governance-top-controls]');
+    const panels = Array.from(root.querySelectorAll('[data-governance-panel]'));
+    const toggles = Array.from(root.querySelectorAll('[data-governance-panel-toggle]'));
+
+    if (!controls || panels.length === 0 || toggles.length === 0) {
+        return;
+    }
+
+    const sync = () => {
+        const hasOpenPanel = panels.some((panel) => !panel.hidden);
+        controls.hidden = !hasOpenPanel;
+        toggles.forEach((toggle) => {
+            const target = root.querySelector(`#${toggle.dataset.governancePanelToggle}`);
+            toggle.setAttribute('aria-expanded', String(Boolean(target && !target.hidden)));
+        });
+    };
+
+    toggles.forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const target = root.querySelector(`#${toggle.dataset.governancePanelToggle}`);
+            if (!(target instanceof HTMLElement)) {
+                return;
+            }
+            const shouldOpen = target.hidden;
+            panels.forEach((panel) => {
+                panel.hidden = true;
+            });
+            target.hidden = !shouldOpen;
+            sync();
+        });
+    });
+
+    sync();
+}
+
+function initTabs(root) {
+    const tabs = Array.from(root.querySelectorAll('[data-governance-tab-toggle]'));
+    const panels = Array.from(root.querySelectorAll('[data-governance-tab-panel]'));
+
+    if (tabs.length === 0 || panels.length === 0) {
+        return;
+    }
+
+    const activate = (tabId) => {
+        tabs.forEach((tab) => {
+            const isActive = tab.dataset.governanceTabToggle === tabId;
+            tab.classList.toggle('governance-hub__tab--active', isActive);
+            tab.setAttribute('aria-selected', String(isActive));
+            tab.tabIndex = isActive ? 0 : -1;
+        });
+        panels.forEach((panel) => {
+            panel.hidden = panel.dataset.governanceTabPanel !== tabId;
+        });
+    };
+
+    tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+            activate(tab.dataset.governanceTabToggle || 'advisor');
+        });
+    });
+
+    activate(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.governanceTabToggle || 'advisor');
+}
+
 function initAdvisor(root) {
     const config = readConfig(root);
     const form = root.querySelector('[data-governance-advisor-form]');
@@ -943,6 +1008,9 @@ function initAdvisor(root) {
     if (!form) {
         return;
     }
+
+    initPanelToggles(root);
+    initTabs(root);
 
     const syncDqPanel = () => {
         const state = getState(form);

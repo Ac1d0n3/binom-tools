@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Governance;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\Contracts\PlanStoreInterface;
+use App\Governance\GovernanceDemoWorkspace;
 use App\Governance\GovernanceSessionStore;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +18,7 @@ class GovernanceSessionController extends Controller
         private readonly AccountAuth $auth,
         private readonly GovernanceSessionStore $sessions,
         private readonly PlanStoreInterface $plans,
+        private readonly GovernanceDemoWorkspace $demo,
     ) {}
 
     public function index(Request $request): View
@@ -32,12 +34,23 @@ class GovernanceSessionController extends Controller
 
     public function demoReport(): View
     {
-        $session = $this->demoSession();
+        $session = $this->demo->session();
 
         return view('governance.sessions.report', [
             'session' => $session,
             'report' => $this->reportData($session),
             'isDemo' => true,
+        ]);
+    }
+
+    public function demoWorkspace(): View
+    {
+        $session = $this->demo->session();
+
+        return view('governance.sessions.demo-workspace', [
+            'session' => $session,
+            'workspace' => $this->demo->workspace(),
+            'report' => $this->reportData($session),
         ]);
     }
 
@@ -215,6 +228,8 @@ class GovernanceSessionController extends Controller
      */
     private function demoSession(): array
     {
+        return $this->demo->session();
+
         $payload = [
             'advisor' => [
                 'scenario' => 'extend',

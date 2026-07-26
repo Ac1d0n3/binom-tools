@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tools;
 
+use App\Governance\GovernanceDemoWorkspace;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -9,6 +10,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GovernanceAdvisoryToolController extends Controller
 {
+    public function __construct(private readonly GovernanceDemoWorkspace $demo) {}
+
     public function show(Request $request): View
     {
         $toolId = $request->route('toolId');
@@ -23,6 +26,7 @@ class GovernanceAdvisoryToolController extends Controller
             'reportSummary' => $this->reportSummaries()[$toolId] ?? '',
             'inputExplanations' => $this->inputExplanations(),
             'outputExplanations' => $this->outputExplanations(),
+            'demoPrefill' => $request->query('demo') === 'finance' ? $this->demo->toolPrefill($toolId) : null,
         ]);
     }
 

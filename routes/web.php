@@ -63,6 +63,7 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/governance', [GovernanceHubController::class, 'index'])->name($name('governance.index'));
+    Route::get('/governance/demo-workspace', [GovernanceSessionController::class, 'demoWorkspace'])->name($name('governance.sessions.demo-workspace'));
     Route::get('/governance/demo-report', [GovernanceSessionController::class, 'demoReport'])->name($name('governance.sessions.demo-report'));
     Route::get('/resources', [VendorResourcesController::class, 'index'])->name($name('resources.index'));
     Route::get('/suppliers', [SupplierLibraryController::class, 'index'])->name($name('suppliers.index'));
