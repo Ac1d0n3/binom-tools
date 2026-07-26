@@ -100,7 +100,11 @@ class LandingCatalogTest extends TestCase
         $this->assertSame(count(config('suppliers.products', [])), $counts['suppliers']);
         $this->assertSame(count(config('vendor-resources.products', [])), $counts['resources']);
         $this->assertSame(count(config('compliance.items', [])), $counts['compliance']);
+        $this->assertSame(count(config('glossary.terms', [])), $counts['glossary']);
+        $this->assertSame(count(config('learning-paths.paths', [])), $counts['learningPaths']);
         $this->assertGreaterThan(0, $counts['sprintPlanner']);
+        $this->assertGreaterThan(0, $counts['glossary']);
+        $this->assertGreaterThan(0, $counts['learningPaths']);
     }
 
     public function test_radar_updated_badge_returns_bilingual_date_when_list_has_timestamps(): void

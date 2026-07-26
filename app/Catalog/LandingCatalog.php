@@ -106,6 +106,8 @@ final class LandingCatalog
      *   resources: int,
      *   suppliers: int,
      *   compliance: int,
+     *   glossary: int,
+     *   learningPaths: int,
      *   sprintPlanner: int,
      *   radar: int,
      *   tools: int
@@ -118,6 +120,8 @@ final class LandingCatalog
             'resources' => count(config('vendor-resources.products', [])),
             'suppliers' => count(config('suppliers.products', [])),
             'compliance' => count(config('compliance.items', [])),
+            'glossary' => count(config('glossary.terms', [])),
+            'learningPaths' => count(config('learning-paths.paths', [])),
             'sprintPlanner' => $this->sprintTemplateCount(),
             'radar' => count(config('governance-radar.sources', [])),
             'tools' => $this->toolCount(),

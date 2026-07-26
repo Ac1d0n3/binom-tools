@@ -1,7 +1,7 @@
 @extends('layouts.tools')
 
 @section('title', config('app.name'))
-@section('meta_description', 'Governance help hub with hub advisor, radar, Markdown stories, resources, suppliers, compliance, sprint planner, and interactive tools — cloneable and CMS-free.')
+@section('meta_description', 'Data governance hub for data quality, PII, data catalog, compliance, and warehouse work — guided stories, learning paths, glossary, radar, and cloneable tools.')
 
 @push('head')
     @if (count($metaKeywords) > 0)
@@ -24,7 +24,7 @@
                             title-de="Hubs"
                         />
                         <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
-                            Entry points for governance, stories, vendor resources, compliance, sprint planning, and the news radar.
+                            Entry points for data governance, data quality, PII, catalog vocabulary, learning paths, compliance, and the news radar.
                         </p>
                     </header>
                     <div class="tools-card-grid">
@@ -66,6 +66,32 @@
                             :hub="true"
                             :count="$hubCounts['stories']"
                             count-label-key="home.hub.stories.countLabel"
+                        />
+                        <x-tools.card
+                            :href="locale_route('learning-paths.index')"
+                            title="Learning Paths"
+                            description="Guided journeys by role and goal — PII, data quality with dbt, warehouse modernization, and foundations."
+                            title-key="home.hub.learningPaths.title"
+                            description-key="home.hub.learningPaths.description"
+                            icon="fa-route"
+                            accent="primary"
+                            card-id="hub-learning-paths"
+                            :hub="true"
+                            :count="$hubCounts['learningPaths']"
+                            count-label-key="home.hub.learningPaths.countLabel"
+                        />
+                        <x-tools.card
+                            :href="locale_route('glossary.index')"
+                            title="Glossary"
+                            description="Shared vocabulary for steward, lineage, DSDR, grain, data product, PII, and catalog — linked to stories and tools."
+                            title-key="home.hub.glossary.title"
+                            description-key="home.hub.glossary.description"
+                            icon="fa-book"
+                            accent="primary"
+                            card-id="hub-glossary"
+                            :hub="true"
+                            :count="$hubCounts['glossary']"
+                            count-label-key="home.hub.glossary.countLabel"
                         />
                         <x-tools.card
                             :href="locale_route('governance.radar')"

@@ -594,6 +594,9 @@ class ToolsPagesTest extends TestCase
             ->before('data-i18n="nav.tools">Binom-Tools</p>');
         $this->assertStringContainsString('data-i18n="nav.resources"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.compliance"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.glossary"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.learningPaths"', $hubsNav);
+        $this->assertStringContainsString('data-i18n="nav.search"', $hubsNav);
         $this->assertStringContainsString('data-i18n="nav.sprintPlanner"', $hubsNav);
         $this->assertStringNotContainsString('data-i18n="nav.sprintPlannerPlans"', $hubsNav);
         $this->assertStringNotContainsString('data-i18n="nav.account"', $hubsNav);
@@ -642,6 +645,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-i18n="home.featuredGovernance.title"', false);
         $response->assertSee('data-i18n="home.hub.tools.title"', false);
         $response->assertSee('data-i18n="home.hub.stories.title"', false);
+        $response->assertSee('data-i18n="home.hub.learningPaths.title"', false);
+        $response->assertSee('data-i18n="home.hub.glossary.title"', false);
         $response->assertSee('data-i18n="home.hub.resources.title"', false);
         $response->assertSee('data-i18n="home.hub.suppliers.title"', false);
         $response->assertSee('data-i18n="home.hub.compliance.title"', false);
@@ -649,17 +654,23 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-i18n="home.hub.radar.title"', false);
         $response->assertSee('data-card-id="featured-governance"', false);
         $response->assertSee('data-card-id="hub-tools"', false);
+        $response->assertSee('data-card-id="hub-learning-paths"', false);
+        $response->assertSee('data-card-id="hub-glossary"', false);
         $response->assertSee('data-card-id="hub-radar"', false);
         $response->assertSee('tools-card__badge--date', false);
         $response->assertSee('fa-arrows-rotate', false);
         $response->assertSee('data-series-teaser', false);
         $response->assertSee('data-i18n="header.mission"', false);
+        $response->assertSee('tools-header__search', false);
         $response->assertSee(route('governance.index'), false);
         $response->assertSee(route('governance.radar'), false);
         $response->assertSee(route('tools.overview'), false);
+        $response->assertSee(route('learning-paths.index'), false);
+        $response->assertSee(route('glossary.index'), false);
         $response->assertSee(route('resources.index'), false);
         $response->assertSee(route('suppliers.index'), false);
         $response->assertSee(route('compliance.index'), false);
         $response->assertSee(route('sprint-planner.index'), false);
+        $response->assertSee(route('search.index'), false);
     }
 }

@@ -16,13 +16,16 @@ return [
     'beta' => filter_var(env('BINOM_TOOLS_BETA', true), FILTER_VALIDATE_BOOL),
 
     'meta_keywords' => [
+        'data governance',
+        'data quality',
+        'PII',
+        'data catalog',
+        'DSDR',
+        'data lineage',
+        'compliance',
+        'learning paths',
+        'glossary',
         'Governance Hub',
-        'Stories',
-        'Radar',
-        'Resources',
-        'Suppliers',
-        'Compliance',
-        'Sprint Planner',
         'Binom-Tools',
     ],
 

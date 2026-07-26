@@ -21,9 +21,12 @@ use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookOfflineController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\Compliance\ComplianceController;
+use App\Http\Controllers\Glossary\GlossaryController;
 use App\Http\Controllers\Governance\GovernanceHubController;
 use App\Http\Controllers\Governance\GovernanceSessionController;
+use App\Http\Controllers\LearningPaths\LearningPathController;
 use App\Http\Controllers\Resources\VendorResourcesController;
+use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Suppliers\SupplierLibraryController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
 use App\Http\Controllers\Tools\ArchitectureFitController;
@@ -76,6 +79,15 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/compliance/{slug}', [ComplianceController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name($name('compliance.show'));
+    Route::get('/glossary', [GlossaryController::class, 'index'])->name($name('glossary.index'));
+    Route::get('/glossary/{slug}', [GlossaryController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name($name('glossary.show'));
+    Route::get('/learning-paths', [LearningPathController::class, 'index'])->name($name('learning-paths.index'));
+    Route::get('/learning-paths/{slug}', [LearningPathController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name($name('learning-paths.show'));
+    Route::get('/search', [SearchController::class, 'index'])->name($name('search.index'));
     Route::get('/calendar', [CalendarController::class, 'index'])->name($name('calendar.index'));
     if (! $localized) {
         Route::get('/api/calendar/events', [CalendarApiController::class, 'events'])->name($name('calendar.events'));

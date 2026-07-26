@@ -87,9 +87,31 @@
         <x-tools.brand />
     </div>
 
-    <p class="tools-header__mission" data-i18n="header.mission">
-        Guided governance: from decision to report — hub, stories, radar, and tools.
-    </p>
+    <div class="tools-header__center">
+        <p class="tools-header__mission" data-i18n="header.mission">
+            Data governance online: quality, PII, catalog, compliance — hub, stories, paths, and tools.
+        </p>
+        <form
+            class="tools-header__search"
+            method="get"
+            action="{{ locale_route('search.index') }}"
+            role="search"
+        >
+            <label class="tools-header__search-field">
+                <span class="sr-only" data-i18n="search.queryLabel">Search the hub</span>
+                <i class="fa-solid fa-magnifying-glass tools-header__search-icon" aria-hidden="true"></i>
+                <input
+                    type="search"
+                    name="q"
+                    class="tools-header__search-input"
+                    value="{{ \App\Support\Locale::routeIs('search.index') ? request('q') : '' }}"
+                    autocomplete="off"
+                    data-i18n-placeholder="search.headerPlaceholder"
+                    placeholder="Search hub…"
+                />
+            </label>
+        </form>
+    </div>
 
     <div class="tools-header__actions">
         <div class="tools-header__settings" data-header-settings>
