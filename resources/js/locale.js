@@ -197,6 +197,9 @@ const shellLabels = {
         'home.aiTitle': 'AI-Tools',
         'home.aiLead':
             'Prompts erstellen und vor dem Senden an externe KI-Tools anonymisieren.',
+        'home.biTitle': 'BI-Formel-Tools',
+        'home.biLead':
+            'Workbench-Generatoren für Qlik Set Analysis, Tableau Calculations und Power BI DAX — keine Governance-Setup-Workflows.',
         'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
@@ -328,6 +331,11 @@ const shellLabels = {
         'compliance.roadmapCta': 'Zertifizierungs-Roadmap für Consultants →',
         'tools.overviewTitle': 'Binom-Tools',
         'tools.overviewLead': 'Durchsuchbarer Tool-Katalog. Setup- und Referenz-Workflows liegen im Governance Hub.',
+        'tools.phoneGate.title': 'Tools ab Tablet',
+        'tools.phoneGate.lead':
+            'Die interaktiven Binom-Tools sind für Tablet- und Desktop-Bildschirme gebaut. Auf dem Phone lies stattdessen Stories — die sind dafür gemacht.',
+        'tools.phoneGate.ctaStories': 'Stories öffnen',
+        'tools.phoneGate.ctaHome': 'Zur Startseite',
         'overview.searchLabel': 'Suchen',
         'overview.searchPlaceholder': 'Suchen…',
         'overview.productLabel': 'Produkt',
@@ -1183,6 +1191,9 @@ const shellLabels = {
         'home.aiTitle': 'AI tools',
         'home.aiLead':
             'Build prompts and sanitize them before sending to external AI tools.',
+        'home.biTitle': 'BI formula tools',
+        'home.biLead':
+            'Workbench generators for Qlik Set Analysis, Tableau calculations, and Power BI DAX — not governance setup workflows.',
         'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
             'Playbooks on data governance topics — step by step, from idea to implementation.',
@@ -1314,6 +1325,11 @@ const shellLabels = {
         'compliance.roadmapCta': 'Consultant certification roadmap →',
         'tools.overviewTitle': 'Binom-Tools',
         'tools.overviewLead': 'Searchable tool catalog. Setup and reference workflows live in the Governance Hub.',
+        'tools.phoneGate.title': 'Tools from tablet onwards',
+        'tools.phoneGate.lead':
+            'Interactive Binom-Tools are built for tablet and desktop screens. On phones, open Stories instead — they are designed to read well here.',
+        'tools.phoneGate.ctaStories': 'Open Stories',
+        'tools.phoneGate.ctaHome': 'Back to home',
         'overview.searchLabel': 'Search',
         'overview.searchPlaceholder': 'Search…',
         'overview.productLabel': 'Product',
@@ -2172,7 +2188,11 @@ export function applyShellLabels(locale) {
         const key = el.getAttribute('data-i18n-aria');
         if (key && labels[key]) {
             el.setAttribute('aria-label', labels[key]);
-            el.setAttribute('title', labels[key]);
+            if (el.hasAttribute('data-tooltip-css')) {
+                el.removeAttribute('title');
+            } else {
+                el.setAttribute('title', labels[key]);
+            }
         }
     });
 

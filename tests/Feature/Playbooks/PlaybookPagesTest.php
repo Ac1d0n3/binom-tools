@@ -51,6 +51,7 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('data-products="snowflake,dbt,qlik"', false);
         $response->assertSee('tools-shell__main--overview', false);
         $response->assertSee('tools-overview-scroll', false);
+        $response->assertDontSee('data-tools-phone-gate', false);
         $response->assertDontSee('tools-overview-tags', false);
 
         $html = $response->getContent();
@@ -188,8 +189,8 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('The 8 Pillars of Data Governance', false);
         $response->assertSee('eight-pillar-hero.png', false);
         $response->assertSee('/playbooks/series/', false);
-        $response->assertSee('data-i18n="overview.seriesView"', false);
-        $response->assertSee('data-i18n="overview.seriesStart"', false);
+        $response->assertSee('data-i18n-aria="overview.seriesView"', false);
+        $response->assertSee('data-i18n-aria="overview.seriesStart"', false);
         $response->assertSee('tools-series-card__parts', false);
         $response->assertSee('data-overview-layout-toggle="grid"', false);
         $response->assertSee('data-overview-view-panel="series"', false);

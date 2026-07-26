@@ -129,7 +129,11 @@ function syncSeriesOfflineStates(savedSlugs) {
 
         const aria = getShellLabel(saved ? 'playbooks.offline.removeSeries' : 'playbooks.offline.saveSeries');
         button.setAttribute('aria-label', aria);
-        button.setAttribute('title', aria);
+        if (button.hasAttribute('data-tooltip-css')) {
+            button.removeAttribute('title');
+        } else {
+            button.setAttribute('title', aria);
+        }
     });
 }
 

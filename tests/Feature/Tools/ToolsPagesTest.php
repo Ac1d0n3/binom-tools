@@ -14,9 +14,16 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-hero', false);
         $response->assertSee('data-i18n="home.toolsTitle"', false);
         $response->assertSee('data-i18n="home.aiTitle"', false);
+        $response->assertSee('data-i18n="home.biTitle"', false);
         $response->assertSee('data-i18n="home.storiesTitle"', false);
+        $response->assertSee('data-phone-hide-tools', false);
+        $response->assertSee('phone-hide-tools', false);
+        $response->assertDontSee('data-tools-phone-gate', false);
         $response->assertSee('AI Sanitizer');
         $response->assertSee('Prompt Studio');
+        $response->assertSee('Qlik Set Analysis Generator');
+        $response->assertSee('Tableau Calculation Generator');
+        $response->assertSee('Power BI DAX Measure Generator');
         $response->assertSee('tools-card--overview', false);
         $response->assertSee('tools-card--quote', false);
         $response->assertSee('tools-card__quote-binary', false);
@@ -47,12 +54,15 @@ class ToolsPagesTest extends TestCase
         $html = $response->getContent();
         $storiesPos = strpos($html, 'data-i18n="home.storiesTitle"');
         $aiPos = strpos($html, 'data-i18n="home.aiTitle"');
+        $biPos = strpos($html, 'data-i18n="home.biTitle"');
         $toolsPos = strpos($html, 'data-i18n="home.toolsTitle"');
         $this->assertNotFalse($storiesPos);
         $this->assertNotFalse($aiPos);
+        $this->assertNotFalse($biPos);
         $this->assertNotFalse($toolsPos);
         $this->assertLessThan($aiPos, $storiesPos);
-        $this->assertLessThan($toolsPos, $aiPos);
+        $this->assertLessThan($biPos, $aiPos);
+        $this->assertLessThan($toolsPos, $biPos);
         $response->assertSee('data-i18n="footer.about"', false);
         $response->assertSee('v0.1.0', false);
         $response->assertSee('tools-beta-badge', false);
@@ -135,10 +145,33 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-overview-sticky-header', false);
         $response->assertSee('tools-shell__main--overview', false);
         $response->assertSee('tools-overview-scroll', false);
+        $response->assertSee('data-tools-phone-gate', false);
+        $response->assertSee('data-i18n="tools.phoneGate.title"', false);
         $response->assertSee('tools-release-meta', false);
         $response->assertSee('v0.1.0', false);
         $response->assertDontSee('data-i18n="tools.overviewTitle"', false);
         $response->assertDontSee('data-i18n="tools.overviewLead"', false);
+    }
+
+    public function test_tool_pages_include_phone_gate_markup(): void
+    {
+        $response = $this->get('/tools/prompt-studio');
+
+        $response->assertOk();
+        $response->assertSee('data-tools-phone-gate', false);
+        $response->assertSee('data-i18n="tools.phoneGate.title"', false);
+        $response->assertSee('data-i18n="tools.phoneGate.lead"', false);
+        $response->assertSee('data-i18n="tools.phoneGate.ctaStories"', false);
+        $response->assertSee('data-i18n="tools.phoneGate.ctaHome"', false);
+        $response->assertSee(route('playbooks.index'), false);
+    }
+
+    public function test_landing_does_not_include_phone_gate_markup(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('data-tools-phone-gate', false);
     }
 
     public function test_tools_overview_can_show_header_when_enabled(): void

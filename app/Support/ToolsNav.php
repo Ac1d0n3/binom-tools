@@ -201,6 +201,39 @@ final class ToolsNav
     }
 
     /**
+     * BI formula workbench tools (Set Analysis, Tableau calcs, DAX, …).
+     *
+     * @param  array<string, mixed>  $item
+     */
+    public static function isBiFormulaTool(array $item): bool
+    {
+        return ($item['landingSection'] ?? null) === 'bi-formula';
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $items
+     * @return list<array<string, mixed>>
+     */
+    public static function biFormulaTools(array $items): array
+    {
+        return array_values(array_filter($items, static fn (array $item): bool => self::isBiFormulaTool($item)));
+    }
+
+    /**
+     * Tools that stay in the generic Binom-Tools landing strip (not AI / BI formula).
+     *
+     * @param  list<array<string, mixed>>  $items
+     * @return list<array<string, mixed>>
+     */
+    public static function governancePreviewTools(array $items): array
+    {
+        return array_values(array_filter(
+            $items,
+            static fn (array $item): bool => ! self::isAiTool($item) && ! self::isBiFormulaTool($item),
+        ));
+    }
+
+    /**
      * Sidebar accordion groups by product (AI, dbt, Fabric, …).
      *
      * @return array<string, array{de: string, en: string}>

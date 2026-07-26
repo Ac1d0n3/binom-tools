@@ -86,7 +86,7 @@
                     <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
                     <span data-text-de="Speichern" data-text-en="Save">Save</span>
                 </button>
-                <button type="button" class="governance-hub__panel-tab" id="governance-panel-tab-tools" data-governance-panel-toggle="governance-tools-panel" role="tab" aria-controls="governance-tools-panel" aria-selected="false" tabindex="-1">
+                <button type="button" class="governance-hub__panel-tab phone-hide-tools" id="governance-panel-tab-tools" data-phone-hide-tools data-governance-panel-toggle="governance-tools-panel" role="tab" aria-controls="governance-tools-panel" aria-selected="false" tabindex="-1">
                     <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
                     <span data-text-de="Tools" data-text-en="Tools">Tools</span>
                 </button>
@@ -117,7 +117,7 @@
                 </div>
             </article>
 
-            <article class="governance-advisor__helpbox" id="governance-tools-panel" aria-labelledby="governance-panel-tab-tools" data-governance-panel role="tabpanel" hidden>
+            <article class="governance-advisor__helpbox phone-hide-tools" id="governance-tools-panel" aria-labelledby="governance-panel-tab-tools" data-phone-hide-tools data-governance-panel role="tabpanel" hidden>
                 <div class="governance-advisor__helpbox-head">
                     <span class="governance-advisor__helpbox-icon">
                         <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
@@ -280,7 +280,7 @@
                 <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
                 <span data-text-de="Entscheidungen" data-text-en="Decisions">Decisions</span>
             </button>
-            <button type="button" class="governance-hub__tab" id="governance-tab-button-tools" data-governance-tab-toggle="tools" role="tab" aria-controls="governance-tab-tools" aria-selected="false" tabindex="-1">
+            <button type="button" class="governance-hub__tab phone-hide-tools" id="governance-tab-button-tools" data-phone-hide-tools data-governance-tab-toggle="tools" role="tab" aria-controls="governance-tab-tools" aria-selected="false" tabindex="-1">
                 <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
                 <span data-text-de="Tools" data-text-en="Tools">Tools</span>
             </button>
@@ -721,7 +721,7 @@
             </div>
         </section>
 
-        <section class="governance-hub__section" id="governance-tab-tools" aria-labelledby="governance-tab-button-tools" data-governance-tab-panel="tools" role="tabpanel" hidden>
+        <section class="governance-hub__section phone-hide-tools" id="governance-tab-tools" aria-labelledby="governance-tab-button-tools" data-phone-hide-tools data-governance-tab-panel="tools" role="tabpanel" hidden>
             <div class="governance-hub__section-heading">
                 <h2
                     id="governance-tools-title"

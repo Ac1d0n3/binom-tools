@@ -68,6 +68,21 @@ final class ToolsNavTest extends TestCase
         $this->assertSame(['fabric-dq'], array_column(ToolsNav::withoutAiTools($items), 'id'));
     }
 
+    public function test_is_bi_formula_tool_uses_landing_section(): void
+    {
+        $this->assertTrue(ToolsNav::isBiFormulaTool(['landingSection' => 'bi-formula']));
+        $this->assertFalse(ToolsNav::isBiFormulaTool(['for' => ['Qlik']]));
+        $this->assertFalse(ToolsNav::isBiFormulaTool(['landingSection' => 'ai']));
+
+        $items = [
+            ['id' => 'qlik-set-analysis-generator', 'landingSection' => 'bi-formula'],
+            ['id' => 'prompt-studio', 'for' => ['AI']],
+            ['id' => 'fabric-dq', 'for' => ['Fabric']],
+        ];
+        $this->assertSame(['qlik-set-analysis-generator'], array_column(ToolsNav::biFormulaTools($items), 'id'));
+        $this->assertSame(['fabric-dq'], array_column(ToolsNav::governancePreviewTools($items), 'id'));
+    }
+
     public function test_group_by_product_orders_ai_dbt_fabric(): void
     {
         $items = [

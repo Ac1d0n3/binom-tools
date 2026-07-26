@@ -10,6 +10,7 @@ import { initCookieConsent } from './cookie-consent';
 import { initDisclaimerBanner } from './disclaimer-banner';
 import { initPlaybookCardActions } from './playbooks/card-actions';
 import { initSupplierLibraryCopy, initSupplierLibraryTabs } from './suppliers-copy';
+import { initToolsPhoneGate } from './tools-phone-gate';
 
 try {
     const raw = document.documentElement.dataset.accountsReadSlugs;
@@ -27,6 +28,7 @@ initSidebarToggle();
 initSidenavAccordions();
 initPlaybookLocale();
 initOverviewFilters();
+initToolsPhoneGate();
 initExternalLinks();
 initCookieConsent();
 initDisclaimerBanner();

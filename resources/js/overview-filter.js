@@ -7,6 +7,7 @@ import {
     hasAnyPlaybookRead,
     isPlaybookRead,
 } from './playbooks/read-state';
+import { attachOverviewProgressiveReveal } from './overview-progressive-reveal.js';
 
 const TAG_SIDEBAR_STORAGE_KEY = 'binom-tools-tag-sidebar';
 const FILTER_TAB_STORAGE_KEY = 'binom-tools-filter-tab';
@@ -90,6 +91,9 @@ export function initOverviewFilters() {
     if (localStorage.getItem(OVERVIEW_HIDE_READ_STORAGE_KEY) === null) {
         localStorage.setItem(OVERVIEW_HIDE_READ_STORAGE_KEY, 'true');
     }
+
+    /** @type {{ refresh: () => void, destroy: () => void } | null} */
+    let progressiveReveal = null;
 
     /** @param {string} value */
     const normalize = (value) => value.toLowerCase().trim();
@@ -601,6 +605,7 @@ export function initOverviewFilters() {
         syncStackBanner();
         applyWorkflowSections();
         sortStories();
+        progressiveReveal?.refresh();
     };
 
     const applySeries = () => {
@@ -685,6 +690,7 @@ export function initOverviewFilters() {
         syncFilterReset();
         syncStackBanner();
         sortSeries();
+        progressiveReveal?.refresh();
     };
 
     /**
@@ -979,6 +985,9 @@ export function initOverviewFilters() {
     }
 
     readFiltersFromUrl();
+    progressiveReveal = attachOverviewProgressiveReveal(root, {
+        getSearchQuery: () => searchInput?.value ?? '',
+    });
     apply();
 }
 

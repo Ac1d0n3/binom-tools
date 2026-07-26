@@ -13,16 +13,25 @@ class LandingCatalogTest extends TestCase
         $catalog = app(LandingCatalog::class);
         $latest = $catalog->latestTools();
         $ai = $catalog->featuredAiTools();
+        $bi = $catalog->featuredBiFormulaTools();
 
         $this->assertLessThanOrEqual(LandingCatalog::TOOLS_PREVIEW_LIMIT, count($latest));
         $this->assertNotEmpty($ai);
         $this->assertContains('prompt-studio', array_column($ai, 'id'));
         $this->assertContains('governance-ai-sanitizer', array_column($ai, 'id'));
+        $this->assertNotEmpty($bi);
+        $this->assertContains('qlik-set-analysis-generator', array_column($bi, 'id'));
+        $this->assertContains('tableau-calculation-generator', array_column($bi, 'id'));
+        $this->assertContains('powerbi-dax-generator', array_column($bi, 'id'));
 
         foreach ($latest as $item) {
             $this->assertFalse(
                 \App\Support\ToolsNav::isAiTool($item),
                 'latestTools must not include AI tools (they have a dedicated section)',
+            );
+            $this->assertFalse(
+                \App\Support\ToolsNav::isBiFormulaTool($item),
+                'latestTools must not include BI formula tools (they have a dedicated section)',
             );
         }
     }

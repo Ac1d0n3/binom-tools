@@ -100,30 +100,38 @@
                 @if ($firstPart)
                     <a
                         href="{{ locale_route('playbooks.show', ['slug' => $firstPart->slug]) }}"
-                        class="tools-series-card__start tools-series-card__start--primary"
-                        data-i18n="overview.seriesStart"
-                    >Start series</a>
+                        class="tools-series-card__action"
+                        data-tooltip-css
+                        data-i18n-aria="overview.seriesStart"
+                        aria-label="Start series"
+                    >
+                        <i class="fa-solid fa-play" aria-hidden="true"></i>
+                    </a>
                 @endif
                 <a
                     href="{{ $seriesHref }}"
-                    class="tools-series-card__start"
-                    data-i18n="overview.seriesView"
-                >View series</a>
+                    class="tools-series-card__action"
+                    data-tooltip-css
+                    data-i18n-aria="overview.seriesView"
+                    aria-label="View series"
+                >
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                </a>
                 @if ($firstPart)
                     <button
                         type="button"
-                        class="tools-series-card__offline-btn"
+                        class="tools-series-card__action tools-series-card__offline-btn"
+                        data-tooltip-css
                         data-playbook-series-offline
                         data-series-id="{{ $series->id }}"
                         data-series-slugs="{{ collect($series->parts)->pluck('slug')->implode(',') }}"
                         data-series-manifest-url="{{ locale_route('playbooks.offline.manifest.series', ['seriesId' => $series->id]) }}"
                         data-i18n-aria="playbooks.offline.saveSeries"
                         aria-label="Save series offline"
-                        title="Save series offline"
                     >
                         <i class="fa-solid fa-download" data-offline-icon="save" aria-hidden="true"></i>
                         <i class="fa-solid fa-trash-can" data-offline-icon="remove" hidden aria-hidden="true"></i>
-                        <span class="tools-series-card__offline-label" data-offline-label data-i18n="playbooks.offline.saveSeriesShort">Offline</span>
+                        <span class="sr-only" data-offline-label data-i18n="playbooks.offline.saveSeriesShort">Offline</span>
                     </button>
                 @endif
             </div>

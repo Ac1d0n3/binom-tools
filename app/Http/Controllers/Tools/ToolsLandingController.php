@@ -32,6 +32,7 @@ class ToolsLandingController extends Controller
             'links' => config('tools.links', []),
             'metaKeywords' => config('tools.meta_keywords', []),
             'featuredAiTools' => $this->catalog->featuredAiTools(),
+            'featuredBiFormulaTools' => $this->catalog->featuredBiFormulaTools(),
             'latestTools' => $this->catalog->latestTools(),
             'toolCount' => $this->catalog->toolCount(),
             'latestLandingCards' => $landingCards,

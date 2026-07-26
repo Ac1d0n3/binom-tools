@@ -43,14 +43,14 @@
 
 <a
     href="{{ $href }}"
-    @class([
+    {{ $attributes->class([
         'tools-card',
         'tools-card--featured' => $featured,
         'tools-card--hub' => $hub,
         'tools-card--hub-primary' => $hub && $accent === 'primary',
         'tools-card--hub-accent' => $hub && $accent === 'accent',
         'tools-card--dbt' => $dbtBadge,
-    ])
+    ]) }}
     @if ($cardId) data-card-id="{{ $cardId }}" @endif
     @if ($overviewItem) data-overview-item @endif
     @if ($searchText) data-search-text="{{ $searchText }}" @endif

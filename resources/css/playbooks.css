@@ -380,9 +380,11 @@
 }
 
 .playbook-prose {
+    max-width: 68ch;
+    margin-inline: auto;
     color: var(--content-font-color);
-    line-height: 1.65;
-    font-size: 1rem;
+    line-height: 1.7;
+    font-size: 1.0625rem;
 }
 
 .playbook-prose > *:first-child {
@@ -391,18 +393,18 @@
 
 .playbook-prose h2,
 .playbook-prose h3 {
-    scroll-margin-top: 1.5rem;
+    scroll-margin-top: 1.25rem;
     color: var(--content-font-color);
 }
 
 .playbook-prose h2 {
-    margin: 2rem 0 0.75rem;
-    font-size: 1.35rem;
+    margin: 1.65rem 0 0.65rem;
+    font-size: 1.3rem;
     font-weight: 600;
 }
 
 .playbook-prose h3 {
-    margin: 1.5rem 0 0.5rem;
+    margin: 1.25rem 0 0.45rem;
     font-size: 1.1rem;
     font-weight: 600;
 }
@@ -1203,7 +1205,7 @@ body.playbook-lightbox-open {
         position: sticky;
         top: 0;
         z-index: 15;
-        padding: 0.35rem 1.5rem 0.5rem;
+        padding: 0.25rem 1rem 0.35rem;
         background: var(--app-background-color);
         border-bottom: 1px solid var(--base-border-color);
     }
@@ -1215,10 +1217,18 @@ body.playbook-lightbox-open {
     .playbook-toc__toggle {
         width: 100%;
         justify-content: center;
+        min-height: 2.5rem;
+        font-size: 0.875rem;
     }
 
     .playbook-toc__panel:not(.playbook-toc__panel--open) {
         display: none;
+    }
+
+    .playbook-toc__panel.playbook-toc__panel--open {
+        max-height: min(40vh, 16rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
     }
 }
 
@@ -1795,7 +1805,7 @@ a.playbook-series__option:hover {
 
 @media (max-width: 767px) {
     .playbook-detail__scroll {
-        padding: 1rem;
+        padding: 0.85rem 1rem 1.25rem;
     }
 
     .playbook-detail__scroll:has(.playbook-detail__hero) {
@@ -1803,9 +1813,29 @@ a.playbook-series__option:hover {
     }
 
     .playbook-detail__hero {
-        /* 15.625rem = 250px max */
-        --playbook-hero-height: clamp(11rem, 26vh, 15.625rem);
+        /* Shorter hero on phone for more reading space */
+        --playbook-hero-height: clamp(9.5rem, 22vh, 13rem);
         margin-inline: -1rem;
+    }
+
+    .playbook-detail__main {
+        max-width: 68ch;
+        margin-inline: auto;
+    }
+
+    .playbook-prose {
+        font-size: 1.0625rem;
+        line-height: 1.72;
+    }
+
+    .playbook-prose h2 {
+        margin: 1.4rem 0 0.55rem;
+        font-size: 1.25rem;
+    }
+
+    .playbook-prose h3 {
+        margin: 1.1rem 0 0.4rem;
+        font-size: 1.05rem;
     }
 
     .playbook-detail__actions .tools-btn {
@@ -1819,6 +1849,19 @@ a.playbook-series__option:hover {
 
     .playbook-pager__link--next {
         text-align: left;
+    }
+
+    .playbook-detail__toolbar {
+        top: 0.5rem;
+        right: 0.5rem;
+        gap: 0.35rem;
+    }
+
+    .playbook-focus-toggle,
+    .playbook-toc-rail-toggle {
+        width: 2.5rem;
+        height: 2.5rem;
+        min-height: 2.5rem;
     }
 }
 

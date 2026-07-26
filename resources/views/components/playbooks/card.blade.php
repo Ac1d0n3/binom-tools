@@ -110,7 +110,9 @@
                     </div>
                 </div>
             @endif
+        </div>
 
+        <div class="tools-card__story-body">
             @if ($seriesBadgeDe !== null && $seriesBadgeEn !== null)
                 <span
                     class="tools-card__series-badge"
@@ -122,9 +124,7 @@
                     <span>{{ $seriesBadgeEn }}</span>
                 </span>
             @endif
-        </div>
 
-        <div class="tools-card__story-body">
             @if ($metaDe !== '' || $metaEn !== '')
                 <p
                     class="tools-card__meta tools-card__meta--story"

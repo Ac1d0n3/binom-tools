@@ -31,13 +31,23 @@ final class LandingCatalog
     }
 
     /**
-     * Recent non-AI tools for the Governance preview strip.
+     * BI formula generators featured on the home page (Set Analysis, Tableau, DAX).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function featuredBiFormulaTools(): array
+    {
+        return ToolsNav::biFormulaTools(ToolsNav::withRegisteredRoutes(config('tools.nav', [])));
+    }
+
+    /**
+     * Recent governance / setup tools for the Binom-Tools preview strip.
      *
      * @return list<array<string, mixed>>
      */
     public function latestTools(): array
     {
-        return collect(ToolsNav::withoutAiTools(ToolsNav::withRegisteredRoutes(config('tools.nav', []))))
+        return collect(ToolsNav::governancePreviewTools(ToolsNav::withRegisteredRoutes(config('tools.nav', []))))
             ->reverse()
             ->take(self::TOOLS_PREVIEW_LIMIT)
             ->values()

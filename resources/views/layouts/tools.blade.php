@@ -92,6 +92,7 @@
                 tabindex="-1"
             >
                 <x-tools.disclaimer-banner />
+                <x-tools.phone-gate />
                 @yield('content')
             </main>
         </div>

@@ -40,6 +40,8 @@
                             :featured="true"
                         />
                         <x-tools.card
+                            class="phone-hide-tools"
+                            data-phone-hide-tools
                             :href="locale_route('tools.overview')"
                             title="Binom-Tools"
                             description="Interactive reference workflows — step by step, copy-paste ready."
@@ -171,7 +173,7 @@
             </section>
 
             @if (count($featuredAiTools) > 0)
-                <section class="tools-section tools-section--band">
+                <section class="tools-section tools-section--band phone-hide-tools" data-phone-hide-tools>
                     <x-tools.section-band-art />
                     <div class="tools-section__body">
                         <header class="tools-section__head">
@@ -209,7 +211,40 @@
                 </section>
             @endif
 
-            <section class="tools-section tools-section--band">
+            @if (count($featuredBiFormulaTools) > 0)
+                <section class="tools-section tools-section--band phone-hide-tools" data-phone-hide-tools>
+                    <x-tools.section-band-art />
+                    <div class="tools-section__body">
+                        <header class="tools-section__head">
+                            <x-tools.section-title
+                                title="BI formula tools"
+                                title-key="home.biTitle"
+                                title-de="BI-Formel-Tools"
+                            />
+                            <p class="tools-section__lead" data-hub-lead data-i18n="home.biLead">
+                                Workbench generators for Qlik Set Analysis, Tableau calculations, and Power BI DAX — not governance setup workflows.
+                            </p>
+                        </header>
+                        <div class="tools-card-grid">
+                            @foreach ($featuredBiFormulaTools as $item)
+                                <x-tools.card
+                                    :href="locale_route($item['route'])"
+                                    :title="$item['label']['en']"
+                                    :description="$item['description']['en']"
+                                    :icon="$item['icon']"
+                                    :accent="$item['accent']"
+                                    :card-id="$item['id']"
+                                    :example="$item['example'] ?? false"
+                                    :dbt-badge="\App\Support\ToolsNav::showsDbtBadge($item)"
+                                    :platform-marks="\App\Support\ToolsNav::platformMarks($item)"
+                                />
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+            @endif
+
+            <section class="tools-section tools-section--band phone-hide-tools" data-phone-hide-tools>
                 <x-tools.section-band-art />
                 <div class="tools-section__body">
                     <header class="tools-section__head">

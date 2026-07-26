@@ -213,7 +213,7 @@
         </ul>
     </div>
 
-    <div class="tools-sidenav__group">
+    <div class="tools-sidenav__group phone-hide-tools" data-phone-hide-tools>
         <p class="tools-sidenav__section" data-i18n="nav.tools">Binom-Tools</p>
         <ul class="tools-sidenav__list">
             <li>

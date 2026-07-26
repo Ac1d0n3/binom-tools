@@ -11,6 +11,8 @@ class GovernanceHubTest extends TestCase
         $response = $this->get('/governance');
 
         $response->assertOk();
+        $response->assertSee('data-phone-hide-tools', false);
+        $response->assertSee('phone-hide-tools', false);
         $response->assertSee('Governance Hub');
         $response->assertSee('governance-hub', false);
         $response->assertSee('Governance control hub');

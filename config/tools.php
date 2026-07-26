@@ -713,6 +713,7 @@ return [
             'icon' => 'fa-filter',
             'accent' => 'primary',
             'for' => ['Qlik'],
+            'landingSection' => 'bi-formula',
         ],
         [
             'id' => 'tableau-calculation-generator',
@@ -729,6 +730,7 @@ return [
             'icon' => 'fa-chart-simple',
             'accent' => 'primary',
             'for' => ['Tableau'],
+            'landingSection' => 'bi-formula',
         ],
         [
             'id' => 'powerbi-dax-generator',
@@ -745,6 +747,7 @@ return [
             'icon' => 'fa-chart-column',
             'accent' => 'primary',
             'for' => ['PowerBI'],
+            'landingSection' => 'bi-formula',
         ],
         [
             'id' => 'architecture-fit',
