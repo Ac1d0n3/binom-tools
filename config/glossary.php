@@ -171,6 +171,7 @@ return [
             'related' => [
                 ['type' => 'series', 'id' => 'metadata-deep-dive', 'label' => ['de' => 'MetaData Deep Dive', 'en' => 'MetaData deep dive']],
                 ['type' => 'tool', 'route' => 'tools.pureview-glossary-generator', 'label' => ['de' => 'PureView Glossary Generator', 'en' => 'PureView glossary generator']],
+                ['type' => 'path', 'id' => 'metadata-operating-model', 'label' => ['de' => 'Metadata Operating Model', 'en' => 'Metadata operating model']],
             ],
         ],
         [
@@ -248,6 +249,7 @@ return [
             'related' => [
                 ['type' => 'series', 'id' => 'metadata-deep-dive', 'label' => ['de' => 'MetaData Deep Dive', 'en' => 'MetaData deep dive']],
                 ['type' => 'story', 'id' => 'metadata-driven-governance-with-dbt-meta', 'label' => ['de' => 'dbt meta Governance', 'en' => 'dbt meta governance']],
+                ['type' => 'path', 'id' => 'metadata-operating-model', 'label' => ['de' => 'Metadata Operating Model', 'en' => 'Metadata operating model']],
             ],
         ],
         [
@@ -312,6 +314,7 @@ return [
             'related' => [
                 ['type' => 'tool', 'route' => 'tools.kpi-definition', 'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition']],
                 ['type' => 'series', 'id' => 'governance-pillars', 'label' => ['de' => '8 Säulen', 'en' => '8 pillars']],
+                ['type' => 'path', 'id' => 'trusted-metrics', 'label' => ['de' => 'Trusted Metrics', 'en' => 'Trusted metrics']],
             ],
         ],
     ],

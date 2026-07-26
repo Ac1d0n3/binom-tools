@@ -212,7 +212,7 @@ const shellLabels = {
         'home.hub.stories.countLabel': 'Stories',
         'home.hub.learningPaths.title': 'Lernpfade',
         'home.hub.learningPaths.description':
-            'Geführte Journeys nach Ziel — PII, DQ mit dbt, Warehouse modernisieren und Foundations; enden im Sprint-Plan.',
+            'Geführte Journeys nach Ziel — Governance, Stack, Privacy, AI und Zertifizierung mit Projekterfolg; enden im Sprint-Plan.',
         'home.hub.learningPaths.countLabel': 'Pfade',
         'home.hub.glossary.title': 'Glossar',
         'home.hub.glossary.description':
@@ -837,6 +837,7 @@ const shellLabels = {
         'search.type.role': 'Rolle',
         'search.type.route': 'Seite',
         'search.type.link': 'Link',
+        'search.type.external': 'Extern',
         'glossary.indexTitle': 'Glossar',
         'glossary.indexLead':
             'Gemeinsames Vokabular für Data Governance — Definitionen mit Links in Stories, Tools und Lernpfaden.',
@@ -849,18 +850,18 @@ const shellLabels = {
         'learningPaths.indexTitle': 'Lernpfade',
         'learningPaths.indexLead':
             'Geführte Journeys nach Rolle und Ziel — aus Stories, Serien, Tools und Glossar-Begriffen.',
-        'learningPaths.searchPlaceholder': 'Suche PII, dbt, Warehouse…',
         'learningPaths.audienceLabel': 'Zielgruppe',
         'learningPaths.audienceAll': 'Alle Zielgruppen',
         'learningPaths.stepCount': '{{count}} Schritte',
         'learningPaths.backToIndex': '← Lernpfade',
         'learningPaths.relatedRolesTitle': 'Passende Rollen',
-        'learningPaths.startSprintPlan': 'Als Sprint-Plan starten',
-        'learningPaths.startSprintPlanHint': 'Öffnet den Sprint Planner mit einer passenden Vorlage.',
+        'learningPaths.startSprintPlan': 'Als Begleitplan starten',
+        'learningPaths.startSprintPlanHint': 'Öffnet den Sprint Planner mit einem Wochenplan, der diese Zertifizierung / diesen Pfad begleitet.',
         'roles.indexTitle': 'Rollen',
         'roles.indexLead':
             'Governance-Personas mit gemeinsamer Sprache, Stories, Lernpfaden und Tools.',
         'roles.cardCta': 'Rolle erkunden',
+        'roles.focusLabel': 'Zweck',
         'roles.backToIndex': '← Rollen',
         'roles.hubLinksTitle': 'Hier starten',
         'roles.storiesTitle': 'Stories',
@@ -1277,7 +1278,7 @@ const shellLabels = {
         'home.hub.stories.countLabel': 'stories',
         'home.hub.learningPaths.title': 'Learning Paths',
         'home.hub.learningPaths.description':
-            'Guided journeys by goal — PII, DQ with dbt, warehouse modernization, and foundations; each ends in a sprint plan.',
+            'Guided journeys by goal — governance, stack, privacy, AI, and certification with project evidence; each ends in a sprint plan.',
         'home.hub.learningPaths.countLabel': 'paths',
         'home.hub.glossary.title': 'Glossary',
         'home.hub.glossary.description':
@@ -1902,6 +1903,7 @@ const shellLabels = {
         'search.type.role': 'Role',
         'search.type.route': 'Page',
         'search.type.link': 'Link',
+        'search.type.external': 'External',
         'glossary.indexTitle': 'Glossary',
         'glossary.indexLead':
             'Shared vocabulary for data governance — definitions with links into stories, tools, and learning paths.',
@@ -1914,18 +1916,18 @@ const shellLabels = {
         'learningPaths.indexTitle': 'Learning Paths',
         'learningPaths.indexLead':
             'Guided journeys by role and goal — built from stories, series, tools, and glossary terms.',
-        'learningPaths.searchPlaceholder': 'Search PII, dbt, warehouse…',
         'learningPaths.audienceLabel': 'Audience',
         'learningPaths.audienceAll': 'All audiences',
         'learningPaths.stepCount': '{{count}} steps',
         'learningPaths.backToIndex': '← Learning Paths',
         'learningPaths.relatedRolesTitle': 'Related roles',
-        'learningPaths.startSprintPlan': 'Start as sprint plan',
-        'learningPaths.startSprintPlanHint': 'Opens the Sprint Planner with a matching template.',
+        'learningPaths.startSprintPlan': 'Start companion plan',
+        'learningPaths.startSprintPlanHint': 'Opens the Sprint Planner with a week-by-week plan that accompanies this certification / path.',
         'roles.indexTitle': 'Roles',
         'roles.indexLead':
             'Governance personas with shared vocabulary, stories, learning paths, and tools.',
         'roles.cardCta': 'Explore role',
+        'roles.focusLabel': 'Focus',
         'roles.backToIndex': '← Roles',
         'roles.hubLinksTitle': 'Start here',
         'roles.storiesTitle': 'Stories',

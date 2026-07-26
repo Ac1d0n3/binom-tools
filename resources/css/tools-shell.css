@@ -11660,7 +11660,7 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
 .roles-hub-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.15rem;
+    gap: 1.25rem;
     margin: 0.5rem 0 1.75rem;
     align-content: start;
 }
@@ -11668,16 +11668,16 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
 .roles-hub-card {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-height: 15.5rem;
-    padding: 1.45rem 1.5rem 1.25rem;
+    gap: 1.15rem;
+    min-height: 22rem;
+    padding: 1.65rem 1.55rem 1.35rem;
     border: 1px solid var(--base-border-color);
-    border-radius: 0.9rem;
+    border-radius: 1rem;
     background:
         linear-gradient(
             165deg,
-            color-mix(in srgb, var(--theme-color-primary) 7%, var(--surface-background-color, var(--content-background-color))) 0%,
-            var(--surface-background-color, var(--content-background-color)) 42%
+            color-mix(in srgb, var(--theme-color-primary) 10%, var(--surface-background-color, var(--content-background-color))) 0%,
+            var(--surface-background-color, var(--content-background-color)) 38%
         );
     color: inherit;
     text-decoration: none;
@@ -11692,46 +11692,115 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
 .roles-hub-card:hover {
     border-color: color-mix(in srgb, var(--theme-color-primary) 48%, var(--base-border-color));
     box-shadow:
-        0 10px 28px color-mix(in srgb, var(--theme-color-primary) 12%, transparent),
+        0 12px 32px color-mix(in srgb, var(--theme-color-primary) 14%, transparent),
         0 1px 0 color-mix(in srgb, var(--content-font-color) 4%, transparent);
     transform: translateY(-2px);
+}
+
+.roles-hub-card:hover .roles-hub-card__icon-wrap {
+    background: color-mix(in srgb, var(--theme-color-primary) 22%, transparent);
+    border-color: color-mix(in srgb, var(--theme-color-primary) 42%, var(--base-border-color));
+    transform: scale(1.04);
+}
+
+.roles-hub-card__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 4.75rem;
 }
 
 .roles-hub-card__icon-wrap {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.8rem;
-    background: color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+    width: 4.75rem;
+    height: 4.75rem;
+    border-radius: 1.05rem;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 28%, var(--base-border-color));
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--theme-color-primary) 22%, transparent) 0%,
+            color-mix(in srgb, var(--theme-color-primary) 10%, transparent) 100%
+        );
     color: var(--theme-color-primary);
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent),
+        0 8px 18px color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
     flex-shrink: 0;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
 }
 
 .roles-hub-card__icon {
-    font-size: 1.2rem;
+    display: block;
+    font-size: 2.05rem;
     line-height: 1;
-}
-
-.roles-hub-card__body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    flex: 1 1 auto;
-    min-width: 0;
+    width: 1em;
+    height: 1em;
+    text-align: center;
 }
 
 .roles-hub-card__title {
-    font-size: 1.28rem;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    min-width: 0;
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: 1.45rem;
     font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+}
+
+.roles-hub-card__purpose {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.roles-hub-card__purpose-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bn-color-text-secondary, color-mix(in srgb, var(--content-font-color) 58%, transparent));
+}
+
+.roles-hub-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.roles-hub-card__tag {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 0.22rem 0.58rem;
+    border-radius: 0.45rem;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 18%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-primary) 9%, var(--surface-background-color, var(--content-background-color)));
+    color: color-mix(in srgb, var(--theme-color-primary) 78%, var(--content-font-color));
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
 }
 
 .roles-hub-card__lead {
-    font-size: 0.95rem;
-    line-height: 1.5;
+    display: block;
+    flex: 1 1 auto;
+    font-size: 0.98rem;
+    line-height: 1.55;
     color: var(--bn-color-text-secondary, color-mix(in srgb, var(--content-font-color) 72%, transparent));
 }
 
@@ -11740,13 +11809,14 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
     align-items: center;
     gap: 0.45rem;
     margin-top: auto;
-    font-size: 0.875rem;
+    padding-top: 0.25rem;
+    font-size: 0.9rem;
     font-weight: 650;
     color: var(--theme-color-primary);
 }
 
 .roles-hub-card__cta i {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     transition: transform 0.18s ease;
 }
 
@@ -11758,21 +11828,55 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
     .roles-hub-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .roles-hub-card {
+        min-height: 20rem;
+    }
 }
 
 @media (max-width: 640px) {
     .roles-hub-grid {
         grid-template-columns: 1fr;
-        gap: 0.9rem;
+        gap: 1rem;
     }
 
     .roles-hub-card {
         min-height: 0;
-        padding: 1.2rem 1.2rem 1.05rem;
+        padding: 1.35rem 1.25rem 1.15rem;
+    }
+
+    .roles-hub-card__header {
+        min-height: 4rem;
+    }
+
+    .roles-hub-card__icon-wrap {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 0.95rem;
+    }
+
+    .roles-hub-card__icon {
+        font-size: 1.75rem;
     }
 
     .roles-hub-card__title {
-        font-size: 1.15rem;
+        font-size: 1.28rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .roles-hub-card,
+    .roles-hub-card__icon-wrap,
+    .roles-hub-card__cta i {
+        transition: none;
+    }
+
+    .roles-hub-card:hover {
+        transform: none;
+    }
+
+    .roles-hub-card:hover .roles-hub-card__icon-wrap {
+        transform: none;
     }
 }
 
@@ -11786,13 +11890,36 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
     font-weight: 600;
 }
 
+.roles-detail__header-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.roles-detail__icon-wrap {
+    width: 4.25rem;
+    height: 4.25rem;
+}
+
+.roles-detail__header-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
 .roles-detail__persona {
-    margin: 0 0 0.35rem;
+    margin: 0;
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--bn-color-text-secondary);
+}
+
+.roles-detail__purpose {
+    margin-top: 0.15rem;
 }
 
 .roles-detail__section {

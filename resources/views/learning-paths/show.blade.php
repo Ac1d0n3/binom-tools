@@ -79,7 +79,10 @@
                         <ul class="learning-path-detail__links">
                             @foreach ($step['links'] as $link)
                                 <li>
-                                    <a href="{{ $link['href'] }}">
+                                    <a
+                                        href="{{ $link['href'] }}"
+                                        @if (! empty($link['external'])) target="_blank" rel="noopener noreferrer" @endif
+                                    >
                                         <span data-text-de="{{ $link['label']['de'] }}" data-text-en="{{ $link['label']['en'] }}">{{ $link['label']['en'] }}</span>
                                         <span class="learning-path-detail__link-kind" data-i18n="search.type.{{ $link['kind'] }}">{{ $link['kind'] }}</span>
                                     </a>

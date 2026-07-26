@@ -71,6 +71,16 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertContains('learning-path-dq-with-dbt', $slugs);
         $this->assertContains('learning-path-modernize-warehouse', $slugs);
         $this->assertContains('learning-path-governance-foundations', $slugs);
+        $this->assertContains('learning-path-metadata-operating-model', $slugs);
+        $this->assertContains('learning-path-trusted-metrics', $slugs);
+        $this->assertContains('learning-path-close-the-gaps', $slugs);
+        $this->assertContains('learning-path-ai-foundations', $slugs);
+        $this->assertContains('learning-path-access-security-ops', $slugs);
+        $this->assertContains('learning-path-end-to-end-governance', $slugs);
+        $this->assertContains('learning-path-simplest-viable-stack', $slugs);
+        $this->assertContains('learning-path-cert-dbt-analytics-engineer', $slugs);
+        $this->assertContains('learning-path-cert-fabric-power-bi', $slugs);
+        $this->assertContains('governance-learning-path-certification', $slugs);
     }
 
     public function test_loads_new_lightweight_templates(): void
@@ -92,6 +102,16 @@ class SprintPlanRepositoryTest extends TestCase
             'learning-path-dq-with-dbt' => 3,
             'learning-path-modernize-warehouse' => 3,
             'learning-path-governance-foundations' => 3,
+            'learning-path-metadata-operating-model' => 3,
+            'learning-path-trusted-metrics' => 3,
+            'learning-path-close-the-gaps' => 3,
+            'learning-path-ai-foundations' => 3,
+            'learning-path-access-security-ops' => 3,
+            'learning-path-end-to-end-governance' => 3,
+            'learning-path-simplest-viable-stack' => 3,
+            'learning-path-cert-dbt-analytics-engineer' => 4,
+            'learning-path-cert-fabric-power-bi' => 4,
+            'governance-learning-path-certification' => 4,
         ];
 
         foreach ($cases as $slug => $duration) {

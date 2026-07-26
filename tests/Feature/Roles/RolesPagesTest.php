@@ -14,6 +14,13 @@ class RolesPagesTest extends TestCase
         $index->assertSee('roles-hub-grid', false);
         $index->assertSee('roles-hub-card', false);
         $index->assertSee('roles-hub-card__icon-wrap', false);
+        $index->assertSee('roles-hub-card__title', false);
+        $index->assertSee('roles-hub-card__purpose', false);
+        $index->assertSee('roles-hub-card__tag', false);
+        $index->assertSee('roles.focusLabel', false);
+        $index->assertSee('Definitions', false);
+        $index->assertSee('DQ gates', false);
+        $index->assertSee('Catalog care', false);
         $index->assertDontSee('roles-persona-bar', false);
         $index->assertDontSee('data-overview-search', false);
         $index->assertSee(route('roles.show', ['slug' => 'architect']), false);

@@ -57,6 +57,12 @@ deliverables:
     helpText: |
       Done when roles, current knowledge, main gaps, and relevant learning sources are clear.
 
+fields:
+  - id: role-stack
+    label: Role and stack
+    type: textarea
+    placeholder: Role, stack, prior knowledge, project task
+
 notes: true
 ```
 

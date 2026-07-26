@@ -22,8 +22,11 @@
                         $icon = (string) ($role['icon'] ?? 'fa-user');
                         $titleEn = (string) ($role['title']['en'] ?? $id);
                         $titleDe = (string) ($role['title']['de'] ?? $titleEn);
+                        $focusEn = is_array($role['focus']['en'] ?? null) ? array_values(array_filter($role['focus']['en'], 'is_string')) : [];
+                        $focusDe = is_array($role['focus']['de'] ?? null) ? array_values(array_filter($role['focus']['de'], 'is_string')) : $focusEn;
                         $leadEn = (string) ($role['lead']['en'] ?? '');
                         $leadDe = (string) ($role['lead']['de'] ?? $leadEn);
+                        $focusCount = max(count($focusEn), count($focusDe));
                     @endphp
                     <a
                         href="{{ locale_route('roles.show', ['slug' => $id]) }}"
@@ -31,13 +34,33 @@
                         role="listitem"
                         data-roles-card
                     >
-                        <span class="roles-hub-card__icon-wrap" aria-hidden="true">
-                            <i class="fa-solid {{ $icon }} roles-hub-card__icon"></i>
-                        </span>
-                        <span class="roles-hub-card__body">
+                        <span class="roles-hub-card__header">
+                            <span class="roles-hub-card__icon-wrap" aria-hidden="true">
+                                <i class="fa-solid {{ $icon }} roles-hub-card__icon"></i>
+                            </span>
                             <span class="roles-hub-card__title" data-text-de="{{ $titleDe }}" data-text-en="{{ $titleEn }}">{{ $titleEn }}</span>
-                            <span class="roles-hub-card__lead" data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</span>
                         </span>
+                        @if ($focusCount > 0)
+                            <span class="roles-hub-card__purpose">
+                                <span class="roles-hub-card__purpose-label" data-i18n="roles.focusLabel">Focus</span>
+                                <span class="roles-hub-card__tags">
+                                    @for ($i = 0; $i < $focusCount; $i++)
+                                        @php
+                                            $tagEn = (string) ($focusEn[$i] ?? $focusDe[$i] ?? '');
+                                            $tagDe = (string) ($focusDe[$i] ?? $tagEn);
+                                        @endphp
+                                        @if ($tagEn !== '')
+                                            <span
+                                                class="roles-hub-card__tag"
+                                                data-text-de="{{ $tagDe }}"
+                                                data-text-en="{{ $tagEn }}"
+                                            >{{ $tagEn }}</span>
+                                        @endif
+                                    @endfor
+                                </span>
+                            </span>
+                        @endif
+                        <span class="roles-hub-card__lead" data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</span>
                         <span class="roles-hub-card__cta">
                             <span data-i18n="roles.cardCta">Explore role</span>
                             <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>

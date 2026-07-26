@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Learning Paths — '.config('app.name'))
-@section('meta_description', 'Guided learning paths for data governance — PII in five steps, DQ with dbt, warehouse modernization, and governance foundations.')
+@section('meta_description', 'Guided learning paths for data governance — practice tracks plus certification paths tied to project evidence (dbt, Fabric/Power BI, and more).')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--learning-paths" data-overview-filter-root>
@@ -14,18 +14,6 @@
             </p>
 
             <div class="tools-overview-toolbar">
-                <label class="tools-overview-search">
-                    <span class="sr-only" data-i18n="overview.searchLabel">Search</span>
-                    <i class="fa-solid fa-magnifying-glass tools-overview-search__icon" aria-hidden="true"></i>
-                    <input
-                        type="search"
-                        class="tools-overview-search__input"
-                        data-overview-search
-                        autocomplete="off"
-                        data-i18n-placeholder="learningPaths.searchPlaceholder"
-                        placeholder="Search PII, dbt, warehouse…"
-                    />
-                </label>
                 <label class="tools-overview-product-filter">
                     <span class="sr-only" data-i18n="learningPaths.audienceLabel">Audience</span>
                     <span class="tools-overview-sort__field">
@@ -69,23 +57,12 @@
                         $durationEn = (string) ($path['duration']['en'] ?? '');
                         $durationDe = (string) ($path['duration']['de'] ?? $durationEn);
                         $stepCount = is_array($path['steps'] ?? null) ? count($path['steps']) : 0;
-                        $searchText = mb_strtolower(implode(' ', array_filter([
-                            $titleEn,
-                            $titleDe,
-                            $leadEn,
-                            $leadDe,
-                            $audienceEn,
-                            $audienceDe,
-                            $id,
-                            $audienceId,
-                        ])));
                     @endphp
                     <a
                         href="{{ locale_route('learning-paths.show', ['slug' => $id]) }}"
                         class="learning-paths-hub-card"
                         role="listitem"
                         data-overview-item
-                        data-search-text="{{ $searchText }}"
                         data-products="{{ $audienceId }}"
                     >
                         <span class="learning-paths-hub-card__meta">

@@ -36,8 +36,22 @@ Roles and Paths stay **separate hubs**. They are cross-linked, not merged. The A
 | `dq-with-dbt` | `learning-path-dq-with-dbt` |
 | `modernize-warehouse` | `learning-path-modernize-warehouse` |
 | `governance-foundations` | `learning-path-governance-foundations` |
+| `metadata-operating-model` | `learning-path-metadata-operating-model` |
+| `trusted-metrics` | `learning-path-trusted-metrics` |
+| `close-the-gaps` | `learning-path-close-the-gaps` |
+| `ai-foundations` | `learning-path-ai-foundations` |
+| `access-security-ops` | `learning-path-access-security-ops` |
+| `end-to-end-governance` | `learning-path-end-to-end-governance` |
+| `simplest-viable-stack` | `learning-path-simplest-viable-stack` |
+| `cert-project-evidence` | `governance-learning-path-certification` |
+| `cert-dbt-analytics-engineer` | `learning-path-cert-dbt-analytics-engineer` |
+| `cert-fabric-power-bi` | `learning-path-cert-fabric-power-bi` |
 
-`governance-learning-path-certification` remains a separate certification track and is no longer shared by PII/Foundations.
+Keep the catalog curated (**≤ 20 paths**). Index uses audience filter only — no search field.
+
+Certification paths are **companions for people taking a specific cert** (e.g. dbt, DP-600/PL-300): official Learn/Docs remain the curriculum; the learning path + sprint plan provide week-by-week cadence (enroll → study → labs → exam → project transfer).
+
+`cert-project-evidence` is the optional umbrella when several certs run in parallel with delivery.
 
 ## Advisor hubs added
 

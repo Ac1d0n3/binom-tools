@@ -167,6 +167,7 @@ class LearningPathController extends Controller
                 'glossary' => $id !== '' ? locale_route('glossary.show', ['slug' => $id]) : null,
                 'path' => $id !== '' ? locale_route('learning-paths.show', ['slug' => $id]) : null,
                 'route' => is_string($entry['route'] ?? null) ? locale_route((string) $entry['route']) : null,
+                'external' => $this->externalHref($entry['href'] ?? null),
                 default => null,
             };
 
@@ -178,9 +179,24 @@ class LearningPathController extends Controller
                 'label' => $label,
                 'href' => $href,
                 'kind' => $kind !== '' ? $kind : 'link',
+                'external' => $kind === 'external',
             ];
         }
 
         return $links;
+    }
+
+    private function externalHref(mixed $href): ?string
+    {
+        if (! is_string($href)) {
+            return null;
+        }
+
+        $href = trim($href);
+        if ($href === '' || ! preg_match('#^https?://#i', $href)) {
+            return null;
+        }
+
+        return $href;
     }
 }
