@@ -86,6 +86,11 @@ return [
         'prophecy' => ['de' => 'Prophecy', 'en' => 'Prophecy'],
         'dagster' => ['de' => 'Dagster', 'en' => 'Dagster'],
         'prefect' => ['de' => 'Prefect', 'en' => 'Prefect'],
+        'bamboohr' => ['de' => 'BambooHR', 'en' => 'BambooHR'],
+        'hibob' => ['de' => 'HiBob', 'en' => 'HiBob'],
+        'factorial' => ['de' => 'Factorial', 'en' => 'Factorial'],
+        'greenhouse' => ['de' => 'Greenhouse', 'en' => 'Greenhouse'],
+        'softgarden' => ['de' => 'softgarden', 'en' => 'softgarden'],
     ],
 
     'families' => [
@@ -7004,7 +7009,490 @@ return [
             ],
         ],
 
-
+        [
+            'id' => 'bamboohr',
+            'family' => 'suppliers',
+            'vendor' => 'bamboohr',
+            'label' => [
+                'de' => 'BambooHR',
+                'en' => 'BambooHR',
+            ],
+            'purpose' => [
+                'de' => 'HRIS / People Ops',
+                'en' => 'HRIS / people ops',
+            ],
+            'models' => [
+                'saas',
+            ],
+            'brandColor' => '#73C41D',
+            'logo' => 'images/bamboohr-badge.svg',
+            'residency' => [
+                'us',
+                'eu',
+                'global',
+            ],
+            'help' => [
+                [
+                    'label' => [
+                        'de' => 'BambooHR Help',
+                        'en' => 'BambooHR Help',
+                    ],
+                    'href' => 'https://help.bamboohr.com/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'API Docs',
+                        'en' => 'API Docs',
+                    ],
+                    'href' => 'https://documentation.bamboohr.com/docs',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => [
+                        'de' => 'Trust / Security',
+                        'en' => 'Trust / Security',
+                    ],
+                    'href' => 'https://www.bamboohr.com/security/',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'Privacy',
+                        'en' => 'Privacy',
+                    ],
+                    'href' => 'https://www.bamboohr.com/privacy-policy/',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => [
+                        'de' => 'Resources',
+                        'en' => 'Resources',
+                    ],
+                    'href' => 'https://www.bamboohr.com/resources/',
+                    'description' => [
+                        'de' => 'Ressourcen und Guides.',
+                        'en' => 'Resources and guides.',
+                    ],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => [
+                        'de' => 'BambooHR Academy',
+                        'en' => 'BambooHR Academy',
+                    ],
+                    'href' => 'https://www.bamboohr.com/resources/',
+                    'description' => [
+                        'de' => 'Enablement / Zertifizierung.',
+                        'en' => 'Enablement / certification.',
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 'hibob',
+            'family' => 'suppliers',
+            'vendor' => 'hibob',
+            'label' => [
+                'de' => 'HiBob',
+                'en' => 'HiBob',
+            ],
+            'purpose' => [
+                'de' => 'HRIS / People Platform',
+                'en' => 'HRIS / people platform',
+            ],
+            'models' => [
+                'saas',
+            ],
+            'brandColor' => '#E91E8C',
+            'logo' => 'images/hibob-badge.svg',
+            'residency' => [
+                'eu',
+                'us',
+                'global',
+            ],
+            'help' => [
+                [
+                    'label' => [
+                        'de' => 'HiBob Help Center',
+                        'en' => 'HiBob Help Center',
+                    ],
+                    'href' => 'https://help.hibob.com/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'API',
+                        'en' => 'API',
+                    ],
+                    'href' => 'https://apidocs.hibob.com/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => [
+                        'de' => 'Trust Center',
+                        'en' => 'Trust Center',
+                    ],
+                    'href' => 'https://www.hibob.com/trust-center/',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'Privacy',
+                        'en' => 'Privacy',
+                    ],
+                    'href' => 'https://www.hibob.com/privacy-policy/',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => [
+                        'de' => 'Resources',
+                        'en' => 'Resources',
+                    ],
+                    'href' => 'https://www.hibob.com/resources/',
+                    'description' => [
+                        'de' => 'Ressourcen und Guides.',
+                        'en' => 'Resources and guides.',
+                    ],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => [
+                        'de' => 'HiBob University',
+                        'en' => 'HiBob University',
+                    ],
+                    'href' => 'https://www.hibob.com/resources/',
+                    'description' => [
+                        'de' => 'Enablement / Zertifizierung.',
+                        'en' => 'Enablement / certification.',
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 'factorial',
+            'family' => 'suppliers',
+            'vendor' => 'factorial',
+            'label' => [
+                'de' => 'Factorial',
+                'en' => 'Factorial',
+            ],
+            'purpose' => [
+                'de' => 'HRIS / People Ops (EU)',
+                'en' => 'HRIS / people ops (EU)',
+            ],
+            'models' => [
+                'saas',
+            ],
+            'brandColor' => '#5B4EFF',
+            'logo' => 'images/factorial-badge.svg',
+            'residency' => [
+                'eu',
+                'de',
+                'global',
+            ],
+            'help' => [
+                [
+                    'label' => [
+                        'de' => 'Factorial Help',
+                        'en' => 'Factorial Help',
+                    ],
+                    'href' => 'https://help.factorialhr.com/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'API',
+                        'en' => 'API',
+                    ],
+                    'href' => 'https://apidoc.factorialhr.com/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => [
+                        'de' => 'Security',
+                        'en' => 'Security',
+                    ],
+                    'href' => 'https://factorialhr.com/security',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'Privacy',
+                        'en' => 'Privacy',
+                    ],
+                    'href' => 'https://factorialhr.com/privacy-policy',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => [
+                        'de' => 'Academy / Resources',
+                        'en' => 'Academy / Resources',
+                    ],
+                    'href' => 'https://factorialhr.com/resources',
+                    'description' => [
+                        'de' => 'Ressourcen und Guides.',
+                        'en' => 'Resources and guides.',
+                    ],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => [
+                        'de' => 'Factorial Guides',
+                        'en' => 'Factorial Guides',
+                    ],
+                    'href' => 'https://factorialhr.com/resources',
+                    'description' => [
+                        'de' => 'Enablement / Zertifizierung.',
+                        'en' => 'Enablement / certification.',
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 'greenhouse',
+            'family' => 'suppliers',
+            'vendor' => 'greenhouse',
+            'label' => [
+                'de' => 'Greenhouse',
+                'en' => 'Greenhouse',
+            ],
+            'purpose' => [
+                'de' => 'ATS / Recruiting',
+                'en' => 'ATS / recruiting',
+            ],
+            'models' => [
+                'saas',
+            ],
+            'brandColor' => '#24A47F',
+            'logo' => 'images/greenhouse-badge.svg',
+            'residency' => [
+                'us',
+                'eu',
+                'global',
+            ],
+            'help' => [
+                [
+                    'label' => [
+                        'de' => 'Greenhouse Support',
+                        'en' => 'Greenhouse Support',
+                    ],
+                    'href' => 'https://support.greenhouse.io/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'API Docs',
+                        'en' => 'API Docs',
+                    ],
+                    'href' => 'https://developers.greenhouse.io/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => [
+                        'de' => 'Security',
+                        'en' => 'Security',
+                    ],
+                    'href' => 'https://www.greenhouse.com/security',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'Privacy',
+                        'en' => 'Privacy',
+                    ],
+                    'href' => 'https://www.greenhouse.com/privacy-policy',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => [
+                        'de' => 'Greenhouse Guides',
+                        'en' => 'Greenhouse Guides',
+                    ],
+                    'href' => 'https://www.greenhouse.com/resources',
+                    'description' => [
+                        'de' => 'Ressourcen und Guides.',
+                        'en' => 'Resources and guides.',
+                    ],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => [
+                        'de' => 'Greenhouse Certification',
+                        'en' => 'Greenhouse Certification',
+                    ],
+                    'href' => 'https://www.greenhouse.com/resources',
+                    'description' => [
+                        'de' => 'Enablement / Zertifizierung.',
+                        'en' => 'Enablement / certification.',
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 'softgarden',
+            'family' => 'suppliers',
+            'vendor' => 'softgarden',
+            'label' => [
+                'de' => 'softgarden',
+                'en' => 'softgarden',
+            ],
+            'purpose' => [
+                'de' => 'ATS / Recruiting (DACH)',
+                'en' => 'ATS / recruiting (DACH)',
+            ],
+            'models' => [
+                'saas',
+            ],
+            'brandColor' => '#00A0E3',
+            'logo' => 'images/softgarden-badge.svg',
+            'residency' => [
+                'de',
+                'eu',
+            ],
+            'help' => [
+                [
+                    'label' => [
+                        'de' => 'softgarden Help',
+                        'en' => 'softgarden Help',
+                    ],
+                    'href' => 'https://help.softgarden.de/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'API / Integration',
+                        'en' => 'API / Integration',
+                    ],
+                    'href' => 'https://softgarden.com/',
+                    'description' => [
+                        'de' => 'Hilfe und Docs.',
+                        'en' => 'Help and docs.',
+                    ],
+                ],
+            ],
+            'governance' => [
+                [
+                    'label' => [
+                        'de' => 'Datenschutz',
+                        'en' => 'Datenschutz',
+                    ],
+                    'href' => 'https://softgarden.com/datenschutz/',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+                [
+                    'label' => [
+                        'de' => 'Security / Trust',
+                        'en' => 'Security / Trust',
+                    ],
+                    'href' => 'https://softgarden.com/',
+                    'description' => [
+                        'de' => 'Security und Privacy.',
+                        'en' => 'Security and privacy.',
+                    ],
+                ],
+            ],
+            'learning' => [
+                [
+                    'label' => [
+                        'de' => 'Wissen / Ressourcen',
+                        'en' => 'Wissen / Ressourcen',
+                    ],
+                    'href' => 'https://softgarden.com/wissen/',
+                    'description' => [
+                        'de' => 'Ressourcen und Guides.',
+                        'en' => 'Resources and guides.',
+                    ],
+                ],
+            ],
+            'certifications' => [
+                [
+                    'label' => [
+                        'de' => 'softgarden Enablement',
+                        'en' => 'softgarden Enablement',
+                    ],
+                    'href' => 'https://softgarden.com/wissen/',
+                    'description' => [
+                        'de' => 'Enablement / Zertifizierung.',
+                        'en' => 'Enablement / certification.',
+                    ],
+                ],
+            ],
+        ],
 
     ],
 ];

@@ -73,6 +73,11 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('data-product-id="pega"', false);
         $response->assertSee('data-product-id="camunda"', false);
         $response->assertSee('data-product-id="epic"', false);
+        $response->assertSee('data-product-id="bamboohr"', false);
+        $response->assertSee('data-product-id="hibob"', false);
+        $response->assertSee('data-product-id="factorial"', false);
+        $response->assertSee('data-product-id="greenhouse"', false);
+        $response->assertSee('data-product-id="softgarden"', false);
         $response->assertSee('Salesforce');
         $response->assertSee('HubSpot');
         $response->assertSee('Google Analytics 4');
@@ -235,6 +240,20 @@ class SupplierLibraryHubTest extends TestCase
     public function test_wave11_supplier_detail_pages_render(): void
     {
         foreach (['freshdesk', 'pega', 'camunda', 'epic'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave12_supplier_detail_pages_render(): void
+    {
+        foreach (['bamboohr', 'hibob', 'factorial', 'greenhouse', 'softgarden'] as $slug) {
             $response = $this->get('/suppliers/'.$slug);
             $response->assertOk();
             $response->assertSee('data-supplier-library', false);
