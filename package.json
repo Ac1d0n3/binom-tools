@@ -10,6 +10,7 @@
         "build:local": "npm run htaccess:local && npm run build",
         "build:production": "npm run build",
         "deploy:ftp": "node scripts/pack-ftp-deploy.mjs",
+        "deploy:ftp:delta": "node scripts/pack-ftp-deploy.mjs",
         "htaccess:local": "cp public/.htaccess.local public/.htaccess",
         "htaccess:production": "cp public/.htaccess.production public/.htaccess",
         "dev": "vite",
