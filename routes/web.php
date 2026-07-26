@@ -34,6 +34,7 @@ use App\Http\Controllers\Tools\DatabricksDqPatternGeneratorController;
 use App\Http\Controllers\Tools\DatabricksPiiGovernancePatternGeneratorController;
 use App\Http\Controllers\Tools\FabricDqPatternGeneratorController;
 use App\Http\Controllers\Tools\FabricPiiGovernancePatternGeneratorController;
+use App\Http\Controllers\Tools\GovernanceAdvisoryToolController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
 use App\Http\Controllers\Tools\ImpactEffortController;
 use App\Http\Controllers\Tools\KpiDefinitionController;
@@ -256,6 +257,27 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('tools.architecture-fit'));
     Route::get('/tools/impact-effort', [ImpactEffortController::class, 'show'])
         ->name($name('tools.impact-effort'));
+    Route::get('/tools/kpi-requirements-intake', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'kpi-requirements-intake')
+        ->name($name('tools.kpi-requirements-intake'));
+    Route::get('/tools/source-scope-builder', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'source-scope-builder')
+        ->name($name('tools.source-scope-builder'));
+    Route::get('/tools/mart-design-brief-generator', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'mart-design-brief-generator')
+        ->name($name('tools.mart-design-brief-generator'));
+    Route::get('/tools/governance-stack-advisor', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'governance-stack-advisor')
+        ->name($name('tools.governance-stack-advisor'));
+    Route::get('/tools/pii-dsdr-readiness-checker', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'pii-dsdr-readiness-checker')
+        ->name($name('tools.pii-dsdr-readiness-checker'));
+    Route::get('/tools/decision-brief-generator', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'decision-brief-generator')
+        ->name($name('tools.decision-brief-generator'));
+    Route::get('/tools/vendor-learning-path-builder', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'vendor-learning-path-builder')
+        ->name($name('tools.vendor-learning-path-builder'));
     Route::get('/tools/dbt-dq-macro-generator', [DbtDqMacroGeneratorController::class, 'show'])
         ->name($name('tools.dbt-dq-macro-generator'));
     Route::get('/tools/dbt-dq-rules-generator', [DbtDqRulesGeneratorController::class, 'show'])

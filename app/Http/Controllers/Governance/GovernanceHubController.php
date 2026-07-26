@@ -31,6 +31,13 @@ class GovernanceHubController extends Controller
         $compliance = config('compliance.items', []);
 
         $featuredToolIds = [
+            'kpi-requirements-intake',
+            'source-scope-builder',
+            'mart-design-brief-generator',
+            'governance-stack-advisor',
+            'pii-dsdr-readiness-checker',
+            'decision-brief-generator',
+            'vendor-learning-path-builder',
             'stakeholder-matrix',
             'kpi-definition',
             'report-inventory',
@@ -49,9 +56,6 @@ class GovernanceHubController extends Controller
             }
         }
 
-        $supplierIds = ['salesforce', 'hubspot', 'sap-s4hana', 'workday', 'servicenow', 'sharepoint'];
-        $featuredSuppliers = $this->pickById($suppliers, $supplierIds);
-
         return view('governance.index', [
             'counts' => [
                 'tools' => count($tools),
@@ -61,34 +65,8 @@ class GovernanceHubController extends Controller
                 'compliance' => count($compliance),
             ],
             'featuredTools' => $featuredTools,
-            'featuredSuppliers' => $featuredSuppliers,
             'journeys' => $this->journeys(),
         ]);
-    }
-
-    /**
-     * @param  list<array<string, mixed>>  $items
-     * @param  list<string>  $ids
-     * @return list<array<string, mixed>>
-     */
-    private function pickById(array $items, array $ids): array
-    {
-        $byId = [];
-        foreach ($items as $item) {
-            $id = is_string($item['id'] ?? null) ? $item['id'] : '';
-            if ($id !== '') {
-                $byId[$id] = $item;
-            }
-        }
-
-        $picked = [];
-        foreach ($ids as $id) {
-            if (isset($byId[$id])) {
-                $picked[] = $byId[$id];
-            }
-        }
-
-        return $picked;
     }
 
     /**
@@ -111,9 +89,9 @@ class GovernanceHubController extends Controller
                 ],
                 'links' => array_values(array_filter([
                     ['href' => $route('tools.stakeholder-matrix'), 'label' => ['de' => 'Stakeholder & RACI', 'en' => 'Stakeholder & RACI']],
+                    ['href' => $route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI Requirements Intake', 'en' => 'KPI Requirements Intake']],
                     ['href' => $route('tools.kpi-definition'), 'label' => ['de' => 'KPI Definition Card', 'en' => 'KPI Definition Card']],
-                    ['href' => $route('tools.report-inventory'), 'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory']],
-                    ['href' => $route('playbooks.index'), 'label' => ['de' => 'KPI Playbooks', 'en' => 'KPI playbooks']],
+                    ['href' => $route('tools.mart-design-brief-generator'), 'label' => ['de' => 'Mart Design Brief', 'en' => 'Mart Design Brief']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
             [
@@ -125,10 +103,9 @@ class GovernanceHubController extends Controller
                     'en' => 'Pick a supplier, understand core entities, review PII/DSDR, and mark skip tables before loading.',
                 ],
                 'links' => array_values(array_filter([
+                    ['href' => $route('tools.source-scope-builder'), 'label' => ['de' => 'Source Scope Builder', 'en' => 'Source Scope Builder']],
                     ['href' => $route('suppliers.index'), 'label' => ['de' => 'Supplier Library', 'en' => 'Supplier library']],
-                    ['href' => $route('tools.meta-export-generator'), 'label' => ['de' => 'Meta Export Generator', 'en' => 'Meta Export Generator']],
                     ['href' => $route('tools.pii-recommend-generator'), 'label' => ['de' => 'PII Recommend', 'en' => 'PII Recommend']],
-                    ['href' => $route('resources.index'), 'label' => ['de' => 'Vendor Resources', 'en' => 'Vendor resources']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
             [
@@ -140,10 +117,10 @@ class GovernanceHubController extends Controller
                     'en' => 'Treat Fabric, Databricks, Snowflake, dbt, BI, and catalog tools as one governance stack.',
                 ],
                 'links' => array_values(array_filter([
+                    ['href' => $route('tools.governance-stack-advisor'), 'label' => ['de' => 'Governance Stack Advisor', 'en' => 'Governance Stack Advisor']],
                     ['href' => $route('resources.index'), 'label' => ['de' => 'Stack Filter', 'en' => 'Stack filter']],
                     ['href' => $route('tools.architecture-fit'), 'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit']],
-                    ['href' => $route('tools.impact-effort'), 'label' => ['de' => 'Impact-Effort', 'en' => 'Impact-effort']],
-                    ['href' => $route('compliance.roadmap'), 'label' => ['de' => 'Zertifikats-Roadmap', 'en' => 'Certification roadmap']],
+                    ['href' => $route('tools.vendor-learning-path-builder'), 'label' => ['de' => 'Learning Path', 'en' => 'Learning path']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
             [
@@ -155,10 +132,10 @@ class GovernanceHubController extends Controller
                     'en' => 'Handle personal data, free text, copies, masking, and evidence as an early project path.',
                 ],
                 'links' => array_values(array_filter([
+                    ['href' => $route('tools.pii-dsdr-readiness-checker'), 'label' => ['de' => 'PII/DSDR Readiness', 'en' => 'PII/DSDR Readiness']],
                     ['href' => $route('tools.pii-policy-generator'), 'label' => ['de' => 'PII Policy', 'en' => 'PII Policy']],
                     ['href' => $route('tools.pii-unreviewed-gate-generator'), 'label' => ['de' => 'PII Table Gate', 'en' => 'PII Table Gate']],
-                    ['href' => $route('tools.governance-ai-sanitizer'), 'label' => ['de' => 'AI Sanitizer', 'en' => 'AI Sanitizer']],
-                    ['href' => $route('compliance.index'), 'label' => ['de' => 'Compliance Hub', 'en' => 'Compliance hub']],
+                    ['href' => $route('tools.decision-brief-generator'), 'label' => ['de' => 'Decision Brief', 'en' => 'Decision Brief']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
         ];

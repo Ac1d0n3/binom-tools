@@ -209,6 +209,7 @@ final class ToolsNav
     {
         return [
             'ai' => ['de' => 'AI', 'en' => 'AI'],
+            'governance' => ['de' => 'Governance', 'en' => 'Governance'],
             'dbt' => ['de' => 'dbt', 'en' => 'dbt'],
             'fabric' => ['de' => 'Fabric', 'en' => 'Fabric'],
             'databricks' => ['de' => 'Databricks', 'en' => 'Databricks'],
@@ -251,6 +252,10 @@ final class ToolsNav
 
         if (($item['workflow'] ?? null) === 'discovery-assessment') {
             return ['discovery'];
+        }
+
+        if (($item['workflow'] ?? null) === 'governance-decision-support') {
+            return ['governance'];
         }
 
         return ['more'];

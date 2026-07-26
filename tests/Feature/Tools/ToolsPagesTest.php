@@ -91,6 +91,13 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('Qlik Set Analysis Generator');
         $response->assertSee('Tableau Calculation Generator');
         $response->assertSee('Power BI DAX Measure Generator');
+        $response->assertSee('KPI Requirements Intake');
+        $response->assertSee('Source Scope Builder');
+        $response->assertSee('Mart Design Brief Generator');
+        $response->assertSee('Governance Stack Advisor');
+        $response->assertSee('PII/DSDR Readiness Checker');
+        $response->assertSee('Decision Brief Generator');
+        $response->assertSee('Vendor Learning Path Builder');
         $response->assertSee('tools-card__platform-mark', false);
         $response->assertSee('images/fabric-badge.svg', false);
         $response->assertSee('images/databricks-badge.svg', false);
