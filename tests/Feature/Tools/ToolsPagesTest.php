@@ -109,9 +109,9 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('Databricks');
         $response->assertSee('PII Table Gate');
         $response->assertSee('Recommend Generator');
-        $response->assertSee('Security &amp; governance setup', false);
-        $response->assertSee('Data quality setup');
-        $response->assertSee('tools-workflow-section', false);
+        $response->assertDontSee('tools-workflow-section', false);
+        $response->assertDontSee('Security &amp; governance setup', false);
+        $response->assertSee('Setup and reference workflows in the Governance Hub', false);
         $response->assertSee('data-overview-filter-root', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-product', false);
@@ -462,17 +462,19 @@ class ToolsPagesTest extends TestCase
             ->assertSee('data-discovery-extra', false);
     }
 
-    public function test_tools_overview_lists_discovery_workflow(): void
+    public function test_tools_overview_lists_discovery_tools_without_workflow_sections(): void
     {
         $response = $this->get('/tools');
 
         $response->assertOk();
-        $response->assertSee('Discovery &amp; assessment', false);
+        $response->assertDontSee('tools-workflow-section', false);
+        $response->assertDontSee('Discovery &amp; assessment', false);
         $response->assertSee('Stakeholder &amp; RACI Matrix', false);
         $response->assertSee('Report Inventory Canvas', false);
         $response->assertSee('KPI Definition Card', false);
         $response->assertSee('Architecture Fit Checklist', false);
         $response->assertSee('Impact–Effort Prioritizer', false);
+        $response->assertSee(route('governance.index'), false);
     }
 
     public function test_sidebar_includes_home_link(): void

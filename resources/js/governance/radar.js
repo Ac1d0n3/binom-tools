@@ -2,6 +2,63 @@ function normalize(value) {
     return String(value || '').toLowerCase().trim();
 }
 
+function splitTopics(value) {
+    return String(value || '')
+        .split('||')
+        .map((topic) => topic.trim())
+        .filter(Boolean);
+}
+
+const RADAR_COMPACT_STORAGE_KEY = 'binom-tools-governance-radar-compact';
+
+function readRadarCompact() {
+    try {
+        return localStorage.getItem(RADAR_COMPACT_STORAGE_KEY) === 'true';
+    } catch (error) {
+        return false;
+    }
+}
+
+function writeRadarCompact(enabled) {
+    try {
+        localStorage.setItem(RADAR_COMPACT_STORAGE_KEY, enabled ? 'true' : 'false');
+    } catch (error) {
+        // Ignore storage failures (private mode / blocked storage).
+    }
+}
+
+function mountRadarCompact(root) {
+    const toggle = root.querySelector('[data-governance-radar-compact-toggle]');
+    const label = toggle?.querySelector('[data-compact-label]');
+    const icon = toggle?.querySelector('[data-compact-icon]');
+
+    const applyCompact = (enabled) => {
+        root.classList.toggle('is-compact', enabled);
+        if (toggle) {
+            toggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+        }
+        if (label) {
+            label.dataset.textDe = enabled ? 'Erweitert' : 'Kompakt';
+            label.dataset.textEn = enabled ? 'Expand' : 'Compact';
+            const lang = document.documentElement.lang === 'de' ? 'de' : 'en';
+            label.textContent = lang === 'de' ? label.dataset.textDe : label.dataset.textEn;
+        }
+        if (icon) {
+            icon.classList.toggle('fa-compress', !enabled);
+            icon.classList.toggle('fa-expand', enabled);
+        }
+    };
+
+    applyCompact(readRadarCompact());
+    document.documentElement.removeAttribute('data-radar-compact-boot');
+
+    toggle?.addEventListener('click', () => {
+        const next = !root.classList.contains('is-compact');
+        writeRadarCompact(next);
+        applyCompact(next);
+    });
+}
+
 function mountRadar(root) {
     const search = root.querySelector('[data-governance-radar-search]');
     const topic = root.querySelector('[data-governance-radar-topic]');
@@ -11,6 +68,38 @@ function mountRadar(root) {
     const count = root.querySelector('[data-governance-radar-count]');
     const empty = root.querySelector('[data-governance-radar-empty]');
     const items = Array.from(root.querySelectorAll('[data-governance-radar-item]'));
+    const topicOptions = topic
+        ? Array.from(topic.querySelectorAll('option')).filter((option) => option.value !== '')
+        : [];
+
+    mountRadarCompact(root);
+
+    const syncTopicOptions = () => {
+        if (!topic) {
+            return;
+        }
+
+        const selectedType = type?.value || '';
+        const previousTopic = topic.value;
+        let keepPrevious = previousTopic === '';
+
+        topicOptions.forEach((option) => {
+            const allowedTypes = String(option.dataset.topicTypes || '')
+                .split('|')
+                .map((entry) => entry.trim())
+                .filter(Boolean);
+            const visible = selectedType === '' || allowedTypes.includes(selectedType);
+            option.hidden = !visible;
+            option.disabled = !visible;
+            if (visible && option.value === previousTopic) {
+                keepPrevious = true;
+            }
+        });
+
+        if (!keepPrevious) {
+            topic.value = '';
+        }
+    };
 
     const apply = () => {
         const query = normalize(search?.value);
@@ -21,7 +110,7 @@ function mountRadar(root) {
 
         items.forEach((item) => {
             const haystack = normalize(item.dataset.search);
-            const itemTopics = normalize(item.dataset.topic);
+            const itemTopics = splitTopics(item.dataset.topics).map(normalize);
             const itemType = normalize(item.dataset.type);
             const itemStacks = normalize(item.dataset.stack);
             const matches = (!query || haystack.includes(query))
@@ -43,7 +132,12 @@ function mountRadar(root) {
         }
     };
 
-    [search, topic, type, stack].forEach((control) => {
+    type?.addEventListener('change', () => {
+        syncTopicOptions();
+        apply();
+    });
+
+    [search, topic, stack].forEach((control) => {
         control?.addEventListener('input', apply);
         control?.addEventListener('change', apply);
     });
@@ -57,9 +151,11 @@ function mountRadar(root) {
                 control.value = '';
             }
         });
+        syncTopicOptions();
         apply();
     });
 
+    syncTopicOptions();
     apply();
 }
 
@@ -148,7 +244,7 @@ function mountSourceAdmin(root) {
         const data = new FormData(form);
         const topics = String(data.get('topics') || '')
             .split(/[,;\n]+/)
-            .map((topic) => topic.trim())
+            .map((entry) => entry.trim())
             .filter(Boolean);
 
         try {

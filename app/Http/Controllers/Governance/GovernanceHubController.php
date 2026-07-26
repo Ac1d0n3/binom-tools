@@ -76,6 +76,8 @@ class GovernanceHubController extends Controller
             ],
             'featuredTools' => $featuredTools,
             'journeys' => $this->journeys(),
+            'setupWorkflows' => ToolsNav::workflowsWithRegisteredRoutes(config('tools.workflows', [])),
+            'toolsById' => $toolsById,
         ]);
     }
 
@@ -96,21 +98,61 @@ class GovernanceHubController extends Controller
             }
         }
 
-        $topics = [];
-        $types = [];
-        $regions = [];
+        $typeMeta = config('governance-radar.type_meta', []);
+
+        $typesPresent = [];
         $stacks = [];
+        /** @var array<string, array<string, true>> $topicsByType */
+        $topicsByType = [];
+        $allTopics = [];
 
         foreach ($items as $item) {
-            $types[] = (string) ($item['type'] ?? '');
-            $regions[] = (string) ($item['region'] ?? '');
-            foreach ((array) ($item['topics'] ?? []) as $topic) {
-                $topics[] = (string) $topic;
+            $type = (string) ($item['type'] ?? '');
+            if ($type !== '') {
+                $typesPresent[$type] = true;
             }
             foreach ((array) ($item['stack'] ?? []) as $stack) {
-                $stacks[] = (string) $stack;
+                $stack = (string) $stack;
+                if ($stack !== '' && $stack !== 'Alle Stacks') {
+                    $stacks[] = $stack;
+                }
+            }
+            foreach ((array) ($item['topics'] ?? []) as $topic) {
+                if (! is_string($topic) || $topic === '') {
+                    continue;
+                }
+                $allTopics[] = $topic;
+                if ($type !== '') {
+                    $topicsByType[$topic][$type] = true;
+                }
             }
         }
+
+        $typeOptions = [];
+        foreach ($typeMeta as $type => $meta) {
+            if (! isset($typesPresent[$type])) {
+                continue;
+            }
+            $typeOptions[] = [
+                'value' => $type,
+                'icon' => (string) ($meta['icon'] ?? 'fa-circle'),
+                'label' => is_array($meta['label'] ?? null) ? $meta['label'] : ['de' => $type, 'en' => $type],
+                'order' => (int) ($meta['order'] ?? 100),
+            ];
+        }
+        usort($typeOptions, static fn (array $a, array $b): int => $a['order'] <=> $b['order']);
+
+        $topicOptions = array_values(array_unique(array_filter($allTopics)));
+        sort($topicOptions, SORT_NATURAL | SORT_FLAG_CASE);
+
+        $topicTypeMap = [];
+        foreach ($topicOptions as $topic) {
+            $topicTypeMap[$topic] = array_keys($topicsByType[$topic] ?? []);
+            sort($topicTypeMap[$topic], SORT_NATURAL | SORT_FLAG_CASE);
+        }
+
+        $stackOptions = array_values(array_unique(array_filter($stacks)));
+        sort($stackOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
         return view('governance.radar', [
             'sources' => $sources,
@@ -118,11 +160,12 @@ class GovernanceHubController extends Controller
             'radarSourcesApiUrl' => $user !== null ? url('/api/governance/radar/sources') : null,
             'items' => $items,
             'sourceNames' => $sourceNames,
+            'typeMeta' => $typeMeta,
+            'topicTypeMap' => $topicTypeMap,
             'filters' => [
-                'topics' => array_values(array_unique(array_filter($topics))),
-                'types' => array_values(array_unique(array_filter($types))),
-                'regions' => array_values(array_unique(array_filter($regions))),
-                'stacks' => array_values(array_unique(array_filter($stacks))),
+                'types' => $typeOptions,
+                'topics' => $topicOptions,
+                'stacks' => $stackOptions,
             ],
         ]);
     }

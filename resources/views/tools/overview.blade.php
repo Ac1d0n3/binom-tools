@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Binom-Tools — ' . config('app.name'))
-@section('meta_description', 'Interactive governance workflows — dbt macros, PII policies, schema editors, and workflow examples you can copy into your stack.')
+@section('meta_description', 'Browse Binom-Tools — dbt macros, PII policies, schema editors, lakehouse generators, and discovery aids. Setup workflows live in the Governance Hub.')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--tools-overview" data-overview-filter-root>
@@ -29,11 +29,10 @@
                 @else
                     data-i18n="tools.overviewLead"
                 @endif
-            >Interactive reference workflows — step by step, copy-paste ready.</p>
+            >Searchable tool catalog. Step-by-step setup workflows live in the Governance Hub.</p>
         @endif
 
         @php
-            $navById = collect($navItems)->keyBy('id');
             $productLabels = [
                 'dbt' => 'dbt',
                 'fabric' => 'Fabric',
@@ -145,42 +144,12 @@
                 @endforeach
             </div>
 
-            @foreach ($workflows as $workflowId => $workflow)
-                @php
-                    $steps = $workflow['steps'] ?? [];
-                    $workflowProducts = collect($steps)
-                        ->map(fn (string $stepId) => $navById->get($stepId))
-                        ->filter()
-                        ->flatMap(fn (array $step) => $productsForItem($step))
-                        ->unique()
-                        ->values()
-                        ->all();
-                @endphp
-                <section class="tools-workflow-section" aria-labelledby="workflow-{{ $workflowId }}-title" data-overview-workflow-section data-products="{{ implode(',', $workflowProducts) }}">
-                    <h2 id="workflow-{{ $workflowId }}-title" class="tools-section__title tools-section__title--with-icon">
-                        @if (! empty($workflow['icon']))
-                            <i class="fa-solid {{ $workflow['icon'] }} tools-section__title-icon" aria-hidden="true"></i>
-                        @endif
-                        <span>{{ $workflow['label']['en'] ?? $workflowId }}</span>
-                    </h2>
-                    @if (! empty($workflow['description']['en']))
-                        <p class="tools-section__lead" data-hub-lead>{{ $workflow['description']['en'] }}</p>
-                    @endif
-                    <ol class="tools-workflow-steps">
-                        @foreach ($steps as $index => $stepId)
-                            @php $step = $navById->get($stepId); @endphp
-                            @if ($step)
-                                <li class="tools-workflow-steps__item">
-                                    <span class="tools-workflow-steps__num">{{ $index + 1 }}</span>
-                                    <a href="{{ locale_route($step['route']) }}" class="tools-workflow-steps__link">
-                                        {{ $step['label']['en'] }}
-                                    </a>
-                                </li>
-                            @endif
-                        @endforeach
-                    </ol>
-                </section>
-            @endforeach
+            <p class="tools-overview-hub-hint" data-hub-lead>
+                <a href="{{ locale_route('governance.index') }}">
+                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                    <span data-text-de="Setup- und Referenz-Workflows im Governance Hub" data-text-en="Setup and reference workflows in the Governance Hub">Setup and reference workflows in the Governance Hub</span>
+                </a>
+            </p>
         </div>
     </div>
 @endsection

@@ -478,9 +478,9 @@
                 <p
                     class="tools-section__lead"
                     data-hub-lead
-                    data-text-de="Die Karten sind keine neuen Silos. Sie führen in vorhandene Hubs und Tools und setzen die neue Beratungslogik darüber."
-                    data-text-en="These cards are not new silos. They route into existing hubs and tools and add the advisory logic above them."
-                >These cards are not new silos. They route into existing hubs and tools and add the advisory logic above them.</p>
+                    data-text-de="Die Karten sind Discovery-Einstiege in Hubs und Tools. Darunter stehen die Setup-/Referenz-Workflows — einmal hier, nicht nochmal in der Tools-Übersicht."
+                    data-text-en="These cards are discovery entry points into hubs and tools. Below are the setup/reference workflows — once here, not again on the tools overview."
+                >These cards are discovery entry points into hubs and tools. Below are the setup/reference workflows — once here, not again on the tools overview.</p>
             </div>
 
             <div class="governance-hub__journey-grid">
@@ -514,42 +514,61 @@
                     </article>
                 @endforeach
             </div>
-        </section>
 
-        <section class="governance-hub__section governance-hub__workflow" aria-labelledby="governance-tab-button-workflows" data-governance-tab-panel="workflows" role="tabpanel" hidden>
-            <div>
-                <p class="governance-hub__eyebrow" data-text-de="Collect Infos Workflow" data-text-en="Collect infos workflow">Collect infos workflow</p>
-                <h2
-                    id="governance-workflow-title"
-                    class="tools-section__title"
-                    data-text-de="Von Workshop-Fragen zum Tabellen- und Entscheidungsbrief"
-                    data-text-en="From workshop questions to table and decision brief"
-                >From workshop questions to table and decision brief</h2>
-                <p
-                    class="tools-section__lead"
-                    data-hub-lead
-                    data-text-de="Der Hub ordnet die vorhandenen Werkzeuge als Beratungsfolge: Stakeholder, Business-Fragen, KPI Cards, Source Scope, PII/DSDR, DQ-Regeln, Mart Design, Decision Brief."
-                    data-text-en="The hub orders the existing tools as an advisory sequence: stakeholders, business questions, KPI cards, source scope, PII/DSDR, DQ rules, mart design, decision brief."
-                >The hub orders the existing tools as an advisory sequence: stakeholders, business questions, KPI cards, source scope, PII/DSDR, DQ rules, mart design, decision brief.</p>
-            </div>
+            <div class="governance-hub__setup-workflows" data-governance-setup-workflows>
+                <div class="governance-hub__section-heading">
+                    <p class="governance-hub__eyebrow" data-text-de="Setup- und Referenz-Workflows" data-text-en="Setup and reference workflows">Setup and reference workflows</p>
+                    <h2
+                        id="governance-setup-workflows-title"
+                        class="tools-section__title"
+                        data-text-de="Schrittweise Tool-Ketten aus der Tools-Config"
+                        data-text-en="Step-by-step tool chains from the tools config"
+                    >Step-by-step tool chains from the tools config</h2>
+                    <p
+                        class="tools-section__lead"
+                        data-hub-lead
+                        data-text-de="Dieselbe Quelle wie die In-Tool-Navigation: dbt, Lakehouse, PureView, Discovery und Decision Support — mit Links zu den Generatoren."
+                        data-text-en="Same source as in-tool navigation: dbt, lakehouse, PureView, discovery, and decision support — with links to the generators."
+                    >Same source as in-tool navigation: dbt, lakehouse, PureView, discovery, and decision support — with links to the generators.</p>
+                </div>
 
-            <ol class="governance-hub__steps">
-                @foreach ([
-                    ['de' => 'Stakeholder', 'en' => 'Stakeholders'],
-                    ['de' => 'Business-Fragen', 'en' => 'Business questions'],
-                    ['de' => 'KPI Cards', 'en' => 'KPI cards'],
-                    ['de' => 'Source Scope', 'en' => 'Source scope'],
-                    ['de' => 'PII/DSDR', 'en' => 'PII/DSDR'],
-                    ['de' => 'DQ-Regeln', 'en' => 'DQ rules'],
-                    ['de' => 'Mart Design', 'en' => 'Mart design'],
-                    ['de' => 'Decision Brief', 'en' => 'Decision brief'],
-                ] as $index => $step)
-                    <li>
-                        <span>{{ $index + 1 }}</span>
-                        <strong data-text-de="{{ $step['de'] }}" data-text-en="{{ $step['en'] }}">{{ $step['en'] }}</strong>
-                    </li>
+                @foreach ($setupWorkflows as $workflowId => $workflow)
+                    @php
+                        $steps = $workflow['steps'] ?? [];
+                        $labelEn = $workflow['label']['en'] ?? $workflowId;
+                        $labelDe = $workflow['label']['de'] ?? $labelEn;
+                        $descEn = $workflow['description']['en'] ?? '';
+                        $descDe = $workflow['description']['de'] ?? $descEn;
+                    @endphp
+                    <section class="tools-workflow-section governance-hub__setup-workflow" aria-labelledby="governance-workflow-{{ $workflowId }}-title" data-governance-setup-workflow="{{ $workflowId }}">
+                        <h3 id="governance-workflow-{{ $workflowId }}-title" class="tools-section__title tools-section__title--with-icon">
+                            @if (! empty($workflow['icon']))
+                                <i class="fa-solid {{ $workflow['icon'] }} tools-section__title-icon" aria-hidden="true"></i>
+                            @endif
+                            <span data-text-de="{{ $labelDe }}" data-text-en="{{ $labelEn }}">{{ $labelEn }}</span>
+                        </h3>
+                        @if ($descEn !== '')
+                            <p class="tools-section__lead" data-hub-lead data-text-de="{{ $descDe }}" data-text-en="{{ $descEn }}">{{ $descEn }}</p>
+                        @endif
+                        <ol class="tools-workflow-steps">
+                            @foreach ($steps as $index => $stepId)
+                                @php $step = $toolsById[$stepId] ?? null; @endphp
+                                @if ($step)
+                                    <li class="tools-workflow-steps__item">
+                                        <span class="tools-workflow-steps__num">{{ $index + 1 }}</span>
+                                        <a href="{{ locale_route($step['route']) }}" class="tools-workflow-steps__link">
+                                            <span
+                                                data-text-de="{{ $step['label']['de'] ?? ($step['label']['en'] ?? $stepId) }}"
+                                                data-text-en="{{ $step['label']['en'] ?? ($step['label']['de'] ?? $stepId) }}"
+                                            >{{ $step['label']['en'] ?? $stepId }}</span>
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ol>
+                    </section>
                 @endforeach
-            </ol>
+            </div>
         </section>
 
         <section class="governance-hub__section governance-hub__decision-section" id="governance-tab-decisions" aria-labelledby="governance-tab-button-decisions" data-governance-tab-panel="decisions" role="tabpanel" hidden>
