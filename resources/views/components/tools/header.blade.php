@@ -206,6 +206,13 @@
                             role="menuitem"
                             data-i18n="nav.accountProfile"
                         >Profile</a>
+                        <a
+                            href="{{ locale_route('governance.sessions.index') }}"
+                            class="tools-header__account-menu-item {{ Locale::routeIs('governance.sessions.index') || Locale::routeIs('governance.sessions.report') ? 'tools-header__account-menu-item--active' : '' }}"
+                            role="menuitem"
+                            data-text-de="Governance Sessions"
+                            data-text-en="Governance Sessions"
+                        >Governance Sessions</a>
                         @if (! empty($accountUser['canManageUsers']))
                             <a
                                 href="{{ locale_route('accounts.users') }}"

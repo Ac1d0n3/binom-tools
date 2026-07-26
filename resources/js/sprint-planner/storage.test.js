@@ -878,6 +878,85 @@ describe('instance-manager', () => {
         expect(started.instance.templateSnapshot?.sprints).toHaveLength(1);
     });
 
+    it('pre-fills ephemeral demo plans with completed work and notes', () => {
+        const template = {
+            slug: 'governance-demo',
+            version: 1,
+            sprints: [
+                {
+                    id: 'sprint_1',
+                    number: 1,
+                    tasks: [{ id: 'task_a' }, { id: 'task_b' }, { id: 'task_c' }],
+                    deliverables: [{ id: 'del_a' }],
+                    fields: [{ id: 'companyName' }, { id: 'projectGoal' }, { id: 'owner' }],
+                },
+                {
+                    id: 'sprint_2',
+                    number: 2,
+                    tasks: [{ id: 'task_d' }, { id: 'task_e' }],
+                    deliverables: [{ id: 'del_b' }],
+                    fields: [{ id: 'reviewStatus' }],
+                },
+            ],
+            locales: {
+                de: { title: 'DE', description: '', sprints: [] },
+                en: { title: 'EN', description: '', sprints: [] },
+            },
+        };
+
+        const started = startInstanceFromTemplate(template, {
+            startedAt: '2026-07-01',
+            ephemeral: true,
+            demoProgress: true,
+        });
+
+        expect(started.ok).toBe(true);
+        expect(started.instance.completedTasks).toEqual([
+            statusKey('governance-demo', 'sprint_1', 'task', 'task_a'),
+            statusKey('governance-demo', 'sprint_1', 'task', 'task_b'),
+            statusKey('governance-demo', 'sprint_2', 'task', 'task_d'),
+        ]);
+        expect(started.instance.completedDeliverables).toEqual([
+            statusKey('governance-demo', 'sprint_1', 'deliverable', 'del_a'),
+        ]);
+        expect(started.instance.fieldValues[statusKey('governance-demo', 'sprint_1', 'field', 'companyName')])
+            .toBe('Acme GmbH');
+        expect(started.instance.fieldValues[statusKey('governance-demo', 'sprint_1', 'field', 'projectGoal')])
+            .toContain('Entscheidungsgrundlage');
+        expect(started.instance.sprintNotes.sprint_1).toContain('Demo-Stand');
+    });
+
+    it('keeps non-demo ephemeral plans empty', () => {
+        const template = {
+            slug: 'local-ephemeral',
+            version: 1,
+            sprints: [
+                {
+                    id: 'sprint_1',
+                    number: 1,
+                    tasks: [{ id: 'task_a' }],
+                    deliverables: [{ id: 'del_a' }],
+                    fields: [{ id: 'companyName' }],
+                },
+            ],
+            locales: {
+                de: { title: 'DE', description: '', sprints: [] },
+                en: { title: 'EN', description: '', sprints: [] },
+            },
+        };
+
+        const started = startInstanceFromTemplate(template, {
+            startedAt: '2026-07-01',
+            ephemeral: true,
+        });
+
+        expect(started.ok).toBe(true);
+        expect(started.instance.completedTasks).toEqual([]);
+        expect(started.instance.completedDeliverables).toEqual([]);
+        expect(started.instance.fieldValues).toEqual({});
+        expect(started.instance.sprintNotes).toEqual({});
+    });
+
     it('claim all only takes unassigned items and never steals assignees', () => {
         const template = {
             slug: 'demo-claim-all',

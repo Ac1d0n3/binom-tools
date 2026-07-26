@@ -23,6 +23,7 @@
         <div class="discovery-export__actions">
             <button type="button" class="tools-btn tools-btn--primary" data-copy-md data-i18n="discovery.copyMarkdown">Copy Markdown</button>
             <button type="button" class="tools-btn" data-download-md data-i18n="discovery.downloadMarkdown">Download .md</button>
+            <button type="button" class="tools-btn" data-print-report data-i18n="discovery.printPdf">Print / PDF</button>
             @if ($copyCsv)
                 <button type="button" class="tools-btn" data-copy-csv data-i18n="discovery.copyCsv">Copy CSV</button>
                 <button type="button" class="tools-btn" data-download-csv data-i18n="discovery.downloadCsv">Download .csv</button>

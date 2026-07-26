@@ -77,7 +77,7 @@ export function undoLastInstanceChange(instanceId) {
 
 /**
  * @param {object} template
- * @param {{startedAt: string, teamId?: string|null, teamIds?: string[], participantIds?: string[], ephemeral?: boolean}} options
+ * @param {{startedAt: string, teamId?: string|null, teamIds?: string[], participantIds?: string[], ephemeral?: boolean, demoProgress?: boolean}} options
  */
 export function startInstanceFromTemplate(template, options) {
     const loaded = loadWorkspace();
@@ -157,9 +157,74 @@ export function startInstanceFromTemplate(template, options) {
         instance.participantIds.push(activePersonId);
     }
 
+    if (options.demoProgress) {
+        applyDemoProgress(instance, template);
+    }
+
     workspace.instances[id] = instance;
     const saved = saveWorkspace(workspace, { dirtyPlanIds: [id] });
     return saved.ok ? { ok: true, instance } : { ok: false, error: saved.error };
+}
+
+function applyDemoProgress(instance, template) {
+    const sprints = Array.isArray(template.sprints) ? template.sprints : [];
+    const completedTasks = [];
+    const completedDeliverables = [];
+    const fieldValues = {};
+    const sprintNotes = {};
+
+    sprints.slice(0, 2).forEach((sprint, sprintIndex) => {
+        if (!sprint?.id) {
+            return;
+        }
+
+        const tasks = Array.isArray(sprint.tasks) ? sprint.tasks : [];
+        tasks.slice(0, sprintIndex === 0 ? 2 : 1).forEach((task) => {
+            if (task?.id) {
+                completedTasks.push(statusKey(template.slug, sprint.id, 'task', task.id));
+            }
+        });
+
+        const deliverables = Array.isArray(sprint.deliverables) ? sprint.deliverables : [];
+        deliverables.slice(0, sprintIndex === 0 ? 1 : 0).forEach((deliverable) => {
+            if (deliverable?.id) {
+                completedDeliverables.push(statusKey(template.slug, sprint.id, 'deliverable', deliverable.id));
+            }
+        });
+
+        const fields = Array.isArray(sprint.fields) ? sprint.fields : [];
+        fields.slice(0, 3).forEach((field, fieldIndex) => {
+            if (field?.id) {
+                fieldValues[statusKey(template.slug, sprint.id, 'field', field.id)] = demoFieldValue(field.id, fieldIndex);
+            }
+        });
+
+        sprintNotes[sprint.id] = sprintIndex === 0
+            ? 'Demo-Stand: Kickoff, Ausgangslage und erste Entscheidungskriterien sind vorbereitet.'
+            : 'Demo-Stand: Scope ist teilweise geprüft; offene Punkte bleiben im Review.';
+    });
+
+    instance.completedTasks = [...new Set(completedTasks)];
+    instance.completedDeliverables = [...new Set(completedDeliverables)];
+    instance.fieldValues = { ...instance.fieldValues, ...fieldValues };
+    instance.sprintNotes = { ...instance.sprintNotes, ...sprintNotes };
+}
+
+function demoFieldValue(fieldId, index) {
+    const id = String(fieldId || '').toLowerCase();
+    if (id.includes('company') || id.includes('firma')) {
+        return 'Acme GmbH';
+    }
+    if (id.includes('goal') || id.includes('ziel')) {
+        return 'Entscheidungsgrundlage für Stack, Scope und KPI-Governance';
+    }
+    if (id.includes('project') || id.includes('projekt')) {
+        return 'Governance Demo Workspace';
+    }
+    if (id.includes('owner')) {
+        return 'Demo Owner';
+    }
+    return ['Demo-Input vorbereitet', 'Review offen', 'Entscheidung nötig'][index] || 'Demo-Wert';
 }
 
 /**

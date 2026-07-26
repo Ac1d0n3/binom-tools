@@ -143,6 +143,15 @@ html.bn-theme-blue-water-dark .discovery-canvas,
     resize: vertical;
 }
 
+.discovery-field-help {
+    display: block;
+    margin-top: 0.32rem;
+    max-width: 18rem;
+    color: var(--dc-text-muted);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
 .discovery-check {
     width: 1rem;
     height: 1rem;
@@ -160,11 +169,118 @@ html.bn-theme-blue-water-dark .discovery-canvas,
     margin-top: 0.5rem;
 }
 
+.discovery-result-summary {
+    display: grid;
+    gap: 0.85rem;
+    margin: 0 0 1rem;
+}
+
+.discovery-result-summary__head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.discovery-result-summary__head p {
+    margin: 0 0 0.25rem;
+    color: var(--dc-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.discovery-result-summary__head h2 {
+    margin: 0;
+    color: var(--dc-text);
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.discovery-result-summary__head > strong {
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--dc-accent) 34%, var(--dc-border));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--dc-accent) 11%, var(--dc-surface));
+    color: var(--dc-accent);
+    font-size: 0.72rem;
+    line-height: 1.2;
+    padding: 0.32rem 0.55rem;
+    text-transform: uppercase;
+}
+
+.discovery-result-summary__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+
+.discovery-result-summary__stats div {
+    min-width: 0;
+    border: 1px solid var(--dc-border);
+    border-radius: var(--dc-radius);
+    background: var(--dc-surface-muted);
+    padding: 0.65rem;
+}
+
+.discovery-result-summary__stats span,
+.discovery-result-summary__stats strong {
+    display: block;
+}
+
+.discovery-result-summary__stats span {
+    color: var(--dc-text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.discovery-result-summary__stats strong {
+    color: var(--dc-text);
+    font-size: 1.35rem;
+    line-height: 1.15;
+}
+
+.discovery-result-summary__findings {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--dc-text-muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
 .discovery-export__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
+}
+
+@media (max-width: 720px) {
+    .discovery-result-summary__head {
+        display: grid;
+    }
+
+    .discovery-result-summary__stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media print {
+    .tools-shell__header,
+    .tools-shell__sidebar,
+    .tools-shell__footer,
+    .discovery-toolbar,
+    .discovery-export__actions,
+    .discovery-table__actions {
+        display: none !important;
+    }
+
+    .discovery-export__preview {
+        max-height: none;
+    }
 }
 
 .discovery-export__preview {

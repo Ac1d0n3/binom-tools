@@ -79,6 +79,10 @@ final class BnToolsSeedStore
                 $seedRoot.DIRECTORY_SEPARATOR.'read-state',
                 $this->config->readStateDirectory(),
             );
+            $this->hydrateDirectoryTreeIfMissing(
+                $seedRoot.DIRECTORY_SEPARATOR.'governance-sessions',
+                $this->config->governanceSessionsDirectory(),
+            );
         } catch (\Throwable) {
             // Storage may be missing/unwritable after FTP deploy — ignore.
         }
@@ -156,7 +160,7 @@ final class BnToolsSeedStore
             $files++;
         }
 
-        foreach (['user-templates', 'plans', 'read-state'] as $dirName) {
+        foreach (['user-templates', 'plans', 'read-state', 'governance-sessions'] as $dirName) {
             $srcDir = $this->config->basePath().DIRECTORY_SEPARATOR.$dirName;
             $destDir = $seedRoot.DIRECTORY_SEPARATOR.$dirName;
             if (! is_dir($srcDir)) {

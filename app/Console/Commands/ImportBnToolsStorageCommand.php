@@ -12,6 +12,7 @@ use App\Accounts\Contracts\TeamRepositoryInterface;
 use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Accounts\Contracts\UserTemplateStoreInterface;
 use App\Accounts\JsonFileStore;
+use App\Governance\GovernanceSessionStore;
 use App\Models\BnTools\BnPlanHistory;
 use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use App\Support\StorageDriver;
@@ -39,6 +40,7 @@ class ImportBnToolsStorageCommand extends Command
         PromptStudioLibraryStoreInterface $promptLibrary,
         PlanAttachmentStoreInterface $attachments,
         PlaybookStatsStoreInterface $stats,
+        GovernanceSessionStore $governanceSessions,
     ): int {
         if (! StorageDriver::isMysql() && ! $this->option('force')) {
             $this->error('BINOM_TOOLS_STORAGE_DRIVER must be mysql (or pass --force).');
@@ -147,6 +149,25 @@ class ImportBnToolsStorageCommand extends Command
             }
         }
         $this->info('Prompt Studio libraries imported.');
+
+        $governanceDir = $config->governanceSessionsDirectory();
+        if (is_dir($governanceDir)) {
+            foreach (glob($governanceDir.DIRECTORY_SEPARATOR.'gov_*.json') ?: [] as $file) {
+                $session = $files->read($file, []);
+                if ($session === [] || ! isset($session['id'], $session['ownerUserId'])) {
+                    continue;
+                }
+                $owner = $users->findById((string) $session['ownerUserId']);
+                if ($owner === null) {
+                    $this->warn('Skip governance session '.$session['id'].' — owner missing.');
+
+                    continue;
+                }
+                $governanceSessions->save($owner, $session);
+                $imported++;
+            }
+        }
+        $this->info('Governance sessions imported.');
 
         $statsDir = storage_path('app/playbook-stats');
         if (is_dir($statsDir)) {

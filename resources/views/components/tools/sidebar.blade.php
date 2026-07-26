@@ -108,18 +108,6 @@
                     Governance
                 </a>
             </li>
-            @if (! empty($accountsEnabled))
-                <li>
-                    <a
-                        href="{{ locale_route('governance.sessions.index') }}"
-                        class="tools-sidenav__link {{ Locale::routeIs('governance.sessions.index') || Locale::routeIs('governance.sessions.report') ? 'tools-sidenav__link--active' : '' }}"
-                        data-text-de="Governance Sessions"
-                        data-text-en="Governance Sessions"
-                    >
-                        Governance Sessions
-                    </a>
-                </li>
-            @endif
             <li>
                 <a
                     href="{{ locale_route('resources.index') }}"

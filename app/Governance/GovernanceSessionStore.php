@@ -131,6 +131,21 @@ final class GovernanceSessionStore
     {
         $payload = is_array($input['payload'] ?? null) ? $input['payload'] : [];
         $advisor = is_array($payload['advisor'] ?? null) ? $payload['advisor'] : [];
+        $dataQuality = is_array($payload['dataQuality'] ?? null) ? $payload['dataQuality'] : [];
+        if (($advisor['goal'] ?? null) === 'dq' && $dataQuality === []) {
+            $dataQuality = [
+                'mode' => $advisor['dqMode'] ?? 'health_check',
+                'layer' => $advisor['dqLayer'] ?? 'source',
+                'issueTypes' => is_array($advisor['dqIssues'] ?? null) ? $advisor['dqIssues'] : [],
+                'affectedSources' => [],
+                'affectedKpis' => [],
+                'affectedReports' => [],
+                'proposedRules' => [],
+                'validationFindings' => [],
+                'decisionStatus' => 'draft',
+            ];
+            $payload['dataQuality'] = $dataQuality;
+        }
         $scenario = $this->pick($input['scenario'] ?? ($advisor['scenario'] ?? 'new'), ['new', 'extend', 'help'], 'new');
         $status = $this->pick($input['status'] ?? 'draft', self::STATUSES, 'draft');
         $title = trim((string) ($input['title'] ?? ''));
@@ -184,6 +199,24 @@ final class GovernanceSessionStore
         if (($required['goal'] ?? '') === 'pii' && empty($payload['pii'])) {
             $warnings[] = 'PII/DSDR details are not collected yet.';
         }
+        if (($required['goal'] ?? '') === 'dq') {
+            $dataQuality = is_array($payload['dataQuality'] ?? null) ? $payload['dataQuality'] : [];
+            if (($dataQuality['mode'] ?? '') === '') {
+                $warnings[] = 'Data Quality mode is missing.';
+            }
+            if (($dataQuality['layer'] ?? '') === '') {
+                $warnings[] = 'Data Quality layer is missing.';
+            }
+            if (empty($dataQuality['issueTypes'])) {
+                $warnings[] = 'At least one Data Quality issue class is required.';
+            }
+            if (empty($dataQuality['affectedSources']) && empty($dataQuality['affectedReports']) && empty($dataQuality['affectedKpis'])) {
+                $warnings[] = 'Affected source, KPI or report is not linked yet.';
+            }
+            if (empty($dataQuality['proposedRules'])) {
+                $warnings[] = 'Data Quality rules are not drafted yet.';
+            }
+        }
 
         $score = max(0, 100 - (count($warnings) * 18));
 
@@ -199,6 +232,7 @@ final class GovernanceSessionStore
         return [
             'generatedAt' => now()->toIso8601String(),
             'advisor' => is_array($payload['advisor'] ?? null) ? $payload['advisor'] : [],
+            'dataQuality' => is_array($payload['dataQuality'] ?? null) ? $payload['dataQuality'] : [],
             'recommendations' => is_array($payload['recommendations'] ?? null) ? $payload['recommendations'] : [],
             'validation' => $validation,
         ];

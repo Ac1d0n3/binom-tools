@@ -11,6 +11,8 @@ import { newRowId, purgeLegacyDraftKeys } from './storage.js';
  *   labelKey: string,
  *   type?: 'text' | 'select' | 'checkbox' | 'number' | 'textarea',
  *   options?: Array<{ value: string, labelKey: string }>,
+ *   placeholderKey?: string,
+ *   helpKey?: string,
  *   min?: number,
  *   max?: number,
  * }} ColumnDef
@@ -56,6 +58,7 @@ export function mountTableCanvas(options) {
     const btnCsv = /** @type {HTMLButtonElement|null} */ (root.querySelector('[data-copy-csv]'));
     const btnDlMd = /** @type {HTMLButtonElement|null} */ (root.querySelector('[data-download-md]'));
     const btnDlCsv = /** @type {HTMLButtonElement|null} */ (root.querySelector('[data-download-csv]'));
+    const btnPrint = /** @type {HTMLButtonElement|null} */ (root.querySelector('[data-print-report]'));
     const btnAdd = /** @type {HTMLButtonElement|null} */ (root.querySelector('[data-add-row]'));
     const btnClear = /** @type {HTMLButtonElement|null} */ (root.querySelector('[data-clear]'));
 
@@ -147,10 +150,15 @@ export function mountTableCanvas(options) {
      */
     function createInput(col, row) {
         const type = col.type || 'text';
+        const helpId = `discovery-help-${row.id}-${col.id}`;
         if (type === 'checkbox') {
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.className = 'discovery-check';
+            if (col.helpKey) {
+                input.title = t(col.helpKey);
+                input.setAttribute('aria-describedby', helpId);
+            }
             input.checked = Boolean(row[col.id]);
             input.addEventListener('change', () => {
                 row[col.id] = input.checked;
@@ -161,6 +169,10 @@ export function mountTableCanvas(options) {
         if (type === 'select') {
             const select = document.createElement('select');
             select.className = 'tools-input discovery-input';
+            if (col.helpKey) {
+                select.title = t(col.helpKey);
+                select.setAttribute('aria-describedby', helpId);
+            }
             for (const opt of col.options || []) {
                 const option = document.createElement('option');
                 option.value = opt.value;
@@ -179,6 +191,13 @@ export function mountTableCanvas(options) {
             const area = document.createElement('textarea');
             area.className = 'tools-input discovery-input discovery-input--area';
             area.rows = 2;
+            if (col.placeholderKey) {
+                area.placeholder = t(col.placeholderKey);
+            }
+            if (col.helpKey) {
+                area.title = t(col.helpKey);
+                area.setAttribute('aria-describedby', helpId);
+            }
             area.value = String(row[col.id] ?? '');
             area.addEventListener('input', () => {
                 row[col.id] = area.value;
@@ -189,6 +208,13 @@ export function mountTableCanvas(options) {
         const input = document.createElement('input');
         input.className = 'tools-input discovery-input';
         input.type = type === 'number' ? 'number' : 'text';
+        if (col.placeholderKey) {
+            input.placeholder = t(col.placeholderKey);
+        }
+        if (col.helpKey) {
+            input.title = t(col.helpKey);
+            input.setAttribute('aria-describedby', helpId);
+        }
         if (type === 'number') {
             if (col.min != null) input.min = String(col.min);
             if (col.max != null) input.max = String(col.max);
@@ -244,6 +270,13 @@ export function mountTableCanvas(options) {
                 for (const col of columns) {
                     const td = document.createElement('td');
                     td.appendChild(createInput(col, row));
+                    if (col.helpKey) {
+                        const help = document.createElement('small');
+                        help.id = `discovery-help-${row.id}-${col.id}`;
+                        help.className = 'discovery-field-help';
+                        help.textContent = t(col.helpKey);
+                        td.appendChild(help);
+                    }
                     tr.appendChild(td);
                 }
                 const tdAct = document.createElement('td');
@@ -317,6 +350,10 @@ export function mountTableCanvas(options) {
     wireCopy(btnCsv, csvExport);
     wireDownload(btnDlMd, markdownExport, `${baseName}.md`);
     wireDownload(btnDlCsv, csvExport, `${baseName}.csv`, 'text/csv;charset=utf-8');
+    btnPrint?.addEventListener('click', () => {
+        markTransferred();
+        window.print();
+    });
 
     bindPlanTransferUi({
         root,

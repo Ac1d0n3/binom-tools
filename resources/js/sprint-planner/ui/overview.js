@@ -642,6 +642,7 @@ function setupStartDialog(onStarted) {
             teamIds,
             participantIds: participants,
             ephemeral: ! wantSave,
+            demoProgress: mode === 'demo',
         });
         if (!result.ok) {
             showToast(storageErrorMessage(result.error));

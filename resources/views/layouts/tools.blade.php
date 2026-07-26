@@ -91,6 +91,7 @@
                 id="tools-main-content"
                 tabindex="-1"
             >
+                <x-tools.disclaimer-banner />
                 @yield('content')
             </main>
         </div>

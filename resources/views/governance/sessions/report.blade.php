@@ -1,11 +1,16 @@
 @extends('layouts.tools')
 
 @section('title', $session['title'] . ' - Governance Report')
-@section('meta_description', 'Printable Governance Discovery report with saved advisor inputs, recommendations and validation findings.')
+@section('meta_description', 'Governance Discovery report view with saved advisor inputs, recommendations and validation findings.')
 
 @section('content')
     @php
         $advisor = $report['advisor'] ?? [];
+        $dataQuality = $report['dataQuality'] ?? [];
+        $kpis = $report['kpis'] ?? [];
+        $sourceScope = $report['sourceScope'] ?? [];
+        $pii = $report['pii'] ?? [];
+        $decisionBrief = $report['decisionBrief'] ?? [];
         $recommendations = $report['recommendations'] ?? [];
         $validation = $report['validation'] ?? [];
         $warnings = is_array($validation['warnings'] ?? null) ? $validation['warnings'] : [];
@@ -13,7 +18,7 @@
     <div class="tools-content governance-report">
         <header class="governance-report__header">
             <div>
-                <p class="governance-hub__eyebrow" data-text-de="Druckbarer Report" data-text-en="Printable report">Printable report</p>
+                <p class="governance-hub__eyebrow" data-text-de="Report Ansicht" data-text-en="Report view">Report view</p>
                 <h1 class="tools-page-title">{{ $session['title'] }}</h1>
                 <p class="tools-page-lead" data-hub-lead>
                     {{ $session['companyName'] ?: 'Governance Discovery' }}
@@ -23,19 +28,26 @@
                 </p>
             </div>
             <div class="governance-report__actions">
-                <button type="button" class="governance-hub__button governance-hub__button--primary" onclick="window.print()">
+                @if (empty($isDemo))
+                    <button
+                        type="button"
+                        class="governance-hub__button governance-hub__button--primary"
+                        data-governance-create-plan
+                        data-session-id="{{ $session['id'] }}"
+                        data-create-plan-url="{{ url('/api/governance/sessions/'.$session['id'].'/create-plan') }}"
+                    >
+                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                        <span data-text-de="In Workflow übernehmen" data-text-en="Create workflow">Create workflow</span>
+                    </button>
+                @else
+                    <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.index') }}#governance-advisor">
+                        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                        <span data-text-de="Eigene Session starten" data-text-en="Start own session">Start own session</span>
+                    </a>
+                @endif
+                <button type="button" class="governance-hub__button" onclick="window.print()">
                     <i class="fa-solid fa-print" aria-hidden="true"></i>
-                    <span data-text-de="Drucken" data-text-en="Print">Print</span>
-                </button>
-                <button
-                    type="button"
-                    class="governance-hub__button"
-                    data-governance-create-plan
-                    data-session-id="{{ $session['id'] }}"
-                    data-create-plan-url="{{ url('/api/governance/sessions/'.$session['id'].'/create-plan') }}"
-                >
-                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    <span data-text-de="In Workflow uebernehmen" data-text-en="Create workflow">Create workflow</span>
+                    <span data-text-de="Drucken/PDF" data-text-en="Print/PDF">Print/PDF</span>
                 </button>
                 <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
                     <i class="fa-solid fa-table-list" aria-hidden="true"></i>
@@ -84,6 +96,97 @@
             </div>
         </section>
 
+        @if ($kpis !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="KPI-Karten" data-text-en="KPI cards">KPI cards</h2>
+                <div class="governance-report__recommendations">
+                    @foreach ($kpis as $kpi)
+                        <article>
+                            <strong>{{ $kpi['name'] ?? '-' }}</strong>
+                            <span>{{ $kpi['status'] ?? 'draft' }}</span>
+                            <em>
+                                {{ $kpi['formula'] ?? '-' }}
+                                @if (! empty($kpi['grain']))
+                                    · Grain: {{ $kpi['grain'] }}
+                                @endif
+                                @if (! empty($kpi['owner']))
+                                    · Owner: {{ $kpi['owner'] }}
+                                @endif
+                            </em>
+                        </article>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
+        @if ($sourceScope !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="Source Scope" data-text-en="Source scope">Source scope</h2>
+                <dl class="governance-report__facts">
+                    <div><dt>Supplier</dt><dd>{{ $sourceScope['supplier'] ?? '-' }}</dd></div>
+                    <div><dt>Must-have</dt><dd>{{ implode(', ', array_map('strval', $sourceScope['mustHave'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt>Optional</dt><dd>{{ implode(', ', array_map('strval', $sourceScope['optional'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt>Skip</dt><dd>{{ implode(', ', array_map('strval', $sourceScope['skip'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt>Owner</dt><dd>{{ implode(', ', array_map('strval', $sourceScope['owners'] ?? [])) ?: '-' }}</dd></div>
+                </dl>
+            </section>
+        @endif
+
+        @if ($pii !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="PII/DSDR" data-text-en="PII/DSDR">PII/DSDR</h2>
+                <dl class="governance-report__facts">
+                    <div><dt>Fields</dt><dd>{{ implode(', ', array_map('strval', $pii['fields'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt>DSDR keys</dt><dd>{{ implode(', ', array_map('strval', $pii['dsdrKeys'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt>Controls</dt><dd>{{ implode(', ', array_map('strval', $pii['controls'] ?? [])) ?: '-' }}</dd></div>
+                </dl>
+            </section>
+        @endif
+
+        @if (($advisor['goal'] ?? '') === 'dq' || $dataQuality !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="Data Quality" data-text-en="Data quality">Data quality</h2>
+                <dl class="governance-report__facts">
+                    <div><dt>Mode</dt><dd>{{ $dataQuality['mode'] ?? $advisor['dqMode'] ?? '-' }}</dd></div>
+                    <div><dt>Layer</dt><dd>{{ $dataQuality['layer'] ?? $advisor['dqLayer'] ?? '-' }}</dd></div>
+                    <div>
+                        <dt>Issue classes</dt>
+                        <dd>{{ implode(', ', array_map('strval', $dataQuality['issueTypes'] ?? $advisor['dqIssues'] ?? [])) ?: '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Decision status</dt>
+                        <dd>{{ $dataQuality['decisionStatus'] ?? 'draft' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Affected context</dt>
+                        <dd>
+                            {{ implode(', ', array_filter([
+                                implode(', ', array_map('strval', $dataQuality['affectedSources'] ?? [])),
+                                implode(', ', array_map('strval', $dataQuality['affectedKpis'] ?? [])),
+                                implode(', ', array_map('strval', $dataQuality['affectedReports'] ?? [])),
+                            ])) ?: '-' }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Proposed rules</dt>
+                        <dd>{{ implode(', ', array_map('strval', $dataQuality['proposedRules'] ?? [])) ?: '-' }}</dd>
+                    </div>
+                </dl>
+                <p data-text-de="DQ ist Teil der Governance-Entscheidung: Regeln, Monitoring und Gates müssen mit Source, KPI, Mart und PII zusammen bewertet werden." data-text-en="DQ is part of the governance decision: rules, monitoring, and gates must be assessed together with source, KPI, mart, and PII.">DQ is part of the governance decision: rules, monitoring, and gates must be assessed together with source, KPI, mart, and PII.</p>
+            </section>
+        @endif
+
+        @if ($decisionBrief !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="Decision Brief" data-text-en="Decision brief">Decision brief</h2>
+                <dl class="governance-report__facts">
+                    <div><dt>Recommendation</dt><dd>{{ $decisionBrief['recommendation'] ?? '-' }}</dd></div>
+                    <div><dt>Open questions</dt><dd>{{ implode(', ', array_map('strval', $decisionBrief['openQuestions'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt>Next sprint</dt><dd>{{ implode(', ', array_map('strval', $decisionBrief['nextSprint'] ?? [])) ?: '-' }}</dd></div>
+                </dl>
+            </section>
+        @endif
+
         <section class="governance-report__section">
             <h2 data-text-de="Validierung" data-text-en="Validation">Validation</h2>
             @if ($warnings === [])
@@ -98,11 +201,11 @@
         </section>
 
         <section class="governance-report__section">
-            <h2 data-text-de="Naechste Workflow-Schritte" data-text-en="Next workflow steps">Next workflow steps</h2>
+            <h2 data-text-de="Nächste Workflow-Schritte" data-text-en="Next workflow steps">Next workflow steps</h2>
             <ol>
-                <li data-text-de="Eingaben und Empfehlungen fachlich pruefen." data-text-en="Review inputs and recommendations with stakeholders.">Review inputs and recommendations with stakeholders.</li>
-                <li data-text-de="Source Scope, KPI/Mart und PII/DSDR-Luecken schliessen." data-text-en="Close source scope, KPI/mart and PII/DSDR gaps.">Close source scope, KPI/mart and PII/DSDR gaps.</li>
-                <li data-text-de="Decision Brief finalisieren und Change Requests fuer spaetere Aenderungen nutzen." data-text-en="Finalize the decision brief and use change requests for later changes.">Finalize the decision brief and use change requests for later changes.</li>
+                <li data-text-de="Eingaben und Empfehlungen fachlich prüfen." data-text-en="Review inputs and recommendations with stakeholders.">Review inputs and recommendations with stakeholders.</li>
+                <li data-text-de="Source Scope, KPI/Mart und PII/DSDR-Lücken schließen." data-text-en="Close source scope, KPI/mart and PII/DSDR gaps.">Close source scope, KPI/mart and PII/DSDR gaps.</li>
+                <li data-text-de="Decision Brief finalisieren und Change Requests für spätere Änderungen nutzen." data-text-en="Finalize the decision brief and use change requests for later changes.">Finalize the decision brief and use change requests for later changes.</li>
             </ol>
         </section>
     </div>

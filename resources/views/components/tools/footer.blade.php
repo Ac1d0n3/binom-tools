@@ -37,6 +37,14 @@
             <span class="tools-site-bar__sep" aria-hidden="true">·</span>
             <a
                 class="tools-site-bar__link"
+                href="{{ locale_route('legal.disclaimer') }}"
+                data-i18n="footer.disclaimer"
+            >
+                Disclaimer
+            </a>
+            <span class="tools-site-bar__sep" aria-hidden="true">·</span>
+            <a
+                class="tools-site-bar__link"
                 href="{{ $links['website'] ?? 'https://binom.net' }}"
                 target="_blank"
                 rel="noopener noreferrer"

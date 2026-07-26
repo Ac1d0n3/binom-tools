@@ -15,6 +15,7 @@ use App\Http\Controllers\Accounts\UsersController;
 use App\Http\Controllers\Calendar\CalendarApiController;
 use App\Http\Controllers\Calendar\CalendarController;
 use App\Http\Controllers\Legal\ImpressumController;
+use App\Http\Controllers\Legal\DisclaimerController;
 use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\Playbooks\PlaybookController;
 use App\Http\Controllers\Playbooks\PlaybookOfflineController;
@@ -62,6 +63,7 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/governance', [GovernanceHubController::class, 'index'])->name($name('governance.index'));
+    Route::get('/governance/demo-report', [GovernanceSessionController::class, 'demoReport'])->name($name('governance.sessions.demo-report'));
     Route::get('/resources', [VendorResourcesController::class, 'index'])->name($name('resources.index'));
     Route::get('/suppliers', [SupplierLibraryController::class, 'index'])->name($name('suppliers.index'));
     Route::get('/suppliers/{slug}', [SupplierLibraryController::class, 'show'])
@@ -244,6 +246,7 @@ $registerRoutes = static function (bool $localized): void {
         ->name($name('sprint-planner.show'));
     Route::get('/about', [AboutController::class, 'show'])->name($name('about.show'));
     Route::get('/impressum', [ImpressumController::class, 'show'])->name($name('legal.impressum'));
+    Route::get('/disclaimer', [DisclaimerController::class, 'show'])->name($name('legal.disclaimer'));
     Route::get('/datenschutz', [PrivacyController::class, 'show'])->name($name('legal.privacy'));
     Route::get('/tools/dbt-governance-macro-generator', [DbtGovernanceMacroGeneratorController::class, 'show'])
         ->name($name('tools.dbt-governance-macro-generator'));

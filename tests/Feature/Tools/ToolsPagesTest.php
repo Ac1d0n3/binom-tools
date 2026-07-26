@@ -58,6 +58,10 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-release-meta', false);
         $response->assertSee('v0.1.0', false);
         $response->assertSee('data-i18n="footer.about"', false);
+        $response->assertSee('data-i18n="footer.disclaimer"', false);
+        $response->assertSee('data-disclaimer-banner', false);
+        $response->assertSee('data-disclaimer-dismiss', false);
+        $response->assertSee('/disclaimer', false);
     }
 
     public function test_tools_overview_lists_workflow_examples_with_search(): void
@@ -441,7 +445,10 @@ class ToolsPagesTest extends TestCase
 
         $this->get('/tools/kpi-definition')
             ->assertOk()
-            ->assertSee('kpi-definition-app', false);
+            ->assertSee('kpi-definition-app', false)
+            ->assertSee('data-discovery-extra', false)
+            ->assertSee('data-print-report', false)
+            ->assertSee('kpi-definition', false);
 
         $this->get('/tools/architecture-fit')
             ->assertOk()

@@ -7,6 +7,7 @@ import { initSidenavAccordions } from './sidenav-accordion';
 import { initThemeControls } from './theme';
 import { initExternalLinks } from './external-links';
 import { initCookieConsent } from './cookie-consent';
+import { initDisclaimerBanner } from './disclaimer-banner';
 import { initPlaybookCardActions } from './playbooks/card-actions';
 import { initSupplierLibraryCopy, initSupplierLibraryTabs } from './suppliers-copy';
 
@@ -28,6 +29,7 @@ initPlaybookLocale();
 initOverviewFilters();
 initExternalLinks();
 initCookieConsent();
+initDisclaimerBanner();
 initPlaybookCardActions();
 initSupplierLibraryCopy();
 initSupplierLibraryTabs();

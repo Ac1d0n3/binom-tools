@@ -4,18 +4,18 @@ Stand: 2026-07-26
 
 Ziel: neue Tools sollen nicht einfach weitere Generatoren sein, sondern die vorhandenen Bereiche verbinden: Resources sagen "welche Plattform", Suppliers sagen "welche Quelle", Discovery-Tools sammeln Anforderungen, Generatoren erzeugen Umsetzungshilfen.
 
-Alle neuen Hubs und Tools muessen SEO-ready geplant werden: oeffentliche Landingpages sind indexierbar, individuelle Nutzer-Eingaben oder exportierte Arbeitsstaende bleiben nicht indexierbar.
+Alle neuen Hubs und Tools müssen SEO-ready geplant werden: öffentliche Landingpages sind indexierbar, individuelle Nutzer-Eingaben oder exportierte Arbeitsstände bleiben nicht indexierbar.
 
 ## Bestehende Staerken
 
 Schon vorhanden:
 
-- Vendor Resources fuer Stacks, Help, Governance, Learning, Certifications und Compliance.
-- Supplier Library fuer Quellsysteme, Kernobjekte, Felder, PII/DSDR, Skip-Hinweise und Standard-KPIs.
+- Vendor Resources für Stacks, Help, Governance, Learning, Certifications und Compliance.
+- Supplier Library für Quellsysteme, Kernobjekte, Felder, PII/DSDR, Skip-Hinweise und Standard-KPIs.
 - Discovery & Assessment Workflow mit Stakeholder Matrix, Report Inventory, KPI Definition, BI Python Toolkit, Architecture Fit und Impact-Effort.
-- Governance Generatoren fuer dbt, PII, DQ, Fabric, Databricks, PureView und AI Sanitizer.
+- Governance Generatoren für dbt, PII, DQ, Fabric, Databricks, PureView und AI Sanitizer.
 
-Der groesste Hebel ist deshalb ein verbindender Workflow, der aus Workshop-Informationen eine Entscheidung und danach ein Tabellen-/Mart-Design vorbereitet.
+Der größte Hebel ist deshalb ein verbindender Workflow, der aus Workshop-Informationen eine Entscheidung und danach ein Tabellen-/Mart-Design vorbereitet.
 
 ## Neuer Workflow: Collect Infos Workflow
 
@@ -23,7 +23,7 @@ Arbeitsname: Governance Discovery Canvas
 
 Zweck:
 
-Ein gefuehrter Ablauf, der die Informationen einsammelt, die man fuer eine Stack-, Source-, KPI- und Tabellenmodell-Entscheidung braucht.
+Ein geführter Ablauf, der die Informationen einsammelt, die man für eine Stack-, Source-, KPI- und Tabellenmodell-Entscheidung braucht.
 
 Schritte:
 
@@ -42,14 +42,14 @@ Schritte:
    - Output: KPI Cards.
 
 4. Quellen zuordnen
-   - Supplier/Product, relevante Entitaeten, System Owner, Zugriff, Datenfrequenz.
+   - Supplier/Product, relevante Entitäten, System Owner, Zugriff, Datenfrequenz.
    - Output: Source Scope.
 
 5. Risiko erfassen
    - PII, besondere Kategorien, Freitext, Anhange, Workforce Data, DSDR-Suchkeys, Retention.
    - Output: PII/DSDR Review Sheet.
 
-6. Datenqualitaet definieren
+6. Datenqualität definieren
    - Pflichtfelder, Business Keys, Freshness, Referenzen, erlaubte Werte, Duplikate.
    - Output: DQ Rule Backlog.
 
@@ -61,21 +61,47 @@ Schritte:
    - Impact, Effort, Risiken, offene Fragen, Pilot-Kandidat.
    - Output: Decision Brief.
 
-Naechste Umsetzung:
+Nächste Umsetzung:
 
 - Als erstes als Tool-Hub mit Stepper bauen, der bestehende Tools verlinkt.
-- Danach gemeinsame Exportstruktur einfuehren: `governance-discovery.md`, `kpi-cards.csv`, `source-scope.csv`, `dq-backlog.csv`.
-- Spaeter optional Speicherung im Account/Sprint-Planner.
+- Danach gemeinsame Exportstruktur einführen: `governance-discovery.md`, `kpi-cards.csv`, `source-scope.csv`, `dq-backlog.csv`.
+- Später optional Speicherung im Account/Sprint-Planner.
+
+Aktualisierte Produktlogik:
+
+- Der Governance Hub ist der neutrale Workspace und verbindet Hubs, Resources, Suppliers, Advisor, Sessions und Reports.
+- Jedes Governance Tool muss standalone nutzbar sein, aber dieselbe Session-Struktur lesen und schreiben können.
+- Wenn ein Tool aus einem Plan geöffnet wird, zeigt es "Im Plan speichern" und "Zurück zum Plan". Gespeichert wird strukturiert plus kurze Notiz; der Nutzer entscheidet, ob die Plan-Aufgabe erledigt ist.
+- Wenn ein Tool aus einem Generator oder aus der Governance Session geöffnet wird, zeigt es "Im Generator speichern" oder "In Session speichern" und führt zurück in den jeweiligen Kontext.
+- Ergebnisse dürfen nicht nur Links sein: jedes Tool braucht Eingaben, Ergebnisansicht, Validierung, Report-Baustein und eine Save-Aktion.
+- Change Requests sind für spätere Änderungen approval-pflichtig; das ist per `GOVERNANCE_CHANGE_APPROVAL_REQUIRED=false` für lokale Demo-Setups abschaltbar.
+
+Dual-Store-Anforderung:
+
+- Runtime-Speicherung bleibt über Store-Klassen gekapselt, nicht direkt in Views oder JavaScript.
+- File Store und MySQL Store nutzen dieselbe normalisierte Session-Payload.
+- Governance Sessions werden unter `governance-sessions/*.json` abgelegt, wenn File Store aktiv ist.
+- MySQL nutzt `bn_governance_sessions` mit `payload`, `validation_summary` und `report_snapshot` als JSON-Spalten.
+- `bn-tools:storage-import` importiert bestehende File-Sessions in den DB Store.
+- Deploy-/Seed-Snapshots müssen Governance Sessions mitnehmen, damit File- und DB-Umstellung nachvollziehbar bleibt.
+
+Data Quality Integration:
+
+- Data Quality ist kein isolierter zweiter Berater, sondern ein Entscheidungspfad im Governance Advisor.
+- Der DQ-Pfad sammelt Ziel, Schicht, Fehlerklassen, betroffene Quellen/KPIs/Reports und vorgeschlagene Regeln.
+- DQ-Ergebnisse werden im Report sichtbar und in den Sprint Planner als eigener Sprint "Datenqualität und Modell" übernommen.
+- Passende bestehende Generatoren: dbt DQ Rules, dbt DQ Macro, dbt DQ History, schema.yml Editor und Mart Design Brief.
+- Spätere Tool-Editoren sollen DQ-Regeln gegen Source Scope, KPI Grain und PII/Access Angaben validieren.
 
 SEO-Anforderung:
 
-- Die Landingpage erklaert ohne Login, welches Problem der Workflow loest.
+- Die Landingpage erklärt ohne Login, welches Problem der Workflow löst.
 - Die acht Schritte sind als crawlbarer HTML-Inhalt vorhanden.
 - Jeder Schritt verlinkt auf vorhandene Tools und relevante Playbooks.
 - Beispiel-Outputs als statische Demo anzeigen, damit Suchmaschinen den Nutzen verstehen.
-- Nutzer-Arbeitsstaende, lokale Storage-Daten und Export-URLs nicht indexieren.
+- Nutzer-Arbeitsstände, lokale Storage-Daten und Export-URLs nicht indexieren.
 
-## SEO-Standard fuer jedes neue Tool
+## SEO-Standard für jedes neue Tool
 
 Jedes Tool bekommt neben der eigentlichen Interaktion eine kleine, hochwertige Such-Landingpage-Struktur:
 
@@ -87,16 +113,16 @@ Jedes Tool bekommt neben der eigentlichen Interaktion eine kleine, hochwertige S
 - "Wann nutzen?" Abschnitt
 - "Welche Inputs brauche ich?" Abschnitt
 - "Was kommt heraus?" Abschnitt
-- "Naechste Tools" interne Links
+- "Nächste Tools" interne Links
 - "Passende Resources/Suppliers/Playbooks" interne Links
 - FAQ mit echten Fragen, falls sinnvoll
-- strukturierte Daten fuer Breadcrumbs und optional WebApplication/FAQ
+- strukturierte Daten für Breadcrumbs und optional WebApplication/FAQ
 - keine Indexierung von temporaeren Ergebniszustaenden
 
 Naming-Regel:
 
-- Tool-Namen duerfen fachlich sein, aber SEO-Titel brauchen die Suchintention.
-- Beispiel: "KPI Requirements Intake Form" intern, SEO-Title "KPI Anforderungen sammeln - Vorlage fuer Grain, Owner, Formel und Datenquelle".
+- Tool-Namen dürfen fachlich sein, aber SEO-Titel brauchen die Suchintention.
+- Beispiel: "KPI Requirements Intake Form" intern, SEO-Title "KPI Anforderungen sammeln - Vorlage für Grain, Owner, Formel und Datenquelle".
 
 Interne Link-Regel:
 
@@ -104,7 +130,7 @@ Interne Link-Regel:
 - Jedes Supplier-nahe Tool linkt zur passenden Supplier Library.
 - Jedes Vendor-nahe Tool linkt zu Resources.
 - Jedes technische Generator-Tool linkt zu mindestens einem Playbook.
-- Jede Tool-Seite bietet einen klaren naechsten Schritt statt Sackgasse.
+- Jede Tool-Seite bietet einen klaren nächsten Schritt statt Sackgasse.
 
 ## Tool-Idee 1: KPI Requirements Intake Form
 
@@ -119,22 +145,22 @@ KPIs werden oft als Name oder Dashboard-Wunsch geliefert, aber ohne Grain, Zeitb
 Eingaben:
 
 - KPI Name
-- Geschaeftsfrage
+- Geschäftsfrage
 - Entscheidung, die mit dem KPI getroffen wird
 - Formel in Worten
 - Beispielrechnung
 - Grain: pro Kunde, Auftrag, Ticket, Mitarbeiter, Tag, Monat usw.
-- Zeitlogik: Buchungsdatum, Ereignisdatum, Closing Date, Gueltigkeit
+- Zeitlogik: Buchungsdatum, Ereignisdatum, Closing Date, Gültigkeit
 - Dimensionen
-- Filter und Ausschluesse
+- Filter und Ausschlüsse
 - Quelle/Supplier
 - Owner und Approver
-- Kritikalitaet
+- Kritikalität
 
 Ausgaben:
 
 - KPI Definition Card
-- offene Fragen fuer Workshop
+- offene Fragen für Workshop
 - empfohlene Fact/Dimension Kandidaten
 - DQ-Regeln aus der KPI-Logik
 - Link zu Power BI DAX, Tableau Calculation oder Qlik Set Analysis Generator
@@ -146,7 +172,7 @@ SEO:
 - Indexierbare Demo: eine Beispiel-KPI-Karte mit Umsatz, Ticket SLA oder Headcount.
 - FAQ: Was ist ein KPI Grain? Wer ist KPI Owner? Welche Felder braucht eine KPI Definition?
 
-Prioritaet: sehr hoch.
+Priorität: sehr hoch.
 
 ## Tool-Idee 2: Source Scope Builder
 
@@ -162,8 +188,8 @@ Eingaben:
 
 - Supplier/Product aus der Supplier Library
 - Ziel-KPIs
-- gewuenschte Dimensionen
-- gewuenschte Historisierung
+- gewünschte Dimensionen
+- gewünschte Historisierung
 - geplante Refresh-Frequenz
 - Risiko-Level
 
@@ -171,18 +197,18 @@ Ausgaben:
 
 - Load Scope: must-have, optional, skip
 - PII/DSDR Watchlist
-- erste Tabellenliste fuer RAW/Bronze
+- erste Tabellenliste für RAW/Bronze
 - Curated Modell-Kandidaten
 - "Nicht laden ohne Freigabe" Liste
 
 SEO:
 
-- Hauptkeyword: SaaS Datenquelle fuer Analytics vorbereiten.
+- Hauptkeyword: SaaS Datenquelle für Analytics vorbereiten.
 - Nebenkeywords: Salesforce Tabellen laden, Supplier Discovery, Source Scope, PII Felder erkennen.
 - Indexierbare Demo: Salesforce oder HubSpot Source Scope mit Must-have/Skip/PII.
 - Interne Links: Supplier Detailseite, PII/DSDR Checker, Mart Design Brief.
 
-Prioritaet: sehr hoch, weil es Suppliers direkt nuetzlich macht.
+Priorität: sehr hoch, weil es Suppliers direkt nützlich macht.
 
 ## Tool-Idee 3: Mart Design Brief Generator
 
@@ -192,7 +218,7 @@ Analytics Engineer, Data Modeler, BI Engineer.
 
 Problem:
 
-Zwischen KPI-Karte und Tabellenmodell fehlt eine kleine Bruecke: Fact, Dimension, Grain, Historie, Semantik.
+Zwischen KPI-Karte und Tabellenmodell fehlt eine kleine Brücke: Fact, Dimension, Grain, Historie, Semantik.
 
 Eingaben:
 
@@ -221,7 +247,7 @@ SEO:
 - Indexierbare Demo: KPI zu Fact/Dimension Mapping.
 - Interne Links: KPI Intake, Source Scope, dbt schema.yml, DQ Rules.
 
-Prioritaet: hoch.
+Priorität: hoch.
 
 ## Tool-Idee 4: Governance Stack Advisor
 
@@ -235,10 +261,10 @@ Vendor Resources enthalten viele gute Links, aber ein Suchender braucht erst ein
 
 Eingaben:
 
-- Cloud Praeferenz
+- Cloud Präferenz
 - SaaS vs Open Source
 - Datenresidenz
-- BI Praeferenz
+- BI Präferenz
 - Governance-Reife
 - Security/Compliance Druck
 - Team-Skills
@@ -258,7 +284,7 @@ SEO:
 - Indexierbare Demo: Stack-Vergleich mit 3 typischen Ausgangslagen.
 - Wichtig: Ergebnisfilter nicht als unendliche URL-Varianten indexieren.
 
-Prioritaet: hoch fuer SEO und Positionierung.
+Priorität: hoch für SEO und Positionierung.
 
 ## Tool-Idee 5: PII/DSDR Readiness Checker
 
@@ -276,14 +302,14 @@ Eingaben:
 - Personenarten: Kunde, Mitarbeiter, Lieferant, Patient, Student
 - Identifier: Email, Phone, Account Id, Employee Id, External Id
 - Datenkopien: RAW, Curated, Mart, BI Extract, Activation
-- Freitext/Anhaenge
-- Retention/Loeschlogik
+- Freitext/Anhänge
+- Retention/Löschlogik
 
 Ausgaben:
 
 - DSDR Suchpfad
 - PII Risiko-Heatmap
-- Tabellen, die nicht ungeprueft geladen werden sollten
+- Tabellen, die nicht ungeprüft geladen werden sollten
 - Review-Aufgaben
 - Weiterleitung zu PII Policy, PII Recommend und AI Sanitizer
 
@@ -294,7 +320,7 @@ SEO:
 - Indexierbare Demo: CRM/HR/Collaboration PII Watchlist.
 - Disclaimer: keine Rechtsberatung, fachliche Daten-Governance-Vorbereitung.
 
-Prioritaet: hoch.
+Priorität: hoch.
 
 ## Tool-Idee 6: Vendor Learning Path Builder
 
@@ -304,7 +330,7 @@ Einsteiger, Consultants, Teams.
 
 Problem:
 
-Zertifikate und Learning Links sind vorhanden, aber nicht in Lernpfade uebersetzt.
+Zertifikate und Learning Links sind vorhanden, aber nicht in Lernpfade übersetzt.
 
 Eingaben:
 
@@ -317,16 +343,16 @@ Ausgaben:
 - 30-Tage Lernpfad
 - offizielle Help/Learning/Certification Links
 - Binom Playbooks
-- praktische Uebungen mit vorhandenen Tools
+- praktische Übungen mit vorhandenen Tools
 
 SEO:
 
 - Hauptkeyword: Data Governance Zertifikate.
 - Nebenkeywords: Fabric Zertifizierung, Databricks Zertifizierung, Snowflake SnowPro, dbt Certification, Data Governance Consultant Lernpfad.
-- Jede Zertifikatsliste braucht "zuletzt geprueft" Datum.
-- Nur offizielle Zertifizierungsseiten als Primaerlinks.
+- Jede Zertifikatsliste braucht "zuletzt geprüft" Datum.
+- Nur offizielle Zertifizierungsseiten als Primärlinks.
 
-Prioritaet: mittel bis hoch, stark fuer SEO.
+Priorität: mittel bis hoch, stark für SEO.
 
 ## Tool-Idee 7: Supplier KPI Pack Generator
 
@@ -336,20 +362,20 @@ BI Consultant, Fachbereich, Analytics Engineer.
 
 Problem:
 
-Supplier Library hat Standard-KPIs, aber ein Nutzer will ein konkretes Paket fuer sein System.
+Supplier Library hat Standard-KPIs, aber ein Nutzer will ein konkretes Paket für sein System.
 
 Eingaben:
 
 - Supplier/Product
 - Domain
 - Zielrolle
-- Top-KPIs auswaehlen
+- Top-KPIs auswählen
 - BI Tool: Power BI, Tableau, Qlik
 
 Ausgaben:
 
 - KPI Pack Markdown
-- CSV fuer KPI Inventory
+- CSV für KPI Inventory
 - BI-spezifische Generator-Weiterleitung
 - Source Fields und Dimensionen
 - offene Definitionen
@@ -360,7 +386,7 @@ SEO:
 - Nebenkeywords je Supplier, z.B. Salesforce KPI Vorlage, HubSpot KPI Definition, Workday KPI Datenmodell.
 - Indexierbare Supplier-Beispiele priorisieren, nicht alle Kombinationen automatisch indexieren.
 
-Prioritaet: mittel.
+Priorität: mittel.
 
 ## Tool-Idee 8: Governance Evidence Pack
 
@@ -378,7 +404,7 @@ Eingaben:
 - Owner
 - Evidence Type
 - Quelle/System
-- Aktualitaetsintervall
+- Aktualitätsintervall
 - Status
 
 Ausgaben:
@@ -394,7 +420,7 @@ SEO:
 - Nebenkeywords: Audit Nachweise Data Governance, Compliance Evidence, Access Review Nachweis.
 - Gut als Compliance-Hub-Erweiterung, weniger als erster SEO-Hebel.
 
-Prioritaet: mittel, spaeter stark fuer Compliance-Hub.
+Priorität: mittel, später stark für Compliance-Hub.
 
 ## Tool-Idee 9: Supplier Quality Rule Builder
 
@@ -404,12 +430,12 @@ Data Quality Lead, Engineer.
 
 Problem:
 
-Supplier-spezifische Quality-Hinweise koennten direkt in DQ-Regeln uebersetzt werden.
+Supplier-spezifische Quality-Hinweise könnten direkt in DQ-Regeln übersetzt werden.
 
 Eingaben:
 
 - Supplier/Product
-- Entitaet
+- Entität
 - Quality-Probleme aus Catalog/Quality Overlay
 - Plattform: dbt, Fabric, Databricks
 
@@ -418,7 +444,7 @@ Ausgaben:
 - DQ Rule Backlog
 - dbt meta.dq_rules
 - Fabric/Databricks Pattern Links
-- Test-Prioritaet
+- Test-Priorität
 
 SEO:
 
@@ -426,7 +452,7 @@ SEO:
 - Nebenkeywords: dbt DQ Rules, Fabric DQ Checks, Databricks Expectations, Pflichtfelder Business Keys Freshness.
 - Indexierbare Demo mit 5 Regeltypen.
 
-Prioritaet: mittel.
+Priorität: mittel.
 
 ## Tool-Idee 10: Decision Brief Generator
 
@@ -452,7 +478,7 @@ Ausgaben:
 - 1-Seiten Decision Brief
 - Pilot-Vorschlag
 - offene Entscheidungen
-- Scope fuer ersten Sprint
+- Scope für ersten Sprint
 - Link zum Sprint Planner
 
 SEO:
@@ -461,7 +487,7 @@ SEO:
 - Nebenkeywords: Decision Brief Data Platform, Governance Pilot Scope, Data Project Entscheidungsvorlage.
 - Indexierbare Demo eines anonymen Decision Briefs.
 
-Prioritaet: hoch als Abschluss des Collect Infos Workflows.
+Priorität: hoch als Abschluss des Collect Infos Workflows.
 
 ## Empfohlene Reihenfolge
 
@@ -477,7 +503,7 @@ Prioritaet: hoch als Abschluss des Collect Infos Workflows.
 10. Supplier Quality Rule Builder.
 11. Governance Evidence Pack.
 
-## Gemeinsames Datenmodell fuer spaeter
+## Gemeinsames Datenmodell für später
 
 Damit die Tools gut zusammenspielen, sollten sie mittelfristig dieselben Felder verstehen:
 
@@ -495,23 +521,23 @@ Damit die Tools gut zusammenspielen, sollten sie mittelfristig dieselben Felder 
 
 Exportformate:
 
-- Markdown fuer Workshop-Dokumente.
-- CSV fuer Listen und Excel/Sheets.
-- JSON fuer Tool-zu-Tool Uebergabe.
-- Optional Sprint-Planner Transfer fuer Umsetzung.
+- Markdown für Workshop-Dokumente.
+- CSV für Listen und Excel/Sheets.
+- JSON für Tool-zu-Tool Übergabe.
+- Optional Sprint-Planner Transfer für Umsetzung.
 
 ## SEO Umsetzung als eigenes Arbeitspaket
 
 Vor der Umsetzung einzelner Tools sollte ein gemeinsames SEO-Fundament entstehen:
 
-1. Meta-Helper fuer Title, Description, Canonical und Open Graph.
-2. Sitemap-Generator fuer statische Seiten, Playbooks, Suppliers, Resources und Tools.
+1. Meta-Helper für Title, Description, Canonical und Open Graph.
+2. Sitemap-Generator für statische Seiten, Playbooks, Suppliers, Resources und Tools.
 3. robots.txt mit Sitemap-Direktive.
 4. Breadcrumb-Komponente plus strukturierte Daten.
-5. Author/Person-Signal fuer Thomas Lindackers auf Playbooks und Governance-Hubs.
-6. FAQ-Komponente fuer echte Frage-Antwort-Bloecke.
-7. `noindex`-Strategie fuer Login, Account, API, Filter- und Ergebniszustaende.
-8. SEO-Testliste fuer jede neue Seite.
+5. Author/Person-Signal für Thomas Lindackers auf Playbooks und Governance-Hubs.
+6. FAQ-Komponente für echte Frage-Antwort-Blöcke.
+7. `noindex`-Strategie für Login, Account, API, Filter- und Ergebniszustaende.
+8. SEO-Testliste für jede neue Seite.
 
 SEO-Testliste:
 
@@ -520,7 +546,7 @@ SEO-Testliste:
 - Ist die Meta Description handgeschrieben?
 - Ist die Canonical URL korrekt?
 - Ist die Seite ohne Login und ohne JS-Grundfunktion crawlbar?
-- Gibt es interne Links zu naechsten Schritten?
+- Gibt es interne Links zu nächsten Schritten?
 - Ist die Seite in der Sitemap, falls indexierbar?
 - Ist die Seite aus der Sitemap ausgeschlossen, falls nicht indexierbar?
 - Gibt es sichtbaren Autor/Stand bei fachlichen Inhalten?
@@ -532,7 +558,7 @@ SEO-Testliste:
 - Account-pflichtige Formulare.
 - Vollautomatische Modellierung ohne Review.
 - Rechtsverbindliche Zertifikats- oder Compliance-Aussagen.
-- Zu viele Einzelseiten ohne gefuehrten Pfad.
+- Zu viele Einzelseiten ohne geführten Pfad.
 - Automatisch tausende Kombinationsseiten erzeugen, die wie Duplicate Content wirken.
 - Indexierbare Ergebnis-URLs mit privaten oder zufaelligen Eingaben.
 

@@ -1,9 +1,10 @@
 const texts = {
     de: {
         summary: {
-            new: 'Neuaufbau: zuerst Zielbild, Quellen-Scope und Governance Gates klaeren.',
-            extend: 'Bestehende Umgebung: erst Fit, Impact und neue Quelle pruefen.',
+            new: 'Neuaufbau: zuerst Zielbild, Quellen-Scope und Governance Gates klären.',
+            extend: 'Bestehende Umgebung: erst Fit, Impact und neue Quelle prüfen.',
             help: 'Orientierung: Stories, Ressourcen und Lernpfade passend zur Lage starten.',
+            dq: 'Data Quality: Problem, Schicht und Fehlerklasse klären, dann Regeln und Gates ableiten.',
         },
         groups: {
             tools: 'Empfohlene Tools',
@@ -11,17 +12,35 @@ const texts = {
             resources: 'Wissen, Stories & Nachweise',
         },
         priority: 'Warum passend',
-        open: 'Oeffnen',
+        open: 'Öffnen',
         saved: 'Session dauerhaft gespeichert.',
         demoSaved: 'Demo-Session in dieser Browser-Sitzung gespeichert.',
+        demoReportReady: 'Demo-Session gespeichert. Report ansehen.',
         loginNeeded: 'Bitte einloggen, um diese Session dauerhaft zu speichern.',
         saveFailed: 'Session konnte nicht gespeichert werden.',
+        viewReport: 'Report ansehen',
+        followup: {
+            new: 'Welche Zielplattform und welche Quellfamilie müssen für den Start entschieden werden?',
+            extend: 'Welcher Stack ist bereits gesetzt, und welche neue Quelle oder Lücke soll ergänzt werden?',
+            help: 'Wo existiert schon Material, und in welchem Stack sollen Stories, Links oder Vorlagen helfen?',
+        },
+        domainLabel: {
+            new: 'Welche Quellfamilie soll zuerst angebunden werden?',
+            extend: 'Welche Quelle oder Domäne kommt dazu?',
+            help: 'Zu welcher Domäne brauchst du Orientierung?',
+        },
+        platformLabel: {
+            new: 'Welcher Ziel-Stack ist geplant?',
+            extend: 'Welcher Stack wird aktuell genutzt?',
+            help: 'In welchem Stack suchst du Hilfe?',
+        },
     },
     en: {
         summary: {
             new: 'New build: clarify target architecture, source scope, and governance gates first.',
             extend: 'Existing environment: check fit, impact, and the new source first.',
             help: 'Orientation: start with stories, resources, and learning paths that match the situation.',
+            dq: 'Data quality: clarify problem, layer, and issue class, then derive rules and gates.',
         },
         groups: {
             tools: 'Recommended tools',
@@ -32,8 +51,25 @@ const texts = {
         open: 'Open',
         saved: 'Session saved permanently.',
         demoSaved: 'Demo session saved in this browser session.',
+        demoReportReady: 'Demo session saved. View report.',
         loginNeeded: 'Please sign in to save this session permanently.',
         saveFailed: 'Session could not be saved.',
+        viewReport: 'View report',
+        followup: {
+            new: 'Which target platform and source family need to be decided for the start?',
+            extend: 'Which stack is already in use, and which new source or gap is being added?',
+            help: 'Where does material already exist, and which stack needs stories, links, or templates?',
+        },
+        domainLabel: {
+            new: 'Which source family should be onboarded first?',
+            extend: 'Which source or domain is being added?',
+            help: 'Which domain do you need orientation for?',
+        },
+        platformLabel: {
+            new: 'Which target stack is planned?',
+            extend: 'Which stack is currently used?',
+            help: 'Which stack do you need help with?',
+        },
     },
 };
 
@@ -53,7 +89,7 @@ const labels = {
         icon: 'fa-database',
         title: { de: 'Source Scope Builder', en: 'Source Scope Builder' },
         reason: {
-            de: 'Sammelt Objekte, Must-have, Skip, PII, Owner und offene Review-Fragen fuer die erste Ladeentscheidung.',
+            de: 'Sammelt Objekte, Must-have, Skip, PII, Owner und offene Review-Fragen für die erste Ladeentscheidung.',
             en: 'Collects objects, must-haves, skips, PII, owners, and open review questions for the first load decision.',
         },
         tags: ['supplier', 'new', 'extend', 'crm', 'erp', 'hcm', 'collab', 'finance'],
@@ -63,7 +99,7 @@ const labels = {
         icon: 'fa-gauge-high',
         title: { de: 'KPI Requirements Intake', en: 'KPI Requirements Intake' },
         reason: {
-            de: 'Macht aus Stakeholder-Wuenschen Formel, Grain, Owner, Dimensionen und Akzeptanzbeispiele.',
+            de: 'Macht aus Stakeholder-Wünschen Formel, Grain, Owner, Dimensionen und Akzeptanzbeispiele.',
             en: 'Turns stakeholder needs into formula, grain, owner, dimensions, and acceptance examples.',
         },
         tags: ['kpi', 'new', 'help', 'finance'],
@@ -73,17 +109,17 @@ const labels = {
         icon: 'fa-table-cells',
         title: { de: 'Mart Design Brief', en: 'Mart Design Brief' },
         reason: {
-            de: 'Fuehrt von KPI-Karten zu Fact-/Dimension-Kandidaten, Grain und offenen Modellierungsentscheidungen.',
+            de: 'Führt von KPI-Karten zu Fact-/Dimension-Kandidaten, Grain und offenen Modellierungsentscheidungen.',
             en: 'Moves KPI cards into fact/dimension candidates, grain, and open modelling decisions.',
         },
-        tags: ['kpi', 'new', 'extend', 'dq'],
+        tags: ['kpi', 'new', 'extend', 'dq', 'mart_quality_gate'],
     },
     'pii-dsdr-readiness-checker': {
         group: 'tools',
         icon: 'fa-shield-halved',
         title: { de: 'PII/DSDR Readiness Checker', en: 'PII/DSDR Readiness Checker' },
         reason: {
-            de: 'Prueft PII, Freitext, Loesch-/Auskunftskeys, Retention und Access-Risiken vor der Umsetzung.',
+            de: 'Prüft PII, Freitext, Lösch-/Auskunftskeys, Retention und Access-Risiken vor der Umsetzung.',
             en: 'Checks PII, free text, deletion/access keys, retention, and access risks before implementation.',
         },
         tags: ['pii', 'new', 'extend', 'hcm', 'collab', 'finance'],
@@ -93,7 +129,7 @@ const labels = {
         icon: 'fa-file-signature',
         title: { de: 'Decision Brief Generator', en: 'Decision Brief Generator' },
         reason: {
-            de: 'Verdichtet Optionen, Annahmen, Risiken und naechste Schritte in eine entscheidbare Vorlage.',
+            de: 'Verdichtet Optionen, Annahmen, Risiken und nächste Schritte in eine entscheidbare Vorlage.',
             en: 'Condenses options, assumptions, risks, and next steps into a decision-ready brief.',
         },
         tags: ['stack', 'supplier', 'kpi', 'new', 'extend'],
@@ -113,7 +149,7 @@ const labels = {
         icon: 'fa-diagram-project',
         title: { de: 'Architecture Fit', en: 'Architecture Fit' },
         reason: {
-            de: 'Klaert, ob die Ergaenzung zur bestehenden Architektur, zum Betrieb und zu Governance-Auflagen passt.',
+            de: 'Klärt, ob die Ergänzung zur bestehenden Architektur, zum Betrieb und zu Governance-Auflagen passt.',
             en: 'Checks whether the extension fits the existing architecture, operations, and governance constraints.',
         },
         tags: ['stack', 'extend', 'opensource'],
@@ -123,7 +159,7 @@ const labels = {
         icon: 'fa-scale-balanced',
         title: { de: 'Impact Effort Matrix', en: 'Impact Effort Matrix' },
         reason: {
-            de: 'Sortiert Ideen nach Nutzen, Aufwand und Risiko, wenn mehrere naechste Schritte konkurrieren.',
+            de: 'Sortiert Ideen nach Nutzen, Aufwand und Risiko, wenn mehrere nächste Schritte konkurrieren.',
             en: 'Ranks ideas by value, effort, and risk when several next steps compete.',
         },
         tags: ['extend', 'help', 'kpi', 'supplier'],
@@ -136,24 +172,24 @@ const labels = {
             de: 'Hilft bei existierenden Systemen, Tabellen, Spalten und Ownership als Entscheidungsinput zu sammeln.',
             en: 'Helps collect existing systems, tables, columns, and ownership as decision input.',
         },
-        tags: ['extend', 'supplier', 'dq', 'unknown'],
+        tags: ['extend', 'supplier', 'dq', 'unknown', 'health_check', 'source', 'raw'],
     },
     'report-inventory': {
         group: 'tools',
         icon: 'fa-chart-simple',
         title: { de: 'Report Inventory Canvas', en: 'Report Inventory Canvas' },
         reason: {
-            de: 'Findet vorhandene Reports, echte Geschaeftsfragen, Owner und wiederkehrende KPI-Kandidaten.',
+            de: 'Findet vorhandene Reports, echte Geschäftsfragen, Owner und wiederkehrende KPI-Kandidaten.',
             en: 'Finds existing reports, real business questions, owners, and recurring KPI candidates.',
         },
-        tags: ['help', 'kpi', 'extend'],
+        tags: ['help', 'kpi', 'extend', 'dq', 'report_stabilization', 'bi'],
     },
     'kpi-definition': {
         group: 'tools',
         icon: 'fa-square-poll-vertical',
         title: { de: 'KPI Definition Card', en: 'KPI Definition Card' },
         reason: {
-            de: 'Schaerft eine einzelne Kennzahl, bevor daraus Modell, Measure oder Report entsteht.',
+            de: 'Schärft eine einzelne Kennzahl, bevor daraus Modell, Measure oder Report entsteht.',
             en: 'Sharpens one metric before it becomes a model, measure, or report.',
         },
         tags: ['kpi', 'help', 'finance'],
@@ -163,7 +199,7 @@ const labels = {
         icon: 'fa-user-shield',
         title: { de: 'PII Policy Generator', en: 'PII Policy Generator' },
         reason: {
-            de: 'Erzeugt erste Regeln fuer Klassifizierung, Maskierung, Rollen und Review-Punkte.',
+            de: 'Erzeugt erste Regeln für Klassifizierung, Maskierung, Rollen und Review-Punkte.',
             en: 'Creates first rules for classification, masking, roles, and review points.',
         },
         tags: ['pii', 'hcm', 'collab', 'finance'],
@@ -173,7 +209,7 @@ const labels = {
         icon: 'fa-lock',
         title: { de: 'PII Recommend Generator', en: 'PII Recommend Generator' },
         reason: {
-            de: 'Gibt Feldempfehlungen fuer sensible Daten und Prioritaeten in der Umsetzung.',
+            de: 'Gibt Feldempfehlungen für sensible Daten und Prioritäten in der Umsetzung.',
             en: 'Suggests sensitive-field handling and priorities for implementation.',
         },
         tags: ['pii', 'supplier', 'hcm', 'collab'],
@@ -186,24 +222,44 @@ const labels = {
             de: 'Bringt beschriebene Modelle, Tests und Metadaten in eine dbt-nahe Arbeitsform.',
             en: 'Turns described models, tests, and metadata into a dbt-friendly working format.',
         },
-        tags: ['dq', 'snowflake-dbt', 'opensource'],
+        tags: ['dq', 'snowflake-dbt', 'opensource', 'transform', 'mart', 'semantic'],
+    },
+    'dbt-dq-macro-generator': {
+        group: 'tools',
+        icon: 'fa-code-branch',
+        title: { de: 'dbt DQ Macro Generator', en: 'dbt DQ Macro Generator' },
+        reason: {
+            de: 'Erstellt die technische Basis für wiederverwendbare DQ-Checks und Governance-Makros.',
+            en: 'Creates the technical base for reusable DQ checks and governance macros.',
+        },
+        tags: ['dq', 'snowflake-dbt', 'opensource', 'transform', 'business_rule', 'referential_integrity'],
     },
     'dbt-dq-rules-generator': {
         group: 'tools',
         icon: 'fa-list-check',
         title: { de: 'dbt DQ Rules Generator', en: 'dbt DQ Rules Generator' },
         reason: {
-            de: 'Leitet aus Regeln und Erwartungen konkrete Data-Quality-Checks fuer dbt ab.',
+            de: 'Leitet aus Regeln und Erwartungen konkrete Data-Quality-Checks für dbt ab.',
             en: 'Turns rules and expectations into concrete data-quality checks for dbt.',
         },
-        tags: ['dq', 'snowflake-dbt', 'opensource'],
+        tags: ['dq', 'snowflake-dbt', 'opensource', 'completeness', 'duplicates', 'freshness', 'value_range', 'referential_integrity', 'business_rule'],
+    },
+    'dbt-dq-history-generator': {
+        group: 'tools',
+        icon: 'fa-clock-rotate-left',
+        title: { de: 'DQ History Generator', en: 'DQ History Generator' },
+        reason: {
+            de: 'Plant Historie und Monitoring für DQ-Findings, Trends und wiederkehrende Gates.',
+            en: 'Plans history and monitoring for DQ findings, trends, and recurring gates.',
+        },
+        tags: ['dq', 'health_check', 'known_issue', 'freshness', 'report_stabilization'],
     },
     'fabric-pii-governance-pattern-generator': {
         group: 'tools',
         icon: 'fa-window-maximize',
         title: { de: 'Fabric PII Governance Pattern', en: 'Fabric PII Governance Pattern' },
         reason: {
-            de: 'Passt, wenn Fabric/Power BI schon gesetzt ist und PII-Gates konkret werden muessen.',
+            de: 'Passt, wenn Fabric/Power BI schon gesetzt ist und PII-Gates konkret werden müssen.',
             en: 'Fits when Fabric/Power BI is selected and PII gates need to become concrete.',
         },
         tags: ['fabric', 'pii', 'dq'],
@@ -213,7 +269,7 @@ const labels = {
         icon: 'fa-database',
         title: { de: 'Databricks PII Governance Pattern', en: 'Databricks PII Governance Pattern' },
         reason: {
-            de: 'Passt fuer Unity Catalog, Grants, Tags, Maskierung und Lakehouse-Governance.',
+            de: 'Passt für Unity Catalog, Grants, Tags, Maskierung und Lakehouse-Governance.',
             en: 'Fits Unity Catalog, grants, tags, masking, and lakehouse governance.',
         },
         tags: ['databricks', 'pii', 'dq'],
@@ -223,7 +279,7 @@ const labels = {
         icon: 'fa-key',
         title: { de: 'Unity Catalog Governance', en: 'Unity Catalog Governance' },
         reason: {
-            de: 'Hilft bei Unity-Catalog-Standards fuer Owner, Tags, Grants und PII-Spalten.',
+            de: 'Hilft bei Unity-Catalog-Standards für Owner, Tags, Grants und PII-Spalten.',
             en: 'Helps with Unity Catalog standards for owners, tags, grants, and PII columns.',
         },
         tags: ['databricks', 'pii', 'dq'],
@@ -236,7 +292,7 @@ const hubItems = {
         icon: 'fa-plug',
         title: { de: 'Supplier Library', en: 'Supplier Library' },
         reason: {
-            de: 'Startpunkt fuer Salesforce, HubSpot, SAP, Workday, ServiceNow, SharePoint und weitere Quellen.',
+            de: 'Startpunkt für Salesforce, HubSpot, SAP, Workday, ServiceNow, SharePoint und weitere Quellen.',
             en: 'Starting point for Salesforce, HubSpot, SAP, Workday, ServiceNow, SharePoint, and more sources.',
         },
         tags: ['supplier', 'new', 'extend', 'crm', 'erp', 'hcm', 'collab', 'finance'],
@@ -297,7 +353,7 @@ const sourceItems = {
         icon: 'fa-users-gear',
         title: { de: 'HCM & Workforce Quellen', en: 'HCM & workforce sources' },
         reason: {
-            de: 'Workday, SuccessFactors und Personio: Organisation, Worker, Abwesenheit, Compensation und hohe PII-Prioritaet.',
+            de: 'Workday, SuccessFactors und Personio: Organisation, Worker, Abwesenheit, Compensation und hohe PII-Priorität.',
             en: 'Workday, SuccessFactors, and Personio: organization, worker, absence, compensation, and high PII priority.',
         },
     },
@@ -351,6 +407,9 @@ function getState(form) {
         goal: formData.get('goal') || 'stack',
         domain: formData.get('domain') || 'unknown',
         platform: formData.get('platform') || 'unknown',
+        dqMode: formData.get('dqMode') || 'health_check',
+        dqLayer: formData.get('dqLayer') || 'source',
+        dqIssues: formData.getAll('dqIssues[]').map(String),
     };
 }
 
@@ -382,6 +441,20 @@ function scoreItem(item, state) {
         score += 4;
     }
 
+    if (state.goal === 'dq') {
+        if (tags.has(state.dqMode)) {
+            score += 5;
+        }
+        if (tags.has(state.dqLayer)) {
+            score += 5;
+        }
+        for (const issue of state.dqIssues || []) {
+            if (tags.has(issue)) {
+                score += 3;
+            }
+        }
+    }
+
     if (state.goal === 'supplier' && item.group === 'suppliers') {
         score += 4;
     }
@@ -396,6 +469,10 @@ function scoreItem(item, state) {
 
     if (state.scenario === 'extend' && ['architecture-fit', 'impact-effort', 'meta-export-generator'].includes(item.id)) {
         score += 3;
+    }
+
+    if (state.goal === 'dq' && ['dbt-dq-rules-generator', 'dbt-dq-macro-generator', 'dbt-dq-history-generator'].includes(item.id)) {
+        score += 5;
     }
 
     return score;
@@ -489,6 +566,19 @@ function currentPayload(root, config) {
         currentStep: 'advisor',
         payload: {
             advisor: state,
+            dataQuality: state.goal === 'dq'
+                ? {
+                    mode: state.dqMode,
+                    layer: state.dqLayer,
+                    issueTypes: state.dqIssues,
+                    affectedSources: [],
+                    affectedKpis: [],
+                    affectedReports: [],
+                    proposedRules: [],
+                    validationFindings: [],
+                    decisionStatus: 'draft',
+                }
+                : {},
             recommendations: serializableRecommendations(recommendations, locale),
         },
     };
@@ -502,9 +592,87 @@ function demoSessionKey() {
     return 'binom-tools:governance-discovery-demo:v1';
 }
 
+function richDemoSession(root, config) {
+    const base = currentPayload(root, config);
+    const locale = pickLocale();
+    const advisor = {
+        scenario: 'extend',
+        goal: 'dq',
+        domain: 'erp',
+        platform: 'fabric',
+        dqMode: 'report_stabilization',
+        dqLayer: 'bi',
+        dqIssues: ['freshness', 'business_rule', 'completeness'],
+    };
+    const recommendations = serializableRecommendations(buildRecommendations(advisor, config), locale);
+
+    return {
+        ...base,
+        title: 'Demo: Finance Governance Discovery',
+        companyName: base.companyName || 'Acme GmbH',
+        projectName: base.projectName || 'Management Reporting 2026',
+        scenario: advisor.scenario,
+        status: 'draft',
+        payload: {
+            advisor,
+            kpis: [
+                {
+                    name: 'Net Revenue',
+                    formula: 'Rechnungsbetrag abzüglich Gutschriften und Stornos.',
+                    grain: 'Firma, Kunde, Rechnungsmonat',
+                    owner: 'Finance Owner',
+                    source: 'SAP S/4HANA Faktura',
+                    status: 'agreed',
+                },
+                {
+                    name: 'Offene Forderungen',
+                    formula: 'Offene Posten nach Fälligkeitsklasse.',
+                    grain: 'Firma, Kunde, Beleg, Tag',
+                    owner: 'Debitoren Lead',
+                    source: 'SAP FI-AR',
+                    status: 'draft',
+                },
+            ],
+            sourceScope: {
+                supplier: 'SAP S/4HANA',
+                mustHave: ['Fakturabelege', 'Kunden', 'Buchungskreis', 'Offene Posten'],
+                optional: ['Kundenaufträge', 'Kostenstellen'],
+                skip: ['Anhänge', 'lange Freitextnotizen'],
+                owners: ['Finance Owner', 'Platform Owner'],
+            },
+            pii: {
+                fields: ['E-Mail Rechnungskontakt', 'Name Rechnungskontakt'],
+                dsdrKeys: ['customer_id', 'contact_email'],
+                controls: ['Maskierung in BI-Extraktionen', 'Retention-Review vor Raw-Load'],
+            },
+            dataQuality: {
+                mode: advisor.dqMode,
+                layer: advisor.dqLayer,
+                issueTypes: advisor.dqIssues,
+                affectedSources: ['SAP S/4HANA Faktura'],
+                affectedKpis: ['Net Revenue', 'Offene Forderungen'],
+                affectedReports: ['Executive Finance Dashboard'],
+                proposedRules: [
+                    'billing_date darf nicht leer sein',
+                    'invoice_amount muss nach Storno-Mapping >= 0 sein',
+                    'Dashboard-Refresh darf maximal 24h alt sein',
+                ],
+                validationFindings: ['zwei Reports nutzen unterschiedliche Umsatzfilter'],
+                decisionStatus: 'review',
+            },
+            decisionBrief: {
+                recommendation: 'Bestehenden Fabric Finance Mart stabilisieren, bevor eine weitere ERP-Quelle angebunden wird.',
+                openQuestions: ['finale Storno-Logik', 'Owner-Freigabe für PII-Maskierung'],
+                nextSprint: ['Source-Scope-Review', 'DQ-Regeln', 'Decision-Brief-Freigabe'],
+            },
+            recommendations,
+        },
+    };
+}
+
 function saveDemoSession(root, config) {
     const session = {
-        ...currentPayload(root, config),
+        ...richDemoSession(root, config),
         id: `demo_${Date.now()}`,
         updatedAt: new Date().toISOString(),
     };
@@ -519,6 +687,153 @@ function saveDemoSession(root, config) {
     sessionStorage.setItem(demoSessionKey(), JSON.stringify(sessions.slice(0, 12)));
 
     return session;
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function listHtml(items) {
+    const values = Array.isArray(items) ? items.filter(Boolean) : [];
+
+    if (values.length === 0) {
+        return '<li>-</li>';
+    }
+
+    return values.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+}
+
+function factsHtml(items) {
+    return items.map(([label, value]) => `
+        <div>
+            <dt>${escapeHtml(label)}</dt>
+            <dd>${escapeHtml(Array.isArray(value) ? value.filter(Boolean).join(', ') || '-' : value || '-')}</dd>
+        </div>
+    `).join('');
+}
+
+function absoluteUrl(url) {
+    try {
+        return new URL(String(url || '#'), window.location.origin).href;
+    } catch {
+        return '#';
+    }
+}
+
+function demoReportHtml(session) {
+    const payload = session.payload || {};
+    const advisor = payload.advisor || {};
+    const dataQuality = payload.dataQuality || {};
+    const recommendations = Array.isArray(payload.recommendations) ? payload.recommendations : [];
+    const kpis = Array.isArray(payload.kpis) ? payload.kpis : [];
+    const sourceScope = payload.sourceScope || {};
+    const pii = payload.pii || {};
+    const decisionBrief = payload.decisionBrief || {};
+
+    return `<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${escapeHtml(session.title || 'Governance Demo Report')}</title>
+    <style>
+        body { color: #17202a; font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f4f7fb; }
+        main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 48px; }
+        header, section { background: #fff; border: 1px solid #d8e2ee; border-radius: 8px; margin-bottom: 16px; padding: 20px; }
+        h1, h2, p { margin-top: 0; }
+        h1 { font-size: 2rem; line-height: 1.15; }
+        h2 { font-size: 1.1rem; }
+        dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        dt { color: #5f6f82; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+        dd { margin: 4px 0 0; font-weight: 700; }
+        article { border: 1px solid #d8e2ee; border-radius: 8px; margin-top: 10px; padding: 12px; }
+        a, button { color: #1269a8; font-weight: 800; }
+        button { border: 1px solid #b9c8d8; border-radius: 8px; background: #fff; cursor: pointer; padding: 10px 14px; }
+        @media print { body { background: #fff; } button { display: none; } main { max-width: none; padding: 0; } }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <p>Report Ansicht</p>
+            <h1>${escapeHtml(session.title || 'Governance Discovery')}</h1>
+            <p>${escapeHtml(session.companyName || 'Demo-Session')}${session.projectName ? ` - ${escapeHtml(session.projectName)}` : ''}</p>
+            <button type="button" onclick="window.print()">Drucken/PDF</button>
+        </header>
+        <section>
+            <h2>Eingaben</h2>
+            <dl>${factsHtml([
+                ['Ausgangslage', advisor.scenario],
+                ['Ziel', advisor.goal],
+                ['Quelle/Domäne', advisor.domain],
+                ['Stack', advisor.platform],
+            ])}</dl>
+        </section>
+        <section>
+            <h2>Empfehlungen</h2>
+            ${recommendations.map((item) => `
+                <article>
+                    <strong>${escapeHtml(item.title || '-')}</strong>
+                    <p>${escapeHtml(item.group || 'tool')}</p>
+                    <p>${escapeHtml(item.reason || '')}</p>
+                    ${item.url ? `<a href="${escapeHtml(absoluteUrl(item.url))}">Öffnen</a>` : ''}
+                </article>
+            `).join('') || '<p>Noch keine Empfehlungen gespeichert.</p>'}
+        </section>
+        <section>
+            <h2>KPI-Karten</h2>
+            ${kpis.map((kpi) => `
+                <article>
+                    <strong>${escapeHtml(kpi.name || '-')}</strong>
+                    <p>${escapeHtml(kpi.formula || '-')}</p>
+                    <p>Grain: ${escapeHtml(kpi.grain || '-')} · Owner: ${escapeHtml(kpi.owner || '-')}</p>
+                </article>
+            `).join('') || '<p>-</p>'}
+        </section>
+        <section>
+            <h2>Source Scope</h2>
+            <dl>${factsHtml([
+                ['Supplier', sourceScope.supplier],
+                ['Must-have', sourceScope.mustHave],
+                ['Optional', sourceScope.optional],
+                ['Skip', sourceScope.skip],
+                ['Owner', sourceScope.owners],
+            ])}</dl>
+        </section>
+        <section>
+            <h2>PII/DSDR</h2>
+            <ul>${listHtml([...(pii.fields || []), ...(pii.dsdrKeys || []), ...(pii.controls || [])])}</ul>
+        </section>
+        <section>
+            <h2>Data Quality</h2>
+            <dl>${factsHtml([
+                ['Modus', dataQuality.mode || advisor.dqMode],
+                ['Schicht', dataQuality.layer || advisor.dqLayer],
+                ['Fehlerklassen', dataQuality.issueTypes || advisor.dqIssues],
+                ['Betroffene Reports', dataQuality.affectedReports],
+                ['Regelvorschläge', dataQuality.proposedRules],
+            ])}</dl>
+        </section>
+        <section>
+            <h2>Decision Brief</h2>
+            <dl>${factsHtml([
+                ['Empfehlung', decisionBrief.recommendation],
+                ['Offene Fragen', decisionBrief.openQuestions],
+                ['Nächster Sprint', decisionBrief.nextSprint],
+            ])}</dl>
+        </section>
+    </main>
+</body>
+</html>`;
+}
+
+function demoReportUrl(session) {
+    return URL.createObjectURL(new Blob([demoReportHtml(session)], { type: 'text/html;charset=utf-8' }));
 }
 
 async function savePermanentSession(root, config) {
@@ -568,6 +883,9 @@ function render(root, config) {
     }
 
     const state = getState(form);
+    const followup = root.querySelector('[data-governance-followup-copy]');
+    const domainLabel = root.querySelector('[data-governance-domain-label]');
+    const platformLabel = root.querySelector('[data-governance-platform-label]');
     const recommendations = buildRecommendations(state, config);
     const grouped = recommendations.reduce((groups, item) => {
         const group = item.group || 'tools';
@@ -577,6 +895,18 @@ function render(root, config) {
     }, {});
 
     summary.textContent = copy.summary[state.scenario] || copy.summary.new;
+    if (state.goal === 'dq') {
+        summary.textContent = copy.summary.dq;
+    }
+    if (followup) {
+        followup.textContent = copy.followup?.[state.scenario] || copy.followup.new;
+    }
+    if (domainLabel) {
+        domainLabel.textContent = copy.domainLabel?.[state.scenario] || copy.domainLabel.new;
+    }
+    if (platformLabel) {
+        platformLabel.textContent = copy.platformLabel?.[state.scenario] || copy.platformLabel.new;
+    }
     results.replaceChildren();
 
     ['tools', 'suppliers', 'resources'].forEach((group) => {
@@ -604,23 +934,43 @@ function render(root, config) {
 function initAdvisor(root) {
     const config = readConfig(root);
     const form = root.querySelector('[data-governance-advisor-form]');
+    const dqPanel = root.querySelector('[data-governance-dq-panel]');
     const permanentButton = root.querySelector('[data-governance-save-session]');
     const demoButton = root.querySelector('[data-governance-save-demo]');
+    const reportLink = root.querySelector('[data-governance-view-report]');
+    let activeDemoReportUrl = null;
 
     if (!form) {
         return;
     }
 
-    form.addEventListener('change', () => render(root, config));
+    const syncDqPanel = () => {
+        const state = getState(form);
+        if (dqPanel) {
+            dqPanel.hidden = state.goal !== 'dq';
+        }
+    };
+    form.addEventListener('change', () => {
+        syncDqPanel();
+        render(root, config);
+    });
     permanentButton?.addEventListener('click', async () => {
         const locale = pickLocale();
         permanentButton.disabled = true;
         try {
             const result = await savePermanentSession(root, config);
-            const sessionsUrl = config.links?.session?.sessionsUrl || config.session?.sessionsUrl;
+            if (activeDemoReportUrl) {
+                URL.revokeObjectURL(activeDemoReportUrl);
+                activeDemoReportUrl = null;
+            }
             setSaveStatus(root, texts[locale].saved);
-            if (result?.session?.id && sessionsUrl) {
-                setSaveStatus(root, `${texts[locale].saved} ${sessionsUrl}`);
+            if (reportLink instanceof HTMLAnchorElement && result?.reportUrl) {
+                reportLink.href = result.reportUrl;
+                reportLink.removeAttribute('target');
+                reportLink.removeAttribute('rel');
+                reportLink.hidden = false;
+                reportLink.removeAttribute('aria-disabled');
+                setSaveStatus(root, `${texts[locale].saved} ${texts[locale].viewReport}`);
             }
         } catch (error) {
             const isLogin = String(error?.message || '').includes('login-required');
@@ -631,9 +981,21 @@ function initAdvisor(root) {
     });
     demoButton?.addEventListener('click', () => {
         const locale = pickLocale();
-        saveDemoSession(root, config);
-        setSaveStatus(root, texts[locale].demoSaved);
+        const session = saveDemoSession(root, config);
+        if (reportLink instanceof HTMLAnchorElement) {
+            if (activeDemoReportUrl) {
+                URL.revokeObjectURL(activeDemoReportUrl);
+            }
+            activeDemoReportUrl = demoReportUrl(session);
+            reportLink.href = activeDemoReportUrl;
+            reportLink.target = '_blank';
+            reportLink.rel = 'noopener noreferrer';
+            reportLink.hidden = false;
+            reportLink.removeAttribute('aria-disabled');
+        }
+        setSaveStatus(root, texts[locale].demoReportReady || texts[locale].demoSaved);
     });
+    syncDqPanel();
     render(root, config);
 }
 

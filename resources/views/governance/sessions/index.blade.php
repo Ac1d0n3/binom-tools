@@ -7,12 +7,12 @@
     <div class="tools-content governance-sessions">
         <header class="governance-sessions__header">
             <div>
-                <p class="governance-hub__eyebrow" data-text-de="Permanente Arbeitsstaende" data-text-en="Persistent work sessions">Persistent work sessions</p>
+                <p class="governance-hub__eyebrow" data-text-de="Permanente Arbeitsstände" data-text-en="Persistent work sessions">Persistent work sessions</p>
                 <h1 class="tools-page-title" data-text-de="Governance Sessions verwalten" data-text-en="Manage governance sessions">Manage governance sessions</h1>
                 <p
                     class="tools-page-lead"
                     data-hub-lead
-                    data-text-de="Gespeicherte Discovery-Ergebnisse bleiben mit Login dauerhaft verfuegbar und koennen als Report, Kopie oder Workflow weiterverwendet werden."
+                    data-text-de="Gespeicherte Discovery-Ergebnisse bleiben mit Login dauerhaft verfügbar und können als Report, Kopie oder Workflow weiterverwendet werden."
                     data-text-en="Signed-in discovery results stay permanently available and can continue as reports, copies, or workflows."
                 >Signed-in discovery results stay permanently available and can continue as reports, copies, or workflows.</p>
             </div>
@@ -20,6 +20,10 @@
                 <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.index') }}#governance-advisor">
                     <i class="fa-solid fa-compass" aria-hidden="true"></i>
                     <span data-text-de="Neue Session starten" data-text-en="Start new session">Start new session</span>
+                </a>
+                <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-report') }}">
+                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                    <span data-text-de="Beispiel-Report ansehen" data-text-en="View example report">View example report</span>
                 </a>
                 <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index', $showArchived ? [] : ['archived' => 1]) }}">
                     <i class="fa-solid fa-box-archive" aria-hidden="true"></i>
@@ -37,6 +41,10 @@
                 <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
                 <h2 data-text-de="Noch keine Sessions" data-text-en="No sessions yet">No sessions yet</h2>
                 <p data-text-de="Starte im Governance Hub den Advisor und speichere die Ergebnisse als permanente Session." data-text-en="Start the advisor in the Governance Hub and save the results as a persistent session.">Start the advisor in the Governance Hub and save the results as a persistent session.</p>
+                <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-report') }}">
+                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                    <span data-text-de="Gefüllte Beispiel-Session ansehen" data-text-en="View filled example session">View filled example session</span>
+                </a>
             </section>
         @else
             <section class="governance-sessions__grid" aria-label="Governance sessions">
@@ -84,8 +92,8 @@
                         @endif
                         <div class="governance-sessions__actions">
                             <a href="{{ locale_route('governance.sessions.report', ['sessionId' => $session['id']]) }}">
-                                <i class="fa-solid fa-print" aria-hidden="true"></i>
-                                <span data-text-de="Report" data-text-en="Report">Report</span>
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                <span data-text-de="Report ansehen" data-text-en="View report">View report</span>
                             </a>
                             <form method="post" action="{{ locale_route('governance.sessions.duplicate', ['sessionId' => $session['id']]) }}">
                                 @csrf

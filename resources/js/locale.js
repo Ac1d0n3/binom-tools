@@ -128,6 +128,7 @@ const shellLabels = {
         'footer.binomNgx': 'binom-ngx Docs',
         'footer.impressum': 'Impressum',
         'footer.privacy': 'Datenschutz',
+        'footer.disclaimer': 'Disclaimer',
         'footer.about': 'Über das Projekt',
         'meta.beta': 'BETA',
         'tools.overviewBetaNote': 'Governance-Workflows in aktiver Entwicklung.',
@@ -167,6 +168,11 @@ const shellLabels = {
         'cookie.banner.privacyLink': 'Datenschutz',
         'cookie.banner.essentialOnly': 'Nur notwendig',
         'cookie.banner.acceptAll': 'Alle akzeptieren',
+        'disclaimer.banner.title': 'Orientierung, keine Gewähr',
+        'disclaimer.banner.text':
+            'Diese Tools liefern Empfehlungen, Best Practices und Leitfäden. Keine Rechts-, Security- oder Projektfreigabe; Vollständigkeit ist nicht garantiert.',
+        'disclaimer.banner.link': 'Disclaimer lesen',
+        'disclaimer.banner.dismiss': 'Dauerhaft ausblenden',
         'home.title': 'Binom Governance',
         'home.lead':
             'Governance Help Hub mit Markdown-Stories, interaktiven Workflows und i18n — klonbar und ohne CMS.',
@@ -1056,6 +1062,7 @@ const shellLabels = {
         'footer.binomNgx': 'binom-ngx Docs',
         'footer.impressum': 'Legal Notice',
         'footer.privacy': 'Privacy',
+        'footer.disclaimer': 'Disclaimer',
         'footer.about': 'About',
         'meta.beta': 'BETA',
         'tools.overviewBetaNote': 'Governance workflows in active development.',
@@ -1095,6 +1102,11 @@ const shellLabels = {
         'cookie.banner.privacyLink': 'Privacy',
         'cookie.banner.essentialOnly': 'Essential only',
         'cookie.banner.acceptAll': 'Accept all',
+        'disclaimer.banner.title': 'Guidance, not a guarantee',
+        'disclaimer.banner.text':
+            'These tools provide recommendations, best practices and guides. They are not legal, security or project approval, and completeness is not guaranteed.',
+        'disclaimer.banner.link': 'Read disclaimer',
+        'disclaimer.banner.dismiss': 'Hide permanently',
         'home.title': 'Binom Governance',
         'home.lead':
             'Governance help hub with Markdown stories, interactive workflows, and i18n — cloneable and CMS-free.',
