@@ -21,6 +21,7 @@ use App\Http\Controllers\Playbooks\PlaybookOfflineController;
 use App\Http\Controllers\Playbooks\PlaybookStatsController;
 use App\Http\Controllers\Compliance\ComplianceController;
 use App\Http\Controllers\Governance\GovernanceHubController;
+use App\Http\Controllers\Governance\GovernanceSessionController;
 use App\Http\Controllers\Resources\VendorResourcesController;
 use App\Http\Controllers\Suppliers\SupplierLibraryController;
 use App\Http\Controllers\SprintPlanner\SprintPlannerController;
@@ -159,10 +160,34 @@ $registerRoutes = static function (bool $localized): void {
         Route::post('/playbooks/{slug}/read', [StoryAclController::class, 'markRead'])
             ->where('slug', '[a-z0-9-]+')
             ->name($name('accounts.playbooks.read'));
+        Route::get('/governance/sessions', [GovernanceSessionController::class, 'index'])->name($name('governance.sessions.index'));
+        Route::get('/governance/sessions/{sessionId}/report', [GovernanceSessionController::class, 'report'])
+            ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+            ->name($name('governance.sessions.report'));
+        Route::post('/governance/sessions/{sessionId}/duplicate', [GovernanceSessionController::class, 'duplicate'])
+            ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+            ->name($name('governance.sessions.duplicate'));
+        Route::post('/governance/sessions/{sessionId}/archive', [GovernanceSessionController::class, 'archive'])
+            ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+            ->name($name('governance.sessions.archive'));
 
         // JSON APIs stay locale-free: {locale} would be injected as the first
         // controller argument (Laravel spreads route params by position).
         if (! $localized) {
+            Route::get('/api/governance/sessions', [GovernanceSessionController::class, 'apiIndex'])->name($name('governance.sessions.api.index'));
+            Route::get('/api/governance/sessions/{sessionId}', [GovernanceSessionController::class, 'apiShow'])
+                ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+                ->name($name('governance.sessions.api.show'));
+            Route::post('/api/governance/sessions', [GovernanceSessionController::class, 'apiStore'])->name($name('governance.sessions.api.store'));
+            Route::post('/api/governance/sessions/{sessionId}/duplicate', [GovernanceSessionController::class, 'apiDuplicate'])
+                ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+                ->name($name('governance.sessions.api.duplicate'));
+            Route::post('/api/governance/sessions/{sessionId}/archive', [GovernanceSessionController::class, 'apiArchive'])
+                ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+                ->name($name('governance.sessions.api.archive'));
+            Route::post('/api/governance/sessions/{sessionId}/create-plan', [GovernanceSessionController::class, 'apiCreatePlan'])
+                ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
+                ->name($name('governance.sessions.api.create-plan'));
             Route::get('/api/sprint-planner/plans', [PlanApiController::class, 'index'])->name($name('accounts.plans.index'));
             Route::get('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'show'])
                 ->where('planId', 'plan_[a-zA-Z0-9_]+')

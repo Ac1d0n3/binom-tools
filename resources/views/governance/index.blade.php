@@ -95,6 +95,13 @@
                     'compliance' => locale_route('compliance.index'),
                     'playbooks' => locale_route('playbooks.index'),
                 ],
+                'session' => [
+                    'accountsEnabled' => ! empty($accountsEnabled),
+                    'loggedIn' => ! empty($accountUser),
+                    'apiUrl' => ! empty($accountUser) ? url('/api/governance/sessions') : null,
+                    'sessionsUrl' => ! empty($accountUser) ? locale_route('governance.sessions.index') : null,
+                    'loginUrl' => ! empty($accountsEnabled) && empty($accountUser) ? locale_route('accounts.login') : null,
+                ],
             ];
         @endphp
 
@@ -204,6 +211,52 @@
                         <h3 data-governance-advisor-summary>Start with the stack decision, then validate sources and governance gates.</h3>
                     </div>
                     <div class="governance-advisor__result-grid" data-governance-advisor-results></div>
+                    <div class="governance-advisor__save" data-governance-save-panel>
+                        <label>
+                            <span data-text-de="Session Titel" data-text-en="Session title">Session title</span>
+                            <input type="text" name="title" value="Governance Discovery" data-governance-session-title>
+                        </label>
+                        <div class="governance-advisor__save-grid">
+                            <label>
+                                <span data-text-de="Firma" data-text-en="Company">Company</span>
+                                <input type="text" name="companyName" placeholder="Acme GmbH" data-governance-session-company>
+                            </label>
+                            <label>
+                                <span data-text-de="Projekt" data-text-en="Project">Project</span>
+                                <input type="text" name="projectName" placeholder="Data Platform 2026" data-governance-session-project>
+                            </label>
+                        </div>
+                        <div class="governance-advisor__save-actions">
+                            <button type="button" class="governance-hub__button governance-hub__button--primary" data-governance-save-session>
+                                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                                <span data-text-de="Session speichern" data-text-en="Save session">Save session</span>
+                            </button>
+                            <button type="button" class="governance-hub__button" data-governance-save-demo>
+                                <i class="fa-solid fa-vial" aria-hidden="true"></i>
+                                <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
+                            </button>
+                            @if (! empty($accountUser))
+                                <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
+                                    <i class="fa-solid fa-table-list" aria-hidden="true"></i>
+                                    <span data-text-de="Sessions verwalten" data-text-en="Manage sessions">Manage sessions</span>
+                                </a>
+                            @elseif (! empty($accountsEnabled))
+                                <a class="governance-hub__button" href="{{ locale_route('accounts.login') }}">
+                                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                                    <span data-text-de="Login fuer permanent" data-text-en="Sign in for permanent">Sign in for permanent</span>
+                                </a>
+                            @endif
+                        </div>
+                        <p class="governance-advisor__save-status" data-governance-save-status>
+                            @if (! empty($accountUser))
+                                <span data-text-de="Eingeloggt: Sessions werden dauerhaft gespeichert." data-text-en="Signed in: sessions are stored permanently.">Signed in: sessions are stored permanently.</span>
+                            @elseif (! empty($accountsEnabled))
+                                <span data-text-de="Demo-Sessions bleiben nur in dieser Browser-Sitzung. Login speichert permanent." data-text-en="Demo sessions stay in this browser session only. Sign in to store permanently.">Demo sessions stay in this browser session only. Sign in to store permanently.</span>
+                            @else
+                                <span data-text-de="Accounts sind deaktiviert. Demo-Sessions bleiben lokal in dieser Sitzung." data-text-en="Accounts are disabled. Demo sessions stay local to this session.">Accounts are disabled. Demo sessions stay local to this session.</span>
+                            @endif
+                        </p>
+                    </div>
                 </aside>
             </div>
         </section>

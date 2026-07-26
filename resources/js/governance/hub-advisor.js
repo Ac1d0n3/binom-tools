@@ -12,6 +12,10 @@ const texts = {
         },
         priority: 'Warum passend',
         open: 'Oeffnen',
+        saved: 'Session dauerhaft gespeichert.',
+        demoSaved: 'Demo-Session in dieser Browser-Sitzung gespeichert.',
+        loginNeeded: 'Bitte einloggen, um diese Session dauerhaft zu speichern.',
+        saveFailed: 'Session konnte nicht gespeichert werden.',
     },
     en: {
         summary: {
@@ -26,6 +30,10 @@ const texts = {
         },
         priority: 'Why it fits',
         open: 'Open',
+        saved: 'Session saved permanently.',
+        demoSaved: 'Demo session saved in this browser session.',
+        loginNeeded: 'Please sign in to save this session permanently.',
+        saveFailed: 'Session could not be saved.',
     },
 };
 
@@ -423,6 +431,18 @@ function buildRecommendations(state, config) {
     }).slice(0, 9);
 }
 
+function serializableRecommendations(recommendations, locale) {
+    return recommendations.map((item) => ({
+        id: item.id,
+        group: item.group,
+        kind: item.kind,
+        title: translate(item.title, locale),
+        reason: translate(item.reason, locale),
+        url: item.url,
+        score: item.score,
+    }));
+}
+
 function createRecommendation(item, locale, copy) {
     const link = document.createElement('a');
     link.className = 'governance-advisor__result-card';
@@ -449,6 +469,91 @@ function createRecommendation(item, locale, copy) {
     link.append(icon, body, cta);
 
     return link;
+}
+
+function currentPayload(root, config) {
+    const locale = pickLocale();
+    const form = root.querySelector('[data-governance-advisor-form]');
+    const title = root.querySelector('[data-governance-session-title]');
+    const company = root.querySelector('[data-governance-session-company]');
+    const project = root.querySelector('[data-governance-session-project]');
+    const state = getState(form);
+    const recommendations = buildRecommendations(state, config);
+
+    return {
+        title: String(title?.value || '').trim() || 'Governance Discovery',
+        companyName: String(company?.value || '').trim(),
+        projectName: String(project?.value || '').trim(),
+        scenario: state.scenario,
+        status: 'draft',
+        currentStep: 'advisor',
+        payload: {
+            advisor: state,
+            recommendations: serializableRecommendations(recommendations, locale),
+        },
+    };
+}
+
+function csrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+}
+
+function demoSessionKey() {
+    return 'binom-tools:governance-discovery-demo:v1';
+}
+
+function saveDemoSession(root, config) {
+    const session = {
+        ...currentPayload(root, config),
+        id: `demo_${Date.now()}`,
+        updatedAt: new Date().toISOString(),
+    };
+    const raw = sessionStorage.getItem(demoSessionKey());
+    let sessions = [];
+    try {
+        sessions = raw ? JSON.parse(raw) : [];
+    } catch {
+        sessions = [];
+    }
+    sessions.unshift(session);
+    sessionStorage.setItem(demoSessionKey(), JSON.stringify(sessions.slice(0, 12)));
+
+    return session;
+}
+
+async function savePermanentSession(root, config) {
+    const apiUrl = config.links?.session?.apiUrl || config.session?.apiUrl;
+    if (!apiUrl) {
+        throw new Error('login-required');
+    }
+
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': csrfToken(),
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ session: currentPayload(root, config) }),
+    });
+
+    if (response.status === 401 || response.status === 403) {
+        throw new Error('login-required');
+    }
+    if (!response.ok) {
+        throw new Error(`save-failed-${response.status}`);
+    }
+
+    return response.json();
+}
+
+function setSaveStatus(root, message) {
+    const status = root.querySelector('[data-governance-save-status]');
+    if (status) {
+        status.textContent = message;
+    }
 }
 
 function render(root, config) {
@@ -499,12 +604,36 @@ function render(root, config) {
 function initAdvisor(root) {
     const config = readConfig(root);
     const form = root.querySelector('[data-governance-advisor-form]');
+    const permanentButton = root.querySelector('[data-governance-save-session]');
+    const demoButton = root.querySelector('[data-governance-save-demo]');
 
     if (!form) {
         return;
     }
 
     form.addEventListener('change', () => render(root, config));
+    permanentButton?.addEventListener('click', async () => {
+        const locale = pickLocale();
+        permanentButton.disabled = true;
+        try {
+            const result = await savePermanentSession(root, config);
+            const sessionsUrl = config.links?.session?.sessionsUrl || config.session?.sessionsUrl;
+            setSaveStatus(root, texts[locale].saved);
+            if (result?.session?.id && sessionsUrl) {
+                setSaveStatus(root, `${texts[locale].saved} ${sessionsUrl}`);
+            }
+        } catch (error) {
+            const isLogin = String(error?.message || '').includes('login-required');
+            setSaveStatus(root, isLogin ? texts[locale].loginNeeded : texts[locale].saveFailed);
+        } finally {
+            permanentButton.disabled = false;
+        }
+    });
+    demoButton?.addEventListener('click', () => {
+        const locale = pickLocale();
+        saveDemoSession(root, config);
+        setSaveStatus(root, texts[locale].demoSaved);
+    });
     render(root, config);
 }
 

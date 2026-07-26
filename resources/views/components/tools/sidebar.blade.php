@@ -30,7 +30,6 @@
 
     $toolGroups = \App\Support\ToolsNav::groupByProduct($navItems);
     $routeBase = Locale::routeBaseName(request()->route()?->getName());
-    $governanceActive = str_starts_with((string) $routeBase, 'governance.');
     $resourcesActive = str_starts_with((string) $routeBase, 'resources.');
     $suppliersActive = str_starts_with((string) $routeBase, 'suppliers.');
     $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
@@ -102,13 +101,25 @@
             <li>
                 <a
                     href="{{ locale_route('governance.index') }}"
-                    class="tools-sidenav__link {{ $governanceActive ? 'tools-sidenav__link--active' : '' }}"
+                    class="tools-sidenav__link {{ Locale::routeIs('governance.index') ? 'tools-sidenav__link--active' : '' }}"
                     data-text-de="Governance"
                     data-text-en="Governance"
                 >
                     Governance
                 </a>
             </li>
+            @if (! empty($accountsEnabled))
+                <li>
+                    <a
+                        href="{{ locale_route('governance.sessions.index') }}"
+                        class="tools-sidenav__link {{ Locale::routeIs('governance.sessions.index') || Locale::routeIs('governance.sessions.report') ? 'tools-sidenav__link--active' : '' }}"
+                        data-text-de="Governance Sessions"
+                        data-text-en="Governance Sessions"
+                    >
+                        Governance Sessions
+                    </a>
+                </li>
+            @endif
             <li>
                 <a
                     href="{{ locale_route('resources.index') }}"
