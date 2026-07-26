@@ -2,6 +2,7 @@
 
 namespace App\Governance;
 
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 
@@ -33,14 +34,15 @@ final class GovernanceRadarFeedFetchGuard
         }
     }
 
-    public function fetch(string $url): string
+    public function fetch(string $url, ?int $timeoutSeconds = null): string
     {
         $this->validateUrl($url);
 
-        $timeout = (int) config('governance-radar.ingest.timeout_seconds', 12);
-        $maxSize = (int) config('governance-radar.ingest.max_bytes', 1_048_576);
+        $timeout = $timeoutSeconds ?? (int) config('governance-radar.ingest.timeout_seconds', 12);
+        $maxSize = (int) config('governance-radar.ingest.max_bytes', 2_097_152);
 
         $response = Http::timeout($timeout)
+            ->withOptions(['stream' => true])
             ->withHeaders([
                 'Accept' => 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*',
                 'User-Agent' => 'binom-tools-governance-radar/1.0',
@@ -48,15 +50,77 @@ final class GovernanceRadarFeedFetchGuard
             ->get($url);
 
         if (! $response->successful()) {
-            throw new InvalidArgumentException('Failed to fetch feed URL: HTTP '.$response->status());
+            $status = $response->status();
+            if (in_array($status, [401, 403, 404, 410], true)) {
+                throw new GovernanceRadarFeedUnavailableException(
+                    $status,
+                    'Feed URL is unavailable: HTTP '.$status,
+                );
+            }
+
+            throw new InvalidArgumentException('Failed to fetch feed URL: HTTP '.$status);
         }
 
-        $body = $response->body();
-        if (strlen($body) > $maxSize) {
+        return $this->readBodyCapped($response, $maxSize);
+    }
+
+    private function readBodyCapped(Response $response, int $maxSize): string
+    {
+        $stream = $response->toPsrResponse()->getBody();
+        $body = '';
+        $truncated = false;
+
+        while (! $stream->eof()) {
+            $chunk = $stream->read(8192);
+            if ($chunk === '') {
+                break;
+            }
+            $body .= $chunk;
+            if (strlen($body) > $maxSize) {
+                $truncated = true;
+                break;
+            }
+        }
+
+        if (! $truncated) {
+            return $body;
+        }
+
+        return $this->salvageTruncatedFeed(substr($body, 0, $maxSize));
+    }
+
+    /**
+     * Large vendor feeds often ship years of history. Radar only needs recent items,
+     * so keep the prefix (newest-first) up to the last complete item/entry and close XML.
+     */
+    private function salvageTruncatedFeed(string $xml): string
+    {
+        $endItem = strripos($xml, '</item>');
+        $endEntry = strripos($xml, '</entry>');
+
+        if ($endItem === false && $endEntry === false) {
             throw new InvalidArgumentException('Feed exceeds maximum allowed size.');
         }
 
-        return $body;
+        $useAtom = $endEntry !== false && ($endItem === false || $endEntry > $endItem);
+        if ($useAtom) {
+            $xml = substr($xml, 0, $endEntry + strlen('</entry>'));
+            if (! preg_match('/<\/feed\s*>/i', $xml)) {
+                $xml .= '</feed>';
+            }
+
+            return $xml;
+        }
+
+        $xml = substr($xml, 0, $endItem + strlen('</item>'));
+        if (! preg_match('/<\/channel\s*>/i', $xml)) {
+            $xml .= '</channel>';
+        }
+        if (! preg_match('/<\/rss\s*>/i', $xml)) {
+            $xml .= '</rss>';
+        }
+
+        return $xml;
     }
 
     private function isPrivateIp(string $ip): bool

@@ -140,11 +140,24 @@
                         @endif
                     </time>
                 </p>
-                @if (! empty($feedSyncErrors))
-                    <p class="governance-radar__feed-errors" data-governance-radar-feed-errors>
-                        {{ implode(' · ', $feedSyncErrors) }}
-                    </p>
-                @endif
+                <details
+                    class="governance-radar__feed-errors"
+                    data-governance-radar-feed-errors
+                    @if (($feedSyncErrorCount ?? 0) < 1) hidden @endif
+                >
+                    <summary>
+                        <span
+                            data-governance-radar-feed-error-summary
+                            data-text-de="{{ (int) ($feedSyncErrorCount ?? 0) }} Quellen mit Sync-Problemen"
+                            data-text-en="{{ (int) ($feedSyncErrorCount ?? 0) }} sources with sync issues"
+                        >{{ (int) ($feedSyncErrorCount ?? 0) }} sources with sync issues</span>
+                    </summary>
+                    <ul class="governance-radar__feed-error-list" data-governance-radar-feed-error-list>
+                        @foreach ($feedSyncErrors ?? [] as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </details>
             </div>
 
             <div class="tools-overview-toolbar governance-radar__toolbar" aria-label="Radar search and filters">
@@ -229,9 +242,9 @@
                         <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
                     </span>
                 </label>
-                <button type="button" class="governance-hub__button governance-radar__toolbar-action" data-governance-radar-reset title="Reset">
+                <button type="button" class="governance-hub__button governance-radar__toolbar-action" data-governance-radar-reset title="Reset filters">
                     <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-                    <span data-text-de="Zurücksetzen" data-text-en="Reset">Reset</span>
+                    <span class="sr-only" data-text-de="Zurücksetzen" data-text-en="Reset">Reset</span>
                 </button>
                 <button
                     type="button"
@@ -242,8 +255,33 @@
                     title="Compact"
                 >
                     <i class="fa-solid fa-compress" aria-hidden="true" data-compact-icon></i>
-                    <span data-compact-label data-text-de="Kompakt" data-text-en="Compact">Compact</span>
+                    <span class="sr-only" data-compact-label data-text-de="Kompakt" data-text-en="Compact">Compact</span>
                 </button>
+                <div class="tools-overview-read-controls governance-radar__read-controls" role="group" aria-label="Read status">
+                    <button
+                        type="button"
+                        class="tools-overview-read-controls__button tools-overview-read-controls__button--active"
+                        data-governance-radar-hide-read
+                        aria-pressed="true"
+                        title="Show read items"
+                        aria-label="Show read items"
+                    >
+                        <i class="fa-solid fa-eye-slash" aria-hidden="true"></i>
+                        <span class="sr-only">Show read items</span>
+                    </button>
+                    <button
+                        type="button"
+                        class="tools-overview-read-controls__button tools-overview-read-controls__button--reset"
+                        data-governance-radar-read-reset
+                        disabled
+                        aria-disabled="true"
+                        title="Reset read status"
+                        aria-label="Reset read status"
+                    >
+                        <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i>
+                        <span class="sr-only">Reset read status</span>
+                    </button>
+                </div>
                 <span class="governance-radar__count" data-governance-radar-count>{{ count($items) }}</span>
             </div>
         </div>
@@ -402,6 +440,18 @@
                                                         <span data-text-de="Anreichern" data-text-en="Enrich">Enrich</span>
                                                     </button>
                                                 @endif
+                                                <button
+                                                    type="button"
+                                                    class="governance-hub__button governance-radar__mark-read"
+                                                    data-governance-radar-mark-read
+                                                    data-item-id="{{ $itemId }}"
+                                                    aria-pressed="false"
+                                                    title="Mark as read"
+                                                    aria-label="Mark as read"
+                                                >
+                                                    <i class="fa-solid fa-eye" aria-hidden="true" data-mark-read-icon></i>
+                                                    <span class="sr-only" data-mark-read-label>Mark read</span>
+                                                </button>
                                                 <a class="governance-hub__button governance-hub__button--primary governance-radar__open-source" href="{{ $itemHref }}" @if (! str_starts_with($itemUrl, '/')) target="_blank" rel="noopener" @endif>
                                                     <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                                                     <span data-text-de="Quelle öffnen" data-text-en="Open source">Open source</span>
@@ -416,6 +466,7 @@
                 </div>
 
                 <p class="governance-radar__empty" data-governance-radar-empty hidden data-text-de="Keine Treffer für diese Filter." data-text-en="No matches for these filters.">No matches for these filters.</p>
+                <p class="governance-radar__empty" data-governance-radar-unread-empty hidden data-text-de="Alle passenden Einträge sind bereits gelesen." data-text-en="All matching items are already read.">All matching items are already read.</p>
             </section>
 
             @if ($canEnrichRadarItems ?? false)

@@ -9,10 +9,11 @@ import {
 } from './playbooks/read-state';
 
 const TAG_SIDEBAR_STORAGE_KEY = 'binom-tools-tag-sidebar';
+const FILTER_TAB_STORAGE_KEY = 'binom-tools-filter-tab';
 const OVERVIEW_VIEW_STORAGE_KEY = 'binom-tools-overview-view';
 const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
 const OVERVIEW_LAYOUT_STORAGE_KEY = 'binom-tools-overview-layout';
-const OVERVIEW_HIDE_READ_STORAGE_KEY = 'binom-tools-overview-hide-read';
+const OVERVIEW_HIDE_READ_STORAGE_KEY = 'binom-tools-overview-hide-read-v2';
 const FILTER_TAG_MODE_STORAGE_KEY = 'binom-tools-filter-tag-mode';
 
 /** @typedef {'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'} OverviewSortKey */
@@ -28,6 +29,7 @@ export function initOverviewFilters() {
     root.dataset.overviewFiltersBound = 'true';
 
     initTagSidebar(root);
+    initFilterSidebarTabs(root);
     initTagSidebarSearch(root);
     initOverviewViewToggle(root);
     initOverviewLayoutToggle(root);
@@ -36,8 +38,9 @@ export function initOverviewFilters() {
         root.querySelector('[data-overview-search]')
     );
     const productSelect = /** @type {HTMLSelectElement | null} */ (
-        root.querySelector('[data-overview-product]')
+        root.querySelector('select[data-overview-product]')
     );
+    const productButtons = root.querySelectorAll('button[data-overview-product]');
     const modelSelect = /** @type {HTMLSelectElement | null} */ (
         root.querySelector('[data-overview-model]')
     );
@@ -71,6 +74,9 @@ export function initOverviewFilters() {
     /** @type {string} */
     let activeCategoryKey = 'all';
 
+    /** @type {string} */
+    let activeProductKey = 'all';
+
     /** @type {Set<string>} */
     const activeTags = new Set();
 
@@ -80,7 +86,10 @@ export function initOverviewFilters() {
     /** @type {OverviewSortKey} */
     let activeSort = readOverviewSort(root);
 
-    let hideRead = localStorage.getItem(OVERVIEW_HIDE_READ_STORAGE_KEY) === 'true';
+    let hideRead = localStorage.getItem(OVERVIEW_HIDE_READ_STORAGE_KEY) !== 'false';
+    if (localStorage.getItem(OVERVIEW_HIDE_READ_STORAGE_KEY) === null) {
+        localStorage.setItem(OVERVIEW_HIDE_READ_STORAGE_KEY, 'true');
+    }
 
     /** @param {string} value */
     const normalize = (value) => value.toLowerCase().trim();
@@ -89,7 +98,16 @@ export function initOverviewFilters() {
     const locale = () => getLocale();
 
     /** @returns {string} */
-    const activeProduct = () => productSelect?.value || 'all';
+    const activeProduct = () => {
+        if (productButtons.length > 0) {
+            return activeProductKey;
+        }
+
+        return productSelect?.value || 'all';
+    };
+
+    /** @returns {boolean} */
+    const hasProductFilter = () => productButtons.length > 0 || productSelect !== null;
 
     /** @returns {string} */
     const activeModel = () => modelSelect?.value || 'all';
@@ -217,6 +235,10 @@ export function initOverviewFilters() {
 
         const countText = String(count);
         resultCountEl.setAttribute('data-i18n-count', countText);
+        if (resultCountEl.hasAttribute('data-overview-count-badge')) {
+            resultCountEl.textContent = countText;
+            return;
+        }
         const key = resultCountEl.getAttribute('data-i18n') || 'resources.visibleVendorCount';
         const template = getShellLabel(key, locale());
         resultCountEl.textContent = template.replace(/\{\{count\}\}/g, countText);
@@ -516,7 +538,7 @@ export function initOverviewFilters() {
             const matchesSearch = query === '' || text.includes(query);
             const matchesCategory = activeCategoryKey === 'all' || categoryKey === activeCategoryKey;
             const matchesTag = matchesTagFilter(tags);
-            const matchesProduct = productSelect === null || matchesProductFilter(products);
+            const matchesProduct = !hasProductFilter() || matchesProductFilter(products);
             const matchesModel = modelSelect === null || matchesModelFilter(models);
             const matchesResidency = residencySelect === null || matchesResidencyFilter(residencies);
             const matchesVendor = vendorSelect === null || matchesVendorFilter(vendor);
@@ -583,7 +605,7 @@ export function initOverviewFilters() {
 
     const applySeries = () => {
         const query = normalize(searchInput?.value ?? '');
-        let visible = 0;
+            let visible = 0;
 
         seriesItems.forEach((item) => {
             const text = normalize(item.getAttribute('data-search-text') ?? '');
@@ -604,19 +626,33 @@ export function initOverviewFilters() {
                 .split(',')
                 .map((stack) => stack.trim())
                 .filter(Boolean);
+            const partLinks = Array.from(item.querySelectorAll('[data-playbook-series-part][data-slug]'));
+            let readParts = 0;
+            partLinks.forEach((link) => {
+                const slug = link.getAttribute('data-slug') ?? '';
+                const read = isPlaybookRead(slug);
+                link.classList.toggle('is-read', read);
+                link.dataset.read = read ? '1' : '0';
+                if (read) {
+                    readParts += 1;
+                }
+            });
+            const allPartsRead = partLinks.length > 0 && readParts === partLinks.length;
             const matchesSearch = query === '' || text.includes(query);
-            const matchesProduct = productSelect === null || matchesProductFilter(products);
+            const matchesProduct = !hasProductFilter() || matchesProductFilter(products);
             const matchesModel = modelSelect === null || matchesModelFilter(models);
             const matchesResidency = residencySelect === null || matchesResidencyFilter(residencies);
             const matchesVendor = vendorSelect === null || matchesVendorFilter(vendor);
             const matchesStack = stackSelect === null || matchesStackFilter(stacks);
-            const show =
+            const matchesFilters =
                 matchesSearch &&
                 matchesProduct &&
                 matchesModel &&
                 matchesResidency &&
                 matchesVendor &&
                 matchesStack;
+
+            const show = matchesFilters && (!hideRead || !allPartsRead);
 
             item.hidden = !show;
             if (show) visible += 1;
@@ -626,6 +662,8 @@ export function initOverviewFilters() {
             seriesEmptyEl.hidden = visible > 0;
         }
 
+        syncResultCount(visible);
+        syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
         syncFilterReset();
         syncStackBanner();
         sortSeries();
@@ -643,6 +681,21 @@ export function initOverviewFilters() {
         return Array.from(select.options).some((option) => option.value === value);
     };
 
+    /**
+     * @param {string} value
+     */
+    const productChipExists = (value) =>
+        Array.from(productButtons).some(
+            (button) => (button.getAttribute('data-overview-product') ?? '') === value,
+        );
+
+    const syncProductChips = () => {
+        productButtons.forEach((button) => {
+            const key = button.getAttribute('data-overview-product') ?? '';
+            button.classList.toggle('tools-filter-chip--active', key === activeProductKey);
+        });
+    };
+
     const readFiltersFromUrl = () => {
         const params = new URLSearchParams(window.location.search);
         const vendor = params.get('vendor');
@@ -653,8 +706,13 @@ export function initOverviewFilters() {
             vendorSelect.value = vendor;
         }
 
-        if (product && selectHasOption(productSelect, product) && productSelect) {
-            productSelect.value = product;
+        if (product) {
+            if (productButtons.length > 0 && productChipExists(product)) {
+                activeProductKey = product;
+                syncProductChips();
+            } else if (selectHasOption(productSelect, product) && productSelect) {
+                productSelect.value = product;
+            }
         }
 
         if (query !== null && searchInput) {
@@ -682,8 +740,8 @@ export function initOverviewFilters() {
             setOrDelete('vendor', vendorSelect.value);
         }
 
-        if (productSelect) {
-            setOrDelete('product', productSelect.value);
+        if (hasProductFilter()) {
+            setOrDelete('product', activeProduct());
         }
 
         if (searchInput) {
@@ -735,6 +793,7 @@ export function initOverviewFilters() {
 
     const resetFilters = () => {
         activeCategoryKey = 'all';
+        activeProductKey = 'all';
         activeTags.clear();
 
         if (productSelect) {
@@ -762,6 +821,8 @@ export function initOverviewFilters() {
             button.classList.toggle('tools-filter-chip--active', key === 'all');
         });
 
+        syncProductChips();
+
         tagButtons.forEach((button) => {
             const tag = button.getAttribute('data-overview-tag') ?? '';
             button.classList.toggle('tools-filter-chip--active', tag === 'all');
@@ -787,6 +848,14 @@ export function initOverviewFilters() {
             categoryButtons.forEach((other) => {
                 other.classList.toggle('tools-filter-chip--active', other === button);
             });
+            apply();
+        });
+    });
+
+    productButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            activeProductKey = button.getAttribute('data-overview-product') ?? 'all';
+            syncProductChips();
             apply();
         });
     });
@@ -882,6 +951,7 @@ export function initOverviewFilters() {
     window.addEventListener('pageshow', apply);
     window.addEventListener('binom-tools:locale', () => {
         syncStackBanner();
+        syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
     });
 
     initOverviewSort(root);
@@ -905,6 +975,7 @@ function syncOverviewReadControls(hideReadToggle, readResetButton, hideRead) {
         hideReadToggle.classList.toggle('tools-overview-read-controls__button--active', hideRead);
 
         const icon = hideReadToggle.querySelector('i');
+        // When read items are hidden, the next action is "show them again".
         const labelKey = hideRead ? 'overview.showRead' : 'overview.hideRead';
         const label = getShellLabel(labelKey);
 
@@ -913,8 +984,15 @@ function syncOverviewReadControls(hideReadToggle, readResetButton, hideRead) {
             icon.classList.toggle('fa-eye-slash', hideRead);
         }
 
+        hideReadToggle.setAttribute('data-i18n-aria', labelKey);
         hideReadToggle.setAttribute('aria-label', label);
         hideReadToggle.setAttribute('title', label);
+
+        const srOnly = hideReadToggle.querySelector('.sr-only');
+        if (srOnly instanceof HTMLElement) {
+            srOnly.setAttribute('data-i18n', labelKey);
+            srOnly.textContent = label;
+        }
     }
 
     if (readResetButton instanceof HTMLButtonElement) {
@@ -1055,22 +1133,125 @@ function initOverviewSort(root) {
  */
 function initTagSidebar(root) {
     const sidebar = root.querySelector('[data-tag-sidebar]');
-    const toggle = root.querySelector('[data-tag-sidebar-toggle]');
+    const toggles = root.querySelectorAll('[data-tag-sidebar-toggle]');
 
-    if (!(sidebar instanceof HTMLElement) || !(toggle instanceof HTMLElement)) {
+    if (!(sidebar instanceof HTMLElement) || toggles.length === 0) {
         return;
     }
 
     const stored = localStorage.getItem(TAG_SIDEBAR_STORAGE_KEY);
     const collapsed = stored === 'collapsed';
 
-    setTagSidebarCollapsed(sidebar, toggle, collapsed);
+    setTagSidebarCollapsed(sidebar, toggles, collapsed);
 
-    toggle.addEventListener('click', () => {
-        const nextCollapsed = sidebar.dataset.collapsed !== 'true';
-        setTagSidebarCollapsed(sidebar, toggle, nextCollapsed);
-        localStorage.setItem(TAG_SIDEBAR_STORAGE_KEY, nextCollapsed ? 'collapsed' : 'open');
+    toggles.forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const nextCollapsed = sidebar.dataset.collapsed !== 'true';
+            setTagSidebarCollapsed(sidebar, toggles, nextCollapsed);
+            localStorage.setItem(TAG_SIDEBAR_STORAGE_KEY, nextCollapsed ? 'collapsed' : 'open');
+        });
     });
+}
+
+/**
+ * @param {ParentNode} root
+ */
+function initFilterSidebarTabs(root) {
+    const tabRoot = root.querySelector('[data-filter-tab-root]');
+    if (!(tabRoot instanceof HTMLElement)) {
+        return;
+    }
+
+    const tabs = Array.from(tabRoot.querySelectorAll('[data-filter-tab]'));
+    const panels = Array.from(tabRoot.querySelectorAll('[data-filter-tab-panel]'));
+    if (tabs.length === 0 || panels.length === 0) {
+        return;
+    }
+
+    const available = new Set(
+        tabs
+            .map((tab) => tab.getAttribute('data-filter-tab') ?? '')
+            .filter((id) => id !== ''),
+    );
+
+    const stored = localStorage.getItem(FILTER_TAB_STORAGE_KEY);
+    const initial =
+        stored && available.has(stored)
+            ? stored
+            : (tabRoot.getAttribute('data-filter-tab-active') ?? tabs[0]?.getAttribute('data-filter-tab') ?? '');
+
+    /**
+     * @param {string} tabId
+     */
+    const setTab = (tabId) => {
+        if (!available.has(tabId)) {
+            return;
+        }
+
+        tabRoot.setAttribute('data-filter-tab-active', tabId);
+        localStorage.setItem(FILTER_TAB_STORAGE_KEY, tabId);
+
+        tabs.forEach((tab) => {
+            const active = (tab.getAttribute('data-filter-tab') ?? '') === tabId;
+            tab.classList.toggle('tools-filter-sidebar__tab--active', active);
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            tab.setAttribute('tabindex', active ? '0' : '-1');
+        });
+
+        panels.forEach((panel) => {
+            const active = (panel.getAttribute('data-filter-tab-panel') ?? '') === tabId;
+            if (panel instanceof HTMLElement) {
+                panel.hidden = !active;
+            }
+        });
+    };
+
+    tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.getAttribute('data-filter-tab') ?? '';
+            if (tabId !== '') {
+                setTab(tabId);
+            }
+        });
+
+        tab.addEventListener('keydown', (event) => {
+            if (!(event instanceof KeyboardEvent)) {
+                return;
+            }
+            if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft' && event.key !== 'Home' && event.key !== 'End') {
+                return;
+            }
+
+            event.preventDefault();
+            const currentIndex = tabs.indexOf(tab);
+            if (currentIndex < 0) {
+                return;
+            }
+
+            let nextIndex = currentIndex;
+            if (event.key === 'ArrowRight') {
+                nextIndex = (currentIndex + 1) % tabs.length;
+            } else if (event.key === 'ArrowLeft') {
+                nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+            } else if (event.key === 'Home') {
+                nextIndex = 0;
+            } else if (event.key === 'End') {
+                nextIndex = tabs.length - 1;
+            }
+
+            const next = tabs[nextIndex];
+            if (!(next instanceof HTMLElement)) {
+                return;
+            }
+            const nextId = next.getAttribute('data-filter-tab') ?? '';
+            setTab(nextId);
+            next.focus();
+        });
+    });
+
+    if (initial) {
+        setTab(initial);
+    }
 }
 
 /**
@@ -1132,18 +1313,21 @@ function initOverviewViewToggle(root) {
 
 /**
  * @param {HTMLElement} sidebar
- * @param {Element | null} toggle
+ * @param {NodeListOf<Element> | Element[]} toggles
  * @param {boolean} collapsed
  */
-function setTagSidebarCollapsed(sidebar, toggle, collapsed) {
+function setTagSidebarCollapsed(sidebar, toggles, collapsed) {
     sidebar.dataset.collapsed = collapsed ? 'true' : 'false';
 
     const layout = sidebar.closest('.tools-overview-layout');
     layout?.classList.toggle('tools-overview-layout--tags-collapsed', collapsed);
 
-    if (toggle instanceof HTMLElement) {
+    Array.from(toggles).forEach((toggle) => {
+        if (!(toggle instanceof HTMLElement)) {
+            return;
+        }
         toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-    }
+    });
 }
 
 /**

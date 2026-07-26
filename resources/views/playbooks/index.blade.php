@@ -15,7 +15,7 @@
     <div class="tools-content tools-content--overview" data-overview-filter-root>
         <div @class([
             'tools-overview-layout',
-            'tools-overview-layout--with-tags' => count($tagCounts) > 0 || count($categoryCounts) > 0,
+            'tools-overview-layout--with-tags' => count($tagCounts) > 0 || count($categoryCounts) > 0 || count($productCounts ?? []) > 0,
         ])>
             <div class="tools-overview-main">
                 @if (config('playbooks.overview.show_title'))
@@ -43,7 +43,8 @@
                     >Step-by-step governance guides — from idea to implementation.</p>
                 @endif
 
-                <div class="tools-overview-toolbar">
+                <div class="tools-overview-toolbar tools-overview-toolbar--playbooks">
+                    <div class="tools-overview-toolbar__row tools-overview-toolbar__row--controls">
                     @if (count($seriesList) > 0)
                         <div class="tools-overview-view-toggle" role="tablist" aria-label="Overview view">
                             <button
@@ -103,15 +104,15 @@
                         <div class="tools-overview-read-controls" role="group">
                             <button
                                 type="button"
-                                class="tools-overview-read-controls__button"
+                                class="tools-overview-read-controls__button tools-overview-read-controls__button--active"
                                 data-overview-hide-read
-                                aria-pressed="false"
-                                data-i18n-aria="overview.hideRead"
-                                aria-label="Hide read stories"
-                                title="Hide read stories"
+                                aria-pressed="true"
+                                data-i18n-aria="overview.showRead"
+                                aria-label="Show read stories"
+                                title="Show read stories"
                             >
-                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                                <span class="sr-only" data-i18n="overview.hideRead">Hide read stories</span>
+                                <i class="fa-solid fa-eye-slash" aria-hidden="true"></i>
+                                <span class="sr-only" data-i18n="overview.showRead">Show read stories</span>
                             </button>
                             <button
                                 type="button"
@@ -129,8 +130,22 @@
                         </div>
                     @endif
 
+                    @if (count($tagCounts) > 0 || count($categoryCounts) > 0 || count($productCounts ?? []) > 0)
+                        <button
+                            type="button"
+                            class="tools-tag-sidebar__toggle"
+                            data-tag-sidebar-toggle
+                            aria-expanded="true"
+                            aria-controls="playbook-tag-sidebar-panel"
+                        >
+                            <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                            <span class="tools-tag-sidebar__toggle-label" data-i18n="overview.filterTitle">Filter</span>
+                            <i class="fa-solid fa-chevron-right tools-tag-sidebar__toggle-icon" aria-hidden="true"></i>
+                        </button>
+                    @endif
+
                     <div class="tools-overview-sort">
-                        <label class="tools-overview-sort__label" for="playbook-overview-sort" data-i18n="overview.sortLabel">Sort</label>
+                        <label class="sr-only" for="playbook-overview-sort" data-i18n="overview.sortLabel">Sort</label>
                         <div class="tools-overview-sort__field">
                             <select
                                 id="playbook-overview-sort"
@@ -145,35 +160,6 @@
                             <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
                         </div>
                     </div>
-
-                    @if (count($availableProducts ?? []) > 0)
-                        <label class="tools-overview-product-filter">
-                            <span class="sr-only" data-i18n="overview.productLabel">Product</span>
-                            <span class="tools-overview-sort__field">
-                                <select class="tools-overview-sort__select" data-overview-product>
-                                    <option value="all" data-i18n="overview.productAll">All products</option>
-                                    @foreach ($availableProducts as $product)
-                                        <option value="{{ $product }}">{{ \App\Playbooks\PlaybookProducts::label($product) }}</option>
-                                    @endforeach
-                                </select>
-                                <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
-                            </span>
-                        </label>
-                    @endif
-
-                    @if (count($tagCounts) > 0 || count($categoryCounts) > 0)
-                        <button
-                            type="button"
-                            class="tools-tag-sidebar__toggle"
-                            data-tag-sidebar-toggle
-                            aria-expanded="true"
-                            aria-controls="playbook-tag-sidebar-panel"
-                        >
-                            <i class="fa-solid fa-filter" aria-hidden="true"></i>
-                            <span class="tools-tag-sidebar__toggle-label" data-i18n="overview.filterTitle">Filter</span>
-                            <i class="fa-solid fa-chevron-right tools-tag-sidebar__toggle-icon" aria-hidden="true"></i>
-                        </button>
-                    @endif
 
                     <div class="playbook-offline playbook-offline--index" data-playbook-offline-index>
                         <button
@@ -194,18 +180,29 @@
                         </button>
                     </div>
 
-                    <label class="tools-overview-search">
-                        <span class="sr-only" data-i18n="overview.searchLabel">Search</span>
-                        <i class="fa-solid fa-magnifying-glass tools-overview-search__icon" aria-hidden="true"></i>
-                        <input
-                            type="search"
-                            class="tools-overview-search__input"
-                            data-overview-search
-                            autocomplete="off"
-                            data-i18n-placeholder="overview.searchPlaceholder"
-                            placeholder="Search playbooks…"
-                        />
-                    </label>
+                    <span
+                        class="tools-overview-count-badge"
+                        data-overview-result-count
+                        data-overview-count-mode="items"
+                        data-overview-count-badge
+                        aria-live="polite"
+                    >{{ count($playbooks) }}</span>
+                    </div>
+
+                    <div class="tools-overview-toolbar__row tools-overview-toolbar__row--search">
+                        <label class="tools-overview-search">
+                            <span class="sr-only" data-i18n="overview.searchLabel">Search</span>
+                            <i class="fa-solid fa-magnifying-glass tools-overview-search__icon" aria-hidden="true"></i>
+                            <input
+                                type="search"
+                                class="tools-overview-search__input"
+                                data-overview-search
+                                autocomplete="off"
+                                data-i18n-placeholder="overview.searchPlaceholder"
+                                placeholder="Search playbooks…"
+                            />
+                        </label>
+                    </div>
                 </div>
 
                 <div class="tools-overview-scroll">
@@ -248,6 +245,7 @@
             <x-playbooks.tag-sidebar
                 :tag-counts="$tagCounts"
                 :category-counts="$categoryCounts"
+                :product-counts="$productCounts ?? []"
                 :story-count="count($playbooks)"
             />
         </div>

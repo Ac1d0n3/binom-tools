@@ -17,6 +17,10 @@ class PlaybookOverviewSortTest extends TestCase
         $response->assertSee('data-overview-layout-toggle="list"', false);
         $response->assertSee('data-overview-hide-read', false);
         $response->assertSee('data-overview-read-reset', false);
+        $response->assertSee('data-overview-result-count', false);
+        $response->assertSee('data-overview-count-badge', false);
+        $response->assertSee('tools-overview-toolbar--playbooks', false);
+        $response->assertSee('tools-overview-toolbar__row--search', false);
         $response->assertSee('data-playbook-slug=', false);
         $response->assertSee('data-sort-date=', false);
         $response->assertSee('data-sort-title-de=', false);

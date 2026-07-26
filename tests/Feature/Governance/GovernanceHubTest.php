@@ -158,6 +158,10 @@ class GovernanceHubTest extends TestCase
         $response->assertDontSee('governance-radar__type-chip', false);
         $response->assertSee('data-governance-radar-item', false);
         $response->assertSee('data-governance-radar-count', false);
+        $response->assertSee('data-governance-radar-hide-read', false);
+        $response->assertSee('data-governance-radar-read-reset', false);
+        $response->assertSee('data-governance-radar-mark-read', false);
+        $response->assertSee('data-governance-radar-unread-empty', false);
         $response->assertSee('data-governance-radar-compact-toggle', false);
         $response->assertSee('data-governance-radar-intro', false);
         $response->assertSee('governance-radar__intro', false);

@@ -1,3 +1,12 @@
+import {
+    clearAllRadarRead,
+    hasAnyRadarRead,
+    isRadarItemRead,
+    readRadarHideRead,
+    toggleRadarItemRead,
+    writeRadarHideRead,
+} from './radar-read-state.js';
+
 function normalize(value) {
     return String(value || '').toLowerCase().trim();
 }
@@ -72,12 +81,84 @@ function mountRadar(root) {
     const reset = root.querySelector('[data-governance-radar-reset]');
     const count = root.querySelector('[data-governance-radar-count]');
     const empty = root.querySelector('[data-governance-radar-empty]');
+    const unreadEmpty = root.querySelector('[data-governance-radar-unread-empty]');
+    const hideReadToggle = root.querySelector('[data-governance-radar-hide-read]');
+    const readResetButton = root.querySelector('[data-governance-radar-read-reset]');
     const items = Array.from(root.querySelectorAll('[data-governance-radar-item]'));
     const topicOptions = topic
         ? Array.from(topic.querySelectorAll('option')).filter((option) => option.value !== '')
         : [];
 
+    let hideRead = readRadarHideRead();
+
     mountRadarCompact(root);
+
+    const lang = () => (document.documentElement.lang === 'de' ? 'de' : 'en');
+
+    const syncMarkReadButton = (button, read) => {
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+        button.setAttribute('aria-pressed', read ? 'true' : 'false');
+        button.classList.toggle('is-read', read);
+        const icon = button.querySelector('[data-mark-read-icon]');
+        const label = button.querySelector('[data-mark-read-label]');
+        if (icon) {
+            icon.classList.add('fa-solid');
+            icon.classList.toggle('fa-eye', !read);
+            icon.classList.toggle('fa-eye-slash', read);
+        }
+        const title = lang() === 'de'
+            ? (read ? 'Als ungelesen markieren' : 'Als gelesen markieren')
+            : (read ? 'Mark as unread' : 'Mark as read');
+        button.setAttribute('title', title);
+        button.setAttribute('aria-label', title);
+        if (label) {
+            label.textContent = title;
+        }
+    };
+
+    const syncItemReadUi = (item) => {
+        const itemId = item.dataset.itemId || '';
+        const read = isRadarItemRead(itemId);
+        item.dataset.read = read ? '1' : '0';
+        item.classList.toggle('is-read', read);
+        const button = item.querySelector('[data-governance-radar-mark-read]');
+        syncMarkReadButton(button, read);
+    };
+
+    const syncReadControls = () => {
+        if (hideReadToggle instanceof HTMLButtonElement) {
+            hideReadToggle.setAttribute('aria-pressed', hideRead ? 'true' : 'false');
+            hideReadToggle.classList.toggle('tools-overview-read-controls__button--active', hideRead);
+            const icon = hideReadToggle.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-eye', !hideRead);
+                icon.classList.toggle('fa-eye-slash', hideRead);
+            }
+            const label = hideRead
+                ? (lang() === 'de' ? 'Gelesene anzeigen' : 'Show read items')
+                : (lang() === 'de' ? 'Gelesene ausblenden' : 'Hide read items');
+            hideReadToggle.setAttribute('title', label);
+            hideReadToggle.setAttribute('aria-label', label);
+            const sr = hideReadToggle.querySelector('.sr-only');
+            if (sr) {
+                sr.textContent = label;
+            }
+        }
+        if (readResetButton instanceof HTMLButtonElement) {
+            const canReset = hasAnyRadarRead();
+            readResetButton.disabled = !canReset;
+            readResetButton.setAttribute('aria-disabled', canReset ? 'false' : 'true');
+            const resetLabel = lang() === 'de' ? 'Gelesen-Status zurücksetzen' : 'Reset read status';
+            readResetButton.setAttribute('title', resetLabel);
+            readResetButton.setAttribute('aria-label', resetLabel);
+            const sr = readResetButton.querySelector('.sr-only');
+            if (sr) {
+                sr.textContent = resetLabel;
+            }
+        }
+    };
 
     const selectedTypes = () => typeOptions
         .filter((option) => option.checked)
@@ -180,19 +261,28 @@ function mountRadar(root) {
         const selectedStack = normalize(stack?.value);
         const selectedRegion = normalize(region?.value);
         let visible = 0;
+        let wouldShowButRead = 0;
 
         items.forEach((item) => {
+            syncItemReadUi(item);
             const haystack = normalize(item.dataset.search);
             const itemTopics = splitTopics(item.dataset.topics).map(normalize);
             const itemType = normalize(item.dataset.type);
             const itemStacks = normalize(item.dataset.stack);
             const itemRegion = normalize(item.dataset.region);
-            const matches = (!query || haystack.includes(query))
+            const itemId = item.dataset.itemId || '';
+            const read = isRadarItemRead(itemId);
+            const matchesFilters = (!query || haystack.includes(query))
                 && (!selectedTopic || itemTopics.includes(selectedTopic))
                 && (selectedTypeValues.length === 0 || selectedTypeValues.includes(itemType))
                 && (!selectedStack || itemStacks.includes(selectedStack))
                 && (!selectedRegion || itemRegion === selectedRegion);
 
+            if (matchesFilters && hideRead && read) {
+                wouldShowButRead += 1;
+            }
+
+            const matches = matchesFilters && (!hideRead || !read);
             item.hidden = !matches;
             if (matches) {
                 visible += 1;
@@ -202,9 +292,14 @@ function mountRadar(root) {
         if (count) {
             count.textContent = String(visible);
         }
+        const showUnreadEmpty = hideRead && visible === 0 && wouldShowButRead > 0;
         if (empty) {
-            empty.hidden = visible !== 0;
+            empty.hidden = visible > 0 || showUnreadEmpty;
         }
+        if (unreadEmpty) {
+            unreadEmpty.hidden = !showUnreadEmpty;
+        }
+        syncReadControls();
     };
 
     typeToggle?.addEventListener('click', (event) => {
@@ -272,6 +367,43 @@ function mountRadar(root) {
         apply();
         setTypePanelOpen(false);
     });
+
+    root.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-governance-radar-mark-read]');
+        if (!button || !root.contains(button)) {
+            return;
+        }
+        const itemId = button.dataset.itemId || button.closest('[data-governance-radar-item]')?.dataset.itemId || '';
+        if (!itemId) {
+            return;
+        }
+        toggleRadarItemRead(itemId);
+        apply();
+    });
+
+    if (hideReadToggle instanceof HTMLButtonElement) {
+        hideReadToggle.addEventListener('click', () => {
+            hideRead = !hideRead;
+            writeRadarHideRead(hideRead);
+            apply();
+        });
+    }
+
+    if (readResetButton instanceof HTMLButtonElement) {
+        readResetButton.addEventListener('click', () => {
+            const message = lang() === 'de'
+                ? 'Alle Gelesen-Markierungen im Radar löschen? Das kann nicht rückgängig gemacht werden.'
+                : 'Clear all read markers for radar items? This cannot be undone.';
+            if (!window.confirm(message)) {
+                return;
+            }
+            clearAllRadarRead();
+            apply();
+        });
+    }
+
+    window.addEventListener('binom-tools:radar-read', apply);
+    window.addEventListener('binom-tools:radar-read-reset', apply);
 
     syncTypeLabel();
     syncTopicOptions();
@@ -421,18 +553,52 @@ function mountFeedSync(root) {
     const button = root.querySelector('[data-governance-radar-feed-sync]');
     const syncedAt = root.querySelector('[data-governance-radar-feed-synced-at]');
     const errors = root.querySelector('[data-governance-radar-feed-errors]');
+    const errorSummary = root.querySelector('[data-governance-radar-feed-error-summary]');
+    const errorList = root.querySelector('[data-governance-radar-feed-error-list]');
     if (!apiUrl || !button) {
         return;
     }
 
     const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const lang = () => (document.documentElement.lang === 'de' ? 'de' : 'en');
+
+    /**
+     * @param {string[]} list
+     */
+    const renderErrors = (list) => {
+        if (!(errors instanceof HTMLElement)) {
+            return;
+        }
+        if (list.length === 0) {
+            errors.hidden = true;
+            if (errorList) {
+                errorList.innerHTML = '';
+            }
+            return;
+        }
+
+        errors.hidden = false;
+        if (errorSummary instanceof HTMLElement) {
+            errorSummary.textContent = lang() === 'de'
+                ? `${list.length} Quellen mit Sync-Problemen`
+                : `${list.length} sources with sync issues`;
+            errorSummary.setAttribute('data-text-de', `${list.length} Quellen mit Sync-Problemen`);
+            errorSummary.setAttribute('data-text-en', `${list.length} sources with sync issues`);
+        }
+        if (errorList instanceof HTMLElement) {
+            errorList.innerHTML = list
+                .slice(0, 8)
+                .map((item) => `<li>${item.replace(/[<>&]/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[ch] || ch))}</li>`)
+                .join('');
+        }
+    };
 
     button.addEventListener('click', async () => {
         button.disabled = true;
         const label = button.querySelector('span');
         const previous = label?.textContent || '';
         if (label) {
-            label.textContent = document.documentElement.lang === 'de' ? 'Aktualisiere…' : 'Refreshing…';
+            label.textContent = lang() === 'de' ? 'Aktualisiere…' : 'Refreshing…';
         }
         try {
             const response = await fetch(apiUrl, {
@@ -454,17 +620,11 @@ function mountFeedSync(root) {
                 syncedAt.setAttribute('datetime', payload.syncedAt);
                 syncedAt.textContent = payload.syncedAt;
             }
-            if (errors) {
-                const list = Array.isArray(payload.errors) ? payload.errors.slice(0, 5) : [];
-                errors.textContent = list.join(' · ');
-                errors.hidden = list.length === 0;
-            }
+            const list = Array.isArray(payload.errors) ? payload.errors : [];
+            renderErrors(list);
             window.location.reload();
         } catch (error) {
-            if (errors) {
-                errors.hidden = false;
-                errors.textContent = error.message || 'Feed sync failed.';
-            }
+            renderErrors([error.message || 'Feed sync failed.']);
         } finally {
             button.disabled = false;
             if (label) {

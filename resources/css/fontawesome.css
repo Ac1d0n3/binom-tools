@@ -1,12 +1,20 @@
 /* Font Awesome Free — local, no Pro (font-display patched to swap in vite.config.js) */
 @import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
 @import '@fortawesome/fontawesome-free/css/solid.min.css';
+@import '@fortawesome/fontawesome-free/css/regular.min.css';
 @import '@fortawesome/fontawesome-free/css/brands.min.css';
 
-/* Keep solid glyphs on the Free webfont (weight 900) under layout font inheritance. */
+/* Keep Free webfont weights under layout font inheritance. */
 .fa-solid,
 .fas {
     font-family: "Font Awesome 7 Free", "Font Awesome 6 Free" !important;
     font-weight: 900 !important;
+    font-style: normal !important;
+}
+
+.fa-regular,
+.far {
+    font-family: "Font Awesome 7 Free", "Font Awesome 6 Free" !important;
+    font-weight: 400 !important;
     font-style: normal !important;
 }

@@ -96,10 +96,14 @@ class GovernanceHubController extends Controller
         $sources = config('governance-radar.sources', []);
         $customSources = $user !== null ? $this->radarSources->listFor($user) : [];
 
-        // Refresh a few stale feeds on page load (budgeted); scheduler covers the rest.
+        // Defer feed refresh until after the HTML is sent so page open stays fast.
+        // Scheduler + manual sync cover bulk freshness; ensureFresh is budgeted + backoffed.
         $feedSyncResult = ['synced' => 0, 'failed' => 0, 'skipped' => 0, 'errors' => [], 'statuses' => []];
         if (! app()->runningUnitTests() && (bool) config('governance-radar.ingest.on_request', true)) {
-            $feedSyncResult = $this->radarFeedSync->ensureFresh($user);
+            $feedSync = $this->radarFeedSync;
+            app()->terminating(static function () use ($feedSync, $user): void {
+                $feedSync->ensureFresh($user);
+            });
         }
 
         /** @var list<array<string, mixed>> $items */
@@ -199,15 +203,40 @@ class GovernanceHubController extends Controller
         $regionOptions = array_values(array_unique(array_filter($regions)));
         sort($regionOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
-        $feedErrors = array_values(array_filter(
-            array_map(static function (array $sync): ?string {
-                if (($sync['last_status'] ?? '') !== 'error') {
-                    return null;
+        $feedErrorStatuses = array_values(array_filter(
+            $this->radarFeedItems->syncStatusesBySourceId(),
+            static function (array $sync): bool {
+                $status = (string) ($sync['last_status'] ?? '');
+                if ($status !== 'error') {
+                    return false;
+                }
+                $error = (string) ($sync['last_error'] ?? '');
+
+                // Auth/missing feeds are not actionable sync problems.
+                foreach ([401, 403, 404, 410] as $status) {
+                    if (str_contains($error, 'HTTP '.$status)) {
+                        return false;
+                    }
                 }
 
-                return (string) ($sync['source_id'] ?? 'source').': '.(string) ($sync['last_error'] ?? 'error');
-            }, $this->radarFeedItems->syncStatusesBySourceId()),
+                // Legacy "too large" errors retry via salvage on next sync — hide noise.
+                if (str_contains($error, 'maximum allowed size')) {
+                    return false;
+                }
+
+                return true;
+            },
         ));
+        $feedSyncErrors = array_map(static function (array $sync): string {
+            $sourceId = (string) ($sync['source_id'] ?? 'source');
+            $raw = (string) ($sync['last_error'] ?? 'error');
+            $short = match (true) {
+                str_contains($raw, 'timeout') || str_contains($raw, 'Timeout') => 'timeout',
+                default => mb_substr($raw, 0, 80),
+            };
+
+            return $sourceId.': '.$short;
+        }, $feedErrorStatuses);
 
         return view('governance.radar', [
             'sources' => $sources,
@@ -221,7 +250,8 @@ class GovernanceHubController extends Controller
             'typeMeta' => $typeMeta,
             'topicTypeMap' => $topicTypeMap,
             'feedSyncedAt' => $this->radarFeedItems->latestSyncedAt(),
-            'feedSyncErrors' => array_slice($feedErrors, 0, 5),
+            'feedSyncErrors' => array_slice($feedSyncErrors, 0, 8),
+            'feedSyncErrorCount' => count($feedErrorStatuses),
             'feedSyncResult' => $feedSyncResult,
             'filters' => [
                 'types' => $typeOptions,

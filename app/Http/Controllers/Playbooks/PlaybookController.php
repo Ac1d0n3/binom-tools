@@ -79,23 +79,34 @@ class PlaybookController extends Controller
 
         $seriesList = $this->playbooks->allSeries();
 
-        $availableProducts = collect($playbooks)
+        $productCounts = collect($playbooks)
             ->flatMap(fn (array $item): array => $item['products'] ?? [])
             ->merge(
                 collect($seriesList)->flatMap(fn ($series): array => $series->products ?? [])
             )
             ->filter(fn (mixed $id): bool => is_string($id) && $id !== '')
-            ->unique()
-            ->sortBy(fn (string $id): int => array_search($id, PlaybookProducts::ORDERED_IDS, true) !== false
-                ? (int) array_search($id, PlaybookProducts::ORDERED_IDS, true)
+            ->countBy()
+            ->map(fn (int $count, string $id): array => [
+                'id' => $id,
+                'label' => PlaybookProducts::label($id),
+                'count' => $count,
+            ])
+            ->sortBy(fn (array $product): int => array_search($product['id'], PlaybookProducts::ORDERED_IDS, true) !== false
+                ? (int) array_search($product['id'], PlaybookProducts::ORDERED_IDS, true)
                 : PHP_INT_MAX)
             ->values()
             ->all();
+
+        $availableProducts = array_values(array_map(
+            static fn (array $product): string => $product['id'],
+            $productCounts,
+        ));
 
         return view('playbooks.index', [
             'playbooks' => $playbooks,
             'tagCounts' => $tagCounts,
             'categoryCounts' => $categoryCounts,
+            'productCounts' => $productCounts,
             'availableProducts' => $availableProducts,
             'seriesList' => $seriesList,
             'serverReadSlugs' => $this->serverReadSlugs(),

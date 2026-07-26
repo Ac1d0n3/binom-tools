@@ -60,10 +60,16 @@ return [
     'ingest' => [
         'ttl_minutes' => 45,
         'timeout_seconds' => 12,
-        'max_bytes' => 1_048_576,
+        // On page-load / ensureFresh only — keep well under request_budget_seconds.
+        'request_timeout_seconds' => 3,
+        // Soft cap: oversize feeds are truncated to the last complete item/entry.
+        'max_bytes' => 2_097_152,
         'default_limit' => 8,
-        'request_budget_seconds' => 8,
-        'max_sources_per_request' => 3,
+        'request_budget_seconds' => 4,
+        'max_sources_per_request' => 2,
+        // Do not retry failed feeds on every page open.
+        'error_backoff_minutes' => 360,
+        // Refresh stale feeds after the HTML response (terminating), not before.
         'on_request' => true,
         'default_keywords' => [
             'governance', 'catalog', 'security', 'privacy', 'compliance', 'policy',
@@ -302,7 +308,8 @@ return [
             'source_url' => 'https://iapp.org/news/',
             'feed_url' => 'https://iapp.org/news/a/rss/',
             'note' => 'Kuratierte Privacy-/Governance-News und Analyse zu Enforcement und Cross-Regulatory-Themen.',
-            'ingest' => true,
+            // Public RSS endpoint currently 404 — keep as catalog source only.
+            'ingest' => false,
 
             'priority' => 'medium',
         ],
@@ -522,7 +529,8 @@ return [
             'source_url' => 'https://www.bsi.bund.de/DE/Service-Navi/Presse/presse_node.html',
             'feed_url' => 'https://www.bsi.bund.de/SiteGlobals/Functions/RSSFeed/RSSNewsfeed/RSSNewsfeed.xml',
             'note' => 'DE-Security-Standards, Cloud- und C5-nahe Hinweise mit Schnittstelle zu Data-/Vendor-Governance.',
-            'ingest' => true,
+            // Official RSS URL currently 404 — keep as catalog source only.
+            'ingest' => false,
 
             'priority' => 'high',
         ],
@@ -604,7 +612,8 @@ return [
             'source_url' => 'https://www.alation.com/blog/',
             'feed_url' => 'https://www.alation.com/blog/feed/',
             'note' => 'Data Catalog, Literacy und Governance-Operating-Model aus Alation-Perspektive.',
-            'ingest' => true,
+            // Blog feed currently 404 — keep as catalog source only.
+            'ingest' => false,
             'ingest_keywords' => ['catalog', 'governance', 'literacy', 'steward', 'quality', 'lineage'],
 
             'priority' => 'low',
