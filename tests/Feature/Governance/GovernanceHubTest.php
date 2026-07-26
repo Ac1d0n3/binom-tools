@@ -17,6 +17,9 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-advisor', false);
         $response->assertSee('data-governance-advisor-config', false);
         $response->assertSee('data-governance-top-controls', false);
+        $response->assertSee('data-governance-drawer-toggle', false);
+        $response->assertSee('governance-hub__panel-tabs', false);
+        $response->assertSee('governance-hub__panel-tab--active', false);
         $response->assertSee('data-governance-panel-toggle="governance-help-panel"', false);
         $response->assertSee('data-governance-panel-toggle="governance-tools-panel"', false);
         $response->assertSee('data-governance-panel-toggle="governance-save-panel"', false);
@@ -57,6 +60,8 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('/governance/demo-workspace', false);
         $response->assertSee('Beispiel-Report ansehen', false);
         $response->assertSee('/governance/demo-report', false);
+        $response->assertSee('Aktive Pläne weiterführen', false);
+        $response->assertSee('/sprint-planner?list=1', false);
         $response->assertSee('data-governance-view-report', false);
         $response->assertSee('Report ansehen', false);
         $response->assertSee('governance-advisor__save-primary', false);

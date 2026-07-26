@@ -58,6 +58,8 @@ class GovernanceSessionsTest extends TestCase
             ->assertSee('Decision brief')
             ->assertSee('Zurück zum Hub', false)
             ->assertSee('/governance', false)
+            ->assertSee('Aktive Pläne weiterführen', false)
+            ->assertSee('/sprint-planner?list=1', false)
             ->assertSee('Eigene Session starten', false)
             ->assertDontSee('data-session-id="demo_finance_governance"', false);
     }

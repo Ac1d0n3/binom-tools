@@ -935,35 +935,78 @@ function initPanelToggles(root) {
     const controls = root.querySelector('[data-governance-top-controls]');
     const panels = Array.from(root.querySelectorAll('[data-governance-panel]'));
     const toggles = Array.from(root.querySelectorAll('[data-governance-panel-toggle]'));
+    const drawerToggle = root.querySelector('[data-governance-drawer-toggle]');
 
-    if (!controls || panels.length === 0 || toggles.length === 0) {
+    if (!controls || panels.length === 0 || toggles.length === 0 || !drawerToggle) {
         return;
     }
 
-    const sync = () => {
-        const hasOpenPanel = panels.some((panel) => !panel.hidden);
-        controls.hidden = !hasOpenPanel;
+    let scrollAnchor = null;
+
+    const rememberScroll = () => {
+        scrollAnchor = { x: window.scrollX, y: window.scrollY };
+    };
+
+    const activatePanel = (targetId) => {
+        panels.forEach((panel) => {
+            panel.hidden = panel.id !== targetId;
+        });
         toggles.forEach((toggle) => {
-            const target = root.querySelector(`#${toggle.dataset.governancePanelToggle}`);
-            toggle.setAttribute('aria-expanded', String(Boolean(target && !target.hidden)));
+            const isActive = toggle.dataset.governancePanelToggle === targetId;
+            toggle.classList.toggle('governance-hub__panel-tab--active', isActive);
+            toggle.setAttribute('aria-selected', String(isActive));
+            toggle.tabIndex = isActive ? 0 : -1;
         });
     };
 
+    const keepScrollPosition = (callback) => {
+        const scrollX = scrollAnchor?.x ?? window.scrollX;
+        const scrollY = scrollAnchor?.y ?? window.scrollY;
+        callback();
+        window.requestAnimationFrame(() => {
+            window.scrollTo(scrollX, scrollY);
+            window.setTimeout(() => {
+                window.scrollTo(scrollX, scrollY);
+                scrollAnchor = null;
+            }, 40);
+        });
+    };
+
+    const sync = () => {
+        drawerToggle.setAttribute('aria-expanded', String(!controls.hidden));
+    };
+
+    drawerToggle.addEventListener('click', () => {
+        controls.hidden = !controls.hidden;
+        if (!controls.hidden && !panels.some((panel) => !panel.hidden)) {
+            activatePanel(toggles[0]?.dataset.governancePanelToggle || panels[0]?.id || '');
+        }
+        sync();
+    });
+
     toggles.forEach((toggle) => {
+        toggle.addEventListener('pointerdown', rememberScroll);
+        toggle.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                rememberScroll();
+            }
+        });
         toggle.addEventListener('click', () => {
             const target = root.querySelector(`#${toggle.dataset.governancePanelToggle}`);
             if (!(target instanceof HTMLElement)) {
                 return;
             }
-            const shouldOpen = target.hidden;
-            panels.forEach((panel) => {
-                panel.hidden = true;
+            keepScrollPosition(() => {
+                controls.hidden = false;
+                activatePanel(target.id);
+                toggle.blur();
+                sync();
             });
-            target.hidden = !shouldOpen;
-            sync();
         });
     });
 
+    activatePanel(toggles.find((toggle) => toggle.getAttribute('aria-selected') === 'true')?.dataset.governancePanelToggle || toggles[0].dataset.governancePanelToggle || panels[0].id);
+    controls.hidden = true;
     sync();
 }
 

@@ -53,6 +53,10 @@
                     <i class="fa-solid fa-print" aria-hidden="true"></i>
                     <span data-text-de="Drucken/PDF" data-text-en="Print/PDF">Print/PDF</span>
                 </button>
+                <a class="governance-hub__button" href="{{ locale_route('sprint-planner.index') }}?list=1">
+                    <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+                    <span data-text-de="Aktive Pläne weiterführen" data-text-en="Continue active plans">Continue active plans</span>
+                </a>
                 <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
                     <i class="fa-solid fa-table-list" aria-hidden="true"></i>
                     <span data-text-de="Sessions" data-text-en="Sessions">Sessions</span>

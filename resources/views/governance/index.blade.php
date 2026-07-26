@@ -75,8 +75,25 @@
             {!! json_encode(['links' => $advisorLinks], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
         </script>
 
-        <section class="governance-hub__top-controls" aria-label="Governance Hub Hinweise und Session" data-governance-top-controls hidden>
-            <article class="governance-advisor__helpbox" id="governance-help-panel" data-governance-panel hidden>
+        <header class="governance-hub__hero">
+        <section class="governance-hub__top-controls" id="governance-header-drawer" aria-label="Governance Hub Hinweise und Session" data-governance-top-controls hidden>
+            <nav class="governance-hub__panel-tabs" aria-label="Header Bereich" role="tablist">
+                <button type="button" class="governance-hub__panel-tab governance-hub__panel-tab--active" id="governance-panel-tab-help" data-governance-panel-toggle="governance-help-panel" role="tab" aria-controls="governance-help-panel" aria-selected="true">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    <span data-text-de="Hilfe" data-text-en="Help">Help</span>
+                </button>
+                <button type="button" class="governance-hub__panel-tab" id="governance-panel-tab-save" data-governance-panel-toggle="governance-save-panel" role="tab" aria-controls="governance-save-panel" aria-selected="false" tabindex="-1">
+                    <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                    <span data-text-de="Speichern" data-text-en="Save">Save</span>
+                </button>
+                <button type="button" class="governance-hub__panel-tab" id="governance-panel-tab-tools" data-governance-panel-toggle="governance-tools-panel" role="tab" aria-controls="governance-tools-panel" aria-selected="false" tabindex="-1">
+                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                    <span data-text-de="Tools" data-text-en="Tools">Tools</span>
+                </button>
+            </nav>
+
+            <div class="governance-hub__panel-stage">
+            <article class="governance-advisor__helpbox" id="governance-help-panel" aria-labelledby="governance-panel-tab-help" data-governance-panel role="tabpanel">
                 <div class="governance-advisor__helpbox-head">
                     <span class="governance-advisor__helpbox-icon">
                         <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
@@ -100,7 +117,7 @@
                 </div>
             </article>
 
-            <article class="governance-advisor__helpbox" id="governance-tools-panel" data-governance-panel hidden>
+            <article class="governance-advisor__helpbox" id="governance-tools-panel" aria-labelledby="governance-panel-tab-tools" data-governance-panel role="tabpanel" hidden>
                 <div class="governance-advisor__helpbox-head">
                     <span class="governance-advisor__helpbox-icon">
                         <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
@@ -123,7 +140,7 @@
                 </div>
             </article>
 
-            <section class="governance-advisor__save-disclosure governance-advisor__save-disclosure--hub" id="governance-save-panel" data-governance-save-panel data-governance-panel hidden>
+            <section class="governance-advisor__save-disclosure governance-advisor__save-disclosure--hub" id="governance-save-panel" aria-labelledby="governance-panel-tab-save" data-governance-save-panel data-governance-panel role="tabpanel" hidden>
                 <div class="governance-advisor__save-head">
                     <span>
                         <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
@@ -162,6 +179,10 @@
                                 <i class="fa-solid fa-eye" aria-hidden="true"></i>
                                 <span data-text-de="Beispiel-Report ansehen" data-text-en="View example report">View example report</span>
                             </a>
+                            <a class="governance-hub__button" href="{{ locale_route('sprint-planner.index') }}?list=1">
+                                <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+                                <span data-text-de="Aktive Pläne weiterführen" data-text-en="Continue active plans">Continue active plans</span>
+                            </a>
                             <button type="button" class="governance-hub__button" data-governance-save-demo>
                                 <i class="fa-solid fa-vial" aria-hidden="true"></i>
                                 <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
@@ -194,9 +215,9 @@
                     </p>
                 </div>
             </section>
+            </div>
         </section>
 
-        <header class="governance-hub__hero">
             <div class="governance-hub__hero-copy">
                 <p class="governance-hub__eyebrow" data-text-de="Governance Schaltzentrale" data-text-en="Governance control hub">Governance control hub</p>
                 <h1
@@ -211,17 +232,9 @@
                     data-text-en="This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path."
                 >This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path.</p>
                 <div class="governance-hub__hero-actions" aria-label="Governance Hub Panels">
-                    <button type="button" class="governance-hub__button" data-governance-panel-toggle="governance-help-panel" aria-controls="governance-help-panel" aria-expanded="false">
-                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
-                        <span data-text-de="Hilfe" data-text-en="Help">Help</span>
-                    </button>
-                    <button type="button" class="governance-hub__button" data-governance-panel-toggle="governance-tools-panel" aria-controls="governance-tools-panel" aria-expanded="false">
-                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                        <span data-text-de="Tools" data-text-en="Tools">Tools</span>
-                    </button>
-                    <button type="button" class="governance-hub__button" data-governance-panel-toggle="governance-save-panel" aria-controls="governance-save-panel" aria-expanded="false">
-                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
-                        <span data-text-de="Speichern" data-text-en="Save">Save</span>
+                    <button type="button" class="governance-hub__button" data-governance-drawer-toggle aria-controls="governance-header-drawer" aria-expanded="false">
+                        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                        <span data-text-de="Hilfe, Speichern, Tools" data-text-en="Help, save, tools">Help, save, tools</span>
                     </button>
                     <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-report') }}">
                         <i class="fa-solid fa-eye" aria-hidden="true"></i>
