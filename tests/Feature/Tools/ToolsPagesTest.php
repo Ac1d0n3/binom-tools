@@ -597,6 +597,8 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('data-i18n="home.hubsTitle"', false);
         $response->assertSee('tools-section__head', false);
+        $response->assertSee('tools-section--band', false);
+        $response->assertSee('tools-section__art', false);
         $response->assertSee('data-i18n="home.featuredGovernance.title"', false);
         $response->assertSee('data-i18n="home.hub.tools.title"', false);
         $response->assertSee('data-i18n="home.hub.stories.title"', false);
