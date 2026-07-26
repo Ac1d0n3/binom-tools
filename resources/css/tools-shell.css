@@ -4803,6 +4803,15 @@ html[data-color-scheme='dark'] .governance-radar__item-icon--editorial {
     text-transform: uppercase;
 }
 
+.tools-card__badge--date {
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    font-weight: 550;
+    background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--surface-background-color));
+    color: var(--theme-color-primary);
+}
+
 .tools-card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
@@ -4975,11 +4984,21 @@ html[data-color-scheme='light'] .tools-home .tools-content > .tools-section--ban
     border-bottom: 1px solid color-mix(in srgb, var(--theme-color-primary) 14%, var(--base-border-color));
 }
 
+.tools-home .tools-section__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-width: 0;
+}
+
 .tools-home .tools-section__title {
     display: flex;
     align-items: center;
     gap: 0.7rem;
+    flex: 0 1 auto;
     margin: 0;
+    min-width: 0;
     font-size: clamp(1.05rem, 1.7vw, 1.2rem);
     font-weight: 500;
     letter-spacing: 0.06em;
@@ -5000,6 +5019,27 @@ html[data-color-scheme='light'] .tools-home .tools-content > .tools-section--ban
         var(--theme-color-primary) 100%
     );
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-color-accent) 16%, transparent);
+}
+
+.tools-home .tools-section__title-binary {
+    flex: 1 1 8rem;
+    min-width: 0;
+    max-width: min(48%, 32rem);
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: right;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: clamp(0.58rem, 1.15vw, 0.78rem);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    color: var(--theme-color-primary);
+    opacity: 0.38;
+    user-select: none;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 14%);
 }
 
 .tools-home .tools-section__lead {

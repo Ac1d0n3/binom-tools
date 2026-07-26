@@ -2,8 +2,10 @@
 
 namespace App\Catalog;
 
+use App\Governance\GovernanceRadarFeedItemStore;
 use App\Playbooks\PlaybookRepository;
 use App\Support\ToolsNav;
+use Carbon\Carbon;
 
 final class LandingCatalog
 {
@@ -15,6 +17,7 @@ final class LandingCatalog
 
     public function __construct(
         private readonly PlaybookRepository $playbooks,
+        private readonly GovernanceRadarFeedItemStore $radarFeedItems,
     ) {}
 
     /**
@@ -144,6 +147,30 @@ final class LandingCatalog
         $files = glob(rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'*.en.md');
 
         return is_array($files) ? count($files) : 0;
+    }
+
+    /**
+     * Bilingual date badge for the Radar hub card (last list update).
+     *
+     * @return array{de: string, en: string}|null
+     */
+    public function radarUpdatedBadge(): ?array
+    {
+        $raw = $this->radarFeedItems->latestListUpdatedAt();
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+
+        try {
+            $date = Carbon::parse($raw);
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return [
+            'en' => $date->format('j M Y'),
+            'de' => $date->format('d.m.Y'),
+        ];
     }
 
     /**

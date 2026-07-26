@@ -21,6 +21,9 @@
     'products' => [],
     'dbtBadge' => false,
     'platformMarks' => [],
+    'titleBadge' => null,
+    'titleBadgeDe' => null,
+    'titleBadgeEn' => null,
 ])
 
 @php
@@ -31,6 +34,9 @@
         'AI' => 'images/ai-badge.svg',
     ];
     $hasCount = $count !== null && $count !== '';
+    $badgeEn = trim((string) ($titleBadgeEn ?? $titleBadge ?? ''));
+    $badgeDe = trim((string) ($titleBadgeDe ?? $badgeEn));
+    $hasTitleBadge = $badgeEn !== '';
 @endphp
 
 <a
@@ -63,6 +69,15 @@
                 <h3 class="tools-card__title" @if ($titleKey) data-i18n="{{ $titleKey }}" @endif>{{ $title }}</h3>
                 @if ($example)
                     <span class="tools-card__badge" data-i18n="card.exampleBadge">Example</span>
+                @endif
+                @if ($hasTitleBadge)
+                    <span
+                        class="tools-card__badge tools-card__badge--date"
+                        @if ($badgeDe !== '' && $badgeEn !== '')
+                            data-text-de="{{ $badgeDe }}"
+                            data-text-en="{{ $badgeEn }}"
+                        @endif
+                    >{{ $badgeEn }}</span>
                 @endif
             </div>
             @if ($hasCount)

@@ -18,7 +18,11 @@
                 <x-tools.section-band-art />
                 <div class="tools-section__body">
                     <header class="tools-section__head">
-                        <h2 class="tools-section__title" data-i18n="home.hubsTitle">Hubs</h2>
+                        <x-tools.section-title
+                            title="Hubs"
+                            title-key="home.hubsTitle"
+                            title-de="Hubs"
+                        />
                         <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
                             Entry points for governance, stories, vendor resources, compliance, sprint planning, and the news radar.
                         </p>
@@ -60,6 +64,21 @@
                             :hub="true"
                             :count="$hubCounts['stories']"
                             count-label-key="home.hub.stories.countLabel"
+                        />
+                        <x-tools.card
+                            :href="locale_route('governance.radar')"
+                            title="Radar"
+                            description="Curated monitor for governance news, policy changes, standards, and vendor updates."
+                            title-key="home.hub.radar.title"
+                            description-key="home.hub.radar.description"
+                            icon="fa-satellite-dish"
+                            accent="primary"
+                            card-id="hub-radar"
+                            :hub="true"
+                            :count="$hubCounts['radar']"
+                            count-label-key="home.hub.radar.countLabel"
+                            :title-badge-en="data_get($radarUpdatedBadge, 'en')"
+                            :title-badge-de="data_get($radarUpdatedBadge, 'de')"
                         />
                         <x-tools.card
                             :href="locale_route('resources.index')"
@@ -113,19 +132,6 @@
                             :count="$hubCounts['sprintPlanner']"
                             count-label-key="home.hub.sprintPlanner.countLabel"
                         />
-                        <x-tools.card
-                            :href="locale_route('governance.radar')"
-                            title="Radar"
-                            description="Curated monitor for governance news, policy changes, standards, and vendor updates."
-                            title-key="home.hub.radar.title"
-                            description-key="home.hub.radar.description"
-                            icon="fa-satellite-dish"
-                            accent="primary"
-                            card-id="hub-radar"
-                            :hub="true"
-                            :count="$hubCounts['radar']"
-                            count-label-key="home.hub.radar.countLabel"
-                        />
                     </div>
                 </div>
             </section>
@@ -134,7 +140,11 @@
                 <x-tools.section-band-art />
                 <div class="tools-section__body">
                     <header class="tools-section__head">
-                        <h2 class="tools-section__title" data-i18n="home.storiesTitle">Governance stories</h2>
+                        <x-tools.section-title
+                            title="Governance stories"
+                            title-key="home.storiesTitle"
+                            title-de="Governance-Stories"
+                        />
                         <p class="tools-section__lead" data-hub-lead data-i18n="home.storiesLead">
                             Playbooks on data governance topics — step by step, from idea to implementation.
                         </p>
@@ -160,7 +170,11 @@
                     <x-tools.section-band-art />
                     <div class="tools-section__body">
                         <header class="tools-section__head">
-                            <h2 class="tools-section__title" data-i18n="home.aiTitle">AI tools</h2>
+                            <x-tools.section-title
+                                title="AI tools"
+                                title-key="home.aiTitle"
+                                title-de="AI-Tools"
+                            />
                             <p class="tools-section__lead" data-hub-lead data-i18n="home.aiLead">
                                 Build prompts and sanitize them before sending to external AI tools.
                             </p>
@@ -194,7 +208,11 @@
                 <x-tools.section-band-art />
                 <div class="tools-section__body">
                     <header class="tools-section__head">
-                        <h2 class="tools-section__title" data-i18n="home.toolsTitle">Binom-Tools</h2>
+                        <x-tools.section-title
+                            title="Binom-Tools"
+                            title-key="home.toolsTitle"
+                            title-de="Binom-Tools"
+                        />
                         <p class="tools-section__lead" data-hub-lead data-i18n="home.workflowsLead">
                             Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.
                         </p>
@@ -229,7 +247,11 @@
                     <x-tools.section-band-art />
                     <div class="tools-section__body">
                         <header class="tools-section__head">
-                            <h2 class="tools-section__title" data-i18n="home.ecosystemTitle">Ecosystem</h2>
+                            <x-tools.section-title
+                                title="Ecosystem"
+                                title-key="home.ecosystemTitle"
+                                title-de="Ökosystem"
+                            />
                         </header>
                         <div class="tools-card-grid">
                             @foreach ($ecosystemItems as $item)

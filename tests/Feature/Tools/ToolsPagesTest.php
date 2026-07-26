@@ -597,6 +597,7 @@ class ToolsPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('data-i18n="home.hubsTitle"', false);
         $response->assertSee('tools-section__head', false);
+        $response->assertSee('tools-section__title-binary', false);
         $response->assertSee('tools-section--band', false);
         $response->assertSee('tools-section__art', false);
         $response->assertSee('data-i18n="home.featuredGovernance.title"', false);
@@ -610,6 +611,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-card-id="featured-governance"', false);
         $response->assertSee('data-card-id="hub-tools"', false);
         $response->assertSee('data-card-id="hub-radar"', false);
+        $response->assertSee('tools-card__badge--date', false);
         $response->assertSee('data-i18n="header.mission"', false);
         $response->assertSee(route('governance.index'), false);
         $response->assertSee(route('governance.radar'), false);

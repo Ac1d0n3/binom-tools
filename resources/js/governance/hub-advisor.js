@@ -77,7 +77,7 @@ const labels = {
     'governance-stack-advisor': {
         group: 'tools',
         icon: 'fa-layer-group',
-        title: { de: 'Governance Stack Advisor', en: 'Governance Stack Advisor' },
+        title: { de: 'Governance-Stack auswählen', en: 'Governance Stack Advisor' },
         reason: {
             de: 'Vergleicht Fabric, Databricks, Snowflake/dbt, SAP und Open Source nach Zielbild, Betrieb und Governance.',
             en: 'Compares Fabric, Databricks, Snowflake/dbt, SAP, and open source by target architecture, operations, and governance.',
@@ -87,7 +87,7 @@ const labels = {
     'source-scope-builder': {
         group: 'tools',
         icon: 'fa-database',
-        title: { de: 'Source Scope Builder', en: 'Source Scope Builder' },
+        title: { de: 'Quellen-Scope festlegen', en: 'Source Scope Builder' },
         reason: {
             de: 'Sammelt Objekte, Must-have, Skip, PII, Owner und offene Review-Fragen für die erste Ladeentscheidung.',
             en: 'Collects objects, must-haves, skips, PII, owners, and open review questions for the first load decision.',
@@ -97,7 +97,7 @@ const labels = {
     'kpi-requirements-intake': {
         group: 'tools',
         icon: 'fa-gauge-high',
-        title: { de: 'KPI Requirements Intake', en: 'KPI Requirements Intake' },
+        title: { de: 'KPI-Anforderungen erfassen', en: 'KPI Requirements Intake' },
         reason: {
             de: 'Macht aus Stakeholder-Wünschen Formel, Grain, Owner, Dimensionen und Akzeptanzbeispiele.',
             en: 'Turns stakeholder needs into formula, grain, owner, dimensions, and acceptance examples.',
@@ -107,7 +107,7 @@ const labels = {
     'mart-design-brief-generator': {
         group: 'tools',
         icon: 'fa-table-cells',
-        title: { de: 'Mart Design Brief', en: 'Mart Design Brief' },
+        title: { de: 'Mart Design Brief erstellen', en: 'Mart Design Brief' },
         reason: {
             de: 'Führt von KPI-Karten zu Fact-/Dimension-Kandidaten, Grain und offenen Modellierungsentscheidungen.',
             en: 'Moves KPI cards into fact/dimension candidates, grain, and open modelling decisions.',
@@ -117,7 +117,7 @@ const labels = {
     'pii-dsdr-readiness-checker': {
         group: 'tools',
         icon: 'fa-shield-halved',
-        title: { de: 'PII/DSDR Readiness Checker', en: 'PII/DSDR Readiness Checker' },
+        title: { de: 'PII/DSDR Readiness prüfen', en: 'PII/DSDR Readiness Checker' },
         reason: {
             de: 'Prüft PII, Freitext, Lösch-/Auskunftskeys, Retention und Access-Risiken vor der Umsetzung.',
             en: 'Checks PII, free text, deletion/access keys, retention, and access risks before implementation.',
@@ -127,7 +127,7 @@ const labels = {
     'decision-brief-generator': {
         group: 'tools',
         icon: 'fa-file-signature',
-        title: { de: 'Decision Brief Generator', en: 'Decision Brief Generator' },
+        title: { de: 'Entscheidungsvorlage erstellen', en: 'Decision Brief Generator' },
         reason: {
             de: 'Verdichtet Optionen, Annahmen, Risiken und nächste Schritte in eine entscheidbare Vorlage.',
             en: 'Condenses options, assumptions, risks, and next steps into a decision-ready brief.',
@@ -137,7 +137,7 @@ const labels = {
     'vendor-learning-path-builder': {
         group: 'tools',
         icon: 'fa-graduation-cap',
-        title: { de: 'Vendor Learning Path Builder', en: 'Vendor Learning Path Builder' },
+        title: { de: 'Lern- und Zertifizierungspfad planen', en: 'Vendor Learning Path Builder' },
         reason: {
             de: 'Ordnet Hersteller-Doku, Lernpfade und Zertifikate passend zu Stack und Rolle.',
             en: 'Maps vendor docs, learning paths, and certifications to stack and role.',

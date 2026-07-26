@@ -7,6 +7,7 @@ use App\Accounts\JsonFileStore;
 use App\Models\BnTools\BnGovernanceRadarFeedItem;
 use App\Models\BnTools\BnGovernanceRadarFeedSync;
 use App\Support\StorageDriver;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
 final class GovernanceRadarFeedItemStore
@@ -185,6 +186,57 @@ final class GovernanceRadarFeedItemStore
         rsort($times);
 
         return $times[0];
+    }
+
+    /**
+     * Best-effort “list last updated” stamp for hub badges:
+     * prefer last successful feed sync, else newest published_at across feed + curated items.
+     */
+    public function latestListUpdatedAt(): ?string
+    {
+        $sync = $this->latestSyncedAt();
+        if ($sync !== null && $sync !== '') {
+            return $sync;
+        }
+
+        $candidates = [];
+        foreach ($this->allItems() as $item) {
+            $value = trim((string) ($item['published_at'] ?? ''));
+            if ($value !== '') {
+                $candidates[] = $value;
+            }
+        }
+
+        foreach (config('governance-radar.items', []) as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            $value = trim((string) ($item['published_at'] ?? ''));
+            if ($value !== '') {
+                $candidates[] = $value;
+            }
+        }
+
+        if ($candidates === []) {
+            return null;
+        }
+
+        $normalized = [];
+        foreach ($candidates as $candidate) {
+            try {
+                $normalized[] = Carbon::parse($candidate)->toIso8601String();
+            } catch (\Throwable) {
+                // Ignore unparseable stamps.
+            }
+        }
+
+        if ($normalized === []) {
+            return null;
+        }
+
+        rsort($normalized);
+
+        return $normalized[0];
     }
 
     /**

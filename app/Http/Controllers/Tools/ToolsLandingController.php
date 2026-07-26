@@ -31,6 +31,7 @@ class ToolsLandingController extends Controller
             'storyCount' => $this->catalog->storyCount(),
             'hubCounts' => $this->catalog->hubCounts(),
             'landingQuote' => $this->catalog->landingQuote(),
+            'radarUpdatedBadge' => $this->catalog->radarUpdatedBadge(),
         ]);
     }
 }

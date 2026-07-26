@@ -204,7 +204,7 @@ return [
         ],
         'governance-decision-support' => [
             'label' => [
-                'de' => 'Governance Decision Support',
+                'de' => 'Governance-Entscheidungshilfen',
                 'en' => 'Governance decision support',
             ],
             'navLabel' => [
@@ -212,7 +212,7 @@ return [
                 'en' => 'Governance',
             ],
             'description' => [
-                'de' => 'Gefuehrte Entscheidungshilfen: KPI-Anforderungen, Source Scope, Mart Design, Stack-Auswahl, PII/DSDR, Decision Brief und Lernpfad.',
+                'de' => 'Geführte Entscheidungshilfen: KPI-Anforderungen, Quellen-Scope, Mart Design, Stack-Auswahl, PII/DSDR, Entscheidungsbrief und Lernpfad.',
                 'en' => 'Guided decision aids: KPI requirements, source scope, mart design, stack selection, PII/DSDR, decision brief, and learning path.',
             ],
             'icon' => 'fa-compass',
@@ -784,7 +784,7 @@ return [
             'id' => 'kpi-requirements-intake',
             'route' => 'tools.kpi-requirements-intake',
             'label' => [
-                'de' => 'KPI Requirements Intake',
+                'de' => 'KPI-Anforderungen erfassen',
                 'en' => 'KPI Requirements Intake',
             ],
             'description' => [
@@ -801,7 +801,7 @@ return [
             'id' => 'source-scope-builder',
             'route' => 'tools.source-scope-builder',
             'label' => [
-                'de' => 'Source Scope Builder',
+                'de' => 'Quellen-Scope festlegen',
                 'en' => 'Source Scope Builder',
             ],
             'description' => [
@@ -818,11 +818,11 @@ return [
             'id' => 'mart-design-brief-generator',
             'route' => 'tools.mart-design-brief-generator',
             'label' => [
-                'de' => 'Mart Design Brief Generator',
+                'de' => 'Mart Design Brief erstellen',
                 'en' => 'Mart Design Brief Generator',
             ],
             'description' => [
-                'de' => 'KPI Cards und Source Scope in Fact, Dimension, Grain, History und DQ-Fragen uebersetzen.',
+                'de' => 'KPI-Karten und Quellen-Scope in Fact, Dimension, Grain, Historie und DQ-Fragen übersetzen.',
                 'en' => 'Translate KPI cards and source scope into fact, dimension, grain, history, and DQ questions.',
             ],
             'example' => true,
@@ -835,7 +835,7 @@ return [
             'id' => 'governance-stack-advisor',
             'route' => 'tools.governance-stack-advisor',
             'label' => [
-                'de' => 'Governance Stack Advisor',
+                'de' => 'Governance-Stack auswählen',
                 'en' => 'Governance Stack Advisor',
             ],
             'description' => [
@@ -852,11 +852,11 @@ return [
             'id' => 'pii-dsdr-readiness-checker',
             'route' => 'tools.pii-dsdr-readiness-checker',
             'label' => [
-                'de' => 'PII/DSDR Readiness Checker',
+                'de' => 'PII/DSDR Readiness prüfen',
                 'en' => 'PII/DSDR Readiness Checker',
             ],
             'description' => [
-                'de' => 'Personenbezug, DSDR-Suchkeys, Freitext, Kopien, Retention und Governance Gates pruefen.',
+                'de' => 'Personenbezug, DSDR-Suchkeys, Freitext, Kopien, Retention und Governance-Gates prüfen.',
                 'en' => 'Check personal data, DSDR search keys, free text, copies, retention, and governance gates.',
             ],
             'example' => true,
@@ -869,11 +869,11 @@ return [
             'id' => 'decision-brief-generator',
             'route' => 'tools.decision-brief-generator',
             'label' => [
-                'de' => 'Decision Brief Generator',
+                'de' => 'Entscheidungsvorlage erstellen',
                 'en' => 'Decision Brief Generator',
             ],
             'description' => [
-                'de' => 'Discovery-Ergebnisse zu Entscheidung, Pilot-Scope, Risiken und naechstem Sprint verdichten.',
+                'de' => 'Discovery-Ergebnisse zu Entscheidung, Pilot-Scope, Risiken und nächstem Sprint verdichten.',
                 'en' => 'Condense discovery results into decision, pilot scope, risks, and next sprint.',
             ],
             'example' => true,
@@ -886,11 +886,11 @@ return [
             'id' => 'vendor-learning-path-builder',
             'route' => 'tools.vendor-learning-path-builder',
             'label' => [
-                'de' => 'Vendor Learning Path Builder',
+                'de' => 'Lern- und Zertifizierungspfad planen',
                 'en' => 'Vendor Learning Path Builder',
             ],
             'description' => [
-                'de' => 'Rollenbasierte Lernpfade mit offiziellen Zertifikatslinks, Playbooks und praktischen Uebungen planen.',
+                'de' => 'Rollenbasierte Lernpfade mit offiziellen Zertifikatslinks, Playbooks und praktischen Übungen planen.',
                 'en' => 'Plan role-based learning paths with official certification links, playbooks, and practical exercises.',
             ],
             'example' => true,

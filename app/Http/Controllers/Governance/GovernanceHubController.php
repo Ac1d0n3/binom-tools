@@ -515,7 +515,7 @@ class GovernanceHubController extends Controller
                 ],
                 'links' => array_values(array_filter([
                     ['href' => $route('tools.stakeholder-matrix'), 'label' => ['de' => 'Stakeholder & RACI', 'en' => 'Stakeholder & RACI']],
-                    ['href' => $route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI Requirements Intake', 'en' => 'KPI Requirements Intake']],
+                    ['href' => $route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI-Anforderungen', 'en' => 'KPI Requirements Intake']],
                     ['href' => $route('tools.kpi-definition'), 'label' => ['de' => 'KPI Definition Card', 'en' => 'KPI Definition Card']],
                     ['href' => $route('tools.mart-design-brief-generator'), 'label' => ['de' => 'Mart Design Brief', 'en' => 'Mart Design Brief']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
@@ -529,7 +529,7 @@ class GovernanceHubController extends Controller
                     'en' => 'Pick a supplier, understand core entities, review PII/DSDR, and mark skip tables before loading.',
                 ],
                 'links' => array_values(array_filter([
-                    ['href' => $route('tools.source-scope-builder'), 'label' => ['de' => 'Source Scope Builder', 'en' => 'Source Scope Builder']],
+                    ['href' => $route('tools.source-scope-builder'), 'label' => ['de' => 'Quellen-Scope', 'en' => 'Source Scope Builder']],
                     ['href' => $route('suppliers.index'), 'label' => ['de' => 'Supplier Library', 'en' => 'Supplier library']],
                     ['href' => $route('tools.pii-recommend-generator'), 'label' => ['de' => 'PII Recommend', 'en' => 'PII Recommend']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
@@ -543,10 +543,10 @@ class GovernanceHubController extends Controller
                     'en' => 'Treat Fabric, Databricks, Snowflake, dbt, BI, and catalog tools as one governance stack.',
                 ],
                 'links' => array_values(array_filter([
-                    ['href' => $route('tools.governance-stack-advisor'), 'label' => ['de' => 'Governance Stack Advisor', 'en' => 'Governance Stack Advisor']],
+                    ['href' => $route('tools.governance-stack-advisor'), 'label' => ['de' => 'Stack-Berater', 'en' => 'Governance Stack Advisor']],
                     ['href' => $route('resources.index'), 'label' => ['de' => 'Stack Filter', 'en' => 'Stack filter']],
                     ['href' => $route('tools.architecture-fit'), 'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit']],
-                    ['href' => $route('tools.vendor-learning-path-builder'), 'label' => ['de' => 'Learning Path', 'en' => 'Learning path']],
+                    ['href' => $route('tools.vendor-learning-path-builder'), 'label' => ['de' => 'Vendor-Lernpfad', 'en' => 'Learning path']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
             [
@@ -561,7 +561,7 @@ class GovernanceHubController extends Controller
                     ['href' => $route('tools.pii-dsdr-readiness-checker'), 'label' => ['de' => 'PII/DSDR Readiness', 'en' => 'PII/DSDR Readiness']],
                     ['href' => $route('tools.pii-policy-generator'), 'label' => ['de' => 'PII Policy', 'en' => 'PII Policy']],
                     ['href' => $route('tools.pii-unreviewed-gate-generator'), 'label' => ['de' => 'PII Table Gate', 'en' => 'PII Table Gate']],
-                    ['href' => $route('tools.decision-brief-generator'), 'label' => ['de' => 'Decision Brief', 'en' => 'Decision Brief']],
+                    ['href' => $route('tools.decision-brief-generator'), 'label' => ['de' => 'Entscheidungsbrief', 'en' => 'Decision Brief']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
         ];

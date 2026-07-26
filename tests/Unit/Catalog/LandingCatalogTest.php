@@ -94,6 +94,18 @@ class LandingCatalogTest extends TestCase
         $this->assertGreaterThan(0, $counts['sprintPlanner']);
     }
 
+    public function test_radar_updated_badge_returns_bilingual_date_when_list_has_timestamps(): void
+    {
+        $catalog = app(LandingCatalog::class);
+        $badge = $catalog->radarUpdatedBadge();
+
+        $this->assertIsArray($badge);
+        $this->assertArrayHasKey('en', $badge);
+        $this->assertArrayHasKey('de', $badge);
+        $this->assertMatchesRegularExpression('/^\d{1,2} [A-Z][a-z]{2} \d{4}$/', $badge['en']);
+        $this->assertMatchesRegularExpression('/^\d{2}\.\d{2}\.\d{4}$/', $badge['de']);
+    }
+
     public function test_top_stories_ranks_by_likes_then_views(): void
     {
         $catalog = app(LandingCatalog::class);

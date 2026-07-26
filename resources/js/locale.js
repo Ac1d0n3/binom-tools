@@ -465,6 +465,34 @@ const shellLabels = {
         'card.powerbi-dax-generator.title': 'Power BI DAX Measure Generator',
         'card.powerbi-dax-generator.description':
             'DAX Measures, Time-Intelligence-Vorlagen und Dokumentations-CSV aus Base Measures plus Definitionen erzeugen.',
+        'nav.kpi-requirements-intake': 'KPI-Anforderungen',
+        'card.kpi-requirements-intake.title': 'KPI-Anforderungen erfassen',
+        'card.kpi-requirements-intake.description':
+            'Stakeholder-Fragen, Formel, Grain, Owner, Dimensionen und Akzeptanzbeispiele erfassen.',
+        'nav.source-scope-builder': 'Quellen-Scope',
+        'card.source-scope-builder.title': 'Quellen-Scope festlegen',
+        'card.source-scope-builder.description':
+            'Supplier-Load vorbereiten: must-have, optional, skip, PII/DSDR und Review-Fragen.',
+        'nav.mart-design-brief-generator': 'Mart Design Brief',
+        'card.mart-design-brief-generator.title': 'Mart Design Brief erstellen',
+        'card.mart-design-brief-generator.description':
+            'KPI-Karten und Quellen-Scope in Fact, Dimension, Grain, Historie und DQ-Fragen übersetzen.',
+        'nav.governance-stack-advisor': 'Stack-Berater',
+        'card.governance-stack-advisor.title': 'Governance-Stack auswählen',
+        'card.governance-stack-advisor.description':
+            'Stack-Shortlist nach Cloud, BI, Catalog, Residency, Skills, Zertifikaten und Risiko vorbereiten.',
+        'nav.pii-dsdr-readiness-checker': 'PII/DSDR Readiness',
+        'card.pii-dsdr-readiness-checker.title': 'PII/DSDR Readiness prüfen',
+        'card.pii-dsdr-readiness-checker.description':
+            'Personenbezug, DSDR-Suchkeys, Freitext, Kopien, Retention und Governance-Gates prüfen.',
+        'nav.decision-brief-generator': 'Entscheidungsbrief',
+        'card.decision-brief-generator.title': 'Entscheidungsvorlage erstellen',
+        'card.decision-brief-generator.description':
+            'Discovery-Ergebnisse zu Entscheidung, Pilot-Scope, Risiken und nächstem Sprint verdichten.',
+        'nav.vendor-learning-path-builder': 'Vendor-Lernpfad',
+        'card.vendor-learning-path-builder.title': 'Lern- und Zertifizierungspfad planen',
+        'card.vendor-learning-path-builder.description':
+            'Rollenbasierte Lernpfade mit offiziellen Zertifikatslinks, Playbooks und praktischen Übungen planen.',
         'tableauCalc.pageTitle': 'Tableau Calculation Generator',
         'tableauCalc.pageLead': 'Erzeuge Tableau Calculated Fields, LOD-Varianten und Dokumentations-CSV aus Base Measures plus wiederverwendbaren Definitionen.',
         'tableauCalc.help.title': 'Tableau Calculation Hilfe',
@@ -1415,6 +1443,34 @@ const shellLabels = {
         'card.powerbi-dax-generator.title': 'Power BI DAX Measure Generator',
         'card.powerbi-dax-generator.description':
             'Generate DAX measures, time-intelligence snippets, and documentation CSV from base measures plus definitions.',
+        'nav.kpi-requirements-intake': 'KPI Requirements',
+        'card.kpi-requirements-intake.title': 'KPI Requirements Intake',
+        'card.kpi-requirements-intake.description':
+            'Capture stakeholder questions, formula, grain, owner, dimensions, and acceptance examples.',
+        'nav.source-scope-builder': 'Source Scope',
+        'card.source-scope-builder.title': 'Source Scope Builder',
+        'card.source-scope-builder.description':
+            'Prepare supplier load: must-have, optional, skip, PII/DSDR, and review questions.',
+        'nav.mart-design-brief-generator': 'Mart Design Brief',
+        'card.mart-design-brief-generator.title': 'Mart Design Brief Generator',
+        'card.mart-design-brief-generator.description':
+            'Translate KPI cards and source scope into fact, dimension, grain, history, and DQ questions.',
+        'nav.governance-stack-advisor': 'Stack Advisor',
+        'card.governance-stack-advisor.title': 'Governance Stack Advisor',
+        'card.governance-stack-advisor.description':
+            'Prepare a stack shortlist by cloud, BI, catalog, residency, skills, certifications, and risk.',
+        'nav.pii-dsdr-readiness-checker': 'PII/DSDR Readiness',
+        'card.pii-dsdr-readiness-checker.title': 'PII/DSDR Readiness Checker',
+        'card.pii-dsdr-readiness-checker.description':
+            'Check personal data, DSDR search keys, free text, copies, retention, and governance gates.',
+        'nav.decision-brief-generator': 'Decision Brief',
+        'card.decision-brief-generator.title': 'Decision Brief Generator',
+        'card.decision-brief-generator.description':
+            'Condense discovery results into decision, pilot scope, risks, and next sprint.',
+        'nav.vendor-learning-path-builder': 'Vendor Learning Path',
+        'card.vendor-learning-path-builder.title': 'Vendor Learning Path Builder',
+        'card.vendor-learning-path-builder.description':
+            'Plan role-based learning paths with official certification links, playbooks, and practical exercises.',
         'tableauCalc.pageTitle': 'Tableau Calculation Generator',
         'tableauCalc.pageLead': 'Generate Tableau calculated fields, LOD variants and documentation CSV from base measures plus reusable definitions.',
         'tableauCalc.help.title': 'Tableau Calculation help',
