@@ -13,6 +13,7 @@ class RolesPagesTest extends TestCase
         $index->assertSee('data-i18n="roles.indexTitle"', false);
         $index->assertSee('roles-hub-grid', false);
         $index->assertSee('roles-hub-card', false);
+        $index->assertSee('roles-hub-card__icon-wrap', false);
         $index->assertDontSee('roles-persona-bar', false);
         $index->assertDontSee('data-overview-search', false);
         $index->assertSee(route('roles.show', ['slug' => 'architect']), false);

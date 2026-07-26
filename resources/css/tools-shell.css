@@ -11647,43 +11647,133 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
     color: var(--bn-color-text-secondary, color-mix(in srgb, var(--content-font-color) 68%, transparent));
 }
 
+.learning-path-detail__roles {
+    margin: 1.25rem 0 0.5rem;
+}
+
+.learning-path-detail__section-title {
+    margin: 0 0 0.65rem;
+    font-size: 1rem;
+}
+
 /* Roles hub */
 .roles-hub-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
-    gap: 0.85rem;
-    margin: 0.35rem 0 1.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.15rem;
+    margin: 0.5rem 0 1.75rem;
+    align-content: start;
 }
 
 .roles-hub-card {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    min-height: 8.5rem;
-    padding: 1rem 1.05rem;
+    gap: 1rem;
+    min-height: 15.5rem;
+    padding: 1.45rem 1.5rem 1.25rem;
     border: 1px solid var(--base-border-color);
-    border-radius: 0.65rem;
-    background: var(--surface-background-color, var(--content-background-color));
+    border-radius: 0.9rem;
+    background:
+        linear-gradient(
+            165deg,
+            color-mix(in srgb, var(--theme-color-primary) 7%, var(--surface-background-color, var(--content-background-color))) 0%,
+            var(--surface-background-color, var(--content-background-color)) 42%
+        );
     color: inherit;
     text-decoration: none;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--content-font-color) 4%, transparent);
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
 }
 
 .roles-hub-card:hover {
-    border-color: color-mix(in srgb, var(--theme-color-primary) 45%, var(--base-border-color));
-    background: color-mix(in srgb, var(--theme-color-primary) 6%, var(--surface-background-color, var(--content-background-color)));
+    border-color: color-mix(in srgb, var(--theme-color-primary) 48%, var(--base-border-color));
+    box-shadow:
+        0 10px 28px color-mix(in srgb, var(--theme-color-primary) 12%, transparent),
+        0 1px 0 color-mix(in srgb, var(--content-font-color) 4%, transparent);
+    transform: translateY(-2px);
+}
+
+.roles-hub-card__icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+    color: var(--theme-color-primary);
+    flex-shrink: 0;
+}
+
+.roles-hub-card__icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.roles-hub-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .roles-hub-card__title {
-    font-size: 1.05rem;
-    font-weight: 650;
-    line-height: 1.3;
+    font-size: 1.28rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
 }
 
 .roles-hub-card__lead {
-    font-size: 0.875rem;
-    line-height: 1.45;
+    font-size: 0.95rem;
+    line-height: 1.5;
     color: var(--bn-color-text-secondary, color-mix(in srgb, var(--content-font-color) 72%, transparent));
+}
+
+.roles-hub-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    font-size: 0.875rem;
+    font-weight: 650;
+    color: var(--theme-color-primary);
+}
+
+.roles-hub-card__cta i {
+    font-size: 0.8rem;
+    transition: transform 0.18s ease;
+}
+
+.roles-hub-card:hover .roles-hub-card__cta i {
+    transform: translateX(3px);
+}
+
+@media (max-width: 1100px) {
+    .roles-hub-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .roles-hub-grid {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+    }
+
+    .roles-hub-card {
+        min-height: 0;
+        padding: 1.2rem 1.2rem 1.05rem;
+    }
+
+    .roles-hub-card__title {
+        font-size: 1.15rem;
+    }
 }
 
 .roles-detail__nav {

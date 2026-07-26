@@ -105,8 +105,16 @@ Nach Ablage als `content/{slug}.en.md` + `content/{slug}.de.md` im Hub verdrahte
 
 ---
 
-## Nach dem Schreiben
+## Nach dem Schreiben / Status
 
-1. Dateien nach `content/` legen (`{slug}.en.md`, `{slug}.de.md` inkl. Frontmatter).  
-2. Im Agents-Chat „Stories verdrahten“ / Todo `wire-new-stories` anstoßen — Roles Hub, Glossary `related`, Learning Paths aktualisieren.  
-3. Bis dahin nutzt der Roles Hub **Fallback-Links** auf die bestehenden Stories oben.
+| Slug | Status |
+|------|--------|
+| `data-architect-role` | **fertig** — in Roles Hub / Glossary / Path verdrahtet |
+| `raci-for-data-governance` | **fertig** — verdrahtet |
+| `data-product-owner-vs-data-owner` | **fertig** — verdrahtet (+ Persona Data Product Owner) |
+| `stewardship-capacity` | **fertig** — verdrahtet |
+| `governance-coe` | **fertig** — in Learning Path Governance Foundations verdrahtet |
+
+Serie: `roles-hub` (*Roles and Decision Rights*).
+
+Config-Anker: [`config/roles.php`](../config/roles.php), [`config/glossary.php`](../config/glossary.php), [`config/learning-paths.php`](../config/learning-paths.php).

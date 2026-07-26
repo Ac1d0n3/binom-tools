@@ -86,6 +86,7 @@ class LearningPathController extends Controller
             'item' => $item,
             'audiences' => $audiences,
             'steps' => $steps,
+            'relatedRoles' => $this->resolveRelatedRoles(is_array($item['roleIds'] ?? null) ? $item['roleIds'] : []),
             'sprintPlanHref' => $this->sprintPlanHref($item),
         ]);
     }
@@ -101,6 +102,42 @@ class LearningPathController extends Controller
         }
 
         return locale_route('sprint-planner.templates').'?start='.rawurlencode($slug);
+    }
+
+    /**
+     * @param  list<mixed>  $roleIds
+     * @return list<array{label: array{de: string, en: string}, href: string, kind: string}>
+     */
+    private function resolveRelatedRoles(array $roleIds): array
+    {
+        /** @var list<array<string, mixed>> $roles */
+        $roles = config('roles.roles', []);
+        $byId = [];
+        foreach ($roles as $role) {
+            $id = (string) ($role['id'] ?? '');
+            if ($id !== '') {
+                $byId[$id] = $role;
+            }
+        }
+
+        $links = [];
+        foreach ($roleIds as $roleId) {
+            if (! is_string($roleId) || $roleId === '' || ! isset($byId[$roleId])) {
+                continue;
+            }
+
+            $role = $byId[$roleId];
+            $links[] = [
+                'label' => [
+                    'en' => (string) ($role['title']['en'] ?? $roleId),
+                    'de' => (string) ($role['title']['de'] ?? $role['title']['en'] ?? $roleId),
+                ],
+                'href' => locale_route('roles.show', ['slug' => $roleId]),
+                'kind' => 'role',
+            ];
+        }
+
+        return $links;
     }
 
     /**

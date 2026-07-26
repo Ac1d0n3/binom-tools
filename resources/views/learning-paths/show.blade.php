@@ -46,6 +46,24 @@
             @endif
         </header>
 
+        @if (count($relatedRoles ?? []) > 0)
+            <section class="learning-path-detail__roles" aria-labelledby="learning-path-related-roles">
+                <h2 id="learning-path-related-roles" class="learning-path-detail__section-title" data-i18n="learningPaths.relatedRolesTitle">
+                    Related roles
+                </h2>
+                <ul class="learning-path-detail__links">
+                    @foreach ($relatedRoles as $link)
+                        <li>
+                            <a href="{{ $link['href'] }}">
+                                <span data-text-de="{{ $link['label']['de'] }}" data-text-en="{{ $link['label']['en'] }}">{{ $link['label']['en'] }}</span>
+                                <span class="learning-path-detail__link-kind" data-i18n="search.type.role">role</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
         <ol class="learning-path-detail__steps">
             @foreach ($steps as $index => $step)
                 <li class="learning-path-detail__step">

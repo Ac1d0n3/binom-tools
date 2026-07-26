@@ -59,6 +59,9 @@
                 'suppliers' => locale_route('suppliers.index'),
                 'compliance' => locale_route('compliance.index'),
                 'playbooks' => locale_route('playbooks.index'),
+                'learningPaths' => locale_route('learning-paths.index'),
+                'roles' => locale_route('roles.index'),
+                'sprintPlanner' => locale_route('sprint-planner.templates'),
             ],
             'session' => [
                 'accountsEnabled' => ! empty($accountsEnabled),

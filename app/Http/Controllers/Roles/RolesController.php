@@ -74,13 +74,15 @@ class RolesController extends Controller
 
         $storyLinks = [];
         if ($primaryStory !== null) {
+            $defaultLabel = [
+                'en' => (string) ($role['title']['en'] ?? $primaryStory),
+                'de' => (string) ($role['title']['de'] ?? $role['title']['en'] ?? $primaryStory),
+            ];
+            $label = $this->bilingualLabel($role['storyLabel'] ?? null, $defaultLabel);
             $storyLinks[] = [
                 'slug' => $primaryStory,
                 'href' => locale_route('playbooks.show', ['slug' => $primaryStory]),
-                'label' => [
-                    'en' => (string) ($role['title']['en'] ?? $primaryStory).' story',
-                    'de' => (string) ($role['title']['de'] ?? $role['title']['en'] ?? $primaryStory).'-Story',
-                ],
+                'label' => $label,
                 'pending' => $this->isPendingPreferred(
                     is_string($role['storyPreferred'] ?? null) ? $role['storyPreferred'] : null,
                     $primaryStory,
@@ -167,5 +169,28 @@ class RolesController extends Controller
         return is_string($preferred)
             && $preferred !== ''
             && $preferred !== $resolved;
+    }
+
+    /**
+     * @param  array{de?: string, en?: string}|null  $value
+     * @param  array{de: string, en: string}  $fallback
+     * @return array{de: string, en: string}
+     */
+    private function bilingualLabel(?array $value, array $fallback): array
+    {
+        if ($value === null) {
+            return $fallback;
+        }
+
+        $en = trim((string) ($value['en'] ?? ''));
+        $de = trim((string) ($value['de'] ?? ''));
+        if ($en === '') {
+            $en = $de !== '' ? $de : $fallback['en'];
+        }
+        if ($de === '') {
+            $de = $en !== '' ? $en : $fallback['de'];
+        }
+
+        return ['de' => $de, 'en' => $en];
     }
 }

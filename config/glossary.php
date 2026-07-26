@@ -29,8 +29,11 @@ return [
             'related' => [
                 ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
                 ['type' => 'glossary', 'id' => 'data-architect', 'label' => ['de' => 'Data Architect', 'en' => 'Data Architect']],
-                ['type' => 'series', 'id' => 'governance-pillars', 'label' => ['de' => '8 Säulen der Governance', 'en' => '8 pillars of governance']],
+                ['type' => 'story', 'id' => 'stewardship-capacity', 'label' => ['de' => 'Stewardship staffen', 'en' => 'Staffing stewardship']],
+                ['type' => 'story', 'id' => 'data-ownership-stewardship', 'label' => ['de' => 'Ownership & Stewardship', 'en' => 'Ownership & stewardship']],
+                ['type' => 'series', 'id' => 'roles-hub', 'label' => ['de' => 'Roles and Decision Rights', 'en' => 'Roles and decision rights']],
                 ['type' => 'path', 'id' => 'governance-foundations', 'label' => ['de' => 'Governance Foundations', 'en' => 'Governance foundations']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
             ],
         ],
         [
@@ -47,6 +50,9 @@ return [
                 ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
                 ['type' => 'glossary', 'id' => 'data-consumer', 'label' => ['de' => 'Data Consumer', 'en' => 'Data Consumer']],
                 ['type' => 'glossary', 'id' => 'raci', 'label' => ['de' => 'RACI', 'en' => 'RACI']],
+                ['type' => 'story', 'id' => 'data-product-owner-vs-data-owner', 'label' => ['de' => 'Product Owner vs Owner vs Steward', 'en' => 'Product Owner vs Owner vs Steward']],
+                ['type' => 'story', 'id' => 'raci-for-data-governance', 'label' => ['de' => 'RACI für Data Governance', 'en' => 'RACI for data governance']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
             ],
         ],
         [
@@ -63,9 +69,10 @@ return [
                 ['type' => 'glossary', 'id' => 'grain', 'label' => ['de' => 'Grain', 'en' => 'Grain']],
                 ['type' => 'glossary', 'id' => 'data-contract', 'label' => ['de' => 'Data Contract', 'en' => 'Data Contract']],
                 ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
-                ['type' => 'story', 'id' => 'define-kpi', 'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition']],
-                ['type' => 'story', 'id' => 'operating-and-governing-the-platform', 'label' => ['de' => 'Platform betreiben', 'en' => 'Operating the platform']],
+                ['type' => 'story', 'id' => 'data-architect-role', 'label' => ['de' => 'Die Rolle Data Architect', 'en' => 'The Data Architect role']],
+                ['type' => 'story', 'id' => 'raci-for-data-governance', 'label' => ['de' => 'RACI für Data Governance', 'en' => 'RACI for data governance']],
                 ['type' => 'path', 'id' => 'modernize-warehouse', 'label' => ['de' => 'Warehouse modernisieren', 'en' => 'Modernize the warehouse']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
             ],
         ],
         [
@@ -82,6 +89,8 @@ return [
                 ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
                 ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
                 ['type' => 'story', 'id' => 'data-ownership-stewardship', 'label' => ['de' => 'Ownership & Stewardship', 'en' => 'Ownership & stewardship']],
+                ['type' => 'story', 'id' => 'raci-for-data-governance', 'label' => ['de' => 'RACI für Data Governance', 'en' => 'RACI for data governance']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
             ],
         ],
         [
@@ -97,7 +106,9 @@ return [
             'related' => [
                 ['type' => 'glossary', 'id' => 'data-product', 'label' => ['de' => 'Data Product', 'en' => 'Data Product']],
                 ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
-                ['type' => 'story', 'id' => 'data-ownership-stewardship', 'label' => ['de' => 'Ownership & Stewardship', 'en' => 'Ownership & stewardship']],
+                ['type' => 'story', 'id' => 'data-product-owner-vs-data-owner', 'label' => ['de' => 'Product Owner vs Owner vs Steward', 'en' => 'Product Owner vs Owner vs Steward']],
+                ['type' => 'story', 'id' => 'one-data-product-multiple-consumers', 'label' => ['de' => 'Ein Data Product, viele Consumer', 'en' => 'One data product, many consumers']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
             ],
         ],
         [
@@ -112,7 +123,9 @@ return [
             ],
             'related' => [
                 ['type' => 'glossary', 'id' => 'grain', 'label' => ['de' => 'Grain', 'en' => 'Grain']],
+                ['type' => 'story', 'id' => 'data-product-owner-vs-data-owner', 'label' => ['de' => 'Product Owner vs Owner vs Steward', 'en' => 'Product Owner vs Owner vs Steward']],
                 ['type' => 'series', 'id' => 'building-modern-data-warehouse', 'label' => ['de' => 'Modern Data Warehouse', 'en' => 'Modern data warehouse']],
+                ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
             ],
         ],
         [
@@ -250,9 +263,10 @@ return [
             'related' => [
                 ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
                 ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
+                ['type' => 'story', 'id' => 'raci-for-data-governance', 'label' => ['de' => 'RACI für Data Governance', 'en' => 'RACI for data governance']],
                 ['type' => 'tool', 'route' => 'tools.stakeholder-matrix', 'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix']],
                 ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
-                ['type' => 'route', 'route' => 'governance.index', 'label' => ['de' => 'Governance Hub', 'en' => 'Governance hub']],
+                ['type' => 'series', 'id' => 'roles-hub', 'label' => ['de' => 'Roles and Decision Rights', 'en' => 'Roles and decision rights']],
             ],
         ],
         [

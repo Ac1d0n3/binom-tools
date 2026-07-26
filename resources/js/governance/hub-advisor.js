@@ -319,13 +319,43 @@ const hubItems = {
     },
     playbooks: {
         group: 'resources',
-        icon: 'fa-route',
+        icon: 'fa-book',
         title: { de: 'Governance Stories & Playbooks', en: 'Governance stories & playbooks' },
         reason: {
             de: 'Gut, wenn schon vieles vorhanden ist und du Beispiele, Stories und Vorgehen brauchst.',
             en: 'Useful when much already exists and you need examples, stories, and next actions.',
         },
         tags: ['help', 'learning', 'kpi', 'dq', 'supplier'],
+    },
+    learningPaths: {
+        group: 'resources',
+        icon: 'fa-route',
+        title: { de: 'Learning Paths', en: 'Learning Paths' },
+        reason: {
+            de: 'Geführte Journeys (PII, DQ, Warehouse, Foundations) — enden im passenden Sprint-Plan.',
+            en: 'Guided journeys (PII, DQ, warehouse, foundations) — each ends in a matching sprint plan.',
+        },
+        tags: ['help', 'learning', 'new', 'pii', 'dq', 'stack'],
+    },
+    roles: {
+        group: 'resources',
+        icon: 'fa-user-group',
+        title: { de: 'Roles Hub', en: 'Roles Hub' },
+        reason: {
+            de: 'Decision Rights klären: Steward, Owner, Architect, Custodian, Consumer.',
+            en: 'Clarify decision rights: steward, owner, architect, custodian, consumer.',
+        },
+        tags: ['help', 'learning', 'new', 'kpi'],
+    },
+    sprintPlanner: {
+        group: 'resources',
+        icon: 'fa-calendar-week',
+        title: { de: 'Sprint Planner Templates', en: 'Sprint Planner templates' },
+        reason: {
+            de: 'Lern- oder Umsetzungsplan aus einer Vorlage starten und im Team abarbeiten.',
+            en: 'Start a learning or delivery plan from a template and work it as a team.',
+        },
+        tags: ['help', 'learning', 'new', 'extend', 'dq', 'stack'],
     },
 };
 
@@ -460,6 +490,14 @@ function scoreItem(item, state) {
     }
 
     if (state.scenario === 'help' && item.group === 'resources') {
+        score += 3;
+    }
+
+    if (state.scenario === 'help' && ['learningPaths', 'roles', 'sprintPlanner', 'playbooks'].includes(item.id)) {
+        score += 5;
+    }
+
+    if (state.scenario === 'new' && ['learningPaths', 'roles', 'sprintPlanner'].includes(item.id)) {
         score += 3;
     }
 

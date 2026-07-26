@@ -18,7 +18,8 @@ return [
             'id' => 'pii-in-five-steps',
             'order' => 10,
             'audienceId' => 'privacy',
-            'sprintTemplateSlug' => 'governance-learning-path-certification',
+            'sprintTemplateSlug' => 'learning-path-pii-in-five-steps',
+            'roleIds' => ['steward', 'custodian', 'consumer'],
             'audience' => [
                 'de' => 'Privacy, Stewardship, Plattform',
                 'en' => 'Privacy, stewardship, platform',
@@ -113,7 +114,8 @@ return [
             'id' => 'dq-with-dbt',
             'order' => 20,
             'audienceId' => 'engineering',
-            'sprintTemplateSlug' => 'change-tests',
+            'sprintTemplateSlug' => 'learning-path-dq-with-dbt',
+            'roleIds' => ['steward', 'architect'],
             'audience' => [
                 'de' => 'Analytics Engineers, DQ-Owner',
                 'en' => 'Analytics engineers, DQ owners',
@@ -194,7 +196,8 @@ return [
             'id' => 'modernize-warehouse',
             'order' => 30,
             'audienceId' => 'platform',
-            'sprintTemplateSlug' => 'database-model',
+            'sprintTemplateSlug' => 'learning-path-modernize-warehouse',
+            'roleIds' => ['architect', 'custodian'],
             'audience' => [
                 'de' => 'Platform, Architecture, BI Leads',
                 'en' => 'Platform, architecture, BI leads',
@@ -273,7 +276,8 @@ return [
             'id' => 'governance-foundations',
             'order' => 40,
             'audienceId' => 'governance',
-            'sprintTemplateSlug' => 'governance-learning-path-certification',
+            'sprintTemplateSlug' => 'learning-path-governance-foundations',
+            'roleIds' => ['steward', 'owner', 'product-owner', 'architect', 'custodian', 'consumer'],
             'audience' => [
                 'de' => 'Governance Leads, CoE, Consultants',
                 'en' => 'Governance leads, CoE, consultants',
@@ -297,20 +301,39 @@ return [
                         'en' => '1. Shared language',
                     ],
                     'lead' => [
-                        'de' => 'Owner, Steward, Catalog und RACI als Einstieg.',
-                        'en' => 'Owner, steward, catalog, and RACI as the entry set.',
+                        'de' => 'Owner, Steward, Architect, Catalog und RACI als Einstieg.',
+                        'en' => 'Owner, steward, architect, catalog, and RACI as the entry set.',
                     ],
                     'links' => [
                         ['type' => 'glossary', 'id' => 'data-owner', 'label' => ['de' => 'Data Owner', 'en' => 'Data Owner']],
                         ['type' => 'glossary', 'id' => 'data-steward', 'label' => ['de' => 'Data Steward', 'en' => 'Data Steward']],
+                        ['type' => 'glossary', 'id' => 'data-architect', 'label' => ['de' => 'Data Architect', 'en' => 'Data Architect']],
                         ['type' => 'glossary', 'id' => 'raci', 'label' => ['de' => 'RACI', 'en' => 'RACI']],
-                        ['type' => 'glossary', 'id' => 'data-catalog', 'label' => ['de' => 'Data Catalog', 'en' => 'Data Catalog']],
+                        ['type' => 'route', 'route' => 'roles.index', 'label' => ['de' => 'Roles Hub', 'en' => 'Roles hub']],
                     ],
                 ],
                 [
                     'title' => [
-                        'de' => '2. Acht Säulen lesen',
-                        'en' => '2. Read the eight pillars',
+                        'de' => '2. Rollen & Decision Rights',
+                        'en' => '2. Roles and decision rights',
+                    ],
+                    'lead' => [
+                        'de' => 'Serie Roles Hub: Architect, RACI, Product Owner, Stewardship Capacity, CoE.',
+                        'en' => 'Roles Hub series: architect, RACI, product owner, stewardship capacity, CoE.',
+                    ],
+                    'links' => [
+                        ['type' => 'series', 'id' => 'roles-hub', 'label' => ['de' => 'Roles and Decision Rights', 'en' => 'Roles and decision rights']],
+                        ['type' => 'story', 'id' => 'data-architect-role', 'label' => ['de' => 'Data Architect Role', 'en' => 'Data Architect role']],
+                        ['type' => 'story', 'id' => 'raci-for-data-governance', 'label' => ['de' => 'RACI für Data Governance', 'en' => 'RACI for data governance']],
+                        ['type' => 'story', 'id' => 'data-product-owner-vs-data-owner', 'label' => ['de' => 'Product Owner vs Owner vs Steward', 'en' => 'Product Owner vs Owner vs Steward']],
+                        ['type' => 'story', 'id' => 'stewardship-capacity', 'label' => ['de' => 'Stewardship Capacity', 'en' => 'Stewardship capacity']],
+                        ['type' => 'story', 'id' => 'governance-coe', 'label' => ['de' => 'Governance CoE', 'en' => 'Governance CoE']],
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => '3. Acht Säulen lesen',
+                        'en' => '3. Read the eight pillars',
                     ],
                     'lead' => [
                         'de' => 'Das mentale Modell hinter Ownership, Metadata, PII, DQ und Lifecycle.',
@@ -319,12 +342,13 @@ return [
                     'links' => [
                         ['type' => 'series', 'id' => 'governance-pillars', 'label' => ['de' => '8 Säulen der Data Governance', 'en' => '8 pillars of data governance']],
                         ['type' => 'story', 'id' => 'eight-pillars', 'label' => ['de' => 'Overview: Eight Pillars', 'en' => 'Overview: eight pillars']],
+                        ['type' => 'story', 'id' => 'data-ownership-stewardship', 'label' => ['de' => 'Ownership & Stewardship', 'en' => 'Ownership & stewardship']],
                     ],
                 ],
                 [
                     'title' => [
-                        'de' => '3. Hub & Radar nutzen',
-                        'en' => '3. Use hub & radar',
+                        'de' => '4. Hub & Radar nutzen',
+                        'en' => '4. Use hub & radar',
                     ],
                     'lead' => [
                         'de' => 'Entscheidungen führen, News beobachten, Compliance verorten.',
@@ -334,16 +358,17 @@ return [
                         ['type' => 'route', 'route' => 'governance.index', 'label' => ['de' => 'Governance Hub', 'en' => 'Governance hub']],
                         ['type' => 'route', 'route' => 'governance.radar', 'label' => ['de' => 'Radar', 'en' => 'Radar']],
                         ['type' => 'route', 'route' => 'compliance.index', 'label' => ['de' => 'Compliance', 'en' => 'Compliance']],
+                        ['type' => 'tool', 'route' => 'tools.stakeholder-matrix', 'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix']],
                     ],
                 ],
                 [
                     'title' => [
-                        'de' => '4. Vertiefung wählen',
-                        'en' => '4. Choose a deep dive',
+                        'de' => '5. Vertiefung wählen',
+                        'en' => '5. Choose a deep dive',
                     ],
                     'lead' => [
-                        'de' => 'Metadata Deep Dive oder Missing Pieces — je nach Reife.',
-                        'en' => 'Metadata deep dive or missing pieces — depending on maturity.',
+                        'de' => 'Metadata Deep Dive, Missing Pieces oder PII-Pfad — je nach Reife.',
+                        'en' => 'Metadata deep dive, missing pieces, or PII path — depending on maturity.',
                     ],
                     'links' => [
                         ['type' => 'series', 'id' => 'metadata-deep-dive', 'label' => ['de' => 'MetaData Deep Dive', 'en' => 'MetaData deep dive']],

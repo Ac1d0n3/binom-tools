@@ -196,15 +196,6 @@
             </li>
             <li>
                 <a
-                    href="{{ locale_route('glossary.index') }}"
-                    class="tools-sidenav__link {{ $glossaryActive ? 'tools-sidenav__link--active' : '' }}"
-                    data-i18n="nav.glossary"
-                >
-                    Glossary
-                </a>
-            </li>
-            <li>
-                <a
                     href="{{ locale_route('learning-paths.index') }}"
                     class="tools-sidenav__link {{ $learningPathsActive ? 'tools-sidenav__link--active' : '' }}"
                     data-i18n="nav.learningPaths"
@@ -219,6 +210,15 @@
                     data-i18n="nav.roles"
                 >
                     Roles
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{{ locale_route('glossary.index') }}"
+                    class="tools-sidenav__link {{ $glossaryActive ? 'tools-sidenav__link--active' : '' }}"
+                    data-i18n="nav.glossary"
+                >
+                    Glossary
                 </a>
             </li>
             <li>

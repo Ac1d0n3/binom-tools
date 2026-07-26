@@ -81,19 +81,6 @@
                             count-label-key="home.hub.learningPaths.countLabel"
                         />
                         <x-tools.card
-                            :href="locale_route('glossary.index')"
-                            title="Glossary"
-                            description="Shared vocabulary for steward, lineage, DSDR, grain, data product, PII, and catalog — linked to stories and tools."
-                            title-key="home.hub.glossary.title"
-                            description-key="home.hub.glossary.description"
-                            icon="fa-book"
-                            accent="primary"
-                            card-id="hub-glossary"
-                            :hub="true"
-                            :count="$hubCounts['glossary']"
-                            count-label-key="home.hub.glossary.countLabel"
-                        />
-                        <x-tools.card
                             :href="locale_route('roles.index')"
                             title="Roles"
                             description="Steward, Owner, Architect, Custodian, Consumer — with glossary, stories, paths, and tools."
@@ -105,6 +92,19 @@
                             :hub="true"
                             :count="$hubCounts['roles']"
                             count-label-key="home.hub.roles.countLabel"
+                        />
+                        <x-tools.card
+                            :href="locale_route('glossary.index')"
+                            title="Glossary"
+                            description="Shared vocabulary for steward, lineage, DSDR, grain, data product, PII, and catalog — linked to stories and tools."
+                            title-key="home.hub.glossary.title"
+                            description-key="home.hub.glossary.description"
+                            icon="fa-book"
+                            accent="primary"
+                            card-id="hub-glossary"
+                            :hub="true"
+                            :count="$hubCounts['glossary']"
+                            count-label-key="home.hub.glossary.countLabel"
                         />
                         <x-tools.card
                             :href="locale_route('governance.radar')"

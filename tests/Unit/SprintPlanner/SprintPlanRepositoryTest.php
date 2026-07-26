@@ -67,6 +67,10 @@ class SprintPlanRepositoryTest extends TestCase
         $this->assertContains('database-model', $slugs);
         $this->assertContains('report-kpi-analysis', $slugs);
         $this->assertContains('change-tests', $slugs);
+        $this->assertContains('learning-path-pii-in-five-steps', $slugs);
+        $this->assertContains('learning-path-dq-with-dbt', $slugs);
+        $this->assertContains('learning-path-modernize-warehouse', $slugs);
+        $this->assertContains('learning-path-governance-foundations', $slugs);
     }
 
     public function test_loads_new_lightweight_templates(): void
@@ -84,6 +88,10 @@ class SprintPlanRepositoryTest extends TestCase
             'database-model' => 4,
             'report-kpi-analysis' => 4,
             'change-tests' => 3,
+            'learning-path-pii-in-five-steps' => 3,
+            'learning-path-dq-with-dbt' => 3,
+            'learning-path-modernize-warehouse' => 3,
+            'learning-path-governance-foundations' => 3,
         ];
 
         foreach ($cases as $slug => $duration) {

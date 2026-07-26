@@ -18,6 +18,12 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('Governance control hub');
         $response->assertSee('data-governance-advisor', false);
         $response->assertSee('data-governance-advisor-config', false);
+        $response->assertSee(route('learning-paths.index'), false);
+        $response->assertSee(route('roles.index'), false);
+        $response->assertSee(route('sprint-planner.templates'), false);
+        $response->assertSee('"learningPaths"', false);
+        $response->assertSee('"roles"', false);
+        $response->assertSee('"sprintPlanner"', false);
         $response->assertSee('data-governance-top-controls', false);
         $response->assertSee('data-governance-drawer-toggle', false);
         $response->assertSee('governance-hub__panel-tabs', false);

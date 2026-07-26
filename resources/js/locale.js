@@ -212,7 +212,7 @@ const shellLabels = {
         'home.hub.stories.countLabel': 'Stories',
         'home.hub.learningPaths.title': 'Lernpfade',
         'home.hub.learningPaths.description':
-            'Geführte Einstiege nach Rolle und Ziel — PII, DQ mit dbt, Warehouse modernisieren und Foundations.',
+            'Geführte Journeys nach Ziel — PII, DQ mit dbt, Warehouse modernisieren und Foundations; enden im Sprint-Plan.',
         'home.hub.learningPaths.countLabel': 'Pfade',
         'home.hub.glossary.title': 'Glossar',
         'home.hub.glossary.description':
@@ -220,7 +220,7 @@ const shellLabels = {
         'home.hub.glossary.countLabel': 'Begriffe',
         'home.hub.roles.title': 'Rollen',
         'home.hub.roles.description':
-            'Steward, Owner, Architect, Custodian, Consumer — mit Glossar, Stories, Pfaden und Tools.',
+            'Wer entscheidet? Steward, Owner, Architect und Co. — Decision Rights mit Glossar, Stories und passendem Lernpfad.',
         'home.hub.roles.countLabel': 'Rollen',
         'home.hub.resources.title': 'Hersteller-Ressourcen',
         'home.hub.resources.description':
@@ -854,11 +854,13 @@ const shellLabels = {
         'learningPaths.audienceAll': 'Alle Zielgruppen',
         'learningPaths.stepCount': '{{count}} Schritte',
         'learningPaths.backToIndex': '← Lernpfade',
+        'learningPaths.relatedRolesTitle': 'Passende Rollen',
         'learningPaths.startSprintPlan': 'Als Sprint-Plan starten',
         'learningPaths.startSprintPlanHint': 'Öffnet den Sprint Planner mit einer passenden Vorlage.',
         'roles.indexTitle': 'Rollen',
         'roles.indexLead':
             'Governance-Personas mit gemeinsamer Sprache, Stories, Lernpfaden und Tools.',
+        'roles.cardCta': 'Rolle erkunden',
         'roles.backToIndex': '← Rollen',
         'roles.hubLinksTitle': 'Hier starten',
         'roles.storiesTitle': 'Stories',
@@ -1275,7 +1277,7 @@ const shellLabels = {
         'home.hub.stories.countLabel': 'stories',
         'home.hub.learningPaths.title': 'Learning Paths',
         'home.hub.learningPaths.description':
-            'Guided journeys by role and goal — PII, DQ with dbt, warehouse modernization, and foundations.',
+            'Guided journeys by goal — PII, DQ with dbt, warehouse modernization, and foundations; each ends in a sprint plan.',
         'home.hub.learningPaths.countLabel': 'paths',
         'home.hub.glossary.title': 'Glossary',
         'home.hub.glossary.description':
@@ -1283,7 +1285,7 @@ const shellLabels = {
         'home.hub.glossary.countLabel': 'terms',
         'home.hub.roles.title': 'Roles',
         'home.hub.roles.description':
-            'Steward, Owner, Architect, Custodian, Consumer — with glossary, stories, paths, and tools.',
+            'Who decides? Steward, Owner, Architect, and more — decision rights with glossary, stories, and a matching learning path.',
         'home.hub.roles.countLabel': 'roles',
         'home.hub.resources.title': 'Vendor Resources',
         'home.hub.resources.description':
@@ -1917,11 +1919,13 @@ const shellLabels = {
         'learningPaths.audienceAll': 'All audiences',
         'learningPaths.stepCount': '{{count}} steps',
         'learningPaths.backToIndex': '← Learning Paths',
+        'learningPaths.relatedRolesTitle': 'Related roles',
         'learningPaths.startSprintPlan': 'Start as sprint plan',
         'learningPaths.startSprintPlanHint': 'Opens the Sprint Planner with a matching template.',
         'roles.indexTitle': 'Roles',
         'roles.indexLead':
             'Governance personas with shared vocabulary, stories, learning paths, and tools.',
+        'roles.cardCta': 'Explore role',
         'roles.backToIndex': '← Roles',
         'roles.hubLinksTitle': 'Start here',
         'roles.storiesTitle': 'Stories',
