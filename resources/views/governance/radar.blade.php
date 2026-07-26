@@ -154,6 +154,18 @@
                     </span>
                 </label>
                 <label class="tools-overview-product-filter">
+                    <span class="sr-only" data-text-de="Region" data-text-en="Region">Region</span>
+                    <span class="tools-overview-sort__field">
+                        <select class="tools-overview-sort__select" data-governance-radar-region>
+                            <option value="" data-text-de="Alle Regionen" data-text-en="All regions">All regions</option>
+                            @foreach ($filters['regions'] as $region)
+                                <option value="{{ $region }}">{{ $region }}</option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
+                    </span>
+                </label>
+                <label class="tools-overview-product-filter">
                     <span class="sr-only" data-text-de="Thema" data-text-en="Topic">Topic</span>
                     <span class="tools-overview-sort__field">
                         <select class="tools-overview-sort__select" data-governance-radar-topic>
@@ -206,6 +218,13 @@
                             $typeIcon = (string) ($typeMeta[$itemType]['icon'] ?? 'fa-circle');
                             $typeTone = (string) ($typeMeta[$itemType]['tone'] ?? 'news');
                             $impact = (string) ($item['impact'] ?? '');
+                            $impactTone = match ($impact) {
+                                'Handlungsbedarf' => 'critical',
+                                'Prüfen', 'Architektur prüfen' => 'watch',
+                                'Relevant' => 'signal',
+                                'Best Practice' => 'practice',
+                                default => 'info',
+                            };
                             $showAdvisor = in_array($impact, $advisorImpacts, true);
                             $search = strtolower(implode(' ', [
                                 $item['title'] ?? '',
@@ -219,12 +238,13 @@
                             ]));
                         @endphp
                         <article
-                            class="governance-radar__item"
+                            class="governance-radar__item governance-radar__item--{{ $typeTone }}"
                             data-governance-radar-item
                             data-search="{{ $search }}"
                             data-topics="{{ implode('||', $rawTopics) }}"
                             data-type="{{ $itemType }}"
                             data-stack="{{ implode(' ', $stackValues) }}"
+                            data-region="{{ $item['region'] ?? '' }}"
                             data-impact="{{ $impact }}"
                         >
                             <div class="governance-radar__item-row">
@@ -237,33 +257,56 @@
                                 </div>
                                 <div class="governance-radar__item-content">
                                     <div class="governance-radar__item-main">
-                                        <div class="governance-radar__meta">
-                                            <span>{{ $itemType }}</span>
-                                            <span>{{ $source }}</span>
-                                            <span>{{ $item['published_at'] ?? '' }}</span>
-                                            <span>{{ $item['region'] ?? '' }}</span>
+                                        <div class="governance-radar__item-top">
+                                            <div class="governance-radar__meta">
+                                                <span class="governance-radar__meta-type">{{ $itemType }}</span>
+                                                <span class="governance-radar__meta-source">{{ $source }}</span>
+                                                @if (! empty($item['published_at']))
+                                                    <time datetime="{{ $item['published_at'] }}">{{ $item['published_at'] }}</time>
+                                                @endif
+                                                @if (! empty($item['region']))
+                                                    <span class="governance-radar__meta-region">{{ $item['region'] }}</span>
+                                                @endif
+                                            </div>
+                                            <span class="governance-radar__impact governance-radar__impact--{{ $impactTone }}">{{ $impact }}</span>
                                         </div>
                                         <h3>{{ $item['title'] }}</h3>
-                                        <p>{{ $item['summary'] }}</p>
-                                        <div class="governance-radar__chips">
-                                            <span>{{ $item['impact'] }}</span>
-                                            @foreach ($rawTopics as $topic)
-                                                <span>{{ $topic }}</span>
-                                            @endforeach
-                                        </div>
-                                        <p class="governance-radar__action-note">{{ $item['recommended_action'] }}</p>
+                                        <p class="governance-radar__summary-text">{{ $item['summary'] }}</p>
                                     </div>
-                                    <div class="governance-radar__item-actions">
-                                        <a class="governance-hub__button governance-hub__button--primary" href="{{ $itemHref }}" @if (! str_starts_with($itemUrl, '/')) target="_blank" rel="noopener" @endif>
-                                            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-                                            <span data-text-de="Quelle öffnen" data-text-en="Open source">Open source</span>
-                                        </a>
-                                        @if ($showAdvisor)
-                                            <a class="governance-hub__button" href="{{ locale_route('governance.index') }}" data-governance-radar-advisor>
-                                                <i class="fa-solid fa-compass" aria-hidden="true"></i>
-                                                <span data-text-de="Im Advisor prüfen" data-text-en="Review in advisor">Review in advisor</span>
-                                            </a>
-                                        @endif
+                                    <div class="governance-radar__item-footer">
+                                        <p class="governance-radar__action-note">
+                                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                                            <span>{{ $item['recommended_action'] }}</span>
+                                        </p>
+                                        <div class="governance-radar__item-bar">
+                                            @php
+                                                $topicVisible = array_slice($rawTopics, 0, 4);
+                                                $topicMore = max(0, count($rawTopics) - count($topicVisible));
+                                            @endphp
+                                            <div class="governance-radar__chips" aria-label="Tags">
+                                                @foreach ($stackValues as $stackValue)
+                                                    <span class="governance-radar__chip governance-radar__chip--stack">{{ $stackValue }}</span>
+                                                @endforeach
+                                                @foreach ($topicVisible as $topic)
+                                                    <span class="governance-radar__chip">{{ $topic }}</span>
+                                                @endforeach
+                                                @if ($topicMore > 0)
+                                                    <span class="governance-radar__chip governance-radar__chip--more">+{{ $topicMore }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="governance-radar__item-actions">
+                                                <a class="governance-hub__button governance-hub__button--primary" href="{{ $itemHref }}" @if (! str_starts_with($itemUrl, '/')) target="_blank" rel="noopener" @endif>
+                                                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                                    <span data-text-de="Quelle öffnen" data-text-en="Open source">Open source</span>
+                                                </a>
+                                                @if ($showAdvisor)
+                                                    <a class="governance-hub__button" href="{{ locale_route('governance.index') }}" data-governance-radar-advisor>
+                                                        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                                                        <span data-text-de="Im Advisor prüfen" data-text-en="Review in advisor">Review in advisor</span>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

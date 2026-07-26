@@ -64,6 +64,7 @@ function mountRadar(root) {
     const topic = root.querySelector('[data-governance-radar-topic]');
     const type = root.querySelector('[data-governance-radar-type]');
     const stack = root.querySelector('[data-governance-radar-stack]');
+    const region = root.querySelector('[data-governance-radar-region]');
     const reset = root.querySelector('[data-governance-radar-reset]');
     const count = root.querySelector('[data-governance-radar-count]');
     const empty = root.querySelector('[data-governance-radar-empty]');
@@ -106,6 +107,7 @@ function mountRadar(root) {
         const selectedTopic = normalize(topic?.value);
         const selectedType = normalize(type?.value);
         const selectedStack = normalize(stack?.value);
+        const selectedRegion = normalize(region?.value);
         let visible = 0;
 
         items.forEach((item) => {
@@ -113,10 +115,12 @@ function mountRadar(root) {
             const itemTopics = splitTopics(item.dataset.topics).map(normalize);
             const itemType = normalize(item.dataset.type);
             const itemStacks = normalize(item.dataset.stack);
+            const itemRegion = normalize(item.dataset.region);
             const matches = (!query || haystack.includes(query))
                 && (!selectedTopic || itemTopics.includes(selectedTopic))
                 && (!selectedType || itemType === selectedType)
-                && (!selectedStack || itemStacks.includes(selectedStack));
+                && (!selectedStack || itemStacks.includes(selectedStack))
+                && (!selectedRegion || itemRegion === selectedRegion);
 
             item.hidden = !matches;
             if (matches) {
@@ -137,7 +141,7 @@ function mountRadar(root) {
         apply();
     });
 
-    [search, topic, stack].forEach((control) => {
+    [search, topic, stack, region].forEach((control) => {
         control?.addEventListener('input', apply);
         control?.addEventListener('change', apply);
     });
@@ -146,7 +150,7 @@ function mountRadar(root) {
         if (search) {
             search.value = '';
         }
-        [topic, type, stack].forEach((control) => {
+        [topic, type, stack, region].forEach((control) => {
             if (control) {
                 control.value = '';
             }

@@ -138,6 +138,11 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-radar-topic', false);
         $response->assertSee('data-governance-radar-type', false);
         $response->assertSee('data-governance-radar-stack', false);
+        $response->assertSee('data-governance-radar-region', false);
+        $response->assertSee('value="DE"', false);
+        $response->assertSee('value="EU"', false);
+        $response->assertSee('value="Global"', false);
+        $response->assertSee('data-region=', false);
         $response->assertSee('governance-radar__item-row', false);
         $response->assertSee('governance-radar__item-icon', false);
         $response->assertSee('governance-radar__item-icon--security', false);
@@ -156,6 +161,12 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('governance-radar__intro', false);
         $response->assertDontSee('Feed Registry');
         $response->assertDontSee('data-governance-radar-admin', false);
+        $response->assertSee('governance-radar__item--security', false);
+        $response->assertSee('governance-radar__impact', false);
+        $response->assertSee('governance-radar__impact--critical', false);
+        $response->assertSee('governance-radar__item-footer', false);
+        $response->assertSee('governance-radar__item-bar', false);
+        $response->assertSee('governance-radar__chip--stack', false);
         $response->assertSee('EDPB');
         $response->assertSee('BfDI');
         $response->assertSee('CNIL');
@@ -167,6 +178,11 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('Power BI');
         $response->assertSee('Qlik');
         $response->assertSee('Tableau');
+        $response->assertSee('BayLDA');
+        $response->assertSee('BSI');
+        $response->assertSee('CISA');
+        $response->assertSee('Collibra');
+        $response->assertSee('Alation');
         $response->assertSee('Security News');
         $response->assertDontSee('LfDI Baden-Württemberg', false);
         $response->assertSee('Snowflake: Clean Rooms');

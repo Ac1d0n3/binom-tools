@@ -102,6 +102,7 @@ class GovernanceHubController extends Controller
 
         $typesPresent = [];
         $stacks = [];
+        $regions = [];
         /** @var array<string, array<string, true>> $topicsByType */
         $topicsByType = [];
         $allTopics = [];
@@ -110,6 +111,10 @@ class GovernanceHubController extends Controller
             $type = (string) ($item['type'] ?? '');
             if ($type !== '') {
                 $typesPresent[$type] = true;
+            }
+            $region = (string) ($item['region'] ?? '');
+            if ($region !== '') {
+                $regions[] = $region;
             }
             foreach ((array) ($item['stack'] ?? []) as $stack) {
                 $stack = (string) $stack;
@@ -154,6 +159,9 @@ class GovernanceHubController extends Controller
         $stackOptions = array_values(array_unique(array_filter($stacks)));
         sort($stackOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
+        $regionOptions = array_values(array_unique(array_filter($regions)));
+        sort($regionOptions, SORT_NATURAL | SORT_FLAG_CASE);
+
         return view('governance.radar', [
             'sources' => $sources,
             'customSources' => $customSources,
@@ -166,6 +174,7 @@ class GovernanceHubController extends Controller
                 'types' => $typeOptions,
                 'topics' => $topicOptions,
                 'stacks' => $stackOptions,
+                'regions' => $regionOptions,
             ],
         ]);
     }
