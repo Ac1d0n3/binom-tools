@@ -61,6 +61,11 @@ final class AccountsConfig
         return $this->basePath().DIRECTORY_SEPARATOR.'governance-sessions';
     }
 
+    public function governanceRadarSourcesDirectory(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'governance-radar-sources';
+    }
+
     public function planAttachmentsDirectory(string $planId): string
     {
         $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $planId) ?: 'invalid';

@@ -30,6 +30,7 @@
 
     $toolGroups = \App\Support\ToolsNav::groupByProduct($navItems);
     $routeBase = Locale::routeBaseName(request()->route()?->getName());
+    $governanceActive = str_starts_with((string) $routeBase, 'governance.') && $routeBase !== 'governance.radar';
     $resourcesActive = str_starts_with((string) $routeBase, 'resources.');
     $suppliersActive = str_starts_with((string) $routeBase, 'suppliers.');
     $complianceActive = str_starts_with((string) $routeBase, 'compliance.');
@@ -101,11 +102,21 @@
             <li>
                 <a
                     href="{{ locale_route('governance.index') }}"
-                    class="tools-sidenav__link {{ Locale::routeIs('governance.index') ? 'tools-sidenav__link--active' : '' }}"
+                    class="tools-sidenav__link {{ $governanceActive ? 'tools-sidenav__link--active' : '' }}"
                     data-text-de="Governance"
                     data-text-en="Governance"
                 >
                     Governance
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{{ locale_route('governance.radar') }}"
+                    class="tools-sidenav__link {{ Locale::routeIs('governance.radar') ? 'tools-sidenav__link--active' : '' }}"
+                    data-text-de="Governance Radar"
+                    data-text-en="Governance Radar"
+                >
+                    Governance Radar
                 </a>
             </li>
             <li>

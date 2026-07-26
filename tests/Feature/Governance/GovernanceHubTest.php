@@ -24,6 +24,8 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-panel-toggle="governance-tools-panel"', false);
         $response->assertSee('data-governance-panel-toggle="governance-save-panel"', false);
         $response->assertSee('Workspace Report', false);
+        $response->assertSee('Governance Radar', false);
+        $response->assertSee('/governance/radar', false);
         $response->assertSee('data-governance-tabs', false);
         $response->assertSee('data-governance-tab-toggle="advisor"', false);
         $response->assertSee('data-governance-tab-toggle="workflows"', false);
@@ -112,6 +114,37 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('application/ld+json', false);
         $response->assertSee('"@context":"https://schema.org"', false);
         $response->assertDontSee('__contextArgs', false);
+        $response->assertSee('Thomas Lindackers');
+    }
+
+    public function test_governance_radar_renders_sources_filters_and_seo(): void
+    {
+        $response = $this->get('/governance/radar');
+
+        $response->assertOk();
+        $response->assertSee('Governance Radar');
+        $response->assertSee('data-governance-radar', false);
+        $response->assertSee('data-governance-radar-search', false);
+        $response->assertSee('data-governance-radar-topic', false);
+        $response->assertSee('data-governance-radar-type', false);
+        $response->assertSee('data-governance-radar-stack', false);
+        $response->assertSee('data-governance-radar-item', false);
+        $response->assertSee('data-governance-radar-count', false);
+        $response->assertDontSee('Feed Registry');
+        $response->assertDontSee('data-governance-radar-admin', false);
+        $response->assertSee('EDPB');
+        $response->assertDontSee('LfDI Baden-Württemberg', false);
+        $response->assertSee('Snowflake: Clean Rooms');
+        $response->assertSee('Databricks: Unity Catalog');
+        $response->assertSee('binom');
+        $response->assertSee('Richtlinien');
+        $response->assertSee('Vendor Update');
+        $response->assertSee('Eigene News');
+        $response->assertSee('Im Advisor prüfen', false);
+        $response->assertDontSee('/sprint-planner/create', false);
+        $response->assertSee('/governance', false);
+        $response->assertSee('application/ld+json', false);
+        $response->assertSee('"@type":"CollectionPage"', false);
         $response->assertSee('Thomas Lindackers');
     }
 }

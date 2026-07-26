@@ -63,6 +63,7 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/governance', [GovernanceHubController::class, 'index'])->name($name('governance.index'));
+    Route::get('/governance/radar', [GovernanceHubController::class, 'radar'])->name($name('governance.radar'));
     Route::get('/governance/demo-workspace', [GovernanceSessionController::class, 'demoWorkspace'])->name($name('governance.sessions.demo-workspace'));
     Route::get('/governance/demo-report', [GovernanceSessionController::class, 'demoReport'])->name($name('governance.sessions.demo-report'));
     Route::get('/resources', [VendorResourcesController::class, 'index'])->name($name('resources.index'));
@@ -191,6 +192,11 @@ $registerRoutes = static function (bool $localized): void {
             Route::post('/api/governance/sessions/{sessionId}/create-plan', [GovernanceSessionController::class, 'apiCreatePlan'])
                 ->where('sessionId', 'gov_[a-zA-Z0-9_]+')
                 ->name($name('governance.sessions.api.create-plan'));
+            Route::get('/api/governance/radar/sources', [GovernanceHubController::class, 'apiRadarSources'])->name($name('governance.radar.api.sources'));
+            Route::post('/api/governance/radar/sources', [GovernanceHubController::class, 'apiStoreRadarSource'])->name($name('governance.radar.api.sources.store'));
+            Route::delete('/api/governance/radar/sources/{sourceId}', [GovernanceHubController::class, 'apiDeleteRadarSource'])
+                ->where('sourceId', 'radsrc_[a-zA-Z0-9_]+')
+                ->name($name('governance.radar.api.sources.delete'));
             Route::get('/api/sprint-planner/plans', [PlanApiController::class, 'index'])->name($name('accounts.plans.index'));
             Route::get('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'show'])
                 ->where('planId', 'plan_[a-zA-Z0-9_]+')

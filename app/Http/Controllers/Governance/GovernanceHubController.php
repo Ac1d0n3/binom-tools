@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers\Governance;
 
+use App\Accounts\AccountAuth;
+use App\Governance\GovernanceRadarSourceStore;
 use App\Http\Controllers\Controller;
 use App\Support\ToolsNav;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
+use InvalidArgumentException;
 
 class GovernanceHubController extends Controller
 {
+    public function __construct(
+        private readonly AccountAuth $auth,
+        private readonly GovernanceRadarSourceStore $radarSources,
+    ) {}
+
     public function index(): View
     {
         /** @var list<array<string, mixed>> $tools */
@@ -66,6 +76,111 @@ class GovernanceHubController extends Controller
             ],
             'featuredTools' => $featuredTools,
             'journeys' => $this->journeys(),
+        ]);
+    }
+
+    public function radar(): View
+    {
+        $user = $this->auth->user();
+        /** @var list<array<string, mixed>> $sources */
+        $sources = config('governance-radar.sources', []);
+        $customSources = $user !== null ? $this->radarSources->listFor($user) : [];
+        /** @var list<array<string, mixed>> $items */
+        $items = config('governance-radar.items', []);
+
+        $sourceNames = [];
+        foreach ([...$sources, ...$customSources] as $source) {
+            $id = is_string($source['id'] ?? null) ? $source['id'] : '';
+            if ($id !== '') {
+                $sourceNames[$id] = (string) ($source['short_name'] ?? $source['name'] ?? $id);
+            }
+        }
+
+        $topics = [];
+        $types = [];
+        $regions = [];
+        $stacks = [];
+
+        foreach ($items as $item) {
+            $types[] = (string) ($item['type'] ?? '');
+            $regions[] = (string) ($item['region'] ?? '');
+            foreach ((array) ($item['topics'] ?? []) as $topic) {
+                $topics[] = (string) $topic;
+            }
+            foreach ((array) ($item['stack'] ?? []) as $stack) {
+                $stacks[] = (string) $stack;
+            }
+        }
+
+        return view('governance.radar', [
+            'sources' => $sources,
+            'customSources' => $customSources,
+            'radarSourcesApiUrl' => $user !== null ? url('/api/governance/radar/sources') : null,
+            'items' => $items,
+            'sourceNames' => $sourceNames,
+            'filters' => [
+                'topics' => array_values(array_unique(array_filter($topics))),
+                'types' => array_values(array_unique(array_filter($types))),
+                'regions' => array_values(array_unique(array_filter($regions))),
+                'stacks' => array_values(array_unique(array_filter($stacks))),
+            ],
+        ]);
+    }
+
+    public function apiRadarSources(): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        return response()->json([
+            'sources' => $this->radarSources->listFor($user),
+        ]);
+    }
+
+    public function apiStoreRadarSource(Request $request): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        $data = $request->validate([
+            'id' => ['nullable', 'string', 'max:64'],
+            'name' => ['required', 'string', 'max:190'],
+            'feedUrl' => ['required', 'url', 'max:500'],
+            'sourceUrl' => ['nullable', 'url', 'max:500'],
+            'type' => ['nullable', 'string', 'max:64'],
+            'region' => ['nullable', 'string', 'max:64'],
+            'language' => ['nullable', 'string', 'max:16'],
+            'cadence' => ['nullable', 'string', 'max:64'],
+            'topics' => ['nullable'],
+            'note' => ['nullable', 'string', 'max:1000'],
+            'active' => ['nullable', 'boolean'],
+        ]);
+
+        try {
+            $source = $this->radarSources->save($user, $data);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json([
+            'source' => $source,
+            'sources' => $this->radarSources->listFor($user),
+        ]);
+    }
+
+    public function apiDeleteRadarSource(string $sourceId): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        try {
+            $this->radarSources->delete($user, $sourceId);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json([
+            'sources' => $this->radarSources->listFor($user),
         ]);
     }
 

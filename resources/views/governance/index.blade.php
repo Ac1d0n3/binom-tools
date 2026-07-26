@@ -240,6 +240,10 @@
                         <i class="fa-solid fa-eye" aria-hidden="true"></i>
                         <span data-text-de="Workspace Report" data-text-en="Workspace report">Workspace report</span>
                     </a>
+                    <a class="governance-hub__button" href="{{ locale_route('governance.radar') }}">
+                        <i class="fa-solid fa-rss" aria-hidden="true"></i>
+                        <span data-text-de="Governance Radar" data-text-en="Governance Radar">Governance Radar</span>
+                    </a>
                 </div>
             </div>
 

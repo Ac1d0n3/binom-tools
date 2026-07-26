@@ -44,6 +44,39 @@ class GovernanceSessionsTest extends TestCase
         ])->assertUnauthorized();
     }
 
+    public function test_signed_in_user_can_manage_governance_radar_sources(): void
+    {
+        $this->login();
+
+        $this->get('/governance/radar')
+            ->assertOk()
+            ->assertSee('data-governance-radar-admin', false)
+            ->assertSee('RSS-Quellen verwalten', false)
+            ->assertDontSee('Feed Registry');
+
+        $response = $this->postJson('/api/governance/radar/sources', [
+            'name' => 'Acme Governance News',
+            'feedUrl' => 'https://example.com/governance/rss.xml',
+            'type' => 'Eigene Quelle',
+            'topics' => ['Data Quality', 'PII'],
+        ])
+            ->assertOk()
+            ->assertJsonPath('source.name', 'Acme Governance News')
+            ->assertJsonPath('source.feedUrl', 'https://example.com/governance/rss.xml');
+
+        $sourceId = $response->json('source.id');
+        $this->assertMatchesRegularExpression('/^radsrc_/', $sourceId);
+
+        $this->getJson('/api/governance/radar/sources')
+            ->assertOk()
+            ->assertJsonCount(1, 'sources')
+            ->assertJsonPath('sources.0.name', 'Acme Governance News');
+
+        $this->deleteJson('/api/governance/radar/sources/'.$sourceId)
+            ->assertOk()
+            ->assertJsonCount(0, 'sources');
+    }
+
     public function test_demo_report_shows_a_filled_example_session(): void
     {
         $this->get('/governance/demo-report')
