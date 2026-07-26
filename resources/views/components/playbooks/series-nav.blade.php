@@ -21,6 +21,12 @@
             data-text-en="Part {{ $series->currentPart }} of {{ $series->totalParts() }}"
         >Part {{ $series->currentPart }} of {{ $series->totalParts() }}</p>
 
+        <a
+            href="{{ locale_route('playbooks.series', ['seriesId' => $series->id]) }}"
+            class="playbook-series__overview-link"
+            data-i18n="playbooks.seriesOverview"
+        >View series</a>
+
         <div class="playbook-series__list" role="list">
             @foreach ($series->parts as $part)
                 @if ($part->isCurrent)

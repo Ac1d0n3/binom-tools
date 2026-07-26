@@ -50,6 +50,16 @@ final class LandingCatalog
     }
 
     /**
+     * Landing preview: standalone stories plus series teasers (not part-1 story cards).
+     *
+     * @return list<array{type: 'story', item: array<string, mixed>}|array{type: 'series', series: \App\Playbooks\PlaybookSeriesOverview}>
+     */
+    public function latestLandingCards(): array
+    {
+        return $this->playbooks->latestCatalogCards(self::STORIES_PREVIEW_LIMIT);
+    }
+
+    /**
      * Landing preview: standalone stories plus the first part of each series only.
      *
      * @return list<array<string, mixed>>
@@ -168,8 +178,8 @@ final class LandingCatalog
         }
 
         return [
-            'en' => $date->format('j M Y'),
-            'de' => $date->format('d.m.Y'),
+            'en' => $date->format('j M Y H:i'),
+            'de' => $date->format('d.m.Y H:i'),
         ];
     }
 

@@ -79,6 +79,7 @@
                             count-label-key="home.hub.radar.countLabel"
                             :title-badge-en="data_get($radarUpdatedBadge, 'en')"
                             :title-badge-de="data_get($radarUpdatedBadge, 'de')"
+                            title-badge-icon="fa-arrows-rotate"
                         />
                         <x-tools.card
                             :href="locale_route('resources.index')"
@@ -150,8 +151,12 @@
                         </p>
                     </header>
                     <div class="tools-card-grid">
-                        @foreach ($latestStories as $item)
-                            <x-playbooks.card :item="$item" />
+                        @foreach ($latestLandingCards as $card)
+                            @if (($card['type'] ?? '') === 'series')
+                                <x-playbooks.series-teaser :series="$card['series']" />
+                            @else
+                                <x-playbooks.card :item="$card['item']" />
+                            @endif
                         @endforeach
                         <x-tools.overview-card
                             :href="locale_route('playbooks.index')"

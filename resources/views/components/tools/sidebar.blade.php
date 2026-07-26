@@ -3,8 +3,9 @@
 
     $navItems = \App\Support\ToolsNav::withRegisteredRoutes(config('tools.nav', []));
     $currentSlug = request()->route('slug');
+    $currentSeriesId = request()->route('seriesId');
     $playbookRepository = app(\App\Playbooks\PlaybookRepository::class);
-    $sidebarPlaybooks = $playbookRepository->latestForIndex(
+    $sidebarCards = $playbookRepository->latestCatalogCards(
         \App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT,
         is_string($currentSlug) ? $currentSlug : null,
     );
@@ -15,9 +16,26 @@
         $account = ! empty($accountUser)
             ? app(\App\Accounts\AccountAuth::class)->user()
             : null;
-        $sidebarPlaybooks = array_values(array_filter(
-            $sidebarPlaybooks,
-            static fn (array $item): bool => $acl->canAccess($account, (string) ($item['slug'] ?? '')),
+        $sidebarCards = array_values(array_filter(
+            $sidebarCards,
+            static function (array $card) use ($acl, $account): bool {
+                if (($card['type'] ?? '') === 'series') {
+                    $series = $card['series'] ?? null;
+                    if (! $series instanceof \App\Playbooks\PlaybookSeriesOverview) {
+                        return false;
+                    }
+
+                    foreach ($series->parts as $part) {
+                        if ($acl->canAccess($account, $part->slug)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                return $acl->canAccess($account, (string) (($card['item']['slug'] ?? '')));
+            },
         ));
         $allIndex = array_values(array_filter(
             $allIndex,
@@ -25,8 +43,16 @@
         ));
     }
 
+    $activeSeriesId = is_string($currentSeriesId) && $currentSeriesId !== '' ? $currentSeriesId : null;
+    if ($activeSeriesId === null && is_string($currentSlug) && $currentSlug !== '') {
+        $currentPlaybook = $playbookRepository->find($currentSlug);
+        if ($currentPlaybook !== null && is_string($currentPlaybook->seriesId) && $currentPlaybook->seriesId !== '') {
+            $activeSeriesId = $currentPlaybook->seriesId;
+        }
+    }
+
     $totalStoryCount = count($allIndex);
-    $remainingStoryCount = max(0, $totalStoryCount - count($sidebarPlaybooks));
+    $remainingStoryCount = max(0, $totalStoryCount - count($sidebarCards));
 
     $toolGroups = \App\Support\ToolsNav::groupByProduct($navItems);
     $routeBase = Locale::routeBaseName(request()->route()?->getName());
@@ -63,23 +89,43 @@
                     Overview
                 </a>
             </li>
-            @foreach ($sidebarPlaybooks as $item)
-                @php
-                    $de = $item['locales']['de'] ?? null;
-                    $en = $item['locales']['en'] ?? null;
-                    $titleEn = $en['title'] ?? ($de['title'] ?? $item['slug']);
-                @endphp
-                <li>
-                    <a
-                        href="{{ locale_route('playbooks.show', ['slug' => $item['slug']]) }}"
-                        class="tools-sidenav__link {{ Locale::routeIs('playbooks.show') && $currentSlug === $item['slug'] ? 'tools-sidenav__link--active' : '' }}"
-                        data-playbook-nav-title
-                        data-text-de="{{ $de['title'] ?? '' }}"
-                        data-text-en="{{ $titleEn }}"
-                    >
-                        {{ $titleEn }}
-                    </a>
-                </li>
+            @foreach ($sidebarCards as $card)
+                @if (($card['type'] ?? '') === 'series' && ($card['series'] ?? null) instanceof \App\Playbooks\PlaybookSeriesOverview)
+                    @php
+                        $series = $card['series'];
+                        $seriesActive = $activeSeriesId === $series->id;
+                    @endphp
+                    <li>
+                        <a
+                            href="{{ locale_route('playbooks.series', ['seriesId' => $series->id]) }}"
+                            class="tools-sidenav__link {{ $seriesActive ? 'tools-sidenav__link--active' : '' }}"
+                            data-playbook-nav-title
+                            data-text-de="{{ $series->titleDe }}"
+                            data-text-en="{{ $series->titleEn }}"
+                        >
+                            {{ $series->titleEn }}
+                        </a>
+                    </li>
+                @else
+                    @php
+                        $item = $card['item'] ?? [];
+                        $de = $item['locales']['de'] ?? null;
+                        $en = $item['locales']['en'] ?? null;
+                        $titleEn = $en['title'] ?? ($de['title'] ?? ($item['slug'] ?? ''));
+                        $itemSlug = (string) ($item['slug'] ?? '');
+                    @endphp
+                    <li>
+                        <a
+                            href="{{ locale_route('playbooks.show', ['slug' => $itemSlug]) }}"
+                            class="tools-sidenav__link {{ Locale::routeIs('playbooks.show') && $currentSlug === $itemSlug ? 'tools-sidenav__link--active' : '' }}"
+                            data-playbook-nav-title
+                            data-text-de="{{ $de['title'] ?? '' }}"
+                            data-text-en="{{ $titleEn }}"
+                        >
+                            {{ $titleEn }}
+                        </a>
+                    </li>
+                @endif
             @endforeach
             @if ($remainingStoryCount > 0)
                 <li class="tools-sidenav__more">

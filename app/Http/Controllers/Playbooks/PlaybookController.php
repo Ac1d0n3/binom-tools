@@ -113,6 +113,29 @@ class PlaybookController extends Controller
         ]);
     }
 
+    public function series(Request $request): View
+    {
+        // Resolve by route name — localized URLs also bind {locale}, which would
+        // otherwise fill a positional string $seriesId with the locale code.
+        $seriesId = (string) $request->route('seriesId');
+        $series = $this->playbooks->findSeries($seriesId);
+        abort_if($series === null, 404);
+
+        if ($this->accountsConfig->enabled()) {
+            $user = $this->accountAuth->user();
+            $visibleParts = array_values(array_filter(
+                $series->parts,
+                fn ($part): bool => $this->storyAcl->canAccess($user, $part->slug),
+            ));
+            abort_if($visibleParts === [], 403);
+        }
+
+        return view('playbooks.series', [
+            'series' => $series,
+            'serverReadSlugs' => $this->serverReadSlugs(),
+        ]);
+    }
+
     public function show(Request $request): View
     {
         $slug = (string) $request->route('slug');

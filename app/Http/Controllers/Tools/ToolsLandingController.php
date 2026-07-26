@@ -16,7 +16,15 @@ class ToolsLandingController extends Controller
 
     public function index(): View
     {
-        $catalogStories = $this->stats->attachToItems($this->catalog->latestStories());
+        $landingCards = [];
+        foreach ($this->catalog->latestLandingCards() as $card) {
+            if (($card['type'] ?? '') === 'story' && isset($card['item']) && is_array($card['item'])) {
+                $withStats = $this->stats->attachToItems([$card['item']]);
+                $card['item'] = $withStats[0] ?? $card['item'];
+            }
+            $landingCards[] = $card;
+        }
+
         $allCatalogForRanking = $this->stats->attachToItems($this->catalog->allForIndexCatalog());
 
         return view('tools.landing', [
@@ -26,7 +34,7 @@ class ToolsLandingController extends Controller
             'featuredAiTools' => $this->catalog->featuredAiTools(),
             'latestTools' => $this->catalog->latestTools(),
             'toolCount' => $this->catalog->toolCount(),
-            'latestStories' => $catalogStories,
+            'latestLandingCards' => $landingCards,
             'topStories' => $this->catalog->topStories($allCatalogForRanking, 3),
             'storyCount' => $this->catalog->storyCount(),
             'hubCounts' => $this->catalog->hubCounts(),

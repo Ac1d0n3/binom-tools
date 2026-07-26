@@ -1428,6 +1428,188 @@ a.playbook-series__option:hover {
     white-space: nowrap;
 }
 
+.playbook-series__overview-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--theme-color-primary);
+    text-decoration: none;
+}
+
+.playbook-series__overview-link:hover {
+    text-decoration: underline;
+}
+
+.playbook-series-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: 1.25rem var(--tools-home-padding-inline, 1.25rem) 2.5rem;
+}
+
+.playbook-series-page__nav {
+    display: flex;
+    align-items: center;
+}
+
+.playbook-series-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--theme-color-primary);
+    text-decoration: none;
+}
+
+.playbook-series-page__back:hover {
+    text-decoration: underline;
+}
+
+.playbook-series-page__header {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.playbook-series-page__hero {
+    overflow: hidden;
+    border-radius: 12px;
+    aspect-ratio: 16 / 7;
+    background: color-mix(in srgb, var(--theme-color-primary) 8%, var(--surface-background-color));
+}
+
+.playbook-series-page__hero-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.playbook-series-page__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.playbook-series-page__eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--theme-color-accent);
+}
+
+.playbook-series-page__title {
+    margin: 0;
+    font-size: clamp(1.45rem, 2.5vw, 1.9rem);
+    line-height: 1.2;
+}
+
+.playbook-series-page__meta {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--bn-color-text-secondary);
+}
+
+.playbook-series-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 0.25rem;
+}
+
+.playbook-series-page__start {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55rem 0.9rem;
+    border-radius: 8px;
+    background: var(--theme-color-primary);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.playbook-series-page__parts-title {
+    margin: 0 0 0.85rem;
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.playbook-series-page__parts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.playbook-series-page__part-link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: 0.55rem;
+    align-items: center;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 10px;
+    background: var(--content-background-color);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.playbook-series-page__part-link:hover {
+    border-color: var(--theme-color-primary);
+}
+
+.playbook-series-page__part-link.is-read,
+.playbook-series-page__part-link[data-read='1'] {
+    opacity: 0.6;
+    border-style: dashed;
+}
+
+.playbook-series-page__part-index {
+    font-weight: 700;
+    color: var(--theme-color-primary);
+}
+
+.playbook-series-page__part-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9375rem;
+}
+
+.playbook-series-page__part-time {
+    font-size: 0.8125rem;
+    color: var(--bn-color-text-secondary);
+    white-space: nowrap;
+}
+
+.playbook-series-page__part-arrow {
+    font-size: 0.75rem;
+    opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+    .playbook-series-page__part-link {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .playbook-series-page__part-time {
+        display: none;
+    }
+}
+
 .playbook-pager {
     display: grid;
     grid-template-columns: 1fr 1fr;

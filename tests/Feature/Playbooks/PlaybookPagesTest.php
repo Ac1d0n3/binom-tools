@@ -184,10 +184,65 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('tools-series-card', false);
+        $response->assertSee('data-overview-series-grid', false);
         $response->assertSee('The 8 Pillars of Data Governance', false);
         $response->assertSee('eight-pillar-hero.png', false);
-        $response->assertSee('/playbooks/eight-pillars', false);
+        $response->assertSee('/playbooks/series/', false);
+        $response->assertSee('data-i18n="overview.seriesView"', false);
+        $response->assertSee('data-i18n="overview.seriesStart"', false);
+        $response->assertSee('tools-series-card__parts', false);
+        $response->assertSee('data-overview-layout-toggle="grid"', false);
         $response->assertSee('data-overview-view-panel="series"', false);
+    }
+
+    public function test_product_marks_truncate_to_known_products_plus_more(): void
+    {
+        $response = $this->get('/playbooks');
+
+        $response->assertOk();
+        // Full product list stays on the card for filtering.
+        $response->assertSee('data-products="snowflake,dbt,qlik,fabric,databricks,powerbi"', false);
+        $response->assertSee('data-i18n="overview.productsMore"', false);
+        $response->assertSee('data-i18n-count="3"', false);
+        $response->assertSee('tools-card__product-chip--more', false);
+        $response->assertSee(asset('images/snowflake-badge.svg'), false);
+        $response->assertSee(asset('images/dbt-badge.svg'), false);
+        $response->assertSee(asset('images/qlik-badge.svg'), false);
+    }
+
+    public function test_series_detail_page_lists_parts_and_back_link(): void
+    {
+        $response = $this->get('/playbooks/series/governance-pillars');
+
+        $response->assertOk();
+        $response->assertSee('playbook-series-page', false);
+        $response->assertSee('The 8 Pillars of Data Governance', false);
+        $response->assertSee('/playbooks?view=series', false);
+        $response->assertSee('data-i18n="playbooks.seriesBack"', false);
+        $response->assertSee('/playbooks/eight-pillars', false);
+        $response->assertSee('data-i18n="overview.seriesStart"', false);
+        $response->assertSee('playbook-series-page__parts-list', false);
+    }
+
+    public function test_localized_series_detail_page_is_reachable(): void
+    {
+        $this->get('/de/playbooks/series/governance-pillars')->assertOk();
+        $this->get('/en/playbooks/series/governance-pillars')->assertOk();
+    }
+
+    public function test_unknown_series_detail_returns_404(): void
+    {
+        $this->get('/playbooks/series/does-not-exist')->assertNotFound();
+        $this->get('/de/playbooks/series/does-not-exist')->assertNotFound();
+    }
+
+    public function test_eight_pillar_story_links_to_series_overview(): void
+    {
+        $response = $this->get('/playbooks/eight-pillars');
+
+        $response->assertOk();
+        $response->assertSee('/playbooks/series/governance-pillars', false);
+        $response->assertSee('data-i18n="playbooks.seriesOverview"', false);
     }
 
     public function test_eight_pillar_story_renders_localized_diagram_images(): void

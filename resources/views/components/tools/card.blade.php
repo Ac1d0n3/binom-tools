@@ -24,6 +24,7 @@
     'titleBadge' => null,
     'titleBadgeDe' => null,
     'titleBadgeEn' => null,
+    'titleBadgeIcon' => null,
 ])
 
 @php
@@ -37,6 +38,7 @@
     $badgeEn = trim((string) ($titleBadgeEn ?? $titleBadge ?? ''));
     $badgeDe = trim((string) ($titleBadgeDe ?? $badgeEn));
     $hasTitleBadge = $badgeEn !== '';
+    $badgeIcon = is_string($titleBadgeIcon) ? trim($titleBadgeIcon) : '';
 @endphp
 
 <a
@@ -71,13 +73,18 @@
                     <span class="tools-card__badge" data-i18n="card.exampleBadge">Example</span>
                 @endif
                 @if ($hasTitleBadge)
-                    <span
-                        class="tools-card__badge tools-card__badge--date"
-                        @if ($badgeDe !== '' && $badgeEn !== '')
-                            data-text-de="{{ $badgeDe }}"
-                            data-text-en="{{ $badgeEn }}"
+                    <span class="tools-card__badge tools-card__badge--date">
+                        @if ($badgeIcon !== '')
+                            <i class="fa-solid {{ $badgeIcon }} tools-card__badge-icon" aria-hidden="true"></i>
                         @endif
-                    >{{ $badgeEn }}</span>
+                        <span
+                            class="tools-card__badge-text"
+                            @if ($badgeDe !== '' && $badgeEn !== '')
+                                data-text-de="{{ $badgeDe }}"
+                                data-text-en="{{ $badgeEn }}"
+                            @endif
+                        >{{ $badgeEn }}</span>
+                    </span>
                 @endif
             </div>
             @if ($hasCount)

@@ -542,13 +542,19 @@ class ToolsPagesTest extends TestCase
         $storyLinkCount = substr_count($storiesNav, 'data-playbook-nav-title');
         $this->assertLessThanOrEqual(\App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT, $storyLinkCount);
 
-        $totalStories = count(app(\App\Playbooks\PlaybookRepository::class)->allForIndex());
-        if ($totalStories > \App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT) {
-            $remaining = $totalStories - min($totalStories, \App\Playbooks\PlaybookRepository::SIDEBAR_INDEX_LIMIT);
+        $repository = app(\App\Playbooks\PlaybookRepository::class);
+        $totalStories = count($repository->allForIndex());
+        $sidebarCards = $repository->latestCatalogCards();
+        if ($totalStories > count($sidebarCards)) {
+            $remaining = $totalStories - count($sidebarCards);
             $response->assertSee('data-i18n="nav.storiesMore"', false);
             $response->assertSee('data-i18n-count="'.$remaining.'"', false);
             $response->assertSee(route('playbooks.index'), false);
         }
+
+        $this->assertStringContainsString('MetaData Deep Dive', $storiesNav);
+        $this->assertStringContainsString('/playbooks/series/metadata-deep-dive', $storiesNav);
+        $this->assertLessThanOrEqual(1, substr_count($storiesNav, 'metadata-deep-dive'));
 
         $hubsNav = (string) str($response->getContent())
             ->after('data-i18n="nav.hubs">Hubs</p>')
@@ -612,6 +618,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-card-id="hub-tools"', false);
         $response->assertSee('data-card-id="hub-radar"', false);
         $response->assertSee('tools-card__badge--date', false);
+        $response->assertSee('fa-arrows-rotate', false);
+        $response->assertSee('data-series-teaser', false);
         $response->assertSee('data-i18n="header.mission"', false);
         $response->assertSee(route('governance.index'), false);
         $response->assertSee(route('governance.radar'), false);

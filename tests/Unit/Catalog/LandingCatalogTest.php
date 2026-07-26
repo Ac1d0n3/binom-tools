@@ -102,8 +102,33 @@ class LandingCatalogTest extends TestCase
         $this->assertIsArray($badge);
         $this->assertArrayHasKey('en', $badge);
         $this->assertArrayHasKey('de', $badge);
-        $this->assertMatchesRegularExpression('/^\d{1,2} [A-Z][a-z]{2} \d{4}$/', $badge['en']);
-        $this->assertMatchesRegularExpression('/^\d{2}\.\d{2}\.\d{4}$/', $badge['de']);
+        $this->assertMatchesRegularExpression('/^\d{1,2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}$/', $badge['en']);
+        $this->assertMatchesRegularExpression('/^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$/', $badge['de']);
+    }
+
+    public function test_latest_landing_cards_prefer_series_teasers_over_part_one_stories(): void
+    {
+        $catalog = app(LandingCatalog::class);
+        $cards = $catalog->latestLandingCards();
+
+        $this->assertNotEmpty($cards);
+        $this->assertLessThanOrEqual(LandingCatalog::STORIES_PREVIEW_LIMIT, count($cards));
+
+        $seriesIds = [];
+        foreach ($cards as $card) {
+            $this->assertArrayHasKey('type', $card);
+            if ($card['type'] === 'series') {
+                $this->assertInstanceOf(\App\Playbooks\PlaybookSeriesOverview::class, $card['series']);
+                $seriesIds[] = $card['series']->id;
+            } else {
+                $this->assertSame('story', $card['type']);
+                $this->assertIsArray($card['item']);
+                $seriesId = $card['item']['seriesId'] ?? null;
+                $this->assertTrue(! is_string($seriesId) || $seriesId === '');
+            }
+        }
+
+        $this->assertSame($seriesIds, array_values(array_unique($seriesIds)));
     }
 
     public function test_top_stories_ranks_by_likes_then_views(): void

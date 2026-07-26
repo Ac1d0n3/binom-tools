@@ -3,6 +3,7 @@
 namespace Tests\Unit\Playbooks;
 
 use App\Playbooks\PlaybookRepository;
+use App\Playbooks\PlaybookSeriesOverview;
 use Tests\TestCase;
 
 class PlaybookRepositorySidebarTest extends TestCase
@@ -31,6 +32,45 @@ class PlaybookRepositorySidebarTest extends TestCase
         $this->assertLessThanOrEqual(PlaybookRepository::SIDEBAR_INDEX_LIMIT, count($latest));
         $this->assertTrue(
             collect($latest)->contains(static fn (array $item): bool => $item['slug'] === $oldest['slug']),
+        );
+    }
+
+    public function test_latest_catalog_cards_collapse_series_to_one_entry(): void
+    {
+        $repository = app(PlaybookRepository::class);
+        $cards = $repository->latestCatalogCards();
+
+        $this->assertLessThanOrEqual(PlaybookRepository::SIDEBAR_INDEX_LIMIT, count($cards));
+
+        $seriesIds = [];
+        foreach ($cards as $card) {
+            $this->assertArrayHasKey('type', $card);
+            if ($card['type'] === 'series') {
+                $this->assertInstanceOf(PlaybookSeriesOverview::class, $card['series']);
+                $seriesIds[] = $card['series']->id;
+            } else {
+                $this->assertSame('story', $card['type']);
+                $this->assertTrue(! is_string($card['item']['seriesId'] ?? null) || $card['item']['seriesId'] === '');
+            }
+        }
+
+        $this->assertSame($seriesIds, array_values(array_unique($seriesIds)));
+        $this->assertContains('metadata-deep-dive', $seriesIds);
+    }
+
+    public function test_latest_catalog_cards_ensures_series_for_current_part_slug(): void
+    {
+        $repository = app(PlaybookRepository::class);
+        $cards = $repository->latestCatalogCards(
+            PlaybookRepository::SIDEBAR_INDEX_LIMIT,
+            'eight-pillars',
+        );
+
+        $this->assertTrue(
+            collect($cards)->contains(
+                static fn (array $card): bool => ($card['type'] ?? '') === 'series'
+                    && ($card['series']->id ?? null) === 'governance-pillars',
+            ),
         );
     }
 }

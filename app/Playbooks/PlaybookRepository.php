@@ -105,6 +105,110 @@ final class PlaybookRepository
     }
 
     /**
+     * Landing / sidebar preview cards: standalone stories plus one entry per series.
+     *
+     * Series appear when any part is among the newest stories, but only once
+     * (linked as the full series, not as individual late parts).
+     *
+     * @return list<array{type: 'series', series: PlaybookSeriesOverview}|array{type: 'story', item: array<string, mixed>}>
+     */
+    public function latestCatalogCards(int $limit = self::SIDEBAR_INDEX_LIMIT, ?string $ensureSlug = null): array
+    {
+        $cards = [];
+        $seenSeries = [];
+
+        foreach ($this->allForIndex() as $item) {
+            if (count($cards) >= $limit) {
+                break;
+            }
+
+            $seriesId = is_string($item['seriesId'] ?? null) ? (string) $item['seriesId'] : '';
+            if ($seriesId !== '') {
+                if (isset($seenSeries[$seriesId])) {
+                    continue;
+                }
+
+                $series = $this->findSeries($seriesId);
+                if ($series === null) {
+                    continue;
+                }
+
+                $seenSeries[$seriesId] = true;
+                $cards[] = [
+                    'type' => 'series',
+                    'series' => $series,
+                ];
+
+                continue;
+            }
+
+            $cards[] = [
+                'type' => 'story',
+                'item' => $item,
+            ];
+        }
+
+        if ($ensureSlug !== null && $ensureSlug !== '') {
+            $cards = $this->ensureCatalogCard($cards, $ensureSlug, $limit);
+        }
+
+        return $cards;
+    }
+
+    /**
+     * @param  list<array{type: 'series', series: PlaybookSeriesOverview}|array{type: 'story', item: array<string, mixed>}>  $cards
+     * @return list<array{type: 'series', series: PlaybookSeriesOverview}|array{type: 'story', item: array<string, mixed>}>
+     */
+    private function ensureCatalogCard(array $cards, string $ensureSlug, int $limit): array
+    {
+        $current = collect($this->allForIndex())->first(
+            static fn (array $item): bool => ($item['slug'] ?? '') === $ensureSlug,
+        );
+
+        if (! is_array($current)) {
+            return $cards;
+        }
+
+        $seriesId = is_string($current['seriesId'] ?? null) ? (string) $current['seriesId'] : '';
+
+        if ($seriesId !== '') {
+            $already = collect($cards)->contains(
+                static fn (array $card): bool => ($card['type'] ?? '') === 'series'
+                    && ($card['series'] ?? null) instanceof PlaybookSeriesOverview
+                    && $card['series']->id === $seriesId,
+            );
+
+            if ($already) {
+                return $cards;
+            }
+
+            $series = $this->findSeries($seriesId);
+            if ($series === null) {
+                return $cards;
+            }
+
+            return array_values(array_merge(
+                [['type' => 'series', 'series' => $series]],
+                array_slice($cards, 0, max(0, $limit - 1)),
+            ));
+        }
+
+        $already = collect($cards)->contains(
+            static fn (array $card): bool => ($card['type'] ?? '') === 'story'
+                && (($card['item']['slug'] ?? '') === $ensureSlug),
+        );
+
+        if ($already) {
+            return $cards;
+        }
+
+        return array_values(array_merge(
+            [['type' => 'story', 'item' => $current]],
+            array_slice($cards, 0, max(0, $limit - 1)),
+        ));
+    }
+
+    /**
      * @return list<PlaybookSeriesOverview>
      */
     public function allSeries(): array

@@ -89,6 +89,9 @@ $registerRoutes = static function (bool $localized): void {
         ->where('seriesId', '[a-z0-9-]+')
         ->middleware('throttle:60,1')
         ->name($name('playbooks.offline.manifest.series'));
+    Route::get('/playbooks/series/{seriesId}', [PlaybookController::class, 'series'])
+        ->where('seriesId', '[a-z0-9-]+')
+        ->name($name('playbooks.series'));
     Route::get('/playbooks/{slug}/offline-manifest', [PlaybookOfflineController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->middleware('throttle:60,1')

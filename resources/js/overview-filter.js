@@ -605,7 +605,8 @@ export function initOverviewFilters() {
 
     const applySeries = () => {
         const query = normalize(searchInput?.value ?? '');
-            let visible = 0;
+        let visible = 0;
+        let wouldShowButCompleted = 0;
 
         seriesItems.forEach((item) => {
             const text = normalize(item.getAttribute('data-search-text') ?? '');
@@ -652,18 +653,35 @@ export function initOverviewFilters() {
                 matchesVendor &&
                 matchesStack;
 
+            if (matchesFilters && hideRead && allPartsRead) {
+                wouldShowButCompleted += 1;
+            }
+
             const show = matchesFilters && (!hideRead || !allPartsRead);
 
             item.hidden = !show;
             if (show) visible += 1;
         });
 
+        const showCompletedEmpty = hideRead && visible === 0 && wouldShowButCompleted > 0;
+
         if (seriesEmptyEl instanceof HTMLElement) {
-            seriesEmptyEl.hidden = visible > 0;
+            if (showCompletedEmpty) {
+                seriesEmptyEl.setAttribute('data-i18n', 'overview.noIncompleteSeries');
+                seriesEmptyEl.textContent = getShellLabel('overview.noIncompleteSeries');
+                seriesEmptyEl.hidden = false;
+            } else {
+                seriesEmptyEl.setAttribute('data-i18n', 'overview.seriesNoResults');
+                seriesEmptyEl.textContent = getShellLabel('overview.seriesNoResults');
+                seriesEmptyEl.hidden = visible > 0;
+            }
         }
 
         syncResultCount(visible);
-        syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
+        syncOverviewReadControls(hideReadToggle, readResetButton, hideRead, {
+            hideKey: 'overview.hideCompletedSeries',
+            showKey: 'overview.showCompletedSeries',
+        });
         syncFilterReset();
         syncStackBanner();
         sortSeries();
@@ -968,15 +986,18 @@ export function initOverviewFilters() {
  * @param {Element | null} hideReadToggle
  * @param {Element | null} readResetButton
  * @param {boolean} hideRead
+ * @param {{ hideKey?: string, showKey?: string }} [labels]
  */
-function syncOverviewReadControls(hideReadToggle, readResetButton, hideRead) {
+function syncOverviewReadControls(hideReadToggle, readResetButton, hideRead, labels = {}) {
     if (hideReadToggle instanceof HTMLButtonElement) {
         hideReadToggle.setAttribute('aria-pressed', hideRead ? 'true' : 'false');
         hideReadToggle.classList.toggle('tools-overview-read-controls__button--active', hideRead);
 
         const icon = hideReadToggle.querySelector('i');
         // When read items are hidden, the next action is "show them again".
-        const labelKey = hideRead ? 'overview.showRead' : 'overview.hideRead';
+        const labelKey = hideRead
+            ? (labels.showKey ?? 'overview.showRead')
+            : (labels.hideKey ?? 'overview.hideRead');
         const label = getShellLabel(labelKey);
 
         if (icon instanceof HTMLElement) {
@@ -1057,8 +1078,9 @@ function readOverviewSort(root) {
 function initOverviewLayoutToggle(root) {
     const toggles = root.querySelectorAll('[data-overview-layout-toggle]');
     const storiesGrid = root.querySelector('[data-overview-stories-grid]');
+    const seriesGrid = root.querySelector('[data-overview-series-grid]');
 
-    if (toggles.length === 0 || !(storiesGrid instanceof HTMLElement)) {
+    if (toggles.length === 0 || (!(storiesGrid instanceof HTMLElement) && !(seriesGrid instanceof HTMLElement))) {
         return;
     }
 
@@ -1069,7 +1091,12 @@ function initOverviewLayoutToggle(root) {
     const setLayout = (layout) => {
         const isList = layout === 'list';
 
-        storiesGrid.classList.toggle('tools-card-grid--list', isList);
+        if (storiesGrid instanceof HTMLElement) {
+            storiesGrid.classList.toggle('tools-card-grid--list', isList);
+        }
+        if (seriesGrid instanceof HTMLElement) {
+            seriesGrid.classList.toggle('tools-card-grid--list', isList);
+        }
 
         toggles.forEach((button) => {
             const active = button.getAttribute('data-overview-layout-toggle') === layout;
@@ -1267,11 +1294,20 @@ function initOverviewViewToggle(root) {
     }
 
     const layout = root.querySelector('.tools-overview-layout');
+    const params = new URLSearchParams(window.location.search);
+    const queryView = params.get('view');
     const stored = localStorage.getItem(OVERVIEW_VIEW_STORAGE_KEY);
-    const initialView = stored === 'series' && seriesPanel instanceof HTMLElement ? 'series' : 'stories';
+    let initialView = 'stories';
+    if (queryView === 'series' && seriesPanel instanceof HTMLElement) {
+        initialView = 'series';
+    } else if (queryView === 'stories') {
+        initialView = 'stories';
+    } else if (stored === 'series' && seriesPanel instanceof HTMLElement) {
+        initialView = 'series';
+    }
 
     /** @param {'stories' | 'series'} view */
-    const setView = (view) => {
+    const setView = (view, { syncUrl = true } = {}) => {
         const isSeries = view === 'series' && seriesPanel instanceof HTMLElement;
 
         layout?.classList.toggle('tools-overview-layout--view-series', isSeries);
@@ -1292,6 +1328,16 @@ function initOverviewViewToggle(root) {
 
         localStorage.setItem(OVERVIEW_VIEW_STORAGE_KEY, view);
 
+        if (syncUrl) {
+            const url = new URL(window.location.href);
+            if (view === 'series') {
+                url.searchParams.set('view', 'series');
+            } else {
+                url.searchParams.delete('view');
+            }
+            window.history.replaceState({}, '', url);
+        }
+
         const searchInput = root.querySelector('[data-overview-search]');
         if (searchInput instanceof HTMLInputElement) {
             searchInput.dispatchEvent(new Event('input'));
@@ -1308,7 +1354,7 @@ function initOverviewViewToggle(root) {
         });
     });
 
-    setView(initialView);
+    setView(initialView, { syncUrl: queryView === 'series' || queryView === 'stories' });
 }
 
 /**

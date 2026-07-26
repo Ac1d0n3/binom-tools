@@ -70,7 +70,7 @@
                         </div>
                     @endif
 
-                    @if (count($playbooks) > 0)
+                    @if (count($playbooks) > 0 || count($seriesList) > 0)
                         <div
                             class="tools-overview-layout-toggle"
                             role="group"
@@ -100,7 +100,9 @@
                                 <span class="sr-only" data-i18n="overview.layoutList">List view</span>
                             </button>
                         </div>
+                    @endif
 
+                    @if (count($playbooks) > 0)
                         <div class="tools-overview-read-controls" role="group">
                             <button
                                 type="button"
@@ -232,7 +234,7 @@
 
                     @if (count($seriesList) > 0)
                         <div id="playbook-overview-series" data-overview-view-panel="series" hidden>
-                            <div class="tools-card-grid tools-card-grid--series">
+                            <div class="tools-card-grid tools-card-grid--series" data-overview-series-grid>
                                 @foreach ($seriesList as $series)
                                     <x-playbooks.series-card :series="$series" />
                                 @endforeach

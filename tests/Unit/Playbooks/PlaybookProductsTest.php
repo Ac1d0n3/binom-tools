@@ -39,4 +39,12 @@ class PlaybookProductsTest extends TestCase
             PlaybookProducts::union(['qlik', 'dbt'], ['snowflake', 'dbt'], []),
         );
     }
+
+    public function test_sort_keeps_known_products_first(): void
+    {
+        $this->assertSame(
+            ['snowflake', 'dbt', 'qlik', 'fabric', 'databricks', 'powerbi'],
+            PlaybookProducts::sort(['powerbi', 'fabric', 'dbt', 'snowflake', 'qlik', 'databricks']),
+        );
+    }
 }
