@@ -27,6 +27,20 @@ function readConfig(root) {
     }
 }
 
+function currentLocale() {
+    return document.documentElement.lang === 'de' ? 'de' : 'en';
+}
+
+function localizedLabel(key, config) {
+    const labels = config.fieldLabels && typeof config.fieldLabels === 'object' ? config.fieldLabels : {};
+    const entry = labels[key];
+    if (entry && typeof entry === 'object') {
+        return entry[currentLocale()] || entry.en || entry.de || key;
+    }
+
+    return key;
+}
+
 function safeFilename(value) {
     return String(value || 'governance-tool-report')
         .toLowerCase()
@@ -40,7 +54,7 @@ function safeFilename(value) {
 function collect(root, config) {
     const note = root.querySelector('[data-governance-tool-note]')?.value?.trim() || '';
     const fields = Array.from(root.querySelectorAll('[data-governance-tool-field]')).map((input) => ({
-        label: input.dataset.fieldLabel || input.name,
+        label: input.dataset[currentLocale() === 'de' ? 'fieldLabelDe' : 'fieldLabelEn'] || input.dataset.fieldLabel || input.name,
         help: input.dataset.fieldHelp || '',
         value: input.value.trim(),
     }));
@@ -50,12 +64,12 @@ function collect(root, config) {
 
     return {
         toolId: config.id || 'governance-tool',
-        title: config.title || 'Governance Tool',
+        title: currentLocale() === 'de' ? (config.titleDe || config.title || 'Governance Tool') : (config.title || 'Governance Tool'),
         note,
         fields,
         filled,
         open,
-        outputs: Array.isArray(config.outputs) ? config.outputs : [],
+        outputs: Array.isArray(config.outputs) ? config.outputs.map((output) => localizedLabel(output, config)) : [],
         reportSummary: String(config.reportSummary || '').trim(),
         score,
     };
@@ -162,6 +176,94 @@ function applyPrefill(root, config) {
     });
 }
 
+function initHeaderDrawer(root) {
+    const drawer = root.querySelector('[data-governance-tool-header-drawer]');
+    const drawerToggle = root.querySelector('[data-governance-tool-drawer-toggle]');
+    const panels = Array.from(root.querySelectorAll('[data-governance-tool-panel]'));
+    const tabs = Array.from(root.querySelectorAll('[data-governance-tool-panel-toggle]'));
+
+    if (!drawer || !drawerToggle || panels.length === 0 || tabs.length === 0) {
+        return;
+    }
+
+    let scrollAnchor = null;
+
+    const rememberScroll = () => {
+        scrollAnchor = { x: window.scrollX, y: window.scrollY };
+    };
+
+    const activatePanel = (targetId) => {
+        panels.forEach((panel) => {
+            panel.hidden = panel.id !== targetId;
+        });
+        tabs.forEach((tab) => {
+            const isActive = tab.dataset.governanceToolPanelToggle === targetId;
+            tab.classList.toggle('governance-hub__panel-tab--active', isActive);
+            tab.setAttribute('aria-selected', String(isActive));
+            tab.tabIndex = isActive ? 0 : -1;
+        });
+    };
+
+    const keepScrollPosition = (callback) => {
+        const scrollX = scrollAnchor?.x ?? window.scrollX;
+        const scrollY = scrollAnchor?.y ?? window.scrollY;
+        callback();
+        window.requestAnimationFrame(() => {
+            window.scrollTo(scrollX, scrollY);
+            window.setTimeout(() => {
+                window.scrollTo(scrollX, scrollY);
+                scrollAnchor = null;
+            }, 40);
+        });
+    };
+
+    const sync = () => {
+        drawerToggle.setAttribute('aria-expanded', String(!drawer.hidden));
+    };
+
+    drawerToggle.addEventListener('pointerdown', rememberScroll);
+    drawerToggle.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            rememberScroll();
+        }
+    });
+    drawerToggle.addEventListener('click', () => {
+        keepScrollPosition(() => {
+            drawer.hidden = !drawer.hidden;
+            if (!drawer.hidden && !panels.some((panel) => !panel.hidden)) {
+                activatePanel(tabs[0]?.dataset.governanceToolPanelToggle || panels[0]?.id || '');
+            }
+            drawerToggle.blur();
+            sync();
+        });
+    });
+
+    tabs.forEach((tab) => {
+        tab.addEventListener('pointerdown', rememberScroll);
+        tab.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                rememberScroll();
+            }
+        });
+        tab.addEventListener('click', () => {
+            const target = root.querySelector(`#${tab.dataset.governanceToolPanelToggle}`);
+            if (!(target instanceof HTMLElement)) {
+                return;
+            }
+            keepScrollPosition(() => {
+                drawer.hidden = false;
+                activatePanel(target.id);
+                tab.blur();
+                sync();
+            });
+        });
+    });
+
+    activatePanel(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.governanceToolPanelToggle || tabs[0].dataset.governanceToolPanelToggle || panels[0].id);
+    drawer.hidden = true;
+    sync();
+}
+
 function mount(root) {
     const config = readConfig(root);
     const preview = root.querySelector('[data-governance-tool-preview]');
@@ -170,6 +272,7 @@ function mount(root) {
     const returnLink = root.querySelector('[data-return-to-plan]');
 
     let transferred = false;
+    initHeaderDrawer(root);
     applyPrefill(root, config);
     let current = collect(root, config);
 

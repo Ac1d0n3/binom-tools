@@ -84,7 +84,7 @@ class GovernanceHubController extends Controller
                 'icon' => 'fa-gauge-high',
                 'label' => ['de' => 'KPI-Anforderungen sammeln', 'en' => 'Collect KPI requirements'],
                 'lead' => [
-                    'de' => 'Von Geschaeftsfrage und Stakeholdern zu KPI Card, Grain, Owner und ersten Mart-Kandidaten.',
+                    'de' => 'Von Geschäftsfrage und Stakeholdern zu KPI Card, Grain, Owner und ersten Mart-Kandidaten.',
                     'en' => 'Move from business question and stakeholders to KPI card, grain, owner, and first mart candidates.',
                 ],
                 'links' => array_values(array_filter([
@@ -99,7 +99,7 @@ class GovernanceHubController extends Controller
                 'icon' => 'fa-database',
                 'label' => ['de' => 'Quelle anbinden', 'en' => 'Scope a source'],
                 'lead' => [
-                    'de' => 'Supplier auswaehlen, Kernobjekte verstehen, PII/DSDR pruefen und Skip-Tabellen vor dem Load markieren.',
+                    'de' => 'Supplier auswählen, Kernobjekte verstehen, PII/DSDR prüfen und Skip-Tabellen vor dem Load markieren.',
                     'en' => 'Pick a supplier, understand core entities, review PII/DSDR, and mark skip tables before loading.',
                 ],
                 'links' => array_values(array_filter([
@@ -128,7 +128,7 @@ class GovernanceHubController extends Controller
                 'icon' => 'fa-shield-halved',
                 'label' => ['de' => 'PII und DSDR absichern', 'en' => 'Secure PII and DSDR'],
                 'lead' => [
-                    'de' => 'Personenbezug, Freitext, Kopien, Maskierung und Nachweisbarkeit als fruehen Projektpfad behandeln.',
+                    'de' => 'Personenbezug, Freitext, Kopien, Maskierung und Nachweisbarkeit als frühen Projektpfad behandeln.',
                     'en' => 'Handle personal data, free text, copies, masking, and evidence as an early project path.',
                 ],
                 'links' => array_values(array_filter([

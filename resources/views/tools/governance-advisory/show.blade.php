@@ -15,6 +15,7 @@
         'title' => $titleEn,
         'titleDe' => $titleDe,
         'outputs' => $outputs,
+        'fieldLabels' => $fieldLabels ?? [],
         'template' => $tool['template'] ?? [],
         'templateGuides' => $templateGuides ?? [],
         'reportSummary' => $reportSummary ?? '',
@@ -36,100 +37,135 @@
         data-tool-config='@json($toolJson)'
     >
         <header class="governance-advisory-tool__header">
-            <div>
+            <div class="governance-advisory-tool__header-main">
                 <p class="governance-hub__eyebrow" data-text-de="Governance Tool" data-text-en="Governance tool">Governance tool</p>
                 <h1 class="tools-page-title" data-text-de="{{ $titleDe }}" data-text-en="{{ $titleEn }}">{{ $titleEn }}</h1>
                 <p class="tools-page-lead" data-hub-lead data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</p>
-            </div>
-            <div class="governance-advisory-tool__header-side">
-                <div class="governance-advisory-tool__question">
-                    @if (! empty($tool['icon']))
-                        <i class="fa-solid {{ $tool['icon'] }}" aria-hidden="true"></i>
-                    @endif
-                    <span data-text-de="Entscheidungsfrage" data-text-en="Decision question">Decision question</span>
-                    <strong data-text-de="{{ $questionDe }}" data-text-en="{{ $questionEn }}">{{ $questionEn }}</strong>
-                </div>
                 <div class="governance-advisory-tool__header-actions">
+                    <button type="button" class="governance-hub__button" data-governance-tool-drawer-toggle aria-controls="{{ $toolId }}-header-drawer" aria-expanded="false">
+                        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                        <span data-text-de="Hilfe, Überblick, Struktur" data-text-en="Help, overview, structure">Help, overview, structure</span>
+                    </button>
                     <a class="governance-hub__button governance-hub__button--primary" href="#{{ $toolId }}-workbench">
                         <i class="fa-solid fa-eye" aria-hidden="true"></i>
                         <span data-text-de="Report ansehen" data-text-en="View report">View report</span>
                     </a>
-                    <button type="button" class="governance-hub__button" data-governance-tool-copy>
-                        <i class="fa-solid fa-copy" aria-hidden="true"></i>
-                        <span data-text-de="Report kopieren" data-text-en="Copy report">Copy report</span>
-                    </button>
                     <button type="button" class="governance-hub__button" data-governance-tool-save-demo>
                         <i class="fa-solid fa-vial" aria-hidden="true"></i>
                         <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
                     </button>
                 </div>
             </div>
+
+            <div class="governance-advisory-tool__question">
+                @if (! empty($tool['icon']))
+                    <i class="fa-solid {{ $tool['icon'] }}" aria-hidden="true"></i>
+                @endif
+                <span data-text-de="Entscheidungsfrage" data-text-en="Decision question">Decision question</span>
+                <strong data-text-de="{{ $questionDe }}" data-text-en="{{ $questionEn }}">{{ $questionEn }}</strong>
+            </div>
+
+            <section class="governance-advisory-tool__drawer" id="{{ $toolId }}-header-drawer" aria-label="Tool Hilfe, Überblick und Struktur" data-governance-tool-header-drawer hidden>
+                <nav class="governance-hub__panel-tabs governance-advisory-tool__drawer-tabs" aria-label="Tool Header Bereich" role="tablist">
+                    <button type="button" class="governance-hub__panel-tab governance-hub__panel-tab--active" id="{{ $toolId }}-drawer-tab-help" data-governance-tool-panel-toggle="{{ $toolId }}-drawer-help" role="tab" aria-controls="{{ $toolId }}-drawer-help" aria-selected="true">
+                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                        <span data-text-de="Hilfe" data-text-en="Help">Help</span>
+                    </button>
+                    <button type="button" class="governance-hub__panel-tab" id="{{ $toolId }}-drawer-tab-overview" data-governance-tool-panel-toggle="{{ $toolId }}-drawer-overview" role="tab" aria-controls="{{ $toolId }}-drawer-overview" aria-selected="false" tabindex="-1">
+                        <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
+                        <span data-text-de="Überblick" data-text-en="Overview">Overview</span>
+                    </button>
+                    <button type="button" class="governance-hub__panel-tab" id="{{ $toolId }}-drawer-tab-structure" data-governance-tool-panel-toggle="{{ $toolId }}-drawer-structure" role="tab" aria-controls="{{ $toolId }}-drawer-structure" aria-selected="false" tabindex="-1">
+                        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                        <span data-text-de="Struktur" data-text-en="Structure">Structure</span>
+                    </button>
+                </nav>
+
+                <div class="governance-advisory-tool__drawer-stage">
+                    <article class="governance-advisor__helpbox governance-advisory-tool__drawer-panel" id="{{ $toolId }}-drawer-help" aria-labelledby="{{ $toolId }}-drawer-tab-help" data-governance-tool-panel role="tabpanel">
+                        <div class="governance-advisor__helpbox-head">
+                            <span class="governance-advisor__helpbox-icon">
+                                <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <span class="governance-hub__eyebrow" data-text-de="Wie du dieses Tool nutzt" data-text-en="How to use this tool">How to use this tool</span>
+                                <strong data-text-de="Beratung, Eingaben, Report und Übergabe in einer Arbeitsfolge." data-text-en="Guidance, inputs, report, and handoff in one working flow.">Guidance, inputs, report, and handoff in one working flow.</strong>
+                            </span>
+                        </div>
+                        <div class="governance-advisor__helpbox-content">
+                            <p
+                                data-text-de="Nutze das Tool wie einen Workshop-Assistenten: erst die Entscheidungsfrage verstehen, dann die wichtigsten Informationen erfassen, danach den Report-Baustein prüfen und erst dann in Plan, Workflow, Wiki oder Ticket übernehmen."
+                                data-text-en="Use the tool like a workshop assistant: understand the decision question first, capture the most important information, review the report block, then move it into a plan, workflow, wiki, or ticket."
+                            >Use the tool like a workshop assistant: understand the decision question first, capture the most important information, review the report block, then move it into a plan, workflow, wiki, or ticket.</p>
+                            <ol>
+                                <li data-text-de="Wenn du aus dem Governance Hub kommst, nutze die Empfehlungen dort als Reihenfolge und öffne nur die Tools, die zur aktuellen Entscheidung passen." data-text-en="If you came from the Governance Hub, use its recommendations as the working order and open only tools that match the current decision.">If you came from the Governance Hub, use its recommendations as the working order and open only tools that match the current decision.</li>
+                                <li data-text-de="Fülle nicht alles perfekt aus. Wichtig sind konkrete Beispiele, Owner, offene Fragen und die Quelle der Information." data-text-en="Do not try to fill everything perfectly. Concrete examples, owners, open questions, and the source of the information matter most.">Do not try to fill everything perfectly. Concrete examples, owners, open questions, and the source of the information matter most.</li>
+                                <li data-text-de="Die Ergebnisansicht ist der prüfbare Report-Baustein. Kopieren, Markdown laden, Demo speichern oder aus dem Plan heraus direkt zurückschreiben." data-text-en="The result view is the reviewable report block. Copy it, download Markdown, save a demo, or write it back directly when you came from a plan.">The result view is the reviewable report block. Copy it, download Markdown, save a demo, or write it back directly when you came from a plan.</li>
+                            </ol>
+                        </div>
+                    </article>
+
+                    <article class="governance-advisory-tool__drawer-panel" id="{{ $toolId }}-drawer-overview" aria-labelledby="{{ $toolId }}-drawer-tab-overview" data-governance-tool-panel role="tabpanel" hidden>
+                        <div class="governance-advisory-tool__grid governance-advisory-tool__grid--explained">
+                            <section aria-labelledby="{{ $toolId }}-helps">
+                                <h2 id="{{ $toolId }}-helps" data-text-de="Wobei hilft das Tool?" data-text-en="What does this tool help decide?">What does this tool help decide?</h2>
+                                <ul>
+                                    @foreach ($tool['helps'] as $item)
+                                        <li>{{ $item }}</li>
+                                    @endforeach
+                                </ul>
+                            </section>
+
+                            <section aria-labelledby="{{ $toolId }}-inputs">
+                                <h2 id="{{ $toolId }}-inputs" data-text-de="Warum diese Eingaben?" data-text-en="Why these inputs?">Why these inputs?</h2>
+                                <div class="governance-advisory-tool__explain-list">
+                                    @foreach ($inputs as $item)
+                                        @php($label = $fieldLabels[$item] ?? ['de' => $item, 'en' => $item])
+                                        <article>
+                                            <strong data-text-de="{{ $label['de'] }}" data-text-en="{{ $label['en'] }}">{{ $label['en'] }}</strong>
+                                            <p>{{ $inputExplanations[$item] ?? 'Hilft, Kontext, Owner, Risiko und Entscheidungsreife sauber einzuordnen.' }}</p>
+                                        </article>
+                                    @endforeach
+                                </div>
+                            </section>
+
+                            <section aria-labelledby="{{ $toolId }}-outputs">
+                                <h2 id="{{ $toolId }}-outputs" data-text-de="Was entsteht daraus?" data-text-en="What comes out?">What comes out?</h2>
+                                <div class="governance-advisory-tool__explain-list governance-advisory-tool__explain-list--accent">
+                                    @foreach ($outputs as $item)
+                                        @php($label = $fieldLabels[$item] ?? ['de' => $item, 'en' => $item])
+                                        <article>
+                                            <strong data-text-de="{{ $label['de'] }}" data-text-en="{{ $label['en'] }}">{{ $label['en'] }}</strong>
+                                            <p>{{ $outputExplanations[$item] ?? 'Wird als Report-Teil, Plan-Notiz oder nächster Workflow-Baustein nutzbar.' }}</p>
+                                        </article>
+                                    @endforeach
+                                </div>
+                            </section>
+                        </div>
+                    </article>
+
+                    <article class="governance-advisory-tool__drawer-panel" id="{{ $toolId }}-drawer-structure" aria-labelledby="{{ $toolId }}-drawer-tab-structure" data-governance-tool-panel role="tabpanel" hidden>
+                        <div class="governance-advisory-tool__template-content">
+                            <div>
+                                <span class="governance-hub__eyebrow" data-text-de="Erfassungsstruktur und Feldhilfe" data-text-en="Capture structure and field help">Capture structure and field help</span>
+                                <p data-text-de="Diese Struktur ist die Checkliste für einen sauberen Arbeitsstand: Jedes Feld beantwortet eine Frage, die später für Entscheidung, Umsetzung, Review oder Change Request gebraucht wird." data-text-en="This structure is the checklist for a clean working state: each field answers a question needed later for decision, implementation, review, or change request.">This structure is the checklist for a clean working state: each field answers a question needed later for decision, implementation, review, or change request.</p>
+                            </div>
+                            <ol>
+                                @foreach ($tool['template'] as $index => $item)
+                                    @php($guide = $templateGuides[$index] ?? [])
+                                    @php($label = $fieldLabels[$item] ?? ['de' => $item, 'en' => $item])
+                                    <li>
+                                        <strong data-text-de="{{ $label['de'] }}" data-text-en="{{ $label['en'] }}">{{ $label['en'] }}</strong>
+                                        <span>{{ $guide['help'] ?? 'Erfasse den konkreten Stand, offene Fragen und die Quelle der Information.' }}</span>
+                                    </li>
+                                @endforeach
+                            </ol>
+                            <small data-text-de="Welche Informationen in den Report gehören" data-text-en="Which information belongs in the report">Which information belongs in the report</small>
+                        </div>
+                    </article>
+                </div>
+            </section>
         </header>
-
-        <details class="governance-advisory-tool__help" open>
-            <summary>
-                <span>
-                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
-                    <strong data-text-de="Wie du dieses Tool nutzt" data-text-en="How to use this tool">How to use this tool</strong>
-                </span>
-                <small data-text-de="Beratung, Eingaben, Report und Übergabe" data-text-en="Guidance, inputs, report, and handoff">Guidance, inputs, report, and handoff</small>
-            </summary>
-            <div class="governance-advisory-tool__help-content">
-                <p
-                    data-text-de="Nutze das Tool wie einen Workshop-Assistenten: erst die Entscheidungsfrage verstehen, dann die wichtigsten Informationen erfassen, danach den Report-Baustein prüfen und erst dann in Plan, Workflow, Wiki oder Ticket übernehmen."
-                    data-text-en="Use the tool like a workshop assistant: understand the decision question first, capture the most important information, review the report block, then move it into a plan, workflow, wiki, or ticket."
-                >Use the tool like a workshop assistant: understand the decision question first, capture the most important information, review the report block, then move it into a plan, workflow, wiki, or ticket.</p>
-                <ol>
-                    <li data-text-de="Wenn du aus dem Governance Hub kommst, nutze die Empfehlungen dort als Reihenfolge und öffne nur die Tools, die zur aktuellen Entscheidung passen." data-text-en="If you came from the Governance Hub, use its recommendations as the working order and open only tools that match the current decision.">If you came from the Governance Hub, use its recommendations as the working order and open only tools that match the current decision.</li>
-                    <li data-text-de="Fülle nicht alles perfekt aus. Wichtig sind konkrete Beispiele, Owner, offene Fragen und die Quelle der Information." data-text-en="Do not try to fill everything perfectly. Concrete examples, owners, open questions, and the source of the information matter most.">Do not try to fill everything perfectly. Concrete examples, owners, open questions, and the source of the information matter most.</li>
-                    <li data-text-de="Die Ergebnisansicht ist der prüfbare Report-Baustein. Kopieren, Markdown laden, Demo speichern oder aus dem Plan heraus direkt zurückschreiben." data-text-en="The result view is the reviewable report block. Copy it, download Markdown, save a demo, or write it back directly when you came from a plan.">The result view is the reviewable report block. Copy it, download Markdown, save a demo, or write it back directly when you came from a plan.</li>
-                </ol>
-            </div>
-        </details>
-
-        <details class="governance-advisory-tool__overview" open>
-            <summary>
-                <span>
-                    <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
-                    <strong data-text-de="Entscheidung, Inputs und Outputs" data-text-en="Decision, inputs, and outputs">Decision, inputs, and outputs</strong>
-                </span>
-                <small data-text-de="Kurzüberblick ein- oder ausblenden" data-text-en="Show or hide the overview">Show or hide the overview</small>
-            </summary>
-            <div class="governance-advisory-tool__grid governance-advisory-tool__grid--explained">
-                <section class="governance-advisory-tool__panel" aria-labelledby="{{ $toolId }}-helps">
-                    <h2 id="{{ $toolId }}-helps" data-text-de="Wobei hilft das Tool?" data-text-en="What does this tool help decide?">What does this tool help decide?</h2>
-                    <ul>
-                        @foreach ($tool['helps'] as $item)
-                            <li>{{ $item }}</li>
-                        @endforeach
-                    </ul>
-                </section>
-
-                <section class="governance-advisory-tool__panel" aria-labelledby="{{ $toolId }}-inputs">
-                    <h2 id="{{ $toolId }}-inputs" data-text-de="Warum diese Eingaben?" data-text-en="Why these inputs?">Why these inputs?</h2>
-                    <div class="governance-advisory-tool__explain-list">
-                        @foreach ($inputs as $item)
-                            <article>
-                                <strong>{{ $item }}</strong>
-                                <p>{{ $inputExplanations[$item] ?? 'Hilft, Kontext, Owner, Risiko und Entscheidungsreife sauber einzuordnen.' }}</p>
-                            </article>
-                        @endforeach
-                    </div>
-                </section>
-
-                <section class="governance-advisory-tool__panel" aria-labelledby="{{ $toolId }}-outputs">
-                    <h2 id="{{ $toolId }}-outputs" data-text-de="Was entsteht daraus?" data-text-en="What comes out?">What comes out?</h2>
-                    <div class="governance-advisory-tool__explain-list governance-advisory-tool__explain-list--accent">
-                        @foreach ($outputs as $item)
-                            <article>
-                                <strong>{{ $item }}</strong>
-                                <p>{{ $outputExplanations[$item] ?? 'Wird als Report-Teil, Plan-Notiz oder nächster Workflow-Baustein nutzbar.' }}</p>
-                            </article>
-                        @endforeach
-                    </div>
-                </section>
-            </div>
-        </details>
 
         <section
             class="governance-advisory-tool__panel governance-advisory-tool__workbench"
@@ -173,14 +209,17 @@
                     </label>
                     @foreach ($tool['template'] as $index => $item)
                         @php($guide = $templateGuides[$index] ?? [])
+                        @php($label = $fieldLabels[$item] ?? ['de' => $item, 'en' => $item])
                         <label>
-                            <span>{{ $item }}</span>
+                            <span data-text-de="{{ $label['de'] }}" data-text-en="{{ $label['en'] }}">{{ $label['en'] }}</span>
                             <textarea
                                 class="tools-input"
                                 name="field_{{ $index }}"
                                 rows="3"
                                 data-governance-tool-field
-                                data-field-label="{{ $item }}"
+                                data-field-label="{{ $label['en'] }}"
+                                data-field-label-de="{{ $label['de'] }}"
+                                data-field-label-en="{{ $label['en'] }}"
                                 data-field-help="{{ $guide['help'] ?? 'Erfasse den konkreten Stand, offene Fragen und die Quelle der Information.' }}"
                                 placeholder="{{ $guide['placeholder'] ?? $item }}"
                                 aria-describedby="{{ $toolId }}-field-help-{{ $index }}"
@@ -203,20 +242,20 @@
                     <pre data-governance-tool-preview></pre>
                     <div class="governance-advisory-tool__links governance-advisory-tool__links--actions">
                         <button type="button" data-governance-tool-copy>
-                            <span data-text-de="Report kopieren" data-text-en="Copy report">Copy report</span>
                             <i class="fa-solid fa-copy" aria-hidden="true"></i>
+                            <span data-text-de="Report kopieren" data-text-en="Copy report">Copy report</span>
                         </button>
                         <button type="button" data-governance-tool-download>
-                            <span data-text-de="Markdown laden" data-text-en="Download Markdown">Download Markdown</span>
                             <i class="fa-solid fa-download" aria-hidden="true"></i>
+                            <span data-text-de="Markdown laden" data-text-en="Download Markdown">Download Markdown</span>
                         </button>
                         <button type="button" data-governance-tool-print>
-                            <span data-text-de="Drucken/PDF" data-text-en="Print/PDF">Print/PDF</span>
                             <i class="fa-solid fa-print" aria-hidden="true"></i>
+                            <span data-text-de="Drucken/PDF" data-text-en="Print/PDF">Print/PDF</span>
                         </button>
                         <button type="button" data-governance-tool-save-demo>
-                            <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
                             <i class="fa-solid fa-vial" aria-hidden="true"></i>
+                            <span data-text-de="Demo speichern" data-text-en="Save demo">Save demo</span>
                         </button>
                     </div>
                     <p class="governance-advisor__save-status" data-governance-tool-status>
@@ -225,28 +264,6 @@
                 </aside>
             </div>
         </section>
-
-        <details class="governance-advisory-tool__panel governance-advisory-tool__template" aria-labelledby="{{ $toolId }}-template">
-            <summary>
-                <span>
-                    <i class="fa-solid fa-list-check" aria-hidden="true"></i>
-                    <strong id="{{ $toolId }}-template" data-text-de="Erfassungsstruktur und Feldhilfe" data-text-en="Capture structure and field help">Capture structure and field help</strong>
-                </span>
-                <small data-text-de="Welche Informationen in den Report gehören" data-text-en="Which information belongs in the report">Which information belongs in the report</small>
-            </summary>
-            <div class="governance-advisory-tool__template-content">
-                <p data-text-de="Diese Struktur ist die Checkliste für einen sauberen Arbeitsstand: Jedes Feld beantwortet eine Frage, die später für Entscheidung, Umsetzung, Review oder Change Request gebraucht wird." data-text-en="This structure is the checklist for a clean working state: each field answers a question needed later for decision, implementation, review, or change request.">This structure is the checklist for a clean working state: each field answers a question needed later for decision, implementation, review, or change request.</p>
-                <ol>
-                    @foreach ($tool['template'] as $index => $item)
-                        @php($guide = $templateGuides[$index] ?? [])
-                        <li>
-                            <strong>{{ $item }}</strong>
-                            <span>{{ $guide['help'] ?? 'Erfasse den konkreten Stand, offene Fragen und die Quelle der Information.' }}</span>
-                        </li>
-                    @endforeach
-                </ol>
-            </div>
-        </details>
 
         <section class="governance-advisory-tool__panel" aria-labelledby="{{ $toolId }}-next">
             <h2 id="{{ $toolId }}-next" data-text-de="Nächster Schritt" data-text-en="Next step">Next step</h2>
