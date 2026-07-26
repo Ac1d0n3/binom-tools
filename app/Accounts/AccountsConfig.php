@@ -66,6 +66,21 @@ final class AccountsConfig
         return $this->basePath().DIRECTORY_SEPARATOR.'governance-radar-sources';
     }
 
+    public function governanceRadarOverlaysPath(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'governance-radar-overlays.json';
+    }
+
+    public function governanceRadarFeedItemsPath(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'governance-radar-feed-items.json';
+    }
+
+    public function governanceRadarFeedSyncsPath(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'governance-radar-feed-syncs.json';
+    }
+
     public function planAttachmentsDirectory(string $planId): string
     {
         $safe = preg_replace('/[^a-zA-Z0-9_]/', '', $planId) ?: 'invalid';

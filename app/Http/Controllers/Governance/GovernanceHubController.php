@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Governance;
 
 use App\Accounts\AccountAuth;
+use App\Governance\GovernanceRadarFeedDisplay;
+use App\Governance\GovernanceRadarFeedItemStore;
+use App\Governance\GovernanceRadarFeedSync;
+use App\Governance\GovernanceRadarItemOverlayStore;
 use App\Governance\GovernanceRadarSourceStore;
 use App\Http\Controllers\Controller;
 use App\Support\ToolsNav;
@@ -17,6 +21,10 @@ class GovernanceHubController extends Controller
     public function __construct(
         private readonly AccountAuth $auth,
         private readonly GovernanceRadarSourceStore $radarSources,
+        private readonly GovernanceRadarItemOverlayStore $radarOverlays,
+        private readonly GovernanceRadarFeedSync $radarFeedSync,
+        private readonly GovernanceRadarFeedDisplay $radarFeedDisplay,
+        private readonly GovernanceRadarFeedItemStore $radarFeedItems,
     ) {}
 
     public function index(): View
@@ -87,11 +95,22 @@ class GovernanceHubController extends Controller
         /** @var list<array<string, mixed>> $sources */
         $sources = config('governance-radar.sources', []);
         $customSources = $user !== null ? $this->radarSources->listFor($user) : [];
+
+        // Refresh a few stale feeds on page load (budgeted); scheduler covers the rest.
+        $feedSyncResult = ['synced' => 0, 'failed' => 0, 'skipped' => 0, 'errors' => [], 'statuses' => []];
+        if (! app()->runningUnitTests() && (bool) config('governance-radar.ingest.on_request', true)) {
+            $feedSyncResult = $this->radarFeedSync->ensureFresh($user);
+        }
+
         /** @var list<array<string, mixed>> $items */
         $items = config('governance-radar.items', []);
+        $overlaysById = $this->radarOverlays->allByItemId();
+        $preferDe = app()->getLocale() === 'de';
+        $canEnrich = $user !== null && $user->canManageUsers;
 
         $sourceNames = [];
-        foreach ([...$sources, ...$customSources] as $source) {
+        $mergedSources = [...$sources, ...$customSources];
+        foreach ($mergedSources as $source) {
             $id = is_string($source['id'] ?? null) ? $source['id'] : '';
             if ($id !== '') {
                 $sourceNames[$id] = (string) ($source['short_name'] ?? $source['name'] ?? $id);
@@ -106,32 +125,50 @@ class GovernanceHubController extends Controller
         /** @var array<string, array<string, true>> $topicsByType */
         $topicsByType = [];
         $allTopics = [];
+        $displayItems = [];
+        $seenUrls = [];
 
         foreach ($items as $item) {
-            $type = (string) ($item['type'] ?? '');
-            if ($type !== '') {
-                $typesPresent[$type] = true;
+            $displayItem = $this->mergeRadarItemForDisplay($item, $overlaysById[(string) ($item['id'] ?? '')] ?? null, $preferDe);
+            $displayItems[] = $displayItem;
+            $url = strtolower(trim((string) ($displayItem['url'] ?? '')));
+            if ($url !== '') {
+                $seenUrls[$url] = true;
             }
-            $region = (string) ($item['region'] ?? '');
-            if ($region !== '') {
-                $regions[] = $region;
-            }
-            foreach ((array) ($item['stack'] ?? []) as $stack) {
-                $stack = (string) $stack;
-                if ($stack !== '' && $stack !== 'Alle Stacks') {
-                    $stacks[] = $stack;
-                }
-            }
-            foreach ((array) ($item['topics'] ?? []) as $topic) {
-                if (! is_string($topic) || $topic === '') {
-                    continue;
-                }
-                $allTopics[] = $topic;
-                if ($type !== '') {
-                    $topicsByType[$topic][$type] = true;
-                }
-            }
+            $this->collectRadarFilterFacets($displayItem, $typesPresent, $stacks, $regions, $topicsByType, $allTopics);
         }
+
+        $customAsSources = array_map(static function (array $custom): array {
+            return [
+                'id' => $custom['id'] ?? '',
+                'name' => $custom['name'] ?? '',
+                'short_name' => $custom['name'] ?? '',
+                'type' => $custom['type'] ?? 'Custom',
+                'region' => $custom['region'] ?? 'Global',
+                'language' => $custom['language'] ?? 'en',
+                'topics' => $custom['topics'] ?? [],
+                'feed_url' => $custom['feedUrl'] ?? '',
+                'source_url' => $custom['sourceUrl'] ?? '',
+                'stack' => [],
+            ];
+        }, $customSources);
+
+        foreach ($this->radarFeedDisplay->displayItems([...$sources, ...$customAsSources]) as $feedItem) {
+            $url = strtolower(trim((string) ($feedItem['url'] ?? '')));
+            if ($url !== '' && isset($seenUrls[$url])) {
+                continue;
+            }
+            if ($url !== '') {
+                $seenUrls[$url] = true;
+            }
+            $displayItem = $this->mergeRadarItemForDisplay($feedItem, null, $preferDe);
+            $displayItems[] = $displayItem;
+            $this->collectRadarFilterFacets($displayItem, $typesPresent, $stacks, $regions, $topicsByType, $allTopics);
+        }
+
+        usort($displayItems, static function (array $a, array $b): int {
+            return strcmp((string) ($b['published_at'] ?? ''), (string) ($a['published_at'] ?? ''));
+        });
 
         $typeOptions = [];
         foreach ($typeMeta as $type => $meta) {
@@ -162,20 +199,53 @@ class GovernanceHubController extends Controller
         $regionOptions = array_values(array_unique(array_filter($regions)));
         sort($regionOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
+        $feedErrors = array_values(array_filter(
+            array_map(static function (array $sync): ?string {
+                if (($sync['last_status'] ?? '') !== 'error') {
+                    return null;
+                }
+
+                return (string) ($sync['source_id'] ?? 'source').': '.(string) ($sync['last_error'] ?? 'error');
+            }, $this->radarFeedItems->syncStatusesBySourceId()),
+        ));
+
         return view('governance.radar', [
             'sources' => $sources,
             'customSources' => $customSources,
             'radarSourcesApiUrl' => $user !== null ? url('/api/governance/radar/sources') : null,
-            'items' => $items,
+            'radarFeedSyncApiUrl' => $user !== null ? url('/api/governance/radar/feeds/sync') : null,
+            'radarOverlaysApiUrl' => $canEnrich ? url('/api/governance/radar/items') : null,
+            'canEnrichRadarItems' => $canEnrich,
+            'items' => $displayItems,
             'sourceNames' => $sourceNames,
             'typeMeta' => $typeMeta,
             'topicTypeMap' => $topicTypeMap,
+            'feedSyncedAt' => $this->radarFeedItems->latestSyncedAt(),
+            'feedSyncErrors' => array_slice($feedErrors, 0, 5),
+            'feedSyncResult' => $feedSyncResult,
             'filters' => [
                 'types' => $typeOptions,
                 'topics' => $topicOptions,
                 'stacks' => $stackOptions,
                 'regions' => $regionOptions,
             ],
+        ]);
+    }
+
+    public function apiSyncRadarFeeds(): JsonResponse
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+
+        $result = $this->radarFeedSync->sync($user);
+
+        return response()->json([
+            'synced' => $result['synced'],
+            'failed' => $result['failed'],
+            'skipped' => $result['skipped'],
+            'errors' => $result['errors'],
+            'syncedAt' => $this->radarFeedItems->latestSyncedAt(),
+            'statuses' => $result['statuses'],
         ]);
     }
 
@@ -234,6 +304,165 @@ class GovernanceHubController extends Controller
         return response()->json([
             'sources' => $this->radarSources->listFor($user),
         ]);
+    }
+
+    public function apiRadarItemOverlay(string $itemId): JsonResponse
+    {
+        $user = $this->requireRadarEnrichAdmin();
+
+        try {
+            $overlay = $this->radarOverlays->find($itemId);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json([
+            'overlay' => $overlay,
+        ]);
+    }
+
+    public function apiStoreRadarItemOverlay(Request $request, string $itemId): JsonResponse
+    {
+        $user = $this->requireRadarEnrichAdmin();
+
+        $data = $request->validate([
+            'titleDe' => ['nullable', 'string', 'max:500'],
+            'summaryDe' => ['nullable', 'string', 'max:4000'],
+            'recommendedActionDe' => ['nullable', 'string', 'max:2000'],
+            'editorialNote' => ['nullable', 'string', 'max:2000'],
+            'impact' => ['nullable', 'string', 'max:64'],
+        ]);
+
+        try {
+            $overlay = $this->radarOverlays->save($user, $itemId, $data);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json([
+            'overlay' => $overlay,
+        ]);
+    }
+
+    public function apiDeleteRadarItemOverlay(string $itemId): JsonResponse
+    {
+        $this->requireRadarEnrichAdmin();
+
+        try {
+            $this->radarOverlays->delete($itemId);
+        } catch (InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json([
+            'overlay' => null,
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $displayItem
+     * @param  array<string, true>  $typesPresent
+     * @param  list<string>  $stacks
+     * @param  list<string>  $regions
+     * @param  array<string, array<string, true>>  $topicsByType
+     * @param  list<string>  $allTopics
+     */
+    private function collectRadarFilterFacets(
+        array $displayItem,
+        array &$typesPresent,
+        array &$stacks,
+        array &$regions,
+        array &$topicsByType,
+        array &$allTopics,
+    ): void {
+        $type = (string) ($displayItem['type'] ?? '');
+        if ($type !== '') {
+            $typesPresent[$type] = true;
+        }
+        $region = (string) ($displayItem['region'] ?? '');
+        if ($region !== '') {
+            $regions[] = $region;
+        }
+        foreach ((array) ($displayItem['stack'] ?? []) as $stack) {
+            $stack = (string) $stack;
+            if ($stack !== '' && $stack !== 'Alle Stacks') {
+                $stacks[] = $stack;
+            }
+        }
+        foreach ((array) ($displayItem['topics'] ?? []) as $topic) {
+            if (! is_string($topic) || $topic === '') {
+                continue;
+            }
+            $allTopics[] = $topic;
+            if ($type !== '') {
+                $topicsByType[$topic][$type] = true;
+            }
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @param  array<string, mixed>|null  $overlay
+     * @return array<string, mixed>
+     */
+    private function mergeRadarItemForDisplay(array $item, ?array $overlay, bool $preferDe): array
+    {
+        $origin = (string) ($item['origin'] ?? 'example');
+        $language = (string) ($item['language'] ?? 'de');
+        $hasOverlay = is_array($overlay) && (
+            ($overlay['titleDe'] ?? null)
+            || ($overlay['summaryDe'] ?? null)
+            || ($overlay['recommendedActionDe'] ?? null)
+            || ($overlay['editorialNote'] ?? null)
+            || ($overlay['impact'] ?? null)
+        );
+
+        $useDe = $preferDe && $hasOverlay;
+        $title = $useDe && ($overlay['titleDe'] ?? null)
+            ? (string) $overlay['titleDe']
+            : (string) ($item['title'] ?? '');
+        $summary = $useDe && ($overlay['summaryDe'] ?? null)
+            ? (string) $overlay['summaryDe']
+            : (string) ($item['summary'] ?? '');
+        $recommendedAction = $useDe && ($overlay['recommendedActionDe'] ?? null)
+            ? (string) $overlay['recommendedActionDe']
+            : (string) ($item['recommended_action'] ?? '');
+        $impact = ($overlay['impact'] ?? null)
+            ? (string) $overlay['impact']
+            : (string) ($item['impact'] ?? '');
+
+        return [
+            ...$item,
+            'title' => $title,
+            'summary' => $summary,
+            'recommended_action' => $recommendedAction,
+            'impact' => $impact,
+            'origin' => $origin,
+            'language' => $language,
+            'original_title' => (string) ($item['title'] ?? ''),
+            'original_summary' => (string) ($item['summary'] ?? ''),
+            'original_recommended_action' => (string) ($item['recommended_action'] ?? ''),
+            'display_language' => $useDe && (($overlay['titleDe'] ?? null) || ($overlay['summaryDe'] ?? null)) ? 'de' : $language,
+            'has_overlay' => $hasOverlay,
+            'editorial_note' => $overlay['editorialNote'] ?? null,
+            'overlay' => $hasOverlay ? [
+                'titleDe' => $overlay['titleDe'] ?? null,
+                'summaryDe' => $overlay['summaryDe'] ?? null,
+                'recommendedActionDe' => $overlay['recommendedActionDe'] ?? null,
+                'editorialNote' => $overlay['editorialNote'] ?? null,
+                'impact' => $overlay['impact'] ?? null,
+            ] : null,
+            'enrichable' => $origin !== 'vendor' && $origin !== 'feed',
+        ];
+    }
+
+    private function requireRadarEnrichAdmin(): \App\Accounts\AccountUser
+    {
+        $user = $this->auth->user();
+        abort_if($user === null, 401);
+        abort_if(! $user->canManageUsers, 403);
+
+        return $user;
     }
 
     /**

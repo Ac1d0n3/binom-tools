@@ -63,6 +63,12 @@
         @if ($radarSourcesApiUrl)
             data-radar-sources-api-url="{{ $radarSourcesApiUrl }}"
         @endif
+        @if ($radarFeedSyncApiUrl ?? null)
+            data-radar-feed-sync-api-url="{{ $radarFeedSyncApiUrl }}"
+        @endif
+        @if ($radarOverlaysApiUrl ?? null)
+            data-radar-overlays-api-url="{{ $radarOverlaysApiUrl }}"
+        @endif
     >
         <div class="tools-overview-sticky-header governance-radar-sticky">
             <div class="governance-radar__intro" id="governance-radar-intro" data-governance-radar-intro>
@@ -105,7 +111,39 @@
                             <i class="fa-solid fa-rss" aria-hidden="true"></i>
                             <span data-text-de="RSS verwalten" data-text-en="Manage RSS">Manage RSS</span>
                         </a>
+                        @if ($radarFeedSyncApiUrl ?? null)
+                            <button
+                                type="button"
+                                class="governance-hub__button"
+                                data-governance-radar-feed-sync
+                                data-text-de="Updates aktualisieren"
+                                data-text-en="Refresh updates"
+                            >
+                                <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                                <span data-text-de="Updates aktualisieren" data-text-en="Refresh updates">Refresh updates</span>
+                            </button>
+                        @endif
                     </div>
+                @endif
+                <p class="governance-radar__feed-status" data-governance-radar-feed-status>
+                    <span data-text-de="Updates:" data-text-en="Updates:">Updates:</span>
+                    <time
+                        data-governance-radar-feed-synced-at
+                        @if (! empty($feedSyncedAt))
+                            datetime="{{ $feedSyncedAt }}"
+                        @endif
+                    >
+                        @if (! empty($feedSyncedAt))
+                            {{ $feedSyncedAt }}
+                        @else
+                            <span data-text-de="noch nicht synchronisiert" data-text-en="not synced yet">not synced yet</span>
+                        @endif
+                    </time>
+                </p>
+                @if (! empty($feedSyncErrors))
+                    <p class="governance-radar__feed-errors" data-governance-radar-feed-errors>
+                        {{ implode(' · ', $feedSyncErrors) }}
+                    </p>
                 @endif
             </div>
 
@@ -121,26 +159,37 @@
                         placeholder="EDPB, Unity Catalog, Datenschutz, Clean Rooms..."
                     >
                 </label>
-                <label class="tools-overview-product-filter">
-                    <span class="sr-only" data-text-de="Typ" data-text-en="Type">Type</span>
-                    <span class="tools-overview-sort__field">
-                        <select class="tools-overview-sort__select" data-governance-radar-type>
-                            <option value="" data-text-de="Alle Typen" data-text-en="All types">All types</option>
-                            @foreach ($filters['types'] as $type)
-                                @php
-                                    $typeLabelEn = $type['label']['en'] ?? $type['value'];
-                                    $typeLabelDe = $type['label']['de'] ?? $typeLabelEn;
-                                @endphp
-                                <option
+                <div class="governance-radar__multi" data-governance-radar-type-multi>
+                    <span class="sr-only" data-text-de="Typen" data-text-en="Types">Types</span>
+                    <button
+                        type="button"
+                        class="governance-radar__multi-toggle"
+                        data-governance-radar-type-toggle
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                    >
+                        <span data-governance-radar-type-label data-text-de="Alle Typen" data-text-en="All types">All types</span>
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <div class="governance-radar__multi-panel" data-governance-radar-type-panel hidden role="listbox" aria-multiselectable="true">
+                        @foreach ($filters['types'] as $type)
+                            @php
+                                $typeLabelEn = $type['label']['en'] ?? $type['value'];
+                                $typeLabelDe = $type['label']['de'] ?? $typeLabelEn;
+                            @endphp
+                            <label class="governance-radar__multi-option">
+                                <input
+                                    type="checkbox"
                                     value="{{ $type['value'] }}"
+                                    data-governance-radar-type-option
                                     data-text-de="{{ $typeLabelDe }}"
                                     data-text-en="{{ $typeLabelEn }}"
-                                >{{ $typeLabelEn }}</option>
-                            @endforeach
-                        </select>
-                        <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
-                    </span>
-                </label>
+                                >
+                                <span data-text-de="{{ $typeLabelDe }}" data-text-en="{{ $typeLabelEn }}">{{ $typeLabelEn }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
                 <label class="tools-overview-product-filter">
                     <span class="sr-only" data-text-de="Stack" data-text-en="Stack">Stack</span>
                     <span class="tools-overview-sort__field">
@@ -180,16 +229,17 @@
                         <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
                     </span>
                 </label>
-                <button type="button" class="governance-hub__button" data-governance-radar-reset>
+                <button type="button" class="governance-hub__button governance-radar__toolbar-action" data-governance-radar-reset title="Reset">
                     <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
                     <span data-text-de="Zurücksetzen" data-text-en="Reset">Reset</span>
                 </button>
                 <button
                     type="button"
-                    class="governance-hub__button governance-radar__compact-toggle"
+                    class="governance-hub__button governance-radar__compact-toggle governance-radar__toolbar-action"
                     data-governance-radar-compact-toggle
                     aria-pressed="false"
                     aria-controls="governance-radar-intro"
+                    title="Compact"
                 >
                     <i class="fa-solid fa-compress" aria-hidden="true" data-compact-icon></i>
                     <span data-compact-label data-text-de="Kompakt" data-text-en="Compact">Compact</span>
@@ -203,6 +253,7 @@
                 <div class="governance-radar__list">
                     @foreach ($items as $item)
                         @php
+                            $itemId = (string) ($item['id'] ?? '');
                             $source = $sourceNames[$item['source_id'] ?? ''] ?? ($item['source_id'] ?? 'Quelle');
                             $itemUrl = (string) ($item['url'] ?? '');
                             $itemHref = str_starts_with($itemUrl, '/') ? url($itemUrl) : $itemUrl;
@@ -226,9 +277,18 @@
                                 default => 'info',
                             };
                             $showAdvisor = in_array($impact, $advisorImpacts, true);
+                            $origin = (string) ($item['origin'] ?? 'example');
+                            $language = (string) ($item['language'] ?? 'de');
+                            $displayLanguage = (string) ($item['display_language'] ?? $language);
+                            $hasOverlay = (bool) ($item['has_overlay'] ?? false);
+                            $enrichable = (bool) ($item['enrichable'] ?? false);
+                            $overlay = is_array($item['overlay'] ?? null) ? $item['overlay'] : [];
                             $search = strtolower(implode(' ', [
                                 $item['title'] ?? '',
                                 $item['summary'] ?? '',
+                                $overlay['titleDe'] ?? '',
+                                $overlay['summaryDe'] ?? '',
+                                $overlay['recommendedActionDe'] ?? '',
                                 $source,
                                 $itemType,
                                 $impact,
@@ -240,12 +300,18 @@
                         <article
                             class="governance-radar__item governance-radar__item--{{ $typeTone }}"
                             data-governance-radar-item
+                            data-item-id="{{ $itemId }}"
+                            data-origin="{{ $origin }}"
+                            data-language="{{ $language }}"
                             data-search="{{ $search }}"
                             data-topics="{{ implode('||', $rawTopics) }}"
                             data-type="{{ $itemType }}"
                             data-stack="{{ implode(' ', $stackValues) }}"
                             data-region="{{ $item['region'] ?? '' }}"
                             data-impact="{{ $impact }}"
+                            @if ($hasOverlay)
+                                data-has-overlay="true"
+                            @endif
                         >
                             <div class="governance-radar__item-row">
                                 <div
@@ -267,16 +333,32 @@
                                                 @if (! empty($item['region']))
                                                     <span class="governance-radar__meta-region">{{ $item['region'] }}</span>
                                                 @endif
+                                                @if ($origin === 'example')
+                                                    <span class="governance-radar__badge" data-text-de="Beispiel" data-text-en="Example">Example</span>
+                                                @elseif ($origin === 'vendor')
+                                                    <span class="governance-radar__badge" data-text-de="Vendor" data-text-en="Vendor">Vendor</span>
+                                                @elseif ($origin === 'feed')
+                                                    <span class="governance-radar__badge governance-radar__badge--live" data-text-de="Live" data-text-en="Live">Live</span>
+                                                @endif
+                                                @if (strtoupper($displayLanguage) !== 'DE' || $language !== 'de')
+                                                    <span class="governance-radar__badge governance-radar__badge--lang">{{ strtoupper($displayLanguage) }}</span>
+                                                @endif
+                                                @if ($hasOverlay)
+                                                    <span class="governance-radar__badge governance-radar__badge--curated" data-text-de="Kuratiert" data-text-en="Curated">Curated</span>
+                                                @endif
                                             </div>
                                             <span class="governance-radar__impact governance-radar__impact--{{ $impactTone }}">{{ $impact }}</span>
                                         </div>
-                                        <h3>{{ $item['title'] }}</h3>
-                                        <p class="governance-radar__summary-text">{{ $item['summary'] }}</p>
+                                        <h3 data-radar-item-title>{{ $item['title'] }}</h3>
+                                        <p class="governance-radar__summary-text" data-radar-item-summary>{{ $item['summary'] }}</p>
+                                        @if (! empty($item['editorial_note']))
+                                            <p class="governance-radar__editorial-note">{{ $item['editorial_note'] }}</p>
+                                        @endif
                                     </div>
                                     <div class="governance-radar__item-footer">
                                         <p class="governance-radar__action-note">
                                             <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                                            <span>{{ $item['recommended_action'] }}</span>
+                                            <span data-radar-item-action>{{ $item['recommended_action'] }}</span>
                                         </p>
                                         <div class="governance-radar__item-bar">
                                             @php
@@ -295,16 +377,35 @@
                                                 @endif
                                             </div>
                                             <div class="governance-radar__item-actions">
-                                                <a class="governance-hub__button governance-hub__button--primary" href="{{ $itemHref }}" @if (! str_starts_with($itemUrl, '/')) target="_blank" rel="noopener" @endif>
-                                                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-                                                    <span data-text-de="Quelle öffnen" data-text-en="Open source">Open source</span>
-                                                </a>
                                                 @if ($showAdvisor)
                                                     <a class="governance-hub__button" href="{{ locale_route('governance.index') }}" data-governance-radar-advisor>
                                                         <i class="fa-solid fa-compass" aria-hidden="true"></i>
                                                         <span data-text-de="Im Advisor prüfen" data-text-en="Review in advisor">Review in advisor</span>
                                                     </a>
                                                 @endif
+                                                @if (($canEnrichRadarItems ?? false) && $enrichable)
+                                                    <button
+                                                        type="button"
+                                                        class="governance-hub__button"
+                                                        data-governance-radar-enrich
+                                                        data-item-id="{{ $itemId }}"
+                                                        data-overlay-title-de="{{ $overlay['titleDe'] ?? '' }}"
+                                                        data-overlay-summary-de="{{ $overlay['summaryDe'] ?? '' }}"
+                                                        data-overlay-action-de="{{ $overlay['recommendedActionDe'] ?? '' }}"
+                                                        data-overlay-note="{{ $overlay['editorialNote'] ?? '' }}"
+                                                        data-overlay-impact="{{ $overlay['impact'] ?? '' }}"
+                                                        data-original-title="{{ $item['original_title'] ?? $item['title'] ?? '' }}"
+                                                        data-original-summary="{{ $item['original_summary'] ?? '' }}"
+                                                        data-original-action="{{ $item['original_recommended_action'] ?? '' }}"
+                                                    >
+                                                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                                        <span data-text-de="Anreichern" data-text-en="Enrich">Enrich</span>
+                                                    </button>
+                                                @endif
+                                                <a class="governance-hub__button governance-hub__button--primary governance-radar__open-source" href="{{ $itemHref }}" @if (! str_starts_with($itemUrl, '/')) target="_blank" rel="noopener" @endif>
+                                                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                                    <span data-text-de="Quelle öffnen" data-text-en="Open source">Open source</span>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -316,6 +417,50 @@
 
                 <p class="governance-radar__empty" data-governance-radar-empty hidden data-text-de="Keine Treffer für diese Filter." data-text-en="No matches for these filters.">No matches for these filters.</p>
             </section>
+
+            @if ($canEnrichRadarItems ?? false)
+                <dialog class="governance-radar__enrich-dialog" data-governance-radar-enrich-dialog>
+                    <form method="dialog" class="governance-radar__enrich-form" data-governance-radar-enrich-form>
+                        <div class="governance-radar__enrich-head">
+                            <h2 data-text-de="Eintrag anreichern" data-text-en="Enrich item">Enrich item</h2>
+                            <button type="submit" class="governance-hub__button" value="cancel" data-text-de="Schließen" data-text-en="Close">Close</button>
+                        </div>
+                        <p class="governance-radar__enrich-original" data-governance-radar-enrich-original></p>
+                        <input type="hidden" name="itemId" data-enrich-item-id>
+                        <label>
+                            <span data-text-de="Titel (DE)" data-text-en="Title (DE)">Title (DE)</span>
+                            <input class="tools-input" type="text" name="titleDe" data-enrich-title-de maxlength="500">
+                        </label>
+                        <label>
+                            <span data-text-de="Zusammenfassung (DE)" data-text-en="Summary (DE)">Summary (DE)</span>
+                            <textarea class="tools-input" name="summaryDe" data-enrich-summary-de rows="4" maxlength="4000"></textarea>
+                        </label>
+                        <label>
+                            <span data-text-de="Empfohlene Aktion (DE)" data-text-en="Recommended action (DE)">Recommended action (DE)</span>
+                            <textarea class="tools-input" name="recommendedActionDe" data-enrich-action-de rows="3" maxlength="2000"></textarea>
+                        </label>
+                        <label>
+                            <span data-text-de="Redaktionelle Notiz" data-text-en="Editorial note">Editorial note</span>
+                            <textarea class="tools-input" name="editorialNote" data-enrich-note rows="2" maxlength="2000"></textarea>
+                        </label>
+                        <label>
+                            <span data-text-de="Impact Override" data-text-en="Impact override">Impact override</span>
+                            <input class="tools-input" type="text" name="impact" data-enrich-impact maxlength="64" placeholder="Prüfen, Relevant, …">
+                        </label>
+                        <p class="governance-radar__source-status" data-governance-radar-enrich-status hidden></p>
+                        <div class="governance-radar__form-actions">
+                            <button type="button" class="governance-hub__button governance-hub__button--primary" data-governance-radar-enrich-save>
+                                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                                <span data-text-de="Speichern" data-text-en="Save">Save</span>
+                            </button>
+                            <button type="button" class="governance-hub__button" data-governance-radar-enrich-reset>
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                <span data-text-de="Overlay löschen" data-text-en="Delete overlay">Delete overlay</span>
+                            </button>
+                        </div>
+                    </form>
+                </dialog>
+            @endif
 
             @if ($radarSourcesApiUrl)
                 <section class="governance-radar__manage" id="governance-radar-manage" aria-labelledby="governance-radar-manage-title" data-governance-radar-admin>

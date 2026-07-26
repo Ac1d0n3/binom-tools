@@ -77,6 +77,68 @@ class GovernanceSessionsTest extends TestCase
             ->assertJsonCount(0, 'sources');
     }
 
+    public function test_non_admin_cannot_manage_radar_item_overlays(): void
+    {
+        $this->login();
+
+        $this->get('/governance/radar')
+            ->assertOk()
+            ->assertDontSee('data-governance-radar-enrich', false)
+            ->assertDontSee('data-radar-overlays-api-url', false);
+
+        $this->putJson('/api/governance/radar/items/edpb-ai-anonymisierung-blockchain/overlay', [
+            'titleDe' => 'Test',
+        ])->assertForbidden();
+    }
+
+    public function test_admin_can_save_and_delete_radar_item_overlay(): void
+    {
+        app(UserRepository::class)->upsert([
+            'id' => 'user_gov_admin',
+            'email' => 'gov-admin@example.com',
+            'displayName' => 'Governance Admin',
+            'passwordHash' => password_hash('password123', PASSWORD_DEFAULT),
+            'canManageUsers' => true,
+            'canManageTeams' => true,
+            'active' => true,
+            'teamIds' => [],
+        ]);
+
+        $this->post('/login', [
+            'email' => 'gov-admin@example.com',
+            'password' => 'password123',
+        ])->assertRedirect();
+
+        $this->get('/governance/radar')
+            ->assertOk()
+            ->assertSee('data-radar-overlays-api-url', false)
+            ->assertSee('data-governance-radar-enrich', false)
+            ->assertSee('data-origin="vendor"', false);
+
+        $itemId = 'edpb-ai-anonymisierung-blockchain';
+        $this->putJson('/api/governance/radar/items/'.$itemId.'/overlay', [
+            'titleDe' => 'EDPB Leitlinien kuratiert',
+            'summaryDe' => 'Kurz angereicherte DE-Zusammenfassung für Governance-Reviews.',
+            'recommendedActionDe' => 'Gegen eigene AI-Use-Cases spiegeln.',
+            'editorialNote' => 'Admin-Notiz',
+            'impact' => 'Prüfen',
+        ])
+            ->assertOk()
+            ->assertJsonPath('overlay.titleDe', 'EDPB Leitlinien kuratiert')
+            ->assertJsonPath('overlay.editorialNote', 'Admin-Notiz');
+
+        app()->setLocale('de');
+        $this->get('/governance/radar')
+            ->assertOk()
+            ->assertSee('EDPB Leitlinien kuratiert', false)
+            ->assertSee('Kuratiert', false)
+            ->assertSee('Admin-Notiz', false);
+
+        $this->deleteJson('/api/governance/radar/items/'.$itemId.'/overlay')
+            ->assertOk()
+            ->assertJsonPath('overlay', null);
+    }
+
     public function test_demo_report_shows_a_filled_example_session(): void
     {
         $this->get('/governance/demo-report')

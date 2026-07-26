@@ -136,7 +136,9 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-radar', false);
         $response->assertSee('data-governance-radar-search', false);
         $response->assertSee('data-governance-radar-topic', false);
-        $response->assertSee('data-governance-radar-type', false);
+        $response->assertSee('data-governance-radar-type-multi', false);
+        $response->assertSee('data-governance-radar-type-option', false);
+        $response->assertSee('data-governance-radar-type-toggle', false);
         $response->assertSee('data-governance-radar-stack', false);
         $response->assertSee('data-governance-radar-region', false);
         $response->assertSee('value="DE"', false);
@@ -159,6 +161,13 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-radar-compact-toggle', false);
         $response->assertSee('data-governance-radar-intro', false);
         $response->assertSee('governance-radar__intro', false);
+        $response->assertSee('data-origin="example"', false);
+        $response->assertSee('data-origin="vendor"', false);
+        $response->assertSee('data-language="en"', false);
+        $response->assertSee('Snowflake Release Notes', false);
+        $response->assertSee('Databricks Release Notes', false);
+        $response->assertDontSee('data-governance-radar-enrich', false);
+        $response->assertDontSee('data-radar-overlays-api-url', false);
         $response->assertDontSee('Feed Registry');
         $response->assertDontSee('data-governance-radar-admin', false);
         $response->assertSee('governance-radar__item--security', false);

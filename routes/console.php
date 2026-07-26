@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('bn-tools:backup-plans')->dailyAt('02:15');
+Schedule::command('bn-tools:sync-governance-radar-feeds')->hourly();

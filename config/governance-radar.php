@@ -51,6 +51,36 @@ return [
             'label' => ['de' => 'Eigene News', 'en' => 'Editorial'],
         ],
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Feed ingest
+    |--------------------------------------------------------------------------
+    | Only sources with ingest=true and a real RSS/Atom feed_url are fetched.
+    */
+    'ingest' => [
+        'ttl_minutes' => 45,
+        'timeout_seconds' => 12,
+        'max_bytes' => 1_048_576,
+        'default_limit' => 8,
+        'request_budget_seconds' => 8,
+        'max_sources_per_request' => 3,
+        'on_request' => true,
+        'default_keywords' => [
+            'governance', 'catalog', 'security', 'privacy', 'compliance', 'policy',
+            'access', 'unity catalog', 'purview', 'lineage', 'pii', 'rls', 'masking',
+            'clean room', 'data quality', 'audit', 'iam', 'permission', 'release',
+            'what\'s new', 'whats new', 'changelog', 'behavior change',
+        ],
+        'source_type_to_item_type' => [
+            'Vendor' => 'Vendor Update',
+            'Regulator' => 'Richtlinien',
+            'Standard' => 'Standard',
+            'Community' => 'Governance News',
+            'Eigene News' => 'Eigene News',
+            'Custom' => 'Governance News',
+            'Eigene Quelle' => 'Eigene News',
+        ],
+    ],
     'sources' => [
         [
             'id' => 'edpb-news',
@@ -64,6 +94,8 @@ return [
             'source_url' => 'https://www.edpb.europa.eu/news_en',
             'feed_url' => 'https://www.edpb.europa.eu/news_en',
             'note' => 'Offizielle News und Veröffentlichungen rund um GDPR, Leitlinien, nationale Aufsichtsbehörden und EDPB-Entscheidungen.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -78,6 +110,8 @@ return [
             'source_url' => 'https://www.edps.europa.eu/press-publications/publications/newsletters_en',
             'feed_url' => 'https://www.edps.europa.eu/press-publications/publications/newsletters_en',
             'note' => 'Newsletter und Positionsübersichten zu Datenschutz, AI Act, EU-Institutionen und Aufsichtspraxis.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -92,6 +126,8 @@ return [
             'source_url' => 'https://ico.org.uk/global/rss-feeds/',
             'feed_url' => 'https://ico.org.uk/global/rss-feeds/',
             'note' => 'RSS-Übersicht für News, Blogs, Enforcement und Decision Notices.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -106,6 +142,8 @@ return [
             'source_url' => 'https://www.baden-wuerttemberg.datenschutz.de/newsfeeds/',
             'feed_url' => 'https://www.baden-wuerttemberg.datenschutz.de/newsfeeds/',
             'note' => 'Deutsche Datenschutz-Newsfeeds, Pressemitteilungen und Praxishilfen.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -120,6 +158,8 @@ return [
             'source_url' => 'https://www.nist.gov/frameworks',
             'feed_url' => 'https://www.nist.gov/frameworks',
             'note' => 'Standards und Frameworks für Privacy, Cybersecurity, AI Risk und Risk Management.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -134,6 +174,8 @@ return [
             'source_url' => 'https://csrc.nist.gov/news/',
             'feed_url' => 'https://csrc.nist.gov/news/',
             'note' => 'News und Updates zu Security-, Privacy-, Supplier- und Risk-Management-Publikationen.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -148,6 +190,8 @@ return [
             'source_url' => 'https://docs.snowflake.com/en/release-notes/all-release-notes',
             'feed_url' => 'https://docs.snowflake.com/en/release-notes/all-release-notes',
             'note' => 'Release Notes für Governance-relevante Features, Policy-Änderungen, Clean Rooms und Catalog-Funktionen.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -162,6 +206,8 @@ return [
             'source_url' => 'https://docs.databricks.com/aws/en/data-governance',
             'feed_url' => 'https://docs.databricks.com/aws/en/data-governance',
             'note' => 'Governance-Dokumentation zu Unity Catalog, Discovery, Classification, DQ Monitoring und AI Governance.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -176,6 +222,8 @@ return [
             'source_url' => 'https://www.bfdi.bund.de/DE/BfDI/Presse/Pressemitteilungen/pressemitteilungen_node.html',
             'feed_url' => 'https://www.bfdi.bund.de/DE/BfDI/Presse/Pressemitteilungen/pressemitteilungen_node.html',
             'note' => 'Nationale DE-Aufsicht: Pressemitteilungen zu Data Act, KI, Transparenz und Tätigkeitsberichten.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -190,6 +238,8 @@ return [
             'source_url' => 'https://www.cnil.fr/en/news',
             'feed_url' => 'https://www.cnil.fr/en/rss.xml',
             'note' => 'Französische Aufsicht mit starken Praxisleitfäden zu AI, Transparenz und Data Governance.',
+            'ingest' => true,
+
             'priority' => 'high',
         ],
         [
@@ -204,6 +254,8 @@ return [
             'source_url' => 'https://www.dataprotection.ie/en/news-media/latest-news',
             'feed_url' => 'https://www.dataprotection.ie/en/news-media/latest-news',
             'note' => 'Lead-Aufsicht für viele Big-Tech-/AI-Fälle und Cross-Border-Enforcement in der EU.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -218,6 +270,8 @@ return [
             'source_url' => 'https://www.enisa.europa.eu/news',
             'feed_url' => 'https://www.enisa.europa.eu/news',
             'note' => 'Cyber-/Risk-Guidance mit Schnittstellen zu NIS2, Supply Chain und Governance-Controls.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -232,6 +286,8 @@ return [
             'source_url' => 'https://digital-strategy.ec.europa.eu/en/news',
             'feed_url' => 'https://digital-strategy.ec.europa.eu/en/rss.xml',
             'note' => 'EU-Updates zu AI Act, Data Act und digitaler Regulierung mit Governance-Impact.',
+            'ingest' => true,
+
             'priority' => 'high',
         ],
         [
@@ -246,6 +302,8 @@ return [
             'source_url' => 'https://iapp.org/news/',
             'feed_url' => 'https://iapp.org/news/a/rss/',
             'note' => 'Kuratierte Privacy-/Governance-News und Analyse zu Enforcement und Cross-Regulatory-Themen.',
+            'ingest' => true,
+
             'priority' => 'medium',
         ],
         [
@@ -260,6 +318,8 @@ return [
             'source_url' => 'https://noyb.eu/en/news',
             'feed_url' => 'https://noyb.eu/en/rss.xml',
             'note' => 'Advocacy- und Complaint-Signale zu GDPR-Enforcement — klar als NGO/Community labeln.',
+            'ingest' => true,
+
             'priority' => 'medium',
         ],
         [
@@ -274,6 +334,10 @@ return [
             'source_url' => 'https://learn.microsoft.com/en-us/purview/',
             'feed_url' => 'https://learn.microsoft.com/api/search/rss?search=%22Microsoft+Purview%22&locale=en-us',
             'note' => 'Vendor-Docs zu Catalog, Classification, Data Loss Prevention und Fabric Governance.',
+            'ingest' => true,
+            'ingest_keywords' => ['purview', 'catalog', 'governance', 'classification', 'lineage', 'sensitivity', 'dlp', 'fabric'],
+            'item_type' => 'Vendor Update',
+
             'priority' => 'medium',
         ],
         [
@@ -288,6 +352,10 @@ return [
             'source_url' => 'https://www.getdbt.com/blog',
             'feed_url' => 'https://www.getdbt.com/blog/rss.xml',
             'note' => 'Praxis zu Analytics Engineering, Tests, Docs und Governance-nahen Workflows.',
+            'ingest' => true,
+            'ingest_keywords' => ['test', 'docs', 'governance', 'metadata', 'quality', 'semantic', 'mesh', 'discovery'],
+            'item_type' => 'Vendor Update',
+
             'priority' => 'medium',
         ],
         [
@@ -302,6 +370,8 @@ return [
             'source_url' => 'https://docs.snowflake.com/en/user-guide/trust-center',
             'feed_url' => 'https://docs.snowflake.com/en/release-notes/all-release-notes',
             'note' => 'Security-, Auth- und Trust-Center-Updates parallel zu Feature Release Notes.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -314,8 +384,12 @@ return [
             'cadence' => 'weekly',
             'topics' => ['Vendor Updates', 'Security', 'Unity Catalog', 'AI Governance'],
             'source_url' => 'https://docs.databricks.com/aws/en/release-notes/',
-            'feed_url' => 'https://docs.databricks.com/aws/en/release-notes/',
+            'feed_url' => 'https://docs.databricks.com/aws/en/feed.xml',
             'note' => 'Plattform-, Security- und Governance-Feature-Updates für Databricks Workspaces.',
+            'ingest' => true,
+            'ingest_keywords' => ['unity catalog', 'governance', 'security', 'access', 'lineage', 'ai governance', 'permission', 'lakehouse'],
+            'item_type' => 'Vendor Update',
+
             'priority' => 'high',
         ],
         [
@@ -330,6 +404,10 @@ return [
             'source_url' => 'https://learn.microsoft.com/en-us/fabric/get-started/whats-new',
             'feed_url' => 'https://learn.microsoft.com/api/search/rss?search=%22Microsoft+Fabric%22&locale=en-us',
             'note' => 'Fabric Feature- und Governance-Updates inkl. Workspace-, Security- und Semantic-Model-Änderungen.',
+            'ingest' => true,
+            'ingest_keywords' => ['fabric', 'governance', 'security', 'catalog', 'workspace', 'oneLake', 'purview'],
+            'item_type' => 'Vendor Update',
+
             'priority' => 'high',
         ],
         [
@@ -344,6 +422,10 @@ return [
             'source_url' => 'https://powerbi.microsoft.com/en-us/blog/',
             'feed_url' => 'https://powerbi.microsoft.com/en-us/blog/feed/',
             'note' => 'Service Updates zu Security, Sharing, RLS und Governance-relevanten Report-Features.',
+            'ingest' => true,
+            'ingest_keywords' => ['security', 'governance', 'rls', 'sharing', 'workspace', 'admin', 'compliance', 'sensitivity'],
+            'item_type' => 'Vendor Update',
+
             'priority' => 'medium',
         ],
         [
@@ -356,8 +438,12 @@ return [
             'cadence' => 'weekly',
             'topics' => ['Vendor Updates', 'Security', 'Catalog', 'Access Control'],
             'source_url' => 'https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/saas-change-log.htm',
-            'feed_url' => 'https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/saas-change-log.htm',
+            'feed_url' => 'https://qlik.dev/rss.xml',
             'note' => 'Qlik Cloud Change Log für Security, Spaces, Access Control und Catalog-nahe Änderungen.',
+            'ingest' => true,
+            'ingest_keywords' => ['security', 'access', 'space', 'catalog', 'governance', 'permission', 'admin'],
+            'item_type' => 'Vendor Update',
+
             'priority' => 'medium',
         ],
         [
@@ -372,6 +458,8 @@ return [
             'source_url' => 'https://www.tableau.com/support/releases',
             'feed_url' => 'https://www.tableau.com/support/releases',
             'note' => 'Tableau Desktop/Server/Cloud Releases inkl. Security Fixes und Permission-Änderungen.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -386,6 +474,8 @@ return [
             'source_url' => 'https://www.oecd.org/en/topics/policy-issues/data-governance-and-privacy.html',
             'feed_url' => 'https://www.oecd.org/en/topics/policy-issues/data-governance-and-privacy.html',
             'note' => 'Policy-Frameworks zu Data Governance, Privacy und vertrauenswürdigem Datenaustausch.',
+            'ingest' => false,
+
             'priority' => 'low',
         ],
         [
@@ -400,6 +490,8 @@ return [
             'source_url' => 'https://www.lda.bayern.de/de/aktuelles.html',
             'feed_url' => 'https://www.lda.bayern.de/de/aktuelles.html',
             'note' => 'Bayerische Aufsicht mit praxisnahen Hinweisen zu Cloud, KI und Unternehmensdatenschutz.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
         [
@@ -414,6 +506,8 @@ return [
             'source_url' => 'https://www.datenschutz-berlin.de/presse/',
             'feed_url' => 'https://www.datenschutz-berlin.de/presse/',
             'note' => 'Berliner Aufsicht: Pressemitteilungen, Tätigkeitsberichte und Praxisfragen für öffentliche und private Stellen.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -428,6 +522,8 @@ return [
             'source_url' => 'https://www.bsi.bund.de/DE/Service-Navi/Presse/presse_node.html',
             'feed_url' => 'https://www.bsi.bund.de/SiteGlobals/Functions/RSSFeed/RSSNewsfeed/RSSNewsfeed.xml',
             'note' => 'DE-Security-Standards, Cloud- und C5-nahe Hinweise mit Schnittstelle zu Data-/Vendor-Governance.',
+            'ingest' => true,
+
             'priority' => 'high',
         ],
         [
@@ -442,6 +538,8 @@ return [
             'source_url' => 'https://www.cisa.gov/news-events/news',
             'feed_url' => 'https://www.cisa.gov/news.xml',
             'note' => 'Security Alerts und Guidance zu Supply Chain, Incidents und kritischer Infrastruktur.',
+            'ingest' => true,
+
             'priority' => 'medium',
         ],
         [
@@ -456,6 +554,9 @@ return [
             'source_url' => 'https://aws.amazon.com/blogs/security/',
             'feed_url' => 'https://aws.amazon.com/blogs/security/feed/',
             'note' => 'IAM-, Encryption-, Logging- und Control-Updates für AWS-Landschaften.',
+            'ingest' => true,
+            'ingest_keywords' => ['iam', 'governance', 'encryption', 'logging', 'access', 'policy', 'compliance', 'lake'],
+
             'priority' => 'medium',
         ],
         [
@@ -470,6 +571,9 @@ return [
             'source_url' => 'https://cloud.google.com/blog/products/identity-security',
             'feed_url' => 'https://cloudblog.withgoogle.com/rss',
             'note' => 'Identity-, Security- und Compliance-Updates rund um Google Cloud und BigQuery-Ökosysteme.',
+            'ingest' => true,
+            'ingest_keywords' => ['iam', 'governance', 'security', 'access', 'policy', 'compliance', 'bigquery'],
+
             'priority' => 'medium',
         ],
         [
@@ -484,6 +588,8 @@ return [
             'source_url' => 'https://www.collibra.com/us/en/blog',
             'feed_url' => 'https://www.collibra.com/us/en/blog',
             'note' => 'Catalog-, Stewardship- und Data-Quality-Praxis aus dem Data-Intelligence-Ökosystem.',
+            'ingest' => false,
+
             'priority' => 'medium',
         ],
         [
@@ -498,6 +604,9 @@ return [
             'source_url' => 'https://www.alation.com/blog/',
             'feed_url' => 'https://www.alation.com/blog/feed/',
             'note' => 'Data Catalog, Literacy und Governance-Operating-Model aus Alation-Perspektive.',
+            'ingest' => true,
+            'ingest_keywords' => ['catalog', 'governance', 'literacy', 'steward', 'quality', 'lineage'],
+
             'priority' => 'low',
         ],
         [
@@ -512,6 +621,8 @@ return [
             'source_url' => 'https://www.iso.org/news.html',
             'feed_url' => 'https://www.iso.org/rss/news.rss',
             'note' => 'Internationale Standards zu Security, Quality und AI — als Framework-Referenz, nicht als Tagesnews.',
+            'ingest' => true,
+
             'priority' => 'low',
         ],
         [
@@ -526,6 +637,8 @@ return [
             'source_url' => '/governance/radar',
             'feed_url' => null,
             'note' => 'Eigene kuratierte Hinweise, Best Practices, Playbook-Updates und interne Governance-Notizen.',
+            'ingest' => false,
+
             'priority' => 'high',
         ],
     ],
@@ -543,6 +656,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.edpb.europa.eu/news_en',
             'recommended_action' => 'Quelle lesen und bei AI-/Web-Scraping-Projekten gegen eigene Use Cases spiegeln. Nur bei Abweichung nachziehen — sonst beobachten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'edpb-cross-regulatory-sharing',
@@ -557,6 +674,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.edpb.europa.eu/news_en',
             'recommended_action' => 'Beobachten, wenn Data Sharing oder Clean-Room-Szenarien anstehen — ohne sofortigen Plan. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'nist-privacy-framework-11',
@@ -571,6 +692,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.nist.gov/frameworks',
             'recommended_action' => 'Framework-Mapping prüfen und nur bei Lücken im eigenen Stack in den Advisor nehmen. Privacy Framework gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'edpb-annual-report-2025',
@@ -585,6 +710,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.edpb.europa.eu/news_en',
             'recommended_action' => 'Zum Lesen und Orientieren — gegen eigene Policies spiegeln, ohne neuen Plan zu starten. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'edpb-dpia-template',
@@ -599,6 +728,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.edpb.europa.eu/news_en',
             'recommended_action' => 'Template lesen und prüfen, ob PII/DSDR- und Source-Scope-Checks davon profitieren. DPIA gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'edpb-transparency-enforcement',
@@ -613,6 +746,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.edpb.europa.eu/news_en',
             'recommended_action' => 'Bei personenbezogenen Reports Zweck, Datenherkunft, Owner und Löschlogik im Advisor prüfen. Bei Lücken Owner/Controls notieren und gezielt im Advisor spiegeln.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'nist-system-plans-privacy-scrm',
@@ -627,6 +764,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://csrc.nist.gov/news/',
             'recommended_action' => 'Bei neuen Plattformen Security-/Privacy-/Supplier-Pfade im Advisor gegen die Architektur halten. Nur bei struktureller Lücke in den Advisor nehmen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'nist-supplier-due-diligence',
@@ -641,6 +782,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://csrc.nist.gov/news/',
             'recommended_action' => 'Guide lesen und offene Vendor-/Quellen-Checks im Advisor nachziehen. Bei Lücken Owner/Controls notieren und gezielt im Advisor spiegeln.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'snowflake-clean-rooms-update',
@@ -655,6 +800,10 @@ return [
             'stack' => ['Snowflake', 'dbt'],
             'url' => 'https://docs.snowflake.com/en/release-notes/all-release-notes',
             'recommended_action' => 'Release Notes prüfen und bei Snowflake-Umgebungen betroffene Policies im Advisor bewerten. Bei Lücken Owner/Controls notieren und gezielt im Advisor spiegeln.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'databricks-unity-catalog-governance',
@@ -669,6 +818,10 @@ return [
             'stack' => ['Databricks'],
             'url' => 'https://docs.databricks.com/aws/en/data-governance',
             'recommended_action' => 'Dokumentation beobachten — bei neuen Features gegen den eigenen Databricks-Stack spiegeln. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'lfdi-ki-praxishilfen',
@@ -683,6 +836,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.baden-wuerttemberg.datenschutz.de/newsfeeds/',
             'recommended_action' => 'Als Referenz lesen und bei Bedarf in Workshops oder Checks verlinken. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'binom-source-governance-watchlist',
@@ -697,6 +854,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => '/governance',
             'recommended_action' => 'Als Merksatz behalten — nicht automatisch einen neuen Workflow starten. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'binom-data-ownership-operating-model',
@@ -711,6 +872,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => '/tools/stakeholder-matrix',
             'recommended_action' => 'Bei kritischen KPIs und Quellen die Stakeholder Matrix als Hilfsmittel öffnen. Als Referenz für die nächste verwandte Entscheidung behalten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'binom-dq-as-governance-signal',
@@ -725,6 +890,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => '/tools/dbt-dq-rules-generator',
             'recommended_action' => 'DQ-Regeln fachlich begründen — Tools nur öffnen, wenn eine Regel ansteht. Als Referenz für die nächste verwandte Entscheidung behalten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'binom-metadata-minimum',
@@ -739,6 +908,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => '/tools/source-scope-builder',
             'recommended_action' => 'Vor Mart Design oder Reporting zuerst Scope und Ownership klären — bei Bedarf Source Scope Builder öffnen. Als Referenz für die nächste verwandte Entscheidung behalten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'bfdi-data-act-aufsicht',
@@ -753,6 +926,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.bfdi.bund.de/SharedDocs/Pressemitteilungen/DE/2026/07_Data-Act-Datenschutzaufsicht.html',
             'recommended_action' => 'Prüfen, ob Data-Sharing- oder Geräte-Datenpfade personenbezogene Daten berühren und dokumentiert sind. Data Act gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'bfdi-taetigkeitsbericht-2025',
@@ -767,6 +944,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.bfdi.bund.de/SharedDocs/Pressemitteilungen/DE/2026/06_TB34.html',
             'recommended_action' => 'Zum Orientieren lesen und gegen eigene DE-Policies spiegeln — ohne neuen Plan. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'cnil-ai-transparency-watch',
@@ -781,6 +962,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.cnil.fr/en/news',
             'recommended_action' => 'News beobachten und bei AI-/Transparenz-Fragen als Praxisreferenz nutzen. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'dpc-annual-report-2025',
@@ -795,6 +980,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.dataprotection.ie/en/news-media/latest-news',
             'recommended_action' => 'Als Lagebild lesen, besonders wenn Vendor oder AI-Training personenbezogene EU-Daten berührt. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'enisa-nis2-market-framework',
@@ -809,6 +998,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.enisa.europa.eu/news',
             'recommended_action' => 'Beobachten und bei Supplier-/Security-Reviews als Referenz ablegen. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'eu-ai-act-digital-strategy',
@@ -823,6 +1016,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://digital-strategy.ec.europa.eu/en/news',
             'recommended_action' => 'Prüfen, ob AI-Use-Cases und Data-Sharing-Pfade den aktuellen EU-Anforderungen entsprechen. AI Act gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'iapp-cross-regulatory-dublin',
@@ -837,6 +1034,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://iapp.org/news/a/edpb-high-level-meeting-in-dublin-further-deepens-consistency-and-enforcement-cooperation',
             'recommended_action' => 'Lesen und merken, wenn Data Sharing mehrere Regulierungsfelder gleichzeitig berührt. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'noyb-enforcement-signals',
@@ -851,6 +1052,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://noyb.eu/en/news',
             'recommended_action' => 'Als Frühwarn-Feed beobachten — nicht als Rechtsberatung oder Pflichtplan behandeln. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'purview-fabric-governance-docs',
@@ -865,6 +1070,10 @@ return [
             'stack' => ['Fabric', 'Power BI'],
             'url' => 'https://learn.microsoft.com/en-us/purview/',
             'recommended_action' => 'Dokumentation beobachten und bei Stack-Änderungen gegen den eigenen Fabric-/Purview-Stand spiegeln. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'dbt-governance-engineering',
@@ -879,6 +1088,10 @@ return [
             'stack' => ['dbt'],
             'url' => 'https://www.getdbt.com/blog',
             'recommended_action' => 'Bei dbt-Stacks relevante Posts lesen — Tools nur öffnen, wenn eine konkrete Regel oder Doku ansteht. Als Referenz für die nächste verwandte Entscheidung behalten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'oecd-data-governance-privacy',
@@ -893,6 +1106,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.oecd.org/en/topics/policy-issues/data-governance-and-privacy.html',
             'recommended_action' => 'Als Policy-Hintergrund lesen, nicht als operativen Ticket-Trigger. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'ico-guidance-watch',
@@ -907,6 +1124,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://ico.org.uk/global/rss-feeds/',
             'recommended_action' => 'Feeds beobachten und nur bei UK-/Transfer-Bezug vertiefen. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'edps-newsletter-watch',
@@ -921,6 +1142,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.edps.europa.eu/press-publications/publications/newsletters_en',
             'recommended_action' => 'Zum Orientieren abonnieren bzw. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'snowflake-oidc-trust-center',
@@ -935,6 +1160,10 @@ return [
             'stack' => ['Snowflake', 'dbt'],
             'url' => 'https://docs.snowflake.com/en/release-notes/2026/other/2026-07-17-oidc-federated-authentication-preview',
             'recommended_action' => 'Bei Snowflake-Umgebungen Auth-/Security-Notes lesen und gegen bestehende Integrationspfade prüfen. Security gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'databricks-platform-security-updates',
@@ -949,6 +1178,10 @@ return [
             'stack' => ['Databricks'],
             'url' => 'https://docs.databricks.com/aws/en/release-notes/',
             'recommended_action' => 'Release Notes scannen und nur bei Security-/Access-Impact im Advisor vertiefen. Security gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'fabric-whats-new-governance',
@@ -963,6 +1196,10 @@ return [
             'stack' => ['Fabric', 'Power BI'],
             'url' => 'https://learn.microsoft.com/en-us/fabric/get-started/whats-new',
             'recommended_action' => 'What’s-new-Liste nach Security/Governance filtern und gegen den eigenen Fabric-Stand spiegeln. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'power-bi-service-security',
@@ -977,6 +1214,10 @@ return [
             'stack' => ['Power BI', 'Fabric'],
             'url' => 'https://powerbi.microsoft.com/en-us/blog/',
             'recommended_action' => 'Blog/Service Updates mitlesen — bei Access-/RLS-Änderungen gegen Report-Freigaben prüfen. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'qlik-cloud-change-log',
@@ -991,6 +1232,10 @@ return [
             'stack' => ['Qlik'],
             'url' => 'https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/saas-change-log.htm',
             'recommended_action' => 'Change Log auf Security/Access filtern und nur bei Treffern im eigenen Tenant vertiefen. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'tableau-releases-security',
@@ -1005,6 +1250,10 @@ return [
             'stack' => ['Tableau'],
             'url' => 'https://www.tableau.com/support/releases',
             'recommended_action' => 'Release Notes auf Security/Permissions scannen und Patch-Bedarf gegen die eigene Tableau-Version prüfen. Security gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'baylda-cloud-ki',
@@ -1019,6 +1268,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.lda.bayern.de/de/aktuelles.html',
             'recommended_action' => 'Aktuelles scannen und bei DE-Cloud-/KI-Projekten als Praxisreferenz ablegen. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'blnbdi-presse',
@@ -1033,6 +1286,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.datenschutz-berlin.de/presse/',
             'recommended_action' => 'Zum Orientieren mitlesen — vertiefen, wenn öffentliche oder Berliner Datenpfade betroffen sind. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'bsi-cloud-c5',
@@ -1047,6 +1304,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.bsi.bund.de/DE/Service-Navi/Presse/presse_node.html',
             'recommended_action' => 'Bei Cloud-/Vendor-Auswahl und C5-Nachweisen gegen aktuelle BSI-Hinweise prüfen. Cybersecurity gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'cisa-supply-chain',
@@ -1061,6 +1322,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.cisa.gov/news-events/news',
             'recommended_action' => 'Feeds beobachten und bei betroffenen Vendor-/Cloud-Komponenten im Supplier-Review spiegeln. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'aws-security-iam',
@@ -1075,6 +1340,10 @@ return [
             'stack' => ['AWS', 'Snowflake', 'dbt'],
             'url' => 'https://aws.amazon.com/blogs/security/',
             'recommended_action' => 'Bei AWS-Landschaften Security-Posts zu IAM/Logging lesen und gegen Access Policies prüfen. Security gegen den Use Case spiegeln; nur bei Abweichung nachziehen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'gcp-security-identity',
@@ -1089,6 +1358,10 @@ return [
             'stack' => ['Google Cloud', 'BigQuery'],
             'url' => 'https://cloud.google.com/blog/products/identity-security',
             'recommended_action' => 'Identity-/Security-Updates filtern und gegen den eigenen GCP-Stand spiegeln. Nur markieren, wenn der eigene Stack betroffen ist.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'collibra-catalog-ops',
@@ -1103,6 +1376,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.collibra.com/us/en/blog',
             'recommended_action' => 'Als Operating-Model-Referenz lesen — nicht automatisch als Tool-Wechsel behandeln. Als Referenz für die nächste verwandte Entscheidung behalten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'alation-data-literacy',
@@ -1117,6 +1394,10 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.alation.com/blog/',
             'recommended_action' => 'Bei Catalog-Einführung Literacy- und Steward-Themen mitlesen. Als Referenz für die nächste verwandte Entscheidung behalten.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
         ],
         [
             'id' => 'iso-ai-security-standards',
@@ -1131,6 +1412,226 @@ return [
             'stack' => ['Alle Stacks'],
             'url' => 'https://www.iso.org/news.html',
             'recommended_action' => 'Als Framework-Hintergrund nutzen, wenn Policies oder Zertifizierungen anstehen. Einordnen ohne neuen Workflow, außer der Scope ist klar betroffen.',
+            'origin' => 'example',
+            'language' => 'de',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-snowflake-rn-latest',
+            'source_id' => 'snowflake-release-notes',
+            'title' => 'Snowflake Release Notes — latest platform updates',
+            'summary' => 'Raw watch item for Snowflake release notes covering warehouse, security, governance and data-sharing changes. Open the source for the current changelog.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Vendor Updates', 'Security', 'Catalog'],
+            'stack' => ['Snowflake'],
+            'url' => 'https://docs.snowflake.com/en/release-notes/all-release-notes',
+            'recommended_action' => 'Scan the latest notes for security, policy and sharing changes in your Snowflake accounts.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-databricks-rn-latest',
+            'source_id' => 'databricks-release-notes',
+            'title' => 'Databricks Release Notes — platform and security updates',
+            'summary' => 'Raw watch item for Databricks platform release notes, including Unity Catalog, workspace and security profile changes.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Vendor Updates', 'Unity Catalog', 'Security'],
+            'stack' => ['Databricks'],
+            'url' => 'https://docs.databricks.com/aws/en/release-notes/',
+            'recommended_action' => 'Review recent notes for access-control or catalog changes affecting your workspaces.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-fabric-whats-new-latest',
+            'source_id' => 'microsoft-fabric-whats-new',
+            'title' => 'Microsoft Fabric — What’s new',
+            'summary' => 'Raw watch item for Fabric What’s new updates across workspaces, governance, security and semantic model features.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Vendor Updates', 'Security', 'Semantic Models'],
+            'stack' => ['Fabric', 'Power BI'],
+            'url' => 'https://learn.microsoft.com/en-us/fabric/get-started/whats-new',
+            'recommended_action' => 'Filter What’s new for governance and security entries relevant to your tenant.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-purview-docs-latest',
+            'source_id' => 'microsoft-purview',
+            'title' => 'Microsoft Purview documentation updates',
+            'summary' => 'Raw watch item for Purview catalog, classification, DLP and Fabric governance documentation changes.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Catalog', 'PII', 'Vendor Updates'],
+            'stack' => ['Fabric', 'Power BI'],
+            'url' => 'https://learn.microsoft.com/en-us/purview/',
+            'recommended_action' => 'Check Purview docs when catalog or label policies change in your Microsoft stack.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-powerbi-blog-latest',
+            'source_id' => 'power-bi-blog',
+            'title' => 'Power BI Blog — service and security updates',
+            'summary' => 'Raw watch item for Power BI service blog posts covering sharing, RLS, admin and security updates.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Vendor Updates', 'Security', 'RLS'],
+            'stack' => ['Power BI', 'Fabric'],
+            'url' => 'https://powerbi.microsoft.com/en-us/blog/',
+            'recommended_action' => 'Scan recent posts for sharing, RLS or admin setting changes.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-qlik-changelog-latest',
+            'source_id' => 'qlik-release-notes',
+            'title' => 'Qlik Cloud SaaS change log',
+            'summary' => 'Raw watch item for the Qlik Cloud change log covering spaces, roles, security and catalog-related updates.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Vendor Updates', 'Security', 'Access Control'],
+            'stack' => ['Qlik'],
+            'url' => 'https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/saas-change-log.htm',
+            'recommended_action' => 'Filter the change log for security and access-control entries in your tenant.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-tableau-releases-latest',
+            'source_id' => 'tableau-release-notes',
+            'title' => 'Tableau release notes and security updates',
+            'summary' => 'Raw watch item for Tableau Desktop/Server/Cloud releases including security fixes and permission changes.',
+            'published_at' => '2026-07-26',
+            'type' => 'Security News',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Security', 'Permissions', 'Vendor Updates'],
+            'stack' => ['Tableau'],
+            'url' => 'https://www.tableau.com/support/releases',
+            'recommended_action' => 'Check release notes for security patches matching your Tableau version.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-dbt-blog-latest',
+            'source_id' => 'dbt-blog',
+            'title' => 'dbt Labs Blog — latest posts',
+            'summary' => 'Raw watch item for dbt Labs blog posts on analytics engineering, tests, docs and related governance practices.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Data Quality', 'Metadata', 'Vendor Updates'],
+            'stack' => ['dbt'],
+            'url' => 'https://www.getdbt.com/blog',
+            'recommended_action' => 'Open recent posts when evaluating dbt testing, docs or contract patterns.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-aws-security-latest',
+            'source_id' => 'aws-security',
+            'title' => 'AWS Security Blog — latest posts',
+            'summary' => 'Raw watch item for AWS Security Blog updates on IAM, encryption, logging and control-plane changes.',
+            'published_at' => '2026-07-26',
+            'type' => 'Security News',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Security', 'IAM', 'Cloud'],
+            'stack' => ['AWS'],
+            'url' => 'https://aws.amazon.com/blogs/security/',
+            'recommended_action' => 'Scan recent posts for IAM or audit changes affecting your AWS data paths.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-gcp-security-latest',
+            'source_id' => 'gcp-security',
+            'title' => 'Google Cloud identity & security updates',
+            'summary' => 'Raw watch item for Google Cloud identity and security blog updates relevant to BigQuery and GCP governance.',
+            'published_at' => '2026-07-26',
+            'type' => 'Security News',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Security', 'IAM', 'Cloud'],
+            'stack' => ['Google Cloud', 'BigQuery'],
+            'url' => 'https://cloud.google.com/blog/products/identity-security',
+            'recommended_action' => 'Review recent identity/security posts for GCP projects you operate.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-collibra-blog-latest',
+            'source_id' => 'collibra-blog',
+            'title' => 'Collibra Blog — latest posts',
+            'summary' => 'Raw watch item for Collibra blog posts on catalog, stewardship and data-quality operating models.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Catalog', 'Data Quality', 'Operating Model'],
+            'stack' => [],
+            'url' => 'https://www.collibra.com/us/en/blog',
+            'recommended_action' => 'Use as an optional catalog/operating-model signal — not a mandatory translation task.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
+        ],
+        [
+            'id' => 'vendor-alation-blog-latest',
+            'source_id' => 'alation-blog',
+            'title' => 'Alation Blog — latest posts',
+            'summary' => 'Raw watch item for Alation blog posts on data literacy, catalog adoption and governance workflows.',
+            'published_at' => '2026-07-26',
+            'type' => 'Vendor Update',
+            'impact' => 'Relevant',
+            'region' => 'Global',
+            'topics' => ['Catalog', 'Data Literacy', 'Operating Model'],
+            'stack' => [],
+            'url' => 'https://www.alation.com/blog/',
+            'recommended_action' => 'Open when comparing catalog adoption or literacy practices.',
+            'origin' => 'vendor',
+            'language' => 'en',
+            'ingest' => false,
+
         ],
     ],
 ];

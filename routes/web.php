@@ -197,6 +197,17 @@ $registerRoutes = static function (bool $localized): void {
             Route::delete('/api/governance/radar/sources/{sourceId}', [GovernanceHubController::class, 'apiDeleteRadarSource'])
                 ->where('sourceId', 'radsrc_[a-zA-Z0-9_]+')
                 ->name($name('governance.radar.api.sources.delete'));
+            Route::post('/api/governance/radar/feeds/sync', [GovernanceHubController::class, 'apiSyncRadarFeeds'])
+                ->name($name('governance.radar.api.feeds.sync'));
+            Route::get('/api/governance/radar/items/{itemId}/overlay', [GovernanceHubController::class, 'apiRadarItemOverlay'])
+                ->where('itemId', '[a-zA-Z0-9][a-zA-Z0-9_-]{1,118}')
+                ->name($name('governance.radar.api.items.overlay.show'));
+            Route::put('/api/governance/radar/items/{itemId}/overlay', [GovernanceHubController::class, 'apiStoreRadarItemOverlay'])
+                ->where('itemId', '[a-zA-Z0-9][a-zA-Z0-9_-]{1,118}')
+                ->name($name('governance.radar.api.items.overlay.store'));
+            Route::delete('/api/governance/radar/items/{itemId}/overlay', [GovernanceHubController::class, 'apiDeleteRadarItemOverlay'])
+                ->where('itemId', '[a-zA-Z0-9][a-zA-Z0-9_-]{1,118}')
+                ->name($name('governance.radar.api.items.overlay.delete'));
             Route::get('/api/sprint-planner/plans', [PlanApiController::class, 'index'])->name($name('accounts.plans.index'));
             Route::get('/api/sprint-planner/plans/{planId}', [PlanApiController::class, 'show'])
                 ->where('planId', 'plan_[a-zA-Z0-9_]+')
