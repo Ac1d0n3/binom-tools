@@ -1112,6 +1112,36 @@ $products = array_merge([
     $crmTools,
     $relatedPlaybooks,
     $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave6.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave7.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave8.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave9.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave10.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
+), (require __DIR__.'/suppliers-catalog-wave11.php')(
+    $crmDimensions,
+    $crmTools,
+    $relatedPlaybooks,
+    $crmMeasures,
 ));
 
 $governance = array_merge(
@@ -1120,6 +1150,12 @@ $governance = array_merge(
     require __DIR__.'/suppliers-governance-wave3.php',
     require __DIR__.'/suppliers-governance-wave4.php',
     require __DIR__.'/suppliers-governance-wave5.php',
+    require __DIR__.'/suppliers-governance-wave6.php',
+    require __DIR__.'/suppliers-governance-wave7.php',
+    require __DIR__.'/suppliers-governance-wave8.php',
+    require __DIR__.'/suppliers-governance-wave9.php',
+    require __DIR__.'/suppliers-governance-wave10.php',
+    require __DIR__.'/suppliers-governance-wave11.php',
 );
 $quality = array_merge(
     require __DIR__.'/suppliers-quality.php',
@@ -1127,6 +1163,12 @@ $quality = array_merge(
     require __DIR__.'/suppliers-quality-wave3.php',
     require __DIR__.'/suppliers-quality-wave4.php',
     require __DIR__.'/suppliers-quality-wave5.php',
+    require __DIR__.'/suppliers-quality-wave6.php',
+    require __DIR__.'/suppliers-quality-wave7.php',
+    require __DIR__.'/suppliers-quality-wave8.php',
+    require __DIR__.'/suppliers-quality-wave9.php',
+    require __DIR__.'/suppliers-quality-wave10.php',
+    require __DIR__.'/suppliers-quality-wave11.php',
 );
 $sql = array_merge(
     require __DIR__.'/suppliers-sql.php',
@@ -1134,6 +1176,12 @@ $sql = array_merge(
     require __DIR__.'/suppliers-sql-wave3.php',
     require __DIR__.'/suppliers-sql-wave4.php',
     require __DIR__.'/suppliers-sql-wave5.php',
+    require __DIR__.'/suppliers-sql-wave6.php',
+    require __DIR__.'/suppliers-sql-wave7.php',
+    require __DIR__.'/suppliers-sql-wave8.php',
+    require __DIR__.'/suppliers-sql-wave9.php',
+    require __DIR__.'/suppliers-sql-wave10.php',
+    require __DIR__.'/suppliers-sql-wave11.php',
 );
 
 return array_map(static function (array $product) use ($governance, $quality, $sql): array {

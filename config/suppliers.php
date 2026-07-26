@@ -17,6 +17,13 @@ return [
         'finance' => ['de' => 'Finance', 'en' => 'Finance'],
         'workplace' => ['de' => 'Workplace', 'en' => 'Workplace'],
         'analytics' => ['de' => 'Analytics', 'en' => 'Analytics'],
+        'banking' => ['de' => 'Banking', 'en' => 'Banking'],
+        'insurance' => ['de' => 'Insurance', 'en' => 'Insurance'],
+        'dms' => ['de' => 'DMS', 'en' => 'DMS'],
+        'learning' => ['de' => 'Learning', 'en' => 'Learning'],
+        'marketing' => ['de' => 'Marketing', 'en' => 'Marketing'],
+        'bpm' => ['de' => 'BPM', 'en' => 'BPM'],
+        'healthcare' => ['de' => 'Healthcare', 'en' => 'Healthcare'],
     ],
 
     'products' => require __DIR__.'/suppliers-catalog.php',

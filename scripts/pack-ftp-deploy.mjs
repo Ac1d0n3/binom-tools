@@ -26,6 +26,7 @@ const deployPaths = [
     'app/Http/Controllers',
     'app/Accounts',
     'app/SprintPlanner',
+    'app/Calendar',
     'app/Http/Middleware',
     'bootstrap/app.php',
     'config/tools.php',
@@ -37,10 +38,20 @@ const deployPaths = [
     'config/compliance-items.php',
     'config/vendor-resources.php',
     'config/sprint-planner.php',
+    'config/calendar.php',
+    'lang',
     'routes/web.php',
     // Seeded story view/like counters (JSON files; created on first like/view if missing)
     'storage/app/playbook-stats',
 ];
+
+/** Supplier Library configs (catalog + wave files required by suppliers-catalog.php). */
+const supplierConfigFiles = readdirSync(join(root, 'config'))
+    .filter((name) => name === 'suppliers.php' || name.startsWith('suppliers-'))
+    .filter((name) => name.endsWith('.php'))
+    .map((name) => `config/${name}`);
+
+deployPaths.push(...supplierConfigFiles);
 
 /** Never mirror these from public/ (dev-only or replaced below). */
 const publicSkipNames = new Set([
@@ -207,12 +218,15 @@ Ziel: Server = aktueller lokaler Stand. deploy-ftp/ IST dieser Snapshot.
    - public/build/manifest.json
    - content/sprint-plans/      alle *.md (Sprint- + Task-dependsOn, Help-Links)
    - resources/views/
-   - app/SprintPlanner/ + app/Accounts/
+   - app/SprintPlanner/ + app/Accounts/ + app/Calendar/
 
 3. Weitere Pfade:
    - public/                (images, favicons, …) + public/.htaccess (Production)
    - content/               Stories + Sprint-Pläne
    - app/… bootstrap/app.php config/ routes/web.php
+   - config/suppliers*.php   (Supplier Library Katalog + Waves)
+   - config/calendar.php
+   - lang/                  (DE/EN Calendar-Strings u. a.)
    - storage/app/playbook-stats/
    - app/Playbooks/stats-seed/
    - app/SprintPlanner/bn-tools-seed/

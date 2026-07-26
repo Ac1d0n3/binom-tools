@@ -48,6 +48,31 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('data-product-id="github"', false);
         $response->assertSee('data-product-id="sharepoint"', false);
         $response->assertSee('data-product-id="google-workspace"', false);
+        $response->assertSee('data-product-id="temenos"', false);
+        $response->assertSee('data-product-id="avaloq"', false);
+        $response->assertSee('data-product-id="thought-machine"', false);
+        $response->assertSee('data-product-id="finastra"', false);
+        $response->assertSee('data-product-id="murex"', false);
+        $response->assertSee('data-product-id="fis"', false);
+        $response->assertSee('data-product-id="guidewire"', false);
+        $response->assertSee('data-product-id="duck-creek"', false);
+        $response->assertSee('data-product-id="opentext"', false);
+        $response->assertSee('data-product-id="fabasoft"', false);
+        $response->assertSee('data-product-id="elo"', false);
+        $response->assertSee('data-product-id="docuware"', false);
+        $response->assertSee('data-product-id="box"', false);
+        $response->assertSee('data-product-id="datev"', false);
+        $response->assertSee('data-product-id="sage"', false);
+        $response->assertSee('data-product-id="oracle-fusion"', false);
+        $response->assertSee('data-product-id="personio"', false);
+        $response->assertSee('data-product-id="exchange"', false);
+        $response->assertSee('data-product-id="monday"', false);
+        $response->assertSee('data-product-id="moodle"', false);
+        $response->assertSee('data-product-id="adobe-experience-cloud"', false);
+        $response->assertSee('data-product-id="freshdesk"', false);
+        $response->assertSee('data-product-id="pega"', false);
+        $response->assertSee('data-product-id="camunda"', false);
+        $response->assertSee('data-product-id="epic"', false);
         $response->assertSee('Salesforce');
         $response->assertSee('HubSpot');
         $response->assertSee('Google Analytics 4');
@@ -60,6 +85,13 @@ class SupplierLibraryHubTest extends TestCase
         $response->assertSee('value="collab"', false);
         $response->assertSee('value="finance"', false);
         $response->assertSee('value="workplace"', false);
+        $response->assertSee('value="banking"', false);
+        $response->assertSee('value="insurance"', false);
+        $response->assertSee('value="dms"', false);
+        $response->assertSee('value="learning"', false);
+        $response->assertSee('value="marketing"', false);
+        $response->assertSee('value="bpm"', false);
+        $response->assertSee('value="healthcare"', false);
         $response->assertSee('data-i18n="nav.suppliers"', false);
     }
 
@@ -119,6 +151,90 @@ class SupplierLibraryHubTest extends TestCase
     public function test_wave5_supplier_detail_pages_render(): void
     {
         foreach (['entra-id', 'github', 'sharepoint', 'google-workspace'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave6_supplier_detail_pages_render(): void
+    {
+        foreach (['temenos', 'avaloq', 'thought-machine', 'finastra'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave7_supplier_detail_pages_render(): void
+    {
+        foreach (['murex', 'fis', 'guidewire', 'duck-creek'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave8_supplier_detail_pages_render(): void
+    {
+        foreach (['opentext', 'fabasoft', 'elo', 'docuware', 'box'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave9_supplier_detail_pages_render(): void
+    {
+        foreach (['datev', 'sage', 'oracle-fusion', 'personio'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave10_supplier_detail_pages_render(): void
+    {
+        foreach (['exchange', 'monday', 'moodle', 'adobe-experience-cloud'] as $slug) {
+            $response = $this->get('/suppliers/'.$slug);
+            $response->assertOk();
+            $response->assertSee('data-supplier-library', false);
+            $response->assertSee('data-supplier-tab="measures"', false);
+            $response->assertSee('data-supplier-tab="sql"', false);
+            $response->assertSee('data-supplier-tab="quality"', false);
+            $response->assertSee('supplier-resources-card', false);
+            $response->assertSee('supplier-measure-card--example', false);
+        }
+    }
+
+    public function test_wave11_supplier_detail_pages_render(): void
+    {
+        foreach (['freshdesk', 'pega', 'camunda', 'epic'] as $slug) {
             $response = $this->get('/suppliers/'.$slug);
             $response->assertOk();
             $response->assertSee('data-supplier-library', false);

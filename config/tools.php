@@ -2,6 +2,15 @@
 
 use App\Support\ToolLinks;
 
+if (! function_exists('env')) {
+    function env(string $key, mixed $default = null): mixed
+    {
+        $value = getenv($key);
+
+        return $value === false ? $default : $value;
+    }
+}
+
 return [
     'version' => env('BINOM_TOOLS_VERSION', '0.1.0'),
     'beta' => filter_var(env('BINOM_TOOLS_BETA', true), FILTER_VALIDATE_BOOL),
