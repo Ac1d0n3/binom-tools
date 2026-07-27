@@ -4,7 +4,7 @@
 
 > Open-source public advisor by [Binom](https://binom.net) / Thomas Lindackers — not a commercial SaaS product. Dual store (file default, MySQL optional). Stories stay Markdown under `content/stories/`.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for where new code belongs (Foundations / Shared / Domains).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for where new code belongs (mega-modules / shell / shared). New feature checklist: [docs/new-module-checklist.de.md](docs/new-module-checklist.de.md).
 
 ## What you get
 

@@ -14,7 +14,19 @@ modules/<id>/
   script/                 # Domain PHP + Controllers/
 ```
 
-Shared shell/theme: `resources/{views,js,css}/foundations|shared` (chrome only).  
+### Shell / Shared (kein Feature-Code)
+
+```text
+resources/js/
+  app.js
+  shell/                  # locale, theme, shell-layout, consent, sidenav, …
+  shared/                 # modal, tabs, overview-filter*
+resources/views/
+  foundations/            # Layout-Chrome only
+  shared/  components/
+resources/css/            # app + shell / tools-shell chrome
+```
+
 Catalog bodies: `content/catalogs/`.  
 `config/` = Laravel framework + `storage.php` + `taxonomy.php` — **no** domain dumps, **no** `config/foundations/` folder.
 
@@ -28,8 +40,15 @@ Catalog bodies: `content/catalogs/`.
 | Vite | `modules/<id>/js|css/…` |
 | FTP | whole `modules/` tree |
 
+## New work
+
+Checkliste: [new-module-checklist.de.md](./new-module-checklist.de.md).  
+Cursor: `.cursor/rules/mega-modules.mdc`, `resources-js.mdc`, `config-thin.mdc`.
+
 ## Not this
 
 - `resources/*/domains/` mirrors
+- Feature trees under `resources/js/` or `resources/css/`
 - Thick catalogs in `config/*.php`
 - Extra `config/foundations/` for a single taxonomy file
+- Root JS re-export stubs instead of `shell/` / `shared/`

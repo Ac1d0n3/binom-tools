@@ -27,6 +27,9 @@ Blade: `view('calendar::index')`. Module config: `config('calendar')` from `modu
 
 **Do not** put feature data in thick `config/*.php` files.
 
+**New feature?** Follow [docs/new-module-checklist.de.md](docs/new-module-checklist.de.md) and layout [docs/resources-layout.de.md](docs/resources-layout.de.md). Cursor enforces this via `.cursor/rules/mega-modules.mdc` (+ `resources-js`, `config-thin`).
+
+
 
 ## Setup
 
