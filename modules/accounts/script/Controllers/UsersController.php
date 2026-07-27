@@ -109,7 +109,7 @@ class UsersController extends Controller
 
         $this->membership->syncTeamsFromUser($user);
 
-        $redirect = redirect()->to(locale_route('accounts.users'));
+        $redirect = redirect()->to(locale_route('admin.users.index'));
 
         if ($sendInvite) {
             $mailResult = $this->sendWelcomeMail($user->email, $user->displayName, $plainPassword, $mustChange);
@@ -189,7 +189,7 @@ class UsersController extends Controller
         $user = $this->users->upsert($payload);
         $this->membership->syncTeamsFromUser($user);
 
-        $redirect = redirect()->to(locale_route('accounts.users'));
+        $redirect = redirect()->to(locale_route('admin.users.index'));
 
         if ($sendInvite && $plainPassword !== null) {
             $mailResult = $this->sendWelcomeMail($user->email, $user->displayName, $plainPassword, true);
@@ -222,7 +222,7 @@ class UsersController extends Controller
         $this->membership->removeUserFromTeams($userId);
 
         return redirect()
-            ->to(locale_route('accounts.users'))
+            ->to(locale_route('admin.users.index'))
             ->with('status', 'user-deleted');
     }
 
@@ -239,7 +239,7 @@ class UsersController extends Controller
         ]);
 
         return redirect()
-            ->to(locale_route('accounts.users'))
+            ->to(locale_route('admin.users.index'))
             ->with('status', 'user-approved');
     }
 
@@ -254,7 +254,7 @@ class UsersController extends Controller
         $this->membership->removeUserFromTeams($userId);
 
         return redirect()
-            ->to(locale_route('accounts.users'))
+            ->to(locale_route('admin.users.index'))
             ->with('status', 'user-rejected');
     }
 

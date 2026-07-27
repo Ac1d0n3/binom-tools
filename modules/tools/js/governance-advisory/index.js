@@ -3,7 +3,8 @@ import { downloadTextFile } from '../discovery-shared/download.js';
 import { bindPlanTransferUi } from '../discovery-shared/plan-transfer-ui.js';
 import { deleteGovernanceToolRecord, recordsForTool, upsertGovernanceToolRecord } from '../governance-tool-workspace-store.js';
 import { acceptKpiIntake, deleteKpiIntake, loadKpiWorkspace, upsertKpiIntake } from '../kpi-workspace-store.js';
-import { mountStackBuilder, readCustomStack, syncSelectionToToolFields } from '../../../governance/js/stack-builder.js';
+import { preferredProductIds, stackBuilderContextBanner } from '../../../governance/js/advisor-guidance.js';
+import { mountStackBuilder, normalizeSelection, readCustomStack, readSavedStacksLocal, saveNamedStackLocal, summarizeSelection, syncSelectionToToolFields, writeCustomStack, writeSavedStacksLocal } from '../../../governance/js/stack-builder.js';
 
 const texts = {
     'discovery.applyEmpty': 'Bitte erst Eingaben erfassen.',
@@ -753,16 +754,204 @@ function mount(root) {
 
     if (config.id === 'custom-stack-builder') {
         const builderHost = root.querySelector('[data-stack-builder-root]');
+        const loadSelect = root.querySelector('[data-stack-builder-load]');
+        const saveAsButton = root.querySelector('[data-governance-stack-builder-save-as]');
+        const statusEl = root.querySelector('[data-stack-builder-status]');
+        const lang = () => (document.documentElement.lang === 'de' ? 'de' : 'en');
+        let api = null;
+        let savedStacks = readSavedStacksLocal();
+
+        const setStatus = (message) => {
+            if (!(statusEl instanceof HTMLElement)) {
+                return;
+            }
+            statusEl.hidden = !message;
+            statusEl.textContent = message || '';
+        };
+
+        const fillLoadSelect = () => {
+            if (!(loadSelect instanceof HTMLSelectElement)) {
+                return;
+            }
+            const keep = loadSelect.value;
+            loadSelect.replaceChildren();
+            const empty = document.createElement('option');
+            empty.value = '';
+            empty.textContent = lang() === 'de' ? '— Auswählen —' : '— Choose —';
+            loadSelect.append(empty);
+            savedStacks.forEach((item) => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                loadSelect.append(option);
+            });
+            if (keep && savedStacks.some((item) => item.id === keep)) {
+                loadSelect.value = keep;
+            }
+        };
+
+        const csrf = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        const refreshFromWorkspace = async () => {
+            const activeUrl = config.workspace?.activeUrl;
+            if (!activeUrl) {
+                fillLoadSelect();
+                return;
+            }
+            try {
+                const response = await fetch(activeUrl, {
+                    headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    credentials: 'same-origin',
+                });
+                if (!response.ok) {
+                    fillLoadSelect();
+                    return;
+                }
+                const payload = await response.json();
+                const remote = Array.isArray(payload?.workspace?.savedStacks) ? payload.workspace.savedStacks : [];
+                savedStacks = remote.map((item) => ({
+                    id: String(item.id),
+                    name: String(item.name || 'Stack'),
+                    selection: normalizeSelection(item.selection),
+                    updatedAt: String(item.updatedAt || ''),
+                }));
+                writeSavedStacksLocal(savedStacks);
+                if (payload?.workspace?.stack === 'custom' && payload.workspace.customStack) {
+                    const selection = normalizeSelection(payload.workspace.customStack);
+                    writeCustomStack(selection);
+                    api?.setSelection?.(selection);
+                    syncSelectionToToolFields(root, selection);
+                }
+            } catch {
+                // keep local
+            }
+            fillLoadSelect();
+        };
+
         if (builderHost) {
             const initial = readCustomStack();
-            mountStackBuilder(builderHost, {
+            let hubContext = {};
+            try {
+                const raw = sessionStorage.getItem('binom-governance-hub-context');
+                hubContext = raw ? JSON.parse(raw) : {};
+            } catch {
+                hubContext = {};
+            }
+            const preferred = preferredProductIds({
+                orgContext: hubContext.orgContext,
+                regulationPressure: hubContext.regulationPressure,
+            });
+            const banner = stackBuilderContextBanner({
+                orgContext: hubContext.orgContext,
+                regulationPressure: hubContext.regulationPressure,
+            }, lang());
+            api = mountStackBuilder(builderHost, {
                 selection: initial,
+                preferredProductIds: preferred,
+                contextBanner: banner,
                 onChange: (selection) => {
+                    writeCustomStack(selection);
                     syncSelectionToToolFields(root, selection);
+                    const syncUrl = config.workspace?.syncStackUrl;
+                    if (syncUrl) {
+                        fetch(syncUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Accept: 'application/json',
+                                'X-CSRF-TOKEN': csrf(),
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({ stack: 'custom', customStack: selection }),
+                        }).catch(() => {});
+                    }
                 },
             });
             syncSelectionToToolFields(root, initial);
         }
+
+        fillLoadSelect();
+        refreshFromWorkspace();
+
+        saveAsButton?.addEventListener('click', async () => {
+            const selection = api?.getSelection?.() || readCustomStack();
+            const hasProducts = Object.values(selection).some((items) => Array.isArray(items) && items.length > 0);
+            if (!hasProducts) {
+                setStatus(lang() === 'de' ? 'Bitte zuerst Produkte wählen.' : 'Choose products first.');
+                return;
+            }
+            const suggested = summarizeSelection(selection, lang()).replace(/^Eigener Stack · |^Custom stack · /, '');
+            const name = window.prompt(
+                lang() === 'de' ? 'Name für diesen Stack:' : 'Name for this stack:',
+                suggested || (lang() === 'de' ? 'Mein Stack' : 'My stack'),
+            );
+            if (!name || !String(name).trim()) {
+                return;
+            }
+
+            const savedStacksUrl = config.workspace?.savedStacksUrl;
+            if (savedStacksUrl) {
+                try {
+                    const response = await fetch(savedStacksUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'X-CSRF-TOKEN': csrf(),
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ name: String(name).trim(), selection }),
+                    });
+                    if (response.ok) {
+                        const payload = await response.json();
+                        savedStacks = Array.isArray(payload.savedStacks)
+                            ? payload.savedStacks.map((item) => ({
+                                id: String(item.id),
+                                name: String(item.name || 'Stack'),
+                                selection: normalizeSelection(item.selection),
+                                updatedAt: String(item.updatedAt || ''),
+                            }))
+                            : savedStacks;
+                        writeSavedStacksLocal(savedStacks);
+                        fillLoadSelect();
+                        setStatus(lang() === 'de'
+                            ? `Gespeichert im Workspace: ${payload.savedStack?.name || name}`
+                            : `Saved to workspace: ${payload.savedStack?.name || name}`);
+                        return;
+                    }
+                    if (response.status === 422) {
+                        setStatus(lang() === 'de'
+                            ? 'Kein aktiver Workspace — bitte unter Admin Hub anlegen/aktivieren.'
+                            : 'No active workspace — create/activate one in Admin Hub.');
+                        return;
+                    }
+                } catch {
+                    // fall through
+                }
+            }
+
+            const local = saveNamedStackLocal(String(name).trim(), selection);
+            savedStacks = readSavedStacksLocal();
+            fillLoadSelect();
+            setStatus(lang() === 'de'
+                ? `Lokal gespeichert: ${local?.name || name}`
+                : `Saved locally: ${local?.name || name}`);
+        });
+
+        loadSelect?.addEventListener('change', () => {
+            const id = loadSelect.value;
+            const match = savedStacks.find((item) => item.id === id);
+            if (!match) {
+                return;
+            }
+            const selection = normalizeSelection(match.selection);
+            writeCustomStack(selection);
+            api?.setSelection?.(selection);
+            syncSelectionToToolFields(root, selection);
+            setStatus(lang() === 'de' ? `Geladen: ${match.name}` : `Loaded: ${match.name}`);
+        });
     }
 }
 

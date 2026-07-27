@@ -51,6 +51,8 @@ export default defineConfig(({ command }) => ({
                 'modules/governance/js/hub-advisor.js',
                 'modules/governance/js/radar.js',
                 'modules/governance/js/discovery-canvas.js',
+                'modules/admin/css/admin-hub.css',
+                'modules/admin/js/admin-hub.js',
                 'modules/tools/js/governance-advisory/index.js',
                 'modules/tools/js/dbt-governance-macro-generator/index.js',
                 'modules/tools/js/pii-recommend-generator/index.js',

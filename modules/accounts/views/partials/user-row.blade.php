@@ -58,7 +58,7 @@
             </form>
         @else
             <a
-                href="{{ locale_route('accounts.users.edit', ['userId' => $user['id']]) }}"
+                href="{{ locale_route('admin.users.edit', ['userId' => $user['id']]) }}"
                 class="tools-btn tools-btn--secondary tools-btn--small"
                 data-i18n="accounts.edit"
             >Edit</a>

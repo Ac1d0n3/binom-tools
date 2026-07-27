@@ -90,7 +90,7 @@ class TeamsController extends Controller
         $this->membership->syncUsersFromTeam($team);
 
         return redirect()
-            ->to(locale_route('accounts.teams'))
+            ->to(locale_route('admin.teams.index'))
             ->with('status', 'team-created');
     }
 
@@ -128,7 +128,7 @@ class TeamsController extends Controller
         $this->membership->syncUsersFromTeam($team);
 
         return redirect()
-            ->to(locale_route('accounts.teams'))
+            ->to(locale_route('admin.teams.index'))
             ->with('status', 'team-updated');
     }
 
@@ -141,7 +141,7 @@ class TeamsController extends Controller
         $this->membership->removeTeamFromUsers($teamId);
 
         return redirect()
-            ->to(locale_route('accounts.teams'))
+            ->to(locale_route('admin.teams.index'))
             ->with('status', 'team-deleted');
     }
 

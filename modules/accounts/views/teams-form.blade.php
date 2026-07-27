@@ -1,6 +1,4 @@
-@extends('foundations.layouts.tools', [
-    'viteEntries' => ['modules/sprint-planner/css/sprint-planner.css'],
-])
+@extends('admin::layouts.shell')
 
 @php
     use App\Accounts\AccountTeam;
@@ -19,10 +17,10 @@
 
 @section('title', ($isEdit ? 'Edit team' : 'Add team') . ' — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide sp-app">
         <p class="sp-action-row">
-            <a href="{{ locale_route('accounts.teams') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToTeams">Back to teams</a>
+            <a href="{{ locale_route('admin.teams.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToTeams">Back to teams</a>
         </p>
 
         <h1 class="tools-page-title" data-i18n="{{ $titleKey }}">{{ $isEdit ? 'Edit team' : 'Add team' }}</h1>
@@ -138,7 +136,7 @@
             @endif
 
             <div class="sp-action-row">
-                <a href="{{ locale_route('accounts.teams') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
+                <a href="{{ locale_route('admin.teams.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
                 <button type="submit" class="tools-btn tools-btn--primary" data-i18n="accounts.save">Save</button>
             </div>
         </form>

@@ -102,14 +102,7 @@ export function readCustomStack() {
         if (!raw) {
             return emptySelection();
         }
-        const parsed = JSON.parse(raw);
-        const base = emptySelection();
-        STACK_LAYERS.forEach((layer) => {
-            const values = Array.isArray(parsed?.[layer.id]) ? parsed[layer.id].map(String) : [];
-            const allowed = new Set(layer.products.map((product) => product.id));
-            base[layer.id] = values.filter((id) => allowed.has(id));
-        });
-        return base;
+        return normalizeSelection(JSON.parse(raw));
     } catch {
         return emptySelection();
     }
@@ -121,6 +114,96 @@ export function writeCustomStack(selection) {
     } catch {
         // ignore storage failures
     }
+}
+
+export const SAVED_STACKS_STORAGE_KEY = 'binom-governance-saved-stacks';
+
+/**
+ * @param {unknown} raw
+ * @returns {Record<string, string[]>}
+ */
+export function normalizeSelection(raw) {
+    const base = emptySelection();
+    if (!raw || typeof raw !== 'object') {
+        return base;
+    }
+    STACK_LAYERS.forEach((layer) => {
+        const values = Array.isArray(raw[layer.id]) ? raw[layer.id].map(String) : [];
+        const allowed = new Set(layer.products.map((product) => product.id));
+        base[layer.id] = values.filter((id) => allowed.has(id));
+    });
+    return base;
+}
+
+/**
+ * @returns {Array<{ id: string, name: string, selection: Record<string, string[]>, updatedAt: string }>}
+ */
+export function readSavedStacksLocal() {
+    try {
+        const raw = localStorage.getItem(SAVED_STACKS_STORAGE_KEY);
+        if (!raw) {
+            return [];
+        }
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+        return parsed
+            .filter((item) => item && typeof item === 'object' && typeof item.id === 'string' && typeof item.name === 'string')
+            .map((item) => ({
+                id: String(item.id),
+                name: String(item.name).trim() || 'Stack',
+                selection: normalizeSelection(item.selection),
+                updatedAt: typeof item.updatedAt === 'string' ? item.updatedAt : new Date().toISOString(),
+            }));
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * @param {Array<{ id: string, name: string, selection: Record<string, string[]>, updatedAt: string }>} items
+ */
+export function writeSavedStacksLocal(items) {
+    try {
+        localStorage.setItem(SAVED_STACKS_STORAGE_KEY, JSON.stringify(items));
+    } catch {
+        // ignore storage failures
+    }
+}
+
+/**
+ * @param {string} name
+ * @param {Record<string, string[]>} selection
+ */
+export function saveNamedStackLocal(name, selection) {
+    const trimmed = String(name || '').trim();
+    if (!trimmed) {
+        return null;
+    }
+    const items = readSavedStacksLocal();
+    const now = new Date().toISOString();
+    const existing = items.find((item) => item.name.toLowerCase() === trimmed.toLowerCase());
+    if (existing) {
+        existing.name = trimmed;
+        existing.selection = normalizeSelection(selection);
+        existing.updatedAt = now;
+        writeSavedStacksLocal(items);
+        return existing;
+    }
+    const created = {
+        id: `stack_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+        name: trimmed,
+        selection: normalizeSelection(selection),
+        updatedAt: now,
+    };
+    items.unshift(created);
+    writeSavedStacksLocal(items.slice(0, 40));
+    return created;
+}
+
+export function deleteNamedStackLocal(id) {
+    writeSavedStacksLocal(readSavedStacksLocal().filter((item) => item.id !== id));
 }
 
 export function derivePlatformTags(selection) {
@@ -203,14 +286,19 @@ function selectionFromToolFields(root) {
  *   selection?: Record<string, string[]>,
  *   onChange?: (selection: Record<string, string[]>) => void,
  *   compact?: boolean,
+ *   context?: { orgContext?: string, regulationPressure?: string },
+ *   preferredProductIds?: string[],
+ *   contextBanner?: string,
  * }} options
  */
 export function mountStackBuilder(host, options = {}) {
     if (!(host instanceof HTMLElement)) {
-        return { getSelection: () => emptySelection(), setSelection: () => {} };
+        return { getSelection: () => emptySelection(), setSelection: () => {}, setContext: () => {} };
     }
 
     let selection = options.selection ? { ...emptySelection(), ...options.selection } : readCustomStack();
+    let preferredIds = new Set(Array.isArray(options.preferredProductIds) ? options.preferredProductIds : []);
+    let contextBanner = typeof options.contextBanner === 'string' ? options.contextBanner : '';
     const lang = locale();
 
     const render = () => {
@@ -220,6 +308,13 @@ export function mountStackBuilder(host, options = {}) {
         host.classList.add('stack-builder');
         if (options.compact) {
             host.classList.add('stack-builder--compact');
+        }
+
+        if (contextBanner) {
+            const banner = document.createElement('p');
+            banner.className = 'stack-builder__context-banner';
+            banner.textContent = contextBanner;
+            host.append(banner);
         }
 
         const head = document.createElement('div');
@@ -244,7 +339,12 @@ export function mountStackBuilder(host, options = {}) {
 
             const chips = document.createElement('div');
             chips.className = 'stack-builder__chips';
-            layer.products.forEach((product) => {
+            const products = [...layer.products].sort((a, b) => {
+                const aPref = preferredIds.has(a.id) ? 0 : 1;
+                const bPref = preferredIds.has(b.id) ? 0 : 1;
+                return aPref - bPref;
+            });
+            products.forEach((product) => {
                 const chip = document.createElement('button');
                 chip.type = 'button';
                 chip.className = 'stack-builder__chip';
@@ -252,6 +352,10 @@ export function mountStackBuilder(host, options = {}) {
                 chip.setAttribute('aria-pressed', String((selection[layer.id] || []).includes(product.id)));
                 if ((selection[layer.id] || []).includes(product.id)) {
                     chip.classList.add('stack-builder__chip--active');
+                }
+                if (preferredIds.has(product.id)) {
+                    chip.classList.add('stack-builder__chip--preferred');
+                    chip.title = lang === 'de' ? 'Zum Kontext empfohlen' : 'Recommended for context';
                 }
                 chip.addEventListener('click', () => {
                     const current = new Set(selection[layer.id] || []);
@@ -284,6 +388,11 @@ export function mountStackBuilder(host, options = {}) {
             writeCustomStack(selection);
             render();
             options.onChange?.(selection);
+        },
+        setContext: ({ preferredProductIds: nextPreferred, contextBanner: nextBanner } = {}) => {
+            preferredIds = new Set(Array.isArray(nextPreferred) ? nextPreferred : []);
+            contextBanner = typeof nextBanner === 'string' ? nextBanner : '';
+            render();
         },
         syncFromToolFields: (root) => {
             selection = selectionFromToolFields(root);

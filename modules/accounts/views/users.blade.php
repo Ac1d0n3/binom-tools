@@ -1,6 +1,4 @@
-@extends('foundations.layouts.tools', [
-    'viteEntries' => ['modules/sprint-planner/css/sprint-planner.css'],
-])
+@extends('admin::layouts.shell')
 
 @php
     use App\Support\AccentColors;
@@ -10,7 +8,7 @@
 
 @section('title', 'Users — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide sp-app">
         <h1 class="tools-page-title" data-i18n="accounts.usersTitle">Users</h1>
         <p class="tools-page-lead" data-i18n="accounts.usersLead">
@@ -47,7 +45,7 @@
         <section class="sp-section" aria-labelledby="accounts-users-heading">
             <div class="sp-section__header">
                 <h2 id="accounts-users-heading" class="sp-section__title" data-i18n="accounts.existingUsers">Users</h2>
-                <a href="{{ locale_route('accounts.users.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addUser">
+                <a href="{{ locale_route('admin.users.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addUser">
                     Add user
                 </a>
             </div>

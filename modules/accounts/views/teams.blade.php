@@ -1,6 +1,4 @@
-@extends('foundations.layouts.tools', [
-    'viteEntries' => ['modules/sprint-planner/css/sprint-planner.css'],
-])
+@extends('admin::layouts.shell')
 
 @php
     use App\Support\AccentColors;
@@ -8,7 +6,7 @@
 
 @section('title', 'Teams — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide sp-app">
         <h1 class="tools-page-title" data-i18n="accounts.teamsTitle">Teams</h1>
         <p class="tools-page-lead" data-i18n="accounts.teamsLead">
@@ -24,7 +22,7 @@
         <section class="sp-section" aria-labelledby="accounts-teams-heading">
             <div class="sp-section__header">
                 <h2 id="accounts-teams-heading" class="sp-section__title" data-i18n="accounts.existingTeams">Teams</h2>
-                <a href="{{ locale_route('accounts.teams.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addTeam">
+                <a href="{{ locale_route('admin.teams.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addTeam">
                     Add team
                 </a>
             </div>
@@ -101,7 +99,7 @@
                             </div>
                         </div>
                         <a
-                            href="{{ locale_route('accounts.teams.edit', ['teamId' => $team['id']]) }}"
+                            href="{{ locale_route('admin.teams.edit', ['teamId' => $team['id']]) }}"
                             class="tools-btn tools-btn--secondary tools-btn--small"
                             data-i18n="accounts.edit"
                         >Edit</a>

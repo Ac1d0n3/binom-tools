@@ -55,6 +55,177 @@ export function normalizeRegulation(raw) {
     return 'low';
 }
 
+const PLATFORM_LABELS = {
+    fabric: { de: 'Fabric', en: 'Fabric' },
+    databricks: { de: 'Databricks', en: 'Databricks' },
+    'snowflake-dbt': { de: 'Snowflake / dbt', en: 'Snowflake / dbt' },
+    sap: { de: 'SAP', en: 'SAP' },
+    opensource: { de: 'Open Source', en: 'Open source' },
+    custom: { de: 'Eigener Stack', en: 'Custom stack' },
+};
+
+/**
+ * Soft platform preference order for advisor selects (never hard-filters).
+ * @param {string | undefined} orgRaw
+ * @param {string | undefined} regulationRaw
+ * @returns {string[]}
+ */
+export function preferredPlatforms(orgRaw, regulationRaw) {
+    const org = normalizeOrgContext(orgRaw);
+    const regulation = normalizeRegulation(regulationRaw);
+
+    /** @type {string[]} */
+    let preferred;
+    if (org === 'startup') {
+        preferred = ['opensource', 'snowflake-dbt', 'fabric'];
+    } else if (org === 'midmarket') {
+        preferred = ['fabric', 'snowflake-dbt', 'opensource'];
+    } else if (org === 'enterprise') {
+        preferred = ['fabric', 'databricks', 'snowflake-dbt'];
+    } else if (org === 'bank-finance') {
+        preferred = ['fabric', 'sap', 'databricks'];
+    } else if (org === 'public-sector') {
+        preferred = ['opensource', 'fabric', 'sap'];
+    } else {
+        preferred = ['fabric', 'snowflake-dbt', 'opensource'];
+    }
+
+    if (regulation === 'regulated') {
+        preferred = ['fabric', 'sap', 'databricks', ...preferred.filter((id) => !['fabric', 'sap', 'databricks'].includes(id))];
+    } else if (regulation === 'gdpr-heavy') {
+        preferred = ['fabric', 'opensource', ...preferred.filter((id) => !['fabric', 'opensource'].includes(id))];
+    }
+
+    return [...new Set(preferred)];
+}
+
+/**
+ * Product ids to prioritize in the stack builder for org/regulation context.
+ * @param {{ orgContext?: string, regulationPressure?: string }} context
+ * @returns {string[]}
+ */
+export function preferredProductIds(context = {}) {
+    const org = normalizeOrgContext(context.orgContext);
+    const regulation = normalizeRegulation(context.regulationPressure);
+    /** @type {string[]} */
+    const ids = [];
+
+    if (org === 'startup') {
+        ids.push('airbyte', 'postgres', 'dbt', 'openmetadata', 'airflow');
+    } else if (org === 'midmarket') {
+        ids.push('fivetran', 'snowflake', 'dbt', 'powerbi', 'purview');
+    } else if (org === 'enterprise') {
+        ids.push('adf', 'fabric-lakehouse', 'databricks', 'dbt', 'powerbi', 'purview', 'unity-catalog');
+    } else if (org === 'bank-finance') {
+        ids.push('adf', 'informatica', 'fabric-lakehouse', 'databricks', 'powerbi', 'purview', 'collibra', 'unity-catalog');
+    } else if (org === 'public-sector') {
+        ids.push('airbyte', 'postgres', 'dbt', 'openmetadata', 'airflow', 'purview');
+    }
+
+    if (regulation === 'regulated' || regulation === 'gdpr-heavy' || org === 'bank-finance') {
+        ids.push('purview', 'unity-catalog', 'collibra', 'alation', 'openmetadata');
+    }
+    if (org === 'public-sector' || regulation === 'gdpr-heavy') {
+        ids.push('airbyte', 'postgres', 'openmetadata', 'airflow');
+    }
+
+    return [...new Set(ids)];
+}
+
+/**
+ * Short hint under the platform select.
+ * @param {string | undefined} orgRaw
+ * @param {string | undefined} regulationRaw
+ * @param {'de' | 'en'} [lang]
+ * @returns {string}
+ */
+export function platformPreferenceHint(orgRaw, regulationRaw, lang = 'en') {
+    const org = normalizeOrgContext(orgRaw);
+    const regulation = normalizeRegulation(regulationRaw);
+    if (org === 'unknown' && regulation === 'low') {
+        return '';
+    }
+
+    const preferred = preferredPlatforms(org, regulation).slice(0, 3);
+    const labels = preferred
+        .map((id) => PLATFORM_LABELS[id]?.[lang] || PLATFORM_LABELS[id]?.en || id)
+        .join(', ');
+
+    if (lang === 'de') {
+        if (org === 'bank-finance' || regulation === 'regulated') {
+            return `Für Bank/Finance bzw. Regulierung eher prüfen: ${labels}.`;
+        }
+        if (org === 'public-sector') {
+            return `Für den öffentlichen Sektor eher prüfen: ${labels}.`;
+        }
+        if (org === 'startup') {
+            return `Für Startups eher schlank starten: ${labels}.`;
+        }
+        return `Zum Kontext passende Stacks zuerst: ${labels}.`;
+    }
+
+    if (org === 'bank-finance' || regulation === 'regulated') {
+        return `For bank/finance or regulated setups, check first: ${labels}.`;
+    }
+    if (org === 'public-sector') {
+        return `For public sector, check first: ${labels}.`;
+    }
+    if (org === 'startup') {
+        return `For startups, start lean with: ${labels}.`;
+    }
+    return `Context-fit stacks first: ${labels}.`;
+}
+
+/**
+ * One-line banner for the stack builder modal/tool.
+ * @param {{ orgContext?: string, regulationPressure?: string }} context
+ * @param {'de' | 'en'} [lang]
+ * @returns {string}
+ */
+export function stackBuilderContextBanner(context = {}, lang = 'en') {
+    const org = normalizeOrgContext(context.orgContext);
+    const regulation = normalizeRegulation(context.regulationPressure);
+    if (org === 'unknown' && regulation === 'low') {
+        return '';
+    }
+
+    if (lang === 'de') {
+        if (regulation === 'regulated' || org === 'bank-finance') {
+            return 'Regulierter Kontext: Catalog-/Governance-Produkte früh wählen (Purview, Unity Catalog, Collibra).';
+        }
+        if (regulation === 'gdpr-heavy') {
+            return 'DSGVO-Druck: Catalog und Privacy-fähige Produkte priorisieren; Residenz mitdenken.';
+        }
+        if (org === 'public-sector') {
+            return 'Öffentlicher Sektor: Open-Source- und Residenz-taugliche Bausteine bevorzugen.';
+        }
+        if (org === 'startup') {
+            return 'Startup-Kontext: schlanke Open-/dbt-Bausteine bevorzugen, Overhead vermeiden.';
+        }
+        if (org === 'enterprise') {
+            return 'Enterprise-Kontext: Platform-Fit und Catalog/Ownership früh absichern.';
+        }
+        return 'Kontext gesetzt: bevorzugte Produkte sind hervorgehoben.';
+    }
+
+    if (regulation === 'regulated' || org === 'bank-finance') {
+        return 'Regulated context: pick catalog/governance products early (Purview, Unity Catalog, Collibra).';
+    }
+    if (regulation === 'gdpr-heavy') {
+        return 'GDPR pressure: prioritize catalog and privacy-ready products; consider residency.';
+    }
+    if (org === 'public-sector') {
+        return 'Public sector: prefer open-source and residency-friendly building blocks.';
+    }
+    if (org === 'startup') {
+        return 'Startup context: prefer lean open/dbt building blocks; avoid overhead.';
+    }
+    if (org === 'enterprise') {
+        return 'Enterprise context: lock platform fit and catalog/ownership early.';
+    }
+    return 'Context set: preferred products are highlighted.';
+}
+
 /**
  * @param {GuidanceLinks} links
  * @param {string} key
@@ -708,13 +879,17 @@ function buildStackRationale(state, links) {
     const regulation = normalizeRegulation(state.regulationPressure);
     const goal = state.goal || 'stack';
     const scenario = state.scenario || 'new';
+    const preferred = preferredPlatforms(org, regulation);
+    const preferredLabelDe = preferred.slice(0, 3).map((id) => PLATFORM_LABELS[id]?.de || id).join(', ');
+    const preferredLabelEn = preferred.slice(0, 3).map((id) => PLATFORM_LABELS[id]?.en || id).join(', ');
 
-    if (platform === 'unknown' && org === 'unknown') {
+    if (platform === 'unknown' && org === 'unknown' && regulation === 'low') {
         return null;
     }
 
     const stackAdvisor = linkOf(links, 'governanceStackAdvisor', '/tools/governance-stack-advisor');
     const guidesStacks = linkOf(links, 'guidesStacks', '/governance#guides-stacks');
+    const customBuilder = linkOf(links, 'customStackBuilder', '/tools/custom-stack-builder');
 
     /** @type {LocaleString} */
     let reason = {
@@ -726,37 +901,37 @@ function buildStackRationale(state, links) {
         reason = {
             de: platform !== 'unknown'
                 ? `Ziel-Stack „${platform}“ im Behördenkontext: Residenz/Sovereign und Open-Hinweise in Stacks prüfen.`
-                : 'Öffentlicher Sektor: Residenz/Sovereign und Open-Hinweise in Stacks prüfen, bevor der Ziel-Stack feststeht.',
+                : `Öffentlicher Sektor: zuerst ${preferredLabelDe} prüfen (Residenz/Sovereign), bevor der Ziel-Stack feststeht.`,
             en: platform !== 'unknown'
                 ? `Target stack “${platform}” in public sector: check residency/sovereign and open-source notes in stacks.`
-                : 'Public sector: check residency/sovereign and open-source notes in stacks before locking the target.',
+                : `Public sector: check ${preferredLabelEn} first (residency/sovereign) before locking the target.`,
         };
     } else if (org === 'bank-finance') {
         reason = {
             de: platform !== 'unknown'
                 ? `Ziel-Stack „${platform}“ für Bank/Finance: Control- und Nachweis-Anforderungen früh einbeziehen.`
-                : 'Bank/Finance: Control- und Nachweis-Anforderungen früh in die Stack-Wahl einbeziehen.',
+                : `Bank/Finance: Control-/Nachweisbedarf früh einrechnen — bevorzugte Stacks: ${preferredLabelDe}.`,
             en: platform !== 'unknown'
                 ? `Target stack “${platform}” for bank/finance: fold control and evidence needs in early.`
-                : 'Bank/finance: fold control and evidence needs into the stack choice early.',
+                : `Bank/finance: fold control and evidence needs in early — preferred stacks: ${preferredLabelEn}.`,
         };
     } else if (org === 'startup') {
         reason = {
             de: platform !== 'unknown'
                 ? `Ziel-Stack „${platform}“: für Startups schlank halten — Gates und Lernpfade ohne Plattform-Overkill.`
-                : 'Startup: leichtgewichtigen oder Open-Pfad bevorzugen, bis Fit und Owner klar sind.',
+                : `Startup: leichtgewichtigen Pfad bevorzugen (${preferredLabelDe}), bis Fit und Owner klar sind.`,
             en: platform !== 'unknown'
                 ? `Target stack “${platform}”: keep it lean for startups — gates and learning paths without platform overkill.`
-                : 'Startup: prefer a lightweight or open path until fit and owners are clear.',
+                : `Startup: prefer a lightweight path (${preferredLabelEn}) until fit and owners are clear.`,
         };
     } else if (org === 'midmarket') {
         reason = {
             de: platform !== 'unknown'
                 ? `Ziel-Stack „${platform}“: Midmarket-Fit — praxisnahe Gates statt Enterprise-Overhead.`
-                : 'Midmarket: Stack an realem BI-/Lakehouse-Bedarf ausrichten, nicht an Maximalarchitektur.',
+                : `Midmarket: Stack an realem Bedarf ausrichten — zuerst ${preferredLabelDe}.`,
             en: platform !== 'unknown'
                 ? `Target stack “${platform}”: mid-market fit — practical gates instead of enterprise overhead.`
-                : 'Mid-market: align the stack to real BI/lakehouse need, not a maximal architecture.',
+                : `Mid-market: align to real need — start with ${preferredLabelEn}.`,
         };
     } else if (org === 'enterprise' && platform !== 'unknown') {
         reason = {
@@ -767,6 +942,11 @@ function buildStackRationale(state, links) {
         reason = {
             de: `Ziel-Stack „${platform}“: Fit, Gates und Lernpfade an dieser Plattform ausrichten.`,
             en: `Target stack “${platform}”: align fit, gates, and learning paths to this platform.`,
+        };
+    } else if (org !== 'unknown' || regulation !== 'low') {
+        reason = {
+            de: `Noch kein Ziel-Stack gewählt — zum Kontext passen zuerst: ${preferredLabelDe}.`,
+            en: `No target stack yet — context-fit options first: ${preferredLabelEn}.`,
         };
     }
 
@@ -784,6 +964,9 @@ function buildStackRationale(state, links) {
 
     /** @type {string[]} */
     const startToolIds = ['governance-stack-advisor'];
+    if (goal === 'stack' || platform === 'custom' || platform === 'unknown') {
+        startToolIds.push('custom-stack-builder');
+    }
     if (platform === 'databricks') {
         startToolIds.push('unity-catalog-governance-generator');
     }
@@ -793,7 +976,7 @@ function buildStackRationale(state, links) {
     if (goal === 'kpi' || platform === 'fabric' || (goal === 'stack' && platform !== 'databricks')) {
         startToolIds.push('kpi-requirements-intake');
     }
-    const uniqueTools = [...new Set(startToolIds)].slice(0, 3);
+    const uniqueTools = [...new Set(startToolIds)].slice(0, 4);
 
     return {
         card: {
@@ -802,7 +985,9 @@ function buildStackRationale(state, links) {
             icon: 'fa-cubes',
             title: { de: 'Stack-Begründung', en: 'Stack rationale' },
             reason,
-            url: platform === 'unknown' ? guidesStacks : (guidesStacks !== '#' ? guidesStacks : stackAdvisor),
+            url: platform === 'unknown'
+                ? (guidesStacks !== '#' ? guidesStacks : stackAdvisor)
+                : (guidesStacks !== '#' ? guidesStacks : (customBuilder !== '#' ? customBuilder : stackAdvisor)),
             score: 72,
         },
         startToolIds: uniqueTools,

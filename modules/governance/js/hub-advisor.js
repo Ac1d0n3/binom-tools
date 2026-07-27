@@ -1,12 +1,16 @@
+import { buildGuidance, normalizeOrgContext, normalizeRegulation, platformPreferenceHint, preferredPlatforms, preferredProductIds, stackBuilderContextBanner } from './advisor-guidance.js';
+import { openSharedModal } from '../../../resources/js/shared/modal.js';
 import {
     derivePlatformTags,
     mountStackBuilder,
+    normalizeSelection,
     readCustomStack,
+    readSavedStacksLocal,
+    saveNamedStackLocal,
     summarizeSelection,
     writeCustomStack,
+    writeSavedStacksLocal,
 } from './stack-builder.js';
-import { buildGuidance, normalizeOrgContext, normalizeRegulation } from './advisor-guidance.js';
-import { openSharedModal } from '../../../resources/js/shared/modal.js';
 
 const texts = {
     de: {
@@ -61,16 +65,16 @@ const texts = {
             },
         },
         domainLabel: {
-            new: 'Welche Quellfamilie soll zuerst angebunden werden?',
-            extend: 'Welche Quelle oder Domäne kommt dazu?',
-            help: 'Zu welcher Domäne brauchst du Orientierung?',
-            dq: 'Welche Domäne ist vom DQ-Thema betroffen?',
+            new: 'Quelltyp',
+            extend: 'Quelle / Domäne',
+            help: 'Domäne',
+            dq: 'Betroffene Domäne',
         },
         platformLabel: {
-            new: 'Welcher Ziel-Stack ist geplant?',
-            extend: 'Welcher Stack wird aktuell genutzt?',
-            help: 'In welchem Stack suchst du Hilfe?',
-            dq: 'In welchem Stack sollen DQ-Regeln greifen?',
+            new: 'Ziel-Stack',
+            extend: 'Aktueller Stack',
+            help: 'Stack',
+            dq: 'Stack für DQ',
         },
         contextFiltered: 'Gefiltert',
         contextClear: 'Filter löschen',
@@ -128,16 +132,16 @@ const texts = {
             },
         },
         domainLabel: {
-            new: 'Which source family should be onboarded first?',
-            extend: 'Which source or domain is being added?',
-            help: 'Which domain do you need orientation for?',
-            dq: 'Which domain is affected by the DQ topic?',
+            new: 'Source type',
+            extend: 'Source / domain',
+            help: 'Domain',
+            dq: 'Affected domain',
         },
         platformLabel: {
-            new: 'Which target stack is planned?',
-            extend: 'Which stack is currently used?',
-            help: 'Which stack do you need help with?',
-            dq: 'Which stack should DQ rules apply in?',
+            new: 'Target stack',
+            extend: 'Current stack',
+            help: 'Stack',
+            dq: 'Stack for DQ',
         },
         contextFiltered: 'Filtered',
         contextClear: 'Clear filter',
@@ -180,6 +184,13 @@ const CONTEXT_LABELS = {
         sap: 'SAP',
         opensource: 'Open Source',
         custom: 'Eigener Stack',
+        startup: 'Startup',
+        midmarket: 'Midmarket',
+        enterprise: 'Enterprise',
+        'bank-finance': 'Bank/Finance',
+        'public-sector': 'Öffentlicher Sektor',
+        'gdpr-heavy': 'DSGVO-stark',
+        regulated: 'Reguliert',
     },
     en: {
         steward: 'Data Steward',
@@ -205,6 +216,13 @@ const CONTEXT_LABELS = {
         sap: 'SAP',
         opensource: 'Open source',
         custom: 'Custom stack',
+        startup: 'Startup',
+        midmarket: 'Mid-market',
+        enterprise: 'Enterprise',
+        'bank-finance': 'Bank/finance',
+        'public-sector': 'Public sector',
+        'gdpr-heavy': 'GDPR-heavy',
+        regulated: 'Regulated',
     },
 };
 
@@ -617,6 +635,7 @@ function guidanceLinksFromConfig(config) {
         dsbDe: guidance.dsbDe || '',
         vendorLearningPathBuilder: tools['vendor-learning-path-builder'] || '',
         governanceStackAdvisor: tools['governance-stack-advisor'] || '',
+        customStackBuilder: tools['custom-stack-builder'] || '',
         architectureFit: tools['architecture-fit'] || '',
         impactEffort: tools['impact-effort'] || '',
         kpiRequirementsIntake: tools['kpi-requirements-intake'] || '',
@@ -684,6 +703,7 @@ function itemUrl(item, config) {
 function scoreItem(item, state, boostToolIds = []) {
     const tags = new Set(item.tags || []);
     let score = 0;
+    const preferred = preferredPlatforms(state.orgContext, state.regulationPressure);
 
     if (boostToolIds.includes(item.id)) {
         score += 12;
@@ -711,10 +731,25 @@ function scoreItem(item, state, boostToolIds = []) {
         }
     } else if (state.platform !== 'unknown' && tags.has(state.platform)) {
         score += 7;
+    } else if (state.platform === 'unknown' && preferred.some((id) => tags.has(id))) {
+        score += 4;
     }
 
     if (state.role && tags.has(state.role)) {
         score += 6;
+    }
+
+    if (state.orgContext && state.orgContext !== 'unknown' && tags.has(state.orgContext)) {
+        score += 3;
+    }
+
+    if (state.regulationPressure && state.regulationPressure !== 'low') {
+        if (tags.has(state.regulationPressure) || tags.has('pii') || tags.has('compliance')) {
+            score += 3;
+        }
+        if (['governance-stack-advisor', 'custom-stack-builder', 'pii-dsdr-readiness-checker'].includes(item.id)) {
+            score += 2;
+        }
     }
 
     if (state.goal === 'dq') {
@@ -757,6 +792,10 @@ function scoreItem(item, state, boostToolIds = []) {
 
     if (state.goal === 'dq' && ['dbt-dq-rules-generator', 'dbt-dq-macro-generator', 'dbt-dq-history-generator'].includes(item.id)) {
         score += 5;
+    }
+
+    if (state.goal === 'stack' && ['governance-stack-advisor', 'custom-stack-builder'].includes(item.id)) {
+        score += 3;
     }
 
     return score;
@@ -1220,6 +1259,75 @@ function setSaveStatus(root, message) {
     }
 }
 
+/**
+ * Soft-reorder platform options: preferred first, keep current value, badge labels.
+ * @param {HTMLFormElement} form
+ * @param {ReturnType<typeof getState>} state
+ * @param {'de' | 'en'} locale
+ */
+function applyPlatformPreferences(form, state, locale) {
+    const select = form.querySelector('[data-governance-platform-select], select[name="platform"]');
+    const hint = form.closest('[data-governance-advisor]')?.querySelector('[data-governance-platform-hint]')
+        || form.parentElement?.querySelector('[data-governance-platform-hint]');
+    if (!(select instanceof HTMLSelectElement)) {
+        return;
+    }
+
+    const preferred = preferredPlatforms(state.orgContext, state.regulationPressure);
+    const preferredSet = new Set(preferred);
+    const current = select.value;
+    const options = Array.from(select.options);
+    const pinned = ['unknown', 'custom'];
+    const byValue = new Map(options.map((option) => [option.value, option]));
+
+    const orderedValues = [
+        'unknown',
+        ...preferred.filter((id) => byValue.has(id) && !pinned.includes(id)),
+        ...options
+            .map((option) => option.value)
+            .filter((value) => !pinned.includes(value) && !preferredSet.has(value)),
+        'custom',
+    ].filter((value, index, all) => byValue.has(value) && all.indexOf(value) === index);
+
+    select.replaceChildren();
+    orderedValues.forEach((value) => {
+        const source = byValue.get(value);
+        if (!source) {
+            return;
+        }
+        const option = source.cloneNode(true);
+        if (!(option instanceof HTMLOptionElement)) {
+            return;
+        }
+        const baseDe = option.getAttribute('data-text-de') || option.textContent || value;
+        const baseEn = option.getAttribute('data-text-en') || option.textContent || value;
+        const isPreferred = preferredSet.has(value);
+        option.toggleAttribute('data-preferred', isPreferred);
+        const cleanDe = baseDe.replace(/\s·\sEmpfohlen$/, '');
+        const cleanEn = baseEn.replace(/\s·\sRecommended$/, '');
+        if (isPreferred && value !== 'unknown' && value !== 'custom') {
+            option.setAttribute('data-text-de', `${cleanDe} · Empfohlen`);
+            option.setAttribute('data-text-en', `${cleanEn} · Recommended`);
+            option.textContent = locale === 'de' ? `${cleanDe} · Empfohlen` : `${cleanEn} · Recommended`;
+        } else {
+            option.setAttribute('data-text-de', cleanDe);
+            option.setAttribute('data-text-en', cleanEn);
+            option.textContent = locale === 'de' ? cleanDe : cleanEn;
+        }
+        select.append(option);
+    });
+
+    if (byValue.has(current)) {
+        select.value = current;
+    }
+
+    if (hint instanceof HTMLElement) {
+        const text = platformPreferenceHint(state.orgContext, state.regulationPressure, locale);
+        hint.textContent = text;
+        hint.hidden = text === '';
+    }
+}
+
 function render(root, config) {
     const locale = pickLocale();
     const copy = texts[locale];
@@ -1235,6 +1343,7 @@ function render(root, config) {
     const followup = root.querySelector('[data-governance-followup-copy]');
     const domainLabel = root.querySelector('[data-governance-domain-label]');
     const platformLabel = root.querySelector('[data-governance-platform-label]');
+    applyPlatformPreferences(form, state, locale);
     const recommendations = buildRecommendations(state, config);
     const grouped = recommendations.reduce((groups, item) => {
         const group = item.group || 'tools';
@@ -1425,6 +1534,12 @@ function contextLabelParts(ctx, locale) {
     }
     if (ctx.goal) {
         parts.push(labels[ctx.goal] || ctx.goal);
+    }
+    if (ctx.orgContext && ctx.orgContext !== 'unknown') {
+        parts.push(labels[ctx.orgContext] || ctx.orgContext);
+    }
+    if (ctx.regulationPressure && ctx.regulationPressure !== 'low') {
+        parts.push(labels[ctx.regulationPressure] || ctx.regulationPressure);
     }
     if (ctx.domain && ctx.domain !== 'unknown') {
         parts.push(labels[ctx.domain] || ctx.domain);
@@ -1670,7 +1785,7 @@ function clearHubContext(root) {
     }
 }
 
-function initStackBuilderModal(root) {
+function initStackBuilderModal(root, config = {}) {
     const dialog = root.querySelector('[data-governance-stack-builder]');
     const form = root.querySelector('[data-governance-advisor-form]');
     const openButtons = Array.from(root.querySelectorAll('[data-governance-stack-builder-open]'));
@@ -1680,9 +1795,102 @@ function initStackBuilderModal(root) {
     }
 
     const host = dialog?.querySelector('[data-stack-builder-root]') || null;
+    const loadSelect = dialog?.querySelector('[data-stack-builder-load]');
+    const statusEl = dialog?.querySelector('[data-stack-builder-status]');
     let api = null;
+    let savedStacks = [];
     const locale = () => (document.documentElement.lang === 'de' ? 'de' : 'en');
     const defaultButtonLabel = () => (locale() === 'de' ? 'Stack Builder öffnen' : 'Open Stack Builder');
+
+    const builderContextFromForm = () => {
+        const state = getState(form, root);
+        return {
+            orgContext: state.orgContext,
+            regulationPressure: state.regulationPressure,
+            preferredProductIds: preferredProductIds({
+                orgContext: state.orgContext,
+                regulationPressure: state.regulationPressure,
+            }),
+            contextBanner: stackBuilderContextBanner({
+                orgContext: state.orgContext,
+                regulationPressure: state.regulationPressure,
+            }, locale()),
+        };
+    };
+
+    const syncBuilderContext = () => {
+        if (!api?.setContext) {
+            return;
+        }
+        const ctx = builderContextFromForm();
+        api.setContext({
+            preferredProductIds: ctx.preferredProductIds,
+            contextBanner: ctx.contextBanner,
+        });
+    };
+
+    const setStatus = (message) => {
+        if (!(statusEl instanceof HTMLElement)) {
+            return;
+        }
+        if (!message) {
+            statusEl.hidden = true;
+            statusEl.textContent = '';
+            return;
+        }
+        statusEl.hidden = false;
+        statusEl.textContent = message;
+    };
+
+    const fillLoadSelect = () => {
+        if (!(loadSelect instanceof HTMLSelectElement)) {
+            return;
+        }
+        const keep = loadSelect.value;
+        const placeholder = locale() === 'de' ? '— Auswählen —' : '— Choose —';
+        loadSelect.replaceChildren();
+        const empty = document.createElement('option');
+        empty.value = '';
+        empty.textContent = placeholder;
+        loadSelect.append(empty);
+        savedStacks.forEach((item) => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.name;
+            loadSelect.append(option);
+        });
+        if (keep && savedStacks.some((item) => item.id === keep)) {
+            loadSelect.value = keep;
+        }
+    };
+
+    const refreshSavedStacks = async () => {
+        if (config.workspace?.enabled && config.workspace?.activeUrl) {
+            try {
+                const response = await fetch(config.workspace.activeUrl, {
+                    headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    credentials: 'same-origin',
+                });
+                if (response.ok) {
+                    const payload = await response.json();
+                    const remote = Array.isArray(payload?.workspace?.savedStacks) ? payload.workspace.savedStacks : [];
+                    savedStacks = remote.map((item) => ({
+                        id: String(item.id),
+                        name: String(item.name || 'Stack'),
+                        selection: normalizeSelection(item.selection),
+                        updatedAt: String(item.updatedAt || ''),
+                    }));
+                    writeSavedStacksLocal(savedStacks);
+                    fillLoadSelect();
+                    return;
+                }
+            } catch {
+                // fall through to local
+            }
+        }
+        savedStacks = readSavedStacksLocal();
+        fillLoadSelect();
+    };
 
     const syncOpenButton = () => {
         const isCustom = platformSelect?.value === 'custom';
@@ -1698,7 +1906,7 @@ function initStackBuilderModal(root) {
         });
     };
 
-    const openModal = () => {
+    const openModal = async () => {
         if (!(dialog instanceof HTMLDialogElement)) {
             const link = document.querySelector('a[href*="custom-stack-builder"]');
             if (link instanceof HTMLAnchorElement) {
@@ -1707,17 +1915,25 @@ function initStackBuilderModal(root) {
             return;
         }
 
+        await refreshSavedStacks();
+        setStatus('');
+        const builderCtx = builderContextFromForm();
+
         if (host && !api) {
             api = mountStackBuilder(host, {
                 compact: true,
                 selection: readCustomStack(),
+                preferredProductIds: builderCtx.preferredProductIds,
+                contextBanner: builderCtx.contextBanner,
                 onChange: (selection) => {
                     writeCustomStack(selection);
                     syncOpenButton();
+                    syncWorkspaceStack(root, config, { stack: 'custom', customStack: selection });
                 },
             });
         } else if (api) {
             api.setSelection(readCustomStack());
+            syncBuilderContext();
         }
 
         if (dialog instanceof HTMLDialogElement) {
@@ -1737,26 +1953,176 @@ function initStackBuilderModal(root) {
         if (platformSelect?.value === 'custom') {
             openModal();
         }
+        syncWorkspaceStack(root, config, {
+            stack: platformSelect?.value || 'unknown',
+            customStack: platformSelect?.value === 'custom' ? readCustomStack() : null,
+        });
     };
 
     platformSelect?.addEventListener('change', onPlatformChange);
-    // Form-level change is a backup if the select event is composed/rewritten
     form.addEventListener('change', (event) => {
         if (event.target === platformSelect) {
             onPlatformChange();
         } else {
             syncOpenButton();
+            const name = event.target instanceof HTMLElement ? event.target.getAttribute('name') : '';
+            if (name === 'orgContext' || name === 'regulationPressure') {
+                syncBuilderContext();
+            }
         }
     });
 
     dialog?.querySelector('[data-governance-stack-builder-save]')?.addEventListener('click', () => {
-        writeCustomStack(api?.getSelection?.() || readCustomStack());
+        const selection = api?.getSelection?.() || readCustomStack();
+        writeCustomStack(selection);
         setSelectValue(form, 'platform', 'custom');
         syncOpenButton();
+        syncWorkspaceStack(root, config, { stack: 'custom', customStack: selection });
+        form.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    dialog?.querySelector('[data-governance-stack-builder-save-as]')?.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const selection = api?.getSelection?.() || readCustomStack();
+        const hasProducts = Object.values(selection).some((items) => Array.isArray(items) && items.length > 0);
+        if (!hasProducts) {
+            setStatus(locale() === 'de' ? 'Bitte zuerst Produkte wählen.' : 'Choose products first.');
+            return;
+        }
+        const suggested = summarizeSelection(selection, locale()).replace(/^Eigener Stack · |^Custom stack · /, '');
+        const name = window.prompt(
+            locale() === 'de' ? 'Name für diesen Stack:' : 'Name for this stack:',
+            suggested || (locale() === 'de' ? 'Mein Stack' : 'My stack'),
+        );
+        if (!name || !String(name).trim()) {
+            return;
+        }
+
+        if (config.workspace?.enabled && config.workspace?.savedStacksUrl) {
+            try {
+                const response = await fetch(config.workspace.savedStacksUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'X-CSRF-TOKEN': csrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ name: String(name).trim(), selection }),
+                });
+                if (response.ok) {
+                    const payload = await response.json();
+                    savedStacks = Array.isArray(payload.savedStacks)
+                        ? payload.savedStacks.map((item) => ({
+                            id: String(item.id),
+                            name: String(item.name || 'Stack'),
+                            selection: normalizeSelection(item.selection),
+                            updatedAt: String(item.updatedAt || ''),
+                        }))
+                        : savedStacks;
+                    writeSavedStacksLocal(savedStacks);
+                    fillLoadSelect();
+                    writeCustomStack(selection);
+                    setSelectValue(form, 'platform', 'custom');
+                    syncWorkspaceStack(root, config, { stack: 'custom', customStack: selection });
+                    syncOpenButton();
+                    setStatus(locale() === 'de'
+                        ? `Gespeichert im Workspace: ${payload.savedStack?.name || name}`
+                        : `Saved to workspace: ${payload.savedStack?.name || name}`);
+                    return;
+                }
+                if (response.status === 422) {
+                    setStatus(locale() === 'de'
+                        ? 'Kein aktiver Workspace — bitte unter Admin Hub anlegen/aktivieren.'
+                        : 'No active workspace — create/activate one in Admin Hub.');
+                    return;
+                }
+            } catch {
+                // fall through to local
+            }
+        }
+
+        const local = saveNamedStackLocal(String(name).trim(), selection);
+        savedStacks = readSavedStacksLocal();
+        fillLoadSelect();
+        writeCustomStack(selection);
+        setSelectValue(form, 'platform', 'custom');
+        syncOpenButton();
+        setStatus(locale() === 'de'
+            ? `Lokal gespeichert: ${local?.name || name}`
+            : `Saved locally: ${local?.name || name}`);
+    });
+
+    loadSelect?.addEventListener('change', () => {
+        const id = loadSelect.value;
+        if (!id) {
+            return;
+        }
+        const match = savedStacks.find((item) => item.id === id);
+        if (!match) {
+            return;
+        }
+        const selection = normalizeSelection(match.selection);
+        writeCustomStack(selection);
+        api?.setSelection?.(selection);
+        setSelectValue(form, 'platform', 'custom');
+        syncOpenButton();
+        syncWorkspaceStack(root, config, { stack: 'custom', customStack: selection });
+        setStatus(locale() === 'de' ? `Geladen: ${match.name}` : `Loaded: ${match.name}`);
         form.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
     syncOpenButton();
+    refreshSavedStacks();
+}
+
+let workspaceSyncTimer = null;
+
+function syncWorkspaceStack(root, config, payload) {
+    if (!config?.workspace?.enabled || !config?.workspace?.syncStackUrl) {
+        return;
+    }
+    const stack = String(payload.stack || 'unknown');
+    const body = {
+        stack,
+        customStack: stack === 'custom' ? (payload.customStack || readCustomStack()) : null,
+    };
+    window.clearTimeout(workspaceSyncTimer);
+    workspaceSyncTimer = window.setTimeout(async () => {
+        try {
+            await fetch(config.workspace.syncStackUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(body),
+            });
+        } catch {
+            // ignore sync failures
+        }
+    }, 400);
+}
+
+function applyWorkspaceStack(root, config) {
+    const active = config?.workspace?.active;
+    if (!active || !root) {
+        return;
+    }
+    const form = root.querySelector('[data-governance-advisor-form]');
+    if (!form) {
+        return;
+    }
+    if (typeof active.stack === 'string' && active.stack !== '') {
+        setSelectValue(form, 'platform', active.stack);
+    }
+    if (active.stack === 'custom' && active.customStack) {
+        writeCustomStack(normalizeSelection(active.customStack));
+    }
 }
 
 function initHubContextControls(root) {
@@ -2017,7 +2383,8 @@ function initAdvisor(root) {
     initSubtabs(root);
     initTabs(root);
     initHubContextControls(root);
-    initStackBuilderModal(root);
+    applyWorkspaceStack(root, config);
+    initStackBuilderModal(root, config);
     initPersonas(root, () => {
         if (form) {
             render(root, config);

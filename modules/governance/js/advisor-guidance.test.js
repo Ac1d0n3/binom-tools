@@ -3,6 +3,10 @@ import {
     buildGuidance,
     normalizeOrgContext,
     normalizeRegulation,
+    preferredPlatforms,
+    preferredProductIds,
+    platformPreferenceHint,
+    stackBuilderContextBanner,
 } from './advisor-guidance.js';
 
 describe('normalizeOrgContext', () => {
@@ -123,8 +127,20 @@ describe('buildGuidance', () => {
         expect(stackNote?.url).toContain('guides-stacks');
         expect(stackNote?.reason.de).toMatch(/Bank\/Finance|fabric|Regulierungsdruck/i);
         expect(startToolIds).toContain('governance-stack-advisor');
+        expect(startToolIds).toContain('custom-stack-builder');
         expect(startToolIds.length).toBeGreaterThanOrEqual(2);
-        expect(startToolIds.length).toBeLessThanOrEqual(3);
+        expect(startToolIds.length).toBeLessThanOrEqual(4);
+    });
+
+    it('names preferred platforms when stack is still unknown', () => {
+        const { stackNote } = buildGuidance({
+            orgContext: 'bank-finance',
+            regulationPressure: 'regulated',
+            goal: 'stack',
+            platform: 'unknown',
+        });
+        expect(stackNote?.reason.de).toMatch(/Fabric|SAP|Databricks/i);
+        expect(stackNote?.reason.en).toMatch(/Fabric|SAP|Databricks/i);
     });
 
     it('uses provided guidance links', () => {
@@ -139,5 +155,43 @@ describe('buildGuidance', () => {
     it('normalizes regulation defaults', () => {
         expect(normalizeRegulation(undefined)).toBe('low');
         expect(normalizeRegulation('regulated')).toBe('regulated');
+    });
+});
+
+describe('preferredPlatforms', () => {
+    it('prefers lean open stacks for startups', () => {
+        expect(preferredPlatforms('startup', 'low')[0]).toBe('opensource');
+    });
+
+    it('prefers fabric/sap for bank-finance and regulated', () => {
+        expect(preferredPlatforms('bank-finance', 'low').slice(0, 2)).toEqual(['fabric', 'sap']);
+        expect(preferredPlatforms('midmarket', 'regulated')[0]).toBe('fabric');
+    });
+
+    it('boosts fabric/opensource under gdpr-heavy', () => {
+        const preferred = preferredPlatforms('startup', 'gdpr-heavy');
+        expect(preferred.slice(0, 2)).toEqual(['fabric', 'opensource']);
+    });
+});
+
+describe('preferredProductIds and banners', () => {
+    it('highlights catalog products for regulated contexts', () => {
+        const ids = preferredProductIds({ orgContext: 'bank-finance', regulationPressure: 'regulated' });
+        expect(ids).toEqual(expect.arrayContaining(['purview', 'unity-catalog', 'collibra']));
+    });
+
+    it('highlights lean products for startups', () => {
+        const ids = preferredProductIds({ orgContext: 'startup', regulationPressure: 'low' });
+        expect(ids).toEqual(expect.arrayContaining(['airbyte', 'postgres', 'dbt', 'openmetadata']));
+    });
+
+    it('returns empty hint when context is open/low', () => {
+        expect(platformPreferenceHint('unknown', 'low', 'en')).toBe('');
+        expect(stackBuilderContextBanner({ orgContext: 'unknown', regulationPressure: 'low' }, 'en')).toBe('');
+    });
+
+    it('returns context banner for regulated setups', () => {
+        expect(stackBuilderContextBanner({ orgContext: 'bank-finance', regulationPressure: 'regulated' }, 'de'))
+            .toMatch(/Reguliert|Catalog/i);
     });
 });

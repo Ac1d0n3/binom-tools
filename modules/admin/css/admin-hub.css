@@ -1,0 +1,95 @@
+/* Admin Hub — list chrome on top of sprint-planner sp-* patterns */
+
+.admin-hub {
+    max-width: 72rem;
+}
+
+.admin-hub__help {
+    border: 1px solid var(--bn-border, #d8e2ee);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--bn-surface, #fff) 92%, var(--bn-accent, #1269a8));
+    padding: 0.85rem 1rem;
+    margin: 0 0 1.25rem;
+}
+
+.admin-hub__help[hidden] {
+    display: none !important;
+}
+
+.admin-hub__help-toggle {
+    margin-left: auto;
+}
+
+.admin-hub__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.admin-hub__meta {
+    color: var(--bn-muted, #5f6f82);
+    font-size: 0.85rem;
+}
+
+.admin-hub__editor {
+    display: grid;
+    gap: 1rem;
+}
+
+.admin-hub__editor-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 900px) {
+    .admin-hub__editor-grid--split {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.admin-hub__textarea {
+    width: 100%;
+    min-height: 18rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--bn-border, #d8e2ee);
+    background: var(--bn-surface, #fff);
+    color: inherit;
+}
+
+.admin-hub__field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.admin-hub__field label {
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.admin-hub__field input,
+.admin-hub__field select {
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid var(--bn-border, #d8e2ee);
+    background: var(--bn-surface, #fff);
+    color: inherit;
+}
+
+.admin-sidenav__section {
+    margin-top: 1rem;
+}
+
+.admin-sidenav__label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bn-muted, #5f6f82);
+    margin: 0 0 0.4rem 0.65rem;
+}

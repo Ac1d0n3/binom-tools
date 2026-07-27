@@ -1,8 +1,8 @@
-@extends('foundations.layouts.tools')
+@extends('admin::layouts.shell')
 
 @section('title', 'Link check — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide">
         <h1 class="tools-page-title" data-text-de="Link-Checker" data-text-en="Link checker">Link checker</h1>
         <p class="tools-page-lead" data-text-de="Externe URLs aus Katalogen und Stories — nur für Admins." data-text-en="External URLs from catalogs and stories — admins only.">
@@ -41,7 +41,7 @@
             @foreach (['all' => 'All', 'broken' => 'Broken', 'error' => 'Error', 'redirect' => 'Redirect', 'ok' => 'OK'] as $key => $label)
                 <a
                     class="tools-filter-sidebar__tab {{ $filter === $key ? 'tools-filter-sidebar__tab--active' : '' }}"
-                    href="{{ locale_route('accounts.link-check') }}{{ $key === 'all' ? '' : '?filter='.$key }}"
+                    href="{{ locale_route('admin.link-check.index') }}{{ $key === 'all' ? '' : '?filter='.$key }}"
                 >{{ $label }}</a>
             @endforeach
         </nav>

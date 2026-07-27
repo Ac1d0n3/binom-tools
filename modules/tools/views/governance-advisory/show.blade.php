@@ -20,6 +20,13 @@
         'templateGuides' => $templateGuides ?? [],
         'reportSummary' => $reportSummary ?? '',
         'demoPrefill' => $demoPrefill ?? null,
+        'workspace' => $toolId === 'custom-stack-builder' && accounts_enabled() && app(\App\Accounts\AccountAuth::class)->user()
+            ? [
+                'activeUrl' => locale_route('admin.api.workspace.active'),
+                'syncStackUrl' => locale_route('admin.api.workspace.stack'),
+                'savedStacksUrl' => locale_route('admin.api.workspace.saved-stacks.store'),
+            ]
+            : null,
     ];
 @endphp
 
@@ -307,6 +314,16 @@
                         </div>
                     @endif
                     @if ($toolId === 'custom-stack-builder')
+                        <div class="stack-builder-tool-actions" data-stack-builder-tool-actions>
+                            <label class="stack-builder-tool-actions__load">
+                                <span data-text-de="Gespeicherten Stack laden" data-text-en="Load saved stack">Load saved stack</span>
+                                <select data-stack-builder-load>
+                                    <option value="" data-text-de="— Auswählen —" data-text-en="— Choose —">— Choose —</option>
+                                </select>
+                            </label>
+                            <button type="button" class="governance-hub__button" data-governance-stack-builder-save-as data-text-de="Als Stack speichern" data-text-en="Save as stack">Save as stack</button>
+                            <p class="stack-builder-tool-actions__status" data-stack-builder-status hidden></p>
+                        </div>
                         <div
                             class="stack-builder stack-builder--tool"
                             data-stack-builder-root

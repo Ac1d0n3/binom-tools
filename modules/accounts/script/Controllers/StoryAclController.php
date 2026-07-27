@@ -66,7 +66,7 @@ class StoryAclController extends Controller
         ]);
 
         return redirect()
-            ->to(locale_route('accounts.story-acl'))
+            ->to(locale_route('admin.story-acl.index'))
             ->with('status', 'acl-updated');
     }
 

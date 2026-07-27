@@ -1,10 +1,8 @@
-@extends('foundations.layouts.tools', [
-    'viteEntries' => ['modules/sprint-planner/css/sprint-planner.css'],
-])
+@extends('admin::layouts.shell')
 
 @section('title', 'Account — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide sp-app">
         <h1 class="tools-page-title" data-i18n="accounts.profileTitle">Account</h1>
         <p class="tools-page-lead">{{ $account['email'] }}</p>

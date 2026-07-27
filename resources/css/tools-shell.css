@@ -2265,6 +2265,30 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     align-items: stretch;
 }
 
+.governance-advisor__select-grid + .governance-advisor__select-grid {
+    margin-top: 0.85rem;
+}
+
+.governance-advisor__context-lead {
+    margin: 0 0 0.55rem;
+    color: color-mix(in srgb, var(--content-font-color) 72%, transparent);
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.governance-advisor__platform-hint {
+    margin: 0.35rem 0 0;
+    color: color-mix(in srgb, var(--theme-color-primary) 78%, var(--content-font-color));
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.governance-advisor__platform-hint[hidden] {
+    display: none;
+}
+
 .governance-advisor__select-label {
     min-height: 2.5em;
     display: flex;
@@ -2429,6 +2453,30 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-color-primary) 35%, transparent);
 }
 
+.stack-builder__chip--preferred {
+    outline: 1px dashed color-mix(in srgb, var(--theme-color-primary) 45%, transparent);
+    outline-offset: 1px;
+}
+
+.stack-builder__chip--preferred:not([aria-pressed="true"])::after {
+    content: '★';
+    margin-left: 0.25rem;
+    font-size: 0.72em;
+    opacity: 0.75;
+}
+
+.stack-builder__context-banner {
+    margin: 0 0 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary) 22%, var(--base-border-color));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--theme-color-primary) 8%, var(--surface-background-color));
+    color: color-mix(in srgb, var(--content-font-color) 88%, transparent);
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.4;
+    padding: 0.65rem 0.75rem;
+}
+
 .stack-builder-modal {
     position: fixed;
     top: 50%;
@@ -2472,6 +2520,83 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 .stack-builder-modal__footer {
     border-top: 1px solid color-mix(in srgb, var(--base-border-color) 70%, transparent);
     padding-top: 0.75rem;
+}
+
+.stack-builder-modal__footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.stack-builder-modal__library {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.25rem 0 0.35rem;
+}
+
+.stack-builder-modal__library-load {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.stack-builder-modal__library-load span {
+    color: color-mix(in srgb, var(--content-font-color) 82%, transparent);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.stack-builder-modal__library-load select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.4rem;
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 82%, transparent);
+    border-radius: 8px;
+    background: var(--content-background-color);
+    color: var(--content-font-color);
+    font: inherit;
+    font-weight: 600;
+    padding: 0.45rem 0.7rem;
+}
+
+.stack-builder-tool-actions {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0 0 0.85rem;
+}
+
+.stack-builder-tool-actions__load {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.stack-builder-tool-actions__load span {
+    color: color-mix(in srgb, var(--content-font-color) 82%, transparent);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.stack-builder-tool-actions__load select {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 28rem;
+    min-height: 2.4rem;
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 82%, transparent);
+    border-radius: 8px;
+    background: var(--content-background-color);
+    color: var(--content-font-color);
+    font: inherit;
+    font-weight: 600;
+    padding: 0.45rem 0.7rem;
+}
+
+.stack-builder-tool-actions__status {
+    margin: 0;
+    color: color-mix(in srgb, var(--content-font-color) 72%, transparent);
+    font-size: 0.86rem;
 }
 
 .governance-advisor__followup {

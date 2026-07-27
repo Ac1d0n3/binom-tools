@@ -1,6 +1,4 @@
-@extends('foundations.layouts.tools', [
-    'viteEntries' => ['modules/sprint-planner/css/sprint-planner.css'],
-])
+@extends('admin::layouts.shell')
 
 @php
     $isEdit = is_array($user);
@@ -13,10 +11,10 @@
 
 @section('title', ($isEdit ? 'Edit user' : 'Add user') . ' — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide sp-app">
         <p class="sp-action-row">
-            <a href="{{ locale_route('accounts.users') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToUsers">Back to users</a>
+            <a href="{{ locale_route('admin.users.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToUsers">Back to users</a>
         </p>
 
         <h1 class="tools-page-title" data-i18n="{{ $titleKey }}">{{ $isEdit ? 'Edit user' : 'Add user' }}</h1>
@@ -135,7 +133,7 @@
             </label>
 
             <div class="sp-action-row">
-                <a href="{{ locale_route('accounts.users') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
+                <a href="{{ locale_route('admin.users.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
                 <button type="submit" class="tools-btn tools-btn--primary" data-i18n="{{ $isEdit ? 'accounts.save' : 'accounts.addUserSubmit' }}">
                     {{ $isEdit ? 'Save' : 'Add user' }}
                 </button>

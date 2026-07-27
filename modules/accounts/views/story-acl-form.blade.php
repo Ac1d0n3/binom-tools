@@ -1,13 +1,11 @@
-@extends('foundations.layouts.tools', [
-    'viteEntries' => ['modules/sprint-planner/css/sprint-planner.css'],
-])
+@extends('admin::layouts.shell')
 
 @section('title', 'Edit story access — ' . config('app.name'))
 
-@section('content')
+@section('admin_content')
     <div class="tools-content tools-content--wide sp-app">
         <p class="sp-action-row">
-            <a href="{{ locale_route('accounts.story-acl') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToStoryAcl">
+            <a href="{{ locale_route('admin.story-acl.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToStoryAcl">
                 Back to story access
             </a>
         </p>
@@ -64,7 +62,7 @@
             />
 
             <div class="sp-action-row">
-                <a href="{{ locale_route('accounts.story-acl') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
+                <a href="{{ locale_route('admin.story-acl.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.cancel">Cancel</a>
                 <button type="submit" class="tools-btn tools-btn--primary" data-i18n="accounts.save">Save</button>
             </div>
         </form>

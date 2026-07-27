@@ -420,7 +420,7 @@ final class PlanStore implements PlanStoreInterface
      */
     private function mergePreservedFields(array $existing, array $incoming, array $historyMeta = []): array
     {
-        foreach (['templateSlug', 'startedAt', 'createdAt', 'ownerUserId'] as $key) {
+        foreach (['templateSlug', 'startedAt', 'createdAt', 'ownerUserId', 'workspaceId'] as $key) {
             $next = $incoming[$key] ?? null;
             $prev = $existing[$key] ?? null;
             if (($next === null || $next === '') && $prev !== null && $prev !== '') {

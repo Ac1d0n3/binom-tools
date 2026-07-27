@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Governance;
 
 use App\Accounts\AccountAuth;
+use App\Admin\Contracts\WorkspaceStoreInterface;
 use App\Governance\GovernanceRadarFeedDisplay;
 use App\Governance\GovernanceRadarFeedItemStore;
 use App\Governance\GovernanceRadarFeedSync;
@@ -21,6 +22,7 @@ class GovernanceHubController extends Controller
 {
     public function __construct(
         private readonly AccountAuth $auth,
+        private readonly WorkspaceStoreInterface $workspaces,
         private readonly GovernanceRadarSourceStore $radarSources,
         private readonly GovernanceRadarItemOverlayStore $radarOverlays,
         private readonly GovernanceRadarFeedSync $radarFeedSync,
@@ -752,6 +754,47 @@ class GovernanceHubController extends Controller
                 'loginUrl' => (bool) config('accounts.enabled', false) && $this->auth->user() === null
                     ? locale_route('accounts.login')
                     : null,
+            ],
+            'workspace' => $this->workspaceBootstrap(),
+        ];
+    }
+
+    /**
+     * @return array{
+     *   enabled: bool,
+     *   activeUrl: ?string,
+     *   syncStackUrl: ?string,
+     *   savedStacksUrl: ?string,
+     *   active: ?array{id: string, name: string, stack: string, customStack: ?array, savedStacks: list<array>}
+     * }
+     */
+    private function workspaceBootstrap(): array
+    {
+        $user = $this->auth->user();
+        if ($user === null || ! config('accounts.enabled', false)) {
+            return [
+                'enabled' => false,
+                'activeUrl' => null,
+                'syncStackUrl' => null,
+                'savedStacksUrl' => null,
+                'active' => null,
+            ];
+        }
+
+        $activeId = $this->workspaces->activeId($user);
+        $workspace = $activeId ? $this->workspaces->find($activeId, $user) : null;
+
+        return [
+            'enabled' => true,
+            'activeUrl' => locale_route('admin.api.workspace.active'),
+            'syncStackUrl' => locale_route('admin.api.workspace.stack'),
+            'savedStacksUrl' => locale_route('admin.api.workspace.saved-stacks.store'),
+            'active' => $workspace === null ? null : [
+                'id' => (string) $workspace['id'],
+                'name' => (string) ($workspace['name'] ?? ''),
+                'stack' => (string) ($workspace['stack'] ?? 'unknown'),
+                'customStack' => is_array($workspace['customStack'] ?? null) ? $workspace['customStack'] : null,
+                'savedStacks' => is_array($workspace['savedStacks'] ?? null) ? array_values($workspace['savedStacks']) : [],
             ],
         ];
     }

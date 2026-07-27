@@ -125,36 +125,13 @@
                         </div>
                     </div>
 
+                    {{-- Context before stack: org/regulation influence platform order and builder preferences. --}}
+                    <p
+                        class="governance-advisor__context-lead"
+                        data-text-de="Zuerst Kontext — der beeinflusst Stack-Empfehlungen und den Builder."
+                        data-text-en="Context first — it shapes stack recommendations and the builder."
+                    >Context first — it shapes stack recommendations and the builder.</p>
                     <div class="governance-advisor__select-grid">
-                        <span
-                            class="governance-advisor__select-label governance-advisor__select-label--a"
-                            data-governance-domain-label
-                            data-text-de="Quelltyp"
-                            data-text-en="Source type"
-                        >Source type</span>
-                        <span
-                            class="governance-advisor__select-label governance-advisor__select-label--b"
-                            data-governance-platform-label
-                            data-text-de="Ziel-Stack"
-                            data-text-en="Target stack"
-                        >Target stack</span>
-                        <select class="governance-advisor__select-control--a" name="domain">
-                            <option value="unknown" data-text-de="Noch offen / gemischt" data-text-en="Open / mixed">Open / mixed</option>
-                            <option value="crm" data-text-de="CRM & Revenue" data-text-en="CRM & revenue">CRM & revenue</option>
-                            <option value="erp" data-text-de="ERP, Finance & Procurement" data-text-en="ERP, finance & procurement">ERP, finance & procurement</option>
-                            <option value="hcm" data-text-de="HCM & Workforce" data-text-en="HCM & workforce">HCM & workforce</option>
-                            <option value="collab" data-text-de="Collaboration & Service" data-text-en="Collaboration & service">Collaboration & service</option>
-                            <option value="finance" data-text-de="Reguliertes Finance Reporting" data-text-en="Regulated finance reporting">Regulated finance reporting</option>
-                        </select>
-                        <select class="governance-advisor__select-control--b" name="platform">
-                            <option value="unknown" data-text-de="Noch offen / mehrere" data-text-en="Open / multiple">Open / multiple</option>
-                            <option value="fabric" data-text-de="Microsoft Fabric / Power BI" data-text-en="Microsoft Fabric / Power BI">Microsoft Fabric / Power BI</option>
-                            <option value="databricks" data-text-de="Databricks Lakehouse" data-text-en="Databricks Lakehouse">Databricks Lakehouse</option>
-                            <option value="snowflake-dbt" data-text-de="Snowflake / dbt" data-text-en="Snowflake / dbt">Snowflake / dbt</option>
-                            <option value="sap" data-text-de="SAP-nahe Landschaft" data-text-en="SAP-near landscape">SAP-near landscape</option>
-                            <option value="opensource" data-text-de="Open Source / leichtgewichtig" data-text-en="Open source / lightweight">Open source / lightweight</option>
-                            <option value="custom" data-text-de="Eigener Stack…" data-text-en="Custom stack…">Custom stack…</option>
-                        </select>
                         <span
                             class="governance-advisor__select-label governance-advisor__select-label--a"
                             data-text-de="Organisationskontext"
@@ -189,12 +166,46 @@
                                 <option value="{{ $regId }}" @selected($regId === 'low') data-text-de="{{ $regDe }}" data-text-en="{{ $regEn }}">{{ $regEn }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    {{-- Separate grids: named grid-areas are unique per grid; one shared grid would overlap labels. --}}
+                    <div class="governance-advisor__select-grid">
+                        <span
+                            class="governance-advisor__select-label governance-advisor__select-label--a"
+                            data-governance-domain-label
+                            data-text-de="Quelltyp"
+                            data-text-en="Source type"
+                        >Source type</span>
+                        <span
+                            class="governance-advisor__select-label governance-advisor__select-label--b"
+                            data-governance-platform-label
+                            data-text-de="Ziel-Stack"
+                            data-text-en="Target stack"
+                        >Target stack</span>
+                        <select class="governance-advisor__select-control--a" name="domain">
+                            <option value="unknown" data-text-de="Noch offen / gemischt" data-text-en="Open / mixed">Open / mixed</option>
+                            <option value="crm" data-text-de="CRM & Revenue" data-text-en="CRM & revenue">CRM & revenue</option>
+                            <option value="erp" data-text-de="ERP, Finance & Procurement" data-text-en="ERP, finance & procurement">ERP, finance & procurement</option>
+                            <option value="hcm" data-text-de="HCM & Workforce" data-text-en="HCM & workforce">HCM & workforce</option>
+                            <option value="collab" data-text-de="Collaboration & Service" data-text-en="Collaboration & service">Collaboration & service</option>
+                            <option value="finance" data-text-de="Reguliertes Finance Reporting" data-text-en="Regulated finance reporting">Regulated finance reporting</option>
+                        </select>
+                        <select class="governance-advisor__select-control--b" name="platform" data-governance-platform-select>
+                            <option value="unknown" data-text-de="Noch offen / mehrere" data-text-en="Open / multiple">Open / multiple</option>
+                            <option value="fabric" data-text-de="Microsoft Fabric / Power BI" data-text-en="Microsoft Fabric / Power BI">Microsoft Fabric / Power BI</option>
+                            <option value="databricks" data-text-de="Databricks Lakehouse" data-text-en="Databricks Lakehouse">Databricks Lakehouse</option>
+                            <option value="snowflake-dbt" data-text-de="Snowflake / dbt" data-text-en="Snowflake / dbt">Snowflake / dbt</option>
+                            <option value="sap" data-text-de="SAP-nahe Landschaft" data-text-en="SAP-near landscape">SAP-near landscape</option>
+                            <option value="opensource" data-text-de="Open Source / leichtgewichtig" data-text-en="Open source / lightweight">Open source / lightweight</option>
+                            <option value="custom" data-text-de="Eigener Stack…" data-text-en="Custom stack…">Custom stack…</option>
+                        </select>
                         <span class="governance-advisor__select-spacer governance-advisor__select-action--a" aria-hidden="true"></span>
                         <button type="button" class="governance-hub__button governance-hub__button--compact governance-advisor__stack-edit governance-advisor__select-action--b" data-governance-stack-builder-open hidden>
                             <i class="fa-solid fa-cubes" aria-hidden="true"></i>
                             <span data-text-de="Stack Builder öffnen" data-text-en="Open Stack Builder">Open Stack Builder</span>
                         </button>
                     </div>
+                    <p class="governance-advisor__platform-hint" data-governance-platform-hint hidden></p>
 
                     <div class="governance-advisor__dq" data-governance-dq-panel>
                         <div class="governance-advisor__dq-heading">

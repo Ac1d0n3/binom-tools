@@ -42,8 +42,8 @@ class AccountsAdminPagesTest extends TestCase
     {
         $this->loginAdmin();
 
-        $this->get('/account/teams')->assertOk()->assertSee('accounts.addTeam', false);
-        $this->get('/account/teams/create')->assertOk();
+        $this->get('/admin/teams')->assertOk()->assertSee('accounts.addTeam', false);
+        $this->get('/admin/teams/create')->assertOk();
 
         $this->post('/account/teams', [
             'name_de' => 'Analytics',
@@ -54,7 +54,7 @@ class AccountsAdminPagesTest extends TestCase
             'shortName' => 'ANA',
             'colorToken' => 'accent-3',
             'avatarIcon' => 'yin-yang',
-        ])->assertRedirect('/account/teams');
+        ])->assertRedirect('/admin/teams');
 
         $team = collect(app(TeamRepository::class)->all(true))->first();
         $this->assertNotNull($team);
@@ -63,7 +63,7 @@ class AccountsAdminPagesTest extends TestCase
         $this->assertSame('yin-yang', $team->avatarIcon);
         $this->assertContains($team->id, app(UserRepository::class)->findById('user_admin')?->teamIds ?? []);
 
-        $this->get('/account/teams/'.$team->id.'/edit')->assertOk()->assertSee('Analytics');
+        $this->get('/admin/teams/'.$team->id.'/edit')->assertOk()->assertSee('Analytics');
     }
 
     public function test_team_icon_only_without_trigram(): void
@@ -77,7 +77,7 @@ class AccountsAdminPagesTest extends TestCase
             'shortName' => '',
             'colorToken' => 'accent-2',
             'avatarIcon' => 'rocket',
-        ])->assertRedirect('/account/teams');
+        ])->assertRedirect('/admin/teams');
 
         $team = collect(app(TeamRepository::class)->all(true))->first(
             static fn ($t) => ($t->name['en'] ?? '') === 'Icon Team',
@@ -98,7 +98,7 @@ class AccountsAdminPagesTest extends TestCase
             'memberRoles' => ['user_admin' => 'manager'],
             'shortName' => 'TQ',
             'colorToken' => 'accent-1',
-        ])->assertRedirect('/account/teams');
+        ])->assertRedirect('/admin/teams');
 
         $team = collect(app(TeamRepository::class)->all(true))->first(
             static fn ($t) => ($t->name['en'] ?? '') === 'Team Q',
@@ -143,7 +143,7 @@ class AccountsAdminPagesTest extends TestCase
             'password' => 'password123',
             'shortName' => 'OK',
             'active' => '1',
-        ])->assertRedirect('/account/users');
+        ])->assertRedirect('/admin/users');
 
         $ok = app(UserRepository::class)->findByEmail('ok@example.com');
         $this->assertSame('OK', $ok?->shortName);
@@ -153,8 +153,8 @@ class AccountsAdminPagesTest extends TestCase
     {
         $this->loginAdmin();
 
-        $this->get('/account/users')->assertOk()->assertSee('accounts.addUser', false);
-        $this->get('/account/users/create')->assertOk();
+        $this->get('/admin/users')->assertOk()->assertSee('accounts.addUser', false);
+        $this->get('/admin/users/create')->assertOk();
 
         $this->post('/account/users', [
             'email' => 'new@example.com',
@@ -165,20 +165,20 @@ class AccountsAdminPagesTest extends TestCase
             'shortName' => 'NEW',
             'colorToken' => 'outline-2',
             'avatarIcon' => 'user-astronaut',
-        ])->assertRedirect('/account/users');
+        ])->assertRedirect('/admin/users');
 
         $created = app(UserRepository::class)->findByEmail('new@example.com');
         $this->assertNotNull($created);
         $this->assertSame('outline-2', $created->colorToken);
         $this->assertSame('user-astronaut', $created->avatarIcon);
-        $this->get('/account/users/'.$created->id.'/edit')->assertOk()->assertSee('new@example.com');
+        $this->get('/admin/users/'.$created->id.'/edit')->assertOk()->assertSee('new@example.com');
     }
 
     public function test_story_acl_list_and_edit_flow(): void
     {
         $this->loginAdmin();
 
-        $index = $this->get('/account/story-access');
+        $index = $this->get('/admin/story-access');
         $index->assertOk()->assertSee('accounts.storyAclTitle', false);
 
         $slug = 'ai-basics';
@@ -190,13 +190,13 @@ class AccountsAdminPagesTest extends TestCase
             'visibility' => 'restricted',
             'userIds' => ['user_admin'],
             'teamIds' => [],
-        ])->assertRedirect('/account/story-access');
+        ])->assertRedirect('/admin/story-access');
 
         $acl = app(\App\Accounts\StoryAclRepository::class)->forSlug($slug);
         $this->assertSame('restricted', $acl['visibility']);
         $this->assertSame(['user_admin'], $acl['userIds']);
 
-        $this->get('/account/story-access')
+        $this->get('/admin/story-access')
             ->assertOk()
             ->assertSee('accounts.visibility.restricted', false);
     }

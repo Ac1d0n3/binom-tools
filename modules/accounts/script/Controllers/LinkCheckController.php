@@ -57,7 +57,7 @@ class LinkCheckController extends Controller
         $this->store->save($payload);
 
         return redirect()
-            ->to(locale_route('accounts.link-check'))
+            ->to(locale_route('admin.link-check.index'))
             ->with('status', 'link-check-done');
     }
 
