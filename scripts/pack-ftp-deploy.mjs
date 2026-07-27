@@ -3,6 +3,13 @@
  * Build assets + pack the FTP upload set for governance.binom.net.
  * Does NOT modify public/.htaccess in the working tree (local dev stays intact).
  *
+ * Completeness model (no per-feature file lists):
+ * - deployPaths copy whole trees (app/, config/, views/, …).
+ * - assertMirrorTreesComplete fails if any source file under those trees is missing in the pack.
+ * - assertPackContracts checks structural runtime contracts (catalog dirs, Vite manifest entries,
+ *   a few singleton boot files) — not individual Blade/PHP feature paths.
+ * Adding a hub/view/controller → just put it under a mirrored tree; do not edit this script.
+ *
  * Incremental FTP:
  * - Unchanged file *content* keeps the previous pack mtime (so "upload newer only" works).
  * - Delta is vs last *acknowledged upload* (deploy-ftp-uploaded.json), NOT vs last pack.
@@ -66,11 +73,33 @@ const resyncContentPrefixes = [
 
 const codeOnlyExcludePrefixes = [
     'public/images/',
-    'content/',
+    // Catalog JSON is runtime-required (glossary/suppliers); only skip bulky content trees.
+    'content/stories/',
+    'content/sprint-plans/',
     'storage/',
     'app/Playbooks/stats-seed/',
     'app/SprintPlanner/bn-tools-seed/',
 ];
+
+/**
+ * Story / sprint markdown under content/ — optional in default packs.
+ * content/catalogs/** is always required at runtime (CatalogJsonLoader).
+ *
+ * @param {string} rel
+ */
+function isOptionalContentRel(rel) {
+    if (rel === 'content' || rel === 'content/') {
+        return true;
+    }
+    if (!rel.startsWith('content/')) {
+        return false;
+    }
+    if (rel === 'content/catalogs' || rel.startsWith('content/catalogs/')) {
+        return false;
+    }
+
+    return true;
+}
 
 const metaSkipNames = new Set([
     'UPLOAD.txt',
@@ -90,8 +119,8 @@ const deployPaths = [
     'app',
     'config',
     'resources/views',
-    // content/ only with --with-content / --resync-content (no MD spam in default packs)
-    ...(withContent ? ['content'] : []),
+    // Catalog JSON always ships (glossary/suppliers runtime). Full content/ (stories MD) only with flag.
+    ...(withContent ? ['content'] : ['content/catalogs']),
     'database/migrations',
     'lang',
     'routes',
@@ -102,52 +131,9 @@ const deployPaths = [
 ];
 
 /**
- * Hard fail if these are missing from the packed tree — prevents “looks fine locally, broken on FTP”.
+ * Source trees mirrored 1:1 into the pack. New features under these paths need no packer edits.
+ * Full content/ (stories + sprint plans) only when opted in; catalogs always.
  */
-const requiredPackedPaths = [
-    'app/Governance/GovernanceRadarFeedSync.php',
-    'app/Governance/GovernanceSessionStore.php',
-    'app/Models/BnTools/BnGovernanceRadarSource.php',
-    'app/Models/BnTools/BnGovernanceRadarFeedItem.php',
-    'app/Models/BnTools/BnGovernanceSession.php',
-    'app/Http/Controllers/Governance/GovernanceHubController.php',
-    'app/Glossary/BuzzwordQuizGenerator.php',
-    'app/Calendar/CalendarEventAggregator.php',
-    'app/Accounts/GlossaryQuizResultStore.php',
-    'app/Providers/AppServiceProvider.php',
-    'bootstrap/app.php',
-    'bootstrap/providers.php',
-    'config/governance.php',
-    'config/governance-radar.php',
-    'config/storage.php',
-    'config/roles.php',
-    'config/glossary.php',
-    'config/glossary-buzzwords-wave2.php',
-    'config/glossary-buzzwords-wave7.php',
-    'config/learning-paths.php',
-    'config/calendar.php',
-    'config/accounts.php',
-    'config/tools.php',
-    'config/playbooks.php',
-    'config/mail.php',
-    'config/session.php',
-    'resources/views/roles/index.blade.php',
-    'resources/views/roles/show.blade.php',
-    'resources/views/roles/partials/bridge-card.blade.php',
-    'resources/views/glossary/index.blade.php',
-    'resources/views/glossary/bingo.blade.php',
-    'resources/views/calendar/index.blade.php',
-    'resources/views/governance/radar.blade.php',
-    'resources/views/governance/index.blade.php',
-    'resources/views/accounts/profile.blade.php',
-    'routes/web.php',
-    'public/build/manifest.json',
-    'database/migrations/2026_07_26_000004_create_bn_governance_radar_feed_tables.php',
-    'database/migrations/2026_07_25_000002_create_bn_calendar_holiday_tables.php',
-    'database/migrations/2026_07_27_000001_create_bn_glossary_quiz_results_table.php',
-];
-
-/** Source trees that must be mirrored 1:1 into the pack (no silent skips). */
 const requiredMirrorTrees = [
     'app',
     'config',
@@ -155,12 +141,30 @@ const requiredMirrorTrees = [
     'routes',
     'database/migrations',
     'lang',
+    ...(withContent || forceDeltaAll ? ['content'] : ['content/catalogs']),
 ];
 
-// content/ only when opted in — default packs stay free of story markdown.
-if (withContent || forceDeltaAll) {
-    requiredMirrorTrees.push('content');
-}
+/**
+ * Singleton paths outside mirrored trees (or build outputs) that must exist in every pack.
+ * Keep this tiny — prefer adding a mirrored tree over listing feature files.
+ */
+const requiredSingletonPaths = [
+    'bootstrap/app.php',
+    'bootstrap/providers.php',
+    'public/build/manifest.json',
+];
+
+/**
+ * Hashed asset name prefixes that are NOT Vite `input` entries (dynamic imports / FA fonts).
+ * Prefer vite.config.js input + manifest for normal entries — do not list tools here.
+ */
+const requiredHashedAssetPrefixes = [
+    { prefix: 'fa-solid-900', ext: '.woff2' },
+    { prefix: 'fa-brands-400', ext: '.woff2' },
+    { prefix: 'fa-regular-400', ext: '.woff2' },
+    { prefix: 'glossary-quiz-', ext: '.js', hint: 'dynamic import in resources/js/app.js' },
+    { prefix: 'glossary-bingo-', ext: '.js', hint: 'dynamic import in resources/js/app.js' },
+];
 
 /** Never mirror these from public/ (dev-only or replaced below). */
 const publicSkipNames = new Set([
@@ -241,58 +245,166 @@ function copyPublicTree(srcDir, destDir, opts = {}) {
 }
 
 /**
+ * Parse Laravel Vite `input: [...]` entries from vite.config.js (no eval).
+ *
+ * @returns {string[]}
+ */
+function readViteInputEntries() {
+    const src = readFileSync(join(root, 'vite.config.js'), 'utf8');
+    const block = src.match(/input:\s*\[([\s\S]*?)\]/);
+    if (!block) {
+        throw new Error('Could not parse vite.config.js input array');
+    }
+
+    return [...block[1].matchAll(/['"]([^'"]+)['"]/g)].map((m) => m[1]);
+}
+
+/**
  * @param {string} assetsDir
  */
-function assertFontAwesomeBuildAssets(assetsDir) {
+function assertHashedAssetPrefixes(assetsDir) {
     if (!existsSync(assetsDir)) {
         throw new Error(`Missing build assets directory: ${assetsDir}`);
     }
 
     const files = readdirSync(assetsDir);
-    for (const prefix of ['fa-solid-900', 'fa-brands-400', 'fa-regular-400']) {
-        if (!files.some((file) => file.startsWith(prefix) && file.endsWith('.woff2'))) {
-            throw new Error(`Font Awesome build incomplete — expected ${prefix}*.woff2 in public/build/assets`);
+    for (const { prefix, ext, hint } of requiredHashedAssetPrefixes) {
+        if (!files.some((file) => file.startsWith(prefix) && file.endsWith(ext))) {
+            const where = hint ? ` (${hint})` : '';
+            throw new Error(
+                `Build incomplete — expected ${prefix}*${ext} in public/build/assets${where}`,
+            );
+        }
+    }
+}
+
+/**
+ * Ensure every vite.config input is in the packed manifest and its hashed files exist.
+ *
+ * @param {string} packedRoot
+ */
+function assertViteManifestComplete(packedRoot) {
+    const manifestRel = 'public/build/manifest.json';
+    const manifestPath = join(packedRoot, manifestRel);
+    if (!existsSync(manifestPath)) {
+        throw new Error(`FTP pack incomplete — missing ${manifestRel}`);
+    }
+
+    /** @type {Record<string, { file?: string, css?: string[] }>} */
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    const entries = readViteInputEntries();
+    /** @type {string[]} */
+    const missing = [];
+
+    for (const entry of entries) {
+        const meta = manifest[entry];
+        if (!meta || typeof meta.file !== 'string') {
+            missing.push(`manifest entry missing: ${entry}`);
+            continue;
+        }
+
+        const fileRel = `public/build/${meta.file}`;
+        if (!existsSync(join(packedRoot, fileRel))) {
+            missing.push(fileRel);
+        }
+
+        for (const css of meta.css || []) {
+            const cssRel = `public/build/${css}`;
+            if (!existsSync(join(packedRoot, cssRel))) {
+                missing.push(cssRel);
+            }
         }
     }
 
-    if (!files.some((file) => file.startsWith('radar-') && file.endsWith('.js'))) {
-        throw new Error('Radar JS missing from public/build/assets (expected radar-*.js). Check vite entry resources/js/governance/radar.js');
-    }
-
-    if (!files.some((file) => file.startsWith('app-') && file.endsWith('.css'))) {
-        throw new Error('Main app CSS missing from public/build/assets (expected app-*.css)');
-    }
-
-    if (!files.some((file) => file.startsWith('calendar-public-') && file.endsWith('.js'))) {
+    if (missing.length > 0) {
+        const shown = missing.slice(0, 30);
+        const more = missing.length > shown.length ? `\n  … and ${missing.length - shown.length} more` : '';
         throw new Error(
-            'Calendar public JS missing from public/build/assets (expected calendar-public-*.js). Check vite entry resources/js/calendar/calendar-public.js',
-        );
-    }
-
-    if (!files.some((file) => file.startsWith('glossary-quiz-') && file.endsWith('.js'))) {
-        throw new Error(
-            'Glossary quiz JS missing from public/build/assets (expected glossary-quiz-*.js). Check dynamic import in resources/js/app.js',
-        );
-    }
-
-    if (!files.some((file) => file.startsWith('glossary-bingo-') && file.endsWith('.js'))) {
-        throw new Error(
-            'Glossary bingo JS missing from public/build/assets (expected glossary-bingo-*.js). Check dynamic import in resources/js/app.js',
+            `FTP pack incomplete — Vite build/manifest mismatch:\n  - ${shown.join('\n  - ')}${more}\n`,
         );
     }
 }
 
 /**
+ * Discover catalog dirs under content/catalogs and require meta.json + ≥1 data JSON each.
+ * New catalogs auto-enroll; no packer list edits.
+ *
  * @param {string} packedRoot
  */
-function assertRequiredPackedPaths(packedRoot) {
-    const missing = requiredPackedPaths.filter((rel) => !existsSync(join(packedRoot, rel)));
-    if (missing.length > 0) {
+function assertCatalogContracts(packedRoot) {
+    const catalogsRoot = join(root, 'content/catalogs');
+    if (!existsSync(catalogsRoot)) {
+        throw new Error('Source missing: content/catalogs/');
+    }
+
+    const catalogDirs = readdirSync(catalogsRoot, { withFileTypes: true })
+        .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
+        .map((d) => d.name)
+        .sort();
+
+    if (catalogDirs.length === 0) {
+        throw new Error('content/catalogs/ has no catalog directories');
+    }
+
+    /** @type {string[]} */
+    const problems = [];
+
+    for (const name of catalogDirs) {
+        const packedDir = join(packedRoot, 'content/catalogs', name);
+        const metaRel = `content/catalogs/${name}/meta.json`;
+        const metaPath = join(packedRoot, metaRel);
+
+        if (!existsSync(packedDir)) {
+            problems.push(`content/catalogs/${name}/ (missing from pack)`);
+            continue;
+        }
+        if (!existsSync(metaPath)) {
+            problems.push(`${metaRel} (missing)`);
+            continue;
+        }
+
+        try {
+            const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+            if ((meta.schemaVersion ?? 0) < 1) {
+                problems.push(`${metaRel} (schemaVersion < 1)`);
+            }
+        } catch (err) {
+            problems.push(`${metaRel} (invalid JSON: ${err instanceof Error ? err.message : err})`);
+        }
+
+        const jsonFiles = readdirSync(packedDir).filter(
+            (f) => f.endsWith('.json') && f !== 'meta.json',
+        );
+        if (jsonFiles.length === 0) {
+            problems.push(`content/catalogs/${name}/ (no data JSON beside meta.json)`);
+        }
+    }
+
+    if (problems.length > 0) {
         throw new Error(
-            `FTP pack incomplete — missing required paths:\n  - ${missing.join('\n  - ')}\n`
-            + 'Update scripts/pack-ftp-deploy.mjs deployPaths before uploading.',
+            `FTP pack incomplete — catalog contract failed:\n  - ${problems.join('\n  - ')}\n`,
         );
     }
+}
+
+/**
+ * Structural pack contracts (not a feature file checklist).
+ *
+ * @param {string} packedRoot
+ */
+function assertPackContracts(packedRoot) {
+    const missingSingletons = requiredSingletonPaths.filter(
+        (rel) => !existsSync(join(packedRoot, rel)),
+    );
+    if (missingSingletons.length > 0) {
+        throw new Error(
+            `FTP pack incomplete — missing singleton paths:\n  - ${missingSingletons.join('\n  - ')}\n`,
+        );
+    }
+
+    assertCatalogContracts(packedRoot);
+    assertViteManifestComplete(packedRoot);
+    assertHashedAssetPrefixes(join(packedRoot, 'public/build/assets'));
 }
 
 /**
@@ -387,7 +499,7 @@ function filterUploadDelta(rels, allPackedRels) {
         }
     }
 
-    // code-only: force PHP/Blade/config that the live site needs, never media.
+    // code-only: force PHP/Blade/config + catalogs that the live site needs, never media/stories.
     if (codeOnly) {
         const codePrefixes = [
             'app/',
@@ -397,6 +509,7 @@ function filterUploadDelta(rels, allPackedRels) {
             'bootstrap/',
             'database/migrations/',
             'lang/',
+            'content/catalogs/',
         ];
         for (const rel of allPackedRels) {
             if (rel === 'public/.htaccess' || matchesAnyPrefix(rel, codePrefixes)) {
@@ -413,16 +526,23 @@ function filterUploadDelta(rels, allPackedRels) {
         if (!withImages) {
             effectiveExclude.push('public/images/');
         }
-        if (!withContent) {
-            effectiveExclude.push('content/');
-        }
         if (!withStorage) {
             effectiveExclude.push('storage/app/bn-tools/', 'app/SprintPlanner/bn-tools-seed/');
         }
     }
 
     return [...out]
-        .filter((rel) => !matchesAnyPrefix(rel, effectiveExclude))
+        .filter((rel) => {
+            if (matchesAnyPrefix(rel, effectiveExclude)) {
+                return false;
+            }
+            // Default packs keep content/catalogs; skip stories/sprint MD unless opted in.
+            if (!withContent && !codeOnly && isOptionalContentRel(rel)) {
+                return false;
+            }
+
+            return true;
+        })
         .sort();
 }
 
@@ -543,7 +663,9 @@ async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot, uploadedBy
         if (!withImages && rel.startsWith('public/images/')) {
             return false;
         }
-        if (!withContent && (rel === 'content' || rel.startsWith('content/'))) {
+        // Intentional omit of stories/sprint plans is not a server deletion.
+        // Catalog JSON is always packed — real catalog deletions stay in DELETED.txt.
+        if (!withContent && isOptionalContentRel(rel)) {
             return false;
         }
         if (!withStorage && (
@@ -663,8 +785,6 @@ mkdirSync(outDir, { recursive: true });
 copyPublicTree(join(root, 'public'), join(outDir, 'public'), { includeImages: withImages });
 cpSync(join(root, 'public/.htaccess.production'), join(outDir, 'public/.htaccess'), copyOpts);
 
-assertFontAwesomeBuildAssets(join(outDir, 'public/build/assets'));
-
 if (withImages) {
     const playbookImagesDir = join(outDir, 'public/images/playbooks');
     const pngCount = existsSync(playbookImagesDir)
@@ -698,7 +818,7 @@ for (const rel of deployPaths) {
     cpSync(src, dest, copyOpts);
 }
 
-assertRequiredPackedPaths(outDir);
+assertPackContracts(outDir);
 assertMirrorTreesComplete(outDir);
 
 // Direct upload mirror of local runtime (gitignored) — same paths as on the server.
@@ -739,7 +859,7 @@ if (!withImages && !forceDeltaAll) {
     console.log('Images excluded from pack + delta by default (override: --with-images)');
 }
 if (!withContent && !forceDeltaAll) {
-    console.log('content/*.md excluded from pack + delta by default (override: --with-content)');
+    console.log('content/stories + sprint-plans excluded by default; content/catalogs always packed (override: --with-content)');
 }
 
 const {
@@ -799,6 +919,7 @@ WICHTIG — schnell & korrekt:
        npm run deploy:ftp -- --with-images
        npm run deploy:ftp -- --with-content
        npm run deploy:ftp -- --resync-content   (= beides)
+   - content/catalogs (Glossary/Suppliers JSON) ist IMMER im Pack/Delta.
    - Nur Code + Build (empfohlen nach CSS/Layout-Fixes):
        npm run deploy:ftp:code
 
@@ -811,17 +932,17 @@ A) Inkrementell (immer bevorzugen)
 
 B) Full pack — NUR Erst-Setup / Notfall
    - Ordner: deploy-ftp/
-   - Ohne --with-images/--with-content ebenfalls OHNE Bilder/MDs
+   - Ohne --with-images/--with-content ebenfalls OHNE Bilder/Story-MDs (Catalogs bleiben drin)
 
 Gelöschte Pfade vs. Baseline: siehe DELETED.txt (${deleted.length})
 Upload-Delta: siehe CHANGED.txt
 Lokal vs. letzter Pack: siehe PACK-CHANGED.txt
 
 Flags:
-   --code-only         Code/Views/Config + public/build, OHNE Bilder/Content/Storage
+   --code-only         Code/Views/Config/Catalogs + public/build, OHNE Bilder/Stories/Storage
    --no-include-build  Build NICHT erzwingen (vermeiden — CSS-404-Risiko)
    --with-images       Playbook-Bilder ins Pack/Delta
-   --with-content      content/*.md ins Pack/Delta
+   --with-content      content/stories + sprint-plans ins Pack/Delta
    --with-storage      bn-tools Runtime/Seeds ins Delta
    --resync-content    content/ + Playbook-Bilder erzwingen
    --force-delta-all   ALLES (vermeiden — Stunden-Upload)
@@ -840,6 +961,6 @@ writeFileSync(join(deltaDir, 'UPLOAD.txt'), uploadHelp);
 console.log(`\nReady full:  ${outDir}`);
 console.log(`Ready delta: ${deltaDir} (${changed.length} upload-delta file(s), ${packChanged.length} pack-changed, ${unchanged} mtime-stable, ${deleted.length} deleted)`);
 console.log(`Delta baseline: ${baselineLabel}`);
-console.log('Upload ONLY deploy-ftp-delta/. Default pack has 0 images and 0 markdown.');
+console.log('Upload ONLY deploy-ftp-delta/. Default pack has 0 images and 0 story markdown; catalogs always included.');
 console.log('After FTP succeeds: npm run deploy:ftp:ack');
-console.log('Verified: Governance Radar PHP + config + migrations + radar-*.js + fa-regular fonts are in the pack.');
+console.log('Verified: mirrored trees + catalog contracts + Vite manifest inputs + FA/dynamic-import assets.');
