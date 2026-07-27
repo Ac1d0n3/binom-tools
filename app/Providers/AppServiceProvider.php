@@ -26,6 +26,9 @@ use App\Accounts\StoryAclRepository;
 use App\Accounts\TeamRepository;
 use App\Accounts\UserRepository;
 use App\Accounts\UserTemplateStore;
+use App\Calendar\Contracts\CalendarHolidayStoreInterface;
+use App\Calendar\DatabaseCalendarHolidayStore;
+use App\Calendar\FileCalendarHolidayStore;
 use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use App\Playbooks\Database\DatabasePlaybookStatsStore;
 use App\Playbooks\PlaybookStatsStore;
@@ -114,6 +117,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->singleton(PromptStudioLibraryStoreInterface::class, DatabasePromptStudioLibraryStore::class);
             $this->app->singleton(PlanAttachmentStoreInterface::class, DatabasePlanAttachmentStore::class);
             $this->app->singleton(PlaybookStatsStoreInterface::class, DatabasePlaybookStatsStore::class);
+            $this->app->singleton(CalendarHolidayStoreInterface::class, DatabaseCalendarHolidayStore::class);
 
             return;
         }
@@ -149,6 +153,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PlaybookStatsStoreInterface::class, static function (): PlaybookStatsStore {
             return PlaybookStatsStore::default();
         });
+        $this->app->singleton(CalendarHolidayStoreInterface::class, static function ($app): FileCalendarHolidayStore {
+            return new FileCalendarHolidayStore(
+                $app->make(\App\Accounts\AccountsConfig::class),
+                $app->make(\App\Accounts\JsonFileStore::class),
+            );
+        });
 
         $this->app->singleton(UserRepository::class, static fn ($app) => $app->make(UserRepositoryInterface::class));
         $this->app->singleton(TeamRepository::class, static fn ($app) => $app->make(TeamRepositoryInterface::class));
@@ -158,5 +168,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ReadStateStore::class, static fn ($app) => $app->make(ReadStateStoreInterface::class));
         $this->app->singleton(PromptStudioLibraryStore::class, static fn ($app) => $app->make(PromptStudioLibraryStoreInterface::class));
         $this->app->singleton(PlaybookStatsStore::class, static fn ($app) => $app->make(PlaybookStatsStoreInterface::class));
+        $this->app->singleton(FileCalendarHolidayStore::class, static fn ($app) => $app->make(CalendarHolidayStoreInterface::class));
     }
 }

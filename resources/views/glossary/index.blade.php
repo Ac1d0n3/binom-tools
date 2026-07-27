@@ -65,6 +65,35 @@
                     <span data-i18n="glossary.azToggle">A–Z</span>
                     <i class="fa-solid fa-chevron-down glossary-az-toggle__icon" aria-hidden="true"></i>
                 </button>
+                <div
+                    class="tools-overview-layout-toggle"
+                    role="group"
+                >
+                    <button
+                        type="button"
+                        class="tools-overview-layout-toggle__button tools-overview-layout-toggle__button--active"
+                        data-overview-layout-toggle="grid"
+                        aria-pressed="true"
+                        data-i18n-aria="overview.layoutGrid"
+                        aria-label="Grid view"
+                        title="Grid view"
+                    >
+                        <i class="fa-solid fa-grip" aria-hidden="true"></i>
+                        <span class="sr-only" data-i18n="overview.layoutGrid">Grid view</span>
+                    </button>
+                    <button
+                        type="button"
+                        class="tools-overview-layout-toggle__button"
+                        data-overview-layout-toggle="list"
+                        aria-pressed="false"
+                        data-i18n-aria="overview.layoutList"
+                        aria-label="List view"
+                        title="List view"
+                    >
+                        <i class="fa-solid fa-list" aria-hidden="true"></i>
+                        <span class="sr-only" data-i18n="overview.layoutList">List view</span>
+                    </button>
+                </div>
                 <span
                     class="tools-overview-count-badge"
                     data-overview-result-count
@@ -111,7 +140,7 @@
                 No matches for your search.
             </p>
 
-            <div class="glossary-hub-grid" role="list">
+            <div class="glossary-hub-grid" role="list" data-overview-stories-grid>
                 @foreach ($terms as $term)
                     @php
                         $id = (string) ($term['id'] ?? '');

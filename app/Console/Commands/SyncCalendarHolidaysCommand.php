@@ -3,9 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Calendar\CalendarHolidayImportService;
-use App\Models\BnTools\BnCalendarHolidaySource;
+use App\Calendar\Contracts\CalendarHolidayStoreInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schema;
 
 class SyncCalendarHolidaysCommand extends Command
 {
@@ -15,10 +14,12 @@ class SyncCalendarHolidaysCommand extends Command
 
     protected $description = 'Sync calendar holiday sources from configured iCal URLs';
 
-    public function handle(CalendarHolidayImportService $import): int
-    {
-        if (! Schema::hasTable('bn_calendar_holiday_sources')) {
-            $this->error('Holiday tables are missing. Run migrations first.');
+    public function handle(
+        CalendarHolidayImportService $import,
+        CalendarHolidayStoreInterface $store,
+    ): int {
+        if (! $store->isReady()) {
+            $this->error('Holiday storage is not ready. For mysql, run migrations first.');
 
             return self::FAILURE;
         }
@@ -28,26 +29,30 @@ class SyncCalendarHolidaysCommand extends Command
             $this->info('NRW holiday source presets ensured.');
         }
 
-        $query = BnCalendarHolidaySource::query()->where('is_active', true);
-
+        $sources = $store->listActiveSources();
         if ($sourceId = $this->option('source')) {
-            $query->whereKey($sourceId);
+            $sources = array_values(array_filter(
+                $sources,
+                static fn (array $source): bool => (string) ($source['id'] ?? '') === (string) $sourceId,
+            ));
         }
 
-        $sources = $query->get();
         $total = 0;
 
         foreach ($sources as $source) {
-            if ($source->url === null || $source->url === '') {
+            $url = is_string($source['url'] ?? null) ? (string) $source['url'] : '';
+            if ($url === '') {
                 continue;
             }
+
+            $id = (string) ($source['id'] ?? '');
 
             try {
                 $count = $import->syncSource($source);
                 $total += $count;
-                $this->info("Synced source #{$source->id}: {$count} holidays");
+                $this->info("Synced source {$id}: {$count} holidays");
             } catch (\Throwable $e) {
-                $this->error("Source #{$source->id} failed: {$e->getMessage()}");
+                $this->error("Source {$id} failed: {$e->getMessage()}");
             }
         }
 

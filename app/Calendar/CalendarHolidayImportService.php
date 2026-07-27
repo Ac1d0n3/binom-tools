@@ -2,8 +2,7 @@
 
 namespace App\Calendar;
 
-use App\Models\BnTools\BnCalendarHoliday;
-use App\Models\BnTools\BnCalendarHolidaySource;
+use App\Calendar\Contracts\CalendarHolidayStoreInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Sabre\VObject\Reader;
@@ -13,42 +12,49 @@ final class CalendarHolidayImportService
 {
     public function __construct(
         private readonly CalendarUrlFetchGuard $urlGuard,
+        private readonly CalendarHolidayStoreInterface $store,
     ) {}
 
-    public function syncSource(BnCalendarHolidaySource $source): int
+    /**
+     * @param  array<string, mixed>  $source
+     */
+    public function syncSource(array $source): int
     {
-        if ($source->url === null || $source->url === '') {
+        $url = is_string($source['url'] ?? null) ? (string) $source['url'] : '';
+        if ($url === '') {
             return 0;
         }
 
         try {
-            $content = $this->urlGuard->fetch($source->url);
+            $content = $this->urlGuard->fetch($url);
             $imported = $this->importFromContent($source, $content);
-            $source->update([
-                'last_synced_at' => now(),
-                'settings' => array_merge($source->settings ?? [], ['last_error' => null]),
-            ]);
+            $this->store->markSyncSuccess($source);
 
             return $imported;
         } catch (Throwable $e) {
             Log::error('Calendar holiday import failed', [
-                'source_id' => $source->id,
-                'url' => $source->url,
+                'source_id' => $source['id'] ?? null,
+                'url' => $url,
                 'error' => $e->getMessage(),
             ]);
-            $source->update([
-                'settings' => array_merge($source->settings ?? [], ['last_error' => $e->getMessage()]),
-            ]);
+            $this->store->markSyncFailure($source, $e->getMessage());
 
             throw $e;
         }
     }
 
-    public function importFromContent(BnCalendarHolidaySource $source, string $content): int
+    /**
+     * @param  array<string, mixed>  $source
+     */
+    public function importFromContent(array $source, string $content): int
     {
         $vcalendar = Reader::read($content);
         $count = 0;
         $holidayType = $this->resolveHolidayType($source);
+        $sourceId = $source['id'] ?? null;
+        if ($sourceId === null || $sourceId === '') {
+            return 0;
+        }
 
         foreach ($vcalendar->select('VEVENT') as $vevent) {
             $uid = (string) ($vevent->UID ?? '');
@@ -72,22 +78,17 @@ final class CalendarHolidayImportService
                 $date = $day->toDateString();
                 $importedUid = $uid !== '' ? $uid.'-'.$date : null;
 
-                BnCalendarHoliday::query()->updateOrCreate(
-                    [
-                        'imported_uid' => $importedUid,
-                        'date' => $date,
-                        'source_id' => $source->id,
-                    ],
-                    [
-                        'name' => $summary,
-                        'starts_at' => $day->copy(),
-                        'ends_at' => $vevent->DTEND ? Carbon::instance($vevent->DTEND->getDateTime()) : null,
-                        'country' => $source->country,
-                        'region' => $source->region,
-                        'type' => $holidayType,
-                        'all_day' => true,
-                    ],
-                );
+                $this->store->upsertHolidayDay($sourceId, $importedUid, $date, [
+                    'name' => $summary,
+                    'starts_at' => $day->copy()->toIso8601String(),
+                    'ends_at' => $vevent->DTEND
+                        ? Carbon::instance($vevent->DTEND->getDateTime())->toIso8601String()
+                        : null,
+                    'country' => $source['country'] ?? null,
+                    'region' => $source['region'] ?? null,
+                    'type' => $holidayType,
+                    'all_day' => true,
+                ]);
 
                 $count++;
             }
@@ -99,24 +100,16 @@ final class CalendarHolidayImportService
     public function ensurePresetSources(): void
     {
         foreach (HolidaySourceDefaults::all() as $preset) {
-            BnCalendarHolidaySource::query()->updateOrCreate(
-                ['url' => $preset['url']],
-                [
-                    'name' => $preset['name'],
-                    'type' => $preset['type'],
-                    'country' => $preset['country'],
-                    'region' => $preset['region'],
-                    'is_active' => $preset['is_active'],
-                    'sync_interval_hours' => $preset['sync_interval_hours'],
-                    'settings' => $preset['settings'] ?? [],
-                ],
-            );
+            $this->store->upsertSource($preset);
         }
     }
 
-    private function resolveHolidayType(BnCalendarHolidaySource $source): string
+    /**
+     * @param  array<string, mixed>  $source
+     */
+    private function resolveHolidayType(array $source): string
     {
-        $name = strtolower((string) ($source->name ?? ''));
+        $name = strtolower((string) ($source['name'] ?? ''));
         if (str_contains($name, 'schulferien') || str_contains($name, 'school')) {
             return 'school_holiday';
         }

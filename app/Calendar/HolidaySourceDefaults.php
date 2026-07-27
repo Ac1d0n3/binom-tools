@@ -8,8 +8,13 @@ final class HolidaySourceDefaults
 
     public const IMPORT_CATEGORY_CUSTOM = 'custom';
 
+    public const PRESET_PUBLIC_HOLIDAYS_ID = 'de-nw-public-holidays';
+
+    public const PRESET_SCHOOL_HOLIDAYS_ID = 'de-nw-school-holidays';
+
     /**
      * @return list<array{
+     *     id: string,
      *     name: string,
      *     type: string,
      *     country: string,
@@ -24,6 +29,7 @@ final class HolidaySourceDefaults
     {
         return [
             [
+                'id' => self::PRESET_PUBLIC_HOLIDAYS_ID,
                 'name' => 'Feiertage Deutschland (NRW)',
                 'type' => 'ical',
                 'country' => 'DE',
@@ -37,6 +43,7 @@ final class HolidaySourceDefaults
                 ],
             ],
             [
+                'id' => self::PRESET_SCHOOL_HOLIDAYS_ID,
                 'name' => 'Schulferien NRW',
                 'type' => 'ical',
                 'country' => 'DE',

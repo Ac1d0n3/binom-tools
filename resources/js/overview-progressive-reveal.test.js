@@ -5,6 +5,7 @@ import {
     OVERVIEW_ITEM_UNREVEALED_CLASS,
     OVERVIEW_REVEAL_BATCH,
     attachOverviewProgressiveReveal,
+    findOverviewScrollRoot,
 } from './overview-progressive-reveal.js';
 
 describe('attachOverviewProgressiveReveal', () => {
@@ -118,6 +119,7 @@ describe('attachOverviewProgressiveReveal', () => {
         scroll.className = 'tools-overview-scroll';
         const grid = document.createElement('div');
         grid.className = 'glossary-hub-grid';
+        grid.setAttribute('data-overview-stories-grid', '');
 
         for (let i = 0; i < OVERVIEW_REVEAL_BATCH + 4; i += 1) {
             const item = document.createElement('a');
@@ -129,12 +131,84 @@ describe('attachOverviewProgressiveReveal', () => {
         root.appendChild(scroll);
         document.body.appendChild(root);
 
+        vi.spyOn(window, 'getComputedStyle').mockImplementation((el) => {
+            if (el === scroll) {
+                return /** @type {CSSStyleDeclaration} */ ({ overflowY: 'auto' });
+            }
+            return /** @type {CSSStyleDeclaration} */ ({ overflowY: 'visible' });
+        });
+
         const api = attachOverviewProgressiveReveal(root, { getSearchQuery: () => '' });
 
         expect(grid.querySelector('[data-overview-reveal-sentinel]')).not.toBeNull();
         const items = Array.from(grid.querySelectorAll('[data-overview-item]'));
         expect(items.filter((el) => el.classList.contains(OVERVIEW_ITEM_UNREVEALED_CLASS))).toHaveLength(4);
+        expect(findOverviewScrollRoot(root)).toBe(scroll);
 
         api.destroy();
+    });
+
+    it('keeps revealing while the sentinel stays in the scroll viewport', () => {
+        const root = document.createElement('div');
+        const scroll = document.createElement('div');
+        scroll.className = 'tools-overview-scroll';
+        Object.defineProperty(scroll, 'getBoundingClientRect', {
+            value: () => ({ top: 0, bottom: 800, left: 0, right: 400, width: 400, height: 800 }),
+        });
+
+        vi.spyOn(window, 'getComputedStyle').mockImplementation((el) => {
+            if (el === scroll) {
+                return /** @type {CSSStyleDeclaration} */ ({ overflowY: 'auto' });
+            }
+            return /** @type {CSSStyleDeclaration} */ ({ overflowY: 'visible' });
+        });
+
+        const grid = document.createElement('div');
+        grid.className = 'glossary-hub-grid';
+        grid.setAttribute('data-overview-stories-grid', '');
+
+        for (let i = 0; i < OVERVIEW_REVEAL_BATCH * 3; i += 1) {
+            const item = document.createElement('a');
+            item.setAttribute('data-overview-item', '');
+            grid.appendChild(item);
+        }
+
+        scroll.appendChild(grid);
+        root.appendChild(scroll);
+        document.body.appendChild(root);
+
+        /** @type {IntersectionObserverCallback | null} */
+        let ioCallback = null;
+        vi.stubGlobal(
+            'IntersectionObserver',
+            class {
+                /**
+                 * @param {IntersectionObserverCallback} cb
+                 */
+                constructor(cb) {
+                    ioCallback = cb;
+                }
+                observe() {}
+                disconnect() {}
+                unobserve() {}
+            },
+        );
+
+        attachOverviewProgressiveReveal(root, { getSearchQuery: () => '' });
+
+        const sentinel = grid.querySelector('[data-overview-reveal-sentinel]');
+        expect(sentinel).not.toBeNull();
+        Object.defineProperty(/** @type {HTMLElement} */ (sentinel), 'getBoundingClientRect', {
+            value: () => ({ top: 700, bottom: 701, left: 0, right: 400, width: 400, height: 1 }),
+        });
+
+        ioCallback?.(
+            [{ isIntersecting: true, target: /** @type {Element} */ (sentinel) }],
+            /** @type {IntersectionObserver} */ ({}),
+        );
+
+        const items = Array.from(grid.querySelectorAll('[data-overview-item]'));
+        expect(items.every((el) => !el.classList.contains(OVERVIEW_ITEM_UNREVEALED_CLASS))).toBe(true);
+        expect(/** @type {HTMLElement} */ (sentinel).hidden).toBe(true);
     });
 });

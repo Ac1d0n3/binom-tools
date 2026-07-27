@@ -50,6 +50,19 @@ php artisan bn-tools:storage-import   # optional: copy existing JSON into MySQL
 php artisan calendar:holidays-sync --seed   # Feiertage + Schulferien NRW via iCal
 ```
 
+### Calendar holidays (file or MySQL)
+
+Holiday sources and imported Feiertage/Schulferien follow `BINOM_TOOLS_STORAGE_DRIVER`:
+
+- **file (default):** JSON under `storage/app/bn-tools/calendar/` (`holiday-sources.json`, `holidays.json`) — no calendar migrations required
+- **mysql:** tables `bn_calendar_holiday_sources` / `bn_calendar_holidays` (run `php artisan migrate`)
+
+`npm run build` only builds frontend assets. To seed/update holidays on any driver:
+
+```bash
+php artisan calendar:holidays-sync --seed
+```
+
 With accounts on, the Sprint Planner stays open for guests as a **demo**: start a local plan that never syncs to the server. Sign in to save and share plans. Individual governance tools can require login via `TOOL_*_LOGIN_REQUIRED` (default `false` / open). The Calendar hub shows stories and holidays for everyone; plan tasks appear after sign-in.
 
 ## Stack

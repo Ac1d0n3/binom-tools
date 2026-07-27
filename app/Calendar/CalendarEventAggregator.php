@@ -5,13 +5,11 @@ namespace App\Calendar;
 use App\Accounts\AccountUser;
 use App\Accounts\Contracts\PlanStoreInterface;
 use App\Accounts\Contracts\StoryAclRepositoryInterface;
-use App\Models\BnTools\BnCalendarHoliday;
-use App\Models\BnTools\BnCalendarHolidaySource;
+use App\Calendar\Contracts\CalendarHolidayStoreInterface;
 use App\Playbooks\PlaybookRepository;
 use App\Support\LocaleUrl;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 
 final class CalendarEventAggregator
 {
@@ -32,6 +30,7 @@ final class CalendarEventAggregator
         private readonly PlaybookRepository $playbooks,
         private readonly PlanStoreInterface $plans,
         private readonly StoryAclRepositoryInterface $storyAcl,
+        private readonly CalendarHolidayStoreInterface $holidays,
     ) {}
 
     /**
@@ -405,28 +404,23 @@ final class CalendarEventAggregator
      */
     public function holidaySources(): array
     {
-        if (! $this->holidayTablesReady()) {
+        if (! $this->holidays->isReady()) {
             return [];
         }
 
-        return BnCalendarHolidaySource::query()
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->get()
-            ->map(function (BnCalendarHolidaySource $source): array {
-                $settings = $source->settings ?? [];
+        return array_map(static function (array $source): array {
+            $settings = is_array($source['settings'] ?? null) ? $source['settings'] : [];
 
-                return [
-                    'id' => $source->id,
-                    'name' => $source->name,
-                    'title' => $source->name,
-                    'type' => $source->type,
-                    'country' => $source->country,
-                    'region' => $source->region,
-                    'color' => $settings['color'] ?? '#94a3b8',
-                ];
-            })
-            ->all();
+            return [
+                'id' => $source['id'] ?? null,
+                'name' => $source['name'] ?? '',
+                'title' => $source['name'] ?? '',
+                'type' => $source['type'] ?? 'ical',
+                'country' => $source['country'] ?? null,
+                'region' => $source['region'] ?? null,
+                'color' => $settings['color'] ?? '#94a3b8',
+            ];
+        }, $this->holidays->listActiveSources());
     }
 
     /**
@@ -434,39 +428,41 @@ final class CalendarEventAggregator
      */
     public function holidaysForRange(Carbon $from, Carbon $to): array
     {
-        if (! $this->holidayTablesReady()) {
+        if (! $this->holidays->isReady()) {
             return [];
         }
 
-        $sourcesById = BnCalendarHolidaySource::query()->get()->keyBy('id');
+        $sourcesById = [];
+        foreach ($this->holidays->listSources() as $source) {
+            $id = $source['id'] ?? null;
+            if ($id === null || $id === '') {
+                continue;
+            }
+            $sourcesById[(string) $id] = $source;
+        }
 
-        return BnCalendarHoliday::query()
-            ->inRange($from->toDateString(), $to->toDateString())
-            ->orderBy('date')
-            ->get()
-            ->map(function (BnCalendarHoliday $holiday) use ($sourcesById): array {
-                $date = $holiday->date?->toDateString()
-                    ?? $holiday->starts_at?->toDateString()
-                    ?? now()->toDateString();
-                $source = $holiday->source_id !== null ? $sourcesById->get($holiday->source_id) : null;
-                $settings = is_array($source?->settings) ? $source->settings : [];
+        return array_map(static function (array $holiday) use ($sourcesById): array {
+            $date = (string) ($holiday['date']
+                ?? (is_string($holiday['starts_at'] ?? null) ? substr((string) $holiday['starts_at'], 0, 10) : null)
+                ?? now()->toDateString());
+            $sourceId = $holiday['source_id'] ?? null;
+            $source = $sourceId !== null ? ($sourcesById[(string) $sourceId] ?? null) : null;
+            $settings = is_array($source['settings'] ?? null) ? $source['settings'] : [];
 
-                return [
-                    'id' => $holiday->id,
-                    'source_id' => $holiday->source_id,
-                    'name' => $holiday->name,
-                    'date' => $date,
-                    'starts_at' => $holiday->starts_at?->toIso8601String(),
-                    'ends_at' => $holiday->ends_at?->toIso8601String(),
-                    'all_day' => (bool) $holiday->all_day,
-                    'type' => $holiday->type,
-                    'country' => $holiday->country,
-                    'region' => $holiday->region,
-                    'color' => $settings['color'] ?? '#94a3b8',
-                ];
-            })
-            ->values()
-            ->all();
+            return [
+                'id' => $holiday['id'] ?? null,
+                'source_id' => $sourceId,
+                'name' => $holiday['name'] ?? '',
+                'date' => $date,
+                'starts_at' => $holiday['starts_at'] ?? null,
+                'ends_at' => $holiday['ends_at'] ?? null,
+                'all_day' => (bool) ($holiday['all_day'] ?? true),
+                'type' => $holiday['type'] ?? 'public_holiday',
+                'country' => $holiday['country'] ?? null,
+                'region' => $holiday['region'] ?? null,
+                'color' => $settings['color'] ?? '#94a3b8',
+            ];
+        }, $this->holidays->listHolidaysInRange($from->toDateString(), $to->toDateString()));
     }
 
     public function planCalendarId(string $planId): int
@@ -639,14 +635,5 @@ final class CalendarEventAggregator
         }
 
         return LocaleUrl::path($fallbackPath);
-    }
-
-    private function holidayTablesReady(): bool
-    {
-        try {
-            return Schema::hasTable('bn_calendar_holidays') && Schema::hasTable('bn_calendar_holiday_sources');
-        } catch (\Throwable) {
-            return false;
-        }
     }
 }

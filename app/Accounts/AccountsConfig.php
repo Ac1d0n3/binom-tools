@@ -111,4 +111,19 @@ final class AccountsConfig
     {
         return $this->basePath().DIRECTORY_SEPARATOR.'read-state';
     }
+
+    public function calendarDirectory(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'calendar';
+    }
+
+    public function calendarHolidaySourcesPath(): string
+    {
+        return $this->calendarDirectory().DIRECTORY_SEPARATOR.'holiday-sources.json';
+    }
+
+    public function calendarHolidaysPath(): string
+    {
+        return $this->calendarDirectory().DIRECTORY_SEPARATOR.'holidays.json';
+    }
 }
