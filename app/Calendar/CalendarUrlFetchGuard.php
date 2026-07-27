@@ -24,9 +24,13 @@ final class CalendarUrlFetchGuard
                 throw new InvalidArgumentException('URL resolves to a private or reserved IP address.');
             }
         } else {
-            $ips = collect((array) gethostbynamel($host))->unique();
-            foreach ($ips as $ip) {
-                if ($this->isPrivateIp((string) $ip)) {
+            $resolved = gethostbynamel($host);
+            if ($resolved === false || $resolved === []) {
+                throw new InvalidArgumentException('DNS resolution failed for host: '.$host);
+            }
+
+            foreach (array_unique($resolved) as $ip) {
+                if (! is_string($ip) || $ip === '' || $this->isPrivateIp($ip)) {
                     throw new InvalidArgumentException('URL resolves to a private or reserved IP address.');
                 }
             }

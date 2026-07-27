@@ -35,12 +35,25 @@
                         <div class="calendar-card__chrome">
                             @include('calendar.partials.toolbar', ['anchor' => $anchor])
                             <nav class="calendar-view-switcher" data-calendar-view-switcher aria-label="{{ __('calendar.views.label') }}">
+                                @php
+                                    $viewIcons = [
+                                        'month' => 'fa-calendar-days',
+                                        'week' => 'fa-calendar-week',
+                                        'day' => 'fa-calendar-day',
+                                        'list' => 'fa-list',
+                                    ];
+                                @endphp
                                 @foreach ($allowed_views as $viewKey)
                                     <button
                                         type="button"
                                         data-calendar-view="{{ $viewKey }}"
-                                        class="calendar-view-switcher__btn @if ($view === $viewKey) is-active @endif"
-                                    >{{ __('calendar.views.'.$viewKey) }}</button>
+                                        class="calendar-view-switcher__btn calendar-view-switcher__btn--icon @if ($view === $viewKey) is-active @endif"
+                                        title="{{ __('calendar.views.'.$viewKey) }}"
+                                        aria-label="{{ __('calendar.views.'.$viewKey) }}"
+                                        aria-pressed="{{ $view === $viewKey ? 'true' : 'false' }}"
+                                    >
+                                        <i class="fa-solid {{ $viewIcons[$viewKey] ?? 'fa-calendar' }}" aria-hidden="true"></i>
+                                    </button>
                                 @endforeach
                             </nav>
                         </div>

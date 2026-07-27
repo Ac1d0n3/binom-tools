@@ -31,6 +31,7 @@ final class CalendarEventAggregator
         private readonly PlanStoreInterface $plans,
         private readonly StoryAclRepositoryInterface $storyAcl,
         private readonly CalendarHolidayStoreInterface $holidays,
+        private readonly CalendarHolidayImportService $holidayImport,
     ) {}
 
     /**
@@ -406,6 +407,10 @@ final class CalendarEventAggregator
     {
         if (! $this->holidays->isReady()) {
             return [];
+        }
+
+        if ($this->holidays->listSources() === []) {
+            $this->holidayImport->ensurePresetSources();
         }
 
         return array_map(static function (array $source): array {

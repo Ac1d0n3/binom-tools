@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('bn-tools:backup-plans')->dailyAt('02:15');
 Schedule::command('bn-tools:sync-governance-radar-feeds')->hourly();
+Schedule::command('calendar:holidays-sync --seed')->weeklyOn(1, '03:30');

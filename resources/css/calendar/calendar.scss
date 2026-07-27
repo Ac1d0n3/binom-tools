@@ -200,13 +200,15 @@
   flex-shrink: 0;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 0.75rem;
+  gap: 0.45rem 0.65rem;
   padding: 0.35rem 0.4rem 0.5rem;
   border-bottom: 1px solid var(--calendar-border);
 
+  /* Keep nav + period + view switcher on one row from tablet up. */
   @media (min-width: 640px) {
     flex-wrap: nowrap;
     justify-content: space-between;
+    gap: 0.5rem;
   }
 }
 
@@ -643,18 +645,23 @@
 
 .calendar-toolbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.75rem 1rem;
+  gap: 0.5rem 0.65rem;
+  min-width: 0;
   margin-top: 0;
 
   &__nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    gap: 0.35rem;
   }
 
   &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.25rem 0.75rem;
     border: 1px solid var(--calendar-border);
     border-radius: 0.25rem;
@@ -663,48 +670,84 @@
     font-size: 0.875rem;
     background: var(--surface-background-color, #fff);
     cursor: pointer;
+    white-space: nowrap;
+
+    &--icon {
+      width: 2rem;
+      min-width: 2rem;
+      height: 2rem;
+      padding: 0;
+      font-size: 0.8125rem;
+    }
 
     &--today {
       border-color: var(--calendar-accent);
+      padding-inline: 0.55rem;
     }
   }
 
   &__period {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 0.5rem 0.75rem;
+    gap: 0.4rem 0.5rem;
+    min-width: 0;
   }
 
   &__field {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.35rem;
     font-size: 0.875rem;
+    min-width: 0;
   }
 
   &__field-label {
     color: var(--calendar-muted);
     white-space: nowrap;
+
+    /* Drop visible Month/Year labels on tablet+ — selects keep aria-label. */
+    @media (min-width: 640px) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   }
 
   &__select {
-    min-width: 8rem;
+    min-width: 6.5rem;
     width: auto;
+    max-width: 9.5rem;
     min-height: var(--bn-control-height);
-    padding: 0.25rem 0.75rem;
+    padding: 0.25rem 0.55rem;
     font-size: 0.875rem;
+
+    &--year {
+      min-width: 4.75rem;
+      max-width: 5.5rem;
+    }
   }
 }
 
 .calendar-view-switcher {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: 0.35rem;
   margin-top: 0;
+  margin-inline-start: auto;
 
   &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.25rem 0.75rem;
     border: 1px solid var(--calendar-border);
     border-radius: 0.25rem;
@@ -713,6 +756,14 @@
     background: var(--surface-background-color, #fff);
     cursor: pointer;
     font: inherit;
+
+    &--icon {
+      width: 2rem;
+      min-width: 2rem;
+      height: 2rem;
+      padding: 0;
+      font-size: 0.8125rem;
+    }
 
     &.is-active {
       background: var(--calendar-accent);

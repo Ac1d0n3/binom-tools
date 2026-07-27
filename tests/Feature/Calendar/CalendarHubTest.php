@@ -164,4 +164,39 @@ final class CalendarHubTest extends TestCase
     {
         $this->get('/de/calendar')->assertOk();
     }
+
+    public function test_calendar_bootstrap_exposes_string_nrw_holiday_source_ids(): void
+    {
+        config([
+            'accounts.path' => $this->accountsPath,
+            'storage.driver' => 'file',
+        ]);
+        $this->app->forgetInstance(\App\Calendar\Contracts\CalendarHolidayStoreInterface::class);
+        $this->app->forgetInstance(\App\Calendar\FileCalendarHolidayStore::class);
+        $this->app->forgetInstance(\App\Accounts\AccountsConfig::class);
+        $this->app->forgetInstance(\App\Calendar\CalendarEventAggregator::class);
+
+        app(\App\Calendar\CalendarHolidayImportService::class)->ensurePresetSources();
+
+        $store = app(\App\Calendar\Contracts\CalendarHolidayStoreInterface::class);
+        $source = $store->findSource(\App\Calendar\HolidaySourceDefaults::PRESET_PUBLIC_HOLIDAYS_ID);
+        $this->assertNotNull($source);
+        $store->upsertHolidayDay($source['id'], 'uid-neujahr-2026', '2026-01-01', [
+            'name' => 'Neujahr',
+            'type' => 'public_holiday',
+            'all_day' => true,
+            'country' => 'DE',
+            'region' => 'DE-NW',
+        ]);
+
+        $response = $this->get('/calendar?year=2026&month=1');
+        $response->assertOk();
+        $response->assertSee('de-nw-public-holidays', false);
+        $response->assertSee('de-nw-school-holidays', false);
+        $response->assertSee('Neujahr', false);
+
+        $api = $this->getJson('/api/calendar/holidays?from=2026-01-01&to=2026-01-01');
+        $api->assertOk();
+        $this->assertSame('de-nw-public-holidays', $api->json('data.0.source_id'));
+    }
 }

@@ -20,14 +20,32 @@ function readBootstrap() {
     }
 }
 
+/**
+ * Layer ids are numeric for plan calendars and string slugs for file-store holiday sources
+ * (e.g. "de-nw-school-holidays"). Always compare as strings — Number("de-nw-…") is NaN and
+ * collapses every holiday layer into one broken toggle.
+ */
+function layerId(value) {
+    if (value == null || value === '') {
+        return null;
+    }
+
+    const id = String(value);
+
+    return id === 'NaN' || id === 'null' || id === 'undefined' ? null : id;
+}
+
 function readHiddenLayers() {
     try {
         const raw = localStorage.getItem(HIDDEN_STORAGE_KEY);
         const parsed = raw ? JSON.parse(raw) : {};
+        const toIdSet = (values) => new Set(
+            (values ?? []).map(layerId).filter((id) => id !== null),
+        );
 
         return {
-            calendars: new Set((parsed.calendars ?? []).map(Number)),
-            holiday_sources: new Set((parsed.holiday_sources ?? []).map(Number)),
+            calendars: toIdSet(parsed.calendars),
+            holiday_sources: toIdSet(parsed.holiday_sources),
         };
     } catch {
         return { calendars: new Set(), holiday_sources: new Set() };
@@ -163,9 +181,14 @@ function rangeForView(view, anchor, weekStart = 'monday') {
 }
 
 function isLayerVisible(hidden, type, id) {
+    const key = layerId(id);
+    if (key === null) {
+        return true;
+    }
+
     const set = type === 'holiday' ? hidden.holiday_sources : hidden.calendars;
 
-    return !set.has(Number(id));
+    return !set.has(key);
 }
 
 function readFilters() {
@@ -394,7 +417,7 @@ function holidayColor(state, holiday) {
     }
 
     const source = state.bootstrap.holiday_sources?.find(
-        (item) => Number(item.id) === Number(holiday.source_id),
+        (item) => layerId(item.id) === layerId(holiday.source_id),
     );
 
     return source?.color ?? '#94a3b8';
@@ -970,8 +993,10 @@ function render(state) {
 
     document.querySelector('[data-calendar-root]')?.setAttribute('data-calendar-view', state.view);
 
-    document.querySelectorAll('[data-calendar-view]').forEach((button) => {
-        button.classList.toggle('is-active', button.getAttribute('data-calendar-view') === state.view);
+    document.querySelectorAll('[data-calendar-view-switcher] [data-calendar-view]').forEach((button) => {
+        const active = button.getAttribute('data-calendar-view') === state.view;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
 
     if (state.view === 'month') {
@@ -1095,8 +1120,12 @@ function updateAnchor(state, date) {
 function bindLayers(state) {
     document.querySelectorAll('.calendar-layer-toggle__input').forEach((input) => {
         const type = input.getAttribute('data-layer-type');
-        const id = Number(input.getAttribute('data-layer-id'));
+        const id = layerId(input.getAttribute('data-layer-id'));
         const hiddenKey = type === 'holiday' ? 'holiday_sources' : 'calendars';
+
+        if (id === null) {
+            return;
+        }
 
         input.checked = isLayerVisible(state.hidden, type, id);
 
