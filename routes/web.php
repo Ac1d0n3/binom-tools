@@ -296,6 +296,7 @@ $registerRoutes = static function (bool $localized): void {
         ->where('instanceId', 'plan_[a-zA-Z0-9_]+')
         ->name($name('sprint-planner.show'));
     Route::get('/about', [AboutController::class, 'show'])->name($name('about.show'));
+    Route::get('/sitemap', [SitemapController::class, 'html'])->name($name('seo.sitemap.html'));
     Route::get('/impressum', [ImpressumController::class, 'show'])->name($name('legal.impressum'));
     Route::get('/disclaimer', [DisclaimerController::class, 'show'])->name($name('legal.disclaimer'));
     Route::get('/datenschutz', [PrivacyController::class, 'show'])->name($name('legal.privacy'));

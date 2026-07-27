@@ -45,7 +45,7 @@
             <span class="tools-site-bar__sep" aria-hidden="true">·</span>
             <a
                 class="tools-site-bar__link"
-                href="{{ route('seo.sitemap') }}"
+                href="{{ locale_route('seo.sitemap.html') }}"
                 data-i18n="footer.sitemap"
             >
                 Sitemap

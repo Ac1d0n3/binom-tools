@@ -53,4 +53,26 @@ class SitemapTest extends TestCase
     {
         $this->get('/sitemap-unknown.xml')->assertNotFound();
     }
+
+    public function test_html_sitemap_page_is_browsable(): void
+    {
+        $response = $this->get('/sitemap');
+
+        $response->assertOk();
+        $response->assertSee('tools-html-sitemap', false);
+        $response->assertSee(route('governance.index'), false);
+        $response->assertSee(route('governance.radar'), false);
+        $response->assertSee(route('tools.overview'), false);
+        $response->assertSee(route('playbooks.index'), false);
+        $response->assertSee('/sitemap.xml', false);
+        $response->assertSee('For search engines', false);
+    }
+
+    public function test_localized_html_sitemap_page_works(): void
+    {
+        $this->get('/de/sitemap')
+            ->assertOk()
+            ->assertSee('tools-html-sitemap', false)
+            ->assertSee('/de/governance', false);
+    }
 }
