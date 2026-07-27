@@ -1,12 +1,12 @@
-@extends('admin::layouts.shell')
+@extends('profile::layouts.shell')
 
 @section('title', (($workspace['name'] ?? null) ? 'Edit workspace' : 'Create workspace') . ' — ' . config('app.name'))
 
-@section('admin_content')
+@section('profile_content')
     @php $isEdit = is_array($workspace ?? null); @endphp
     <div class="tools-content tools-content--wide sp-app admin-hub">
         <h1 class="tools-page-title">{{ $isEdit ? 'Edit workspace' : 'Create workspace' }}</h1>
-        <form method="post" action="{{ $isEdit ? locale_route('admin.workspaces.update', ['workspaceId' => $workspace['id']]) : locale_route('admin.workspaces.store') }}" class="admin-hub__editor" style="max-width:36rem">
+        <form method="post" action="{{ $isEdit ? locale_route('profile.workspaces.update', ['workspaceId' => $workspace['id']]) : locale_route('profile.workspaces.store') }}" class="admin-hub__editor" style="max-width:36rem">
             @csrf
             @if ($isEdit) @method('PUT') @endif
             <div class="admin-hub__field">
@@ -40,7 +40,7 @@
             @endif
             <div class="admin-hub__toolbar">
                 <button type="submit" class="tools-btn tools-btn--primary">Save</button>
-                <a class="tools-btn" href="{{ locale_route('admin.workspaces.index') }}">Cancel</a>
+                <a class="tools-btn" href="{{ locale_route('profile.workspaces.index') }}">Cancel</a>
             </div>
         </form>
     </div>

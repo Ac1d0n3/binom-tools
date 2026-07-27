@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Admin;
+namespace App\Profile;
 
 use App\Accounts\AccountUser;
 use App\Accounts\AccountsConfig;
 use App\Accounts\JsonFileStore;
-use App\Admin\Contracts\WorkspaceStoreInterface;
+use App\Profile\Contracts\WorkspaceStoreInterface;
 use InvalidArgumentException;
 
 final class WorkspaceStore implements WorkspaceStoreInterface

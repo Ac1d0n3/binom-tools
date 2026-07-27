@@ -89,8 +89,10 @@
         <div class="tools-sidebar-backdrop" data-tools-sidebar-backdrop hidden></div>
 
         <div class="tools-shell__body">
-            <aside class="tools-shell__sidebar" aria-label="{{ ! empty($adminShell) ? 'Admin navigation' : 'Governance navigation' }}">
-                @if (! empty($adminShell))
+            <aside class="tools-shell__sidebar" aria-label="{{ ! empty($profileShell) ? 'Profile navigation' : (! empty($adminShell) ? 'Admin navigation' : 'Governance navigation') }}">
+                @if (! empty($profileShell))
+                    @include('profile::partials.sidebar')
+                @elseif (! empty($adminShell))
                     @include('admin::partials.sidebar')
                 @else
                     <x-tools.sidebar />

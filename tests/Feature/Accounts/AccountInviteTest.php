@@ -50,7 +50,7 @@ class AccountInviteTest extends TestCase
             'sendInvite' => '1',
             'mustChangePassword' => '1',
             'active' => '1',
-        ])->assertRedirect('/account/users');
+        ])->assertRedirect('/admin/users');
 
         $user = app(UserRepository::class)->findByEmail('new@example.com');
         $this->assertNotNull($user);
@@ -73,11 +73,11 @@ class AccountInviteTest extends TestCase
         $this->post('/login', [
             'email' => 'new@example.com',
             'password' => $plain,
-        ])->assertRedirect('/account');
+        ])->assertRedirect('/profile/settings');
 
-        $this->get('/tools/prompt-studio')->assertRedirect('/account');
+        $this->get('/tools/prompt-studio')->assertRedirect('/profile/settings');
 
-        $this->put('/account', [
+        $this->put('/profile/settings', [
             'displayName' => 'New Person',
             'current_password' => $plain,
             'password' => 'new-secret-99',
@@ -105,7 +105,7 @@ class AccountInviteTest extends TestCase
             'mustChangePassword' => '0',
             'password' => 'manual-pass-12',
             'active' => '1',
-        ])->assertRedirect('/account/users');
+        ])->assertRedirect('/admin/users');
 
         Mail::assertNothingSent();
         $user = app(UserRepository::class)->findByEmail('manual@example.com');

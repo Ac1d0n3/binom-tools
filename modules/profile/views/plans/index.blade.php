@@ -1,8 +1,8 @@
-@extends('admin::layouts.shell')
+@extends('profile::layouts.shell')
 
 @section('title', 'My Plans — ' . config('app.name'))
 
-@section('admin_content')
+@section('profile_content')
     <div class="tools-content tools-content--wide sp-app admin-hub">
         <h1 class="tools-page-title">My Plans</h1>
         <x-admin.help id="plans">
@@ -20,7 +20,7 @@
                         <span class="admin-hub__meta">{{ $plan['id'] }} · workspace {{ $plan['workspaceId'] ?? '—' }}</span>
                     </div>
                     <div class="sp-list__actions">
-                        <form method="post" action="{{ locale_route('admin.plans.assign', ['planId' => $plan['id']]) }}" style="display:inline-flex;gap:.35rem;align-items:center">
+                        <form method="post" action="{{ locale_route('profile.plans.assign', ['planId' => $plan['id']]) }}" style="display:inline-flex;gap:.35rem;align-items:center">
                             @csrf
                             <select name="workspaceId">
                                 <option value="">—</option>
@@ -30,7 +30,7 @@
                             </select>
                             <button class="tools-btn tools-btn--small" type="submit">Assign</button>
                         </form>
-                        <form method="post" action="{{ locale_route('admin.plans.duplicate', ['planId' => $plan['id']]) }}" style="display:inline-flex;gap:.35rem;align-items:center">
+                        <form method="post" action="{{ locale_route('profile.plans.duplicate', ['planId' => $plan['id']]) }}" style="display:inline-flex;gap:.35rem;align-items:center">
                             @csrf
                             <select name="workspaceId">
                                 @foreach ($workspaces as $ws)

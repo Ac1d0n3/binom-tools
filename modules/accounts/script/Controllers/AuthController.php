@@ -56,7 +56,7 @@ class AuthController extends Controller
         $user = $this->auth->user();
         if ($user?->mustChangePassword) {
             return redirect()
-                ->to(locale_route('accounts.profile'))
+                ->to(locale_route('profile.settings'))
                 ->with('status', 'must-change-password');
         }
 
@@ -81,7 +81,7 @@ class AuthController extends Controller
 
         $quizResults = $this->glossaryQuizResults->loadFor($user);
 
-        return view('accounts::profile', [
+        return view('profile::settings', [
             'account' => $user->toPublicArray(),
             'profileAvatarEnabled' => $this->config->profileAvatarEnabled(),
             'mustChangePassword' => $user->mustChangePassword,

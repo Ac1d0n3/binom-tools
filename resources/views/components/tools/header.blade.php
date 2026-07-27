@@ -235,53 +235,20 @@
                             {{ $avatarLabel }}
                         </div>
                         <a
-                            href="{{ locale_route('admin.index') }}"
-                            class="tools-header__account-menu-item {{ Locale::routeIs('admin.*') ? 'tools-header__account-menu-item--active' : '' }}"
+                            href="{{ locale_route('profile.index') }}"
+                            class="tools-header__account-menu-item {{ Locale::routeIs('profile.*') || Locale::routeIs('accounts.profile*') ? 'tools-header__account-menu-item--active' : '' }}"
                             role="menuitem"
-                            data-text-de="Admin Hub"
-                            data-text-en="Admin Hub"
-                        >Admin Hub</a>
-                        <a
-                            href="{{ locale_route('accounts.profile') }}"
-                            class="tools-header__account-menu-item {{ Locale::routeIs('accounts.profile') ? 'tools-header__account-menu-item--active' : '' }}"
-                            role="menuitem"
-                            data-i18n="nav.accountProfile"
-                        >Profile</a>
-                        <a
-                            href="{{ locale_route('governance.sessions.index') }}"
-                            class="tools-header__account-menu-item {{ Locale::routeIs('governance.sessions.index') || Locale::routeIs('governance.sessions.report') ? 'tools-header__account-menu-item--active' : '' }}"
-                            role="menuitem"
-                            data-text-de="Governance Sessions"
-                            data-text-en="Governance Sessions"
-                        >Governance Sessions</a>
-                        @if (! empty($accountUser['canManageUsers']))
+                            data-text-de="Profil Hub"
+                            data-text-en="Profile Hub"
+                        >Profile Hub</a>
+                        @if (! empty($accountUser['canManageUsers']) || ! empty($accountUser['canManageTeams']))
                             <a
-                                href="{{ locale_route('admin.users.index') }}"
-                                class="tools-header__account-menu-item {{ Locale::routeIs('admin.users.*') || Locale::routeIs('accounts.users*') ? 'tools-header__account-menu-item--active' : '' }}"
+                                href="{{ locale_route('admin.index') }}"
+                                class="tools-header__account-menu-item {{ Locale::routeIs('admin.*') ? 'tools-header__account-menu-item--active' : '' }}"
                                 role="menuitem"
-                                data-i18n="nav.accountUsers"
-                            >Users</a>
-                            <a
-                                href="{{ locale_route('admin.story-acl.index') }}"
-                                class="tools-header__account-menu-item {{ Locale::routeIs('admin.story-acl.*') || Locale::routeIs('accounts.story-acl*') ? 'tools-header__account-menu-item--active' : '' }}"
-                                role="menuitem"
-                                data-i18n="nav.accountStoryAccess"
-                            >Story access</a>
-                            <a
-                                href="{{ locale_route('admin.link-check.index') }}"
-                                class="tools-header__account-menu-item {{ Locale::routeIs('admin.link-check.*') || Locale::routeIs('accounts.link-check*') ? 'tools-header__account-menu-item--active' : '' }}"
-                                role="menuitem"
-                                data-text-de="Link-Checker"
-                                data-text-en="Link checker"
-                            >Link checker</a>
-                        @endif
-                        @if (! empty($accountUser['canManageTeams']))
-                            <a
-                                href="{{ locale_route('admin.teams.index') }}"
-                                class="tools-header__account-menu-item {{ Locale::routeIs('admin.teams.*') || Locale::routeIs('accounts.teams*') ? 'tools-header__account-menu-item--active' : '' }}"
-                                role="menuitem"
-                                data-i18n="nav.accountTeams"
-                            >Teams</a>
+                                data-text-de="Admin Hub"
+                                data-text-en="Admin Hub"
+                            >Admin Hub</a>
                         @endif
                         <form method="post" action="{{ locale_route('accounts.logout') }}" class="tools-header__account-menu-form">
                             @csrf

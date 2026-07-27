@@ -22,9 +22,9 @@
         'demoPrefill' => $demoPrefill ?? null,
         'workspace' => $toolId === 'custom-stack-builder' && accounts_enabled() && app(\App\Accounts\AccountAuth::class)->user()
             ? [
-                'activeUrl' => locale_route('admin.api.workspace.active'),
-                'syncStackUrl' => locale_route('admin.api.workspace.stack'),
-                'savedStacksUrl' => locale_route('admin.api.workspace.saved-stacks.store'),
+                'activeUrl' => locale_route('profile.api.workspace.active'),
+                'syncStackUrl' => locale_route('profile.api.workspace.stack'),
+                'savedStacksUrl' => locale_route('profile.api.workspace.saved-stacks.store'),
             ]
             : null,
     ];

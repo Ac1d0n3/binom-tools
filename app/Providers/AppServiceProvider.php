@@ -132,7 +132,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->singleton(PlanAttachmentStoreInterface::class, DatabasePlanAttachmentStore::class);
             $this->app->singleton(PlaybookStatsStoreInterface::class, DatabasePlaybookStatsStore::class);
             $this->app->singleton(CalendarHolidayStoreInterface::class, DatabaseCalendarHolidayStore::class);
-            $this->app->singleton(\App\Admin\Contracts\WorkspaceStoreInterface::class, \App\Admin\WorkspaceStore::class);
+            $this->app->singleton(\App\Profile\Contracts\WorkspaceStoreInterface::class, \App\Profile\WorkspaceStore::class);
 
             return;
         }
@@ -177,8 +177,8 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(\App\Accounts\JsonFileStore::class),
             );
         });
-        $this->app->singleton(\App\Admin\Contracts\WorkspaceStoreInterface::class, static function ($app): \App\Admin\WorkspaceStore {
-            return new \App\Admin\WorkspaceStore(
+        $this->app->singleton(\App\Profile\Contracts\WorkspaceStoreInterface::class, static function ($app): \App\Profile\WorkspaceStore {
+            return new \App\Profile\WorkspaceStore(
                 $app->make(\App\Accounts\AccountsConfig::class),
                 $app->make(\App\Accounts\JsonFileStore::class),
             );

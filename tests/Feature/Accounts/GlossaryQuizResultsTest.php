@@ -67,7 +67,7 @@ class GlossaryQuizResultsTest extends TestCase
         $this->assertSame(1, $stored['attemptCount']);
         $this->assertSame(8, $stored['bestScore']);
 
-        $profile = $this->get('/account');
+        $profile = $this->get('/profile/settings');
         $profile->assertOk();
         $profile->assertSee('data-i18n="glossary.quiz.profileTitle"', false);
         $profile->assertSee('8 / 10', false);

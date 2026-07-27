@@ -59,7 +59,7 @@ class AccountsAuthTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $this->get('/account/users')->assertOk();
+        $this->get('/admin/users')->assertOk();
         $this->get('/sprint-planner/people')->assertOk();
 
         app(UserRepository::class)->upsert([
@@ -78,8 +78,9 @@ class AccountsAuthTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $this->get('/account/users')->assertForbidden();
-        $this->get('/account/teams')->assertForbidden();
+        $this->get('/admin/users')->assertRedirect('/profile');
+        $this->get('/admin/teams')->assertRedirect('/profile');
+        $this->get('/account/users')->assertRedirect('/admin/users');
         $this->get('/sprint-planner/people')->assertForbidden();
         $this->get('/sprint-planner')
             ->assertOk()
@@ -108,11 +109,11 @@ class AccountsAuthTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $this->get('/account')
+        $this->get('/profile/settings')
             ->assertOk()
             ->assertSee('accounts.avatarIcon', false);
 
-        $this->put('/account', [
+        $this->put('/profile/settings', [
             'displayName' => 'Admin',
             'shortName' => 'ADM',
             'colorToken' => 'outline-3',
@@ -135,11 +136,11 @@ class AccountsAuthTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $this->get('/account')
+        $this->get('/profile/settings')
             ->assertOk()
             ->assertDontSee('accounts.avatarIcon', false);
 
-        $this->put('/account', [
+        $this->put('/profile/settings', [
             'displayName' => 'Admin Renamed',
             'shortName' => 'XXX',
             'colorToken' => 'accent-9',

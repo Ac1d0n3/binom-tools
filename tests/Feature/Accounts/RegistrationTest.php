@@ -67,7 +67,7 @@ final class RegistrationTest extends TestCase
             'password' => 'adminpass1',
         ])->assertRedirect();
 
-        $this->post('/account/users/'.$user->id.'/approve')->assertRedirect('/account/users');
+        $this->post('/account/users/'.$user->id.'/approve')->assertRedirect('/admin/users');
 
         $approved = app(UserRepositoryInterface::class)->findById($user->id);
         $this->assertNotNull($approved);

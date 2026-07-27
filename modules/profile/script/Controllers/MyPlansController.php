@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Profile;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\Contracts\PlanStoreInterface;
-use App\Admin\Contracts\WorkspaceStoreInterface;
+use App\Profile\Contracts\WorkspaceStoreInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use InvalidArgumentException;
 
-class MyPlansController extends AdminController
+class MyPlansController extends ProfileController
 {
     public function __construct(
         AccountAuth $auth,
@@ -33,7 +33,7 @@ class MyPlansController extends AdminController
             ));
         }
 
-        return $this->adminView('admin::plans.index', [
+        return $this->profileView('profile::plans.index', [
             'plans' => $plans,
             'workspaces' => $this->workspaces->listFor($user),
             'activeWorkspaceId' => $activeId,

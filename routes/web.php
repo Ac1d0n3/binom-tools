@@ -16,13 +16,14 @@ use App\Http\Controllers\Accounts\UserTemplateApiController;
 use App\Http\Controllers\Accounts\UsersController;
 use App\Http\Controllers\Admin\GlossaryAdminController;
 use App\Http\Controllers\Admin\HubController as AdminHubController;
-use App\Http\Controllers\Admin\MyPlansController;
 use App\Http\Controllers\Admin\PlanTemplatesController;
-use App\Http\Controllers\Admin\ProgressController;
 use App\Http\Controllers\Admin\RadarAdminController;
 use App\Http\Controllers\Admin\StoriesController;
 use App\Http\Controllers\Admin\VendorsAdminController;
-use App\Http\Controllers\Admin\WorkspaceController;
+use App\Http\Controllers\Profile\HubController as ProfileHubController;
+use App\Http\Controllers\Profile\MyPlansController;
+use App\Http\Controllers\Profile\ProgressController;
+use App\Http\Controllers\Profile\WorkspaceController;
 use App\Http\Controllers\Calendar\CalendarApiController;
 use App\Http\Controllers\Calendar\CalendarController;
 use App\Http\Controllers\Legal\ImpressumController;
@@ -163,7 +164,11 @@ $registerRoutes = static function (bool $localized): void {
     });
 
     Route::middleware(['accounts.enabled', 'accounts.auth'])->group(static function () use ($name, $localized): void {
-        Route::get('/account', [AuthController::class, 'profile'])->name($name('accounts.profile'));
+        Route::get('/profile/settings', [AuthController::class, 'profile'])->name($name('profile.settings'));
+        Route::put('/profile/settings', [AuthController::class, 'updateProfile'])->name($name('profile.settings.update'));
+        // Legacy account profile URLs
+        Route::get('/account', static fn () => redirect()->to(locale_route('profile.settings'), 301))
+            ->name($name('accounts.profile'));
         Route::put('/account', [AuthController::class, 'updateProfile'])->name($name('accounts.profile.update'));
 
         // Legacy account admin URLs → Admin Hub
@@ -217,111 +222,127 @@ $registerRoutes = static function (bool $localized): void {
             ->middleware('throttle:3,1')
             ->name($name('accounts.link-check.run'));
 
-        // Admin Hub
-        Route::get('/admin', [AdminHubController::class, 'index'])->name($name('admin.index'));
-        Route::get('/admin/workspaces', [WorkspaceController::class, 'index'])->name($name('admin.workspaces.index'));
-        Route::get('/admin/workspaces/create', [WorkspaceController::class, 'create'])->name($name('admin.workspaces.create'));
-        Route::post('/admin/workspaces', [WorkspaceController::class, 'store'])->name($name('admin.workspaces.store'));
-        Route::get('/admin/workspaces/{workspaceId}/edit', [WorkspaceController::class, 'edit'])
+        // Profile Hub (personal area)
+        Route::get('/profile', [ProfileHubController::class, 'index'])->name($name('profile.index'));
+        Route::get('/profile/workspaces', [WorkspaceController::class, 'index'])->name($name('profile.workspaces.index'));
+        Route::get('/profile/workspaces/create', [WorkspaceController::class, 'create'])->name($name('profile.workspaces.create'));
+        Route::post('/profile/workspaces', [WorkspaceController::class, 'store'])->name($name('profile.workspaces.store'));
+        Route::get('/profile/workspaces/{workspaceId}/edit', [WorkspaceController::class, 'edit'])
             ->where('workspaceId', 'ws_[a-zA-Z0-9_]+')
-            ->name($name('admin.workspaces.edit'));
-        Route::put('/admin/workspaces/{workspaceId}', [WorkspaceController::class, 'update'])
+            ->name($name('profile.workspaces.edit'));
+        Route::put('/profile/workspaces/{workspaceId}', [WorkspaceController::class, 'update'])
             ->where('workspaceId', 'ws_[a-zA-Z0-9_]+')
-            ->name($name('admin.workspaces.update'));
-        Route::post('/admin/workspaces/{workspaceId}/activate', [WorkspaceController::class, 'activate'])
+            ->name($name('profile.workspaces.update'));
+        Route::post('/profile/workspaces/{workspaceId}/activate', [WorkspaceController::class, 'activate'])
             ->where('workspaceId', 'ws_[a-zA-Z0-9_]+')
-            ->name($name('admin.workspaces.activate'));
-        Route::post('/admin/workspaces/{workspaceId}/duplicate', [WorkspaceController::class, 'duplicate'])
+            ->name($name('profile.workspaces.activate'));
+        Route::post('/profile/workspaces/{workspaceId}/duplicate', [WorkspaceController::class, 'duplicate'])
             ->where('workspaceId', 'ws_[a-zA-Z0-9_]+')
-            ->name($name('admin.workspaces.duplicate'));
-        Route::post('/admin/workspaces/{workspaceId}/archive', [WorkspaceController::class, 'archive'])
+            ->name($name('profile.workspaces.duplicate'));
+        Route::post('/profile/workspaces/{workspaceId}/archive', [WorkspaceController::class, 'archive'])
             ->where('workspaceId', 'ws_[a-zA-Z0-9_]+')
-            ->name($name('admin.workspaces.archive'));
-        Route::get('/admin/api/workspace/active', [WorkspaceController::class, 'activePayload'])
-            ->name($name('admin.api.workspace.active'));
-        Route::put('/admin/api/workspace/active/stack', [WorkspaceController::class, 'syncActiveStack'])
-            ->name($name('admin.api.workspace.stack'));
-        Route::post('/admin/api/workspace/active/saved-stacks', [WorkspaceController::class, 'storeSavedStack'])
-            ->name($name('admin.api.workspace.saved-stacks.store'));
-        Route::delete('/admin/api/workspace/active/saved-stacks/{stackId}', [WorkspaceController::class, 'destroySavedStack'])
+            ->name($name('profile.workspaces.archive'));
+        Route::get('/profile/api/workspace/active', [WorkspaceController::class, 'activePayload'])
+            ->name($name('profile.api.workspace.active'));
+        Route::put('/profile/api/workspace/active/stack', [WorkspaceController::class, 'syncActiveStack'])
+            ->name($name('profile.api.workspace.stack'));
+        Route::post('/profile/api/workspace/active/saved-stacks', [WorkspaceController::class, 'storeSavedStack'])
+            ->name($name('profile.api.workspace.saved-stacks.store'));
+        Route::delete('/profile/api/workspace/active/saved-stacks/{stackId}', [WorkspaceController::class, 'destroySavedStack'])
             ->where('stackId', '[a-zA-Z0-9_-]+')
-            ->name($name('admin.api.workspace.saved-stacks.destroy'));
-        Route::get('/admin/plans', [MyPlansController::class, 'index'])->name($name('admin.plans.index'));
-        Route::post('/admin/plans/{planId}/assign', [MyPlansController::class, 'assign'])
+            ->name($name('profile.api.workspace.saved-stacks.destroy'));
+        Route::get('/profile/plans', [MyPlansController::class, 'index'])->name($name('profile.plans.index'));
+        Route::post('/profile/plans/{planId}/assign', [MyPlansController::class, 'assign'])
             ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->name($name('admin.plans.assign'));
-        Route::post('/admin/plans/{planId}/duplicate', [MyPlansController::class, 'duplicate'])
+            ->name($name('profile.plans.assign'));
+        Route::post('/profile/plans/{planId}/duplicate', [MyPlansController::class, 'duplicate'])
             ->where('planId', 'plan_[a-zA-Z0-9_]+')
-            ->name($name('admin.plans.duplicate'));
-        Route::get('/admin/reads', [ProgressController::class, 'reads'])->name($name('admin.reads.index'));
-        Route::get('/admin/quiz', [ProgressController::class, 'quiz'])->name($name('admin.quiz.index'));
+            ->name($name('profile.plans.duplicate'));
+        Route::get('/profile/reads', [ProgressController::class, 'reads'])->name($name('profile.reads.index'));
+        Route::get('/profile/quiz', [ProgressController::class, 'quiz'])->name($name('profile.quiz.index'));
 
-        Route::get('/admin/users', [UsersController::class, 'index'])->name($name('admin.users.index'));
-        Route::get('/admin/users/create', [UsersController::class, 'create'])->name($name('admin.users.create'));
-        Route::get('/admin/users/{userId}/edit', [UsersController::class, 'edit'])
-            ->where('userId', '[a-zA-Z0-9_-]+')
-            ->name($name('admin.users.edit'));
-        Route::get('/admin/teams', [TeamsController::class, 'index'])->name($name('admin.teams.index'));
-        Route::get('/admin/teams/create', [TeamsController::class, 'create'])->name($name('admin.teams.create'));
-        Route::get('/admin/teams/{teamId}/edit', [TeamsController::class, 'edit'])
-            ->where('teamId', '[a-zA-Z0-9_-]+')
-            ->name($name('admin.teams.edit'));
-        Route::get('/admin/story-access', [StoryAclController::class, 'index'])->name($name('admin.story-acl.index'));
-        Route::get('/admin/link-check', [LinkCheckController::class, 'index'])->name($name('admin.link-check.index'));
+        // Legacy personal admin URLs → Profile Hub
+        Route::get('/admin/workspaces', static fn () => redirect()->to(locale_route('profile.workspaces.index'), 301));
+        Route::get('/admin/workspaces/create', static fn () => redirect()->to(locale_route('profile.workspaces.create'), 301));
+        Route::get('/admin/workspaces/{workspaceId}/edit', static function (string $workspaceId) {
+            return redirect()->to(locale_route('profile.workspaces.edit', ['workspaceId' => $workspaceId]), 301);
+        })->where('workspaceId', 'ws_[a-zA-Z0-9_]+');
+        Route::get('/admin/plans', static fn () => redirect()->to(locale_route('profile.plans.index'), 301));
+        Route::get('/admin/reads', static fn () => redirect()->to(locale_route('profile.reads.index'), 301));
+        Route::get('/admin/quiz', static fn () => redirect()->to(locale_route('profile.quiz.index'), 301));
+        Route::get('/admin/api/workspace/active', static fn () => redirect()->to(locale_route('profile.api.workspace.active'), 301));
 
-        Route::get('/admin/stories', [StoriesController::class, 'index'])->name($name('admin.stories.index'));
-        Route::get('/admin/stories/create', [StoriesController::class, 'create'])->name($name('admin.stories.create'));
-        Route::post('/admin/stories', [StoriesController::class, 'store'])->name($name('admin.stories.store'));
-        Route::get('/admin/stories/{slug}/edit', [StoriesController::class, 'edit'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.stories.edit'));
-        Route::put('/admin/stories/{slug}', [StoriesController::class, 'update'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.stories.update'));
-        Route::delete('/admin/stories/{slug}', [StoriesController::class, 'destroy'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.stories.destroy'));
-        Route::post('/admin/stories/{slug}/upload', [StoriesController::class, 'uploadImage'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.stories.upload'));
+        // Admin Hub (manage flags required)
+        Route::middleware(['admin.access'])->group(static function () use ($name): void {
+            Route::get('/admin', [AdminHubController::class, 'index'])->name($name('admin.index'));
 
-        Route::get('/admin/plan-templates', [PlanTemplatesController::class, 'index'])->name($name('admin.plan-templates.index'));
-        Route::get('/admin/plan-templates/create', [PlanTemplatesController::class, 'create'])->name($name('admin.plan-templates.create'));
-        Route::post('/admin/plan-templates', [PlanTemplatesController::class, 'store'])->name($name('admin.plan-templates.store'));
-        Route::get('/admin/plan-templates/{slug}/edit', [PlanTemplatesController::class, 'edit'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.plan-templates.edit'));
-        Route::put('/admin/plan-templates/{slug}', [PlanTemplatesController::class, 'update'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.plan-templates.update'));
-        Route::delete('/admin/plan-templates/{slug}', [PlanTemplatesController::class, 'destroy'])
-            ->where('slug', '[a-z0-9-]+')
-            ->name($name('admin.plan-templates.destroy'));
+            Route::get('/admin/users', [UsersController::class, 'index'])->name($name('admin.users.index'));
+            Route::get('/admin/users/create', [UsersController::class, 'create'])->name($name('admin.users.create'));
+            Route::get('/admin/users/{userId}/edit', [UsersController::class, 'edit'])
+                ->where('userId', '[a-zA-Z0-9_-]+')
+                ->name($name('admin.users.edit'));
+            Route::get('/admin/teams', [TeamsController::class, 'index'])->name($name('admin.teams.index'));
+            Route::get('/admin/teams/create', [TeamsController::class, 'create'])->name($name('admin.teams.create'));
+            Route::get('/admin/teams/{teamId}/edit', [TeamsController::class, 'edit'])
+                ->where('teamId', '[a-zA-Z0-9_-]+')
+                ->name($name('admin.teams.edit'));
+            Route::get('/admin/story-access', [StoryAclController::class, 'index'])->name($name('admin.story-acl.index'));
+            Route::get('/admin/link-check', [LinkCheckController::class, 'index'])->name($name('admin.link-check.index'));
 
-        Route::get('/admin/radar', [RadarAdminController::class, 'index'])->name($name('admin.radar.index'));
-        Route::post('/admin/radar/sources', [RadarAdminController::class, 'storeSource'])->name($name('admin.radar.sources.store'));
-        Route::put('/admin/radar/sources/{sourceId}', [RadarAdminController::class, 'updateSource'])
-            ->where('sourceId', '[a-z0-9-]+')
-            ->name($name('admin.radar.sources.update'));
-        Route::post('/admin/radar/items', [RadarAdminController::class, 'storeItem'])->name($name('admin.radar.items.store'));
+            Route::get('/admin/stories', [StoriesController::class, 'index'])->name($name('admin.stories.index'));
+            Route::get('/admin/stories/create', [StoriesController::class, 'create'])->name($name('admin.stories.create'));
+            Route::post('/admin/stories', [StoriesController::class, 'store'])->name($name('admin.stories.store'));
+            Route::get('/admin/stories/{slug}/edit', [StoriesController::class, 'edit'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.stories.edit'));
+            Route::put('/admin/stories/{slug}', [StoriesController::class, 'update'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.stories.update'));
+            Route::delete('/admin/stories/{slug}', [StoriesController::class, 'destroy'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.stories.destroy'));
+            Route::post('/admin/stories/{slug}/upload', [StoriesController::class, 'uploadImage'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.stories.upload'));
 
-        Route::get('/admin/vendors', [VendorsAdminController::class, 'index'])->name($name('admin.vendors.index'));
-        Route::post('/admin/vendors', [VendorsAdminController::class, 'store'])->name($name('admin.vendors.store'));
-        Route::put('/admin/vendors/{vendorId}', [VendorsAdminController::class, 'update'])
-            ->where('vendorId', '[a-z0-9-]+')
-            ->name($name('admin.vendors.update'));
-        Route::delete('/admin/vendors/{vendorId}', [VendorsAdminController::class, 'destroy'])
-            ->where('vendorId', '[a-z0-9-]+')
-            ->name($name('admin.vendors.destroy'));
+            Route::get('/admin/plan-templates', [PlanTemplatesController::class, 'index'])->name($name('admin.plan-templates.index'));
+            Route::get('/admin/plan-templates/create', [PlanTemplatesController::class, 'create'])->name($name('admin.plan-templates.create'));
+            Route::post('/admin/plan-templates', [PlanTemplatesController::class, 'store'])->name($name('admin.plan-templates.store'));
+            Route::get('/admin/plan-templates/{slug}/edit', [PlanTemplatesController::class, 'edit'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.plan-templates.edit'));
+            Route::put('/admin/plan-templates/{slug}', [PlanTemplatesController::class, 'update'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.plan-templates.update'));
+            Route::delete('/admin/plan-templates/{slug}', [PlanTemplatesController::class, 'destroy'])
+                ->where('slug', '[a-z0-9-]+')
+                ->name($name('admin.plan-templates.destroy'));
 
-        Route::get('/admin/glossary', [GlossaryAdminController::class, 'index'])->name($name('admin.glossary.index'));
-        Route::post('/admin/glossary', [GlossaryAdminController::class, 'store'])->name($name('admin.glossary.store'));
-        Route::put('/admin/glossary/{termId}', [GlossaryAdminController::class, 'update'])
-            ->where('termId', '[a-z0-9-]+')
-            ->name($name('admin.glossary.update'));
-        Route::delete('/admin/glossary/{termId}', [GlossaryAdminController::class, 'destroy'])
-            ->where('termId', '[a-z0-9-]+')
-            ->name($name('admin.glossary.destroy'));
+            Route::get('/admin/radar', [RadarAdminController::class, 'index'])->name($name('admin.radar.index'));
+            Route::post('/admin/radar/sources', [RadarAdminController::class, 'storeSource'])->name($name('admin.radar.sources.store'));
+            Route::put('/admin/radar/sources/{sourceId}', [RadarAdminController::class, 'updateSource'])
+                ->where('sourceId', '[a-z0-9-]+')
+                ->name($name('admin.radar.sources.update'));
+            Route::post('/admin/radar/items', [RadarAdminController::class, 'storeItem'])->name($name('admin.radar.items.store'));
+
+            Route::get('/admin/vendors', [VendorsAdminController::class, 'index'])->name($name('admin.vendors.index'));
+            Route::post('/admin/vendors', [VendorsAdminController::class, 'store'])->name($name('admin.vendors.store'));
+            Route::put('/admin/vendors/{vendorId}', [VendorsAdminController::class, 'update'])
+                ->where('vendorId', '[a-z0-9-]+')
+                ->name($name('admin.vendors.update'));
+            Route::delete('/admin/vendors/{vendorId}', [VendorsAdminController::class, 'destroy'])
+                ->where('vendorId', '[a-z0-9-]+')
+                ->name($name('admin.vendors.destroy'));
+
+            Route::get('/admin/glossary', [GlossaryAdminController::class, 'index'])->name($name('admin.glossary.index'));
+            Route::post('/admin/glossary', [GlossaryAdminController::class, 'store'])->name($name('admin.glossary.store'));
+            Route::put('/admin/glossary/{termId}', [GlossaryAdminController::class, 'update'])
+                ->where('termId', '[a-z0-9-]+')
+                ->name($name('admin.glossary.update'));
+            Route::delete('/admin/glossary/{termId}', [GlossaryAdminController::class, 'destroy'])
+                ->where('termId', '[a-z0-9-]+')
+                ->name($name('admin.glossary.destroy'));
+        });
 
         Route::post('/playbooks/{slug}/read', [StoryAclController::class, 'markRead'])
             ->where('slug', '[a-z0-9-]+')

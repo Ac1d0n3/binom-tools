@@ -1,8 +1,8 @@
-@extends('admin::layouts.shell')
+@extends('profile::layouts.shell')
 
 @section('title', 'Read stories — ' . config('app.name'))
 
-@section('admin_content')
+@section('profile_content')
     <div class="tools-content tools-content--wide sp-app admin-hub">
         <h1 class="tools-page-title" data-text-de="Gelesene Stories" data-text-en="Read stories">Read stories</h1>
         <x-admin.help id="reads">

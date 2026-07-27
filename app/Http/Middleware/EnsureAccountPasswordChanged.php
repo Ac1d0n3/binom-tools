@@ -41,19 +41,25 @@ final class EnsureAccountPasswordChanged
         }
 
         return redirect()
-            ->to(locale_route('accounts.profile'))
+            ->to(locale_route('profile.settings'))
             ->with('status', 'must-change-password');
     }
 
     private function isAllowedWhileForced(Request $request): bool
     {
-        if ($request->routeIs('accounts.profile', 'accounts.profile.update', 'accounts.logout')) {
+        if ($request->routeIs(
+            'profile.settings',
+            'profile.settings.update',
+            'accounts.profile',
+            'accounts.profile.update',
+            'accounts.logout'
+        )) {
             return true;
         }
 
-        // Localized route names: de.accounts.profile / accounts.profile
+        // Localized route names: de.profile.settings / profile.settings
         $name = (string) $request->route()?->getName();
-        foreach (['accounts.profile', 'accounts.profile.update', 'accounts.logout'] as $suffix) {
+        foreach (['profile.settings', 'profile.settings.update', 'accounts.profile', 'accounts.profile.update', 'accounts.logout'] as $suffix) {
             if ($name === $suffix || str_ends_with($name, '.'.$suffix)) {
                 return true;
             }

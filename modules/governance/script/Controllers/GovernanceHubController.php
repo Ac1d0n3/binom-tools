@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Governance;
 
 use App\Accounts\AccountAuth;
-use App\Admin\Contracts\WorkspaceStoreInterface;
+use App\Profile\Contracts\WorkspaceStoreInterface;
 use App\Governance\GovernanceRadarFeedDisplay;
 use App\Governance\GovernanceRadarFeedItemStore;
 use App\Governance\GovernanceRadarFeedSync;
@@ -786,9 +786,9 @@ class GovernanceHubController extends Controller
 
         return [
             'enabled' => true,
-            'activeUrl' => locale_route('admin.api.workspace.active'),
-            'syncStackUrl' => locale_route('admin.api.workspace.stack'),
-            'savedStacksUrl' => locale_route('admin.api.workspace.saved-stacks.store'),
+            'activeUrl' => locale_route('profile.api.workspace.active'),
+            'syncStackUrl' => locale_route('profile.api.workspace.stack'),
+            'savedStacksUrl' => locale_route('profile.api.workspace.saved-stacks.store'),
             'active' => $workspace === null ? null : [
                 'id' => (string) $workspace['id'],
                 'name' => (string) ($workspace['name'] ?? ''),

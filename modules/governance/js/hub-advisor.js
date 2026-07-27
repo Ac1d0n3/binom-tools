@@ -2034,8 +2034,8 @@ function initStackBuilderModal(root, config = {}) {
                 }
                 if (response.status === 422) {
                     setStatus(locale() === 'de'
-                        ? 'Kein aktiver Workspace — bitte unter Admin Hub anlegen/aktivieren.'
-                        : 'No active workspace — create/activate one in Admin Hub.');
+                        ? 'Kein aktiver Workspace — bitte unter Profil Hub anlegen/aktivieren.'
+                        : 'No active workspace — create/activate one in Profile Hub.');
                     return;
                 }
             } catch {

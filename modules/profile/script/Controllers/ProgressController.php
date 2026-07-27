@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Profile;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\Contracts\GlossaryQuizResultStoreInterface;
 use App\Accounts\Contracts\ReadStateStoreInterface;
 use Illuminate\View\View;
 
-class ProgressController extends AdminController
+class ProgressController extends ProfileController
 {
     public function __construct(
         AccountAuth $auth,
@@ -30,7 +30,7 @@ class ProgressController extends AdminController
             ];
         }
 
-        return $this->adminView('admin::reads.index', [
+        return $this->profileView('profile::reads.index', [
             'items' => $items,
         ]);
     }
@@ -39,7 +39,7 @@ class ProgressController extends AdminController
     {
         $user = $this->user();
 
-        return $this->adminView('admin::quiz.index', [
+        return $this->profileView('profile::quiz.index', [
             'results' => $this->quiz->loadFor($user),
         ]);
     }

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Profile;
 
 use App\Accounts\AccountAuth;
-use App\Admin\Contracts\WorkspaceStoreInterface;
+use App\Profile\Contracts\WorkspaceStoreInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use InvalidArgumentException;
 
-class WorkspaceController extends AdminController
+class WorkspaceController extends ProfileController
 {
     public function __construct(
         AccountAuth $auth,
@@ -22,7 +22,7 @@ class WorkspaceController extends AdminController
     {
         $user = $this->user();
 
-        return $this->adminView('admin::workspaces.index', [
+        return $this->profileView('profile::workspaces.index', [
             'workspaces' => $this->workspaces->listFor($user, true),
             'activeWorkspaceId' => $this->workspaces->activeId($user),
             'stacks' => $this->stackOptions(),
@@ -31,7 +31,7 @@ class WorkspaceController extends AdminController
 
     public function create(): View
     {
-        return $this->adminView('admin::workspaces.form', [
+        return $this->profileView('profile::workspaces.form', [
             'workspace' => null,
             'stacks' => $this->stackOptions(),
         ]);
@@ -43,7 +43,7 @@ class WorkspaceController extends AdminController
         $workspace = $this->workspaces->find($workspaceId, $user);
         abort_if($workspace === null, 404);
 
-        return $this->adminView('admin::workspaces.form', [
+        return $this->profileView('profile::workspaces.form', [
             'workspace' => $workspace,
             'stacks' => $this->stackOptions(),
         ]);
@@ -68,7 +68,7 @@ class WorkspaceController extends AdminController
             return back()->withErrors(['name' => $e->getMessage()])->withInput();
         }
 
-        return redirect()->to(locale_route('admin.workspaces.index'))->with('status', 'workspace-saved');
+        return redirect()->to(locale_route('profile.workspaces.index'))->with('status', 'workspace-saved');
     }
 
     public function update(Request $request, string $workspaceId): RedirectResponse
@@ -91,7 +91,7 @@ class WorkspaceController extends AdminController
             return back()->withErrors(['name' => $e->getMessage()])->withInput();
         }
 
-        return redirect()->to(locale_route('admin.workspaces.index'))->with('status', 'workspace-saved');
+        return redirect()->to(locale_route('profile.workspaces.index'))->with('status', 'workspace-saved');
     }
 
     public function activate(string $workspaceId): RedirectResponse
@@ -115,14 +115,14 @@ class WorkspaceController extends AdminController
             abort(404);
         }
 
-        return redirect()->to(locale_route('admin.workspaces.index'))->with('status', 'workspace-duplicated');
+        return redirect()->to(locale_route('profile.workspaces.index'))->with('status', 'workspace-duplicated');
     }
 
     public function archive(string $workspaceId): RedirectResponse
     {
         $this->workspaces->archive($workspaceId, $this->user());
 
-        return redirect()->to(locale_route('admin.workspaces.index'))->with('status', 'workspace-archived');
+        return redirect()->to(locale_route('profile.workspaces.index'))->with('status', 'workspace-archived');
     }
 
     public function activePayload(): \Illuminate\Http\JsonResponse

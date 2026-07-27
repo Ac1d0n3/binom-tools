@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Contracts;
+namespace App\Profile\Contracts;
 
 use App\Accounts\AccountUser;
 
