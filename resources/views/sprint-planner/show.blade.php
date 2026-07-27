@@ -1,4 +1,4 @@
-@extends('layouts.tools', [
+@extends('foundations.layouts.tools', [
     'viteEntries' => [
         'resources/css/playbooks.css',
         'resources/css/sprint-planner.css',

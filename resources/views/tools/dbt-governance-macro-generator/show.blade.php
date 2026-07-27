@@ -1,4 +1,4 @@
-@extends('layouts.tools', [
+@extends('foundations.layouts.tools', [
     'viteEntries' => ['resources/js/tools/dbt-governance-macro-generator/index.js'],
 ])
 

@@ -50,7 +50,11 @@
                 </div>
             </div>
 
-            <div class="tools-filter-sidebar__tabs" role="tablist" aria-label="Filter dimensions">
+            <x-shared.ui.tabs
+                variant="underline"
+                aria-label="Filter dimensions"
+                class="tools-filter-sidebar__tabs"
+            >
                 @if ($hasProducts)
                     <button
                         type="button"
@@ -93,7 +97,7 @@
                         <span data-i18n="overview.tagsSectionTitle">Tags</span>
                     </button>
                 @endif
-            </div>
+            </x-shared.ui.tabs>
 
             <div class="tools-filter-sidebar__panels">
                 @if ($hasProducts)

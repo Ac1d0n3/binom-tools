@@ -37,6 +37,11 @@ Abgrenzung:
 Bestehende Bereiche bleiben die Basis:
 
 - `/playbooks`: fachliche Stories und Lernpfade.
+
+### Stories als Blog (Leitlinie)
+
+Stories dürfen **freistehend** sein (Blog/News/Meinung/Fallbeispiel), ohne Pflicht-Anbindung an einen Learning Path. Learning Paths kuratieren Teilmengen für Journeys; Advisor und Paths verlinken kuratierte Guides. Blog-artige Posts müssen nicht in Sprint-Templates landen. Story-Bodies bleiben Markdown unter `content/` (kein CMS in diesem Wave).
+
 - `/resources`: Vendor Resources mit Help, Governance, Learning, Certifications, Compliance und Stack-Filter.
 - `/suppliers`: Supplier Library mit Kernobjekten, Feldern, PII/DSDR, Skip-Tabellen und Standard-KPIs.
 - `/tools`: interaktive Generatoren und Discovery-Canvas.

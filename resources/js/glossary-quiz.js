@@ -2,6 +2,7 @@
  * Glossary buzzword quiz — modal + single/multi select, optional profile save.
  */
 
+import { openSharedModal, closeSharedModal, ensureDialogOnBody } from './shared/modal.js';
 import { getShellLabel } from './locale';
 
 const LOCAL_STORAGE_KEY = 'binom-tools-glossary-quiz-results';
@@ -456,10 +457,7 @@ function initQuizModal() {
         return;
     }
 
-    // Keep dialog in the top layer / outside overflow-clipped shell regions.
-    if (dialog.parentElement !== document.body) {
-        document.body.appendChild(dialog);
-    }
+    ensureDialogOnBody(dialog);
 
     const openBtn = document.querySelector('[data-glossary-quiz-open]');
     const closeBtn = dialog.querySelector('[data-glossary-quiz-close]');
@@ -473,21 +471,11 @@ function initQuizModal() {
         if (typeof panel?.__glossaryQuizReset === 'function') {
             panel.__glossaryQuizReset();
         }
-        if (typeof dialog.showModal === 'function') {
-            if (!dialog.open) {
-                dialog.showModal();
-            }
-        } else {
-            dialog.setAttribute('open', '');
-        }
+        openSharedModal(dialog);
     };
 
     const close = () => {
-        if (typeof dialog.close === 'function' && dialog.open) {
-            dialog.close();
-        } else {
-            dialog.removeAttribute('open');
-        }
+        closeSharedModal(dialog);
         if (typeof panel?.__glossaryQuizReset === 'function') {
             panel.__glossaryQuizReset();
         }

@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', 'Governance Sessions - ' . config('app.name'))
 @section('meta_description', 'Manage saved Governance Discovery Sessions, reports, validation states and workflow handoff.')

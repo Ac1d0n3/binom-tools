@@ -1,4 +1,4 @@
-@extends('layouts.tools', [
+@extends('foundations.layouts.tools', [
     'mainClass' => 'tools-shell__main--overview',
     'viteEntries' => ['resources/js/governance/radar.js'],
 ])

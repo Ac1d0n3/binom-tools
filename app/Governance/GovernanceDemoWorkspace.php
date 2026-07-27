@@ -31,6 +31,7 @@ class GovernanceDemoWorkspace
             'reportSnapshot' => [
                 'generatedAt' => '2026-07-26T12:00:00+02:00',
                 'advisor' => $payload['advisor'],
+                'guidance' => $payload['guidance'] ?? [],
                 'dataQuality' => $payload['dataQuality'],
                 'recommendations' => $payload['recommendations'],
                 'validation' => [
@@ -206,9 +207,44 @@ class GovernanceDemoWorkspace
                 'goal' => 'dq',
                 'domain' => 'erp',
                 'platform' => 'fabric',
+                'orgContext' => 'bank-finance',
                 'dqMode' => 'report_stabilization',
                 'dqLayer' => 'bi',
                 'dqIssues' => ['freshness', 'business_rule', 'completeness'],
+            ],
+            'guidance' => [
+                'certs' => [
+                    [
+                        'id' => 'cert-cippe-bank',
+                        'group' => 'certs',
+                        'title' => 'CIPP/E (privacy)',
+                        'reason' => 'Regulated finance context: privacy evidence and GDPR language matter.',
+                        'url' => '/compliance/cipp-e',
+                    ],
+                    [
+                        'id' => 'cert-iso-bank',
+                        'group' => 'certs',
+                        'title' => 'ISO 27001 / C5 orientation',
+                        'reason' => 'Security and control evidence for banks and financial services.',
+                        'url' => '/compliance/iso27001-li',
+                    ],
+                ],
+                'gaps' => [
+                    [
+                        'id' => 'gap-fit',
+                        'group' => 'gaps',
+                        'title' => 'Architecture fit',
+                        'reason' => 'Extending an existing stack: check fit and dependencies before a new source.',
+                        'url' => '/tools/architecture-fit',
+                    ],
+                ],
+                'stackNote' => [
+                    'id' => 'stack-note',
+                    'group' => 'gaps',
+                    'title' => 'Stack rationale',
+                    'reason' => 'Bank/finance: fold control and evidence needs into the stack choice early.',
+                    'url' => '/tools/governance-stack-advisor',
+                ],
             ],
             'kpis' => [
                 [

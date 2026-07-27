@@ -13,16 +13,16 @@
                     <h2
                         id="governance-advisor-title"
                         class="tools-section__title"
-                        data-text-de="Beantworte kurz die Lage, dann bekommst du passende Tools, Supplier und Links"
-                        data-text-en="Answer the situation, then get matching tools, suppliers, and links"
-                    >Answer the situation, then get matching tools, suppliers, and links</h2>
+                        data-text-de="Lage beantworten — passende Tools, Nachweise und Lücken"
+                        data-text-en="Answer the situation — matching tools, evidence, and gaps"
+                    >Answer the situation — matching tools, evidence, and gaps</h2>
                 </div>
                 <p
                     class="tools-section__lead"
                     data-hub-lead
-                    data-text-de="Gedacht für drei echte Startpunkte: neu bauen, bestehende Umgebung ergänzen oder Orientierung in einer vorhandenen Landschaft finden."
-                    data-text-en="Built for three real starting points: build new, extend an existing environment, or find orientation in a landscape that already exists."
-                >Built for three real starting points: build new, extend an existing environment, or find orientation in a landscape that already exists.</p>
+                    data-text-de="Drei Startpunkte: neu bauen, ergänzen oder Orientierung finden — inkl. Organisationskontext für Zertifikate, Stack-Fit und Brücken."
+                    data-text-en="Three starting points: build new, extend, or find orientation — including org context for certifications, stack fit, and bridges."
+                >Three starting points: build new, extend, or find orientation — including org context for certifications, stack fit, and bridges.</p>
             </div>
 
             <div class="governance-hub__personas" data-governance-personas role="group" aria-label="Role shortcuts">
@@ -154,6 +154,24 @@
                             <option value="sap" data-text-de="SAP-nahe Landschaft" data-text-en="SAP-near landscape">SAP-near landscape</option>
                             <option value="opensource" data-text-de="Open Source / leichtgewichtig" data-text-en="Open source / lightweight">Open source / lightweight</option>
                             <option value="custom" data-text-de="Eigener Stack…" data-text-en="Custom stack…">Custom stack…</option>
+                        </select>
+                        <span
+                            class="governance-advisor__select-label governance-advisor__select-label--a"
+                            data-text-de="Organisationskontext"
+                            data-text-en="Organisation context"
+                        >Organisation context</span>
+                        <span class="governance-advisor__select-label governance-advisor__select-label--b" aria-hidden="true"></span>
+                        <select class="governance-advisor__select-control--a" name="orgContext" data-governance-org-context>
+                            @php
+                                $orgContexts = config('foundations.taxonomy.orgContexts', []);
+                            @endphp
+                            @foreach ($orgContexts as $orgId => $orgLabels)
+                                @php
+                                    $orgEn = $orgLabels['en'] ?? $orgId;
+                                    $orgDe = $orgLabels['de'] ?? $orgEn;
+                                @endphp
+                                <option value="{{ $orgId }}" data-text-de="{{ $orgDe }}" data-text-en="{{ $orgEn }}">{{ $orgEn }}</option>
+                            @endforeach
                         </select>
                         <span class="governance-advisor__select-spacer governance-advisor__select-action--a" aria-hidden="true"></span>
                         <button type="button" class="governance-hub__button governance-hub__button--compact governance-advisor__stack-edit governance-advisor__select-action--b" data-governance-stack-builder-open hidden>

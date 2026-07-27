@@ -202,10 +202,10 @@ const shellLabels = {
         'home.toolsTitle': 'Binom-Tools',
         'home.aiTitle': 'AI-Tools',
         'home.aiLead':
-            'Prompts erstellen und vor dem Senden an externe KI-Tools anonymisieren.',
+            'Prompt Studio und AI Sanitizer als Kette in der Governance-Werkbank — vor dem Versand an externe KI.',
         'home.biTitle': 'BI-Formel-Tools',
         'home.biLead':
-            'Workbench-Generatoren für Qlik Set Analysis, Tableau Calculations und Power BI DAX — keine Governance-Setup-Workflows.',
+            'Qlik Set Analysis, Tableau Calculations und Power BI DAX — Teil der Governance-Werkbank für nachvollziehbare Report-Logik.',
         'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
@@ -250,7 +250,7 @@ const shellLabels = {
         'home.hub.radar.countLabel': 'Quellen',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
-            'Artefakt-Werkbank: Generatoren und Setup-Workflows — copy-paste-fähig. BI-Formel-Tools sind Hilfen, kein Governance-Setup.',
+            'Artefakt-Werkbank unter Governance: Setup-Workflows, BI-Formel-Generatoren und Prompt/Sanitizer — copy-paste-fähig.',
         'home.hub.tools.countLabel': 'Tools',
         'home.topStories.title': 'Top Stories',
         'home.topStories.lead': 'Aktuell am beliebtesten',
@@ -349,7 +349,7 @@ const shellLabels = {
         'compliance.roadmapCta': 'Zertifizierungs-Roadmap für Consultants →',
         'tools.overviewTitle': 'Binom-Tools',
         'tools.overviewLead':
-            'Artefakt-Werkbank unter dem Governance Hub: Setup- und Referenz-Workflows für PII, DQ, KPI und Discovery. BI-Formel-Generatoren (Qlik, Tableau, DAX) sind Hilfen für Report-Logik — kein Governance-Setup.',
+            'Artefakt-Werkbank unter dem Governance Hub: Setup und Referenz für PII, DQ, KPI und Discovery — inklusive BI-Formel-Generatoren (Qlik, Tableau, DAX) und Prompt Studio/Sanitizer in derselben Werkbank.',
         'tools.phoneGate.title': 'Tools ab Tablet',
         'tools.phoneGate.lead':
             'Die interaktiven Binom-Tools sind für Tablet- und Desktop-Bildschirme gebaut. Auf dem Phone lies stattdessen Stories — die sind dafür gemacht.',
@@ -1355,10 +1355,10 @@ const shellLabels = {
         'home.toolsTitle': 'Binom-Tools',
         'home.aiTitle': 'AI tools',
         'home.aiLead':
-            'Build prompts and sanitize them before sending to external AI tools.',
+            'Prompt Studio and AI Sanitizer as a chain in the governance workbench — before sending to external AI.',
         'home.biTitle': 'BI formula tools',
         'home.biLead':
-            'Workbench generators for Qlik Set Analysis, Tableau calculations, and Power BI DAX — not governance setup workflows.',
+            'Qlik Set Analysis, Tableau calculations, and Power BI DAX — part of the governance workbench for traceable report logic.',
         'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
             'Playbooks on data governance topics — step by step, from idea to implementation.',
@@ -1403,7 +1403,7 @@ const shellLabels = {
         'home.hub.radar.countLabel': 'sources',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
-            'Artifact workbench: generators and setup workflows — copy-paste ready. BI formula tools are helpers, not governance setup.',
+            'Artifact workbench under governance: setup workflows, BI formula generators, and Prompt/Sanitizer — copy-paste ready.',
         'home.hub.tools.countLabel': 'tools',
         'home.topStories.title': 'Top stories',
         'home.topStories.lead': 'Most liked right now',
@@ -1502,7 +1502,7 @@ const shellLabels = {
         'compliance.roadmapCta': 'Consultant certification roadmap →',
         'tools.overviewTitle': 'Binom-Tools',
         'tools.overviewLead':
-            'Artifact workbench under the Governance Hub: setup and reference workflows for PII, DQ, KPI, and discovery. BI formula generators (Qlik, Tableau, DAX) help with report logic — they are not governance setup.',
+            'Artifact workbench under the Governance Hub: setup and reference for PII, DQ, KPI, and discovery — including BI formula generators (Qlik, Tableau, DAX) and Prompt Studio/Sanitizer in the same workbench.',
         'tools.phoneGate.title': 'Tools from tablet onwards',
         'tools.phoneGate.lead':
             'Interactive Binom-Tools are built for tablet and desktop screens. On phones, open Stories instead — they are designed to read well here.',

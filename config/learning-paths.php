@@ -4,17 +4,12 @@
  * Learning Paths Hub — guided journeys by role/goal.
  *
  * Reuses stories, series, tools, glossary, and compliance as building blocks.
+ * Audiences come from TaxonomyFoundation (shared IDs).
  */
+$taxonomy = require __DIR__.'/foundations/taxonomy.php';
+
 return [
-    'audiences' => [
-        'privacy' => ['de' => 'Privacy / DPO', 'en' => 'Privacy / DPO'],
-        'engineering' => ['de' => 'Analytics Engineering', 'en' => 'Analytics engineering'],
-        'platform' => ['de' => 'Platform / Warehouse', 'en' => 'Platform / warehouse'],
-        'governance' => ['de' => 'Governance Lead', 'en' => 'Governance lead'],
-        'metrics' => ['de' => 'KPI / Metrics', 'en' => 'KPI / metrics'],
-        'ai' => ['de' => 'AI / ML', 'en' => 'AI / ML'],
-        'certification' => ['de' => 'Zertifizierung', 'en' => 'Certification'],
-    ],
+    'audiences' => $taxonomy['audiences'],
 
     'paths' => [
         [

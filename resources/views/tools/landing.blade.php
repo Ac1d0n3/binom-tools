@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', config('app.name'))
 @section('meta_description', 'Public online advisor for data governance: start with the right question, then stories, learning paths, glossary, radar, and copy-paste tools — by Thomas Lindackers.')

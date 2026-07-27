@@ -12,8 +12,8 @@ if (! function_exists('env')) {
 }
 
 return [
-    'version' => env('BINOM_TOOLS_VERSION', '0.1.0'),
-    'beta' => filter_var(env('BINOM_TOOLS_BETA', true), FILTER_VALIDATE_BOOL),
+    'version' => env('BINOM_TOOLS_VERSION', '1.0.0'),
+    'beta' => filter_var(env('BINOM_TOOLS_BETA', false), FILTER_VALIDATE_BOOL),
 
     'meta_keywords' => [
         'data governance',

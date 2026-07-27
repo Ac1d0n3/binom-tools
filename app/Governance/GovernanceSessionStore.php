@@ -232,6 +232,7 @@ final class GovernanceSessionStore
         return [
             'generatedAt' => now()->toIso8601String(),
             'advisor' => is_array($payload['advisor'] ?? null) ? $payload['advisor'] : [],
+            'guidance' => is_array($payload['guidance'] ?? null) ? $payload['guidance'] : [],
             'dataQuality' => is_array($payload['dataQuality'] ?? null) ? $payload['dataQuality'] : [],
             'recommendations' => is_array($payload['recommendations'] ?? null) ? $payload['recommendations'] : [],
             'validation' => $validation,

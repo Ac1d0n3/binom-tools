@@ -29,6 +29,35 @@ const scanRoots = [
 ];
 
 /**
+ * Extra PNG roots outside playbooks (landing / hero raster) — skip icons.
+ * @returns {string[]}
+ */
+function collectExtraPngRoots() {
+    const imagesDir = join(root, 'public/images');
+    if (!statSync(imagesDir, { throwIfNoEntry: false })?.isDirectory()) {
+        return [];
+    }
+
+    /** @type {string[]} */
+    const roots = [];
+    for (const entry of readdirSync(imagesDir, { withFileTypes: true })) {
+        if (entry.name === 'playbooks' || entry.name === 'icons') {
+            continue;
+        }
+        const fullPath = join(imagesDir, entry.name);
+        if (entry.isDirectory()) {
+            roots.push(fullPath);
+            continue;
+        }
+        if (entry.isFile() && extname(entry.name).toLowerCase() === '.png') {
+            roots.push(fullPath);
+        }
+    }
+
+    return roots;
+}
+
+/**
  * @param {string} dir
  * @returns {string[]}
  */
@@ -128,10 +157,10 @@ function formatBytes(bytes) {
 }
 
 /** @type {string[]} */
-const pngFiles = scanRoots.flatMap((path) => collectPngFiles(path));
+const pngFiles = [...scanRoots, ...collectExtraPngRoots()].flatMap((path) => collectPngFiles(path));
 
 if (pngFiles.length === 0) {
-    console.error('No PNG files found under public/images/playbooks/.');
+    console.error('No PNG files found under public/images/.');
     process.exit(1);
 }
 

@@ -26,7 +26,7 @@ class GovernanceSessionController extends Controller
         $user = $this->auth->user();
         abort_if($user === null, 401);
 
-        return view('governance.sessions.index', [
+        return view('domains.governance.sessions.index', [
             'sessions' => $this->sessions->listFor($user, $request->boolean('archived')),
             'showArchived' => $request->boolean('archived'),
         ]);
@@ -36,7 +36,7 @@ class GovernanceSessionController extends Controller
     {
         $session = $this->demo->session();
 
-        return view('governance.sessions.report', [
+        return view('domains.governance.sessions.report', [
             'session' => $session,
             'report' => $this->reportData($session),
             'isDemo' => true,
@@ -47,7 +47,7 @@ class GovernanceSessionController extends Controller
     {
         $session = $this->demo->session();
 
-        return view('governance.sessions.demo-workspace', [
+        return view('domains.governance.sessions.demo-workspace', [
             'session' => $session,
             'workspace' => $this->demo->workspace(),
             'report' => $this->reportData($session),
@@ -62,7 +62,7 @@ class GovernanceSessionController extends Controller
         $session = $this->sessions->findFor($user, $sessionId);
         abort_if($session === null, 404);
 
-        return view('governance.sessions.report', [
+        return view('domains.governance.sessions.report', [
             'session' => $session,
             'report' => $this->reportData($session),
         ]);
@@ -213,6 +213,7 @@ class GovernanceSessionController extends Controller
 
         return [
             'advisor' => is_array($payload['advisor'] ?? null) ? $payload['advisor'] : [],
+            'guidance' => is_array($payload['guidance'] ?? null) ? $payload['guidance'] : [],
             'dataQuality' => is_array($payload['dataQuality'] ?? null) ? $payload['dataQuality'] : [],
             'kpis' => is_array($payload['kpis'] ?? null) ? $payload['kpis'] : [],
             'sourceScope' => is_array($payload['sourceScope'] ?? null) ? $payload['sourceScope'] : [],

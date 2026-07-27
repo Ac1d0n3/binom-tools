@@ -1,4 +1,4 @@
-@extends('layouts.tools', ['viteEntries' => ['resources/js/governance/hub-advisor.js']])
+@extends('foundations.layouts.tools', ['viteEntries' => ['resources/js/governance/hub-advisor.js']])
 
 @php
     $faqEntities = collect($hubFaqs ?? [])->map(static fn (array $faq): array => [
@@ -67,7 +67,7 @@
             ['label' => 'Advisor', 'href' => locale_route('governance.advisor')],
         ]" />
 
-        @include('governance.partials.www-nav')
+        @include('domains.governance.partials.www-nav')
 
         
 
@@ -90,8 +90,8 @@
             <x-governance.author-byline compact />
         </header>
 
-        @include('governance.partials.stack-builder-modal')
-        @include('governance.partials.advisor-panel', ['standalone' => true])
+        @include('domains.governance.partials.stack-builder-modal')
+        @include('domains.governance.partials.advisor-panel', ['standalone' => true])
 
         <x-governance.seo-guide
             problem-de="Du brauchst einen klaren Start, bevor du Stack, Quelle oder KPI-Modell baust."

@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', 'Disclaimer — ' . config('app.name'))
 @section('meta_description', 'Hinweise zu Inhalt, Empfehlungen, Best Practices, Haftung, Vollständigkeit und Werbefreiheit von binom-tools.')

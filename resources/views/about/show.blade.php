@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', 'About — ' . config('app.name'))
 @section('meta_description', 'About Binom Governance — public online advisor by Thomas Lindackers: orientation, tools, and evidence for data governance. Open source, not a commercial product.')

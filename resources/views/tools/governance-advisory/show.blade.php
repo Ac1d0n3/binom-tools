@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @php
     $viteEntries = ['resources/js/tools/governance-advisory/index.js'];

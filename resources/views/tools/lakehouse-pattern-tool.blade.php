@@ -1,4 +1,4 @@
-@extends('layouts.tools', [
+@extends('foundations.layouts.tools', [
     'viteEntries' => [$platform === 'fabric' ? 'resources/js/tools/fabric-dq-pattern-generator/index.js' : 'resources/js/tools/databricks-dq-pattern-generator/index.js'],
 ])
 

@@ -218,13 +218,13 @@
 </section>
 
 <section class="governance-hub__guides-block" id="guides-stacks" data-governance-subtab-panel="stacks" role="tabpanel" hidden>
-    @include('governance.partials.panel-stacks')
+    @include('domains.governance.partials.panel-stacks')
 </section>
 
 <section class="governance-hub__guides-block" id="guides-kpi" data-governance-subtab-panel="kpi" role="tabpanel" hidden>
-    @include('governance.partials.panel-kpi')
+    @include('domains.governance.partials.panel-kpi')
 </section>
 
 <section class="governance-hub__guides-block" id="guides-supplier" data-governance-subtab-panel="supplier" role="tabpanel" hidden>
-    @include('governance.partials.panel-supplier')
+    @include('domains.governance.partials.panel-supplier')
 </section>

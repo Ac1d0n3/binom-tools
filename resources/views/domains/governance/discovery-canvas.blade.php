@@ -1,4 +1,4 @@
-@extends('layouts.tools', ['viteEntries' => ['resources/js/governance/discovery-canvas.js']])
+@extends('foundations.layouts.tools', ['viteEntries' => ['resources/js/governance/discovery-canvas.js']])
 
 @php
     $faqEntities = collect($hubFaqs ?? [])->map(static fn (array $faq): array => [
@@ -50,7 +50,7 @@
             ['label' => 'Discovery canvas', 'href' => locale_route('governance.discovery-canvas')],
         ]" />
 
-        @include('governance.partials.www-nav')
+        @include('domains.governance.partials.www-nav')
 
         
 

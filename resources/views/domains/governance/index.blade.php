@@ -1,4 +1,4 @@
-@extends('layouts.tools', [
+@extends('foundations.layouts.tools', [
     'viteEntries' => ['resources/js/governance/hub-advisor.js', 'resources/js/governance/discovery-canvas.js'],
     'mainClass' => 'tools-shell__main--overview',
 ])
@@ -305,7 +305,14 @@
             </div>
         </aside>
 
-        <nav class="governance-hub__tabs" aria-label="Governance Bereiche" data-governance-tabs role="tablist" data-governance-initial-tab="{{ $initialTab ?? 'advisor' }}" data-governance-initial-fragment="{{ $initialFragment ?? '' }}">
+        <x-shared.ui.tabs
+            variant="folder"
+            aria-label="Governance Bereiche"
+            class="governance-hub__tabs"
+            data-governance-tabs
+            data-governance-initial-tab="{{ $initialTab ?? 'advisor' }}"
+            data-governance-initial-fragment="{{ $initialFragment ?? '' }}"
+        >
             <button type="button" class="governance-hub__tab phone-hide-advisor" id="governance-tab-button-advisor" data-phone-hide-advisor data-governance-tab-toggle="advisor" role="tab" aria-controls="governance-tab-advisor" aria-selected="false" tabindex="-1">
                 <i class="fa-solid fa-compass" aria-hidden="true"></i>
                 <span data-text-de="Advisor" data-text-en="Advisor">Advisor</span>
@@ -334,22 +341,22 @@
                     <b data-governance-hub-filter-count></b>
                 </span>
             </button>
-        </nav>
+        </x-shared.ui.tabs>
 
-        @include('governance.partials.stack-builder-modal')
+        @include('domains.governance.partials.stack-builder-modal')
 
-        @include('governance.partials.advisor-panel')
+        @include('domains.governance.partials.advisor-panel')
 
         <section class="governance-hub__section" id="governance-tab-guides" aria-labelledby="governance-tab-button-guides" data-governance-tab-panel="guides" role="tabpanel" hidden>
-            @include('governance.partials.panel-guides')
+            @include('domains.governance.partials.panel-guides')
         </section>
 
         <section class="governance-hub__section" id="governance-tab-canvas" aria-labelledby="governance-tab-button-canvas" data-governance-tab-panel="canvas" role="tabpanel" hidden>
-            @include('governance.partials.panel-canvas')
+            @include('domains.governance.partials.panel-canvas')
         </section>
 
         <section class="governance-hub__section phone-hide-tools" id="governance-tab-tools" aria-labelledby="governance-tab-button-tools" data-phone-hide-tools data-governance-tab-panel="tools" role="tabpanel" hidden>
-            @include('governance.partials.panel-tools')
+            @include('domains.governance.partials.panel-tools')
         </section>
 
     </div>

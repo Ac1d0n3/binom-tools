@@ -108,6 +108,10 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('id="governance-faq"', false);
         $response->assertSee('What is the Governance Hub?', false);
         $response->assertSee('Interactive decision aid');
+        $response->assertSee('name="orgContext"', false);
+        $response->assertSee('data-governance-org-context', false);
+        $response->assertSee('Organisation context');
+        $response->assertSee('matching tools, evidence, and gaps');
         $response->assertSee('Ich baue neu auf', false);
         $response->assertSee('Ich ergänze Bestehendes', false);
         $response->assertSee('Alles ist da, ich brauche Hilfe', false);

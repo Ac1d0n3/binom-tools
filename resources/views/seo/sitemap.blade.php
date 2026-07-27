@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', 'Sitemap — ' . config('app.name'))
 @section('meta_description', 'Browse the main sections of Binom Governance — hubs, governance, and legal pages.')

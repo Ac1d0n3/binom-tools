@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', ($content['title'] ?? 'Privacy') . ' — ' . config('app.name'))
 

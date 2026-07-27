@@ -5,6 +5,7 @@
     'loading' => 'lazy',
     'fetchpriority' => null,
     'decoding' => null,
+    'sizes' => '(max-width: 768px) 100vw, 960px',
 ])
 
 @php
@@ -15,12 +16,13 @@
 @if ($fallbackUrl)
     @if ($sources)
         <picture>
-            <source srcset="{{ $sources['webp'] }}" type="image/webp">
+            <source srcset="{{ $sources['webp'] }}" type="image/webp" @if ($sizes) sizes="{{ $sizes }}" @endif>
             <img
                 src="{{ $sources['fallback'] }}"
                 alt="{{ $alt }}"
                 @class([$class => filled($class)])
                 loading="{{ $loading }}"
+                @if ($sizes) sizes="{{ $sizes }}" @endif
                 @if ($fetchpriority) fetchpriority="{{ $fetchpriority }}" @endif
                 @if ($decoding) decoding="{{ $decoding }}" @endif
                 {{ $attributes }}
@@ -32,6 +34,7 @@
             alt="{{ $alt }}"
             @class([$class => filled($class)])
             loading="{{ $loading }}"
+            @if ($sizes) sizes="{{ $sizes }}" @endif
             @if ($fetchpriority) fetchpriority="{{ $fetchpriority }}" @endif
             @if ($decoding) decoding="{{ $decoding }}" @endif
             {{ $attributes }}

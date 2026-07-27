@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', 'Governance Demo Workspace - ' . config('app.name'))
 @section('meta_description', 'Example governance path without login: filled demo workspace with session, plans, KPI cards, generator results — then open the sample report.')

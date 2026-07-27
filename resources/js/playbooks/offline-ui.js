@@ -1,4 +1,5 @@
 import { applyLocaleToDocument, getLocale, getShellLabel } from '../locale.js';
+import { openSharedModal, closeSharedModal } from '../shared/modal.js';
 import {
     downloadAllStoriesOffline,
     downloadStoryOffline,
@@ -518,7 +519,7 @@ export async function initPlaybookOfflineIndex(root = document) {
         hideConfirm();
         setProgress(false);
         await renderModalState();
-        modal.showModal();
+        openSharedModal(modal);
         void loadSizeHint();
     };
 
@@ -528,13 +529,13 @@ export async function initPlaybookOfflineIndex(root = document) {
 
     closeBtn?.addEventListener('click', () => {
         if (!busy) {
-            modal.close();
+            closeSharedModal(modal);
         }
     });
 
     modal.addEventListener('click', (event) => {
         if (event.target === modal && !busy) {
-            modal.close();
+            closeSharedModal(modal);
         }
     });
 

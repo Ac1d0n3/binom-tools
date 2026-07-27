@@ -5,7 +5,10 @@
  *
  * Learning and orientation only — not legal advice.
  * Prefer primary sources (EUR-Lex, BSI, NIST) and link into existing playbooks.
+ * Regions come from TaxonomyFoundation (shared IDs).
  */
+$taxonomy = require __DIR__.'/foundations/taxonomy.php';
+
 return [
     'categories' => [
         'privacy' => ['de' => 'Privacy', 'en' => 'Privacy'],
@@ -15,12 +18,7 @@ return [
         'sector' => ['de' => 'Sektor', 'en' => 'Sector'],
     ],
 
-    'regions' => [
-        'eu' => ['de' => 'EU', 'en' => 'EU'],
-        'de' => ['de' => 'Deutschland', 'en' => 'Germany'],
-        'us' => ['de' => 'USA', 'en' => 'US'],
-        'intl' => ['de' => 'International', 'en' => 'International'],
-    ],
+    'regions' => $taxonomy['regions'],
 
     'types' => [
         'regulation' => ['de' => 'Verordnung / Gesetz', 'en' => 'Regulation / law'],

@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @php
     $faqEntities = collect($hubFaqs ?? [])->map(static fn (array $faq): array => [
@@ -50,7 +50,7 @@
             ['label' => 'Stacks', 'href' => locale_route('governance.stacks')],
         ]" />
 
-        @include('governance.partials.www-nav')
+        @include('domains.governance.partials.www-nav')
 
         
 

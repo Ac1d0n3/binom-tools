@@ -34,7 +34,7 @@ class GovernanceHubController extends Controller
         $rawTab = is_string($request->query('tab')) ? $request->query('tab') : 'advisor';
         [$tab, $fragment] = $this->resolveHubTab($rawTab);
 
-        return view('governance.index', [
+        return view('domains.governance.index', [
             'counts' => $catalog['counts'],
             'featuredTools' => $catalog['featuredTools'],
             'journeys' => $this->journeys(),
@@ -264,7 +264,7 @@ class GovernanceHubController extends Controller
             return $sourceId.': '.$short;
         }, $feedErrorStatuses);
 
-        return view('governance.radar', [
+        return view('domains.governance.radar', [
             'sources' => $sources,
             'customSources' => $customSources,
             'radarSourcesApiUrl' => $user !== null ? url('/api/governance/radar/sources') : null,
@@ -723,6 +723,20 @@ class GovernanceHubController extends Controller
                 'learningPaths' => locale_route('learning-paths.index'),
                 'roles' => locale_route('roles.index'),
                 'sprintPlanner' => locale_route('sprint-planner.templates'),
+            ],
+            'guidance' => [
+                'roadmap' => locale_route('compliance.roadmap'),
+                'eightPillars' => locale_route('playbooks.show', ['slug' => 'eight-pillars']),
+                'cdmp' => locale_route('compliance.show', ['slug' => 'cdmp']),
+                'cippE' => locale_route('compliance.show', ['slug' => 'cipp-e']),
+                'iso27001' => locale_route('compliance.show', ['slug' => 'iso27001-li']),
+                'dsbDe' => locale_route('compliance.show', ['slug' => 'dsb-de']),
+                'promptStudio' => locale_route('tools.prompt-studio'),
+                'aiSanitizer' => locale_route('tools.governance-ai-sanitizer'),
+                'toolsOverview' => locale_route('tools.overview'),
+                'qlikSetAnalysis' => locale_route('tools.qlik-set-analysis-generator'),
+                'bridgeSolutionStory' => locale_route('playbooks.show', ['slug' => 'bridge-solution']),
+                'guidesStacks' => locale_route('governance.index').'#guides-stacks',
             ],
             'session' => [
                 'accountsEnabled' => (bool) config('accounts.enabled', false),

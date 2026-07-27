@@ -1,4 +1,4 @@
-@extends('layouts.tools', [
+@extends('foundations.layouts.tools', [
     'mainClass' => 'tools-shell__main--overview',
 ])
 
@@ -82,7 +82,12 @@
             </p>
         </header>
 
-        <div class="supplier-detail__tabs" role="tablist" data-i18n-aria="suppliers.tabsLabel">
+        <x-shared.ui.tabs
+            variant="underline"
+            class="supplier-detail__tabs"
+            data-i18n-aria="suppliers.tabsLabel"
+            aria-label="Supplier sections"
+        >
             <button type="button" class="supplier-detail__tab is-active" data-supplier-tab="measures" role="tab" aria-selected="true" aria-controls="supplier-panel-measures" id="supplier-tab-measures" data-i18n="suppliers.sectionMeasures">Measures</button>
             <button type="button" class="supplier-detail__tab" data-supplier-tab="dimensions" role="tab" aria-selected="false" aria-controls="supplier-panel-dimensions" id="supplier-tab-dimensions" data-i18n="suppliers.sectionDimensions">Dimensions</button>
             <button type="button" class="supplier-detail__tab" data-supplier-tab="pii" role="tab" aria-selected="false" aria-controls="supplier-panel-pii" id="supplier-tab-pii" data-i18n="suppliers.sectionPii">PII &amp; DSDR</button>
@@ -96,7 +101,7 @@
                 <button type="button" class="supplier-detail__tab" data-supplier-tab="sql" role="tab" aria-selected="false" aria-controls="supplier-panel-sql" id="supplier-tab-sql" data-i18n="suppliers.sectionSql">SQL</button>
             @endif
             <button type="button" class="supplier-detail__tab" data-supplier-tab="tools" role="tab" aria-selected="false" aria-controls="supplier-panel-tools" id="supplier-tab-tools" data-i18n="suppliers.sectionTools">Tools &amp; playbooks</button>
-        </div>
+        </x-shared.ui.tabs>
 
         <div class="supplier-detail__sections">
             <section id="supplier-panel-measures" class="supplier-detail__section is-active" data-supplier-panel="measures" role="tabpanel" aria-labelledby="supplier-tab-measures">

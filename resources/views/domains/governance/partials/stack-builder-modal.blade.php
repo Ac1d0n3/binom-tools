@@ -1,4 +1,8 @@
-<dialog class="stack-builder-modal" data-governance-stack-builder>
+<dialog
+    class="stack-builder-modal bn-shared-modal"
+    data-governance-stack-builder
+    data-shared-modal
+>
     <form method="dialog" class="stack-builder-modal__sheet">
         <header class="stack-builder-modal__header">
             <div>

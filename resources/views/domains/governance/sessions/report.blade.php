@@ -1,4 +1,4 @@
-@extends('layouts.tools')
+@extends('foundations.layouts.tools')
 
 @section('title', $session['title'] . ' - Governance Report')
 @section('meta_description', ! empty($isDemo)
@@ -8,6 +8,7 @@
 @section('content')
     @php
         $advisor = $report['advisor'] ?? [];
+        $guidance = $report['guidance'] ?? [];
         $dataQuality = $report['dataQuality'] ?? [];
         $kpis = $report['kpis'] ?? [];
         $sourceScope = $report['sourceScope'] ?? [];
@@ -16,6 +17,9 @@
         $recommendations = $report['recommendations'] ?? [];
         $validation = $report['validation'] ?? [];
         $warnings = is_array($validation['warnings'] ?? null) ? $validation['warnings'] : [];
+        $guidanceCerts = is_array($guidance['certs'] ?? null) ? $guidance['certs'] : [];
+        $guidanceGaps = is_array($guidance['gaps'] ?? null) ? $guidance['gaps'] : [];
+        $guidanceItems = array_values(array_filter([...$guidanceCerts, ...$guidanceGaps]));
     @endphp
     <div class="tools-content governance-report">
         <header class="governance-report__header">
@@ -92,6 +96,7 @@
                 <div><dt>Goal</dt><dd>{{ $advisor['goal'] ?? '-' }}</dd></div>
                 <div><dt>Source type</dt><dd>{{ $advisor['domain'] ?? '-' }}</dd></div>
                 <div><dt>Target stack</dt><dd>{{ $advisor['platform'] ?? '-' }}</dd></div>
+                <div><dt data-text-de="Organisationskontext" data-text-en="Organisation context">Organisation context</dt><dd>{{ $advisor['orgContext'] ?? '-' }}</dd></div>
             </dl>
         </section>
 
@@ -109,6 +114,21 @@
                 @endforelse
             </div>
         </section>
+
+        @if ($guidanceItems !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="Nachweise &amp; Lücken" data-text-en="Evidence &amp; gaps">Evidence &amp; gaps</h2>
+                <div class="governance-report__recommendations">
+                    @foreach ($guidanceItems as $item)
+                        <a href="{{ $item['url'] ?? '#' }}">
+                            <strong>{{ $item['title'] ?? '-' }}</strong>
+                            <span>{{ $item['group'] ?? 'guidance' }}</span>
+                            <em>{{ $item['reason'] ?? '' }}</em>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
 
         @if ($kpis !== [])
             <section class="governance-report__section">

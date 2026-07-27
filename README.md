@@ -1,8 +1,10 @@
 # binom-tools
 
-**Governance Help Hub** for data, BI, and analytics teams — Markdown playbooks, interactive reference workflows, and bilingual UI. Cloneable starter template, no CMS.
+**Governance Help Hub** (v1.0.0) for data, BI, and analytics teams — Markdown playbooks, interactive reference workflows, and bilingual UI. Cloneable starter template, no CMS.
 
-> Open-source hobby project by [Binom](https://binom.net) — not a commercial product.
+> Open-source public advisor by [Binom](https://binom.net) / Thomas Lindackers — not a commercial SaaS product. Dual store (file default, MySQL optional). Stories stay Markdown under `content/`.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for where new code belongs (Foundations / Shared / Domains).
 
 ## What you get
 

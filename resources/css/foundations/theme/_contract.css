@@ -1,0 +1,11 @@
+/**
+ * ThemeFoundation — token contract.
+ * Every theme (light + dark scheme) should define these custom properties.
+ * First theme: blue-water.css
+ */
+:root {
+    /* Documented contract — values come from active theme classes */
+    --bn-color-border: var(--base-border-color, #b8cddd);
+    --bn-color-text: var(--content-font-color, #102734);
+    --theme-color-danger: var(--theme-color-error, #c14f4f);
+}
