@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Accounts\Contracts\GlossaryQuizResultStoreInterface;
 use App\Accounts\Contracts\PlanAttachmentStoreInterface;
 use App\Accounts\Contracts\PlanStoreInterface;
 use App\Accounts\Contracts\PromptStudioLibraryStoreInterface;
@@ -10,6 +11,7 @@ use App\Accounts\Contracts\StoryAclRepositoryInterface;
 use App\Accounts\Contracts\TeamRepositoryInterface;
 use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Accounts\Contracts\UserTemplateStoreInterface;
+use App\Accounts\Database\DatabaseGlossaryQuizResultStore;
 use App\Accounts\Database\DatabasePlanAttachmentStore;
 use App\Accounts\Database\DatabasePlanStore;
 use App\Accounts\Database\DatabasePromptStudioLibraryStore;
@@ -18,6 +20,7 @@ use App\Accounts\Database\DatabaseStoryAclRepository;
 use App\Accounts\Database\DatabaseTeamRepository;
 use App\Accounts\Database\DatabaseUserRepository;
 use App\Accounts\Database\DatabaseUserTemplateStore;
+use App\Accounts\GlossaryQuizResultStore;
 use App\Accounts\PlanAttachmentStore;
 use App\Accounts\PlanStore;
 use App\Accounts\PromptStudioLibraryStore;
@@ -115,6 +118,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->singleton(UserTemplateStoreInterface::class, DatabaseUserTemplateStore::class);
             $this->app->singleton(ReadStateStoreInterface::class, DatabaseReadStateStore::class);
             $this->app->singleton(PromptStudioLibraryStoreInterface::class, DatabasePromptStudioLibraryStore::class);
+            $this->app->singleton(GlossaryQuizResultStoreInterface::class, DatabaseGlossaryQuizResultStore::class);
             $this->app->singleton(PlanAttachmentStoreInterface::class, DatabasePlanAttachmentStore::class);
             $this->app->singleton(PlaybookStatsStoreInterface::class, DatabasePlaybookStatsStore::class);
             $this->app->singleton(CalendarHolidayStoreInterface::class, DatabaseCalendarHolidayStore::class);
@@ -147,6 +151,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PromptStudioLibraryStoreInterface::class, static function ($app): PromptStudioLibraryStore {
             return new PromptStudioLibraryStore($app->make(\App\Accounts\AccountsConfig::class), $app->make(\App\Accounts\JsonFileStore::class));
         });
+        $this->app->singleton(GlossaryQuizResultStoreInterface::class, static function ($app): GlossaryQuizResultStore {
+            return new GlossaryQuizResultStore($app->make(\App\Accounts\AccountsConfig::class), $app->make(\App\Accounts\JsonFileStore::class));
+        });
         $this->app->singleton(PlanAttachmentStoreInterface::class, static function ($app): PlanAttachmentStore {
             return new PlanAttachmentStore($app->make(\App\Accounts\AccountsConfig::class), $app->make(\App\Accounts\JsonFileStore::class));
         });
@@ -167,6 +174,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(UserTemplateStore::class, static fn ($app) => $app->make(UserTemplateStoreInterface::class));
         $this->app->singleton(ReadStateStore::class, static fn ($app) => $app->make(ReadStateStoreInterface::class));
         $this->app->singleton(PromptStudioLibraryStore::class, static fn ($app) => $app->make(PromptStudioLibraryStoreInterface::class));
+        $this->app->singleton(GlossaryQuizResultStore::class, static fn ($app) => $app->make(GlossaryQuizResultStoreInterface::class));
         $this->app->singleton(PlaybookStatsStore::class, static fn ($app) => $app->make(PlaybookStatsStoreInterface::class));
         $this->app->singleton(FileCalendarHolidayStore::class, static fn ($app) => $app->make(CalendarHolidayStoreInterface::class));
     }

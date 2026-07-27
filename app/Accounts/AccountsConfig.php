@@ -56,6 +56,11 @@ final class AccountsConfig
         return $this->basePath().DIRECTORY_SEPARATOR.'prompt-studio-library';
     }
 
+    public function glossaryQuizDirectory(): string
+    {
+        return $this->basePath().DIRECTORY_SEPARATOR.'glossary-quiz';
+    }
+
     public function governanceSessionsDirectory(): string
     {
         return $this->basePath().DIRECTORY_SEPARATOR.'governance-sessions';

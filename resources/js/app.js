@@ -36,6 +36,18 @@ initPlaybookCardActions();
 initSupplierLibraryCopy();
 initSupplierLibraryTabs();
 
+if (document.querySelector('[data-glossary-quiz], [data-glossary-quiz-modal]')) {
+    void import('./glossary-quiz.js').catch((error) => {
+        console.warn('Glossary quiz failed to load.', error);
+    });
+}
+
+if (document.querySelector('[data-glossary-bingo]')) {
+    void import('./glossary-bingo.js').catch((error) => {
+        console.warn('Glossary bingo failed to load.', error);
+    });
+}
+
 if (document.querySelector('[data-playbook-offline-index], [data-playbook-card-offline], [data-playbook-series-offline]')) {
     void import('./playbooks/offline-ui')
         .then(({ initOfflineBanner, initPlaybookOfflineIndex }) => {

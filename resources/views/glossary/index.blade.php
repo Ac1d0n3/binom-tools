@@ -94,6 +94,31 @@
                         <span class="sr-only" data-i18n="overview.layoutList">List view</span>
                     </button>
                 </div>
+                <div class="glossary-hub-icon-actions" role="group">
+                    <button
+                        type="button"
+                        class="glossary-hub-icon-btn"
+                        data-glossary-quiz-open
+                        data-tooltip-css
+                        data-i18n-aria="glossary.quiz.cta"
+                        aria-label="Buzzword Quiz"
+                        aria-haspopup="dialog"
+                        aria-controls="glossary-quiz-modal"
+                    >
+                        <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i>
+                        <span class="sr-only" data-i18n="glossary.quiz.cta">Buzzword Quiz</span>
+                    </button>
+                    <a
+                        href="{{ locale_route('glossary.bingo') }}"
+                        class="glossary-hub-icon-btn"
+                        data-tooltip-css
+                        data-i18n-aria="glossary.bingo.cta"
+                        aria-label="Funny Meeting Bingo"
+                    >
+                        <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>
+                        <span class="sr-only" data-i18n="glossary.bingo.cta">Funny Meeting Bingo</span>
+                    </a>
+                </div>
                 <span
                     class="tools-overview-count-badge"
                     data-overview-result-count
@@ -201,4 +226,121 @@
             </div>
         </div>
     </div>
+
+    @php
+        $questionCount = (int) request()->query('count', \App\Glossary\BuzzwordQuizGenerator::DEFAULT_COUNT);
+        $questionCount = \App\Glossary\BuzzwordQuizGenerator::clampQuestionCount($questionCount);
+        $countOptions = range(
+            \App\Glossary\BuzzwordQuizGenerator::MIN_COUNT,
+            \App\Glossary\BuzzwordQuizGenerator::MAX_COUNT,
+            5
+        );
+        if (! in_array($questionCount, $countOptions, true)) {
+            $countOptions[] = $questionCount;
+            sort($countOptions);
+        }
+        $openQuiz = request()->boolean('quiz');
+        $isDe = current_locale() === 'de';
+    @endphp
+    <dialog
+        id="glossary-quiz-modal"
+        class="glossary-quiz-modal"
+        data-glossary-quiz-modal
+        @if ($openQuiz) data-glossary-quiz-autopen="1" @endif
+        aria-labelledby="glossary-quiz-modal-title"
+    >
+        <div
+            class="glossary-quiz-modal__panel"
+            data-glossary-quiz
+            data-quiz-data-url="{{ $quizDataUrl }}"
+            data-can-save="{{ ! empty($canSaveQuizToProfile) ? '1' : '0' }}"
+            @if (! empty($quizResultsUrl))
+                data-quiz-save-url="{{ $quizResultsUrl }}"
+            @endif
+        >
+            <header class="glossary-quiz-modal__header">
+                <h2 id="glossary-quiz-modal-title" class="glossary-quiz-modal__title" data-i18n="glossary.quiz.title">
+                    Buzzword Quiz
+                </h2>
+                <button
+                    type="button"
+                    class="tools-btn tools-btn--ghost tools-btn--compact glossary-quiz-modal__close"
+                    data-glossary-quiz-close
+                    data-i18n-aria="glossary.quiz.close"
+                    aria-label="{{ $isDe ? 'Schließen' : 'Close' }}"
+                >
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <p class="glossary-quiz-modal__lead" data-i18n="glossary.quiz.lead">
+                {{ $isDe
+                    ? 'Gemischte Single- und Multi-Choice-Fragen aus dem Glossar — neue Begriffe fließen automatisch ein.'
+                    : 'Mixed single- and multi-choice questions from the live glossary — new terms are included automatically.' }}
+            </p>
+
+            <form class="glossary-setup-form" data-quiz-setup-form>
+                <label class="glossary-setup-form__field">
+                    <span data-i18n="glossary.quiz.countLabel">{{ $isDe ? 'Fragen' : 'Questions' }}</span>
+                    <span class="tools-overview-sort__field">
+                        <select class="tools-overview-sort__select" name="count" data-quiz-count-select>
+                            @foreach ($countOptions as $option)
+                                <option value="{{ $option }}" @selected($option === $questionCount)>{{ $option }}</option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
+                    </span>
+                </label>
+                @include('glossary.partials.category-picks', [
+                    'availableCategories' => $availableCategories ?? [],
+                    'categories' => $categories ?? [],
+                    'selectedCategories' => $selectedQuizCategories ?? null,
+                    'selectAllWhenEmpty' => false,
+                    'inputName' => 'categories[]',
+                    'dataAttr' => 'data-quiz-category',
+                    'legendI18n' => 'glossary.quiz.categoriesLabel',
+                    'legendFallback' => $isDe ? 'Kategorien' : 'Categories',
+                    'hintI18n' => 'glossary.quiz.categoriesHint',
+                    'hintFallback' => $isDe
+                        ? 'Optional — ohne Auswahl spielen alle Kategorien mit.'
+                        : 'Optional — with no selection, all categories are included.',
+                ])
+                <button type="submit" class="tools-btn tools-btn--primary" data-quiz-start>
+                    <i class="fa-solid fa-play" aria-hidden="true"></i>
+                    <span data-i18n="glossary.quiz.start">{{ $isDe ? 'Quiz starten' : 'Start quiz' }}</span>
+                </button>
+            </form>
+
+            <script type="application/json" data-glossary-quiz-questions>[]</script>
+
+            <div class="glossary-quiz" data-glossary-quiz-ui hidden>
+                <div class="glossary-quiz__progress" data-quiz-progress aria-live="polite"></div>
+                <p class="glossary-quiz__stem" data-quiz-stem></p>
+                <blockquote class="glossary-quiz__prompt" data-quiz-prompt hidden></blockquote>
+                <p class="glossary-quiz__hint" data-quiz-hint hidden></p>
+                <div class="glossary-quiz__choices" data-quiz-choices role="group"></div>
+                <div class="glossary-quiz__feedback" data-quiz-feedback hidden aria-live="polite"></div>
+                <div class="glossary-quiz__actions">
+                    <button type="button" class="tools-btn tools-btn--primary" data-quiz-check hidden data-i18n="glossary.quiz.check">
+                        Check answer
+                    </button>
+                    <button type="button" class="tools-btn tools-btn--primary" data-quiz-next hidden data-i18n="glossary.quiz.next">
+                        Next
+                    </button>
+                </div>
+                <div class="glossary-quiz__result" data-quiz-result hidden>
+                    <p class="glossary-quiz__score" data-quiz-score></p>
+                    <div class="glossary-quiz__result-actions">
+                        <button type="button" class="tools-btn tools-btn--primary" data-quiz-save hidden data-i18n="glossary.quiz.save">
+                            Save to profile
+                        </button>
+                        <button type="button" class="tools-btn" data-quiz-retry data-i18n="glossary.quiz.retry">
+                            Play again
+                        </button>
+                    </div>
+                    <p class="glossary-quiz__save-status" data-quiz-save-status hidden aria-live="polite"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
 @endsection

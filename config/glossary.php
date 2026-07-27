@@ -5,7 +5,7 @@
  *
  * Readable definitions, not a PureView JSON generator.
  */
-return [
+$config = [
   'categories' => [
     'roles' => [
       'de' => 'Rollen',
@@ -18471,3 +18471,27 @@ return [
     ],
   ],
 ];
+
+$waveFiles = [
+    __DIR__.'/glossary-buzzwords-wave2.php',
+    __DIR__.'/glossary-buzzwords-wave3.php',
+    __DIR__.'/glossary-buzzwords-wave4.php',
+    __DIR__.'/glossary-buzzwords-wave5.php',
+    __DIR__.'/glossary-buzzwords-wave6.php',
+    __DIR__.'/glossary-buzzwords-wave7.php',
+];
+
+/** @var list<array<string, mixed>> $existingTerms */
+$existingTerms = is_array($config['terms'] ?? null) ? $config['terms'] : [];
+foreach ($waveFiles as $waveFile) {
+    if (! is_file($waveFile)) {
+        continue;
+    }
+    $wave = require $waveFile;
+    if (is_array($wave) && $wave !== []) {
+        $existingTerms = array_merge($existingTerms, array_values($wave));
+    }
+}
+$config['terms'] = $existingTerms;
+
+return $config;

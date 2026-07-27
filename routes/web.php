@@ -3,6 +3,7 @@
 require_once __DIR__.'/../app/Support/helpers.php';
 
 use App\Http\Controllers\About\AboutController;
+use App\Http\Controllers\Accounts\GlossaryQuizResultApiController;
 use App\Http\Controllers\Accounts\AuthController;
 use App\Http\Controllers\Accounts\PlanApiController;
 use App\Http\Controllers\Accounts\PlanAttachmentController;
@@ -81,6 +82,9 @@ $registerRoutes = static function (bool $localized): void {
         ->where('slug', '[a-z0-9-]+')
         ->name($name('compliance.show'));
     Route::get('/glossary', [GlossaryController::class, 'index'])->name($name('glossary.index'));
+    Route::get('/glossary/quiz/data', [GlossaryController::class, 'quizData'])->name($name('glossary.quiz.data'));
+    Route::get('/glossary/quiz', [GlossaryController::class, 'quiz'])->name($name('glossary.quiz'));
+    Route::get('/glossary/bingo', [GlossaryController::class, 'bingo'])->name($name('glossary.bingo'));
     Route::get('/glossary/{slug}', [GlossaryController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name($name('glossary.show'));
@@ -258,6 +262,8 @@ $registerRoutes = static function (bool $localized): void {
                 ->name($name('accounts.user-templates.destroy'));
             Route::get('/api/prompt-studio/library', [PromptStudioLibraryApiController::class, 'show'])->name($name('accounts.prompt-studio.library.show'));
             Route::post('/api/prompt-studio/library', [PromptStudioLibraryApiController::class, 'store'])->name($name('accounts.prompt-studio.library.store'));
+            Route::get('/api/glossary/quiz-results', [GlossaryQuizResultApiController::class, 'show'])->name($name('accounts.glossary.quiz-results.show'));
+            Route::post('/api/glossary/quiz-results', [GlossaryQuizResultApiController::class, 'store'])->name($name('accounts.glossary.quiz-results.store'));
             Route::post('/api/sprint-planner/plans/{planId}/attachments', [PlanAttachmentController::class, 'store'])
                 ->where('planId', 'plan_[a-zA-Z0-9_]+')
                 ->name($name('accounts.plans.attachments.store'));

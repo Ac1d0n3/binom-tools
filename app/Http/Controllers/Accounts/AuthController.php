@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
+use App\Accounts\Contracts\GlossaryQuizResultStoreInterface;
 use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Support\AccentColors;
@@ -20,6 +21,7 @@ class AuthController extends Controller
         private readonly AccountsConfig $config,
         private readonly AccountAuth $auth,
         private readonly UserRepositoryInterface $users,
+        private readonly GlossaryQuizResultStoreInterface $glossaryQuizResults,
     ) {}
 
     public function showLogin(): View|RedirectResponse
@@ -77,10 +79,13 @@ class AuthController extends Controller
         $user = $this->auth->user();
         abort_if($user === null, 401);
 
+        $quizResults = $this->glossaryQuizResults->loadFor($user);
+
         return view('accounts.profile', [
             'account' => $user->toPublicArray(),
             'profileAvatarEnabled' => $this->config->profileAvatarEnabled(),
             'mustChangePassword' => $user->mustChangePassword,
+            'glossaryQuizResults' => $quizResults,
         ]);
     }
 

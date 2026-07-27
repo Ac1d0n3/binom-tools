@@ -11634,6 +11634,691 @@ html.bn-theme-blue-water-dark .supplier-priority-badge--low {
     color: var(--bn-color-text-secondary, color-mix(in srgb, var(--content-font-color) 72%, transparent));
 }
 
+.glossary-hub-icon-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    flex: 0 0 auto;
+    min-height: var(--tools-overview-control-height, 2.35rem);
+    padding: 0.2rem;
+    border: 1px solid var(--base-border-color);
+    border-radius: 0.55rem;
+    background: var(--surface-background-color, var(--content-background-color));
+    box-sizing: border-box;
+}
+
+.glossary-hub-icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.glossary-hub-icon-btn i {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+}
+
+.glossary-hub-icon-btn:hover,
+.glossary-hub-icon-btn:focus-visible {
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 12%, transparent);
+    color: var(--theme-color-primary, #2563eb);
+    outline: none;
+}
+
+.glossary-hub-icon-btn[data-tooltip-css]::after {
+    content: attr(aria-label);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.4rem);
+    z-index: 5;
+    transform: translateX(-50%) translateY(0.15rem);
+    width: max-content;
+    max-width: 14rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--content-font-color, #0f172a) 92%, transparent);
+    color: var(--content-background-color, #fff);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s ease;
+}
+
+.glossary-hub-icon-btn[data-tooltip-css]:hover::after,
+.glossary-hub-icon-btn[data-tooltip-css]:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.glossary-quiz-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%);
+    padding: 0;
+    border: 1px solid var(--base-border-color);
+    border-radius: 0.85rem;
+    width: min(40rem, calc(100vw - 2rem));
+    max-width: calc(100vw - 2rem);
+    height: fit-content;
+    max-height: min(90dvh, 52rem);
+    overflow: hidden;
+    background: var(--content-background-color, #fff);
+    color: inherit;
+    box-shadow: 0 1rem 2.5rem color-mix(in srgb, #000 22%, transparent);
+}
+
+.glossary-quiz-modal::backdrop {
+    background: color-mix(in srgb, #0f172a 55%, transparent);
+}
+
+.glossary-quiz-modal__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    max-height: inherit;
+    padding: 1.1rem 1.2rem 1.25rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+.glossary-quiz-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.glossary-quiz-modal__title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.glossary-quiz-modal__lead {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--bn-color-text-secondary);
+}
+
+.glossary-hub-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 0 0 1rem;
+}
+
+.glossary-hub-actions__btn {
+    text-decoration: none;
+}
+
+.glossary-setup-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1rem;
+    margin: 0 0 1.25rem;
+}
+
+.glossary-setup-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.glossary-setup-form__field .tools-overview-sort__select {
+    min-width: 5.5rem;
+}
+
+.glossary-category-picks {
+    flex: 1 1 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.glossary-category-picks__legend {
+    padding: 0;
+    margin: 0 0 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.glossary-category-picks__hint {
+    margin: 0 0 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--bn-color-text-secondary);
+}
+
+.glossary-category-picks__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+}
+
+.glossary-category-pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--bn-color-border, #c9d0da) 85%, transparent);
+    border-radius: 0.45rem;
+    background: color-mix(in srgb, var(--bn-color-surface, #fff) 92%, var(--bn-color-bg, #f4f6f8));
+    font-size: 0.8rem;
+    font-weight: 550;
+    cursor: pointer;
+    user-select: none;
+}
+
+.glossary-category-pick:has(input:checked) {
+    border-color: color-mix(in srgb, var(--bn-color-accent, #2563eb) 55%, var(--bn-color-border, #c9d0da));
+    background: color-mix(in srgb, var(--bn-color-accent, #2563eb) 12%, var(--bn-color-surface, #fff));
+}
+
+.glossary-category-pick input {
+    margin: 0;
+    accent-color: var(--bn-color-accent, #2563eb);
+}
+
+.glossary-bingo__pool-warning {
+    margin: 0.35rem 0 0;
+    font-size: 0.78rem;
+    color: var(--bn-color-text-secondary);
+}
+
+.glossary-bingo__sticky.tools-overview-sticky-header {
+    padding-bottom: 0.55rem;
+}
+
+.glossary-bingo__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.glossary-bingo__title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.85rem;
+}
+
+.glossary-bingo__nav {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.glossary-bingo__nav a {
+    text-decoration: none;
+    color: var(--bn-color-text-secondary);
+}
+
+.glossary-bingo__nav a:hover {
+    color: var(--bn-color-text, inherit);
+}
+
+.glossary-bingo__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.glossary-bingo__lead {
+    margin: 0;
+    flex: 1 1 12rem;
+    font-size: 0.8rem;
+    color: var(--bn-color-text-secondary);
+    line-height: 1.35;
+}
+
+.glossary-bingo__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin: 0;
+}
+
+.glossary-bingo__controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.65rem;
+}
+
+.glossary-bingo__controls-row .glossary-setup-form__field,
+.glossary-bingo__cards-field,
+.glossary-bingo__size-field {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 650;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.glossary-bingo__controls-row .tools-overview-sort__select {
+    min-width: 4.5rem;
+    height: var(--tools-overview-control-height, 2.35rem);
+    min-height: var(--tools-overview-control-height, 2.35rem);
+}
+
+.glossary-bingo__size-field .tools-overview-sort__select {
+    min-width: 5.25rem;
+}
+
+.glossary-bingo__controls-row .tools-btn {
+    text-decoration: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: var(--tools-overview-control-height, 2.35rem);
+    height: var(--tools-overview-control-height, 2.35rem);
+    padding: 0 0.85rem;
+    font-size: 0.8125rem;
+    line-height: 1;
+}
+
+.glossary-bingo__controls .glossary-category-picks {
+    flex: 1 1 100%;
+    margin: 0;
+}
+
+.glossary-bingo__controls .glossary-category-picks--compact .glossary-category-picks__legend {
+    display: inline;
+    margin-right: 0.45rem;
+    font-size: 0.78rem;
+}
+
+.glossary-bingo__controls .glossary-category-picks--compact .glossary-category-picks__hint {
+    display: inline;
+    margin: 0 0 0.35rem;
+    font-size: 0.72rem;
+}
+
+.glossary-bingo__controls .glossary-category-picks--compact .glossary-category-picks__list {
+    gap: 0.28rem 0.35rem;
+}
+
+.glossary-bingo__controls .glossary-category-picks--compact .glossary-category-pick {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.72rem;
+    border-radius: 0.35rem;
+}
+
+.glossary-quiz {
+    max-width: 42rem;
+    margin-top: 1rem;
+}
+
+.glossary-quiz__progress {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--bn-color-text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.glossary-quiz__stem {
+    margin: 0 0 0.65rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.glossary-quiz__prompt {
+    margin: 0 0 0.85rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 3px solid var(--theme-color-primary, #2563eb);
+    border-radius: 0 0.45rem 0.45rem 0;
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 8%, transparent);
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.glossary-quiz__hint {
+    font-size: 0.875rem;
+    color: var(--bn-color-text-secondary);
+    margin: 0 0 0.75rem;
+}
+
+.glossary-quiz__choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.glossary-quiz__choice {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--content-font-color) 16%, transparent);
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--bn-color-surface, #fff) 92%, transparent);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    line-height: 1.4;
+}
+
+.glossary-quiz__choice:hover:not(:disabled) {
+    border-color: var(--theme-color-primary);
+}
+
+.glossary-quiz__choice.is-selected {
+    border-color: var(--theme-color-primary);
+    box-shadow: inset 0 0 0 1px var(--theme-color-primary);
+}
+
+.glossary-quiz__choice.is-correct {
+    border-color: #1a7f4b;
+    background: color-mix(in srgb, #1a7f4b 12%, transparent);
+}
+
+.glossary-quiz__choice.is-wrong {
+    border-color: #b42318;
+    background: color-mix(in srgb, #b42318 10%, transparent);
+}
+
+.glossary-quiz__feedback {
+    margin-top: 0.85rem;
+    font-weight: 650;
+}
+
+.glossary-quiz__feedback.is-correct {
+    color: #1a7f4b;
+}
+
+.glossary-quiz__feedback.is-wrong {
+    color: #b42318;
+}
+
+.glossary-quiz__actions,
+.glossary-quiz__result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.glossary-quiz__score {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+}
+
+.glossary-quiz__save-status {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.glossary-quiz-profile {
+    margin-top: 2.5rem;
+    max-width: 40rem;
+}
+
+.glossary-quiz-profile__title {
+    margin: 0 0 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.glossary-quiz-profile__stats {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.glossary-quiz-profile__when {
+    color: var(--bn-color-text-secondary);
+    font-size: 0.85rem;
+}
+
+.glossary-bingo__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 0 0 1.25rem;
+}
+
+.tools-content--glossary-bingo {
+    overflow: hidden;
+}
+
+.tools-content--glossary-bingo .tools-overview-scroll {
+    padding-top: 0.35rem;
+}
+
+.glossary-bingo-card {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0.65rem 0.7rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--content-font-color) 14%, transparent);
+    border-radius: 0.6rem;
+    background: var(--surface-background-color, var(--content-background-color));
+    box-sizing: border-box;
+}
+
+.glossary-bingo-deck {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 1rem;
+    align-items: start;
+}
+
+.glossary-bingo-deck--size-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.glossary-bingo-card__title {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.glossary-bingo-card__size {
+    margin-left: 0.35rem;
+    font-size: 0.78em;
+    font-weight: 650;
+    color: var(--bn-color-text-secondary);
+}
+
+.glossary-bingo-card__number {
+    margin-left: 0.3rem;
+    font-weight: 700;
+    color: var(--bn-color-text-secondary);
+}
+
+.glossary-bingo-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.28rem;
+    width: 100%;
+}
+
+.glossary-bingo-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+}
+
+.glossary-bingo-card--size-3 .glossary-bingo-cell {
+    font-size: clamp(0.62rem, 1.1vw, 0.84rem);
+    padding: 0.3rem 0.22rem;
+}
+
+.glossary-bingo-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.22rem 0.18rem;
+    border: 1px solid color-mix(in srgb, var(--content-font-color) 20%, transparent);
+    border-radius: 0.3rem;
+    background: color-mix(in srgb, var(--bn-color-surface, var(--content-background-color, #fff)) 96%, transparent);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: clamp(0.52rem, 0.85vw, 0.72rem);
+    font-weight: 600;
+    line-height: 1.15;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.glossary-bingo-cell__label {
+    display: block;
+    max-width: 100%;
+}
+
+.glossary-bingo-cell--free {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: color-mix(in srgb, var(--theme-color-primary) 18%, transparent);
+    cursor: default;
+}
+
+.glossary-bingo-cell--marked {
+    background: color-mix(in srgb, var(--theme-color-primary) 32%, transparent);
+    text-decoration: line-through;
+}
+
+.glossary-bingo-card__seed {
+    margin-top: 0.45rem;
+    font-size: 0.7rem;
+    color: var(--bn-color-text-secondary);
+}
+
+@media (max-width: 1100px) {
+    .glossary-bingo-deck--size-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .glossary-bingo-deck,
+    .glossary-bingo-deck--size-3 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .glossary-bingo-cell {
+        font-size: clamp(0.58rem, 2.2vw, 0.78rem);
+    }
+}
+
+@media print {
+    .tools-shell__header,
+    .tools-shell__sidebar,
+    .glossary-bingo__no-print,
+    .tools-app-art,
+    [data-cookie-consent],
+    [data-disclaimer-banner] {
+        display: none !important;
+    }
+
+    .tools-shell,
+    .tools-shell__main,
+    .tools-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: none !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+    }
+
+    .glossary-bingo-deck {
+        display: block;
+    }
+
+    .glossary-bingo-card {
+        max-width: none;
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .glossary-bingo-card:last-child {
+        page-break-after: auto;
+        break-after: auto;
+    }
+
+    .glossary-bingo-card__title {
+        font-size: 1.25rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .glossary-bingo-grid {
+        gap: 0.45rem;
+    }
+
+    .glossary-bingo-cell {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.3rem;
+    }
+
+    .glossary-bingo-cell {
+        break-inside: avoid;
+        background: #fff !important;
+        color: #000 !important;
+        border-color: #222 !important;
+    }
+
+    .glossary-bingo-cell--marked {
+        background: #ddd !important;
+    }
+
+    .glossary-bingo-cell--free {
+        background: #eee !important;
+        font-weight: 800;
+    }
+}
+
 .learning-paths-hub-card__steps {
     margin-top: auto;
     font-size: 0.8rem;
