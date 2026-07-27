@@ -20,7 +20,7 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('governance.phoneHintTitle', false);
         $response->assertSee('Governance Hub');
         $response->assertSee('governance-hub', false);
-        $response->assertSee('Governance control hub');
+        $response->assertSee('Public online advisor');
         $response->assertSee('data-governance-advisor', false);
         $response->assertSee('data-governance-advisor-config', false);
         $response->assertSee(route('learning-paths.index'), false);

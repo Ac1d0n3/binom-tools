@@ -1,6 +1,6 @@
 ---
 title: The 8 Pillars of Data Governance
-description: A practical governance model for ownership, metadata, privacy, DSDR, data quality, metrics, access and the data lifecycle.
+description: A practical governance model for ownership, metadata, privacy, DSDR, data quality, metrics, access and the data lifecycle — with a bridge to DMBOK, CDMP and DCAM.
 author: Thomas Lindackers
 category: Data Governance
 tags:
@@ -245,6 +245,40 @@ Governance loses impact when it exists only outside operational data processes. 
 - policies that are neither versioned nor auditable
 
 No single pillar can close these gaps on its own.
+
+## Bridge to DMBOK, CDMP, and DCAM
+
+Many teams search for **DAMA**, **DMBOK**, **CDMP**, or **DCAM**. Those names matter as a shared professional language and as certification or maturity signals. This playbook is **not** a DMBOK rewrite and not a CDMP course.
+
+| Binom pillar | Typical DMBOK-adjacent topic | What we optimize for |
+| --- | --- | --- |
+| 1. Ownership & Stewardship | Data Governance / stewardship | Named accountability and escalation |
+| 2. Metadata, Catalog & Lineage | Metadata / catalog | Discoverability and end-to-end context |
+| 3. PII & Privacy | Data security / privacy controls | Classification with technical effect |
+| 4. DSDR | Privacy operations / subject rights | Deletion or anonymization with evidence |
+| 5. Data Quality | Data Quality | Measurable standards and remediation |
+| 6. KPI & Metric Governance | Often under BI / usage — less explicit in classic chapter lists | One definition, owner, and change path |
+| 7. Access & Security | Data Security | Least privilege and auditability |
+| 8. Lifecycle & Retention | Data Lifecycle / archival | Retention that actually runs |
+
+**What is different here:** PII, DSDR, and KPI are first-class pillars because they drive day-to-day warehouse and analytics work — especially under GDPR-style obligations. DMBOK remains broader (for example reference and master data as dedicated knowledge areas); we cover those needs via suppliers, stacks, and related stories rather than chapter-by-chapter cloning.
+
+**CDMP** proves you can speak the DMBOK language. Use the [consultant certification roadmap](/compliance/roadmap) for the credential path, then come back here for operational artifacts.
+
+**DCAM** assesses program maturity. Our pillars, advisor, and sessions help find gaps and produce evidence — they are not a DCAM assessment product.
+
+Related next steps: [Governance Hub](/governance), [online advisor](/governance/berater), [Compliance hub](/compliance).
+
+## From model to artifact
+
+A practical path without building a parallel “case study” site:
+
+1. Clarify the decision in the [online advisor](/governance/berater) (situation, goal, domain, platform).
+2. Open matching tools, suppliers, and playbooks from the recommendations.
+3. Inspect a filled example: [demo workspace](/governance/demo-workspace) → [sample report](/governance/demo-report).
+4. Turn findings into a plan via the Sprint Planner when you are ready to execute.
+
+The pillars stay the orientation model. The hub and tools turn that model into copy-paste artifacts and a shareable report.
 
 ## The actual objective
 

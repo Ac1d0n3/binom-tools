@@ -110,23 +110,25 @@ return [
                 'en' => 'DAMA International',
             ],
             'shortPurpose' => [
-                'de' => 'Data-Management-Körperwissen (DMBOK): Governance, Metadaten, Qualität, Lifecycle — die gemeinsame Fachsprache.',
-                'en' => 'Data management body of knowledge (DMBOK): governance, metadata, quality, lifecycle — the shared professional language.',
+                'de' => 'Data-Management-Körperwissen (DMBOK): Governance, Metadaten, Qualität, Lifecycle — die gemeinsame Fachsprache. Praxisstart bei Binom: die 8 Pillars.',
+                'en' => 'Data management body of knowledge (DMBOK): governance, metadata, quality, lifecycle — the shared professional language. Practical start at Binom: the 8 pillars.',
             ],
             'whyForConsultant' => [
-                'de' => 'Hilft, mit Data Owners, Architekten und Stewards auf Augenhöhe zu sprechen — unabhängig vom Cloud-Vendor.',
-                'en' => 'Helps you speak peer-to-peer with data owners, architects and stewards — independent of cloud vendor.',
+                'de' => 'Hilft, mit Data Owners, Architekten und Stewards auf Augenhöhe zu sprechen — unabhängig vom Cloud-Vendor. DMBOK-Begriffe übersetzt ihr bei uns in operative Säulen und Artefakte.',
+                'en' => 'Helps you speak peer-to-peer with data owners, architects and stewards — independent of cloud vendor. Translate DMBOK terms into operational pillars and artifacts here.',
             ],
             'whatYouNeed' => [
                 'de' => [
                     'DMBOK-Grundlagen (Data Governance, Metadata, DQ, Security, Lifecycle)',
                     'Stufen: Associate → Practitioner → Master (je nach Erfahrung)',
-                    'Praxisbezug: Policies, Katalog, Ownership-Modelle',
+                    'Praxisbezug: Policies, Katalog, Ownership-Modelle — Mapping zu den 8 Pillars',
+                    'Start bei Binom: Playbook „Die 8 Säulen der Data Governance“',
                 ],
                 'en' => [
                     'DMBOK basics (data governance, metadata, DQ, security, lifecycle)',
                     'Levels: Associate → Practitioner → Master (by experience)',
-                    'Practice link: policies, catalog, ownership models',
+                    'Practice link: policies, catalog, ownership models — mapped to the 8 pillars',
+                    'Start at Binom: playbook “The 8 Pillars of Data Governance”',
                 ],
             ],
             'officialSources' => [

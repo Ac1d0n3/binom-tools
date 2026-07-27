@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Binom-Tools — ' . config('app.name'))
-@section('meta_description', 'Browse Binom-Tools — dbt macros, PII policies, schema editors, lakehouse generators, and discovery aids. Setup workflows live in the Governance Hub.')
+@section('meta_description', 'Artifact workbench under the Governance Hub: PII, DQ, KPI and discovery generators — plus BI formula helpers for Qlik, Tableau and Power BI DAX.')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--tools-overview" data-overview-filter-root>
@@ -29,7 +29,7 @@
                 @else
                     data-i18n="tools.overviewLead"
                 @endif
-            >Searchable tool catalog. Step-by-step setup workflows live in the Governance Hub.</p>
+            >Searchable tool catalog. Artifact workbench under the Governance Hub: setup workflows for PII, DQ, KPI, and discovery. BI formula generators are helpers — not governance setup.</p>
         @endif
 
         @php

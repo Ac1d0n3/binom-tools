@@ -1,6 +1,6 @@
 ---
 title: Die 8 Säulen der Data Governance
-description: Ein praxisnahes Governance-Modell für Verantwortung, Metadaten, Datenschutz, DSDR, Datenqualität, Kennzahlen, Zugriffe und den Datenlebenszyklus.
+description: Ein praxisnahes Governance-Modell für Verantwortung, Metadaten, Datenschutz, DSDR, Datenqualität, Kennzahlen, Zugriffe und den Datenlebenszyklus — mit Anschluss an DMBOK, CDMP und DCAM.
 author: Thomas Lindackers
 category: Data Governance
 tags:
@@ -245,6 +245,40 @@ Governance verliert Wirkung, wenn sie nur außerhalb der operativen Datenprozess
 - Richtlinien, die nicht versioniert oder auditierbar sind
 
 Keine einzelne Säule kann diese Lücken allein schließen.
+
+## Anschluss an DMBOK, CDMP und DCAM
+
+Viele Teams suchen nach **DAMA**, **DMBOK**, **CDMP** oder **DCAM**. Diese Namen sind gemeinsame Fachsprache sowie Zertifizierungs- oder Reife-Signal. Dieses Playbook ist **kein** DMBOK-Nachbau und kein CDMP-Kurs.
+
+| Binom-Säule | Typisches DMBOK-nahes Thema | Wofür wir optimieren |
+| --- | --- | --- |
+| 1. Ownership & Stewardship | Data Governance / Stewardship | Benannte Verantwortung und Eskalation |
+| 2. Metadata, Catalog & Lineage | Metadata / Catalog | Auffindbarkeit und End-to-End-Kontext |
+| 3. PII & Privacy | Data Security / Privacy-Controls | Klassifikation mit technischer Wirkung |
+| 4. DSDR | Privacy Operations / Betroffenenrechte | Löschung oder Anonymisierung mit Nachweis |
+| 5. Data Quality | Data Quality | Messbare Standards und Remediation |
+| 6. KPI & Metric Governance | Oft unter BI / Usage — in klassischen Kapitelisten weniger explizit | Eine Definition, Owner und Änderungspfad |
+| 7. Access & Security | Data Security | Least Privilege und Auditierbarkeit |
+| 8. Lifecycle & Retention | Data Lifecycle / Archiving | Retention, die wirklich läuft |
+
+**Was hier anders ist:** PII, DSDR und KPI sind eigene Säulen, weil sie den Alltag in Warehouse und Analytics treiben — besonders unter DSGVO-nahen Pflichten. DMBOK bleibt breiter (z. B. Reference & Master Data als eigene Wissensgebiete); das decken wir über Suppliers, Stacks und verwandte Stories ab, nicht als Kapitel-Klon.
+
+**CDMP** zeigt, dass ihr die DMBOK-Sprache sprecht. Die [Zertifizierungs-Roadmap](/compliance/roadmap) führt zum Nachweis; hier geht es weiter mit operativen Artefakten.
+
+**DCAM** bewertet Programm-Reife. Unsere Säulen, der Berater und Sessions helfen, Lücken zu finden und Nachweise zu erzeugen — sie sind kein DCAM-Assessment-Produkt.
+
+Weiter: [Governance Hub](/governance), [Online-Berater](/governance/berater), [Compliance Hub](/compliance).
+
+## Vom Modell zum Artefakt
+
+Ein praktischer Weg ohne parallelen „Case-Study“-Hub:
+
+1. Entscheidung im [Online-Berater](/governance/berater) klären (Lage, Ziel, Domain, Platform).
+2. Passende Tools, Supplier und Playbooks aus den Empfehlungen öffnen.
+3. Gefülltes Beispiel ansehen: [Demo-Workspace](/governance/demo-workspace) → [Beispiel-Report](/governance/demo-report).
+4. Funde bei Bedarf im Sprint Planner in einen Plan überführen.
+
+Die Säulen bleiben das Orientierungsmodell. Hub und Tools machen daraus Copy-Paste-Artefakte und einen teilbaren Report.
 
 ## Das eigentliche Ziel
 

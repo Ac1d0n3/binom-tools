@@ -1,7 +1,7 @@
 @extends('layouts.tools')
 
 @section('title', config('app.name'))
-@section('meta_description', 'Data governance hub for data quality, PII, data catalog, compliance, and warehouse work — guided stories, learning paths, glossary, radar, and cloneable tools.')
+@section('meta_description', 'Public online advisor for data governance: start with the right question, then stories, learning paths, glossary, radar, and copy-paste tools — by Thomas Lindackers.')
 
 @push('head')
     @if (count($metaKeywords) > 0)
@@ -24,14 +24,14 @@
                             title-de="Hubs"
                         />
                         <p class="tools-section__lead" data-hub-lead data-i18n="home.hubsLead">
-                            Entry points for data governance, data quality, PII, catalog vocabulary, learning paths, compliance, and the news radar.
+                            Start in the Governance Hub: orientation and discovery. Stories and learning paths provide substance; tools produce artifacts; glossary, roles, compliance, and radar complete the set.
                         </p>
                     </header>
                     <div class="tools-card-grid">
                         <x-tools.card
                             :href="locale_route('governance.index')"
                             title="Governance Hub"
-                            description="Connects the other hubs into a guided discovery: clarify the decision, stack, sources, and risks — then turn them into plan, workflow, or report."
+                            description="The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report. Advisor by Thomas Lindackers."
                             title-key="home.featuredGovernance.title"
                             description-key="home.featuredGovernance.description"
                             icon="fa-shield-halved"
@@ -44,7 +44,7 @@
                             data-phone-hide-tools
                             :href="locale_route('tools.overview')"
                             title="Binom-Tools"
-                            description="Interactive reference workflows — step by step, copy-paste ready."
+                            description="Artifact workbench: generators and setup workflows — copy-paste ready. BI formula tools are helpers, not governance setup."
                             title-key="home.hub.tools.title"
                             description-key="home.hub.tools.description"
                             icon="fa-screwdriver-wrench"

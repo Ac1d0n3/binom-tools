@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Glossary — '.config('app.name'))
-@section('meta_description', 'Governance glossary — steward, lineage, DSDR, grain, data product, PII, catalog and more, linked to stories and tools.')
+@section('meta_description', 'Governance glossary — steward, lineage, DSDR, grain, PII, catalog, plus DMBOK, CDMP and DCAM bridges to the 8 pillars and certification roadmap.')
 
 @section('content')
     @php

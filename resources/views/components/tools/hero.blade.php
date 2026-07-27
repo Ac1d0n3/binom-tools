@@ -9,10 +9,10 @@
         <div class="tools-hero__content">
             <h1 class="tools-hero__headline">
                 <span data-i18n="home.hero.headline">Data Governance Hub</span>
-                <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">for data quality, PII, catalog, and analytics teams.</span>
+                <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">orientation first — then decisions, artifacts, and evidence.</span>
             </h1>
             <p class="tools-hero__tagline" data-i18n="home.hero.tagline">
-                Your destination for data governance: stories, glossary, learning paths, radar, and tools — cloneable for your internal hub.
+                Public online advisor for data governance: first the right question, then stories, glossary, learning paths, radar, and tools. Cloneable for your internal hub.
             </p>
 
             <div class="tools-hero__actions">
@@ -20,11 +20,11 @@
             </div>
 
             <p class="tools-hero__hint" data-i18n="home.hero.notice">
-                Open Source &amp; klonbar für euren internen Hub.
+                Open source — cloneable as a starter for your internal hub.
             </p>
 
             <p class="tools-hero__attribution">
-                <span data-i18n="home.hero.attribution">Design concept by</span>
+                <span data-i18n="home.hero.attribution">Public advisor by</span>
                 <a href="https://binom.net" target="_blank" rel="noopener noreferrer">Thomas Lindackers</a>
             </p>
         </div>

@@ -137,16 +137,16 @@ const shellLabels = {
         'tools.overviewBetaNote': 'Referenz-Workflows — kontinuierlich gepflegt, lokal klonbar.',
         'about.learnMore': 'Über das Projekt',
         'about.title': 'Über binom-tools',
-        'about.lead': 'Hintergrund zum Projekt — was es ist und woher Inhalte und Visuals kommen.',
+        'about.lead': 'Öffentlicher Online-Berater für Data Governance — Orientierung, Fragen, Tools und Nachweise von Thomas Lindackers.',
         'about.project.title': 'Was ist binom-tools?',
         'about.project.body':
-            'binom-tools ist ein Open-Source-Hobbyprojekt: ein Governance Help Hub mit Markdown-Stories und interaktiven Referenz-Workflows — kein kommerzielles Produkt.',
+            'binom-tools ist ein Open-Source-Projekt von Thomas Lindackers: ein nutzbarer öffentlicher Online-Berater und Governance Help Hub mit Markdown-Stories und interaktiven Referenz-Workflows — kein kommerzielles Produkt und keine Rechtsberatung.',
         'about.stories.title': 'Stories',
         'about.stories.body':
             'Die Playbooks geben einen generellen Einblick in Governance und die Welten darum — von Datenplattformen und BI über Prozesse bis zu den Themen, die in der Praxis wirklich zählen. Es ist Wissen, das ich über die Jahre zusammengetragen habe: Erfahrungen, Modelle und Denkanstöße, nicht ein fertiges Handbuch.',
         'about.tools.title': 'Governance',
         'about.tools.body':
-            'Interaktive Referenz-Workflows machen Ideen aus den Stories praktisch umsetzbar — Schritt für Schritt, copy-paste-fähig für Warehouse oder Governance-Setup.',
+            'Interaktive Referenz-Workflows machen Ideen aus den Stories praktisch umsetzbar — Schritt für Schritt, copy-paste-fähig für Warehouse oder Governance-Setup. Ein Beispielweg: Berater → Demo-Workspace → Report.',
         'about.governanceWhy.title': 'Warum Governance?',
         'about.governanceWhy.body':
             'Data Governance beginnt mit praktischen Entscheidungen: welcher Stack, welche Quelle, welches KPI-Grain, welche PII-Controls. Binom Governance ist ein öffentlicher Online-Berater von Thomas Lindackers — erst Orientierung, dann Tools und Nachweise — kein Vendor-Verzeichnis und keine Rechtsberatung.',
@@ -155,9 +155,9 @@ const shellLabels = {
         'about.visuals.title': 'Visuals',
         'about.visuals.body':
             'Diagramme und Schaubilder zu Playbook-Beispielen erstelle ich mit KI — abgestimmt auf ein einheitliches Corporate Design, damit Stories lesbar und vergleichbar bleiben.',
-        'about.feedback.title': 'Feedback & Mitmachen',
+        'about.feedback.title': 'Feedback',
         'about.feedback.body':
-            'Das Projekt lebt von Austausch. Feedback, Anregungen und Verbesserungsvorschläge sind willkommen — per GitHub.',
+            'Feedback, Korrekturen und Verbesserungsvorschläge gerne über GitHub Issues und Pull Requests.',
         'about.feedback.github': 'Issues & Pull Requests auf GitHub',
         'overview.sortLabel': 'Sortieren',
         'overview.sortDateDesc': 'Neueste zuerst',
@@ -187,15 +187,15 @@ const shellLabels = {
         'home.lead':
             'Governance Help Hub mit Markdown-Stories, interaktiven Workflows und i18n — klonbar und ohne CMS.',
         'home.hero.headline': 'Data Governance Hub',
-        'home.hero.headlineAccent': 'für Data Quality, PII, Catalog und Analytics-Teams.',
+        'home.hero.headlineAccent': 'Orientierung zuerst — dann Entscheidungen, Artefakte und Nachweise.',
         'home.hero.tagline':
-            'Die Anlaufstelle für Data Governance: Stories, Glossary, Learning Paths, Radar und Tools — klonbar für euren internen Hub.',
+            'Öffentlicher Online-Berater für Data Governance: erst die richtige Frage, dann Stories, Glossar, Learning Paths, Radar und Tools. Klonbar für euren internen Hub.',
         'home.hero.notice':
-            'Open Source & klonbar für euren internen Hub.',
+            'Open Source — klonbar als Startvorlage für euren internen Hub.',
         'home.hero.ctaGovernance': 'Governance Hub öffnen',
         'home.hero.ctaWorkflows': 'Binom-Tools öffnen',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
-        'home.hero.attribution': 'Design-Konzept von',
+        'home.hero.attribution': 'Öffentlicher Berater von',
         'home.workflowsTitle': 'Workflow-Beispiele',
         'home.workflowsLead':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
@@ -211,7 +211,7 @@ const shellLabels = {
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
         'home.hubsTitle': 'Hubs',
         'home.hubsLead':
-            'Einstiege für Data Governance, Data Quality, PII, Katalog-Vokabular, Learning Paths, Compliance und den News-Radar.',
+            'Start über den Governance Hub: Orientierung und Discovery. Stories und Learning Paths liefern Substanz; Tools erzeugen Artefakte; Glossar, Rollen, Compliance und Radar ergänzen.',
         'home.hub.stories.title': 'Stories',
         'home.hub.stories.description':
             'Schrittweise Governance-Playbooks — von der Idee bis zur Umsetzung.',
@@ -250,7 +250,7 @@ const shellLabels = {
         'home.hub.radar.countLabel': 'Quellen',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
-            'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
+            'Artefakt-Werkbank: Generatoren und Setup-Workflows — copy-paste-fähig. BI-Formel-Tools sind Hilfen, kein Governance-Setup.',
         'home.hub.tools.countLabel': 'Tools',
         'home.topStories.title': 'Top Stories',
         'home.topStories.lead': 'Aktuell am beliebtesten',
@@ -259,10 +259,10 @@ const shellLabels = {
             'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
         'home.featuredGovernance.title': 'Governance Hub',
         'home.featuredGovernance.description':
-            'Verbindet die anderen Hubs zu einer geführten Discovery: Entscheidung, Stack, Quellen und Risiken klären — und in Plan, Workflow oder Report überführen.',
+            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report. Berater von Thomas Lindackers.',
         'card.featured-governance.title': 'Governance Hub',
         'card.featured-governance.description':
-            'Verbindet die anderen Hubs zu einer geführten Discovery: Entscheidung, Stack, Quellen und Risiken klären — und in Plan, Workflow oder Report überführen.',
+            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report. Berater von Thomas Lindackers.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Inventare, KPI-Funde und offene Entscheidungen in nachvollziehbare Aufgaben überführen.',
@@ -279,7 +279,7 @@ const shellLabels = {
         'home.ecosystemTitle': 'Ökosystem',
         'resources.indexTitle': 'Hersteller-Ressourcen',
         'resources.indexLead':
-            'Offizielle Hilfe, Governance, Lernpfade, Cloud-Residenz (DSGVO) und Compliance — Filter nach Hersteller, Familie, SaaS/Open Source oder Residenz.',
+            'Offizielle Hilfe, Governance, Lernpfade, Cloud-Residenz (DSGVO) und Compliance — kuratiert, kein Verkaufskatalog. Filter nach Hersteller, Familie, SaaS/Open Source oder Residenz.',
         'resources.searchPlaceholder': 'Produkte, DSGVO, C5, ISO, Miro… suchen',
         'resources.helpTitle': 'Hilfe',
         'resources.governanceTitle': 'Governance',
@@ -313,7 +313,7 @@ const shellLabels = {
         'resources.visibleVendorCount': '{{count}} Hersteller',
         'compliance.indexTitle': 'Compliance',
         'compliance.indexLead':
-            'Frameworks und Richtlinien für Daten, Privacy, Security und AI — Zweck, wichtigste Regeln und offizielle Quellen.',
+            'Frameworks und Richtlinien für Daten, Privacy, Security und AI — Zweck, wichtigste Regeln und offizielle Quellen. CDMP/DMBOK-Anschluss über die Zertifizierungs-Roadmap und die 8 Pillars.',
         'compliance.searchPlaceholder': 'DSGVO, C5, AI Act, GoBD… suchen',
         'compliance.categoryLabel': 'Kategorie',
         'compliance.categoryAll': 'Alle Kategorien',
@@ -337,7 +337,7 @@ const shellLabels = {
         'compliance.next': 'Weiter',
         'compliance.roadmapTitle': 'Zertifizierungs-Roadmap für Consultants',
         'compliance.roadmapLead':
-            'Welche Nachweise als Data-/Governance-Consultant helfen — nach Region und Lernphase. Nur Orientierung.',
+            'Welche Nachweise als Data-/Governance-Consultant helfen — nach Region und Lernphase. CDMP (DAMA/DMBOK) ist die gemeinsame Fachsprache; Praxisstart bei den 8 Pillars. Nur Orientierung.',
         'compliance.roadmapDisclaimer':
             'Nur Lernhilfe und Orientierung — keine Karriere-, Recruiting- oder Rechtsberatung. Anforderungen ändern sich; immer beim Anbieter prüfen.',
         'compliance.roadmapSearchPlaceholder': 'CIPP/E, CDMP, ISO, AIGP… suchen',
@@ -348,7 +348,8 @@ const shellLabels = {
         'compliance.roadmapNeed': 'Was du brauchst',
         'compliance.roadmapCta': 'Zertifizierungs-Roadmap für Consultants →',
         'tools.overviewTitle': 'Binom-Tools',
-        'tools.overviewLead': 'Durchsuchbarer Tool-Katalog. Setup- und Referenz-Workflows liegen im Governance Hub.',
+        'tools.overviewLead':
+            'Artefakt-Werkbank unter dem Governance Hub: Setup- und Referenz-Workflows für PII, DQ, KPI und Discovery. BI-Formel-Generatoren (Qlik, Tableau, DAX) sind Hilfen für Report-Logik — kein Governance-Setup.',
         'tools.phoneGate.title': 'Tools ab Tablet',
         'tools.phoneGate.lead':
             'Die interaktiven Binom-Tools sind für Tablet- und Desktop-Bildschirme gebaut. Auf dem Phone lies stattdessen Stories — die sind dafür gemacht.',
@@ -954,7 +955,7 @@ const shellLabels = {
             'Eigene Rollen-Stories sind noch geplant — siehe docs/story-gaps-roles.md.',
         'suppliers.indexTitle': 'Quellen',
         'suppliers.indexLead':
-            'Wiederverwendbare Kernfelder, Dimensionen, PII/DSDR-Hinweise und Measure-Vorlagen je Quellprodukt — hier starten, dann pro Kunde anpassen.',
+            'Wiederverwendbare Kernfelder, Dimensionen, PII/DSDR-Hinweise und Measure-Vorlagen je Quellprodukt — Einstieg für Governance-Discovery, dann pro Kunde anpassen.',
         'suppliers.disclaimer':
             'Nur Vorlagen — Grain, Filter, Custom Fields und Ownership sind firmenspezifisch.',
         'suppliers.searchPlaceholder': 'Suche Salesforce, ARR, PII…',
@@ -1197,7 +1198,8 @@ const shellLabels = {
         'accounts.storyAclRestrictedNote': 'Benutzer- und Teamlisten gelten nur bei eingeschränkter Sichtbarkeit.',
         'accounts.flash.aclUpdated': 'Story-Zugriff gespeichert.',
         'playbooks.indexTitle': 'Stories',
-        'playbooks.indexLead': 'Schritt-für-Schritt-Governance-Guides — von der Idee bis zur Umsetzung.',
+        'playbooks.indexLead':
+            'Schritt-für-Schritt-Guides für Data Governance — Ownership, Metadata, PII, DQ, KPIs und mehr. Einstieg oft über die 8 Pillars oder den Governance Hub.',
         'playbooks.empty': 'Noch keine Stories veröffentlicht.',
         'playbooks.category': 'Kategorie',
         'playbooks.author': 'Autor',
@@ -1206,7 +1208,7 @@ const shellLabels = {
         'playbooks.tags': 'Tags',
         'playbooks.views': 'Aufrufe',
         'playbooks.like': 'Gefällt mir',
-        'playbooks.share': 'Teilen',
+        'playbooks.share': 'Story teilen',
         'playbooks.shareCopied': 'Link kopiert',
         'playbooks.shareFacebook': 'Facebook',
         'playbooks.shareLinkedIn': 'LinkedIn',
@@ -1288,16 +1290,16 @@ const shellLabels = {
         'tools.overviewBetaNote': 'Reference workflows — continuously curated, cloneable locally.',
         'about.learnMore': 'About this project',
         'about.title': 'About binom-tools',
-        'about.lead': 'Background on the project — what it is and where content and visuals come from.',
+        'about.lead': 'Public online advisor for data governance — orientation, questions, tools, and evidence by Thomas Lindackers.',
         'about.project.title': 'What is binom-tools?',
         'about.project.body':
-            'binom-tools is an open-source hobby project: a governance help hub with Markdown stories and interactive reference workflows — not a commercial product.',
+            'binom-tools is an open-source project by Thomas Lindackers: a usable public online advisor and governance help hub with Markdown stories and interactive reference workflows — not a commercial product and not legal advice.',
         'about.stories.title': 'Stories',
         'about.stories.body':
             'The playbooks offer a general introduction to governance and the worlds around it — from data platforms and BI to processes and the topics that matter in practice. It is knowledge collected over the years: experience, models, and ideas to explore, not a finished handbook.',
         'about.tools.title': 'Governance',
         'about.tools.body':
-            'Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup.',
+            'Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup. Example path: advisor → demo workspace → report.',
         'about.governanceWhy.title': 'Why governance?',
         'about.governanceWhy.body':
             'Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a public online advisor by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.',
@@ -1308,7 +1310,7 @@ const shellLabels = {
             'Diagrams and illustrations for playbook examples are created with AI, aligned with a consistent corporate design so stories stay readable and comparable.',
         'about.feedback.title': 'Feedback',
         'about.feedback.body':
-            'The project benefits from exchange. Feedback, suggestions, and improvements are welcome on GitHub.',
+            'Feedback, corrections, and improvements are welcome via GitHub issues and pull requests.',
         'about.feedback.github': 'Issues & pull requests on GitHub',
         'overview.sortLabel': 'Sort',
         'overview.sortDateDesc': 'Newest first',
@@ -1338,15 +1340,15 @@ const shellLabels = {
         'home.lead':
             'Governance help hub with Markdown stories, interactive workflows, and i18n — cloneable and CMS-free.',
         'home.hero.headline': 'Data Governance Hub',
-        'home.hero.headlineAccent': 'for data quality, PII, catalog, and analytics teams.',
+        'home.hero.headlineAccent': 'orientation first — then decisions, artifacts, and evidence.',
         'home.hero.tagline':
-            'Your destination for data governance: stories, glossary, learning paths, radar, and tools — cloneable for your internal hub.',
+            'Public online advisor for data governance: first the right question, then stories, glossary, learning paths, radar, and tools. Cloneable for your internal hub.',
         'home.hero.notice':
-            'Open source and cloneable for your internal hub.',
+            'Open source — cloneable as a starter for your internal hub.',
         'home.hero.ctaGovernance': 'Open Governance Hub',
         'home.hero.ctaWorkflows': 'Open Binom-Tools',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
-        'home.hero.attribution': 'Design concept by',
+        'home.hero.attribution': 'Public advisor by',
         'home.workflowsTitle': 'Workflow examples',
         'home.workflowsLead':
             'Interactive reference workflows — step by step, copy-paste ready.',
@@ -1362,7 +1364,7 @@ const shellLabels = {
             'Playbooks on data governance topics — step by step, from idea to implementation.',
         'home.hubsTitle': 'Hubs',
         'home.hubsLead':
-            'Entry points for data governance, data quality, PII, catalog vocabulary, learning paths, compliance, and the news radar.',
+            'Start in the Governance Hub: orientation and discovery. Stories and learning paths provide substance; tools produce artifacts; glossary, roles, compliance, and radar complete the set.',
         'home.hub.stories.title': 'Stories',
         'home.hub.stories.description':
             'Step-by-step governance playbooks — from idea to implementation.',
@@ -1401,7 +1403,7 @@ const shellLabels = {
         'home.hub.radar.countLabel': 'sources',
         'home.hub.tools.title': 'Binom-Tools',
         'home.hub.tools.description':
-            'Interactive reference workflows — step by step, copy-paste ready.',
+            'Artifact workbench: generators and setup workflows — copy-paste ready. BI formula tools are helpers, not governance setup.',
         'home.hub.tools.countLabel': 'tools',
         'home.topStories.title': 'Top stories',
         'home.topStories.lead': 'Most liked right now',
@@ -1410,10 +1412,10 @@ const shellLabels = {
             'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
         'home.featuredGovernance.title': 'Governance Hub',
         'home.featuredGovernance.description':
-            'Connects the other hubs into a guided discovery: clarify the decision, stack, sources, and risks — then turn them into plan, workflow, or report.',
+            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report. Advisor by Thomas Lindackers.',
         'card.featured-governance.title': 'Governance Hub',
         'card.featured-governance.description':
-            'Connects the other hubs into a guided discovery: clarify the decision, stack, sources, and risks — then turn them into plan, workflow, or report.',
+            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report. Advisor by Thomas Lindackers.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks.',
@@ -1430,7 +1432,7 @@ const shellLabels = {
         'home.ecosystemTitle': 'Ecosystem',
         'resources.indexTitle': 'Vendor resources',
         'resources.indexLead':
-            'Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.',
+            'Official help, governance, learning paths, cloud residency (GDPR) and compliance — curated, not a sales catalog. Filter by vendor, family, SaaS/Open Source or residency.',
         'resources.searchPlaceholder': 'Search products, GDPR, C5, ISO, Miro…',
         'resources.helpTitle': 'Help',
         'resources.governanceTitle': 'Governance',
@@ -1464,7 +1466,7 @@ const shellLabels = {
         'resources.visibleVendorCount': '{{count}} vendors',
         'compliance.indexTitle': 'Compliance',
         'compliance.indexLead':
-            'Frameworks and regulations for data, privacy, security and AI — purpose, key rules and official sources.',
+            'Frameworks and regulations for data, privacy, security and AI — purpose, key rules and official sources. CDMP/DMBOK bridge via the certification roadmap and the 8 pillars.',
         'compliance.searchPlaceholder': 'Search GDPR, C5, AI Act, GoBD…',
         'compliance.categoryLabel': 'Category',
         'compliance.categoryAll': 'All categories',
@@ -1488,7 +1490,7 @@ const shellLabels = {
         'compliance.next': 'Next',
         'compliance.roadmapTitle': 'Consultant certification roadmap',
         'compliance.roadmapLead':
-            'Which credentials help as a data/governance consultant — by region and learning phase. Orientation only.',
+            'Which credentials help as a data/governance consultant — by region and learning phase. CDMP (DAMA/DMBOK) is the shared professional language; practical start is the 8 pillars. Orientation only.',
         'compliance.roadmapDisclaimer':
             'Learning and orientation only — not career, hiring or legal advice. Requirements change; always check the issuer.',
         'compliance.roadmapSearchPlaceholder': 'Search CIPP/E, CDMP, ISO, AIGP…',
@@ -1499,7 +1501,8 @@ const shellLabels = {
         'compliance.roadmapNeed': 'What you need',
         'compliance.roadmapCta': 'Consultant certification roadmap →',
         'tools.overviewTitle': 'Binom-Tools',
-        'tools.overviewLead': 'Searchable tool catalog. Setup and reference workflows live in the Governance Hub.',
+        'tools.overviewLead':
+            'Artifact workbench under the Governance Hub: setup and reference workflows for PII, DQ, KPI, and discovery. BI formula generators (Qlik, Tableau, DAX) help with report logic — they are not governance setup.',
         'tools.phoneGate.title': 'Tools from tablet onwards',
         'tools.phoneGate.lead':
             'Interactive Binom-Tools are built for tablet and desktop screens. On phones, open Stories instead — they are designed to read well here.',
@@ -2105,7 +2108,7 @@ const shellLabels = {
             'Dedicated role stories are still planned — see docs/story-gaps-roles.md.',
         'suppliers.indexTitle': 'Sources',
         'suppliers.indexLead':
-            'Reusable core fields, dimensions, PII/DSDR hints and measure templates per source product — start here, then adapt per customer.',
+            'Reusable core fields, dimensions, PII/DSDR hints and measure templates per source product — start for governance discovery, then adapt per customer.',
         'suppliers.disclaimer':
             'Templates only — grain, filters, custom fields and ownership are firm-specific.',
         'suppliers.searchPlaceholder': 'Search Salesforce, ARR, PII…',
@@ -2348,7 +2351,8 @@ const shellLabels = {
         'accounts.storyAclRestrictedNote': 'User and team lists apply only when visibility is restricted.',
         'accounts.flash.aclUpdated': 'Story access saved.',
         'playbooks.indexTitle': 'Stories',
-        'playbooks.indexLead': 'Step-by-step governance guides — from idea to implementation.',
+        'playbooks.indexLead':
+            'Step-by-step guides for data governance — ownership, metadata, PII, DQ, KPIs, and more. Often start with the 8 pillars or the Governance Hub.',
         'playbooks.empty': 'No stories published yet.',
         'playbooks.category': 'Category',
         'playbooks.author': 'Author',
@@ -2357,7 +2361,7 @@ const shellLabels = {
         'playbooks.tags': 'Tags',
         'playbooks.views': 'Views',
         'playbooks.like': 'Like',
-        'playbooks.share': 'Share',
+        'playbooks.share': 'Share story',
         'playbooks.shareCopied': 'Link copied',
         'playbooks.shareFacebook': 'Facebook',
         'playbooks.shareLinkedIn': 'LinkedIn',

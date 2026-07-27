@@ -18469,6 +18469,143 @@ $config = [
         ],
       ],
     ],
+    [
+      'id' => 'dmbok',
+      'order' => 1680,
+      'category' => 'process',
+      'term' => [
+        'de' => 'DMBOK',
+        'en' => 'DMBOK',
+      ],
+      'aliases' => [
+        'DAMA-DMBOK',
+        'Data Management Body of Knowledge',
+        'DAMA',
+      ],
+      'definition' => [
+        'de' => 'Data Management Body of Knowledge (DAMA): gemeinsamer Fachkanon zu Governance, Metadaten, Qualität, Security und Lifecycle — bei Binom Anschluss über die 8 Pillars, kein Kapitel-Nachbau.',
+        'en' => 'Data Management Body of Knowledge (DAMA): shared professional canon for governance, metadata, quality, security, and lifecycle — at Binom bridged via the 8 pillars, not a chapter-by-chapter clone.',
+      ],
+      'related' => [
+        [
+          'type' => 'glossary',
+          'id' => 'cdmp',
+          'label' => [
+            'de' => 'CDMP',
+            'en' => 'CDMP',
+          ],
+        ],
+        [
+          'type' => 'glossary',
+          'id' => 'dcam',
+          'label' => [
+            'de' => 'DCAM',
+            'en' => 'DCAM',
+          ],
+        ],
+        [
+          'type' => 'story',
+          'id' => 'eight-pillars',
+          'label' => [
+            'de' => 'Die 8 Säulen der Data Governance',
+            'en' => 'The 8 Pillars of Data Governance',
+          ],
+        ],
+        [
+          'type' => 'route',
+          'route' => 'compliance.roadmap',
+          'label' => [
+            'de' => 'Zertifizierungs-Roadmap',
+            'en' => 'Certification roadmap',
+          ],
+        ],
+      ],
+    ],
+    [
+      'id' => 'cdmp',
+      'order' => 1690,
+      'category' => 'process',
+      'term' => [
+        'de' => 'CDMP',
+        'en' => 'CDMP',
+      ],
+      'aliases' => [
+        'Certified Data Management Professional',
+        'DAMA CDMP',
+      ],
+      'definition' => [
+        'de' => 'Zertifizierung von DAMA International zum DMBOK-Körperwissen — gemeinsame Fachsprache; Praxisstart bei Binom über Pillars, Hub und Tools.',
+        'en' => 'DAMA International certification for DMBOK body knowledge — shared professional language; practical start at Binom via pillars, hub, and tools.',
+      ],
+      'related' => [
+        [
+          'type' => 'glossary',
+          'id' => 'dmbok',
+          'label' => [
+            'de' => 'DMBOK',
+            'en' => 'DMBOK',
+          ],
+        ],
+        [
+          'type' => 'story',
+          'id' => 'eight-pillars',
+          'label' => [
+            'de' => 'Die 8 Säulen der Data Governance',
+            'en' => 'The 8 Pillars of Data Governance',
+          ],
+        ],
+        [
+          'type' => 'route',
+          'route' => 'compliance.roadmap',
+          'label' => [
+            'de' => 'Zertifizierungs-Roadmap',
+            'en' => 'Certification roadmap',
+          ],
+        ],
+      ],
+    ],
+    [
+      'id' => 'dcam',
+      'order' => 1700,
+      'category' => 'process',
+      'term' => [
+        'de' => 'DCAM',
+        'en' => 'DCAM',
+      ],
+      'aliases' => [
+        'Data Management Capability Assessment Model',
+      ],
+      'definition' => [
+        'de' => 'Reifegrad-/Assessment-Modell für Data-Management-Programme — misst Fähigkeit; Binom-Pillars und Advisor helfen Lücken und Artefakte zu finden, ersetzen aber kein DCAM-Assessment.',
+        'en' => 'Maturity/assessment model for data management programs — measures capability; Binom pillars and advisor help find gaps and artifacts, but do not replace a DCAM assessment.',
+      ],
+      'related' => [
+        [
+          'type' => 'glossary',
+          'id' => 'dmbok',
+          'label' => [
+            'de' => 'DMBOK',
+            'en' => 'DMBOK',
+          ],
+        ],
+        [
+          'type' => 'story',
+          'id' => 'eight-pillars',
+          'label' => [
+            'de' => 'Die 8 Säulen der Data Governance',
+            'en' => 'The 8 Pillars of Data Governance',
+          ],
+        ],
+        [
+          'type' => 'route',
+          'route' => 'governance.index',
+          'label' => [
+            'de' => 'Governance Hub',
+            'en' => 'Governance Hub',
+          ],
+        ],
+      ],
+    ],
   ],
 ];
 

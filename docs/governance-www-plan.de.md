@@ -1,8 +1,18 @@
 # Governance WWW Autoritaetsplan
 
-Stand: 2026-07-26
+Stand: 2026-07-27
 
 Ziel: governance.binom.net soll bei Suchen rund um Data Governance, Metadata, KPI Definition, DQ, PII, DSDR, Tool-Auswahl und Stack-Entscheidungen als praktischer Einstieg auffallen. Die Seite soll nicht wie ein Vendor-Verzeichnis wirken, sondern wie ein öffentlicher Online-Berater von Thomas Lindackers: erst Orientierung, dann konkrete Fragen, dann Tools, dann Nachweise.
+
+## Authority-Feinschliff (Leitlinie)
+
+Umsetzungsregeln für Content- und Meta-Arbeit ohne IA-Umbau:
+
+- Versprechen: öffentlicher Online-Berater — Orientierung → Fragen → Tools → Nachweise.
+- Die 8 Pillars sind das Praxisgerüst der Seite; DMBOK / CDMP / DCAM sind Anschluss an die Fachsprache, nicht Site-Struktur und nicht Sidebar-Einträge.
+- Fehlende Themen (Standards-Brücke, Proof, Author-Signal) landen in bestehenden Flächen: Home, About, Playbooks, Compliance-Roadmap, Tools-Übersicht, Glossar, Demo-Leads.
+- Community / Discussion bewusst später; keine neuen Hubs und keine neuen Sidebar-Punkte in diesem Feinschliff.
+- Hero behält Clone als Primary-Action; Governance-first kommt über Copy, Featured-Karte und Tools-Lead.
 
 ## Positionierung
 

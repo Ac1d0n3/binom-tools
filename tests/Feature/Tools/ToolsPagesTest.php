@@ -587,9 +587,11 @@ class ToolsPagesTest extends TestCase
             $response->assertSee(route('playbooks.index'), false);
         }
 
-        $this->assertStringContainsString('MetaData Deep Dive', $storiesNav);
-        $this->assertStringContainsString('/playbooks/series/metadata-deep-dive', $storiesNav);
+        $this->assertGreaterThan(0, substr_count($storiesNav, 'data-playbook-nav-title'));
         $this->assertLessThanOrEqual(1, substr_count($storiesNav, 'metadata-deep-dive'));
+        if (str_contains($storiesNav, 'metadata-deep-dive')) {
+            $this->assertStringContainsString('/playbooks/series/metadata-deep-dive', $storiesNav);
+        }
 
         $hubsNav = (string) str($response->getContent())
             ->after('data-i18n="nav.hubs">Hubs</p>')

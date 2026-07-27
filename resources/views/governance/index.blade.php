@@ -15,18 +15,18 @@
 @endphp
 
 @section('title', 'Governance Hub - ' . config('app.name'))
-@section('meta_description', 'Data Governance Hub: connect tools, vendor resources, suppliers, compliance, KPI requirements, PII/DSDR checks and stack decisions.')
+@section('meta_description', 'Public data governance advisor by Thomas Lindackers: clarify decisions, stacks, sources, and risks — then open matching tools, suppliers, playbooks, and evidence.')
 
 @push('head')
     <link rel="canonical" href="{{ url()->current() }}">
     <meta property="og:title" content="Governance Hub - {{ config('app.name') }}">
-    <meta property="og:description" content="Connect governance tools, vendor resources, supplier discovery, compliance, KPI requirements and stack decisions.">
+    <meta property="og:description" content="Public advisor for data governance decisions: orientation first, then tools, suppliers, and evidence — by Thomas Lindackers.">
     <script type="application/ld+json">
         {!! json_encode([
             chr(64).'context' => 'https://schema.org',
             '@type' => 'WebPage',
             'name' => 'Governance Hub',
-            'description' => 'A guided hub for data governance decisions, KPI requirements, supplier discovery, PII checks, and stack selection.',
+            'description' => 'Public online advisor by Thomas Lindackers for data governance decisions, KPI requirements, supplier discovery, PII checks, and stack selection.',
             'url' => url()->current(),
             'author' => [
                 '@type' => 'Person',
@@ -232,7 +232,7 @@
         </section>
 
             <div class="governance-hub__hero-copy">
-                <p class="governance-hub__eyebrow" data-text-de="Governance Schaltzentrale" data-text-en="Governance control hub">Governance control hub</p>
+                <p class="governance-hub__eyebrow" data-text-de="Öffentlicher Online-Berater" data-text-en="Public online advisor">Public online advisor</p>
                 <h1
                     class="tools-page-title governance-hub__title"
                     data-text-de="Data Governance entscheiden, sammeln und umsetzen"
@@ -241,9 +241,9 @@
                 <p
                     class="tools-page-lead governance-hub__lead"
                     data-hub-lead
-                    data-text-de="Dieser Hub verbindet Playbooks, Tools, Vendor Resources, Supplier Library und Compliance zu einem geführten Startpunkt: erst die richtige Frage, dann der passende Weg."
-                    data-text-en="This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path."
-                >This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path.</p>
+                    data-text-de="Berater von Thomas Lindackers: erst die richtige Frage, dann Playbooks, Tools, Vendor Resources, Supplier Library und Compliance. Beispielweg ohne Login: Demo-Workspace und Beispiel-Report."
+                    data-text-en="Advisor by Thomas Lindackers: first the right question, then playbooks, tools, vendor resources, supplier library, and compliance. Example path without login: demo workspace and sample report."
+                >Advisor by Thomas Lindackers: first the right question, then playbooks, tools, vendor resources, supplier library, and compliance. Example path without login: demo workspace and sample report.</p>
                 <div class="governance-hub__hero-actions" aria-label="Governance Hub Panels">
                     <button type="button" class="governance-hub__button" data-governance-drawer-toggle aria-controls="governance-header-drawer" aria-expanded="false">
                         <i class="fa-solid fa-table-columns" aria-hidden="true"></i>

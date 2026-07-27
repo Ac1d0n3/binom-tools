@@ -1,7 +1,7 @@
 @extends('layouts.tools')
 
 @section('title', 'Governance Demo Workspace - ' . config('app.name'))
-@section('meta_description', 'Gefüllter Governance Demo Workspace mit Hauptplan, parallelem Lernplan, KPI Cards, Generator-Ergebnissen und Report-Ansicht.')
+@section('meta_description', 'Example governance path without login: filled demo workspace with session, plans, KPI cards, generator results — then open the sample report.')
 
 @section('content')
     @php
@@ -23,14 +23,14 @@
     <div class="tools-content governance-demo-workspace">
         <header class="governance-demo-workspace__header">
             <div>
-                <p class="governance-hub__eyebrow" data-text-de="Gefülltes Beispiel" data-text-en="Filled example">Filled example</p>
+                <p class="governance-hub__eyebrow" data-text-de="Beweis-Pfad / Beispiel" data-text-en="Proof path / example">Proof path / example</p>
                 <h1 class="tools-page-title" data-text-de="Governance Demo Workspace" data-text-en="Governance Demo Workspace">Governance Demo Workspace</h1>
                 <p
                     class="tools-page-lead"
                     data-hub-lead
-                    data-text-de="Ein kompletter Beispielstand: aktive Governance Session, Hauptplan, paralleler Lernplan, KPI Cards, Generator-Ergebnisse und sichtbarer Report greifen zusammen."
-                    data-text-en="A complete example state: active governance session, main plan, parallel learning plan, KPI cards, generator results, and visible report work together."
-                >A complete example state: active governance session, main plan, parallel learning plan, KPI cards, generator results, and visible report work together.</p>
+                    data-text-de="So sieht ein gefüllter Stand aus: Session, Hauptplan, Lernplan, KPI Cards und Generator-Ergebnisse greifen zusammen. Als Nächstes den Beispiel-Report öffnen — oder im Hub eine eigene Discovery starten."
+                    data-text-en="What a filled state looks like: session, main plan, learning plan, KPI cards, and generator results work together. Next, open the sample report — or start your own discovery in the hub."
+                >What a filled state looks like: session, main plan, learning plan, KPI cards, and generator results work together. Next, open the sample report — or start your own discovery in the hub.</p>
             </div>
             <div class="governance-demo-workspace__actions">
                 <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-report') }}">

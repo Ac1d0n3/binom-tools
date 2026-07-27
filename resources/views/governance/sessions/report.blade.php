@@ -1,7 +1,9 @@
 @extends('layouts.tools')
 
 @section('title', $session['title'] . ' - Governance Report')
-@section('meta_description', 'Governance Discovery report view with saved advisor inputs, recommendations and validation findings.')
+@section('meta_description', ! empty($isDemo)
+    ? 'Sample governance discovery report: advisor inputs, recommendations, and validation findings — example path without login.'
+    : 'Governance Discovery report view with saved advisor inputs, recommendations and validation findings.')
 
 @section('content')
     @php
@@ -18,12 +20,16 @@
     <div class="tools-content governance-report">
         <header class="governance-report__header">
             <div>
-                <p class="governance-hub__eyebrow" data-text-de="Report Ansicht" data-text-en="Report view">Report view</p>
+                <p class="governance-hub__eyebrow" data-text-de="{{ ! empty($isDemo) ? 'Beispiel-Report / Beweis-Pfad' : 'Report Ansicht' }}" data-text-en="{{ ! empty($isDemo) ? 'Sample report / proof path' : 'Report view' }}">{{ ! empty($isDemo) ? 'Sample report / proof path' : 'Report view' }}</p>
                 <h1 class="tools-page-title">{{ $session['title'] }}</h1>
                 <p class="tools-page-lead" data-hub-lead>
-                    {{ $session['companyName'] ?: 'Governance Discovery' }}
-                    @if (! empty($session['projectName']))
-                        - {{ $session['projectName'] }}
+                    @if (! empty($isDemo))
+                        <span data-text-de="Anonymisiertes Beispielartefakt aus einer geführten Discovery — danach eigene Session im Governance Hub starten." data-text-en="Anonymized sample artifact from a guided discovery — then start your own session in the Governance Hub.">Anonymized sample artifact from a guided discovery — then start your own session in the Governance Hub.</span>
+                    @else
+                        {{ $session['companyName'] ?: 'Governance Discovery' }}
+                        @if (! empty($session['projectName']))
+                            - {{ $session['projectName'] }}
+                        @endif
                     @endif
                 </p>
             </div>

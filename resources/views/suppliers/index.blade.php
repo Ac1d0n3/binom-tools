@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Sources — ' . config('app.name'))
-@section('meta_description', 'Supplier library — core fields, dimensions, PII/DSDR and standard measure templates for Salesforce, HubSpot and GA4.')
+@section('meta_description', 'Supplier library for analytics governance — core fields, dimensions, PII/DSDR and KPI templates per source (Salesforce, HubSpot, GA4). Start here, then adapt per customer.')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--suppliers" data-overview-filter-root>

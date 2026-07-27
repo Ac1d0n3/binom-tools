@@ -3,7 +3,7 @@
 ])
 
 <aside {{ $attributes->class(['governance-author-byline', $compact ? 'governance-author-byline--compact' : null]) }}>
-    <p class="governance-author-byline__label" data-text-de="Kuratiert von" data-text-en="Curated by">Curated by</p>
+    <p class="governance-author-byline__label" data-text-de="Öffentlicher Berater" data-text-en="Public advisor">Public advisor</p>
     <p class="governance-author-byline__name">
         <a href="{{ config('playbooks.author_url', 'https://binom.net') }}" rel="author">
             {{ config('playbooks.default_author', 'Thomas Lindackers') }}

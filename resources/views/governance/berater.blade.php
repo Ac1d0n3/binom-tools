@@ -12,7 +12,7 @@
 @endphp
 
 @section('title', 'Data Governance Advisor - ' . config('app.name'))
-@section('meta_description', 'Guided online advisor for data governance: answer six questions, get matching tools, suppliers, stacks, and next artifacts — no login required.')
+@section('meta_description', 'Guided online advisor by Thomas Lindackers: answer six questions, get matching tools, suppliers, stacks, and next artifacts — no login required.')
 
 @push('head')
     <link rel="canonical" href="{{ url()->current() }}">
@@ -23,7 +23,7 @@
             chr(64).'context' => 'https://schema.org',
             '@type' => 'WebPage',
             'name' => 'Data Governance Advisor',
-            'description' => 'Guided online advisor for data governance decisions without login.',
+            'description' => 'Guided online advisor by Thomas Lindackers for data governance decisions without login.',
             'url' => url()->current(),
             'author' => [
                 '@type' => 'Person',
@@ -74,7 +74,7 @@
 
         <header class="governance-hub__hero governance-landing__hero">
             <div class="governance-hub__hero-copy">
-                <p class="governance-hub__eyebrow" data-text-de="Online-Berater" data-text-en="Online advisor">Online advisor</p>
+                <p class="governance-hub__eyebrow" data-text-de="Online-Berater von Thomas Lindackers" data-text-en="Online advisor by Thomas Lindackers">Online advisor by Thomas Lindackers</p>
                 <h1
                     class="tools-page-title governance-hub__title"
                     data-text-de="Data Governance beraten: erst fragen, dann Tools und Nachweise"
@@ -83,9 +83,9 @@
                 <p
                     class="tools-page-lead governance-hub__lead"
                     data-hub-lead
-                    data-text-de="Sechs kurze Fragen zu Ausgangslage, Ziel, Domain und Platform. Danach bekommst du empfohlene Workflows, Tools, Supplier und Playbooks — ohne Login."
-                    data-text-en="Six short questions on starting point, goal, domain, and platform. Then you get recommended workflows, tools, suppliers, and playbooks — no sign-in required."
-                >Six short questions on starting point, goal, domain, and platform. Then you get recommended workflows, tools, suppliers, and playbooks — no sign-in required.</p>
+                    data-text-de="Sechs kurze Fragen zu Ausgangslage, Ziel, Domain und Platform. Danach: empfohlene Workflows, Tools, Supplier und Playbooks — ohne Login. Danach optional Demo-Workspace und Report als Beispielartefakte."
+                    data-text-en="Six short questions on starting point, goal, domain, and platform. Then: recommended workflows, tools, suppliers, and playbooks — no sign-in. Optionally open the demo workspace and report as sample artifacts."
+                >Six short questions on starting point, goal, domain, and platform. Then: recommended workflows, tools, suppliers, and playbooks — no sign-in. Optionally open the demo workspace and report as sample artifacts.</p>
             </div>
             <x-governance.author-byline compact />
         </header>

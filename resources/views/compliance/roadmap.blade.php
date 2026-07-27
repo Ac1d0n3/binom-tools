@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Certification roadmap — Compliance — ' . config('app.name'))
-@section('meta_description', 'Certification roadmap for data and governance consultants — CIPP/E, CDMP, ISO 27001, AIGP and more by region. Learning orientation only.')
+@section('meta_description', 'Certification roadmap for data and governance consultants — CIPP/E, CDMP (DAMA/DMBOK), ISO 27001, AIGP and more. Practical start: the 8 pillars. Learning orientation only.')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--compliance tools-content--compliance-roadmap" data-overview-filter-root>

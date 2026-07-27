@@ -1,19 +1,19 @@
 @extends('layouts.tools')
 
 @section('title', 'About — ' . config('app.name'))
-@section('meta_description', 'About binom-tools — an open-source governance help hub with Markdown stories and interactive reference tools.')
+@section('meta_description', 'About Binom Governance — public online advisor by Thomas Lindackers: orientation, tools, and evidence for data governance. Open source, not a commercial product.')
 
 @section('content')
     <div class="tools-content">
         <h1 class="tools-page-title" data-i18n="about.title">About binom-tools</h1>
         <p class="tools-page-lead" data-hub-lead data-i18n="about.lead">
-            Background on the project — what it is and where content and visuals come from.
+            Public online advisor for data governance — orientation, questions, tools, and evidence by Thomas Lindackers.
         </p>
 
         <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.project.title">What is binom-tools?</h2>
             <p class="tools-about-body" data-i18n="about.project.body">
-                binom-tools is an open-source hobby project: a governance help hub with Markdown stories and interactive reference tools — not a commercial product.
+                binom-tools is an open-source project by Thomas Lindackers: a usable public online advisor and governance help hub with Markdown stories and interactive reference workflows — not a commercial product and not legal advice.
             </p>
         </section>
 
@@ -43,7 +43,7 @@
         <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.tools.title">Governance</h2>
             <p class="tools-about-body" data-i18n="about.tools.body">
-                Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup.
+                Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup. Example path: advisor → demo workspace → report.
             </p>
         </section>
 
@@ -57,7 +57,7 @@
         <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.feedback.title">Feedback</h2>
             <p class="tools-about-body" data-i18n="about.feedback.body">
-                The project benefits from exchange. Feedback, suggestions, and improvements are welcome on GitHub.
+                Feedback, corrections, and improvements are welcome via GitHub issues and pull requests.
             </p>
             <div class="tools-about-actions">
                 @if ($repositoryUrl)

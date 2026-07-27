@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Stories — ' . config('app.name'))
-@section('meta_description', 'Governance stories and playbooks — searchable guides on data quality, PII, lineage, KPIs, ownership, and more.')
+@section('meta_description', 'Governance stories and playbooks — ownership, metadata, PII, DQ, KPIs, and more. Start with the 8 pillars or the Governance Hub.')
 
 @section('content')
     <div

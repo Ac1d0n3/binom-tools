@@ -23,6 +23,8 @@ return [
         'DSDR',
         'data lineage',
         'compliance',
+        'DMBOK',
+        'CDMP',
         'learning paths',
         'glossary',
         'Governance Hub',

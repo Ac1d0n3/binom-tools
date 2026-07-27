@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Resources — ' . config('app.name'))
-@section('meta_description', 'Vendor help, governance, cloud residency (GDPR/DSGVO) and compliance certifications for banks and public sector — filterable by family, SaaS/OSS and residency.')
+@section('meta_description', 'Curated vendor help, governance, learning and compliance links — not a sales directory. Filter by family, SaaS/OSS and cloud residency (GDPR).')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--resources" data-overview-filter-root>

@@ -3,7 +3,7 @@
 ])
 
 @section('title', 'Compliance — ' . config('app.name'))
-@section('meta_description', 'Compliance frameworks for data platforms — GDPR, BSI C5, EU AI Act, ISO 27001 and more. Purpose, key rules and official sources in DE/EN.')
+@section('meta_description', 'Compliance frameworks for data platforms — GDPR, BSI C5, EU AI Act, ISO 27001 and more. CDMP/DMBOK bridge via the certification roadmap and the 8 pillars.')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--compliance" data-overview-filter-root>
