@@ -18,6 +18,7 @@
 /deploy-ftp
 /deploy-ftp-delta
 /deploy-ftp.prev
+/deploy-ftp-uploaded.json
 /deployment
 /public/fonts-manifest.dev.json
 /public/hot

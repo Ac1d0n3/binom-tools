@@ -5,10 +5,15 @@
  *
  * Incremental FTP:
  * - Unchanged file *content* keeps the previous pack mtime (so "upload newer only" works).
+ * - Delta is vs last *acknowledged upload* (deploy-ftp-uploaded.json), NOT vs last pack.
+ *   Pack-vs-pack alone falsely drops stories/images that were packed but never uploaded.
  * - Changed files go to deploy-ftp-delta/ (upload only that tree for small updates).
- * - CHANGED.txt lists every relative path that actually changed.
+ * - CHANGED.txt lists every relative path in the upload delta.
  *
- * Usage: npm run deploy:ftp
+ * Usage:
+ *   npm run deploy:ftp
+ *   npm run deploy:ftp -- --resync-content   # force content/ + playbook images into delta
+ *   npm run deploy:ftp:ack                  # after a successful FTP upload
  */
 import {
     cpSync,
@@ -33,12 +38,25 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'deploy-ftp');
 const prevDir = join(root, 'deploy-ftp.prev');
 const deltaDir = join(root, 'deploy-ftp-delta');
+/** Hashes last confirmed on the server — delta baseline (not the previous local pack). */
+const uploadedManifestPath = join(root, 'deploy-ftp-uploaded.json');
 const copyOpts = { recursive: true, preserveTimestamps: true };
+
+const cliArgs = new Set(process.argv.slice(2));
+const resyncContent = cliArgs.has('--resync-content');
+const forceDeltaAll = cliArgs.has('--force-delta-all');
+
+/** Always force these trees into the delta when --resync-content is set. */
+const resyncContentPrefixes = [
+    'content/',
+    'public/images/playbooks/',
+];
 
 const metaSkipNames = new Set([
     'UPLOAD.txt',
     'CHANGED.txt',
     'DELETED.txt',
+    'PACK-CHANGED.txt',
     '.pack-manifest.json',
     '.DS_Store',
 ]);
@@ -284,17 +302,61 @@ function assertMirrorTreesComplete(packedRoot) {
 }
 
 /**
+ * @returns {Map<string, string>} rel → sha256
+ */
+function loadUploadedHashes() {
+    /** @type {Map<string, string>} */
+    const map = new Map();
+    if (!existsSync(uploadedManifestPath)) {
+        return map;
+    }
+
+    try {
+        const raw = JSON.parse(readFileSync(uploadedManifestPath, 'utf8'));
+        const files = raw?.files && typeof raw.files === 'object' ? raw.files : {};
+        for (const [rel, entry] of Object.entries(files)) {
+            const hash = typeof entry === 'string' ? entry : entry?.hash;
+            if (typeof hash === 'string' && hash.length > 0) {
+                map.set(rel, hash);
+            }
+        }
+    } catch (err) {
+        console.warn(`Could not read ${uploadedManifestPath}:`, err instanceof Error ? err.message : err);
+    }
+
+    return map;
+}
+
+/**
+ * @param {string} rel
+ * @param {string[]} prefixes
+ */
+function matchesAnyPrefix(rel, prefixes) {
+    return prefixes.some((prefix) => rel === prefix.replace(/\/$/, '') || rel.startsWith(prefix));
+}
+
+/**
  * Compare new pack to previous pack by content hash.
  * Unchanged files get previous mtimes so FTP "upload newer only" can skip them.
+ * Upload delta is computed separately against the last acknowledged upload.
  *
  * @param {string} nextRoot
  * @param {string} previousRoot
- * @returns {Promise<{ changed: string[], deleted: string[], unchanged: number }>}
+ * @param {Map<string, string>} uploadedByRel
+ * @returns {Promise<{
+ *   packChanged: string[],
+ *   uploadChanged: string[],
+ *   deleted: string[],
+ *   unchanged: number,
+ *   nextManifest: Record<string, { hash: string, mtimeMs: number }>,
+ *   usedUploadBaseline: boolean,
+ * }>}
  */
-async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot) {
+async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot, uploadedByRel) {
     /** @type {Map<string, { hash: string, mtimeMs: number }>} */
     const prevByRel = new Map();
     const hasPrev = existsSync(previousRoot);
+    const usedUploadBaseline = uploadedByRel.size > 0;
 
     if (hasPrev) {
         for (const full of listFilesRecursive(previousRoot)) {
@@ -311,7 +373,9 @@ async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot) {
     }
 
     /** @type {string[]} */
-    const changed = [];
+    const packChanged = [];
+    /** @type {string[]} */
+    const uploadChanged = [];
     /** @type {Record<string, { hash: string, mtimeMs: number }>} */
     const nextManifest = {};
     let unchanged = 0;
@@ -332,18 +396,40 @@ async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot) {
             unchanged += 1;
             nextManifest[rel] = { hash, mtimeMs: prev.mtimeMs };
             prevByRel.delete(rel);
-            continue;
+        } else {
+            packChanged.push(rel);
+            nextManifest[rel] = { hash, mtimeMs: st.mtimeMs };
+            prevByRel.delete(rel);
         }
 
-        changed.push(rel);
-        nextManifest[rel] = { hash, mtimeMs: st.mtimeMs };
-        prevByRel.delete(rel);
+        const uploadedHash = uploadedByRel.get(rel);
+        const forceResync = resyncContent && matchesAnyPrefix(rel, resyncContentPrefixes);
+        const forceAll = forceDeltaAll;
+        const vsUpload = usedUploadBaseline
+            ? !uploadedHash || uploadedHash !== hash
+            : !prev || prev.hash !== hash;
+
+        if (forceAll || forceResync || vsUpload) {
+            uploadChanged.push(rel);
+        }
+
+        uploadedByRel.delete(rel);
     }
 
-    const deleted = [...prevByRel.keys()].sort();
-    changed.sort();
+    const deleted = usedUploadBaseline
+        ? [...uploadedByRel.keys()].sort()
+        : [...prevByRel.keys()].sort();
+    packChanged.sort();
+    uploadChanged.sort();
 
-    return { changed, deleted, unchanged, nextManifest };
+    return {
+        packChanged,
+        uploadChanged,
+        deleted,
+        unchanged,
+        nextManifest,
+        usedUploadBaseline,
+    };
 }
 
 /**
@@ -484,13 +570,46 @@ if (existsSync(bnToolsRuntime)) {
     console.log('bn-tools runtime mirrored → deploy-ftp/storage/app/bn-tools/');
 }
 
-console.log('Comparing to previous pack (content hash)…');
-const { changed, deleted, unchanged, nextManifest } = await stabilizeMtimesAndCollectDelta(outDir, prevDir);
+console.log('Comparing to previous pack (mtime) + last upload (delta)…');
+const uploadedByRel = loadUploadedHashes();
+if (uploadedByRel.size === 0) {
+    console.warn(
+        'No deploy-ftp-uploaded.json — delta falls back to pack-vs-pack '
+        + '(stories/images packed earlier but never uploaded will be MISSING). '
+        + 'After a good FTP upload: npm run deploy:ftp:ack\n'
+        + 'To force content/ + playbook images into this delta: npm run deploy:ftp -- --resync-content',
+    );
+} else {
+    console.log(`Upload baseline: ${uploadedByRel.size} file hash(es) from deploy-ftp-uploaded.json`);
+}
+if (resyncContent) {
+    console.log('Force-resync: content/ + public/images/playbooks/ → delta');
+}
+if (forceDeltaAll) {
+    console.log('Force-resync: ALL packed files → delta');
+}
+
+const {
+    packChanged,
+    uploadChanged,
+    deleted,
+    unchanged,
+    nextManifest,
+    usedUploadBaseline,
+} = await stabilizeMtimesAndCollectDelta(outDir, prevDir, uploadedByRel);
+
+const changed = uploadChanged;
 
 writeDeltaTree(outDir, changed, deltaDir);
 
-writeFileSync(join(outDir, 'CHANGED.txt'), changed.length > 0 ? `${changed.join('\n')}\n` : '(no content changes vs previous pack)\n');
-writeFileSync(join(outDir, 'DELETED.txt'), deleted.length > 0 ? `${deleted.join('\n')}\n` : '(no deletions vs previous pack)\n');
+writeFileSync(join(outDir, 'CHANGED.txt'), changed.length > 0 ? `${changed.join('\n')}\n` : '(no content changes vs upload baseline)\n');
+writeFileSync(join(outDir, 'DELETED.txt'), deleted.length > 0 ? `${deleted.join('\n')}\n` : '(no deletions vs upload baseline)\n');
+writeFileSync(
+    join(outDir, 'PACK-CHANGED.txt'),
+    packChanged.length > 0
+        ? `${packChanged.join('\n')}\n`
+        : '(no content changes vs previous local pack)\n',
+);
 writeFileSync(
     join(outDir, '.pack-manifest.json'),
     JSON.stringify({ builtAt: new Date().toISOString(), files: nextManifest }, null, 2),
@@ -504,6 +623,9 @@ if (existsSync(prevDir)) {
     rmSync(prevDir, { recursive: true, force: true });
 }
 
+const baselineLabel = usedUploadBaseline
+    ? 'last acknowledged upload (deploy-ftp-uploaded.json)'
+    : 'previous local pack (no upload ack yet)';
 const buildStamp = new Date().toISOString();
 const uploadHelp = `FTP-Deploy für governance.binom.net
 ===================================
@@ -512,27 +634,34 @@ Zwei Upload-Modi:
 
 A) Inkrementell (empfohlen nach dem 1. Full-Upload)
    - Ordner: deploy-ftp-delta/
-   - Enthält NUR Dateien mit geändertem Inhalt (${changed.length} Datei(en))
+   - Enthält NUR Dateien vs. ${baselineLabel} (${changed.length} Datei(en))
    - FTP: diesen Baum ins Webroot mergen / überschreiben
+   - Nach erfolgreichem Upload: npm run deploy:ftp:ack
+     (sonst verschwinden Stories/Bilder beim nächsten Pack wieder aus dem Delta)
 
 B) Full pack + „nur Neuere“
    - Ordner: deploy-ftp/
    - Unveränderte Inhalte behalten die mtime vom letzten Pack
-     (${unchanged} unverändert, ${changed.length} geändert)
+     (${unchanged} unverändert lokal, ${packChanged.length} lokal geändert, ${changed.length} im Upload-Delta)
    - FTP-Client: „nur neuere Dateien hochladen“ funktioniert dann
    - Beim ersten Pack nach diesem Update wirkt noch alles neu — ab dem 2. Lauf greift’s
 
-Gelöschte Pfade vs. letzter Pack: siehe DELETED.txt (${deleted.length})
-Geänderte Pfade: siehe CHANGED.txt
+Gelöschte Pfade vs. Baseline: siehe DELETED.txt (${deleted.length})
+Upload-Delta: siehe CHANGED.txt
+Lokal vs. letzter Pack: siehe PACK-CHANGED.txt
+
+Resync (wenn Delta „leer“ wirkt, Server aber Stories/Bilder fehlen):
+   npm run deploy:ftp -- --resync-content
 
 Pflicht bei Full-Replace (oder wenn Delta unsicher):
    - public/build/ komplett (neue hashed Assets, inkl. calendar-public / glossary-quiz / glossary-bingo)
    - app/, config/, resources/views/, routes/, database/migrations/ (komplett gespiegelt)
    - bootstrap/app.php + bootstrap/providers.php
    - storage/app/bn-tools/ (Accounts + lokaler Calendar unter calendar/)
-   - content/, lang/
+   - content/, lang/, public/images/playbooks/
 
 Nach Upload:
+   - npm run deploy:ftp:ack
    - Hard-Refresh (Cmd+Shift+R)
    - Optional: storage/framework/views/*.php löschen
    - Bei MySQL: php artisan migrate (Calendar-Holidays, Glossary-Quiz, Radar, …)
@@ -547,6 +676,8 @@ writeFileSync(join(outDir, 'UPLOAD.txt'), uploadHelp);
 writeFileSync(join(deltaDir, 'UPLOAD.txt'), uploadHelp);
 
 console.log(`\nReady full:  ${outDir}`);
-console.log(`Ready delta: ${deltaDir} (${changed.length} changed file(s), ${unchanged} unchanged, ${deleted.length} deleted)`);
+console.log(`Ready delta: ${deltaDir} (${changed.length} upload-delta file(s), ${packChanged.length} pack-changed, ${unchanged} mtime-stable, ${deleted.length} deleted)`);
+console.log(`Delta baseline: ${baselineLabel}`);
 console.log('Upload deploy-ftp-delta/ for incremental updates, or deploy-ftp/ with "newer only".');
+console.log('After FTP succeeds: npm run deploy:ftp:ack');
 console.log('Verified: Governance Radar PHP + config + migrations + radar-*.js + fa-regular fonts are in the pack.');

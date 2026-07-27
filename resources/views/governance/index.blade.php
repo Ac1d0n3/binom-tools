@@ -1,4 +1,7 @@
-@extends('layouts.tools', ['viteEntries' => ['resources/js/governance/hub-advisor.js', 'resources/js/governance/discovery-canvas.js']])
+@extends('layouts.tools', [
+    'viteEntries' => ['resources/js/governance/hub-advisor.js', 'resources/js/governance/discovery-canvas.js'],
+    'mainClass' => 'tools-shell__main--overview',
+])
 
 @php
     $faqEntities = collect($hubFaqs ?? [])->map(static fn (array $faq): array => [

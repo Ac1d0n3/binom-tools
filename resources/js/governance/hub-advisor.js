@@ -969,6 +969,38 @@ function render(root, config) {
     });
 }
 
+function createScrollLock() {
+    let scrollAnchor = null;
+
+    const remember = () => {
+        scrollAnchor = { x: window.scrollX, y: window.scrollY };
+    };
+
+    const run = (callback) => {
+        const scrollX = scrollAnchor?.x ?? window.scrollX;
+        const scrollY = scrollAnchor?.y ?? window.scrollY;
+        callback();
+        window.requestAnimationFrame(() => {
+            window.scrollTo(scrollX, scrollY);
+            window.setTimeout(() => {
+                window.scrollTo(scrollX, scrollY);
+                scrollAnchor = null;
+            }, 40);
+        });
+    };
+
+    const bindTrigger = (element) => {
+        element.addEventListener('pointerdown', remember);
+        element.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                remember();
+            }
+        });
+    };
+
+    return { remember, run, bindTrigger };
+}
+
 function initPanelToggles(root) {
     const controls = root.querySelector('[data-governance-top-controls]');
     const panels = Array.from(root.querySelectorAll('[data-governance-panel]'));
@@ -979,11 +1011,7 @@ function initPanelToggles(root) {
         return;
     }
 
-    let scrollAnchor = null;
-
-    const rememberScroll = () => {
-        scrollAnchor = { x: window.scrollX, y: window.scrollY };
-    };
+    const scrollLock = createScrollLock();
 
     const activatePanel = (targetId) => {
         panels.forEach((panel) => {
@@ -994,19 +1022,6 @@ function initPanelToggles(root) {
             toggle.classList.toggle('governance-hub__panel-tab--active', isActive);
             toggle.setAttribute('aria-selected', String(isActive));
             toggle.tabIndex = isActive ? 0 : -1;
-        });
-    };
-
-    const keepScrollPosition = (callback) => {
-        const scrollX = scrollAnchor?.x ?? window.scrollX;
-        const scrollY = scrollAnchor?.y ?? window.scrollY;
-        callback();
-        window.requestAnimationFrame(() => {
-            window.scrollTo(scrollX, scrollY);
-            window.setTimeout(() => {
-                window.scrollTo(scrollX, scrollY);
-                scrollAnchor = null;
-            }, 40);
         });
     };
 
@@ -1023,18 +1038,13 @@ function initPanelToggles(root) {
     });
 
     toggles.forEach((toggle) => {
-        toggle.addEventListener('pointerdown', rememberScroll);
-        toggle.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                rememberScroll();
-            }
-        });
+        scrollLock.bindTrigger(toggle);
         toggle.addEventListener('click', () => {
             const target = root.querySelector(`#${toggle.dataset.governancePanelToggle}`);
             if (!(target instanceof HTMLElement)) {
                 return;
             }
-            keepScrollPosition(() => {
+            scrollLock.run(() => {
                 controls.hidden = false;
                 activatePanel(target.id);
                 toggle.blur();
@@ -1148,21 +1158,26 @@ function activateSubtabGroup(group, panelId) {
 }
 
 function initSubtabs(root) {
+    const scrollLock = createScrollLock();
+
     root.querySelectorAll('[data-governance-subtabs]').forEach((group) => {
         const toggles = Array.from(group.querySelectorAll('[data-governance-subtab-toggle]'));
         const initial = toggles.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.governanceSubtabToggle
             || toggles[0]?.dataset.governanceSubtabToggle
             || '';
         toggles.forEach((tab) => {
+            scrollLock.bindTrigger(tab);
             tab.addEventListener('click', () => {
                 const id = tab.dataset.governanceSubtabToggle || '';
-                activateSubtabGroup(group, id);
-                if (group.dataset.governanceSubtabs === 'guides' && id) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('tab', 'guides');
-                    url.hash = `guides-${id}`;
-                    window.history.replaceState({}, '', url);
-                }
+                scrollLock.run(() => {
+                    activateSubtabGroup(group, id);
+                    if (group.dataset.governanceSubtabs === 'guides' && id) {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('tab', 'guides');
+                        url.hash = `guides-${id}`;
+                        window.history.replaceState({}, '', url);
+                    }
+                });
             });
         });
         activateSubtabGroup(group, initial);
@@ -1215,6 +1230,8 @@ function initTabs(root) {
     }
     let pendingFragment = window.location.hash.replace(/^#/, '') || fromFragmentAttr || fragmentAliases[fromQuery] || '';
 
+    const scrollLock = createScrollLock();
+
     const activate = (tabId, fragment = '') => {
         tabs.forEach((tab) => {
             const isActive = tab.dataset.governanceTabToggle === tabId;
@@ -1246,8 +1263,11 @@ function initTabs(root) {
     };
 
     tabs.forEach((tab) => {
+        scrollLock.bindTrigger(tab);
         tab.addEventListener('click', () => {
-            activate(tab.dataset.governanceTabToggle || 'advisor');
+            scrollLock.run(() => {
+                activate(tab.dataset.governanceTabToggle || 'advisor');
+            });
         });
     });
 

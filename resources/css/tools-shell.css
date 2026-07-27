@@ -744,7 +744,7 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 }
 
 .tools-sidenav__list--home + .tools-sidenav__group {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .tools-sidenav__section {
@@ -1404,6 +1404,7 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     border-bottom: 1px solid color-mix(in srgb, var(--theme-color-primary) 26%, var(--base-border-color));
     margin: 0;
     padding: 0;
+    overflow-anchor: none;
 }
 
 .governance-hub__tabs--nested {
@@ -1540,6 +1541,11 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 
 .governance-hub > .governance-hub__section {
     order: 4;
+}
+
+.governance-hub [data-governance-tab-panel],
+.governance-hub [data-governance-subtab-panel] {
+    overflow-anchor: none;
 }
 
 .governance-hub [data-governance-tab-panel][hidden] {
@@ -7295,9 +7301,9 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-sidenav__list--home {
-    margin: 0 0 0.15rem;
-    padding: 0 0 0.85rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--base-border-color) 88%, transparent);
+    margin: 0;
+    padding: 0;
+    border-bottom: 0;
 }
 
 .tools-overview-toolbar {
