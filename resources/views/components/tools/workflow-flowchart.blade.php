@@ -12,7 +12,11 @@
                     @if ($step['isActive']) aria-current="step" @endif
                 >
                     <span class="tools-workflow-flowchart__num">{{ $step['num'] }}</span>
-                    <span data-i18n="workflow.step-{{ $step['id'] }}">{{ $step['label']['en'] ?? $step['id'] }}</span>
+                    <span
+                        data-i18n="workflow.step-{{ $step['id'] }}"
+                        data-text-de="{{ $step['label']['de'] ?? ($step['label']['en'] ?? $step['id']) }}"
+                        data-text-en="{{ $step['label']['en'] ?? ($step['label']['de'] ?? $step['id']) }}"
+                    >{{ $step['label']['en'] ?? $step['id'] }}</span>
                 </a>
             </li>
         @endforeach

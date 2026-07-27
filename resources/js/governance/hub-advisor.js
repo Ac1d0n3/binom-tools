@@ -1048,24 +1048,201 @@ function initPanelToggles(root) {
     sync();
 }
 
-function initTabs(root) {
-    const tabs = Array.from(root.querySelectorAll('[data-governance-tab-toggle]'));
-    const panels = Array.from(root.querySelectorAll('[data-governance-tab-panel]'));
+const PERSONA_STORAGE_KEY = 'binom-governance-persona';
 
-    if (tabs.length === 0 || panels.length === 0) {
+function setRadioValue(form, name, value) {
+    const input = form.querySelector(`input[name="${name}"][value="${value}"]`);
+    if (input instanceof HTMLInputElement) {
+        input.checked = true;
+    }
+}
+
+function applyPersonaHighlight() {
+    // Intentionally empty: outlining/dimming whole guide blocks made nested frames.
+}
+
+function initPersonas(root, onChange) {
+    const chips = Array.from(root.querySelectorAll('[data-governance-persona]'));
+    if (chips.length === 0) {
         return;
     }
 
-    const activate = (tabId) => {
+    const form = root.querySelector('[data-governance-advisor-form]');
+    let active = '';
+    try {
+        active = localStorage.getItem(PERSONA_STORAGE_KEY) || '';
+    } catch {
+        active = '';
+    }
+
+    const apply = (persona, persist) => {
+        active = persona;
+        chips.forEach((chip) => {
+            const isActive = chip.dataset.governancePersona === persona;
+            chip.classList.toggle('governance-hub__persona--active', isActive);
+            chip.setAttribute('aria-pressed', String(isActive));
+        });
+        applyPersonaHighlight(root, persona || null);
+        if (persona && form) {
+            const chip = chips.find((item) => item.dataset.governancePersona === persona);
+            if (chip) {
+                setRadioValue(form, 'scenario', chip.dataset.personaScenario || '');
+                setRadioValue(form, 'goal', chip.dataset.personaGoal || '');
+                form.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        if (persist) {
+            try {
+                if (persona) {
+                    localStorage.setItem(PERSONA_STORAGE_KEY, persona);
+                } else {
+                    localStorage.removeItem(PERSONA_STORAGE_KEY);
+                }
+            } catch {
+                // ignore storage failures
+            }
+        }
+        onChange?.();
+    };
+
+    chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+            const next = chip.dataset.governancePersona || '';
+            apply(active === next ? '' : next, true);
+        });
+    });
+
+    if (active) {
+        apply(active, false);
+    }
+}
+
+function normalizeGuidesFragment(fragment) {
+    if (!fragment) {
+        return '';
+    }
+    return fragment.startsWith('guides-') ? fragment.slice('guides-'.length) : fragment;
+}
+
+function activateSubtabGroup(group, panelId) {
+    const toggles = Array.from(group.querySelectorAll('[data-governance-subtab-toggle]'));
+    const scope = group.parentElement || group;
+    const panels = Array.from(scope.querySelectorAll(':scope > [data-governance-subtab-panel], :scope > .governance-hub__guides-block[data-governance-subtab-panel]'));
+    const allPanels = panels.length > 0
+        ? panels
+        : Array.from(scope.querySelectorAll('[data-governance-subtab-panel]'));
+    const allowed = new Set(toggles.map((tab) => tab.dataset.governanceSubtabToggle || ''));
+    const next = allowed.has(panelId) ? panelId : (toggles[0]?.dataset.governanceSubtabToggle || '');
+
+    toggles.forEach((tab) => {
+        const isActive = tab.dataset.governanceSubtabToggle === next;
+        tab.classList.toggle('governance-hub__subtab--active', isActive);
+        tab.setAttribute('aria-selected', String(isActive));
+        tab.tabIndex = isActive ? 0 : -1;
+    });
+    allPanels.forEach((panel) => {
+        panel.hidden = panel.dataset.governanceSubtabPanel !== next;
+    });
+
+    return next;
+}
+
+function initSubtabs(root) {
+    root.querySelectorAll('[data-governance-subtabs]').forEach((group) => {
+        const toggles = Array.from(group.querySelectorAll('[data-governance-subtab-toggle]'));
+        const initial = toggles.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.governanceSubtabToggle
+            || toggles[0]?.dataset.governanceSubtabToggle
+            || '';
+        toggles.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                const id = tab.dataset.governanceSubtabToggle || '';
+                activateSubtabGroup(group, id);
+                if (group.dataset.governanceSubtabs === 'guides' && id) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('tab', 'guides');
+                    url.hash = `guides-${id}`;
+                    window.history.replaceState({}, '', url);
+                }
+            });
+        });
+        activateSubtabGroup(group, initial);
+    });
+}
+
+function activateGuidesSubtab(root, fragment) {
+    const id = normalizeGuidesFragment(fragment);
+    if (!id) {
+        return;
+    }
+    const group = root.querySelector('[data-governance-subtabs="guides"]');
+    if (!group) {
+        return;
+    }
+    activateSubtabGroup(group, id);
+}
+
+function initTabs(root) {
+    const tabs = Array.from(root.querySelectorAll('[data-governance-tabs] > [data-governance-tab-toggle]'));
+    const allPanels = Array.from(root.querySelectorAll('[data-governance-tab-panel]'));
+
+    if (tabs.length === 0 || allPanels.length === 0) {
+        return;
+    }
+
+    const tabList = root.querySelector('[data-governance-tabs]');
+    const fromAttr = tabList?.getAttribute('data-governance-initial-tab') || '';
+    const fromFragmentAttr = tabList?.getAttribute('data-governance-initial-fragment') || '';
+    const fromQuery = new URLSearchParams(window.location.search).get('tab') || '';
+    const aliases = {
+        hub: 'advisor',
+        workflows: 'guides',
+        decisions: 'guides',
+        stacks: 'guides',
+        kpi: 'guides',
+        supplier: 'guides',
+    };
+    const fragmentAliases = {
+        workflows: 'journeys',
+        decisions: 'decisions',
+        stacks: 'stacks',
+        kpi: 'kpi',
+        supplier: 'supplier',
+    };
+    const allowed = new Set(tabs.map((tab) => tab.dataset.governanceTabToggle || ''));
+    let initial = aliases[fromQuery] || fromQuery || fromAttr || 'advisor';
+    if (!allowed.has(initial)) {
+        initial = 'advisor';
+    }
+    let pendingFragment = window.location.hash.replace(/^#/, '') || fromFragmentAttr || fragmentAliases[fromQuery] || '';
+
+    const activate = (tabId, fragment = '') => {
         tabs.forEach((tab) => {
             const isActive = tab.dataset.governanceTabToggle === tabId;
             tab.classList.toggle('governance-hub__tab--active', isActive);
             tab.setAttribute('aria-selected', String(isActive));
             tab.tabIndex = isActive ? 0 : -1;
         });
-        panels.forEach((panel) => {
+        allPanels.forEach((panel) => {
             panel.hidden = panel.dataset.governanceTabPanel !== tabId;
         });
+
+        const url = new URL(window.location.href);
+        if (tabId === 'advisor') {
+            url.searchParams.delete('tab');
+        } else {
+            url.searchParams.set('tab', tabId);
+        }
+        if (fragment && tabId === 'guides') {
+            const clean = normalizeGuidesFragment(fragment);
+            url.hash = clean ? `guides-${clean}` : '';
+        } else if (tabId !== 'guides') {
+            url.hash = '';
+        }
+        window.history.replaceState({}, '', url);
+
+        if (tabId === 'guides' && fragment) {
+            window.requestAnimationFrame(() => activateGuidesSubtab(root, fragment));
+        }
     };
 
     tabs.forEach((tab) => {
@@ -1074,7 +1251,7 @@ function initTabs(root) {
         });
     });
 
-    activate(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.governanceTabToggle || 'advisor');
+    activate(initial, pendingFragment);
 }
 
 function initAdvisor(root) {
@@ -1086,12 +1263,18 @@ function initAdvisor(root) {
     const reportLink = root.querySelector('[data-governance-view-report]');
     let activeDemoReportUrl = null;
 
+    initPanelToggles(root);
+    initSubtabs(root);
+    initTabs(root);
+    initPersonas(root, () => {
+        if (form) {
+            render(root, config);
+        }
+    });
+
     if (!form) {
         return;
     }
-
-    initPanelToggles(root);
-    initTabs(root);
 
     const syncDqPanel = () => {
         const state = getState(form);

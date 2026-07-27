@@ -25,6 +25,8 @@ use App\Http\Controllers\Compliance\ComplianceController;
 use App\Http\Controllers\Glossary\GlossaryController;
 use App\Http\Controllers\Governance\GovernanceHubController;
 use App\Http\Controllers\Governance\GovernanceSessionController;
+use App\Http\Controllers\Seo\RobotsController;
+use App\Http\Controllers\Seo\SitemapController;
 use App\Http\Controllers\LearningPaths\LearningPathController;
 use App\Http\Controllers\Resources\VendorResourcesController;
 use App\Http\Controllers\Roles\RolesController;
@@ -68,6 +70,11 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/', [ToolsLandingController::class, 'index'])->name($name('tools.landing'));
     Route::get('/tools', [ToolsOverviewController::class, 'index'])->name($name('tools.overview'));
     Route::get('/governance', [GovernanceHubController::class, 'index'])->name($name('governance.index'));
+    Route::get('/governance/berater', [GovernanceHubController::class, 'advisor'])->name($name('governance.advisor'));
+    Route::get('/governance/stacks', [GovernanceHubController::class, 'stacks'])->name($name('governance.stacks'));
+    Route::get('/governance/kpi-requirements', [GovernanceHubController::class, 'kpiRequirements'])->name($name('governance.kpi-requirements'));
+    Route::get('/governance/supplier-discovery', [GovernanceHubController::class, 'supplierDiscovery'])->name($name('governance.supplier-discovery'));
+    Route::get('/governance/discovery-canvas', [GovernanceHubController::class, 'discoveryCanvas'])->name($name('governance.discovery-canvas'));
     Route::get('/governance/radar', [GovernanceHubController::class, 'radar'])->name($name('governance.radar'));
     Route::get('/governance/demo-workspace', [GovernanceSessionController::class, 'demoWorkspace'])->name($name('governance.sessions.demo-workspace'));
     Route::get('/governance/demo-report', [GovernanceSessionController::class, 'demoReport'])->name($name('governance.sessions.demo-report'));
@@ -592,6 +599,12 @@ $registerRoutes = static function (bool $localized): void {
 };
 
 $registerRoutes(false);
+
+Route::get('/robots.txt', RobotsController::class)->name('seo.robots');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('seo.sitemap');
+Route::get('/sitemap-{group}.xml', [SitemapController::class, 'group'])
+    ->where('group', '[a-z]+')
+    ->name('seo.sitemap.group');
 
 Route::prefix('{locale}')
     ->where(['locale' => 'de|en'])

@@ -146,6 +146,11 @@ const shellLabels = {
         'about.tools.title': 'Governance',
         'about.tools.body':
             'Interaktive Referenz-Workflows machen Ideen aus den Stories praktisch umsetzbar — Schritt für Schritt, copy-paste-fähig für Warehouse oder Governance-Setup.',
+        'about.governanceWhy.title': 'Warum Governance?',
+        'about.governanceWhy.body':
+            'Data Governance beginnt mit praktischen Entscheidungen: welcher Stack, welche Quelle, welches KPI-Grain, welche PII-Controls. Binom Governance ist ein öffentlicher Online-Berater von Thomas Lindackers — erst Orientierung, dann Tools und Nachweise — kein Vendor-Verzeichnis und keine Rechtsberatung.',
+        'about.governanceWhy.cta': 'Governance Hub öffnen',
+        'about.governanceWhy.author': 'Thomas Lindackers auf binom.net',
         'about.visuals.title': 'Visuals',
         'about.visuals.body':
             'Diagramme und Schaubilder zu Playbook-Beispielen erstelle ich mit KI — abgestimmt auf ein einheitliches Corporate Design, damit Stories lesbar und vergleichbar bleiben.',
@@ -1283,6 +1288,11 @@ const shellLabels = {
         'about.tools.title': 'Governance',
         'about.tools.body':
             'Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup.',
+        'about.governanceWhy.title': 'Why governance?',
+        'about.governanceWhy.body':
+            'Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a public online advisor by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.',
+        'about.governanceWhy.cta': 'Open Governance Hub',
+        'about.governanceWhy.author': 'Thomas Lindackers on binom.net',
         'about.visuals.title': 'Visuals',
         'about.visuals.body':
             'Diagrams and illustrations for playbook examples are created with AI, aligned with a consistent corporate design so stories stay readable and comparable.',

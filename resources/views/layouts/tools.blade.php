@@ -16,6 +16,10 @@
     @hasSection('meta_description')
         <meta name="description" content="@yield('meta_description')">
     @endif
+    @hasSection('robots')
+        <meta name="robots" content="@yield('robots')">
+    @endif
+    <x-seo.hreflang />
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
@@ -93,6 +97,7 @@
             >
                 <x-tools.disclaimer-banner />
                 <x-tools.phone-gate />
+                <x-governance.hub-backlink />
                 @yield('content')
             </main>
         </div>

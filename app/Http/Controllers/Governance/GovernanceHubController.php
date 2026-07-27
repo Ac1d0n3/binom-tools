@@ -11,6 +11,7 @@ use App\Governance\GovernanceRadarSourceStore;
 use App\Http\Controllers\Controller;
 use App\Support\ToolsNav;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
@@ -27,66 +28,91 @@ class GovernanceHubController extends Controller
         private readonly GovernanceRadarFeedItemStore $radarFeedItems,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        /** @var list<array<string, mixed>> $tools */
-        $tools = ToolsNav::withRegisteredRoutes(config('tools.nav', []));
-        $toolsById = [];
-        foreach ($tools as $tool) {
-            $id = is_string($tool['id'] ?? null) ? $tool['id'] : '';
-            if ($id !== '') {
-                $toolsById[$id] = $tool;
-            }
-        }
-
-        /** @var array<string, array<string, mixed>> $stacks */
-        $stacks = config('vendor-resources.stacks', []);
-        /** @var list<array<string, mixed>> $resources */
-        $resources = config('vendor-resources.products', []);
-        /** @var list<array<string, mixed>> $suppliers */
-        $suppliers = config('suppliers.products', []);
-        /** @var list<array<string, mixed>> $compliance */
-        $compliance = config('compliance.items', []);
-
-        $featuredToolIds = [
-            'kpi-requirements-intake',
-            'source-scope-builder',
-            'mart-design-brief-generator',
-            'governance-stack-advisor',
-            'pii-dsdr-readiness-checker',
-            'decision-brief-generator',
-            'vendor-learning-path-builder',
-            'stakeholder-matrix',
-            'kpi-definition',
-            'report-inventory',
-            'architecture-fit',
-            'impact-effort',
-            'pii-policy-generator',
-            'pii-recommend-generator',
-            'dbt-dq-rules-generator',
-            'meta-export-generator',
-        ];
-
-        $featuredTools = [];
-        foreach ($featuredToolIds as $id) {
-            if (isset($toolsById[$id])) {
-                $featuredTools[] = $toolsById[$id];
-            }
-        }
+        $catalog = $this->hubCatalog();
+        $rawTab = is_string($request->query('tab')) ? $request->query('tab') : 'advisor';
+        [$tab, $fragment] = $this->resolveHubTab($rawTab);
 
         return view('governance.index', [
-            'counts' => [
-                'tools' => count($tools),
-                'resources' => count($resources),
-                'suppliers' => count($suppliers),
-                'stacks' => count($stacks),
-                'compliance' => count($compliance),
-            ],
-            'featuredTools' => $featuredTools,
+            'counts' => $catalog['counts'],
+            'featuredTools' => $catalog['featuredTools'],
             'journeys' => $this->journeys(),
             'setupWorkflows' => ToolsNav::workflowsWithRegisteredRoutes(config('tools.workflows', [])),
-            'toolsById' => $toolsById,
+            'toolsById' => $catalog['toolsById'],
+            'advisorLinks' => $this->advisorLinks(),
+            'hubFaqs' => $this->hubFaqs(),
+            'stackCards' => $this->stackCards($catalog['toolsById']),
+            'discoverySteps' => $this->discoveryCanvasSteps($catalog['toolsById']),
+            'featuredSuppliers' => $this->featuredSuppliers(),
+            'kpiRelatedTools' => $this->relatedTools($catalog['toolsById'], [
+                'kpi-requirements-intake',
+                'kpi-definition',
+                'stakeholder-matrix',
+                'report-inventory',
+                'mart-design-brief-generator',
+                'source-scope-builder',
+            ]),
+            'supplierRelatedTools' => $this->relatedTools($catalog['toolsById'], [
+                'source-scope-builder',
+                'pii-dsdr-readiness-checker',
+                'mart-design-brief-generator',
+                'kpi-requirements-intake',
+            ]),
+            'initialTab' => $tab,
+            'initialFragment' => $fragment,
         ]);
+    }
+
+    public function advisor(): RedirectResponse
+    {
+        return redirect()->to(locale_route('governance.index').'?tab=advisor');
+    }
+
+    public function stacks(): RedirectResponse
+    {
+        return redirect()->to(locale_route('governance.index').'?tab=guides#stacks');
+    }
+
+    public function kpiRequirements(): RedirectResponse
+    {
+        return redirect()->to(locale_route('governance.index').'?tab=guides#kpi');
+    }
+
+    public function supplierDiscovery(): RedirectResponse
+    {
+        return redirect()->to(locale_route('governance.index').'?tab=guides#supplier');
+    }
+
+    public function discoveryCanvas(): RedirectResponse
+    {
+        return redirect()->to(locale_route('governance.index').'?tab=canvas');
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function resolveHubTab(string $rawTab): array
+    {
+        $allowed = ['advisor', 'guides', 'canvas', 'tools'];
+        $aliases = [
+            'hub' => ['advisor', ''],
+            'workflows' => ['guides', 'journeys'],
+            'decisions' => ['guides', 'decisions'],
+            'stacks' => ['guides', 'stacks'],
+            'kpi' => ['guides', 'kpi'],
+            'supplier' => ['guides', 'supplier'],
+        ];
+
+        if (isset($aliases[$rawTab])) {
+            return $aliases[$rawTab];
+        }
+
+        if (in_array($rawTab, $allowed, true)) {
+            return [$rawTab, ''];
+        }
+
+        return ['advisor', ''];
     }
 
     public function radar(): View
@@ -503,6 +529,8 @@ class GovernanceHubController extends Controller
         $route = static fn (string $name, array $parameters = []): ?string => Route::has($name)
             ? locale_route($name, $parameters)
             : null;
+        $guides = static fn (string $hash = ''): string => locale_route('governance.index').'?tab=guides'.($hash !== '' ? '#'.$hash : '');
+        $hubTab = static fn (string $tab): string => locale_route('governance.index').'?tab='.$tab;
 
         return [
             [
@@ -514,6 +542,7 @@ class GovernanceHubController extends Controller
                     'en' => 'Move from business question and stakeholders to KPI card, grain, owner, and first mart candidates.',
                 ],
                 'links' => array_values(array_filter([
+                    ['href' => $guides('kpi'), 'label' => ['de' => 'KPI-Einstieg', 'en' => 'KPI entry']],
                     ['href' => $route('tools.stakeholder-matrix'), 'label' => ['de' => 'Stakeholder & RACI', 'en' => 'Stakeholder & RACI']],
                     ['href' => $route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI-Anforderungen', 'en' => 'KPI Requirements Intake']],
                     ['href' => $route('tools.kpi-definition'), 'label' => ['de' => 'KPI Definition Card', 'en' => 'KPI Definition Card']],
@@ -529,6 +558,7 @@ class GovernanceHubController extends Controller
                     'en' => 'Pick a supplier, understand core entities, review PII/DSDR, and mark skip tables before loading.',
                 ],
                 'links' => array_values(array_filter([
+                    ['href' => $guides('supplier'), 'label' => ['de' => 'Supplier Discovery', 'en' => 'Supplier discovery']],
                     ['href' => $route('tools.source-scope-builder'), 'label' => ['de' => 'Quellen-Scope', 'en' => 'Source Scope Builder']],
                     ['href' => $route('suppliers.index'), 'label' => ['de' => 'Supplier Library', 'en' => 'Supplier library']],
                     ['href' => $route('tools.pii-recommend-generator'), 'label' => ['de' => 'PII Recommend', 'en' => 'PII Recommend']],
@@ -543,6 +573,7 @@ class GovernanceHubController extends Controller
                     'en' => 'Treat Fabric, Databricks, Snowflake, dbt, BI, and catalog tools as one governance stack.',
                 ],
                 'links' => array_values(array_filter([
+                    ['href' => $guides('stacks'), 'label' => ['de' => 'Stack-Vergleich', 'en' => 'Stack comparison']],
                     ['href' => $route('tools.governance-stack-advisor'), 'label' => ['de' => 'Stack-Berater', 'en' => 'Governance Stack Advisor']],
                     ['href' => $route('resources.index'), 'label' => ['de' => 'Stack Filter', 'en' => 'Stack filter']],
                     ['href' => $route('tools.architecture-fit'), 'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit']],
@@ -564,6 +595,367 @@ class GovernanceHubController extends Controller
                     ['href' => $route('tools.decision-brief-generator'), 'label' => ['de' => 'Entscheidungsbrief', 'en' => 'Decision Brief']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
+            [
+                'id' => 'collect',
+                'icon' => 'fa-table-columns',
+                'label' => ['de' => 'Infos sammeln (Workshop)', 'en' => 'Collect infos (Workshop)'],
+                'lead' => [
+                    'de' => 'Acht Schritte von Stakeholdern bis Decision Brief — mit Markdown-Export für Workshops.',
+                    'en' => 'Eight steps from stakeholders to decision brief — with Markdown export for workshops.',
+                ],
+                'links' => array_values(array_filter([
+                    ['href' => $hubTab('canvas'), 'label' => ['de' => 'Workshop', 'en' => 'Workshop']],
+                    ['href' => $hubTab('advisor'), 'label' => ['de' => 'Online-Berater', 'en' => 'Online advisor']],
+                    ['href' => $guides('kpi'), 'label' => ['de' => 'KPI-Anforderungen', 'en' => 'KPI requirements']],
+                    ['href' => $guides('supplier'), 'label' => ['de' => 'Supplier Discovery', 'en' => 'Supplier discovery']],
+                ], static fn (array $link): bool => is_string($link['href'] ?? null))),
+            ],
         ];
+    }
+
+    /**
+     * @return array{
+     *   counts: array<string, int>,
+     *   featuredTools: list<array<string, mixed>>,
+     *   toolsById: array<string, array<string, mixed>>
+     * }
+     */
+    private function hubCatalog(): array
+    {
+        /** @var list<array<string, mixed>> $tools */
+        $tools = ToolsNav::withRegisteredRoutes(config('tools.nav', []));
+        $toolsById = [];
+        foreach ($tools as $tool) {
+            $id = is_string($tool['id'] ?? null) ? $tool['id'] : '';
+            if ($id !== '') {
+                $toolsById[$id] = $tool;
+            }
+        }
+
+        /** @var array<string, array<string, mixed>> $stacks */
+        $stacks = config('vendor-resources.stacks', []);
+        /** @var list<array<string, mixed>> $resources */
+        $resources = config('vendor-resources.products', []);
+        /** @var list<array<string, mixed>> $suppliers */
+        $suppliers = config('suppliers.products', []);
+        /** @var list<array<string, mixed>> $compliance */
+        $compliance = config('compliance.items', []);
+
+        $featuredToolIds = [
+            'kpi-requirements-intake',
+            'source-scope-builder',
+            'mart-design-brief-generator',
+            'governance-stack-advisor',
+            'pii-dsdr-readiness-checker',
+            'decision-brief-generator',
+            'vendor-learning-path-builder',
+            'stakeholder-matrix',
+            'kpi-definition',
+            'report-inventory',
+            'architecture-fit',
+            'impact-effort',
+            'pii-policy-generator',
+            'pii-recommend-generator',
+            'dbt-dq-rules-generator',
+            'meta-export-generator',
+        ];
+
+        $featuredTools = [];
+        foreach ($featuredToolIds as $id) {
+            if (isset($toolsById[$id])) {
+                $featuredTools[] = $toolsById[$id];
+            }
+        }
+
+        return [
+            'counts' => [
+                'tools' => count($tools),
+                'resources' => count($resources),
+                'suppliers' => count($suppliers),
+                'stacks' => count($stacks),
+                'compliance' => count($compliance),
+            ],
+            'featuredTools' => $featuredTools,
+            'toolsById' => $toolsById,
+        ];
+    }
+
+    /**
+     * @return array{
+     *   tools: array<string, string>,
+     *   hubs: array<string, string>,
+     *   session: array<string, mixed>
+     * }
+     */
+    private function advisorLinks(): array
+    {
+        return [
+            'tools' => [
+                'governance-stack-advisor' => locale_route('tools.governance-stack-advisor'),
+                'source-scope-builder' => locale_route('tools.source-scope-builder'),
+                'kpi-requirements-intake' => locale_route('tools.kpi-requirements-intake'),
+                'mart-design-brief-generator' => locale_route('tools.mart-design-brief-generator'),
+                'pii-dsdr-readiness-checker' => locale_route('tools.pii-dsdr-readiness-checker'),
+                'decision-brief-generator' => locale_route('tools.decision-brief-generator'),
+                'vendor-learning-path-builder' => locale_route('tools.vendor-learning-path-builder'),
+                'architecture-fit' => locale_route('tools.architecture-fit'),
+                'impact-effort' => locale_route('tools.impact-effort'),
+                'meta-export-generator' => locale_route('tools.meta-export-generator'),
+                'report-inventory' => locale_route('tools.report-inventory'),
+                'kpi-definition' => locale_route('tools.kpi-definition'),
+                'pii-policy-generator' => locale_route('tools.pii-policy-generator'),
+                'pii-recommend-generator' => locale_route('tools.pii-recommend-generator'),
+                'schema-yml-editor' => locale_route('tools.schema-yml-editor'),
+                'dbt-dq-macro-generator' => locale_route('tools.dbt-dq-macro-generator'),
+                'dbt-dq-rules-generator' => locale_route('tools.dbt-dq-rules-generator'),
+                'dbt-dq-history-generator' => locale_route('tools.dbt-dq-history-generator'),
+                'fabric-pii-governance-pattern-generator' => locale_route('tools.fabric-pii-governance-pattern-generator'),
+                'databricks-pii-governance-pattern-generator' => locale_route('tools.databricks-pii-governance-pattern-generator'),
+                'unity-catalog-governance-generator' => locale_route('tools.unity-catalog-governance-generator'),
+            ],
+            'hubs' => [
+                'resources' => locale_route('resources.index'),
+                'suppliers' => locale_route('suppliers.index'),
+                'compliance' => locale_route('compliance.index'),
+                'playbooks' => locale_route('playbooks.index'),
+                'learningPaths' => locale_route('learning-paths.index'),
+                'roles' => locale_route('roles.index'),
+                'sprintPlanner' => locale_route('sprint-planner.templates'),
+            ],
+            'session' => [
+                'accountsEnabled' => (bool) config('accounts.enabled', false),
+                'loggedIn' => $this->auth->user() !== null,
+                'apiUrl' => $this->auth->user() !== null ? url('/api/governance/sessions') : null,
+                'sessionsUrl' => $this->auth->user() !== null ? locale_route('governance.sessions.index') : null,
+                'loginUrl' => (bool) config('accounts.enabled', false) && $this->auth->user() === null
+                    ? locale_route('accounts.login')
+                    : null,
+            ],
+        ];
+    }
+
+    /**
+     * @return list<array{qDe: string, qEn: string, aDe: string, aEn: string}>
+     */
+    private function hubFaqs(): array
+    {
+        return [
+            [
+                'qDe' => 'Was ist der Governance Hub?',
+                'qEn' => 'What is the Governance Hub?',
+                'aDe' => 'Ein geführter Einstieg für Data-Governance-Entscheidungen: erst die Frage klären, dann Tools, Supplier, Resources und Playbooks öffnen.',
+                'aEn' => 'A guided entry point for data governance decisions: clarify the question first, then open tools, suppliers, resources, and playbooks.',
+            ],
+            [
+                'qDe' => 'Brauche ich Login für den Berater?',
+                'qEn' => 'Do I need to sign in for the advisor?',
+                'aDe' => 'Nein. Empfehlungen funktionieren ohne Login. Speichern dauerhaft geht mit Account; Demo-Sessions bleiben im Browser.',
+                'aEn' => 'No. Recommendations work without sign-in. Permanent save needs an account; demo sessions stay in the browser.',
+            ],
+            [
+                'qDe' => 'Wie starte ich KPI-Anforderungen?',
+                'qEn' => 'How do I start KPI requirements?',
+                'aDe' => 'Öffne den KPI-Einstieg oder den Workshop, erfasse Stakeholder und KPI-Karten, danach Source Scope und Mart Design.',
+                'aEn' => 'Open the KPI entry or Workshop, capture stakeholders and KPI cards, then source scope and mart design.',
+            ],
+            [
+                'qDe' => 'Ersetzt das Rechtsberatung?',
+                'qEn' => 'Does this replace legal advice?',
+                'aDe' => 'Nein. Die Seite liefert kuratierte Wegweiser und Vorlagen, keinen Ersatz für Rechts- oder Vertragsprüfung.',
+                'aEn' => 'No. The site provides curated guides and templates, not a substitute for legal or contract review.',
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $toolsById
+     * @return list<array<string, mixed>>
+     */
+    private function stackCards(array $toolsById): array
+    {
+        /** @var array<string, array<string, mixed>> $stacks */
+        $stacks = config('vendor-resources.stacks', []);
+        $startToolsByStack = [
+            'modern-data-stack' => ['governance-stack-advisor', 'source-scope-builder', 'dbt-dq-rules-generator'],
+            'microsoft-fabric' => ['governance-stack-advisor', 'fabric-pii-governance-pattern-generator', 'pii-dsdr-readiness-checker'],
+            'databricks-lakehouse' => ['governance-stack-advisor', 'unity-catalog-governance-generator', 'databricks-pii-governance-pattern-generator'],
+            'gcp-analytics' => ['governance-stack-advisor', 'source-scope-builder', 'kpi-requirements-intake'],
+            'open-source-stack' => ['governance-stack-advisor', 'schema-yml-editor', 'dbt-dq-rules-generator'],
+            'eu-sovereign' => ['governance-stack-advisor', 'pii-dsdr-readiness-checker', 'decision-brief-generator'],
+        ];
+
+        $stackCards = [];
+        foreach ($stacks as $stackId => $stack) {
+            $toolIds = $startToolsByStack[$stackId] ?? ['governance-stack-advisor', 'source-scope-builder', 'decision-brief-generator'];
+            $startTools = [];
+            foreach ($toolIds as $toolId) {
+                if (isset($toolsById[$toolId])) {
+                    $startTools[] = $toolsById[$toolId];
+                }
+            }
+
+            $stackCards[] = [
+                'id' => $stackId,
+                'label' => $stack['label'] ?? ['de' => $stackId, 'en' => $stackId],
+                'description' => $stack['description'] ?? ['de' => '', 'en' => ''],
+                'products' => is_array($stack['products'] ?? null) ? $stack['products'] : [],
+                'startTools' => $startTools,
+            ];
+        }
+
+        return $stackCards;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function featuredSuppliers(): array
+    {
+        /** @var list<array<string, mixed>> $suppliers */
+        $suppliers = config('suppliers.products', []);
+        $featuredIds = [
+            'salesforce', 'hubspot', 'sap-s4hana', 'workday', 'servicenow', 'jira', 'sharepoint', 'personio', 'stripe', 'shopify',
+        ];
+        $byId = [];
+        foreach ($suppliers as $supplier) {
+            $id = is_string($supplier['id'] ?? null) ? $supplier['id'] : '';
+            if ($id !== '') {
+                $byId[$id] = $supplier;
+            }
+        }
+
+        $featured = [];
+        foreach ($featuredIds as $id) {
+            if (isset($byId[$id])) {
+                $featured[] = $byId[$id];
+            }
+        }
+
+        return $featured !== [] ? $featured : array_slice($suppliers, 0, 10);
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $toolsById
+     * @param  list<string>  $ids
+     * @return list<array<string, mixed>>
+     */
+    private function relatedTools(array $toolsById, array $ids): array
+    {
+        $related = [];
+        foreach ($ids as $id) {
+            if (isset($toolsById[$id])) {
+                $related[] = $toolsById[$id];
+            }
+        }
+
+        return $related;
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $toolsById
+     * @return list<array<string, mixed>>
+     */
+    private function discoveryCanvasSteps(array $toolsById): array
+    {
+        $toolHref = static function (string $id) use ($toolsById): ?string {
+            $route = is_string($toolsById[$id]['route'] ?? null) ? $toolsById[$id]['route'] : null;
+            if ($route === null || ! Route::has($route)) {
+                return null;
+            }
+
+            return locale_route($route);
+        };
+
+        $steps = [
+            [
+                'id' => 'stakeholders',
+                'title' => ['de' => 'Stakeholder erfassen', 'en' => 'Capture stakeholders'],
+                'lead' => [
+                    'de' => 'Sponsor, Data Owner, Steward, Consumer, Security, Privacy, Platform, BI Owner.',
+                    'en' => 'Sponsor, data owner, steward, consumer, security, privacy, platform, BI owner.',
+                ],
+                'output' => ['de' => 'RACI und Interviewliste', 'en' => 'RACI and interview list'],
+                'toolId' => 'stakeholder-matrix',
+            ],
+            [
+                'id' => 'business-questions',
+                'title' => ['de' => 'Business-Fragen sammeln', 'en' => 'Collect business questions'],
+                'lead' => [
+                    'de' => 'Welche Entscheidungen sollen besser werden? Welche Reports und kritischen KPIs gibt es?',
+                    'en' => 'Which decisions should improve? Which reports and critical KPIs exist?',
+                ],
+                'output' => ['de' => 'Priorisierte Frageliste', 'en' => 'Prioritized question list'],
+                'toolId' => 'report-inventory',
+            ],
+            [
+                'id' => 'kpi',
+                'title' => ['de' => 'KPI-Anforderungen strukturieren', 'en' => 'Structure KPI requirements'],
+                'lead' => [
+                    'de' => 'Name, Definition, Formel, Grain, Zeitlogik, Filter, Dimensionen, Owner, Akzeptanzbeispiel.',
+                    'en' => 'Name, definition, formula, grain, time logic, filters, dimensions, owner, acceptance example.',
+                ],
+                'output' => ['de' => 'KPI Cards', 'en' => 'KPI cards'],
+                'toolId' => 'kpi-requirements-intake',
+            ],
+            [
+                'id' => 'sources',
+                'title' => ['de' => 'Quellen zuordnen', 'en' => 'Map sources'],
+                'lead' => [
+                    'de' => 'Supplier, Entitäten, System Owner, Zugriff, Datenfrequenz.',
+                    'en' => 'Supplier, entities, system owner, access, data frequency.',
+                ],
+                'output' => ['de' => 'Source Scope', 'en' => 'Source scope'],
+                'toolId' => 'source-scope-builder',
+            ],
+            [
+                'id' => 'risk',
+                'title' => ['de' => 'Risiko erfassen', 'en' => 'Capture risk'],
+                'lead' => [
+                    'de' => 'PII, besondere Kategorien, Freitext, Anhänge, Workforce Data, DSDR-Suchkeys, Retention.',
+                    'en' => 'PII, special categories, free text, attachments, workforce data, DSDR search keys, retention.',
+                ],
+                'output' => ['de' => 'PII/DSDR Review Sheet', 'en' => 'PII/DSDR review sheet'],
+                'toolId' => 'pii-dsdr-readiness-checker',
+            ],
+            [
+                'id' => 'dq',
+                'title' => ['de' => 'Datenqualität definieren', 'en' => 'Define data quality'],
+                'lead' => [
+                    'de' => 'Pflichtfelder, Business Keys, Freshness, Referenzen, erlaubte Werte, Duplikate.',
+                    'en' => 'Required fields, business keys, freshness, references, allowed values, duplicates.',
+                ],
+                'output' => ['de' => 'DQ Rule Backlog', 'en' => 'DQ rule backlog'],
+                'toolId' => 'dbt-dq-rules-generator',
+            ],
+            [
+                'id' => 'mart',
+                'title' => ['de' => 'Tabellen- und Mart-Design vorbereiten', 'en' => 'Prepare table and mart design'],
+                'lead' => [
+                    'de' => 'Grain, Facts, Dimensions, SCD, History-Bedarf, Semantik.',
+                    'en' => 'Grain, facts, dimensions, SCD, history needs, semantics.',
+                ],
+                'output' => ['de' => 'Mart Design Brief', 'en' => 'Mart design brief'],
+                'toolId' => 'mart-design-brief-generator',
+            ],
+            [
+                'id' => 'decision',
+                'title' => ['de' => 'Entscheidung vorbereiten', 'en' => 'Prepare the decision'],
+                'lead' => [
+                    'de' => 'Impact, Effort, Risiken, offene Fragen, Pilot-Kandidat.',
+                    'en' => 'Impact, effort, risks, open questions, pilot candidate.',
+                ],
+                'output' => ['de' => 'Decision Brief', 'en' => 'Decision brief'],
+                'toolId' => 'decision-brief-generator',
+            ],
+        ];
+
+        foreach ($steps as &$step) {
+            $toolId = (string) ($step['toolId'] ?? '');
+            $step['href'] = $toolHref($toolId);
+            $step['tool'] = $toolsById[$toolId] ?? null;
+        }
+        unset($step);
+
+        return $steps;
     }
 }

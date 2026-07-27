@@ -2,6 +2,7 @@
 
 @section('title', 'Governance Sessions - ' . config('app.name'))
 @section('meta_description', 'Manage saved Governance Discovery Sessions, reports, validation states and workflow handoff.')
+@section('robots', 'noindex,nofollow')
 
 @section('content')
     <div class="tools-content governance-sessions">

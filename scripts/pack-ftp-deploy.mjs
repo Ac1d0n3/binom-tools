@@ -43,55 +43,24 @@ const metaSkipNames = new Set([
     '.DS_Store',
 ]);
 
-/** Paths relative to project root — merge into the existing server tree. */
+/**
+ * Paths relative to project root — merge into the existing server tree.
+ * Prefer whole trees over cherry-picks so new hubs/features cannot be forgotten.
+ * (public/ is mirrored separately; Vite assets live under public/build/)
+ */
 const deployPaths = [
+    'app',
+    'config',
     'resources/views',
     'content',
-    'app/Playbooks',
-    'app/Support',
-    'app/Catalog',
-    'app/Console/Commands',
-    'app/Providers/AppServiceProvider.php',
-    // Entire Controllers tree — avoid missing new hubs/tools after route updates
-    'app/Http/Controllers',
-    'app/Accounts',
-    'app/SprintPlanner',
-    'app/Calendar',
-    // Governance Radar / Hub domain services (NOT covered by Controllers alone)
-    'app/Governance',
-    // Eloquent models for DB storage driver (sessions, radar feeds, accounts, …)
-    'app/Models',
-    'app/Mail',
-    'app/Http/Middleware',
-    'bootstrap/app.php',
-    'config/tools.php',
-    'config/playbooks.php',
-    'config/legal.php',
-    'config/app.php',
-    'config/accounts.php',
-    'config/compliance.php',
-    'config/compliance-items.php',
-    'config/vendor-resources.php',
-    'config/sprint-planner.php',
-    'config/calendar.php',
-    'config/governance.php',
-    'config/governance-radar.php',
-    'config/storage.php',
-    // Schema for DB-mode hubs (run migrate on server when using MySQL)
     'database/migrations',
     'lang',
-    'routes/web.php',
+    'routes',
+    'bootstrap/app.php',
+    'bootstrap/providers.php',
     // Seeded story view/like counters (JSON files; created on first like/view if missing)
     'storage/app/playbook-stats',
 ];
-
-/** Supplier Library configs (catalog + wave files required by suppliers-catalog.php). */
-const supplierConfigFiles = readdirSync(join(root, 'config'))
-    .filter((name) => name === 'suppliers.php' || name.startsWith('suppliers-'))
-    .filter((name) => name.endsWith('.php'))
-    .map((name) => `config/${name}`);
-
-deployPaths.push(...supplierConfigFiles);
 
 /**
  * Hard fail if these are missing from the packed tree — prevents “looks fine locally, broken on FTP”.
@@ -103,14 +72,51 @@ const requiredPackedPaths = [
     'app/Models/BnTools/BnGovernanceRadarFeedItem.php',
     'app/Models/BnTools/BnGovernanceSession.php',
     'app/Http/Controllers/Governance/GovernanceHubController.php',
+    'app/Glossary/BuzzwordQuizGenerator.php',
+    'app/Calendar/CalendarEventAggregator.php',
+    'app/Accounts/GlossaryQuizResultStore.php',
+    'app/Providers/AppServiceProvider.php',
+    'bootstrap/app.php',
+    'bootstrap/providers.php',
     'config/governance.php',
     'config/governance-radar.php',
     'config/storage.php',
+    'config/roles.php',
+    'config/glossary.php',
+    'config/glossary-buzzwords-wave2.php',
+    'config/glossary-buzzwords-wave7.php',
+    'config/learning-paths.php',
+    'config/calendar.php',
+    'config/accounts.php',
+    'config/tools.php',
+    'config/playbooks.php',
+    'config/mail.php',
+    'config/session.php',
+    'resources/views/roles/index.blade.php',
+    'resources/views/roles/show.blade.php',
+    'resources/views/roles/partials/bridge-card.blade.php',
+    'resources/views/glossary/index.blade.php',
+    'resources/views/glossary/bingo.blade.php',
+    'resources/views/calendar/index.blade.php',
     'resources/views/governance/radar.blade.php',
     'resources/views/governance/index.blade.php',
+    'resources/views/accounts/profile.blade.php',
     'routes/web.php',
     'public/build/manifest.json',
     'database/migrations/2026_07_26_000004_create_bn_governance_radar_feed_tables.php',
+    'database/migrations/2026_07_25_000002_create_bn_calendar_holiday_tables.php',
+    'database/migrations/2026_07_27_000001_create_bn_glossary_quiz_results_table.php',
+];
+
+/** Source trees that must be mirrored 1:1 into the pack (no silent skips). */
+const requiredMirrorTrees = [
+    'app',
+    'config',
+    'resources/views',
+    'routes',
+    'database/migrations',
+    'content',
+    'lang',
 ];
 
 /** Never mirror these from public/ (dev-only or replaced below). */
@@ -207,6 +213,24 @@ function assertFontAwesomeBuildAssets(assetsDir) {
     if (!files.some((file) => file.startsWith('app-') && file.endsWith('.css'))) {
         throw new Error('Main app CSS missing from public/build/assets (expected app-*.css)');
     }
+
+    if (!files.some((file) => file.startsWith('calendar-public-') && file.endsWith('.js'))) {
+        throw new Error(
+            'Calendar public JS missing from public/build/assets (expected calendar-public-*.js). Check vite entry resources/js/calendar/calendar-public.js',
+        );
+    }
+
+    if (!files.some((file) => file.startsWith('glossary-quiz-') && file.endsWith('.js'))) {
+        throw new Error(
+            'Glossary quiz JS missing from public/build/assets (expected glossary-quiz-*.js). Check dynamic import in resources/js/app.js',
+        );
+    }
+
+    if (!files.some((file) => file.startsWith('glossary-bingo-') && file.endsWith('.js'))) {
+        throw new Error(
+            'Glossary bingo JS missing from public/build/assets (expected glossary-bingo-*.js). Check dynamic import in resources/js/app.js',
+        );
+    }
 }
 
 /**
@@ -218,6 +242,43 @@ function assertRequiredPackedPaths(packedRoot) {
         throw new Error(
             `FTP pack incomplete — missing required paths:\n  - ${missing.join('\n  - ')}\n`
             + 'Update scripts/pack-ftp-deploy.mjs deployPaths before uploading.',
+        );
+    }
+}
+
+/**
+ * Fail if any source file under critical trees did not land in the pack.
+ *
+ * @param {string} packedRoot
+ */
+function assertMirrorTreesComplete(packedRoot) {
+    /** @type {string[]} */
+    const missing = [];
+
+    for (const tree of requiredMirrorTrees) {
+        const srcRoot = join(root, tree);
+        if (!existsSync(srcRoot)) {
+            missing.push(`${tree}/ (source tree missing)`);
+            continue;
+        }
+
+        for (const full of listFilesRecursive(srcRoot)) {
+            const rel = relative(root, full).split(sep).join('/');
+            const base = rel.split('/').pop() || '';
+            if (base === '.DS_Store' || base.endsWith('.sqlite') || base.endsWith('.sqlite-journal')) {
+                continue;
+            }
+            if (!existsSync(join(packedRoot, rel))) {
+                missing.push(rel);
+            }
+        }
+    }
+
+    if (missing.length > 0) {
+        const shown = missing.slice(0, 40);
+        const more = missing.length > shown.length ? `\n  … and ${missing.length - shown.length} more` : '';
+        throw new Error(
+            `FTP pack incomplete — source trees not fully mirrored:\n  - ${shown.join('\n  - ')}${more}\n`,
         );
     }
 }
@@ -352,7 +413,7 @@ for (const name of ['users.json', 'teams.json', 'story-acl.json']) {
         bnToolsSeedCount += 1;
     }
 }
-for (const dirName of ['user-templates', 'plans', 'read-state']) {
+for (const dirName of ['user-templates', 'plans', 'read-state', 'calendar']) {
     const srcDir = join(bnToolsRuntime, dirName);
     const destDir = join(bnToolsSeedDir, dirName);
     if (!existsSync(srcDir)) {
@@ -364,7 +425,7 @@ for (const dirName of ['user-templates', 'plans', 'read-state']) {
 }
 console.log(
     bnToolsSeedCount > 0
-        ? `bn-tools seeds packed: ${bnToolsSeedCount} item(s) → app/SprintPlanner/bn-tools-seed/ (users/teams/acl + templates/plans/read-state)`
+        ? `bn-tools seeds packed: ${bnToolsSeedCount} item(s) → app/SprintPlanner/bn-tools-seed/ (users/teams/acl + templates/plans/read-state/calendar)`
         : 'No local bn-tools runtime found — FTP bundle will not include account/plan seeds',
 );
 
@@ -413,6 +474,7 @@ for (const rel of deployPaths) {
 }
 
 assertRequiredPackedPaths(outDir);
+assertMirrorTreesComplete(outDir);
 
 // Direct upload mirror of local runtime (gitignored) — same paths as on the server.
 if (existsSync(bnToolsRuntime)) {
@@ -464,14 +526,17 @@ Gelöschte Pfade vs. letzter Pack: siehe DELETED.txt (${deleted.length})
 Geänderte Pfade: siehe CHANGED.txt
 
 Pflicht bei Full-Replace (oder wenn Delta unsicher):
-   - public/build/ komplett (neue hashed Assets)
-   - resources/views/, app/Governance/, app/Models/, config/governance*.php
-   - database/migrations/ (bei MySQL: php artisan migrate)
+   - public/build/ komplett (neue hashed Assets, inkl. calendar-public / glossary-quiz / glossary-bingo)
+   - app/, config/, resources/views/, routes/, database/migrations/ (komplett gespiegelt)
+   - bootstrap/app.php + bootstrap/providers.php
+   - storage/app/bn-tools/ (Accounts + lokaler Calendar unter calendar/)
+   - content/, lang/
 
 Nach Upload:
    - Hard-Refresh (Cmd+Shift+R)
    - Optional: storage/framework/views/*.php löschen
-   - Kontrolle: /governance/radar ohne Class-not-found
+   - Bei MySQL: php artisan migrate (Calendar-Holidays, Glossary-Quiz, Radar, …)
+   - Kontrolle: /roles, /glossary, /calendar, /governance/radar ohne Class-not-found
 
 Falls vorhanden, LÖSCHEN: public/tools/
 

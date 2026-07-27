@@ -28,24 +28,57 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-governance-drawer-toggle', false);
         $response->assertSee('governance-hub__panel-tabs', false);
         $response->assertSee('governance-hub__panel-tab--active', false);
-        $response->assertSee('data-governance-panel-toggle="governance-help-panel"', false);
-        $response->assertSee('data-governance-panel-toggle="governance-tools-panel"', false);
         $response->assertSee('data-governance-panel-toggle="governance-save-panel"', false);
+        $response->assertSee('data-governance-panel-toggle="governance-help-panel"', false);
+        $response->assertSee('data-governance-panel-toggle="governance-tool-info-panel"', false);
+        $response->assertDontSee('data-governance-panel-toggle="governance-tools-panel"', false);
+        $response->assertSee('Save & help', false);
+        $response->assertSee('Help · FAQ', false);
+        $response->assertSee('Tool info', false);
         $response->assertSee('Workspace Report', false);
         $response->assertSee('>Radar</span>', false);
         $response->assertSee('/governance/radar', false);
+        $response->assertDontSee('/governance/berater', false);
+        $response->assertDontSee('/governance/stacks', false);
+        $response->assertDontSee('/governance/discovery-canvas', false);
+        $response->assertDontSee('governance-www-tabs', false);
+        $response->assertDontSee('governance-hub__cluster-links', false);
+        $response->assertSee('FAQPage', false);
+        $response->assertDontSee('governance-seo-guide', false);
         $response->assertSee('data-governance-tabs', false);
+        $response->assertSee('data-governance-initial-tab="advisor"', false);
         $response->assertSee('data-governance-tab-toggle="advisor"', false);
-        $response->assertSee('data-governance-tab-toggle="workflows"', false);
-        $response->assertSee('data-governance-tab-toggle="decisions"', false);
+        $response->assertSee('data-governance-tab-toggle="guides"', false);
+        $response->assertSee('data-governance-tab-toggle="canvas"', false);
         $response->assertSee('data-governance-tab-toggle="tools"', false);
+        $response->assertDontSee('data-governance-tab-toggle="hub"', false);
+        $response->assertDontSee('data-governance-tab-toggle="workflows"', false);
+        $response->assertDontSee('data-governance-tab-toggle="stacks"', false);
+        $response->assertDontSee('data-governance-hub-tabs', false);
         $response->assertSee('role="tablist"', false);
         $response->assertSee('role="tab"', false);
         $response->assertSee('role="tabpanel"', false);
         $response->assertSee('data-governance-tab-panel="advisor"', false);
-        $response->assertSee('data-governance-tab-panel="workflows"', false);
-        $response->assertSee('data-governance-tab-panel="decisions"', false);
+        $response->assertSee('data-governance-tab-panel="guides"', false);
+        $response->assertSee('data-governance-tab-panel="canvas"', false);
         $response->assertSee('data-governance-tab-panel="tools"', false);
+        $response->assertSee('data-governance-subtabs="guides"', false);
+        $response->assertSee('data-governance-subtab-toggle="journeys"', false);
+        $response->assertSee('data-governance-subtab-toggle="stacks"', false);
+        $response->assertSee('data-governance-subtabs="tools"', false);
+        $response->assertSee('data-governance-subtab-toggle="featured"', false);
+        $response->assertSee('data-governance-subtab-toggle="workflows"', false);
+        $response->assertSee('id="guides-journeys"', false);
+        $response->assertSee('id="guides-stacks"', false);
+        $response->assertSee('id="guides-kpi"', false);
+        $response->assertSee('id="guides-supplier"', false);
+        $response->assertSee('data-governance-persona="architect"', false);
+        $response->assertSee('data-governance-persona="analyst"', false);
+        $response->assertSee('data-governance-persona="dpo"', false);
+        $response->assertSee('data-governance-discovery-canvas', false);
+        $response->assertSee('Modern Data Stack', false);
+        $response->assertSee('id="governance-faq"', false);
+        $response->assertSee('What is the Governance Hub?', false);
         $response->assertSee('Interactive decision aid');
         $response->assertSee('Ich baue neu auf', false);
         $response->assertSee('Ich ergänze Bestehendes', false);
@@ -77,7 +110,7 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('governance-advisor__save-primary', false);
         $response->assertSee('governance-advisor__save-secondary', false);
         $response->assertSee('data-governance-setup-workflows', false);
-        $response->assertSee('Setup and reference workflows', false);
+        $response->assertSee('Clickable flowcharts', false);
         $response->assertSee('data-governance-setup-workflow="governance-decision-support"', false);
         $response->assertSee('data-governance-setup-workflow="discovery-assessment"', false);
         $response->assertSee('data-governance-setup-workflow="dbt-pii-governance"', false);
@@ -130,6 +163,20 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('"@context":"https://schema.org"', false);
         $response->assertDontSee('__contextArgs', false);
         $response->assertSee('Thomas Lindackers');
+        $response->assertSee('governance-hub__tool-grid', false);
+        $response->assertSee('Related tools', false);
+    }
+
+    public function test_tool_pages_show_governance_hub_backlink(): void
+    {
+        $this->get('/tools/source-scope-builder')
+            ->assertOk()
+            ->assertSee('governance-hub-backlink', false)
+            ->assertSee('Back to Governance Hub', false);
+
+        $this->get('/governance')
+            ->assertOk()
+            ->assertDontSee('governance-hub-backlink', false);
     }
 
     public function test_governance_radar_renders_sources_filters_and_seo(): void

@@ -26,6 +26,8 @@ html.bn-theme-blue-water-light {
     --theme-color-info: #3f8ec7;
     --bn-border-color: var(--base-border-color);
     --bn-surface-muted: var(--surface-background-color);
+    --bn-color-surface: var(--content-background-color);
+    --bn-color-surface-subtle: var(--surface-background-color);
     --bn-color-text-secondary: color-mix(in srgb, var(--content-font-color) 65%, transparent);
     --tools-header-height: 44px;
     --tools-sidebar-width: 260px;
@@ -69,6 +71,8 @@ html.bn-theme-blue-water-dark {
     --theme-color-info: #5fa2d6;
     --bn-border-color: var(--base-border-color);
     --bn-surface-muted: var(--surface-background-color);
+    --bn-color-surface: var(--content-background-color);
+    --bn-color-surface-subtle: var(--surface-background-color);
     --bn-color-text-secondary: color-mix(in srgb, var(--content-font-color) 65%, transparent);
     --tools-header-height: 44px;
     --tools-sidebar-width: 260px;

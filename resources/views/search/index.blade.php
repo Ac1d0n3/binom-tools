@@ -4,6 +4,7 @@
 
 @section('title', ($query !== '' ? $query.' — ' : '').'Search — '.config('app.name'))
 @section('meta_description', 'Sitewide search across stories, tools, resources, suppliers, compliance, radar, glossary, and learning paths.')
+@section('robots', 'noindex,follow')
 
 @section('content')
     <div class="tools-content tools-content--overview tools-content--search">

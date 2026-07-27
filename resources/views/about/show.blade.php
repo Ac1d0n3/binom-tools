@@ -25,6 +25,22 @@
         </section>
 
         <section class="tools-section">
+            <h2 class="tools-section__title" data-i18n="about.governanceWhy.title">Why governance?</h2>
+            <p class="tools-about-body" data-i18n="about.governanceWhy.body">
+                Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a public online advisor by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.
+            </p>
+            <div class="tools-about-actions">
+                <a class="tools-btn tools-btn--ghost" href="{{ locale_route('governance.index') }}">
+                    <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                    <span data-i18n="about.governanceWhy.cta">Open Governance Hub</span>
+                </a>
+                <a class="tools-btn tools-btn--ghost" href="{{ config('playbooks.author_url', 'https://binom.net') }}" rel="author noopener noreferrer" target="_blank">
+                    <span data-i18n="about.governanceWhy.author">Thomas Lindackers on binom.net</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.tools.title">Governance</h2>
             <p class="tools-about-body" data-i18n="about.tools.body">
                 Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup.

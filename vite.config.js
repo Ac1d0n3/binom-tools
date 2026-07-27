@@ -50,6 +50,7 @@ export default defineConfig(({ command }) => ({
                 'resources/js/sprint-planner/settings.js',
                 'resources/js/governance/hub-advisor.js',
                 'resources/js/governance/radar.js',
+                'resources/js/governance/discovery-canvas.js',
                 'resources/js/tools/governance-advisory/index.js',
                 'resources/js/tools/dbt-governance-macro-generator/index.js',
                 'resources/js/tools/pii-recommend-generator/index.js',

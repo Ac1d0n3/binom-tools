@@ -28,6 +28,28 @@
 
 @push('head')
     <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $titleEn }} - {{ config('app.name') }}">
+    <meta property="og:description" content="{{ $leadEn }}">
+    <script type="application/ld+json">
+        {!! json_encode([
+            chr(64).'context' => 'https://schema.org',
+            '@type' => 'WebApplication',
+            'name' => $titleEn,
+            'description' => $leadEn,
+            'url' => url()->current(),
+            'applicationCategory' => 'BusinessApplication',
+            'author' => [
+                '@type' => 'Person',
+                'name' => 'Thomas Lindackers',
+                'url' => config('playbooks.author_url', 'https://binom.net'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
 @endpush
 
 @section('content')
@@ -363,5 +385,37 @@
                 </a>
             </div>
         </section>
+
+        <x-governance.seo-guide
+            class="governance-advisory-tool__seo-guide"
+            :problem-de="$questionDe !== '' ? $questionDe : $leadDe"
+            :problem-en="$questionEn !== '' ? $questionEn : $leadEn"
+            decision-de="Welche Inputs brauche ich und welches Artefakt entsteht?"
+            decision-en="Which inputs do I need and which artifact is produced?"
+            :checklist="collect($inputs)->map(static fn ($item): array => [
+                'de' => is_string($item) ? $item : (string) ($item['de'] ?? ''),
+                'en' => is_string($item) ? $item : (string) ($item['en'] ?? $item['de'] ?? ''),
+            ])->all()"
+            :artifacts="collect($outputs)->map(static fn ($item): array => [
+                'de' => is_string($item) ? $item : (string) ($item['de'] ?? ''),
+                'en' => is_string($item) ? $item : (string) ($item['en'] ?? $item['de'] ?? ''),
+            ])->all()"
+            :tools="[
+                ['de' => 'Governance Hub', 'en' => 'Governance hub', 'href' => locale_route('governance.index')],
+                ['de' => 'Discovery Canvas', 'en' => 'Discovery canvas', 'href' => locale_route('governance.discovery-canvas')],
+            ]"
+            :resources="[
+                ['de' => 'Vendor Resources', 'en' => 'Vendor resources', 'href' => locale_route('resources.index')],
+                ['de' => 'Supplier Library', 'en' => 'Supplier library', 'href' => locale_route('suppliers.index')],
+            ]"
+            :playbooks="[
+                ['de' => 'Playbooks', 'en' => 'Playbooks', 'href' => locale_route('playbooks.index')],
+            ]"
+            :next-steps="collect($tool['links'] ?? [])->filter(static fn ($link): bool => \Illuminate\Support\Facades\Route::has($link['route'] ?? ''))->map(static fn ($link): array => [
+                'de' => (string) ($link['label'] ?? $link['route']),
+                'en' => (string) ($link['label'] ?? $link['route']),
+                'href' => locale_route($link['route']),
+            ])->take(3)->values()->all()"
+        />
     </div>
 @endsection
