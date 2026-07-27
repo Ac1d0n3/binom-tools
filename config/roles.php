@@ -541,23 +541,25 @@ return [
             'icon' => 'fa-diagram-project',
             'title' => ['de' => 'Data Architect', 'en' => 'Data Architect'],
             'focus' => [
-                'de' => ['Grain', 'Contracts', 'Modellkonsistenz'],
-                'en' => ['Grain', 'Contracts', 'Model consistency'],
+                'de' => ['Grain', 'Contracts', 'Interfaces'],
+                'en' => ['Grain', 'Contracts', 'Interfaces'],
             ],
             'lead' => [
-                'de' => 'Sichert Grain, Interface-Stabilität und architektonische Konsistenz über Domänen und Marts. Arbeitet mit Steward und Platform zusammen — ohne zum Bottleneck für jedes Ticket zu werden.',
-                'en' => 'Secures grain, interface stability, and architectural consistency across domains and marts. Works with steward and platform — without becoming the bottleneck for every ticket.',
+                'de' => 'Steuert die gesamten Schnittstellen: Grain, Data Contracts und Interface-Stabilität über Domänen und Marts. Arbeitet mit Steward und Platform zusammen — ohne zum Bottleneck für jedes Ticket zu werden.',
+                'en' => 'Owns the full interface surface: grain, data contracts, and interface stability across domains and marts. Works with steward and platform — without becoming the bottleneck for every ticket.',
             ],
             'owns' => [
                 'de' => [
                     'Grain und Modellkonsistenz über Domänen',
-                    'Data Contracts und Interface-Stabilität',
+                    'Data Contracts und Interface-Stabilität über Domänen',
+                    'Steuerung von Breaking Changes an Schnittstellen',
                     'Mitwirkung an Stack- und Mart-Entscheidungen',
                     'Anti-Pattern-Prävention (Bottleneck, Papier-Architektur)',
                 ],
                 'en' => [
                     'Grain and model consistency across domains',
-                    'Data contracts and interface stability',
+                    'Data contracts and cross-domain interface stability',
+                    'Control of breaking changes at interfaces',
                     'Input on stack and mart decisions',
                     'Anti-pattern prevention (bottleneck, paper architecture)',
                 ],
@@ -892,8 +894,8 @@ return [
                 'en' => ['Use', 'Feedback', 'Gap signals'],
             ],
             'lead' => [
-                'de' => 'Nutzt Data Products und Reports für Entscheidungen. Meldet Gaps und Qualitätsprobleme — entscheidet nicht allein über Definition, Zugriff oder Produkt-Roadmap, sondern speist Steward und Product Owner.',
-                'en' => 'Uses data products and reports for decisions. Raises gaps and quality issues — does not alone decide definition, access, or product roadmap, but feeds steward and product owner.',
+                'de' => 'Nutzt Data Products und Reports für Entscheidungen und meldet Gaps. Wer Reports baut, braucht oft eine Bridge zum semantischen Modell — rein passiver Konsum reicht dann nicht.',
+                'en' => 'Uses data products and reports for decisions and raises gaps. Building reports often needs a bridge into the semantic model — pure passive consumption is not enough then.',
             ],
             'owns' => [
                 'de' => [
@@ -1032,6 +1034,466 @@ return [
                     'preferred' => 'data-product-owner-vs-data-owner',
                     'fallback' => null,
                     'label' => ['de' => 'Product Owner vs Owner vs Steward', 'en' => 'Product Owner vs Owner vs Steward'],
+                ],
+            ],
+        ],
+    ],
+
+    /*
+     | Bridge profiles under the six decision-right roles.
+     | Not additional governance personas — typical multi-hat patterns.
+     */
+    'bridges' => [
+        [
+            'id' => 'report-builder-model',
+            'kind' => 'bridge',
+            'tone' => 'recommended',
+            'title' => [
+                'de' => 'Report / BI Builder × Modell',
+                'en' => 'Report / BI builder × model',
+            ],
+            'lead' => [
+                'de' => 'Wer Reports baut, muss das semantische Modell verstehen und mitgestalten — sonst entstehen Shadow-Logik und KPI-Drift.',
+                'en' => 'Anyone who builds reports must understand and help shape the semantic model — otherwise shadow logic and KPI drift follow.',
+            ],
+            'spans' => ['consumer', 'architect', 'steward'],
+            'when' => [
+                'de' => [
+                    'BI-Entwickler:innen bauen Dashboards auf Marts oder Semantic Layers',
+                    'Report-Logik berührt Grain, Measures oder Entitätsgrenzen',
+                    'Consumer-Feedback muss in Modell- und Contract-Änderungen fließen',
+                ],
+                'en' => [
+                    'BI developers build dashboards on marts or semantic layers',
+                    'Report logic touches grain, measures, or entity boundaries',
+                    'Consumer feedback must flow into model and contract changes',
+                ],
+            ],
+            'keepsSeparate' => [
+                'de' => [
+                    'Interface-Standards und Breaking Changes bleiben beim Architect',
+                    'Domänendefinitionen und DQ-Gates bleiben beim Steward',
+                    'Produkt-Priorisierung bleibt beim Product Owner',
+                ],
+                'en' => [
+                    'Interface standards and breaking changes stay with the architect',
+                    'Domain definitions and DQ gates stay with the steward',
+                    'Product prioritization stays with the product owner',
+                ],
+            ],
+        ],
+        [
+            'id' => 'steward-architect',
+            'kind' => 'bridge',
+            'tone' => 'recommended',
+            'title' => [
+                'de' => 'Steward × Architect',
+                'en' => 'Steward × architect',
+            ],
+            'lead' => [
+                'de' => 'Domänendefinitionen und Grain-/Contract-Fragen in einer Person — sinnvoll bei kleinem Scope und klarer Domäne.',
+                'en' => 'Domain definitions plus grain/contract questions in one person — works when scope is small and the domain is clear.',
+            ],
+            'spans' => ['steward', 'architect'],
+            'when' => [
+                'de' => [
+                    'Eine Domäne, begrenzte Mart-Oberfläche',
+                    'Dieselbe Person kennt Fachbegriff und Modellgrenze',
+                    'Contract-Reviews und Katalogpflege eng gekoppelt sind',
+                ],
+                'en' => [
+                    'One domain with a limited mart surface',
+                    'The same person knows business terms and model boundaries',
+                    'Contract reviews and catalog care are tightly coupled',
+                ],
+            ],
+            'keepsSeparate' => [
+                'de' => [
+                    'Cross-Domain-Interface-Steuerung bleibt Architect-Accountability',
+                    'Zweck und Zugriff bleiben beim Owner',
+                    'Bei wachsendem Scope die Hüte wieder trennen',
+                ],
+                'en' => [
+                    'Cross-domain interface control stays architect accountability',
+                    'Purpose and access stay with the owner',
+                    'Split the hats again when scope grows',
+                ],
+            ],
+        ],
+        [
+            'id' => 'product-owner-owner',
+            'kind' => 'bridge',
+            'tone' => 'caution',
+            'title' => [
+                'de' => 'Product Owner × Owner',
+                'en' => 'Product owner × owner',
+            ],
+            'lead' => [
+                'de' => 'Produktpriorität und Domain-Zweck in einer Person — erlaubt, aber konfliktanfällig. Decision Rights trotzdem explizit halten.',
+                'en' => 'Product priority and domain purpose in one person — allowed, but conflict-prone. Keep decision rights explicit anyway.',
+            ],
+            'spans' => ['product-owner', 'owner'],
+            'when' => [
+                'de' => [
+                    'Kleine Organisation ohne getrennte Rollenbesetzung',
+                    'Ein Data Product deckt genau eine Domäne ab',
+                    'Eskalationsweg an Sponsor oder CoE ist klar',
+                ],
+                'en' => [
+                    'Small org without separate role staffing',
+                    'One data product covers exactly one domain',
+                    'Escalation path to sponsor or CoE is clear',
+                ],
+            ],
+            'keepsSeparate' => [
+                'de' => [
+                    'Roadmap-Druck darf Zugriffs- und Zweckentscheidungen nicht überstimmen',
+                    'Stewardship und DQ bleiben unabhängig prüfbar',
+                    'Bei Interessenkonflikt Owner-Entscheidung dokumentieren und eskalieren',
+                ],
+                'en' => [
+                    'Roadmap pressure must not override access and purpose decisions',
+                    'Stewardship and DQ must stay independently reviewable',
+                    'On conflict, document the owner decision and escalate',
+                ],
+            ],
+        ],
+        [
+            'id' => 'architect-interfaces',
+            'kind' => 'accountability',
+            'tone' => 'accountability',
+            'title' => [
+                'de' => 'Architect steuert die Schnittstellen',
+                'en' => 'Architect owns the interfaces',
+            ],
+            'lead' => [
+                'de' => 'Kein neuer Hut: Der Data Architect verantwortet die gesamte Interface-Oberfläche — Contracts, Breaking Changes und Stabilität über Domänen.',
+                'en' => 'Not a new hat: the data architect is accountable for the full interface surface — contracts, breaking changes, and stability across domains.',
+            ],
+            'spans' => ['architect'],
+            'when' => [
+                'de' => [
+                    'Mehrere Domänen oder Marts teilen Contracts',
+                    'Breaking Changes Verbraucher oder Downstream-Systeme treffen',
+                    'Grain und Entitätsgrenzen domänenübergreifend abgestimmt werden müssen',
+                ],
+                'en' => [
+                    'Multiple domains or marts share contracts',
+                    'Breaking changes hit consumers or downstream systems',
+                    'Grain and entity boundaries must align across domains',
+                ],
+            ],
+            'keepsSeparate' => [
+                'de' => [
+                    'Fachlicher Zweck und Zugriff bleiben beim Owner',
+                    'Tägliche Definitionspflege bleibt beim Steward',
+                    'Runtime und Rechteumsetzung bleiben beim Custodian',
+                ],
+                'en' => [
+                    'Business purpose and access stay with the owner',
+                    'Day-to-day definition care stays with the steward',
+                    'Runtime and rights enforcement stay with the custodian',
+                ],
+            ],
+        ],
+        [
+            'id' => 'custodian-architect',
+            'kind' => 'bridge',
+            'tone' => 'recommended',
+            'title' => [
+                'de' => 'Custodian × Architect',
+                'en' => 'Custodian × architect',
+            ],
+            'lead' => [
+                'de' => 'Platform-Fit: Architekturgrenzen und Runtime-Realität in einer Person — hilfreich bei Stack- und Betriebsentscheidungen.',
+                'en' => 'Platform fit: architecture boundaries and runtime reality in one person — useful for stack and operations decisions.',
+            ],
+            'spans' => ['custodian', 'architect'],
+            'when' => [
+                'de' => [
+                    'Stack-Fit und Betriebsmodell eng zusammenhängen',
+                    'Kleine Plattform-Teams ohne getrennte Architecture-Funktion',
+                    'Interface-Entscheidungen brauchen unmittelbares Runtime-Feedback',
+                ],
+                'en' => [
+                    'Stack fit and operating model are tightly coupled',
+                    'Small platform teams without a separate architecture function',
+                    'Interface decisions need immediate runtime feedback',
+                ],
+            ],
+            'keepsSeparate' => [
+                'de' => [
+                    'Cross-Domain-Contracts bleiben Architect-Accountability',
+                    'Policy-Zweck und Freigaben bleiben beim Owner',
+                    'Backup und reine Ops-Stabilität nicht mit Design-Macht vermischen',
+                ],
+                'en' => [
+                    'Cross-domain contracts stay architect accountability',
+                    'Policy purpose and approvals stay with the owner',
+                    'Do not mix backup and pure ops stability with design authority',
+                ],
+            ],
+        ],
+    ],
+
+    /*
+     | Rotating quote cards for the Roles hub (landing-style).
+     | hub = index pool; roles.{id} = detail page pool (falls back to hub).
+     */
+    'quotes' => [
+        'hub' => [
+            [
+                'quote' => [
+                    'en' => 'Six hats. Clear rights. Fewer meetings about meetings.',
+                    'de' => 'Sechs Hüte. Klare Rechte. Weniger Meetings über Meetings.',
+                ],
+                'attribution' => [
+                    'en' => '— Roles realist',
+                    'de' => '— Rollen-Realist',
+                ],
+            ],
+            [
+                'quote' => [
+                    'en' => 'A bridge role is a feature — silent dual hats are a bug.',
+                    'de' => 'Ein Bridge-Profil ist ein Feature — stille Doppelhüte sind ein Bug.',
+                ],
+                'attribution' => [
+                    'en' => '— Multi-hat mechanic',
+                    'de' => '— Mehrfachhut-Mechaniker',
+                ],
+            ],
+            [
+                'quote' => [
+                    'en' => 'Decision rights beat job titles every sprint.',
+                    'de' => 'Decision Rights schlagen Jobtitel in jedem Sprint.',
+                ],
+                'attribution' => [
+                    'en' => '— Governance coach',
+                    'de' => '— Governance-Coach',
+                ],
+            ],
+            [
+                'quote' => [
+                    'en' => 'If everyone owns the interface, nobody owns the interface.',
+                    'de' => 'Wenn alle die Schnittstelle besitzen, besitzt sie niemand.',
+                ],
+                'attribution' => [
+                    'en' => '— Contract skeptic',
+                    'de' => '— Contract-Skeptiker',
+                ],
+            ],
+            [
+                'quote' => [
+                    'en' => 'RACI is not a slide — it’s who unblocks Friday.',
+                    'de' => 'RACI ist keine Folie — es ist, wer Freitag unblockt.',
+                ],
+                'attribution' => [
+                    'en' => '— Cadence poet',
+                    'de' => '— Cadence-Poet',
+                ],
+            ],
+            [
+                'quote' => [
+                    'en' => 'Owners own. Stewards steward. Spreadsheets panic.',
+                    'de' => 'Owner ownen. Stewards stewarden. Spreadsheets paniken.',
+                ],
+                'attribution' => [
+                    'en' => '— RACI with humor',
+                    'de' => '— RACI mit Humor',
+                ],
+            ],
+        ],
+        'roles' => [
+            'steward' => [
+                [
+                    'quote' => [
+                        'en' => 'Definitions first. Vibes never shipped a gate.',
+                        'de' => 'Definitionen first. Vibes haben noch nie ein Gate shipped.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Domain steward',
+                        'de' => '— Domänen-Steward',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'If it isn’t in the catalog, it doesn’t exist.',
+                        'de' => 'Was nicht im Katalog steht, existiert nicht.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Catalog absolutist',
+                        'de' => '— Katalog-Absolutist',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'dq_rule > “it looked fine yesterday”.',
+                        'de' => 'dq_rule > „Gestern sah’s noch gut aus.“',
+                    ],
+                    'attribution' => [
+                        'en' => '— Quality with receipts',
+                        'de' => '— Qualität mit Belegen',
+                    ],
+                ],
+            ],
+            'owner' => [
+                [
+                    'quote' => [
+                        'en' => 'Purpose and access — not a backlog item.',
+                        'de' => 'Zweck und Zugriff — kein Backlog-Item.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Domain owner',
+                        'de' => '— Domänen-Owner',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Trust, but verify — then document.',
+                        'de' => 'Vertrauen ist gut, Verify und Dokumentieren besser.',
+                    ],
+                    'attribution' => [
+                        'en' => '— A cautious data owner',
+                        'de' => '— Ein vorsichtiger Data Owner',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Access denied is a love language.',
+                        'de' => 'Access denied ist eine Liebessprache.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Privacy with a smile',
+                        'de' => '— Privacy mit Augenzwinkern',
+                    ],
+                ],
+            ],
+            'product-owner' => [
+                [
+                    'quote' => [
+                        'en' => 'Ship value — without silently wearing the owner hat.',
+                        'de' => 'Value shippen — ohne still den Owner-Hut aufzusetzen.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Data product owner',
+                        'de' => '— Data Product Owner',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Roadmap pressure is not a purpose decision.',
+                        'de' => 'Roadmap-Druck ist keine Zweckentscheidung.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Dual-hat warning label',
+                        'de' => '— Doppelhut-Warnhinweis',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Consumer delight ≠ domain free-for-all.',
+                        'de' => 'Consumer Delight ≠ Domänen-Freiwild.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Lifecycle realist',
+                        'de' => '— Lifecycle-Realist',
+                    ],
+                ],
+            ],
+            'architect' => [
+                [
+                    'quote' => [
+                        'en' => 'I don’t block tickets — I own the interfaces.',
+                        'de' => 'Ich blocke keine Tickets — ich steuere die Schnittstellen.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Interface accountant',
+                        'de' => '— Interface-Verantwortlicher',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Grain first. Breaking changes last — and loudly.',
+                        'de' => 'Grain first. Breaking Changes last — und laut.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Contract board',
+                        'de' => '— Contract Board',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Metadata: because vibes are not lineage.',
+                        'de' => 'Metadaten: Weil Vibes keine Lineage sind.',
+                    ],
+                    'attribution' => [
+                        'en' => '— A slightly tired architect',
+                        'de' => '— Ein leicht müder Architekt',
+                    ],
+                ],
+            ],
+            'custodian' => [
+                [
+                    'quote' => [
+                        'en' => 'I enforce policy. I don’t invent purpose.',
+                        'de' => 'Ich setze Policy um. Ich erfinde keinen Zweck.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Platform custodian',
+                        'de' => '— Plattform-Custodian',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Runtime is truth. Slides are optimism.',
+                        'de' => 'Runtime ist Wahrheit. Folien sind Optimismus.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Ops with receipts',
+                        'de' => '— Ops mit Belegen',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Backup tested > backup promised.',
+                        'de' => 'Backup getestet > Backup versprochen.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Recovery realist',
+                        'de' => '— Recovery-Realist',
+                    ],
+                ],
+            ],
+            'consumer' => [
+                [
+                    'quote' => [
+                        'en' => 'Building the report? Learn the model — or invent a second truth.',
+                        'de' => 'Report bauen? Lern das Modell — oder erfind eine zweite Wahrheit.',
+                    ],
+                    'attribution' => [
+                        'en' => '— BI bridge advocate',
+                        'de' => '— BI-Bridge-Advocate',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Gaps are gifts — if they reach a steward.',
+                        'de' => 'Gaps sind Geschenke — wenn sie einen Steward erreichen.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Feedback maximalist',
+                        'de' => '— Feedback-Maximalist',
+                    ],
+                ],
+                [
+                    'quote' => [
+                        'en' => 'Shadow BI is just unpublished governance debt.',
+                        'de' => 'Shadow BI ist nur unveröffentlichte Governance-Schuld.',
+                    ],
+                    'attribution' => [
+                        'en' => '— Report inventory fan',
+                        'de' => '— Report-Inventory-Fan',
+                    ],
                 ],
             ],
         ],

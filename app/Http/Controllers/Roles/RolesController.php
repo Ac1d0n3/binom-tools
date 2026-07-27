@@ -30,6 +30,8 @@ class RolesController extends Controller
 
         return view('roles.index', [
             'roles' => $cards,
+            'bridges' => $this->hydrateBridges(),
+            'roleQuote' => $this->pickRoleQuote(null),
         ]);
     }
 
@@ -55,9 +57,14 @@ class RolesController extends Controller
         /** @var array<string, array{de: string, en: string}> $personas */
         $personas = config('roles.personas', []);
 
+        $hydrated = $this->hydrateRole($item);
+        $roleId = (string) ($hydrated['id'] ?? '');
+
         return view('roles.show', [
-            'item' => $this->hydrateRole($item),
+            'item' => $hydrated,
             'personas' => $personas,
+            'relatedBridges' => $this->relatedBridgesForRole($roleId),
+            'roleQuote' => $this->pickRoleQuote($roleId),
         ]);
     }
 
@@ -346,6 +353,206 @@ class RolesController extends Controller
         return is_string($preferred)
             && $preferred !== ''
             && $preferred !== $resolved;
+    }
+
+    /**
+     * Pick a random Roles-hub quote. Role detail prefers role pool, then hub.
+     *
+     * @return array{quote: array{de: string, en: string}, attribution: array{de: string, en: string}}|null
+     */
+    private function pickRoleQuote(?string $roleId): ?array
+    {
+        /** @var array<string, mixed> $quotesConfig */
+        $quotesConfig = config('roles.quotes', []);
+        if (! is_array($quotesConfig)) {
+            return null;
+        }
+
+        $pool = [];
+        if (is_string($roleId) && $roleId !== '') {
+            $byRole = $quotesConfig['roles'][$roleId] ?? null;
+            if (is_array($byRole)) {
+                $pool = array_values(array_filter($byRole, 'is_array'));
+            }
+        }
+
+        if ($pool === []) {
+            $hub = $quotesConfig['hub'] ?? null;
+            $pool = is_array($hub) ? array_values(array_filter($hub, 'is_array')) : [];
+        }
+
+        if ($pool === []) {
+            return null;
+        }
+
+        $picked = $pool[array_rand($pool)];
+        if (! is_array($picked)) {
+            return null;
+        }
+
+        $quoteText = $picked['quote'] ?? null;
+        $attribution = $picked['attribution'] ?? null;
+        if (! is_array($quoteText) || ! is_array($attribution)) {
+            return null;
+        }
+
+        $quoteEn = trim((string) ($quoteText['en'] ?? ''));
+        $quoteDe = trim((string) ($quoteText['de'] ?? $quoteEn));
+        $attrEn = trim((string) ($attribution['en'] ?? ''));
+        $attrDe = trim((string) ($attribution['de'] ?? $attrEn));
+
+        if ($quoteEn === '' && $quoteDe === '') {
+            return null;
+        }
+
+        return [
+            'quote' => [
+                'en' => $quoteEn !== '' ? $quoteEn : $quoteDe,
+                'de' => $quoteDe !== '' ? $quoteDe : $quoteEn,
+            ],
+            'attribution' => [
+                'en' => $attrEn,
+                'de' => $attrDe !== '' ? $attrDe : $attrEn,
+            ],
+        ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function hydrateBridges(): array
+    {
+        /** @var list<array<string, mixed>> $bridges */
+        $bridges = config('roles.bridges', []);
+        if ($bridges === []) {
+            return [];
+        }
+
+        $roleIndex = $this->roleTitleIndex();
+        $hydrated = [];
+
+        foreach ($bridges as $bridge) {
+            if (! is_array($bridge)) {
+                continue;
+            }
+
+            $id = (string) ($bridge['id'] ?? '');
+            if ($id === '') {
+                continue;
+            }
+
+            $spanLinks = [];
+            $spanIds = is_array($bridge['spans'] ?? null) ? $bridge['spans'] : [];
+            foreach ($spanIds as $spanId) {
+                if (! is_string($spanId) || $spanId === '' || ! isset($roleIndex[$spanId])) {
+                    continue;
+                }
+                $spanLinks[] = [
+                    'id' => $spanId,
+                    'href' => locale_route('roles.show', ['slug' => $spanId]),
+                    'label' => $roleIndex[$spanId],
+                ];
+            }
+
+            $hydrated[] = [
+                'id' => $id,
+                'kind' => (string) ($bridge['kind'] ?? 'bridge'),
+                'tone' => (string) ($bridge['tone'] ?? 'recommended'),
+                'title' => $this->bilingualLabel(
+                    is_array($bridge['title'] ?? null) ? $bridge['title'] : null,
+                    ['de' => $id, 'en' => $id],
+                ),
+                'lead' => $this->bilingualLabel(
+                    is_array($bridge['lead'] ?? null) ? $bridge['lead'] : null,
+                    ['de' => '', 'en' => ''],
+                ),
+                'spans' => $spanLinks,
+                'when' => $this->bilingualLines($bridge['when'] ?? null),
+                'keepsSeparate' => $this->bilingualLines($bridge['keepsSeparate'] ?? null),
+            ];
+        }
+
+        return $hydrated;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function relatedBridgesForRole(string $roleId): array
+    {
+        if ($roleId === '') {
+            return [];
+        }
+
+        $related = [];
+        foreach ($this->hydrateBridges() as $bridge) {
+            $spanIds = array_map(
+                static fn (array $span): string => (string) ($span['id'] ?? ''),
+                is_array($bridge['spans'] ?? null) ? $bridge['spans'] : [],
+            );
+            if (in_array($roleId, $spanIds, true)) {
+                $related[] = $bridge;
+            }
+        }
+
+        return $related;
+    }
+
+    /**
+     * @return array<string, array{de: string, en: string}>
+     */
+    private function roleTitleIndex(): array
+    {
+        /** @var list<array<string, mixed>> $roles */
+        $roles = config('roles.roles', []);
+        $index = [];
+        foreach ($roles as $role) {
+            if (! is_array($role)) {
+                continue;
+            }
+            $id = (string) ($role['id'] ?? '');
+            if ($id === '') {
+                continue;
+            }
+            $index[$id] = [
+                'en' => (string) ($role['title']['en'] ?? $id),
+                'de' => (string) ($role['title']['de'] ?? $role['title']['en'] ?? $id),
+            ];
+        }
+
+        return $index;
+    }
+
+    /**
+     * @param  mixed  $value
+     * @return array{de: list<string>, en: list<string>}
+     */
+    private function bilingualLines(mixed $value): array
+    {
+        $en = [];
+        $de = [];
+        if (is_array($value)) {
+            $enRaw = is_array($value['en'] ?? null) ? $value['en'] : [];
+            $deRaw = is_array($value['de'] ?? null) ? $value['de'] : $enRaw;
+            foreach ($enRaw as $line) {
+                if (is_string($line) && trim($line) !== '') {
+                    $en[] = trim($line);
+                }
+            }
+            foreach ($deRaw as $line) {
+                if (is_string($line) && trim($line) !== '') {
+                    $de[] = trim($line);
+                }
+            }
+            if ($de === [] && $en !== []) {
+                $de = $en;
+            }
+            if ($en === [] && $de !== []) {
+                $en = $de;
+            }
+        }
+
+        return ['de' => $de, 'en' => $en];
     }
 
     /**

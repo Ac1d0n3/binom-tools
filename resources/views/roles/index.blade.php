@@ -68,6 +68,33 @@
                     </a>
                 @endforeach
             </div>
+
+            @php
+                $bridges = is_array($bridges ?? null) ? $bridges : [];
+            @endphp
+            @if (count($bridges) > 0)
+                <section class="roles-bridges" id="roles-bridges" aria-labelledby="roles-bridges-title">
+                    <header class="roles-bridges__header">
+                        <h2 id="roles-bridges-title" class="roles-bridges__title" data-i18n="roles.bridgesTitle">Bridge profiles</h2>
+                        <p class="roles-bridges__lead" data-i18n="roles.bridgesLead">
+                            The six roles are decision rights. Bridges are typical multi-hat patterns — not extra governance personas.
+                        </p>
+                    </header>
+                    <div class="roles-bridges__grid">
+                        @foreach ($bridges as $bridge)
+                            @include('roles.partials.bridge-card', ['bridge' => $bridge, 'compact' => false])
+                        @endforeach
+                        @if (! empty($roleQuote))
+                            <div class="roles-quote-slot roles-quote-slot--bridges">
+                                <x-tools.quote-card
+                                    :quote="$roleQuote['quote']"
+                                    :attribution="$roleQuote['attribution']"
+                                />
+                            </div>
+                        @endif
+                    </div>
+                </section>
+            @endif
         </div>
     </div>
 @endsection

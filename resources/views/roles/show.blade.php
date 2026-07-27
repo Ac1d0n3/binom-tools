@@ -25,6 +25,7 @@
     $storyLinks = is_array($item['storyLinks'] ?? null) ? $item['storyLinks'] : [];
     $glossaryLink = is_array($item['glossaryLink'] ?? null) ? $item['glossaryLink'] : null;
     $pending = is_array($item['pendingStories'] ?? null) ? $item['pendingStories'] : [];
+    $relatedBridges = is_array($relatedBridges ?? null) ? $relatedBridges : [];
 @endphp
 
 @section('title', $titleEn.' — Roles — '.config('app.name'))
@@ -37,38 +38,48 @@
         </nav>
 
         <header class="roles-detail__header">
-            <div class="roles-detail__header-top">
-                <span class="roles-hub-card__icon-wrap roles-detail__icon-wrap" aria-hidden="true">
-                    <i class="fa-solid {{ $icon }} roles-hub-card__icon"></i>
-                </span>
-                <div class="roles-detail__header-copy">
-                    <p class="roles-detail__persona" data-text-de="{{ $personaLabel['de'] ?? $persona }}" data-text-en="{{ $personaLabel['en'] ?? $persona }}">
-                        {{ $personaLabel['en'] ?? $persona }}
-                    </p>
-                    @if ($focusCount > 0)
-                        <div class="roles-hub-card__purpose roles-detail__purpose">
-                            <span class="roles-hub-card__purpose-label" data-i18n="roles.focusLabel">Focus</span>
-                            <span class="roles-hub-card__tags">
-                                @for ($i = 0; $i < $focusCount; $i++)
-                                    @php
-                                        $tagEn = (string) ($focusEn[$i] ?? $focusDe[$i] ?? '');
-                                        $tagDe = (string) ($focusDe[$i] ?? $tagEn);
-                                    @endphp
-                                    @if ($tagEn !== '')
-                                        <span
-                                            class="roles-hub-card__tag"
-                                            data-text-de="{{ $tagDe }}"
-                                            data-text-en="{{ $tagEn }}"
-                                        >{{ $tagEn }}</span>
-                                    @endif
-                                @endfor
-                            </span>
-                        </div>
-                    @endif
+            <div class="roles-detail__header-main">
+                <div class="roles-detail__header-top">
+                    <span class="roles-hub-card__icon-wrap roles-detail__icon-wrap" aria-hidden="true">
+                        <i class="fa-solid {{ $icon }} roles-hub-card__icon"></i>
+                    </span>
+                    <div class="roles-detail__header-copy">
+                        <p class="roles-detail__persona" data-text-de="{{ $personaLabel['de'] ?? $persona }}" data-text-en="{{ $personaLabel['en'] ?? $persona }}">
+                            {{ $personaLabel['en'] ?? $persona }}
+                        </p>
+                        @if ($focusCount > 0)
+                            <div class="roles-hub-card__purpose roles-detail__purpose">
+                                <span class="roles-hub-card__purpose-label" data-i18n="roles.focusLabel">Focus</span>
+                                <span class="roles-hub-card__tags">
+                                    @for ($i = 0; $i < $focusCount; $i++)
+                                        @php
+                                            $tagEn = (string) ($focusEn[$i] ?? $focusDe[$i] ?? '');
+                                            $tagDe = (string) ($focusDe[$i] ?? $tagEn);
+                                        @endphp
+                                        @if ($tagEn !== '')
+                                            <span
+                                                class="roles-hub-card__tag"
+                                                data-text-de="{{ $tagDe }}"
+                                                data-text-en="{{ $tagEn }}"
+                                            >{{ $tagEn }}</span>
+                                        @endif
+                                    @endfor
+                                </span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+                <h1 class="tools-page-title" data-text-de="{{ $titleDe }}" data-text-en="{{ $titleEn }}">{{ $titleEn }}</h1>
+                <p class="tools-page-lead" data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</p>
             </div>
-            <h1 class="tools-page-title" data-text-de="{{ $titleDe }}" data-text-en="{{ $titleEn }}">{{ $titleEn }}</h1>
-            <p class="tools-page-lead" data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</p>
+            @if (! empty($roleQuote))
+                <div class="roles-quote-slot roles-quote-slot--header">
+                    <x-tools.quote-card
+                        :quote="$roleQuote['quote']"
+                        :attribution="$roleQuote['attribution']"
+                    />
+                </div>
+            @endif
         </header>
 
         @if (count($ownsEn) > 0 || count($doesNotEn) > 0)
@@ -150,6 +161,22 @@
                         </li>
                     @endforeach
                 </ul>
+            </section>
+        @endif
+
+        @if (count($relatedBridges) > 0)
+            <section class="roles-detail__section roles-detail__section--bridges" aria-labelledby="roles-related-bridges">
+                <h2 id="roles-related-bridges" class="roles-detail__section-title" data-i18n="roles.relatedBridgesTitle">Bridge patterns</h2>
+                <p class="roles-detail__bridges-lead">
+                    <a href="{{ locale_route('roles.index') }}#roles-bridges" data-i18n="roles.relatedBridgesLead">
+                        See all bridge profiles on the Roles hub
+                    </a>
+                </p>
+                <div class="roles-bridges__grid roles-bridges__grid--detail">
+                    @foreach ($relatedBridges as $bridge)
+                        @include('roles.partials.bridge-card', ['bridge' => $bridge, 'compact' => true])
+                    @endforeach
+                </div>
             </section>
         @endif
 

@@ -24,15 +24,34 @@ class RolesPagesTest extends TestCase
         $index->assertDontSee('roles-persona-bar', false);
         $index->assertDontSee('data-overview-search', false);
         $index->assertSee(route('roles.show', ['slug' => 'architect']), false);
+        $index->assertSee('id="roles-bridges"', false);
+        $index->assertSee('data-i18n="roles.bridgesTitle"', false);
+        $index->assertSee('data-bridge-id="report-builder-model"', false);
+        $index->assertSee('data-bridge-id="steward-architect"', false);
+        $index->assertSee('data-bridge-id="product-owner-owner"', false);
+        $index->assertSee('data-bridge-id="architect-interfaces"', false);
+        $index->assertSee('data-bridge-id="custodian-architect"', false);
+        $index->assertSee('Report / BI builder × model', false);
+        $index->assertSee('Architect owns the interfaces', false);
+        $index->assertSee('data-bridge-tone="caution"', false);
+        $index->assertSee('data-bridge-tone="accountability"', false);
+        $index->assertSee('tools-card--quote', false);
+        $index->assertSee('tools-card__quote-binary', false);
 
         $show = $this->get('/roles/architect');
         $show->assertOk();
         $show->assertSee('Data Architect', false);
+        $show->assertSee('tools-card--quote', false);
+        $show->assertSee('tools-card__quote-binary', false);
         $show->assertSee('data-i18n="roles.boundariesTitle"', false);
         $show->assertSee('data-i18n="roles.ownsTitle"', false);
         $show->assertSee('data-i18n="roles.doesNotTitle"', false);
         $show->assertSee('data-i18n="roles.tasksTitle"', false);
         $show->assertSee('data-i18n="roles.worksWithTitle"', false);
+        $show->assertSee('data-i18n="roles.relatedBridgesTitle"', false);
+        $show->assertSee('data-bridge-id="architect-interfaces"', false);
+        $show->assertSee('Architect owns the interfaces', false);
+        $show->assertSee(route('roles.index').'#roles-bridges', false);
         $show->assertSee('data-i18n="roles.pathsTitle"', false);
         $show->assertSee('data-i18n="roles.toolsTitle"', false);
         $show->assertSee('data-i18n="roles.glossaryTitle"', false);
@@ -47,14 +66,28 @@ class RolesPagesTest extends TestCase
         $html = $show->getContent();
         $boundariesPos = strpos($html, 'id="roles-boundaries"');
         $glossaryPos = strpos($html, 'id="roles-glossary"');
+        $bridgesPos = strpos($html, 'id="roles-related-bridges"');
+        $worksWithPos = strpos($html, 'id="roles-works-with"');
         $this->assertNotFalse($boundariesPos);
         $this->assertNotFalse($glossaryPos);
+        $this->assertNotFalse($bridgesPos);
+        $this->assertNotFalse($worksWithPos);
         $this->assertLessThan($glossaryPos, $boundariesPos);
+        $this->assertLessThan($bridgesPos, $worksWithPos);
+        $this->assertLessThan($glossaryPos, $bridgesPos);
 
         $productOwner = $this->get('/roles/product-owner');
         $productOwner->assertOk();
         $productOwner->assertSee(route('glossary.show', ['slug' => 'data-product-owner']), false);
         $productOwner->assertSee('href="'.route('glossary.show', ['slug' => 'data-product-owner']).'"', false);
+        $productOwner->assertSee('data-bridge-id="product-owner-owner"', false);
+        $productOwner->assertSee('data-bridge-tone="caution"', false);
+
+        $consumer = $this->get('/roles/consumer');
+        $consumer->assertOk();
+        $consumer->assertSee('data-bridge-id="report-builder-model"', false);
+        $consumer->assertSee('Report / BI builder × model', false);
+        $consumer->assertSee('semantic model', false);
 
         $this->get('/de/roles')->assertOk();
         $this->get('/en/roles/steward')->assertOk();
