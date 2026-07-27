@@ -25,10 +25,22 @@ return [
 
     'orgContexts' => [
         'unknown' => ['de' => 'Noch offen / gemischt', 'en' => 'Open / mixed'],
-        'sme' => ['de' => 'KMU / mittelständisch', 'en' => 'SME / mid-market'],
+        'startup' => ['de' => 'Startup', 'en' => 'Startup'],
+        'midmarket' => ['de' => 'Midmarket / KMU', 'en' => 'Mid-market / SME'],
         'enterprise' => ['de' => 'Enterprise', 'en' => 'Enterprise'],
         'bank-finance' => ['de' => 'Bank / Finance (reguliert)', 'en' => 'Bank / finance (regulated)'],
         'public-sector' => ['de' => 'Behörde / öffentlicher Sektor', 'en' => 'Public sector'],
+    ],
+
+    // Legacy sessions may still store orgContext=sme — map to midmarket in Advisor JS.
+    'orgContextAliases' => [
+        'sme' => 'midmarket',
+    ],
+
+    'regulationPressures' => [
+        'low' => ['de' => 'Niedrig', 'en' => 'Low'],
+        'gdpr-heavy' => ['de' => 'DSGVO-stark', 'en' => 'GDPR-heavy'],
+        'regulated' => ['de' => 'Reguliert (DORA/NIS2/…)', 'en' => 'Regulated (DORA/NIS2/…)'],
     ],
 
     'platforms' => [

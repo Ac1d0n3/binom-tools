@@ -13,6 +13,8 @@ class ComplianceRoadmapTest extends TestCase
             ->assertSee('compliance-roadmap-org-context', false)
             ->assertSee('By organisation context')
             ->assertSee('Open Governance Advisor', false)
+            ->assertSee('Startup: start lean', false)
+            ->assertSee('Regulatory pressure', false)
             ->assertSee(route('governance.index'), false);
     }
 }

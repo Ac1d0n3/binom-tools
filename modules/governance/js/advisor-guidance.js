@@ -1,5 +1,5 @@
 /**
- * Advisor guidance — certs, gaps/bridges, optional stack note by orgContext.
+ * Advisor guidance — certs, gaps/bridges, stack rationale by orgContext + regulation.
  * Pure rules module; hub-advisor.js renders the cards.
  */
 
@@ -20,10 +20,40 @@
  *   domain?: string,
  *   platform?: string,
  *   orgContext?: string,
+ *   regulationPressure?: string,
  *   role?: string,
  * }} AdvisorState
  * @typedef {Record<string, string>} GuidanceLinks
+ * @typedef {{
+ *   card: GuidanceCard,
+ *   startToolIds: string[],
+ * }} StackRationale
  */
+
+/** @type {Record<string, string>} */
+const ORG_ALIASES = {
+    sme: 'midmarket',
+};
+
+/**
+ * @param {string | undefined} raw
+ * @returns {string}
+ */
+export function normalizeOrgContext(raw) {
+    const value = typeof raw === 'string' && raw !== '' ? raw : 'unknown';
+    return ORG_ALIASES[value] || value;
+}
+
+/**
+ * @param {string | undefined} raw
+ * @returns {'low' | 'gdpr-heavy' | 'regulated'}
+ */
+export function normalizeRegulation(raw) {
+    if (raw === 'gdpr-heavy' || raw === 'regulated') {
+        return raw;
+    }
+    return 'low';
+}
 
 /**
  * @param {GuidanceLinks} links
@@ -37,12 +67,72 @@ function linkOf(links, key, fallback = '#') {
 }
 
 /**
+ * Lean path shared by startup + midmarket (+ legacy sme via alias).
+ * @param {GuidanceLinks} links
+ * @param {'startup' | 'midmarket'} org
+ * @returns {GuidanceCard[]}
+ */
+function leanOrgCerts(links, org) {
+    const roadmap = linkOf(links, 'roadmap', '/compliance/roadmap');
+    const eightPillars = linkOf(links, 'eightPillars', '/playbooks/eight-pillars');
+    const learningPaths = linkOf(links, 'learningPaths', '/learning-paths');
+
+    const startupBias = org === 'startup';
+
+    return [
+        {
+            id: 'cert-pillars',
+            group: 'certs',
+            icon: 'fa-landmark',
+            title: { de: '8 Säulen als Praxisstart', en: '8 pillars as a practical start' },
+            reason: {
+                de: startupBias
+                    ? 'Startups: schlankes Governance-Gerüst zuerst — kein Zert-Overkill.'
+                    : 'Für Midmarket/KMU oft schlanker als sofortige Cert-Pfade — gemeinsames Gerüst zuerst.',
+                en: startupBias
+                    ? 'Startups: lean governance frame first — no cert overkill.'
+                    : 'For mid-market/SMEs often leaner than jumping straight into certs — shared frame first.',
+            },
+            url: eightPillars,
+            score: 90,
+        },
+        {
+            id: 'cert-foundations-path',
+            group: 'certs',
+            icon: 'fa-route',
+            title: { de: 'Foundations Learning Path', en: 'Foundations learning path' },
+            reason: {
+                de: 'Kuratierter Einstieg; CDMP nur optional als Fachsprache.',
+                en: 'Curated onboarding; CDMP only optional as shared language.',
+            },
+            url: learningPaths,
+            score: 82,
+        },
+        ...(startupBias
+            ? []
+            : [{
+                id: 'cert-roadmap-optional',
+                group: 'certs',
+                icon: 'fa-certificate',
+                title: { de: 'Zertifizierungs-Roadmap (optional)', en: 'Certification roadmap (optional)' },
+                reason: {
+                    de: 'Orientierung, wenn später Nachweise gefragt werden — ohne Pflichtprogramm.',
+                    en: 'Orientation when evidence is asked later — not a mandatory track.',
+                },
+                url: roadmap,
+                score: 70,
+            }]),
+    ];
+}
+
+/**
  * @param {AdvisorState} state
  * @param {GuidanceLinks} links
  * @returns {GuidanceCard[]}
  */
 function buildCertCards(state, links) {
-    const org = state.orgContext || 'unknown';
+    const org = normalizeOrgContext(state.orgContext);
+    const regulation = normalizeRegulation(state.regulationPressure);
     /** @type {GuidanceCard[]} */
     const cards = [];
 
@@ -54,46 +144,12 @@ function buildCertCards(state, links) {
     const iso27001 = linkOf(links, 'iso27001', '/compliance/iso27001-li');
     const dsbDe = linkOf(links, 'dsbDe', '/compliance/dsb-de');
     const vendorLearning = linkOf(links, 'vendorLearningPathBuilder', '/tools/vendor-learning-path-builder');
+    const dora = linkOf(links, 'dora', '/compliance/dora');
+    const nis2 = linkOf(links, 'nis2', '/compliance/nis2');
+    const bsiC5 = linkOf(links, 'bsiC5', '/compliance/bsi-c5');
 
-    if (org === 'sme') {
-        cards.push(
-            {
-                id: 'cert-pillars',
-                group: 'certs',
-                icon: 'fa-landmark',
-                title: { de: '8 Säulen als Praxisstart', en: '8 pillars as a practical start' },
-                reason: {
-                    de: 'Für KMU oft schlanker als sofortige Cert-Pfade — gemeinsames Governance-Gerüst zuerst.',
-                    en: 'For SMEs often leaner than jumping straight into certs — shared governance frame first.',
-                },
-                url: eightPillars,
-                score: 90,
-            },
-            {
-                id: 'cert-foundations-path',
-                group: 'certs',
-                icon: 'fa-route',
-                title: { de: 'Foundations Learning Path', en: 'Foundations learning path' },
-                reason: {
-                    de: 'Kuratierter Einstieg; CDMP nur optional als Fachsprache.',
-                    en: 'Curated onboarding; CDMP only optional as shared language.',
-                },
-                url: learningPaths,
-                score: 82,
-            },
-            {
-                id: 'cert-roadmap-optional',
-                group: 'certs',
-                icon: 'fa-certificate',
-                title: { de: 'Zertifizierungs-Roadmap (optional)', en: 'Certification roadmap (optional)' },
-                reason: {
-                    de: 'Orientierung, wenn später Nachweise gefragt werden — ohne Pflichtprogramm.',
-                    en: 'Orientation when evidence is asked later — not a mandatory track.',
-                },
-                url: roadmap,
-                score: 70,
-            },
-        );
+    if (org === 'startup' || org === 'midmarket') {
+        cards.push(...leanOrgCerts(links, org));
     } else if (org === 'enterprise') {
         cards.push(
             {
@@ -156,7 +212,7 @@ function buildCertCards(state, links) {
                     de: 'Security- und Control-Nachweise für Banken und Finanzdienstleister.',
                     en: 'Security and control evidence for banks and financial services.',
                 },
-                url: iso27001,
+                url: iso27001 !== '#' ? iso27001 : bsiC5,
                 score: 88,
             },
             {
@@ -252,7 +308,130 @@ function buildCertCards(state, links) {
         );
     }
 
+    applyRegulationOverlay(cards, {
+        org,
+        regulation,
+        links: {
+            cippE,
+            iso27001,
+            dsbDe,
+            roadmap,
+            dora,
+            nis2,
+            bsiC5,
+            learningPaths,
+        },
+    });
+
     return cards;
+}
+
+/**
+ * Boost or inject cert cards based on regulationPressure.
+ * @param {GuidanceCard[]} cards
+ * @param {{
+ *   org: string,
+ *   regulation: 'low' | 'gdpr-heavy' | 'regulated',
+ *   links: Record<string, string>,
+ * }} opts
+ */
+function applyRegulationOverlay(cards, opts) {
+    const { org, regulation, links } = opts;
+    if (regulation === 'low') {
+        return;
+    }
+
+    const hasId = (id) => cards.some((c) => c.id === id);
+    const bump = (id, delta) => {
+        const card = cards.find((c) => c.id === id);
+        if (card) {
+            card.score = (card.score ?? 50) + delta;
+        }
+    };
+
+    if (regulation === 'gdpr-heavy') {
+        bump('cert-cippe-bank', 4);
+        bump('cert-cippe-public', 4);
+        if (!hasId('cert-cippe-bank') && !hasId('cert-cippe-public') && !hasId('cert-cippe-overlay')) {
+            cards.push({
+                id: 'cert-cippe-overlay',
+                group: 'certs',
+                icon: 'fa-shield-halved',
+                title: { de: 'CIPP/E (Privacy-Fokus)', en: 'CIPP/E (privacy focus)' },
+                reason: {
+                    de: 'DSGVO-starker Druck: Privacy-Nachweis und gemeinsame Sprache priorisieren.',
+                    en: 'GDPR-heavy pressure: prioritize privacy evidence and shared language.',
+                },
+                url: links.cippE,
+                score: 91,
+            });
+        }
+        if (org === 'public-sector') {
+            bump('cert-dsb', 3);
+        }
+        bump('cert-roadmap-optional', 2);
+        bump('cert-roadmap-unknown', 2);
+        bump('cert-roadmap-enterprise', 2);
+        return;
+    }
+
+    // regulated
+    bump('cert-cippe-bank', 3);
+    bump('cert-cippe-public', 3);
+    bump('cert-iso-bank', 4);
+    bump('cert-roadmap-bank', 5);
+    bump('cert-roadmap-public', 3);
+
+    if (!hasId('cert-cippe-bank') && !hasId('cert-cippe-public') && !hasId('cert-cippe-overlay')) {
+        cards.push({
+            id: 'cert-cippe-overlay',
+            group: 'certs',
+            icon: 'fa-shield-halved',
+            title: { de: 'CIPP/E', en: 'CIPP/E' },
+            reason: {
+                de: 'Regulierter Kontext: Privacy-Nachweis früh mitdenken.',
+                en: 'Regulated context: fold privacy evidence in early.',
+            },
+            url: links.cippE,
+            score: 90,
+        });
+    }
+
+    if (!hasId('cert-iso-bank') && !hasId('cert-iso-overlay')) {
+        cards.push({
+            id: 'cert-iso-overlay',
+            group: 'certs',
+            icon: 'fa-lock',
+            title: { de: 'ISO 27001 / C5-Orientierung', en: 'ISO 27001 / C5 orientation' },
+            reason: {
+                de: 'Regulierungsdruck: Security- und Control-Nachweise absichern.',
+                en: 'Regulatory pressure: secure security and control evidence.',
+            },
+            url: links.iso27001 !== '#' ? links.iso27001 : links.bsiC5,
+            score: 86,
+        });
+    }
+
+    if (!hasId('cert-dora-nis2') && (org === 'bank-finance' || org === 'enterprise' || org === 'unknown')) {
+        cards.push({
+            id: 'cert-dora-nis2',
+            group: 'certs',
+            icon: 'fa-scale-balanced',
+            title: { de: 'DORA / NIS2 Orientierung', en: 'DORA / NIS2 orientation' },
+            reason: {
+                de: 'Bestehende Compliance-Seiten als Einstieg — Roadmap und Framework-Karten nutzen.',
+                en: 'Use existing compliance pages as entry — roadmap and framework cards.',
+            },
+            url: links.dora !== '#' ? links.dora : links.roadmap,
+            score: 84,
+        });
+        if (links.nis2 && links.nis2 !== '#' && links.dora === '#') {
+            const card = cards.find((c) => c.id === 'cert-dora-nis2');
+            if (card) {
+                card.url = links.nis2;
+            }
+        }
+    }
 }
 
 /**
@@ -261,7 +440,7 @@ function buildCertCards(state, links) {
  * @returns {GuidanceCard[]}
  */
 function buildGapCards(state, links) {
-    const org = state.orgContext || 'unknown';
+    const org = normalizeOrgContext(state.orgContext);
     const goal = state.goal || 'stack';
     const scenario = state.scenario || 'new';
     const platform = state.platform || 'unknown';
@@ -281,6 +460,12 @@ function buildGapCards(state, links) {
     const compliance = linkOf(links, 'compliance', '/compliance');
     const bridgeStory = linkOf(links, 'bridgeSolutionStory', '/playbooks/bridge-solution');
     const trustedMetrics = linkOf(links, 'learningPaths', '/learning-paths');
+    const metadataStory = linkOf(links, 'metadataCatalogStory', '/playbooks/metadata-catalog-lineage');
+    const unityCatalog = linkOf(links, 'unityCatalogTool', '/tools/unity-catalog-governance-generator');
+    const metaExport = linkOf(links, 'metaExportTool', '/tools/meta-export-generator');
+
+    const lakehousePlatforms = new Set(['databricks', 'snowflake-dbt', 'fabric']);
+    const biNearPlatforms = new Set(['fabric', 'databricks', 'snowflake-dbt']);
 
     if (platform === 'unknown' && goal === 'stack') {
         cards.push({
@@ -295,6 +480,48 @@ function buildGapCards(state, links) {
             url: stackAdvisor,
             score: 91,
         });
+    }
+
+    if (platform !== 'unknown' && (goal === 'stack' || scenario === 'extend' || goal === 'supplier')) {
+        cards.push({
+            id: 'gap-metadata-catalog',
+            group: 'gaps',
+            icon: 'fa-sitemap',
+            title: { de: 'Metadata & Catalog-Brücke', en: 'Metadata & catalog bridge' },
+            reason: {
+                de: 'Stack ohne Catalog/Metadata-Säule bleibt blind — Pillar-Story und Catalog-Tool parallel öffnen.',
+                en: 'A stack without a catalog/metadata pillar stays blind — open the pillar story and catalog tool together.',
+            },
+            url: metadataStory,
+            score: 85,
+        });
+        if (platform === 'databricks') {
+            cards.push({
+                id: 'gap-unity-catalog',
+                group: 'gaps',
+                icon: 'fa-cubes',
+                title: { de: 'Unity Catalog Governance', en: 'Unity Catalog governance' },
+                reason: {
+                    de: 'Databricks-Zielbild: Catalog- und Access-Muster früh festziehen.',
+                    en: 'Databricks target: lock catalog and access patterns early.',
+                },
+                url: unityCatalog,
+                score: 82,
+            });
+        } else {
+            cards.push({
+                id: 'gap-meta-export',
+                group: 'gaps',
+                icon: 'fa-file-export',
+                title: { de: 'Meta-Export / Inventar', en: 'Meta export / inventory' },
+                reason: {
+                    de: 'Catalog-Lücke über Export und Inventar schließen, wenn kein natives Catalog-Tool greift.',
+                    en: 'Close the catalog gap via export and inventory when no native catalog tool fits.',
+                },
+                url: metaExport !== '#' ? metaExport : playbooks,
+                score: 74,
+            });
+        }
     }
 
     if (goal === 'kpi') {
@@ -321,6 +548,19 @@ function buildGapCards(state, links) {
             },
             url: trustedMetrics,
             score: 72,
+        });
+    } else if (goal === 'stack' || biNearPlatforms.has(platform)) {
+        cards.push({
+            id: 'gap-bi-kpi-governance',
+            group: 'gaps',
+            icon: 'fa-gauge-high',
+            title: { de: 'BI ohne KPI-Governance schließen', en: 'Close BI without KPI governance' },
+            reason: {
+                de: 'Stack/BI ohne KPI-Intake erzeugt Report-Chaos — Kennzahlvertrag vor Formel-Werkbank.',
+                en: 'Stack/BI without KPI intake creates report chaos — metric contract before the formula workbench.',
+            },
+            url: kpiIntake,
+            score: 79,
         });
     }
 
@@ -400,11 +640,15 @@ function buildGapCards(state, links) {
             icon: 'fa-bridge',
             title: { de: 'Bridge-Solution Story', en: 'Bridge-solution story' },
             reason: {
-                de: 'Muster für Übergangslösungen zwischen Alt und Zielbild.',
-                en: 'Pattern for transitional solutions between legacy and target.',
+                de: lakehousePlatforms.has(platform)
+                    ? 'Gewachsenes BI + neues Lakehouse: Übergangsmuster zwischen Alt und Zielbild.'
+                    : 'Muster für Übergangslösungen zwischen Alt und Zielbild.',
+                en: lakehousePlatforms.has(platform)
+                    ? 'Grown BI + new lakehouse: transitional patterns between legacy and target.'
+                    : 'Pattern for transitional solutions between legacy and target.',
             },
             url: bridgeStory,
-            score: 68,
+            score: lakehousePlatforms.has(platform) ? 88 : 68,
         });
     }
 
@@ -415,8 +659,8 @@ function buildGapCards(state, links) {
             icon: 'fa-wand-magic-sparkles',
             title: { de: 'Prompt Studio → AI Sanitizer', en: 'Prompt Studio → AI sanitizer' },
             reason: {
-                de: 'Prompt bauen und vor dem Versand an externe KI anonymisieren — eine Kette.',
-                en: 'Build the prompt and sanitize before sending to external AI — one chain.',
+                de: 'Prompt bauen und vor dem Versand an externe KI anonymisieren — Sanitizer priorisieren.',
+                en: 'Build the prompt and sanitize before sending to external AI — prioritize the sanitizer.',
             },
             url: promptStudio,
             score: 83,
@@ -427,11 +671,11 @@ function buildGapCards(state, links) {
             icon: 'fa-mask',
             title: { de: 'Governance AI Sanitizer', en: 'Governance AI sanitizer' },
             reason: {
-                de: 'Zweiter Schritt der AI-Werkbank im gleichen Governance-Kontext.',
-                en: 'Second step of the AI workbench in the same governance context.',
+                de: 'Zweiter Schritt der AI-Werkbank im gleichen Governance-Kontext — nicht überspringen.',
+                en: 'Second step of the AI workbench in the same governance context — do not skip.',
             },
             url: aiSanitizer,
-            score: 78,
+            score: 80,
         });
     }
 
@@ -442,8 +686,8 @@ function buildGapCards(state, links) {
             icon: 'fa-calculator',
             title: { de: 'BI-Formel-Werkbank', en: 'BI formula workbench' },
             reason: {
-                de: 'Qlik/Tableau/DAX-Generatoren gehören zur gleichen Governance-Werkbank für Report-Logik.',
-                en: 'Qlik/Tableau/DAX generators belong to the same governance workbench for report logic.',
+                de: 'Qlik/Tableau/DAX-Generatoren gehören zur gleichen Governance-Werkbank für Report-Logik — BI gehört dazu.',
+                en: 'Qlik/Tableau/DAX generators belong to the same governance workbench for report logic — BI is part of it.',
             },
             url: qlik !== '#' ? qlik : toolsOverview,
             score: 70,
@@ -456,11 +700,15 @@ function buildGapCards(state, links) {
 /**
  * @param {AdvisorState} state
  * @param {GuidanceLinks} links
- * @returns {GuidanceCard | null}
+ * @returns {StackRationale | null}
  */
-function buildStackNote(state, links) {
+function buildStackRationale(state, links) {
     const platform = state.platform || 'unknown';
-    const org = state.orgContext || 'unknown';
+    const org = normalizeOrgContext(state.orgContext);
+    const regulation = normalizeRegulation(state.regulationPressure);
+    const goal = state.goal || 'stack';
+    const scenario = state.scenario || 'new';
+
     if (platform === 'unknown' && org === 'unknown') {
         return null;
     }
@@ -468,6 +716,7 @@ function buildStackNote(state, links) {
     const stackAdvisor = linkOf(links, 'governanceStackAdvisor', '/tools/governance-stack-advisor');
     const guidesStacks = linkOf(links, 'guidesStacks', '/governance#guides-stacks');
 
+    /** @type {LocaleString} */
     let reason = {
         de: 'Stack-Hinweis aus Organisationskontext und Zielplattform — Guides und Stack-Advisor nutzen.',
         en: 'Stack note from org context and target platform — use guides and Stack Advisor.',
@@ -475,13 +724,44 @@ function buildStackNote(state, links) {
 
     if (org === 'public-sector') {
         reason = {
-            de: 'Öffentlicher Sektor: Residenz/Sovereign und Open-Hinweise in Stacks prüfen.',
-            en: 'Public sector: check residency/sovereign and open-source notes in stacks.',
+            de: platform !== 'unknown'
+                ? `Ziel-Stack „${platform}“ im Behördenkontext: Residenz/Sovereign und Open-Hinweise in Stacks prüfen.`
+                : 'Öffentlicher Sektor: Residenz/Sovereign und Open-Hinweise in Stacks prüfen, bevor der Ziel-Stack feststeht.',
+            en: platform !== 'unknown'
+                ? `Target stack “${platform}” in public sector: check residency/sovereign and open-source notes in stacks.`
+                : 'Public sector: check residency/sovereign and open-source notes in stacks before locking the target.',
         };
     } else if (org === 'bank-finance') {
         reason = {
-            de: 'Bank/Finance: Control- und Nachweis-Anforderungen früh in die Stack-Wahl einbeziehen.',
-            en: 'Bank/finance: fold control and evidence needs into the stack choice early.',
+            de: platform !== 'unknown'
+                ? `Ziel-Stack „${platform}“ für Bank/Finance: Control- und Nachweis-Anforderungen früh einbeziehen.`
+                : 'Bank/Finance: Control- und Nachweis-Anforderungen früh in die Stack-Wahl einbeziehen.',
+            en: platform !== 'unknown'
+                ? `Target stack “${platform}” for bank/finance: fold control and evidence needs in early.`
+                : 'Bank/finance: fold control and evidence needs into the stack choice early.',
+        };
+    } else if (org === 'startup') {
+        reason = {
+            de: platform !== 'unknown'
+                ? `Ziel-Stack „${platform}“: für Startups schlank halten — Gates und Lernpfade ohne Plattform-Overkill.`
+                : 'Startup: leichtgewichtigen oder Open-Pfad bevorzugen, bis Fit und Owner klar sind.',
+            en: platform !== 'unknown'
+                ? `Target stack “${platform}”: keep it lean for startups — gates and learning paths without platform overkill.`
+                : 'Startup: prefer a lightweight or open path until fit and owners are clear.',
+        };
+    } else if (org === 'midmarket') {
+        reason = {
+            de: platform !== 'unknown'
+                ? `Ziel-Stack „${platform}“: Midmarket-Fit — praxisnahe Gates statt Enterprise-Overhead.`
+                : 'Midmarket: Stack an realem BI-/Lakehouse-Bedarf ausrichten, nicht an Maximalarchitektur.',
+            en: platform !== 'unknown'
+                ? `Target stack “${platform}”: mid-market fit — practical gates instead of enterprise overhead.`
+                : 'Mid-market: align the stack to real BI/lakehouse need, not a maximal architecture.',
+        };
+    } else if (org === 'enterprise' && platform !== 'unknown') {
+        reason = {
+            de: `Ziel-Stack „${platform}“: Platform-Certs, Fit und Vendor-Pfade an dieser Plattform ausrichten.`,
+            en: `Target stack “${platform}”: align platform certs, fit, and vendor paths to this platform.`,
         };
     } else if (platform !== 'unknown') {
         reason = {
@@ -490,29 +770,68 @@ function buildStackNote(state, links) {
         };
     }
 
+    if (regulation === 'regulated') {
+        reason = {
+            de: `${reason.de} Regulierungsdruck: Nachweise und Control-Gates in die Stack-Entscheidung einrechnen.`,
+            en: `${reason.en} Regulatory pressure: fold evidence and control gates into the stack decision.`,
+        };
+    } else if (regulation === 'gdpr-heavy') {
+        reason = {
+            de: `${reason.de} DSGVO-Druck: Privacy-/Residenz-Aspekte der Plattform prüfen.`,
+            en: `${reason.en} GDPR pressure: check privacy/residency aspects of the platform.`,
+        };
+    }
+
+    /** @type {string[]} */
+    const startToolIds = ['governance-stack-advisor'];
+    if (platform === 'databricks') {
+        startToolIds.push('unity-catalog-governance-generator');
+    }
+    if (scenario === 'extend' || platform !== 'unknown') {
+        startToolIds.push('architecture-fit');
+    }
+    if (goal === 'kpi' || platform === 'fabric' || (goal === 'stack' && platform !== 'databricks')) {
+        startToolIds.push('kpi-requirements-intake');
+    }
+    const uniqueTools = [...new Set(startToolIds)].slice(0, 3);
+
     return {
-        id: 'stack-note',
-        group: 'gaps',
-        icon: 'fa-cubes',
-        title: { de: 'Stack-Begründung', en: 'Stack rationale' },
-        reason,
-        url: platform === 'unknown' ? guidesStacks : stackAdvisor,
-        score: 60,
+        card: {
+            id: 'stack-note',
+            group: 'gaps',
+            icon: 'fa-cubes',
+            title: { de: 'Stack-Begründung', en: 'Stack rationale' },
+            reason,
+            url: platform === 'unknown' ? guidesStacks : (guidesStacks !== '#' ? guidesStacks : stackAdvisor),
+            score: 72,
+        },
+        startToolIds: uniqueTools,
     };
 }
 
 /**
  * @param {AdvisorState} state
  * @param {GuidanceLinks} [links]
- * @returns {{ certs: GuidanceCard[], gaps: GuidanceCard[], stackNote: GuidanceCard | null }}
+ * @returns {{
+ *   certs: GuidanceCard[],
+ *   gaps: GuidanceCard[],
+ *   stackNote: GuidanceCard | null,
+ *   startToolIds: string[],
+ * }}
  */
 export function buildGuidance(state = {}, links = {}) {
     const certs = buildCertCards(state, links);
     const gaps = buildGapCards(state, links);
-    const stackNote = buildStackNote(state, links);
+    const rationale = buildStackRationale(state, links);
+    const stackNote = rationale?.card ?? null;
     if (stackNote) {
         gaps.push(stackNote);
     }
 
-    return { certs, gaps, stackNote };
+    return {
+        certs,
+        gaps,
+        stackNote,
+        startToolIds: rationale?.startToolIds ?? [],
+    };
 }

@@ -19,7 +19,11 @@
         $warnings = is_array($validation['warnings'] ?? null) ? $validation['warnings'] : [];
         $guidanceCerts = is_array($guidance['certs'] ?? null) ? $guidance['certs'] : [];
         $guidanceGaps = is_array($guidance['gaps'] ?? null) ? $guidance['gaps'] : [];
-        $guidanceItems = array_values(array_filter([...$guidanceCerts, ...$guidanceGaps]));
+        $guidanceStackNote = is_array($guidance['stackNote'] ?? null) ? $guidance['stackNote'] : null;
+        $guidanceGapsOnly = array_values(array_filter(
+            $guidanceGaps,
+            static fn ($item) => is_array($item) && ($item['id'] ?? '') !== 'stack-note'
+        ));
     @endphp
     <div class="tools-content governance-report">
         <header class="governance-report__header">
@@ -97,6 +101,7 @@
                 <div><dt>Source type</dt><dd>{{ $advisor['domain'] ?? '-' }}</dd></div>
                 <div><dt>Target stack</dt><dd>{{ $advisor['platform'] ?? '-' }}</dd></div>
                 <div><dt data-text-de="Organisationskontext" data-text-en="Organisation context">Organisation context</dt><dd>{{ $advisor['orgContext'] ?? '-' }}</dd></div>
+                <div><dt data-text-de="Regulierungsdruck" data-text-en="Regulatory pressure">Regulatory pressure</dt><dd>{{ $advisor['regulationPressure'] ?? '-' }}</dd></div>
             </dl>
         </section>
 
@@ -115,17 +120,45 @@
             </div>
         </section>
 
-        @if ($guidanceItems !== [])
+        @if ($guidanceCerts !== [])
             <section class="governance-report__section">
-                <h2 data-text-de="Nachweise &amp; Lücken" data-text-en="Evidence &amp; gaps">Evidence &amp; gaps</h2>
+                <h2 data-text-de="Nachweise &amp; Zertifikate" data-text-en="Evidence &amp; certifications">Evidence &amp; certifications</h2>
                 <div class="governance-report__recommendations">
-                    @foreach ($guidanceItems as $item)
+                    @foreach ($guidanceCerts as $item)
                         <a href="{{ $item['url'] ?? '#' }}">
                             <strong>{{ $item['title'] ?? '-' }}</strong>
-                            <span>{{ $item['group'] ?? 'guidance' }}</span>
+                            <span>certs</span>
                             <em>{{ $item['reason'] ?? '' }}</em>
                         </a>
                     @endforeach
+                </div>
+            </section>
+        @endif
+
+        @if ($guidanceGapsOnly !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="Lücken &amp; Brücken" data-text-en="Gaps &amp; bridges">Gaps &amp; bridges</h2>
+                <div class="governance-report__recommendations">
+                    @foreach ($guidanceGapsOnly as $item)
+                        <a href="{{ $item['url'] ?? '#' }}">
+                            <strong>{{ $item['title'] ?? '-' }}</strong>
+                            <span>gaps</span>
+                            <em>{{ $item['reason'] ?? '' }}</em>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
+        @if ($guidanceStackNote !== null)
+            <section class="governance-report__section">
+                <h2 data-text-de="Stack-Begründung" data-text-en="Stack rationale">Stack rationale</h2>
+                <div class="governance-report__recommendations">
+                    <a href="{{ $guidanceStackNote['url'] ?? '#' }}">
+                        <strong>{{ $guidanceStackNote['title'] ?? '-' }}</strong>
+                        <span>stack</span>
+                        <em>{{ $guidanceStackNote['reason'] ?? '' }}</em>
+                    </a>
                 </div>
             </section>
         @endif

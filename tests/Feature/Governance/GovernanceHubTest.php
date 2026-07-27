@@ -111,6 +111,12 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('name="orgContext"', false);
         $response->assertSee('data-governance-org-context', false);
         $response->assertSee('Organisation context');
+        $response->assertSee('name="regulationPressure"', false);
+        $response->assertSee('data-governance-regulation-pressure', false);
+        $response->assertSee('Regulatory pressure');
+        $response->assertSee('value="startup"', false);
+        $response->assertSee('value="midmarket"', false);
+        $response->assertDontSee('value="sme"', false);
         $response->assertSee('matching tools, evidence, and gaps');
         $response->assertSee('Ich baue neu auf', false);
         $response->assertSee('Ich ergänze Bestehendes', false);

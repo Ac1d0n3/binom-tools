@@ -160,7 +160,11 @@
                             data-text-de="Organisationskontext"
                             data-text-en="Organisation context"
                         >Organisation context</span>
-                        <span class="governance-advisor__select-label governance-advisor__select-label--b" aria-hidden="true"></span>
+                        <span
+                            class="governance-advisor__select-label governance-advisor__select-label--b"
+                            data-text-de="Regulierungsdruck"
+                            data-text-en="Regulatory pressure"
+                        >Regulatory pressure</span>
                         <select class="governance-advisor__select-control--a" name="orgContext" data-governance-org-context>
                             @php
                                 $orgContexts = config('taxonomy.orgContexts', []);
@@ -171,6 +175,18 @@
                                     $orgDe = $orgLabels['de'] ?? $orgEn;
                                 @endphp
                                 <option value="{{ $orgId }}" data-text-de="{{ $orgDe }}" data-text-en="{{ $orgEn }}">{{ $orgEn }}</option>
+                            @endforeach
+                        </select>
+                        <select class="governance-advisor__select-control--b" name="regulationPressure" data-governance-regulation-pressure>
+                            @php
+                                $regulationPressures = config('taxonomy.regulationPressures', []);
+                            @endphp
+                            @foreach ($regulationPressures as $regId => $regLabels)
+                                @php
+                                    $regEn = $regLabels['en'] ?? $regId;
+                                    $regDe = $regLabels['de'] ?? $regEn;
+                                @endphp
+                                <option value="{{ $regId }}" @selected($regId === 'low') data-text-de="{{ $regDe }}" data-text-en="{{ $regEn }}">{{ $regEn }}</option>
                             @endforeach
                         </select>
                         <span class="governance-advisor__select-spacer governance-advisor__select-action--a" aria-hidden="true"></span>

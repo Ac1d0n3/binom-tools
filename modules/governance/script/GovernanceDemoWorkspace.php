@@ -208,6 +208,7 @@ class GovernanceDemoWorkspace
                 'domain' => 'erp',
                 'platform' => 'fabric',
                 'orgContext' => 'bank-finance',
+                'regulationPressure' => 'regulated',
                 'dqMode' => 'report_stabilization',
                 'dqLayer' => 'bi',
                 'dqIssues' => ['freshness', 'business_rule', 'completeness'],
@@ -228,6 +229,13 @@ class GovernanceDemoWorkspace
                         'reason' => 'Security and control evidence for banks and financial services.',
                         'url' => '/compliance/iso27001-li',
                     ],
+                    [
+                        'id' => 'cert-dora-nis2',
+                        'group' => 'certs',
+                        'title' => 'DORA / NIS2 orientation',
+                        'reason' => 'Use existing compliance pages as entry — roadmap and framework cards.',
+                        'url' => '/compliance/dora',
+                    ],
                 ],
                 'gaps' => [
                     [
@@ -237,13 +245,27 @@ class GovernanceDemoWorkspace
                         'reason' => 'Extending an existing stack: check fit and dependencies before a new source.',
                         'url' => '/tools/architecture-fit',
                     ],
+                    [
+                        'id' => 'gap-bridge-story',
+                        'group' => 'gaps',
+                        'title' => 'Bridge-solution story',
+                        'reason' => 'Grown BI + new lakehouse: transitional patterns between legacy and target.',
+                        'url' => '/playbooks/bridge-solution',
+                    ],
+                    [
+                        'id' => 'gap-bi-kpi-governance',
+                        'group' => 'gaps',
+                        'title' => 'Close BI without KPI governance',
+                        'reason' => 'Stack/BI without KPI intake creates report chaos — metric contract before the formula workbench.',
+                        'url' => '/tools/kpi-requirements-intake',
+                    ],
                 ],
                 'stackNote' => [
                     'id' => 'stack-note',
                     'group' => 'gaps',
                     'title' => 'Stack rationale',
-                    'reason' => 'Bank/finance: fold control and evidence needs into the stack choice early.',
-                    'url' => '/tools/governance-stack-advisor',
+                    'reason' => 'Target stack “fabric” for bank/finance: fold control and evidence needs in early. Regulatory pressure: fold evidence and control gates into the stack decision.',
+                    'url' => '/governance#guides-stacks',
                 ],
             ],
             'kpis' => [

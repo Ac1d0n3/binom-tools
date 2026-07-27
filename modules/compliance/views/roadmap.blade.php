@@ -23,15 +23,17 @@
 
             <section class="compliance-roadmap-org-context" aria-labelledby="compliance-roadmap-org-context-title">
                 <h2 id="compliance-roadmap-org-context-title" data-text-de="Nach Organisationskontext" data-text-en="By organisation context">By organisation context</h2>
-                <p class="tools-page-lead" data-text-de="Kurzorientierung — Details im Governance Advisor (Organisationskontext) und in den Cert-Karten darunter." data-text-en="Short orientation — details in the Governance Advisor (organisation context) and the cert cards below.">Short orientation — details in the Governance Advisor (organisation context) and the cert cards below.</p>
+                <p class="tools-page-lead" data-text-de="Kurzorientierung — Details im Governance Advisor (Organisationskontext + Regulierungsdruck) und in den Cert-Karten darunter." data-text-en="Short orientation — details in the Governance Advisor (organisation context + regulatory pressure) and the cert cards below.">Short orientation — details in the Governance Advisor (organisation context + regulatory pressure) and the cert cards below.</p>
                 <ul class="compliance-roadmap-org-context__list">
-                    <li data-text-de="KMU: schlank starten — 8 Säulen und Foundations-Lernpfad; CDMP optional." data-text-en="SME: start lean — 8 pillars and foundations learning path; CDMP optional.">SME: start lean — 8 pillars and foundations learning path; CDMP optional.</li>
+                    <li data-text-de="Startup: schlank starten — 8 Säulen und Foundations; kein Zert-Overkill." data-text-en="Startup: start lean — 8 pillars and foundations; no cert overkill.">Startup: start lean — 8 pillars and foundations; no cert overkill.</li>
+                    <li data-text-de="Midmarket / KMU: Säulen + Foundations-Lernpfad; CDMP und Roadmap optional." data-text-en="Mid-market / SME: pillars + foundations learning path; CDMP and roadmap optional.">Mid-market / SME: pillars + foundations learning path; CDMP and roadmap optional.</li>
                     <li data-text-de="Enterprise: CDMP als Fachsprache plus Platform-/Vendor-Lernpfade zum Stack." data-text-en="Enterprise: CDMP as shared language plus platform/vendor paths for your stack.">Enterprise: CDMP as shared language plus platform/vendor paths for your stack.</li>
                     <li data-text-de="Bank / Finance: CIPP/E und ISO/C5-Orientierung; Roadmap-Karten zu DORA/NIS2 mitdenken." data-text-en="Bank / finance: CIPP/E and ISO/C5 orientation; keep DORA/NIS2 roadmap cards in view.">Bank / finance: CIPP/E and ISO/C5 orientation; keep DORA/NIS2 roadmap cards in view.</li>
                     <li data-text-de="Behörde / öffentlicher Sektor: CIPP/E und DE-DSB; Residenz/Sovereign über Resources und Stacks." data-text-en="Public sector: CIPP/E and DE DPO notes; residency/sovereign via resources and stacks.">Public sector: CIPP/E and DE DPO notes; residency/sovereign via resources and stacks.</li>
+                    <li data-text-de="Regulierungsdruck: low = schlank bleiben; GDPR-stark = CIPP/E priorisieren; reguliert = CIPP/E + ISO/C5 + DORA/NIS2-Orientierung." data-text-en="Regulatory pressure: low = stay lean; GDPR-heavy = prioritize CIPP/E; regulated = CIPP/E + ISO/C5 + DORA/NIS2 orientation.">Regulatory pressure: low = stay lean; GDPR-heavy = prioritize CIPP/E; regulated = CIPP/E + ISO/C5 + DORA/NIS2 orientation.</li>
                 </ul>
                 <p>
-                    <a href="{{ locale_route('governance.index') }}" data-text-de="Zum Governance Advisor →" data-text-en="Open Governance Advisor →">Open Governance Advisor →</a>
+                    <a href="{{ locale_route('governance.index') }}?tab=advisor" data-text-de="Zum Governance Advisor →" data-text-en="Open Governance Advisor →">Open Governance Advisor →</a>
                 </p>
             </section>
 

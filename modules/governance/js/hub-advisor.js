@@ -5,7 +5,7 @@ import {
     summarizeSelection,
     writeCustomStack,
 } from './stack-builder.js';
-import { buildGuidance } from './advisor-guidance.js';
+import { buildGuidance, normalizeOrgContext, normalizeRegulation } from './advisor-guidance.js';
 import { openSharedModal } from '../../../resources/js/shared/modal.js';
 
 const texts = {
@@ -589,7 +589,8 @@ function getState(form, root = null) {
         goal: formData.get('goal') || 'stack',
         domain: formData.get('domain') || 'unknown',
         platform: formData.get('platform') || 'unknown',
-        orgContext: formData.get('orgContext') || 'unknown',
+        orgContext: normalizeOrgContext(String(formData.get('orgContext') || 'unknown')),
+        regulationPressure: normalizeRegulation(String(formData.get('regulationPressure') || 'low')),
         role: getActiveRole(scope),
         dqMode: formData.get('dqMode') || 'health_check',
         dqLayer: formData.get('dqLayer') || 'source',
@@ -628,6 +629,12 @@ function guidanceLinksFromConfig(config) {
         compliance: hubs.compliance || '',
         bridgeSolutionStory: guidance.bridgeSolutionStory || '',
         guidesStacks: guidance.guidesStacks || '',
+        metadataCatalogStory: guidance.metadataCatalogStory || '',
+        unityCatalogTool: guidance.unityCatalogTool || tools['unity-catalog-governance-generator'] || '',
+        metaExportTool: guidance.metaExportTool || tools['meta-export-generator'] || '',
+        dora: guidance.dora || '',
+        nis2: guidance.nis2 || '',
+        bsiC5: guidance.bsiC5 || '',
     };
 }
 
@@ -674,9 +681,13 @@ function itemUrl(item, config) {
     return config.links?.tools?.[item.id] || '#';
 }
 
-function scoreItem(item, state) {
+function scoreItem(item, state, boostToolIds = []) {
     const tags = new Set(item.tags || []);
     let score = 0;
+
+    if (boostToolIds.includes(item.id)) {
+        score += 12;
+    }
 
     if (tags.has(state.goal)) {
         score += 8;
@@ -752,6 +763,8 @@ function scoreItem(item, state) {
 }
 
 function buildRecommendations(state, config) {
+    const links = guidanceLinksFromConfig(config);
+    const { startToolIds } = buildGuidance(state, links);
     const tools = Object.entries(labels).map(([id, item]) => ({ ...item, id, kind: 'tool' }));
     const hubs = Object.entries(hubItems).map(([id, item]) => ({ ...item, id, kind: 'hub' }));
     const domainItem = state.domain === 'unknown'
@@ -761,7 +774,7 @@ function buildRecommendations(state, config) {
         .map((item, index) => ({
             ...item,
             url: itemUrl(item, config),
-            score: item.fixed ? 99 : scoreItem(item, state),
+            score: item.fixed ? 99 : scoreItem(item, state, startToolIds),
             order: index,
         }))
         .filter((item) => item.url !== '#' && item.score > 0)
@@ -886,6 +899,7 @@ function richDemoSession(root, config) {
         domain: 'erp',
         platform: 'fabric',
         orgContext: 'bank-finance',
+        regulationPressure: 'regulated',
         dqMode: 'report_stabilization',
         dqLayer: 'bi',
         dqIssues: ['freshness', 'business_rule', 'completeness'],
@@ -1067,6 +1081,7 @@ function demoReportHtml(session) {
                 ['Quelle/Domäne', advisor.domain],
                 ['Stack', advisor.platform],
                 ['Organisationskontext', advisor.orgContext],
+                ['Regulierungsdruck', advisor.regulationPressure],
             ])}</dl>
         </section>
         <section>
@@ -1081,22 +1096,44 @@ function demoReportHtml(session) {
             `).join('') || '<p>Noch keine Empfehlungen gespeichert.</p>'}
         </section>
         <section>
-            <h2>Nachweise &amp; Lücken</h2>
+            <h2>Nachweise &amp; Zertifikate</h2>
             ${(() => {
-                const guidancePayload = payload.guidance || {};
-                const certs = Array.isArray(guidancePayload.certs) ? guidancePayload.certs : [];
-                const gaps = Array.isArray(guidancePayload.gaps) ? guidancePayload.gaps : [];
-                const items = [...certs, ...gaps];
-                return items.map((item) => `
+                const certs = Array.isArray(payload.guidance?.certs) ? payload.guidance.certs : [];
+                return certs.map((item) => `
                 <article>
                     <strong>${escapeHtml(item.title || '-')}</strong>
-                    <p>${escapeHtml(item.group || 'guidance')}</p>
+                    <p>certs</p>
                     <p>${escapeHtml(item.reason || '')}</p>
                     ${item.url ? `<a href="${escapeHtml(absoluteUrl(item.url))}">Öffnen</a>` : ''}
                 </article>
-            `).join('') || '<p>Noch keine Nachweis-/Lücken-Hinweise gespeichert.</p>';
+            `).join('') || '<p>Noch keine Nachweis-Hinweise gespeichert.</p>';
             })()}
         </section>
+        <section>
+            <h2>Lücken &amp; Brücken</h2>
+            ${(() => {
+                const gaps = Array.isArray(payload.guidance?.gaps) ? payload.guidance.gaps : [];
+                const withoutStack = gaps.filter((item) => item.id !== 'stack-note');
+                return withoutStack.map((item) => `
+                <article>
+                    <strong>${escapeHtml(item.title || '-')}</strong>
+                    <p>gaps</p>
+                    <p>${escapeHtml(item.reason || '')}</p>
+                    ${item.url ? `<a href="${escapeHtml(absoluteUrl(item.url))}">Öffnen</a>` : ''}
+                </article>
+            `).join('') || '<p>Noch keine Lücken-/Brücken-Hinweise gespeichert.</p>';
+            })()}
+        </section>
+        ${payload.guidance?.stackNote ? `
+        <section>
+            <h2>Stack-Begründung</h2>
+            <article>
+                <strong>${escapeHtml(payload.guidance.stackNote.title || '-')}</strong>
+                <p>${escapeHtml(payload.guidance.stackNote.reason || '')}</p>
+                ${payload.guidance.stackNote.url ? `<a href="${escapeHtml(absoluteUrl(payload.guidance.stackNote.url))}">Stacks &amp; Guides öffnen</a>` : ''}
+            </article>
+        </section>
+        ` : ''}
         <section>
             <h2>KPI-Karten</h2>
             ${kpis.map((kpi) => `
@@ -1601,6 +1638,7 @@ function persistAndApplyHubContext(root, state) {
         domain: state.domain || 'unknown',
         platform: state.platform || 'unknown',
         orgContext: state.orgContext || 'unknown',
+        regulationPressure: state.regulationPressure || 'low',
     };
     writeHubContext(ctx);
     applyHubContextFilter(root, ctx);
@@ -1623,11 +1661,12 @@ function clearHubContext(root) {
         setSelectValue(form, 'domain', 'unknown');
         setSelectValue(form, 'platform', 'unknown');
         setSelectValue(form, 'orgContext', 'unknown');
+        setSelectValue(form, 'regulationPressure', 'low');
         syncGoalPillPreference(form, '');
         form.dispatchEvent(new Event('change', { bubbles: true }));
     } else {
-        writeHubContext({ role: '', goal: 'stack', scenario: 'new', domain: 'unknown', platform: 'unknown', orgContext: 'unknown' });
-        applyHubContextFilter(root, { role: '', goal: 'stack', scenario: 'new', domain: 'unknown', platform: 'unknown', orgContext: 'unknown' });
+        writeHubContext({ role: '', goal: 'stack', scenario: 'new', domain: 'unknown', platform: 'unknown', orgContext: 'unknown', regulationPressure: 'low' });
+        applyHubContextFilter(root, { role: '', goal: 'stack', scenario: 'new', domain: 'unknown', platform: 'unknown', orgContext: 'unknown', regulationPressure: 'low' });
     }
 }
 
