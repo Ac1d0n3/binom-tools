@@ -1,0 +1,189 @@
+<?php
+
+namespace App\Http\Controllers\Accounts;
+
+use App\Accounts\AccountAuth;
+use App\Accounts\AccountTeam;
+use App\Accounts\MembershipSync;
+use App\Accounts\Contracts\TeamRepositoryInterface;
+use App\Accounts\Contracts\UserRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Support\AccentColors;
+use App\Support\AvatarIcons;
+use App\Support\ShortName;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+
+class TeamsController extends Controller
+{
+    public function __construct(
+        private readonly AccountAuth $auth,
+        private readonly TeamRepositoryInterface $teams,
+        private readonly UserRepositoryInterface $users,
+        private readonly MembershipSync $membership,
+    ) {}
+
+    public function index(): View
+    {
+        $this->assertCanManage();
+
+        return view('accounts::teams', [
+            'teams' => array_map(static fn ($t) => $t->toArray(), $this->teams->all(true)),
+            'users' => array_map(static fn ($u) => $u->toPublicArray(), $this->users->all()),
+        ]);
+    }
+
+    public function create(): View
+    {
+        $this->assertCanManage();
+
+        return view('accounts::teams-form', [
+            'team' => null,
+            'users' => array_map(static fn ($u) => $u->toPublicArray(), $this->users->all()),
+            'defaultColorToken' => $this->nextColorToken(),
+        ]);
+    }
+
+    public function edit(string $teamId): View
+    {
+        $this->assertCanManage();
+        $team = $this->teams->findById($teamId);
+        abort_if($team === null, 404);
+
+        return view('accounts::teams-form', [
+            'team' => $team->toArray(),
+            'users' => array_map(static fn ($u) => $u->toPublicArray(), $this->users->all()),
+            'defaultColorToken' => $team->colorToken,
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $this->assertCanManage();
+        $data = $this->validated($request);
+
+        $memberIds = array_values(array_map('strval', $data['memberIds'] ?? []));
+        $memberRoles = AccountTeam::normalizeMemberRoles(
+            is_array($data['memberRoles'] ?? null) ? $data['memberRoles'] : [],
+            $memberIds,
+        );
+
+        $team = $this->teams->upsert([
+            'name' => [
+                'de' => $data['name_de'],
+                'en' => $data['name_en'] ?: $data['name_de'],
+            ],
+            'description' => [
+                'de' => $data['description_de'] ?? '',
+                'en' => $data['description_en'] ?? ($data['description_de'] ?? ''),
+            ],
+            'memberIds' => $memberIds,
+            'memberRoles' => $memberRoles,
+            'shortName' => $data['shortName'] ?? '',
+            'colorToken' => $data['colorToken'] ?? $this->nextColorToken(),
+            'avatarIcon' => AvatarIcons::normalize($data['avatarIcon'] ?? ''),
+            'archived' => false,
+        ]);
+
+        $this->membership->syncUsersFromTeam($team);
+
+        return redirect()
+            ->to(locale_route('accounts.teams'))
+            ->with('status', 'team-created');
+    }
+
+    public function update(Request $request, string $teamId): RedirectResponse
+    {
+        $this->assertCanManage();
+        abort_if($this->teams->findById($teamId) === null, 404);
+
+        $data = $this->validated($request, true);
+
+        $memberIds = array_values(array_map('strval', $data['memberIds'] ?? []));
+        $memberRoles = AccountTeam::normalizeMemberRoles(
+            is_array($data['memberRoles'] ?? null) ? $data['memberRoles'] : [],
+            $memberIds,
+        );
+
+        $team = $this->teams->upsert([
+            'id' => $teamId,
+            'name' => [
+                'de' => $data['name_de'],
+                'en' => $data['name_en'] ?: $data['name_de'],
+            ],
+            'description' => [
+                'de' => $data['description_de'] ?? '',
+                'en' => $data['description_en'] ?? ($data['description_de'] ?? ''),
+            ],
+            'memberIds' => $memberIds,
+            'memberRoles' => $memberRoles,
+            'shortName' => $data['shortName'] ?? '',
+            'colorToken' => $data['colorToken'] ?? 'accent-1',
+            'avatarIcon' => AvatarIcons::normalize($data['avatarIcon'] ?? ''),
+            'archived' => $request->boolean('archived'),
+        ]);
+
+        $this->membership->syncUsersFromTeam($team);
+
+        return redirect()
+            ->to(locale_route('accounts.teams'))
+            ->with('status', 'team-updated');
+    }
+
+    public function destroy(string $teamId): RedirectResponse
+    {
+        $this->assertCanManage();
+        abort_if($this->teams->findById($teamId) === null, 404);
+
+        $this->teams->delete($teamId);
+        $this->membership->removeTeamFromUsers($teamId);
+
+        return redirect()
+            ->to(locale_route('accounts.teams'))
+            ->with('status', 'team-deleted');
+    }
+
+    private function assertCanManage(): void
+    {
+        $actor = $this->auth->user();
+        abort_if($actor === null || ! $actor->canManageTeams, 403);
+    }
+
+    private function nextColorToken(): string
+    {
+        $teams = $this->teams->all(true);
+
+        return AccentColors::nextUnused(
+            array_map(static fn ($team) => $team->colorToken, $teams),
+            count($teams),
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function validated(Request $request, bool $forUpdate = false): array
+    {
+        $rules = [
+            'name_de' => ['required', 'string', 'max:120'],
+            'name_en' => ['nullable', 'string', 'max:120'],
+            'description_de' => ['nullable', 'string', 'max:2000'],
+            'description_en' => ['nullable', 'string', 'max:2000'],
+            'memberIds' => ['nullable', 'array'],
+            'memberIds.*' => ['string'],
+            'memberRoles' => ['nullable', 'array'],
+            'memberRoles.*' => ['string', 'in:'.implode(',', AccountTeam::ROLES)],
+            'shortName' => ShortName::rules(),
+            'colorToken' => ['nullable', 'string', 'in:'.implode(',', AccentColors::TEAM_TOKENS)],
+            'avatarIcon' => ['nullable', 'string', Rule::in(array_merge([''], AvatarIcons::OPTIONS))],
+        ];
+
+        if ($forUpdate) {
+            $rules['archived'] = ['sometimes', 'boolean'];
+        }
+
+        return $request->validate($rules);
+    }
+}

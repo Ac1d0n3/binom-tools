@@ -1,0 +1,68 @@
+{
+    "schemaVersion": 1,
+    "teams": [
+        {
+            "id": "team_q",
+            "name": {
+                "de": "Team Q",
+                "en": "Team Q"
+            },
+            "description": {
+                "de": "",
+                "en": ""
+            },
+            "memberIds": [
+                "user_acidone",
+                "user_matthi"
+            ],
+            "archived": false,
+            "shortName": "",
+            "colorToken": "accent-2"
+        },
+        {
+            "id": "team_fabrics",
+            "name": {
+                "de": "Team Fabrics",
+                "en": "Team Fabrics"
+            },
+            "description": {
+                "de": "",
+                "en": ""
+            },
+            "memberIds": [],
+            "archived": false,
+            "shortName": "",
+            "colorToken": "accent-4"
+        },
+        {
+            "id": "team_data",
+            "name": {
+                "de": "Team Data",
+                "en": "Team Data"
+            },
+            "description": {
+                "de": "",
+                "en": ""
+            },
+            "memberIds": [],
+            "archived": false,
+            "shortName": "",
+            "colorToken": "accent-5"
+        },
+        {
+            "id": "team_analytics",
+            "name": {
+                "de": "Team Analytics",
+                "en": "Team Analytics"
+            },
+            "description": {
+                "de": "",
+                "en": ""
+            },
+            "memberIds": [],
+            "archived": false,
+            "shortName": "",
+            "colorToken": "accent-3"
+        }
+    ]
+}

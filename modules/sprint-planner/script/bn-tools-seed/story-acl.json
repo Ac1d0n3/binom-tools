@@ -1,0 +1,10 @@
+{
+    "schemaVersion": 1,
+    "stories": {
+        "ai-basics": {
+            "visibility": "public",
+            "userIds": [],
+            "teamIds": []
+        }
+    }
+}

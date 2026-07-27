@@ -1,0 +1,13 @@
+{
+    "schemaVersion": 1,
+    "read": {
+        "dq-test4": 1784471536,
+        "data-ownership-stewardship": 1784472085,
+        "eight-pillars": 1784472096,
+        "missing-pieces-ownership-stewardship": 1784476600,
+        "modernizing-an-existing-warehouse": 1784481648,
+        "keeping-business-logic-outside-bi-apps": 1784481992,
+        "dq-test6": 1784482124,
+        "python-bi-export-setup": 1784536886
+    }
+}

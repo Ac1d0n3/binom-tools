@@ -3,7 +3,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
@@ -24,7 +27,31 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "App\\Calendar\\": "modules/calendar/script/",
+            "App\\Governance\\": "modules/governance/script/",
+            "App\\Playbooks\\": "modules/playbooks/script/",
+            "App\\SprintPlanner\\": "modules/sprint-planner/script/",
+            "App\\Glossary\\": "modules/glossary/script/",
+            "App\\Accounts\\": "modules/accounts/script/",
+            "App\\Seo\\": "modules/seo/script/",
+            "App\\Catalog\\": "modules/catalog/script/",
+            "App\\Http\\Controllers\\Calendar\\": "modules/calendar/script/Controllers/",
+            "App\\Http\\Controllers\\Governance\\": "modules/governance/script/Controllers/",
+            "App\\Http\\Controllers\\Playbooks\\": "modules/playbooks/script/Controllers/",
+            "App\\Http\\Controllers\\SprintPlanner\\": "modules/sprint-planner/script/Controllers/",
+            "App\\Http\\Controllers\\Glossary\\": "modules/glossary/script/Controllers/",
+            "App\\Http\\Controllers\\Accounts\\": "modules/accounts/script/Controllers/",
+            "App\\Http\\Controllers\\Seo\\": "modules/seo/script/Controllers/",
+            "App\\Http\\Controllers\\Roles\\": "modules/roles/script/Controllers/",
+            "App\\Http\\Controllers\\Compliance\\": "modules/compliance/script/Controllers/",
+            "App\\Http\\Controllers\\Suppliers\\": "modules/suppliers/script/Controllers/",
+            "App\\Http\\Controllers\\LearningPaths\\": "modules/learning-paths/script/Controllers/",
+            "App\\Http\\Controllers\\Search\\": "modules/search/script/Controllers/",
+            "App\\Http\\Controllers\\About\\": "modules/about/script/Controllers/",
+            "App\\Http\\Controllers\\Legal\\": "modules/legal/script/Controllers/",
+            "App\\Http\\Controllers\\Resources\\": "modules/resources/script/Controllers/",
+            "App\\Http\\Controllers\\Tools\\": "modules/tools/script/Controllers/"
         },
         "files": [
             "app/Support/helpers.php"

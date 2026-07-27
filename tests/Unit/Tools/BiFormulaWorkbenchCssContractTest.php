@@ -13,7 +13,7 @@ class BiFormulaWorkbenchCssContractTest extends TestCase
 {
     private function cssPath(): string
     {
-        return resource_path('css/tools/bi-formula-workbench.css');
+        return base_path('modules/tools/css/bi-formula-workbench.css');
     }
 
     private function stripAtMediaBlocks(string $css): string
@@ -70,7 +70,7 @@ class BiFormulaWorkbenchCssContractTest extends TestCase
     #[Test]
     public function set_analysis_blade_keeps_three_workbench_columns(): void
     {
-        $path = resource_path('views/tools/qlik-set-analysis-generator/show.blade.php');
+        $path = base_path('modules/tools/views/qlik-set-analysis-generator/show.blade.php');
         $this->assertFileExists($path);
 
         $blade = (string) file_get_contents($path);

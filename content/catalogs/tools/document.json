@@ -1,0 +1,1336 @@
+{
+    "meta_keywords": [
+        "data governance",
+        "data quality",
+        "PII",
+        "data catalog",
+        "DSDR",
+        "data lineage",
+        "compliance",
+        "DMBOK",
+        "CDMP",
+        "learning paths",
+        "glossary",
+        "Governance Hub",
+        "Binom-Tools"
+    ],
+    "workflows": {
+        "ai-prompt-workflow": {
+            "label": {
+                "de": "AI Prompt Workflow",
+                "en": "AI prompt workflow"
+            },
+            "navLabel": {
+                "de": "AI",
+                "en": "AI"
+            },
+            "description": {
+                "de": "Prompt erstellen, PII anonymisieren, sicher ans LLM senden.",
+                "en": "Build prompt, anonymize PII, send safely to LLM."
+            },
+            "icon": "fa-microchip",
+            "accent": "primary",
+            "steps": [
+                "prompt-studio",
+                "governance-ai-sanitizer"
+            ]
+        },
+        "dbt-pii-governance": {
+            "label": {
+                "de": "Security & Governance Einrichtung",
+                "en": "Security & governance setup"
+            },
+            "navLabel": {
+                "de": "PII & Security",
+                "en": "PII & Security"
+            },
+            "description": {
+                "de": "Copy-Paste-Einrichtung: Makros, Policy, Table Gate, PII Recommend — Einstellungen werden über alle Steps geteilt.",
+                "en": "Copy-paste setup: macros, policy, table gate, PII recommend — settings shared across steps."
+            },
+            "icon": "fa-shield-halved",
+            "accent": "accent",
+            "steps": [
+                "dbt-governance-macro-generator",
+                "pii-policy-generator",
+                "pii-unreviewed-gate-generator",
+                "pii-recommend-generator"
+            ]
+        },
+        "dbt-dq-governance": {
+            "label": {
+                "de": "Datenqualität Einrichtung",
+                "en": "Data quality setup"
+            },
+            "navLabel": {
+                "de": "Datenqualität",
+                "en": "Data quality"
+            },
+            "description": {
+                "de": "Copy-Paste-Einrichtung: DQ-Makros, meta.dq_rules in schema.yml, History-Mart für Trends und Reports.",
+                "en": "Copy-paste setup: DQ macros, meta.dq_rules in schema.yml, history mart for trends and reports."
+            },
+            "icon": "fa-table",
+            "accent": "primary",
+            "steps": [
+                "dbt-dq-macro-generator",
+                "dbt-dq-rules-generator",
+                "dbt-dq-history-generator"
+            ]
+        },
+        "lakehouse-dq-patterns": {
+            "label": {
+                "de": "Lakehouse DQ Patterns",
+                "en": "Lakehouse DQ patterns"
+            },
+            "navLabel": {
+                "de": "Lakehouse DQ",
+                "en": "Lakehouse DQ"
+            },
+            "description": {
+                "de": "Copy-Paste-Patterns für Fabric und Databricks: Checks, Delta/SCD-Snippets und Governance-Runbooks.",
+                "en": "Copy-paste patterns for Fabric and Databricks: checks, Delta/SCD snippets, and governance runbooks."
+            },
+            "icon": "fa-layer-group",
+            "accent": "accent",
+            "steps": [
+                "fabric-dq-pattern-generator",
+                "databricks-dq-pattern-generator"
+            ]
+        },
+        "lakehouse-pii-governance-patterns": {
+            "label": {
+                "de": "Lakehouse PII & Governance Patterns",
+                "en": "Lakehouse PII & governance patterns"
+            },
+            "navLabel": {
+                "de": "Lakehouse PII",
+                "en": "Lakehouse PII"
+            },
+            "description": {
+                "de": "Copy-Paste-Patterns fuer Fabric und Databricks: PII-Felder, Owner, Zugriff, Maskierung und Governance-Gates.",
+                "en": "Copy-paste patterns for Fabric and Databricks: PII fields, owners, access, masking, and governance gates."
+            },
+            "icon": "fa-shield-halved",
+            "accent": "accent",
+            "steps": [
+                "fabric-pii-governance-pattern-generator",
+                "databricks-pii-governance-pattern-generator"
+            ]
+        },
+        "lakehouse-specialized-generators": {
+            "label": {
+                "de": "Lakehouse Spezial-Generatoren",
+                "en": "Lakehouse specialized generators"
+            },
+            "navLabel": {
+                "de": "Lakehouse Tools",
+                "en": "Lakehouse tools"
+            },
+            "description": {
+                "de": "Spezialisierte Copy-Paste-Generatoren fuer Fabric, Databricks, Unity Catalog, Delta Loads, SCD und Semantic Guardrails.",
+                "en": "Specialized copy-paste generators for Fabric, Databricks, Unity Catalog, Delta loads, SCD, and semantic guardrails."
+            },
+            "icon": "fa-wand-magic-sparkles",
+            "accent": "primary",
+            "steps": [
+                "fabric-dq-rule-generator",
+                "fabric-notebook-snippet-generator",
+                "fabric-pipeline-checklist-generator",
+                "fabric-semantic-model-guardrails",
+                "databricks-dq-expectation-generator",
+                "databricks-dbt-on-databricks-generator",
+                "unity-catalog-governance-generator",
+                "delta-load-scd-pattern-generator"
+            ]
+        },
+        "pureview-governance": {
+            "label": {
+                "de": "PureView Governance Generatoren",
+                "en": "PureView governance generators"
+            },
+            "navLabel": {
+                "de": "PureView",
+                "en": "PureView"
+            },
+            "description": {
+                "de": "Copy-Paste-Artefakte fuer das erste PureView-Setup: Scans, Klassifikationen, Glossary Terms und Data Products.",
+                "en": "Copy-paste artifacts for the first PureView setup: scans, classifications, glossary terms, and data products."
+            },
+            "icon": "fa-circle-nodes",
+            "accent": "primary",
+            "steps": [
+                "pureview-scan-generator",
+                "pureview-classification-generator",
+                "pureview-glossary-generator",
+                "pureview-data-product-generator"
+            ]
+        },
+        "discovery-assessment": {
+            "label": {
+                "de": "Discovery & Assessment",
+                "en": "Discovery & assessment"
+            },
+            "navLabel": {
+                "de": "Discovery",
+                "en": "Discovery"
+            },
+            "description": {
+                "de": "Inventare, Matrizen und Checklisten — standalone nutzbar, Export/Download, keine Speicherung im Tool.",
+                "en": "Inventories, matrices, and checklists — works standalone, export/download, nothing stored in the tool."
+            },
+            "icon": "fa-compass",
+            "accent": "primary",
+            "steps": [
+                "stakeholder-matrix",
+                "report-inventory",
+                "kpi-definition",
+                "bi-python-toolkit",
+                "architecture-fit",
+                "impact-effort"
+            ]
+        },
+        "governance-decision-support": {
+            "label": {
+                "de": "Governance-Entscheidungshilfen",
+                "en": "Governance decision support"
+            },
+            "navLabel": {
+                "de": "Governance",
+                "en": "Governance"
+            },
+            "description": {
+                "de": "Geführte Entscheidungshilfen: KPI-Anforderungen, Quellen-Scope, Mart Design, Stack-Auswahl, PII/DSDR, Entscheidungsbrief und Lernpfad.",
+                "en": "Guided decision aids: KPI requirements, source scope, mart design, stack selection, PII/DSDR, decision brief, and learning path."
+            },
+            "icon": "fa-compass",
+            "accent": "primary",
+            "steps": [
+                "kpi-requirements-intake",
+                "source-scope-builder",
+                "mart-design-brief-generator",
+                "governance-stack-advisor",
+                "custom-stack-builder",
+                "pii-dsdr-readiness-checker",
+                "decision-brief-generator",
+                "vendor-learning-path-builder"
+            ]
+        }
+    },
+    "nav": [
+        {
+            "id": "dbt-governance-macro-generator",
+            "route": "tools.dbt-governance-macro-generator",
+            "label": {
+                "de": "PII Macro Generator",
+                "en": "PII Macro Generator"
+            },
+            "description": {
+                "de": "Laufzeit-Makros, Generic Tests und SETUP.md für dein dbt-Projekt.",
+                "en": "Runtime macros, generic tests, and SETUP.md for your dbt project."
+            },
+            "example": true,
+            "accent": "primary",
+            "workflow": "dbt-pii-governance",
+            "workflowStep": 1
+        },
+        {
+            "id": "pii-policy-generator",
+            "route": "tools.pii-policy-generator",
+            "label": {
+                "de": "PII Policy Generator",
+                "en": "PII Policy Generator"
+            },
+            "description": {
+                "de": "pii_details schema.yml-Beispiel und Secure Model — Zielzustand nach Review.",
+                "en": "pii_details schema.yml example and secure model — target state after review."
+            },
+            "example": true,
+            "accent": "accent",
+            "workflow": "dbt-pii-governance",
+            "workflowStep": 2
+        },
+        {
+            "id": "pii-unreviewed-gate-generator",
+            "route": "tools.pii-unreviewed-gate-generator",
+            "label": {
+                "de": "PII Table Gate",
+                "en": "PII Table Gate"
+            },
+            "description": {
+                "de": "Ungeprüfte Models identifizieren und für Rollen verstecken.",
+                "en": "Identify and hide unreviewed models from roles."
+            },
+            "example": true,
+            "accent": "accent",
+            "workflow": "dbt-pii-governance",
+            "workflowStep": 3
+        },
+        {
+            "id": "pii-recommend-generator",
+            "route": "tools.pii-recommend-generator",
+            "label": {
+                "de": "PII Recommend Generator",
+                "en": "PII Recommend Generator"
+            },
+            "description": {
+                "de": "Name- und Content-Audit, Heuristik-Regeln und pii_recommend schema.yml.",
+                "en": "Name and content audit, heuristic rules, and pii_recommend schema.yml."
+            },
+            "example": true,
+            "accent": "primary",
+            "workflow": "dbt-pii-governance",
+            "workflowStep": 4
+        },
+        {
+            "id": "dbt-dq-macro-generator",
+            "route": "tools.dbt-dq-macro-generator",
+            "label": {
+                "de": "DQ Macro Generator",
+                "en": "DQ Macro Generator"
+            },
+            "navLabel": {
+                "de": "DG Macro Generator",
+                "en": "DG Macro Generator"
+            },
+            "description": {
+                "de": "Laufzeit-Makros, Generic Test dq_rule und SETUP_DQ.md für dein dbt-Projekt.",
+                "en": "Runtime macros, dq_rule generic test, and SETUP_DQ.md for your dbt project."
+            },
+            "example": true,
+            "accent": "primary",
+            "workflow": "dbt-dq-governance",
+            "workflowStep": 1
+        },
+        {
+            "id": "dbt-dq-rules-generator",
+            "route": "tools.dbt-dq-rules-generator",
+            "label": {
+                "de": "DQ Rules Generator",
+                "en": "DQ Rules Generator"
+            },
+            "description": {
+                "de": "meta.dq_rules in schema.yml — Regeln pro Spalte und Model.",
+                "en": "meta.dq_rules in schema.yml — rules per column and model."
+            },
+            "example": true,
+            "accent": "accent",
+            "workflow": "dbt-dq-governance",
+            "workflowStep": 2
+        },
+        {
+            "id": "dbt-dq-history-generator",
+            "route": "tools.dbt-dq-history-generator",
+            "label": {
+                "de": "DQ History Generator",
+                "en": "DQ History Generator"
+            },
+            "description": {
+                "de": "dq_run_history, Report-Views und dq_collect_results Runbook.",
+                "en": "dq_run_history, report views, and dq_collect_results runbook."
+            },
+            "example": true,
+            "accent": "primary",
+            "workflow": "dbt-dq-governance",
+            "workflowStep": 3
+        },
+        {
+            "id": "fabric-dq-pattern-generator",
+            "route": "tools.fabric-dq-pattern-generator",
+            "label": {
+                "de": "Fabric DQ Pattern Generator",
+                "en": "Fabric DQ Pattern Generator"
+            },
+            "description": {
+                "de": "SQL- und Notebook-Patterns für Fabric Lakehouse/Warehouse: DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.",
+                "en": "SQL and notebook patterns for Fabric Lakehouse/Warehouse: DQ rules, Delta loads, SCD2, and pipeline gates."
+            },
+            "example": true,
+            "icon": "fa-layer-group",
+            "accent": "accent",
+            "for": [
+                "Fabric"
+            ],
+            "workflow": "lakehouse-dq-patterns",
+            "workflowStep": 1
+        },
+        {
+            "id": "databricks-dq-pattern-generator",
+            "route": "tools.databricks-dq-pattern-generator",
+            "label": {
+                "de": "Databricks DQ Pattern Generator",
+                "en": "Databricks DQ Pattern Generator"
+            },
+            "description": {
+                "de": "DLT Expectations, Delta MERGE/SCD2 und Unity-Catalog-Governance-Patterns für Databricks.",
+                "en": "DLT expectations, Delta MERGE/SCD2, and Unity Catalog governance patterns for Databricks."
+            },
+            "example": true,
+            "icon": "fa-database",
+            "accent": "primary",
+            "for": [
+                "Databricks"
+            ],
+            "workflow": "lakehouse-dq-patterns",
+            "workflowStep": 2
+        },
+        {
+            "id": "fabric-pii-governance-pattern-generator",
+            "route": "tools.fabric-pii-governance-pattern-generator",
+            "label": {
+                "de": "Fabric PII Governance Pattern Generator",
+                "en": "Fabric PII Governance Pattern Generator"
+            },
+            "description": {
+                "de": "Fabric-Patterns fuer PII-Klassifikation, Sensitive Labels, Rollen, Maskierung und Governance-Gates.",
+                "en": "Fabric patterns for PII classification, sensitivity labels, roles, masking, and governance gates."
+            },
+            "example": true,
+            "icon": "fa-shield-halved",
+            "accent": "accent",
+            "for": [
+                "Fabric"
+            ],
+            "workflow": "lakehouse-pii-governance-patterns",
+            "workflowStep": 1
+        },
+        {
+            "id": "databricks-pii-governance-pattern-generator",
+            "route": "tools.databricks-pii-governance-pattern-generator",
+            "label": {
+                "de": "Databricks PII Governance Pattern Generator",
+                "en": "Databricks PII Governance Pattern Generator"
+            },
+            "description": {
+                "de": "Unity-Catalog-Patterns fuer PII-Tags, Owner, Grants, Maskierung und Governance-Gates.",
+                "en": "Unity Catalog patterns for PII tags, owners, grants, masking, and governance gates."
+            },
+            "example": true,
+            "icon": "fa-shield-halved",
+            "accent": "primary",
+            "for": [
+                "Databricks"
+            ],
+            "workflow": "lakehouse-pii-governance-patterns",
+            "workflowStep": 2
+        },
+        {
+            "id": "fabric-dq-rule-generator",
+            "route": "tools.fabric-dq-rule-generator",
+            "label": {
+                "de": "Fabric DQ Rule Generator",
+                "en": "Fabric DQ Rule Generator"
+            },
+            "description": {
+                "de": "Fabric SQL-/Notebook-Regeln fuer Pflichtfelder, Business Keys, Freshness und Release-Gates.",
+                "en": "Fabric SQL/notebook rules for required fields, business keys, freshness, and release gates."
+            },
+            "example": true,
+            "icon": "fa-table-list",
+            "accent": "accent",
+            "for": [
+                "Fabric"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 1
+        },
+        {
+            "id": "fabric-notebook-snippet-generator",
+            "route": "tools.fabric-notebook-snippet-generator",
+            "label": {
+                "de": "Fabric Notebook Snippet Generator",
+                "en": "Fabric Notebook Snippet Generator"
+            },
+            "description": {
+                "de": "Fabric Notebook-Snippets fuer DQ, Delta Loads, SCD2 und Governance Reviews.",
+                "en": "Fabric notebook snippets for DQ, Delta loads, SCD2, and governance reviews."
+            },
+            "example": true,
+            "icon": "fa-file-code",
+            "accent": "accent",
+            "for": [
+                "Fabric"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 2
+        },
+        {
+            "id": "fabric-pipeline-checklist-generator",
+            "route": "tools.fabric-pipeline-checklist-generator",
+            "label": {
+                "de": "Fabric Pipeline Checklist Generator",
+                "en": "Fabric Pipeline Checklist Generator"
+            },
+            "description": {
+                "de": "Pipeline-Checkliste fuer Incremental Loads, Alerts, Owner, Retry und Semantic Refresh.",
+                "en": "Pipeline checklist for incremental loads, alerts, owners, retry, and semantic refresh."
+            },
+            "example": true,
+            "icon": "fa-list-check",
+            "accent": "primary",
+            "for": [
+                "Fabric"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 3
+        },
+        {
+            "id": "fabric-semantic-model-guardrails",
+            "route": "tools.fabric-semantic-model-guardrails",
+            "label": {
+                "de": "Fabric Semantic Model Guardrails",
+                "en": "Fabric Semantic Model Guardrails"
+            },
+            "description": {
+                "de": "Guardrails fuer Semantic Models: KPI-Owner, versteckte Felder, Export-Risiko und Publishing-Gate.",
+                "en": "Guardrails for semantic models: KPI owners, hidden fields, export risk, and publishing gate."
+            },
+            "example": true,
+            "icon": "fa-shield-halved",
+            "accent": "primary",
+            "for": [
+                "Fabric"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 4
+        },
+        {
+            "id": "databricks-dq-expectation-generator",
+            "route": "tools.databricks-dq-expectation-generator",
+            "label": {
+                "de": "Databricks DQ Expectation Generator",
+                "en": "Databricks DQ Expectation Generator"
+            },
+            "description": {
+                "de": "DLT Expectations und Notebook-Checks fuer Pflichtfelder, Keys und Freshness.",
+                "en": "DLT expectations and notebook checks for required fields, keys, and freshness."
+            },
+            "example": true,
+            "icon": "fa-table-list",
+            "accent": "accent",
+            "for": [
+                "Databricks"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 5
+        },
+        {
+            "id": "databricks-dbt-on-databricks-generator",
+            "route": "tools.databricks-dbt-on-databricks-generator",
+            "label": {
+                "de": "Databricks dbt-on-Databricks Generator",
+                "en": "Databricks dbt-on-Databricks Generator"
+            },
+            "description": {
+                "de": "Starter-Snippets fuer dbt Incremental Models, Tests, Jobs und Unity-Catalog-Handoff.",
+                "en": "Starter snippets for dbt incremental models, tests, jobs, and Unity Catalog handoff."
+            },
+            "example": true,
+            "icon": "fa-code-branch",
+            "accent": "primary",
+            "for": [
+                "Databricks"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 6
+        },
+        {
+            "id": "unity-catalog-governance-generator",
+            "route": "tools.unity-catalog-governance-generator",
+            "label": {
+                "de": "Unity Catalog Governance Generator",
+                "en": "Unity Catalog Governance Generator"
+            },
+            "description": {
+                "de": "Unity-Catalog-Snippets fuer Tags, Owner, Grants, PII-Spalten und Release-Gates.",
+                "en": "Unity Catalog snippets for tags, owners, grants, PII columns, and release gates."
+            },
+            "example": true,
+            "icon": "fa-shield-halved",
+            "accent": "accent",
+            "for": [
+                "Databricks"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 7
+        },
+        {
+            "id": "delta-load-scd-pattern-generator",
+            "route": "tools.delta-load-scd-pattern-generator",
+            "label": {
+                "de": "Delta Load / SCD Pattern Generator",
+                "en": "Delta Load / SCD Pattern Generator"
+            },
+            "description": {
+                "de": "Delta MERGE- und SCD2-Patterns fuer inkrementelle Lakehouse-Modelle.",
+                "en": "Delta MERGE and SCD2 patterns for incremental lakehouse models."
+            },
+            "example": true,
+            "icon": "fa-layer-group",
+            "accent": "primary",
+            "for": [
+                "Fabric",
+                "Databricks"
+            ],
+            "workflow": "lakehouse-specialized-generators",
+            "workflowStep": 8
+        },
+        {
+            "id": "pureview-scan-generator",
+            "route": "tools.pureview-scan-generator",
+            "label": {
+                "de": "PureView Scan Generator",
+                "en": "PureView Scan Generator"
+            },
+            "description": {
+                "de": "Erzeugt Beispiel-JSON, CLI/curl-Hinweise und Setup-Checkliste fuer Data Sources und Scans.",
+                "en": "Generates example JSON, CLI/curl notes, and setup checklist for data sources and scans."
+            },
+            "example": true,
+            "icon": "fa-magnifying-glass-chart",
+            "accent": "primary",
+            "for": [
+                "PureView"
+            ],
+            "workflow": "pureview-governance",
+            "workflowStep": 1
+        },
+        {
+            "id": "pureview-classification-generator",
+            "route": "tools.pureview-classification-generator",
+            "label": {
+                "de": "PureView Classification Generator",
+                "en": "PureView Classification Generator"
+            },
+            "description": {
+                "de": "Erzeugt Klassifikations-Mapping, Sensitivity-Beispiele und Review-Artefakte fuer Spalten.",
+                "en": "Generates classification mapping, sensitivity examples, and review artifacts for columns."
+            },
+            "example": true,
+            "icon": "fa-tags",
+            "accent": "accent",
+            "for": [
+                "PureView"
+            ],
+            "workflow": "pureview-governance",
+            "workflowStep": 2
+        },
+        {
+            "id": "pureview-glossary-generator",
+            "route": "tools.pureview-glossary-generator",
+            "label": {
+                "de": "PureView Glossary Generator",
+                "en": "PureView Glossary Generator"
+            },
+            "description": {
+                "de": "Erzeugt Business-Term-JSON, Synonyme, Owner und Asset-Mapping fuer Glossary Reviews.",
+                "en": "Generates business term JSON, synonyms, owners, and asset mapping for glossary reviews."
+            },
+            "example": true,
+            "icon": "fa-book-open",
+            "accent": "primary",
+            "for": [
+                "PureView"
+            ],
+            "workflow": "pureview-governance",
+            "workflowStep": 3
+        },
+        {
+            "id": "pureview-data-product-generator",
+            "route": "tools.pureview-data-product-generator",
+            "label": {
+                "de": "PureView Data Product Generator",
+                "en": "PureView Data Product Generator"
+            },
+            "description": {
+                "de": "Erzeugt Data-Product-Steckbrief, Owner-/Stewardship-Felder, DQ-Gates und Consumer-Readme.",
+                "en": "Generates data product profile, owner/stewardship fields, DQ gates, and consumer readme."
+            },
+            "example": true,
+            "icon": "fa-box-archive",
+            "accent": "accent",
+            "for": [
+                "PureView"
+            ],
+            "workflow": "pureview-governance",
+            "workflowStep": 4
+        },
+        {
+            "id": "schema-yml-editor",
+            "route": "tools.schema-yml-editor",
+            "label": {
+                "de": "Schema YML Editor",
+                "en": "Schema YML Editor"
+            },
+            "description": {
+                "de": "Hilfs-Tool: einzelne schema.yml typo-sicher bearbeiten — nicht Teil der Einrichtungs-Kette.",
+                "en": "Helper tool: edit individual schema.yml safely — not part of the setup chain."
+            },
+            "example": true,
+            "icon": "fa-file-lines",
+            "dbt": true,
+            "accent": "primary"
+        },
+        {
+            "id": "meta-export-generator",
+            "route": "tools.meta-export-generator",
+            "label": {
+                "de": "Meta Export Generator",
+                "en": "Meta Export Generator"
+            },
+            "description": {
+                "de": "Copy-Paste-SQL/Scripts für Schemas, Tabellen, Spalten und Access-Meta — 10 Plattformen, kein Live-Connect.",
+                "en": "Copy-paste SQL/scripts for schemas, tables, columns and access meta — 10 platforms, no live connect."
+            },
+            "example": true,
+            "icon": "fa-database",
+            "accent": "accent"
+        },
+        {
+            "id": "stakeholder-matrix",
+            "route": "tools.stakeholder-matrix",
+            "label": {
+                "de": "Stakeholder & RACI Matrix",
+                "en": "Stakeholder & RACI Matrix"
+            },
+            "description": {
+                "de": "Stakeholder mit Einfluss, Interesse und optionaler RACI — Export für Mandat und Owner-Matrix.",
+                "en": "Stakeholders with influence, interest, and optional RACI — export for mandate and owner matrix."
+            },
+            "example": true,
+            "icon": "fa-users",
+            "accent": "primary",
+            "workflow": "discovery-assessment",
+            "workflowStep": 1
+        },
+        {
+            "id": "report-inventory",
+            "route": "tools.report-inventory",
+            "label": {
+                "de": "Report Inventory Canvas",
+                "en": "Report Inventory Canvas"
+            },
+            "description": {
+                "de": "Reports und Dashboards inventarisieren — Owner, Tool, Rhythmus, Geschäftsfrage.",
+                "en": "Inventory reports and dashboards — owner, tool, cadence, business question."
+            },
+            "example": true,
+            "icon": "fa-chart-pie",
+            "accent": "accent",
+            "workflow": "discovery-assessment",
+            "workflowStep": 2
+        },
+        {
+            "id": "kpi-definition",
+            "route": "tools.kpi-definition",
+            "label": {
+                "de": "KPI Definition Card",
+                "en": "KPI Definition Card"
+            },
+            "description": {
+                "de": "KPI-Inventar mit Formel, Grain, Owner und Abstimmungsstatus.",
+                "en": "KPI inventory with formula, grain, owner, and agreement status."
+            },
+            "example": true,
+            "icon": "fa-gauge-high",
+            "accent": "primary",
+            "workflow": "discovery-assessment",
+            "workflowStep": 3
+        },
+        {
+            "id": "bi-python-toolkit",
+            "route": "tools.bi-python-toolkit",
+            "label": {
+                "de": "BI Python Export Toolkit",
+                "en": "BI Python Export Toolkit"
+            },
+            "description": {
+                "de": "Python-Downloads für Qlik KPI-Export, Qlik App-/Sheet-Inventar und BI-Formel-Inventare.",
+                "en": "Python downloads for Qlik KPI export, Qlik app/sheet inventory and BI formula inventories."
+            },
+            "example": true,
+            "icon": "fa-file-code",
+            "accent": "accent",
+            "for": [
+                "Qlik"
+            ],
+            "workflow": "discovery-assessment",
+            "workflowStep": 4
+        },
+        {
+            "id": "qlik-set-analysis-generator",
+            "route": "tools.qlik-set-analysis-generator",
+            "label": {
+                "de": "Qlik Set Analysis Generator",
+                "en": "Qlik Set Analysis Generator"
+            },
+            "description": {
+                "de": "Child Measures und Variablen aus einer Base Measure plus Dimension-Wert-CSV erzeugen.",
+                "en": "Generate child measures and variables from a base measure plus dimension-value CSV."
+            },
+            "example": true,
+            "icon": "fa-filter",
+            "accent": "primary",
+            "for": [
+                "Qlik"
+            ],
+            "landingSection": "bi-formula"
+        },
+        {
+            "id": "tableau-calculation-generator",
+            "route": "tools.tableau-calculation-generator",
+            "label": {
+                "de": "Tableau Calculation Generator",
+                "en": "Tableau Calculation Generator"
+            },
+            "description": {
+                "de": "Calculated Fields, LOD-Varianten und Dokumentations-CSV aus Base Measures plus Definitionen erzeugen.",
+                "en": "Generate calculated fields, LOD variants, and documentation CSV from base measures plus definitions."
+            },
+            "example": true,
+            "icon": "fa-chart-simple",
+            "accent": "primary",
+            "for": [
+                "Tableau"
+            ],
+            "landingSection": "bi-formula"
+        },
+        {
+            "id": "powerbi-dax-generator",
+            "route": "tools.powerbi-dax-generator",
+            "label": {
+                "de": "Power BI DAX Measure Generator",
+                "en": "Power BI DAX Measure Generator"
+            },
+            "description": {
+                "de": "DAX Measures, Time-Intelligence-Vorlagen und Dokumentations-CSV aus Base Measures plus Definitionen erzeugen.",
+                "en": "Generate DAX measures, time-intelligence snippets, and documentation CSV from base measures plus definitions."
+            },
+            "example": true,
+            "icon": "fa-chart-column",
+            "accent": "primary",
+            "for": [
+                "PowerBI"
+            ],
+            "landingSection": "bi-formula"
+        },
+        {
+            "id": "architecture-fit",
+            "route": "tools.architecture-fit",
+            "label": {
+                "de": "Architecture Fit Checklist",
+                "en": "Architecture Fit Checklist"
+            },
+            "description": {
+                "de": "Architekturdiagnose und Engpass-Liste entlang Quellen bis Consumption.",
+                "en": "Architecture diagnosis and bottleneck list from sources to consumption."
+            },
+            "example": true,
+            "icon": "fa-sitemap",
+            "accent": "accent",
+            "workflow": "discovery-assessment",
+            "workflowStep": 5
+        },
+        {
+            "id": "impact-effort",
+            "route": "tools.impact-effort",
+            "label": {
+                "de": "Impact–Effort Prioritizer",
+                "en": "Impact–Effort Prioritizer"
+            },
+            "description": {
+                "de": "Initiativen scoren, 2×2-Matrix sehen und Pilot-Kandidaten markieren.",
+                "en": "Score initiatives, view a 2×2 matrix, and mark the pilot candidate."
+            },
+            "example": true,
+            "icon": "fa-bullseye",
+            "accent": "primary",
+            "workflow": "discovery-assessment",
+            "workflowStep": 6
+        },
+        {
+            "id": "kpi-requirements-intake",
+            "route": "tools.kpi-requirements-intake",
+            "label": {
+                "de": "KPI-Anforderungen erfassen",
+                "en": "KPI Requirements Intake"
+            },
+            "description": {
+                "de": "Stakeholder-Fragen, Formel, Grain, Owner, Dimensionen und Akzeptanzbeispiele erfassen.",
+                "en": "Capture stakeholder questions, formula, grain, owner, dimensions, and acceptance examples."
+            },
+            "example": true,
+            "icon": "fa-gauge-high",
+            "accent": "primary",
+            "workflow": "governance-decision-support",
+            "workflowStep": 1
+        },
+        {
+            "id": "source-scope-builder",
+            "route": "tools.source-scope-builder",
+            "label": {
+                "de": "Quellen-Scope festlegen",
+                "en": "Source Scope Builder"
+            },
+            "description": {
+                "de": "Supplier-Load vorbereiten: must-have, optional, skip, PII/DSDR und Review-Fragen.",
+                "en": "Prepare supplier load: must-have, optional, skip, PII/DSDR, and review questions."
+            },
+            "example": true,
+            "icon": "fa-database",
+            "accent": "accent",
+            "workflow": "governance-decision-support",
+            "workflowStep": 2
+        },
+        {
+            "id": "mart-design-brief-generator",
+            "route": "tools.mart-design-brief-generator",
+            "label": {
+                "de": "Mart Design Brief erstellen",
+                "en": "Mart Design Brief Generator"
+            },
+            "description": {
+                "de": "KPI-Karten und Quellen-Scope in Fact, Dimension, Grain, Historie und DQ-Fragen übersetzen.",
+                "en": "Translate KPI cards and source scope into fact, dimension, grain, history, and DQ questions."
+            },
+            "example": true,
+            "icon": "fa-table-columns",
+            "accent": "primary",
+            "workflow": "governance-decision-support",
+            "workflowStep": 3
+        },
+        {
+            "id": "governance-stack-advisor",
+            "route": "tools.governance-stack-advisor",
+            "label": {
+                "de": "Governance-Stack auswählen",
+                "en": "Governance Stack Advisor"
+            },
+            "description": {
+                "de": "Stack-Shortlist nach Cloud, BI, Catalog, Residency, Skills, Zertifikaten und Risiko vorbereiten.",
+                "en": "Prepare a stack shortlist by cloud, BI, catalog, residency, skills, certifications, and risk."
+            },
+            "example": true,
+            "icon": "fa-layer-group",
+            "accent": "accent",
+            "workflow": "governance-decision-support",
+            "workflowStep": 4
+        },
+        {
+            "id": "custom-stack-builder",
+            "route": "tools.custom-stack-builder",
+            "label": {
+                "de": "Eigenen Stack bauen",
+                "en": "Custom Stack Builder"
+            },
+            "description": {
+                "de": "Ist- oder Ziel-Stack je Funktion dokumentieren: Produkte wählen und Platform-Tags ableiten.",
+                "en": "Document current or target stack by function: pick products and derive platform tags."
+            },
+            "example": true,
+            "icon": "fa-cubes",
+            "accent": "primary",
+            "workflow": "governance-decision-support",
+            "workflowStep": 4
+        },
+        {
+            "id": "pii-dsdr-readiness-checker",
+            "route": "tools.pii-dsdr-readiness-checker",
+            "label": {
+                "de": "PII/DSDR Readiness prüfen",
+                "en": "PII/DSDR Readiness Checker"
+            },
+            "description": {
+                "de": "Personenbezug, DSDR-Suchkeys, Freitext, Kopien, Retention und Governance-Gates prüfen.",
+                "en": "Check personal data, DSDR search keys, free text, copies, retention, and governance gates."
+            },
+            "example": true,
+            "icon": "fa-shield-halved",
+            "accent": "primary",
+            "workflow": "governance-decision-support",
+            "workflowStep": 5
+        },
+        {
+            "id": "decision-brief-generator",
+            "route": "tools.decision-brief-generator",
+            "label": {
+                "de": "Entscheidungsvorlage erstellen",
+                "en": "Decision Brief Generator"
+            },
+            "description": {
+                "de": "Discovery-Ergebnisse zu Entscheidung, Pilot-Scope, Risiken und nächstem Sprint verdichten.",
+                "en": "Condense discovery results into decision, pilot scope, risks, and next sprint."
+            },
+            "example": true,
+            "icon": "fa-file-signature",
+            "accent": "accent",
+            "workflow": "governance-decision-support",
+            "workflowStep": 6
+        },
+        {
+            "id": "vendor-learning-path-builder",
+            "route": "tools.vendor-learning-path-builder",
+            "label": {
+                "de": "Lern- und Zertifizierungspfad planen",
+                "en": "Vendor Learning Path Builder"
+            },
+            "description": {
+                "de": "Rollenbasierte Lernpfade mit offiziellen Zertifikatslinks, Playbooks und praktischen Übungen planen.",
+                "en": "Plan role-based learning paths with official certification links, playbooks, and practical exercises."
+            },
+            "example": true,
+            "icon": "fa-graduation-cap",
+            "accent": "primary",
+            "workflow": "governance-decision-support",
+            "workflowStep": 7
+        },
+        {
+            "id": "prompt-studio",
+            "route": "tools.prompt-studio",
+            "label": {
+                "de": "Prompt Studio",
+                "en": "Prompt Studio"
+            },
+            "description": {
+                "de": "Professionelle Prompts für ChatGPT, Claude, Gemini, Suno, Midjourney und mehr — config-getrieben.",
+                "en": "Professional prompts for ChatGPT, Claude, Gemini, Suno, Midjourney and more — config-driven."
+            },
+            "example": true,
+            "icon": "fa-wand-magic-sparkles",
+            "accent": "primary",
+            "for": [
+                "AI"
+            ],
+            "workflow": "ai-prompt-workflow",
+            "workflowStep": 1
+        },
+        {
+            "id": "governance-ai-sanitizer",
+            "route": "tools.governance-ai-sanitizer",
+            "label": {
+                "de": "AI Sanitizer",
+                "en": "AI Sanitizer"
+            },
+            "description": {
+                "de": "Prompt sanitisieren, Outbound kopieren, KI-Antwort wiederherstellen.",
+                "en": "Sanitize prompt, copy outbound, restore AI response."
+            },
+            "example": true,
+            "icon": "fa-microchip",
+            "accent": "primary",
+            "for": [
+                "AI"
+            ],
+            "workflow": "ai-prompt-workflow",
+            "workflowStep": 2
+        }
+    ],
+    "ecosystem": [
+        {
+            "id": "binom-ngx",
+            "title": "binom-ngx",
+            "description": {
+                "de": "Angular UI Libraries, SDKs und interaktive Dokumentation.",
+                "en": "Angular UI libraries, SDKs, and interactive documentation."
+            },
+            "meta": {
+                "de": "Docs & Demos",
+                "en": "Docs & Demos"
+            },
+            "icon": "fa-bolt",
+            "accent": "accent",
+            "featured": true,
+            "external": true,
+            "href": "https://ngx-docs.binom.net"
+        },
+        {
+            "id": "qlik-binom",
+            "title": "qlik.binom.net",
+            "description": {
+                "de": "Altes Qlik-Training-Projekt — Demos, Übungen und Referenzen rund um Qlik.",
+                "en": "Old Qlik training project — demos, exercises, and Qlik reference material."
+            },
+            "meta": {
+                "de": "Training (Archiv)",
+                "en": "Training (archive)"
+            },
+            "icon": "fa-graduation-cap",
+            "accent": "primary",
+            "featured": false,
+            "external": true,
+            "href": "https://qlik.binom.net"
+        }
+    ],
+    "links": {
+        "website": "https://binom.net",
+        "binom_ngx_docs": "https://ngx-docs.binom.net",
+        "qlik_binom": "https://qlik.binom.net",
+        "repository": "https://github.com/Ac1d0n3/binom-tools"
+    },
+    "landing_quotes": [
+        {
+            "quote": {
+                "en": "I'm data gover me well.",
+                "de": "Ich bin data-governt — mir geht’s gut."
+            },
+            "attribution": {
+                "en": "— Anonymous steward",
+                "de": "— Anonymer Steward"
+            }
+        },
+        {
+            "quote": {
+                "en": "Keep calm and govern on.",
+                "de": "Ruhe bewahren und weiter governen."
+            },
+            "attribution": {
+                "en": "— A catalog whisperer",
+                "de": "— Ein Katalog-Flüsterer"
+            }
+        },
+        {
+            "quote": {
+                "en": "Metadata: because vibes are not lineage.",
+                "de": "Metadaten: Weil Vibes keine Lineage sind."
+            },
+            "attribution": {
+                "en": "— A slightly tired architect",
+                "de": "— Ein leicht müder Architekt"
+            }
+        },
+        {
+            "quote": {
+                "en": "No PII, no cry.",
+                "de": "Kein PII, kein Drama."
+            },
+            "attribution": {
+                "en": "— Privacy with a smile",
+                "de": "— Privacy mit Augenzwinkern"
+            }
+        },
+        {
+            "quote": {
+                "en": "Trust, but verify — then document.",
+                "de": "Vertrauen ist gut, Verify und Dokumentieren besser."
+            },
+            "attribution": {
+                "en": "— A cautious data owner",
+                "de": "— Ein vorsichtiger Data Owner"
+            }
+        },
+        {
+            "quote": {
+                "en": "Bronze, silver, gold — still needs a steward.",
+                "de": "Bronze, Silver, Gold — ohne Steward glänzt nichts."
+            },
+            "attribution": {
+                "en": "— Medallion realist",
+                "de": "— Medallion-Realist"
+            }
+        },
+        {
+            "quote": {
+                "en": "Schema first, regrets later — or never.",
+                "de": "Schema first, Reue later — oder nie."
+            },
+            "attribution": {
+                "en": "— A YAML romantic",
+                "de": "— Ein YAML-Romantiker"
+            }
+        },
+        {
+            "quote": {
+                "en": "If it isn’t in the catalog, it doesn’t exist.",
+                "de": "Was nicht im Katalog steht, existiert nicht."
+            },
+            "attribution": {
+                "en": "— Catalog absolutist",
+                "de": "— Katalog-Absolutist"
+            }
+        },
+        {
+            "quote": {
+                "en": "dq_rule > “it looked fine yesterday”.",
+                "de": "dq_rule > „Gestern sah’s noch gut aus.“"
+            },
+            "attribution": {
+                "en": "— Quality with receipts",
+                "de": "— Qualität mit Belegen"
+            }
+        },
+        {
+            "quote": {
+                "en": "Access denied is a love language.",
+                "de": "Access denied ist eine Liebessprache."
+            },
+            "attribution": {
+                "en": "— Security softie",
+                "de": "— Security-Softie"
+            }
+        },
+        {
+            "quote": {
+                "en": "Owners own. Stewards steward. Spreadsheets panic.",
+                "de": "Owner ownen. Stewards stewarden. Spreadsheets paniken."
+            },
+            "attribution": {
+                "en": "— RACI with humor",
+                "de": "— RACI mit Humor"
+            }
+        },
+        {
+            "quote": {
+                "en": "Fresh data, stale excuses.",
+                "de": "Frische Daten, abgestandene Ausreden."
+            },
+            "attribution": {
+                "en": "— Pipeline poet",
+                "de": "— Pipeline-Poet"
+            }
+        },
+        {
+            "quote": {
+                "en": "Tag it, bag it, don’t drag it.",
+                "de": "Tag it, bag it, don’t drag it."
+            },
+            "attribution": {
+                "en": "— Classification coach",
+                "de": "— Klassifikations-Coach"
+            }
+        },
+        {
+            "quote": {
+                "en": "Lineage is just gossip with receipts.",
+                "de": "Lineage ist Klatsch — mit Belegen."
+            },
+            "attribution": {
+                "en": "— Impact analyst",
+                "de": "— Impact-Analyst"
+            }
+        },
+        {
+            "quote": {
+                "en": "Null is fine. Silent null is not.",
+                "de": "Null ist okay. Stilles Null ist es nicht."
+            },
+            "attribution": {
+                "en": "— Honest warehouse",
+                "de": "— Ehrliches Warehouse"
+            }
+        },
+        {
+            "quote": {
+                "en": "Govern once, reuse forever.",
+                "de": "Einmal governen, ewig wiederverwenden."
+            },
+            "attribution": {
+                "en": "— Platform minimalist",
+                "de": "— Platform-Minimalist"
+            }
+        },
+        {
+            "quote": {
+                "en": "PII is personal. Treat it that way.",
+                "de": "PII ist persönlich. Behandel es so."
+            },
+            "attribution": {
+                "en": "— Empathetic DPO",
+                "de": "— Empathischer DPO"
+            }
+        },
+        {
+            "quote": {
+                "en": "docs > tribal knowledge.",
+                "de": "docs > Stammeswissen."
+            },
+            "attribution": {
+                "en": "— Onboarding survivor",
+                "de": "— Onboarding-Überlebender"
+            }
+        }
+    ],
+    "enabled": {
+        "dbt-governance-macro-generator": true,
+        "pii-policy-generator": true,
+        "pii-unreviewed-gate-generator": true,
+        "pii-recommend-generator": true,
+        "dbt-dq-macro-generator": true,
+        "dbt-dq-rules-generator": true,
+        "dbt-dq-history-generator": true,
+        "fabric-dq-pattern-generator": true,
+        "databricks-dq-pattern-generator": true,
+        "fabric-pii-governance-pattern-generator": true,
+        "databricks-pii-governance-pattern-generator": true,
+        "fabric-dq-rule-generator": true,
+        "fabric-notebook-snippet-generator": true,
+        "fabric-pipeline-checklist-generator": true,
+        "fabric-semantic-model-guardrails": true,
+        "databricks-dq-expectation-generator": true,
+        "databricks-dbt-on-databricks-generator": true,
+        "unity-catalog-governance-generator": true,
+        "delta-load-scd-pattern-generator": true,
+        "schema-yml-editor": true,
+        "meta-export-generator": true,
+        "stakeholder-matrix": true,
+        "report-inventory": true,
+        "kpi-definition": true,
+        "architecture-fit": true,
+        "impact-effort": true,
+        "kpi-requirements-intake": true,
+        "source-scope-builder": true,
+        "mart-design-brief-generator": true,
+        "governance-stack-advisor": true,
+        "custom-stack-builder": true,
+        "pii-dsdr-readiness-checker": true,
+        "decision-brief-generator": true,
+        "vendor-learning-path-builder": true,
+        "prompt-studio": true,
+        "governance-ai-sanitizer": true
+    },
+    "login_required": {
+        "dbt-governance-macro-generator": false,
+        "pii-policy-generator": false,
+        "pii-unreviewed-gate-generator": false,
+        "pii-recommend-generator": false,
+        "dbt-dq-macro-generator": false,
+        "dbt-dq-rules-generator": false,
+        "dbt-dq-history-generator": false,
+        "fabric-dq-pattern-generator": false,
+        "databricks-dq-pattern-generator": false,
+        "fabric-pii-governance-pattern-generator": false,
+        "databricks-pii-governance-pattern-generator": false,
+        "fabric-dq-rule-generator": false,
+        "fabric-notebook-snippet-generator": false,
+        "fabric-pipeline-checklist-generator": false,
+        "fabric-semantic-model-guardrails": false,
+        "databricks-dq-expectation-generator": false,
+        "databricks-dbt-on-databricks-generator": false,
+        "unity-catalog-governance-generator": false,
+        "delta-load-scd-pattern-generator": false,
+        "schema-yml-editor": false,
+        "meta-export-generator": false,
+        "stakeholder-matrix": false,
+        "report-inventory": false,
+        "kpi-definition": false,
+        "architecture-fit": false,
+        "impact-effort": false,
+        "kpi-requirements-intake": false,
+        "source-scope-builder": false,
+        "mart-design-brief-generator": false,
+        "governance-stack-advisor": false,
+        "custom-stack-builder": false,
+        "pii-dsdr-readiness-checker": false,
+        "decision-brief-generator": false,
+        "vendor-learning-path-builder": false,
+        "prompt-studio": false,
+        "governance-ai-sanitizer": false
+    },
+    "overview": {
+        "show_title": false,
+        "show_lead": false,
+        "title_de": null,
+        "title_en": null,
+        "lead_de": null,
+        "lead_en": null
+    }
+}

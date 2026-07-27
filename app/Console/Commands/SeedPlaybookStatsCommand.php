@@ -18,7 +18,7 @@ class SeedPlaybookStatsCommand extends Command
         $force = (bool) $this->option('force');
         $seeded = 0;
         $skipped = 0;
-        $seedDir = app_path('Playbooks/stats-seed');
+        $seedDir = base_path('modules/playbooks/script/stats-seed');
 
         if (! is_dir($seedDir) && ! mkdir($seedDir, 0775, true) && ! is_dir($seedDir)) {
             $this->error('Unable to create seed directory: '.$seedDir);

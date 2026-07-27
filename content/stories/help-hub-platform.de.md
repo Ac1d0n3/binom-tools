@@ -172,7 +172,7 @@ Tools erscheinen automatisch in Sidebar, Tools-Übersicht (`/tools`) und auf der
 
 ## i18n & Theme
 
-- UI-Strings: `resources/js/locale.js` (`data-i18n`, `data-card-id`, `data-text-de` / `data-text-en`)
+- UI-Strings: `resources/js/shell/locale.js` (`data-i18n`, `data-card-id`, `data-text-de` / `data-text-en`)
 - Playbook-Inhalte: getrennte Locale-Dateien (`.de.md`, `.en.md`)
 - Theme: Light/Dark via `data-color-scheme` und CSS-Variablen in `resources/css/themes/`
 

@@ -1,0 +1,25 @@
+{
+    "id": "rev_251de1072c08a96c",
+    "planId": "plan_20260817_acid1",
+    "createdAt": "2026-07-19T23:40:11+00:00",
+    "actorUserId": "user_acidone",
+    "actorLabel": "Acidone",
+    "action": "update",
+    "summary": "Plan updated",
+    "snapshot": {
+        "id": "plan_20260817_acid1",
+        "ownerUserId": "user_acidone",
+        "viewerTeamIds": [
+            "team_q"
+        ],
+        "itemOverrides": [],
+        "teamIds": [
+            "team_q"
+        ],
+        "teamId": null,
+        "viewerUserIds": [],
+        "linkedStorySlugs": [],
+        "updatedAt": "2026-07-19T23:39:03+00:00",
+        "updatedBy": "user_acidone"
+    }
+}

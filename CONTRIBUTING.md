@@ -15,32 +15,18 @@ Public Governance Help Hub — single-site Laravel app. **v1.0.0**. Not a SaaS p
 
 | Kind | Location |
 |------|----------|
-| Theme tokens / registry | `resources/css/foundations/theme/`, `resources/js/foundations/theme/` |
-| Shared vocabulary IDs | `config/foundations/taxonomy.php` (+ `App\Foundations\Taxonomy`) |
-| Shell / layouts | `resources/views/foundations/` (during migration: also `layouts/`, `components/tools/`) |
-| Reusable UI | `resources/views/shared/ui/`, `resources/js/shared/` |
-| Domain pages | `resources/views/domains/<domain>/` (during migration: existing `views/<domain>/`) |
-| Domain JS/CSS | `resources/js/domains/<domain>/`, `resources/css/domains/<domain>/` |
-| Playbook stories | `content/stories/*.md` only |
-| Sprint templates | `content/sprint-plans/` |
-| Catalog data (suppliers, glossary, …) | `content/catalogs/{name}/*.json` — **never** new `config/*wave*.php` |
+| **Feature (mega-module)** | `modules/<id>/{js,css,views,script}/` + **`config.php` am Modul-Root** (optional `<key>.config.php`) |
+| Theme / shell JS | `resources/js/shell/` (locale, theme, layout, consent, phone gate) |
+| Shared UI | `resources/views/shared/`, `resources/js/shared/` |
+| Shell layouts (Blade/CSS) | `resources/views/foundations/`, `resources/css/` (chrome only) |
+| Catalog data | `content/catalogs/{name}/` |
+| Shared vocabulary | `config/taxonomy.php` (+ `App\Support\Taxonomy`) |
+| Laravel / globals | `config/{app,auth,database,session,storage,…}.php` only |
 
-**Rule of thumb:** domain page → `domains/<name>/`; button/toggle/tabs/modal → `shared/ui/`; shell/theme → `foundations/`; shared IDs/labels → taxonomy; **stories → `content/stories/`**; **catalog entries → JSON**.
+Blade: `view('calendar::index')`. Module config: `config('calendar')` from `modules/calendar/config.php`.
 
-Laravel stays **by type** (views / js / php / config). Layer folders (`foundations`, `shared`, `domains`) are mirrored across those trees — not one mega feature folder. Details: [docs/resources-layout.de.md](docs/resources-layout.de.md).
+**Do not** put feature data in thick `config/*.php` files.
 
-### Catalogs (JSON)
-
-Suppliers and Glossary load from `content/catalogs/` via `App\Catalog\CatalogJsonLoader`. Thin PHP facades remain in `config/suppliers.php` and `config/glossary.php`.
-
-- Add/edit a supplier product → `content/catalogs/suppliers/products.json` (and overlays in `governance.json` / `quality.json` / `sql.json` if needed).
-- Add/edit a glossary term → `content/catalogs/glossary/terms-core.json` or `terms-buzzwords.json`.
-- **Do not** add `config/*wave*.php` files.
-- Optional re-export (legacy): `php -d memory_limit=512M scripts/export-catalog-json.php` — only useful if PHP sources still exist.
-- Optional MySQL cache: `php artisan bn-tools:catalog-sync` (repo JSON stays source of truth).
-- Admin link checker: `php artisan bn-tools:link-check` / UI `/account/link-check` (`canManageUsers` only).
-
-Runtime Dual Store (`BINOM_TOOLS_STORAGE_DRIVER=file|mysql`) covers users/plans/sessions/likes — **not** catalog bodies or story markdown.
 
 ## Setup
 
@@ -72,34 +58,17 @@ Playbook PNGs under `public/images/playbooks/` (and other non-icon rasters under
 ## Architecture map (target)
 
 ```
-resources/
-  views/
-    foundations/     # layouts, shell chrome
-    shared/ui/       # tabs (folder|underline), modal, layout-toggle, segmented
-    domains/         # governance, playbooks, tools, compliance, …
-  js/
-    foundations/theme/
-    shared/
-    domains/governance/   # hub-advisor, advisor-guidance, …
-  css/
-    foundations/theme/    # _contract.css, blue-water.css
-    shared/ui/
-    domains/
-config/foundations/
-  taxonomy.php            # TaxonomyFoundation data only
-app/Foundations/
-  Taxonomy.php
-content/
-  stories/                # playbook Markdown
-  sprint-plans/
-  catalogs/{suppliers,glossary}/
+modules/<id>/
+  config.php              # optional <key>.config.php
+  js/ css/ views/ script/
+resources/                # shell + shared only (layouts/theme)
+content/stories|sprint-plans|catalogs/
+config/                   # Laravel + storage + taxonomy only
 ```
-
-Migration is incremental: existing paths may remain until a domain is moved; delete parallel/dead code after tests are green (**delete-after-green**).
 
 ## Advisor guidance
 
-New cert/gap/stack recommendation rules belong in `resources/js/domains/governance/advisor-guidance.js`, with Vitest coverage — not as one-off copies inside the hub shell (`hub-advisor.js` stays the thin integrator).
+New cert/gap/stack recommendation rules belong in `modules/governance/js/advisor-guidance.js`, with Vitest coverage — not as one-off copies inside the hub shell (`hub-advisor.js` stays the thin integrator).
 
 ## Pull requests
 

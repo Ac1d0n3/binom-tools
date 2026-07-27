@@ -77,8 +77,8 @@ const codeOnlyExcludePrefixes = [
     'content/stories/',
     'content/sprint-plans/',
     'storage/',
-    'app/Playbooks/stats-seed/',
-    'app/SprintPlanner/bn-tools-seed/',
+    'modules/playbooks/script/stats-seed/',
+    'modules/sprint-planner/script/bn-tools-seed/',
 ];
 
 /**
@@ -117,6 +117,7 @@ const metaSkipNames = new Set([
  */
 const deployPaths = [
     'app',
+    'modules',
     'config',
     'resources/views',
     // Catalog JSON always ships (glossary/suppliers runtime). Full content/ (stories MD) only with flag.
@@ -136,6 +137,7 @@ const deployPaths = [
  */
 const requiredMirrorTrees = [
     'app',
+    'modules',
     'config',
     'resources/views',
     'routes',
@@ -503,6 +505,7 @@ function filterUploadDelta(rels, allPackedRels) {
     if (codeOnly) {
         const codePrefixes = [
             'app/',
+            'modules/',
             'config/',
             'resources/views/',
             'routes/',
@@ -527,7 +530,7 @@ function filterUploadDelta(rels, allPackedRels) {
             effectiveExclude.push('public/images/');
         }
         if (!withStorage) {
-            effectiveExclude.push('storage/app/bn-tools/', 'app/SprintPlanner/bn-tools-seed/');
+            effectiveExclude.push('storage/app/bn-tools/', 'modules/sprint-planner/script/bn-tools-seed/');
         }
     }
 
@@ -670,7 +673,7 @@ async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot, uploadedBy
         }
         if (!withStorage && (
             rel.startsWith('storage/app/bn-tools/')
-            || rel.startsWith('app/SprintPlanner/bn-tools-seed/')
+            || rel.startsWith('modules/sprint-planner/script/bn-tools-seed/')
         )) {
             return false;
         }
@@ -717,7 +720,7 @@ execSync('npm run build', {
     stdio: 'inherit',
 });
 
-const statsSeedDir = join(root, 'app/Playbooks/stats-seed');
+const statsSeedDir = join(root, 'modules/playbooks/script/stats-seed');
 const seedJsonCount = existsSync(statsSeedDir)
     ? readdirSync(statsSeedDir).filter((name) => name.endsWith('.json')).length
     : 0;
@@ -734,7 +737,7 @@ if (seedJsonCount === 0) {
 
 // Snapshot local accounts / user-templates into FTP-safe seeds (not in Git).
 const bnToolsRuntime = join(root, 'storage/app/bn-tools');
-const bnToolsSeedDir = join(root, 'app/SprintPlanner/bn-tools-seed');
+const bnToolsSeedDir = join(root, 'modules/sprint-planner/script/bn-tools-seed');
 mkdirSync(bnToolsSeedDir, { recursive: true });
 
 /**
@@ -768,7 +771,7 @@ for (const dirName of ['user-templates', 'plans', 'read-state', 'calendar']) {
 }
 console.log(
     bnToolsSeedCount > 0
-        ? `bn-tools seeds packed: ${bnToolsSeedCount} item(s) → app/SprintPlanner/bn-tools-seed/ (users/teams/acl + templates/plans/read-state/calendar)`
+        ? `bn-tools seeds packed: ${bnToolsSeedCount} item(s) → modules/sprint-planner/script/bn-tools-seed/ (users/teams/acl + templates/plans/read-state/calendar)`
         : 'No local bn-tools runtime found — FTP bundle will not include account/plan seeds',
 );
 

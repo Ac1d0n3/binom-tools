@@ -1,6 +1,7 @@
 {
     "schemaVersion": 1,
     "catalog": "glossary",
+    "loader": "glossary",
     "categories": {
         "roles": {
             "de": "Rollen",

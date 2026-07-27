@@ -1,0 +1,26 @@
+{
+    "id": "rev_927a82ab3749a53c",
+    "planId": "plan_20260817_acid1",
+    "createdAt": "2026-07-20T05:47:21+00:00",
+    "actorUserId": "user_acidone",
+    "actorLabel": "Acidone",
+    "action": "template-sync",
+    "summary": "Template snapshot and realistic Q1 effort updated",
+    "snapshot": {
+        "id": "plan_20260817_acid1",
+        "ownerUserId": "user_acidone",
+        "viewerTeamIds": [
+            "team_q"
+        ],
+        "itemOverrides": [],
+        "teamIds": [
+            "team_q"
+        ],
+        "teamId": null,
+        "viewerUserIds": [],
+        "linkedStorySlugs": [],
+        "updatedAt": "2026-07-19T23:40:15+00:00",
+        "updatedBy": "user_acidone",
+        "startedAt": "2026-08-17"
+    }
+}

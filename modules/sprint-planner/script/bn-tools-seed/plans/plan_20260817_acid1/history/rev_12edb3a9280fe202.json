@@ -1,0 +1,25 @@
+{
+    "id": "rev_12edb3a9280fe202",
+    "planId": "plan_20260817_acid1",
+    "createdAt": "2026-07-19T23:35:34+00:00",
+    "actorUserId": "user_acidone",
+    "actorLabel": "Acidone",
+    "action": "heal",
+    "summary": "Restored full local plan over hollow server shell",
+    "snapshot": {
+        "id": "plan_20260817_acid1",
+        "ownerUserId": "user_acidone",
+        "viewerTeamIds": [
+            "team_q"
+        ],
+        "itemOverrides": [],
+        "teamIds": [
+            "team_q"
+        ],
+        "teamId": null,
+        "viewerUserIds": [],
+        "linkedStorySlugs": [],
+        "updatedAt": "2026-07-19T23:35:34+00:00",
+        "updatedBy": "user_acidone"
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "schemaVersion": 1,
+    "sources": [
+        {
+            "id": "de-nw-public-holidays",
+            "name": "Feiertage Deutschland (NRW)",
+            "type": "ical",
+            "country": "DE",
+            "region": "DE-NW",
+            "url": "https://www.feiertage-deutschland.de/kalender-download/ics/feiertage-deutschland.ics",
+            "is_active": true,
+            "sync_interval_hours": 168,
+            "last_synced_at": "2026-07-27T18:55:17+00:00",
+            "settings": {
+                "color": "#ef4444",
+                "import_category": "holidays"
+            }
+        },
+        {
+            "id": "de-nw-school-holidays",
+            "name": "Schulferien NRW",
+            "type": "ical",
+            "country": "DE",
+            "region": "DE-NW",
+            "url": "https://www.feiertage-deutschland.de/kalender-download/ics/schulferien-nordrhein-westfalen.ics",
+            "is_active": true,
+            "sync_interval_hours": 168,
+            "last_synced_at": "2026-07-27T18:55:18+00:00",
+            "settings": {
+                "color": "#f59e0b",
+                "import_category": "holidays"
+            }
+        }
+    ]
+}
