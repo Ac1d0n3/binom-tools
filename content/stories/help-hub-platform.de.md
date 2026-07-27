@@ -18,7 +18,7 @@ seriesTitle: Governance Help Hub
 
 Diese Seite beschreibt, wie **binom-tools** als **Governance Help Hub** funktioniert: Stories als Markdown-Playbooks, interaktive Referenz-Tools, zweisprachige Oberfläche und ein schlanker Laravel-Stack ohne CMS.
 
-Du kannst das Projekt klonen, eigene Stories unter `content/` ablegen und optional interaktive Tools ergänzen — ideal für Data-Governance- und BI-Teams, die Wissen versionierbar und nah am Code halten wollen.
+Du kannst das Projekt klonen, eigene Stories unter `content/stories/` ablegen und optional interaktive Tools ergänzen — ideal für Data-Governance- und BI-Teams, die Wissen versionierbar und nah am Code halten wollen.
 
 Diese Story ist **Teil 1** der Serie *Governance Help Hub*. Teil 2 behandelt optionale [Logins und Rechte](/playbooks/help-hub-accounts), Teil 3 den [Sprint Planner](/playbooks/help-hub-sprint-planner) (Vorlagen, Storage, Fence-Syntax).
 
@@ -30,11 +30,11 @@ Diese Story ist **Teil 1** der Serie *Governance Help Hub*. Teil 2 behandelt opt
 | --- | --- | --- |
 | Backend | Laravel 12, PHP 8.2+ | Routing, Playbook-Repository, Blade Views |
 | Frontend | Vite, Vanilla JS, CSS | Shell, Suche, TOC, Theme, Locale |
-| Stories | Markdown + YAML Frontmatter | Playbooks unter `content/` |
+| Stories | Markdown + YAML Frontmatter | Playbooks unter `content/stories/` |
 | Tools | Blade + Tool-spezifisches JS | Interaktive Referenz-Workflows |
 | Assets | `public/` | Bilder, gebaute CSS/JS |
 
-**Datenfluss Stories:** `content/*.md` → `PlaybookRepository` → Blade (`playbooks/show`) → gerendertes HTML + TOC aus Überschriften.
+**Datenfluss Stories:** `content/stories/*.md` → `PlaybookRepository` → Blade (`playbooks/show`) → gerendertes HTML + TOC aus Überschriften.
 
 **Datenfluss Tools:** `config/tools.php` → Controller → Blade-Karten und Sidebar-Navigation.
 
@@ -49,8 +49,10 @@ binom-tools/
 │   ├── Playbooks/            # Parser, Renderer, Repository
 │   └── SprintPlanner/        # Vorlagen-Parser, Seeds (siehe Teil 3)
 ├── config/tools.php          # Tool-Navigation, Hero, Ecosystem-Links
-├── content/                  # Markdown-Stories (.de.md / .en.md)
-├── content/sprint-plans/     # Sprint-Planner-Vorlagen
+├── content/
+│   ├── stories/              # Markdown-Stories (.de.md / .en.md)
+│   ├── sprint-plans/         # Sprint-Planner-Vorlagen
+│   └── catalogs/             # Suppliers / Glossary JSON
 ├── public/images/            # Hero-Grafiken, Logos
 ├── resources/
 │   ├── css/                  # Shell, Playbooks, Themes
@@ -69,7 +71,7 @@ Wichtige UI-Komponenten:
 
 ## Story hinzufügen
 
-1. Zwei Dateien anlegen: `content/mein-thema.de.md` und `content/mein-thema.en.md`
+1. Zwei Dateien anlegen: `content/stories/mein-thema.de.md` und `content/stories/mein-thema.en.md`
 2. YAML-Frontmatter ausfüllen (Titel, Beschreibung, Kategorie, Tags, optional `order` und `hero`)
 3. Body in Markdown schreiben — `##` und `###` erzeugen automatisch Anker und TOC-Einträge
 
@@ -209,7 +211,7 @@ Stories sind reine Dateien — Content-Updates können per Git Pull ohne DB-Migr
 Das Projekt ist als **Starter-Template** gedacht:
 
 1. **Repository klonen** und unter eigenem Namen weiterentwickeln
-2. **`content/`** durch eigene Governance-Stories ersetzen oder erweitern
+2. **`content/stories/`** durch eigene Governance-Stories ersetzen oder erweitern
 3. **`config/tools.php`** und Branding (`resources/views/components/tools/brand.blade.php`) anpassen
 4. Optional nur Stories nutzen — interaktive Tools können schrittweise ergänzt werden
 

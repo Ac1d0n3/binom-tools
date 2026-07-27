@@ -2,13 +2,13 @@
 
 **Governance Help Hub** (v1.0.0) for data, BI, and analytics teams — Markdown playbooks, interactive reference workflows, and bilingual UI. Cloneable starter template, no CMS.
 
-> Open-source public advisor by [Binom](https://binom.net) / Thomas Lindackers — not a commercial SaaS product. Dual store (file default, MySQL optional). Stories stay Markdown under `content/`.
+> Open-source public advisor by [Binom](https://binom.net) / Thomas Lindackers — not a commercial SaaS product. Dual store (file default, MySQL optional). Stories stay Markdown under `content/stories/`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for where new code belongs (Foundations / Shared / Domains).
 
 ## What you get
 
-- **Stories (Playbooks)** — Markdown guides under `content/` (DE/EN) with tags, TOC, and hero art
+- **Stories (Playbooks)** — Markdown guides under `content/stories/` (DE/EN) with tags, TOC, and hero art
 - **Calendar hub** — story publish dates, plan tasks, Feiertage + Schulferien NRW (`/calendar`)
 - **Governance workflows** — interactive, copy-paste-ready tools (PII chain, data quality, Prompt Studio, AI Sanitizer, …)
 - **Help hub shell** — search, theme (light/dark), locale, sidebar, overview filters
@@ -113,7 +113,10 @@ Local MAMP-style base path: use `public/.htaccess.local` via `npm run build:loca
 binom-tools/
 ├── app/                 # Controllers, playbooks, catalog, support
 ├── config/tools.php     # Nav, workflows, ecosystem links
-├── content/             # Playbooks (.de.md / .en.md)
+├── content/
+│   ├── stories/         # Playbooks (.de.md / .en.md)
+│   ├── sprint-plans/    # Sprint Planner templates
+│   └── catalogs/        # Suppliers / glossary JSON
 ├── packages/sdk-governance/
 ├── public/              # Built assets, images, prompt-studio config
 ├── resources/
@@ -123,7 +126,7 @@ binom-tools/
 └── routes/web.php
 ```
 
-**Story flow:** `content/*.md` → `PlaybookRepository` → `playbooks/show`  
+**Story flow:** `content/stories/*.md` → `PlaybookRepository` → `playbooks/show`  
 **Governance cards:** `config/tools.php` → controllers → Blade cards + sidebar
 
 ## Configuration (.env)
@@ -140,10 +143,10 @@ Story **views** and **likes** are stored as JSON under `storage/app/playbook-sta
 
 ## Adding content
 
-1. **Story** — add `content/<slug>.en.md` (+ `.de.md`), then clear playbook cache if needed  
+1. **Story** — add `content/stories/<slug>.en.md` (+ `.de.md`), then clear playbook cache if needed  
 2. **Workflow tool** — entry in `config/tools.php` → `nav`, route, controller, view under `resources/views/tools/…`, optional Vite entry in `vite.config.js`
 
-More detail: playbook [Governance Help Hub](content/help-hub-platform.en.md) / [DE](content/help-hub-platform.de.md).
+More detail: playbook [Governance Help Hub](content/stories/help-hub-platform.en.md) / [DE](content/stories/help-hub-platform.de.md).
 
 ## Related
 

@@ -6,7 +6,7 @@ Public Governance Help Hub — single-site Laravel app. **v1.0.0**. Not a SaaS p
 
 - **1:1 parity when refactoring:** look and behaviour stay the same unless the change is an explicit product feature.
 - **Dual store:** default is file storage (no DB required). MySQL is optional. Core features must never require a database.
-- **Stories = Markdown** under `content/*.md` (DE/EN). No CMS / no “Add Story” UI in core.
+- **Stories = Markdown** under `content/stories/*.md` (DE/EN). No CMS / no “Add Story” UI in core.
 - **No new hubs or sidebar entries** without agreement.
 - **Reuse Shared UI** before copy-pasting tabs, modals, or layout toggles.
 - **Qlik Set Analysis / BI workbench CSS** is hands-off unless explicitly requested.
@@ -21,10 +21,13 @@ Public Governance Help Hub — single-site Laravel app. **v1.0.0**. Not a SaaS p
 | Reusable UI | `resources/views/shared/ui/`, `resources/js/shared/` |
 | Domain pages | `resources/views/domains/<domain>/` (during migration: existing `views/<domain>/`) |
 | Domain JS/CSS | `resources/js/domains/<domain>/`, `resources/css/domains/<domain>/` |
-| Playbook content | `content/*.md` only |
+| Playbook stories | `content/stories/*.md` only |
+| Sprint templates | `content/sprint-plans/` |
 | Catalog data (suppliers, glossary, …) | `content/catalogs/{name}/*.json` — **never** new `config/*wave*.php` |
 
-**Rule of thumb:** domain page → `domains/<name>/`; button/toggle/tabs/modal → `shared/ui/`; shell/theme → `foundations/`; shared IDs/labels → taxonomy; **catalog entries → JSON**.
+**Rule of thumb:** domain page → `domains/<name>/`; button/toggle/tabs/modal → `shared/ui/`; shell/theme → `foundations/`; shared IDs/labels → taxonomy; **stories → `content/stories/`**; **catalog entries → JSON**.
+
+Laravel stays **by type** (views / js / php / config). Layer folders (`foundations`, `shared`, `domains`) are mirrored across those trees — not one mega feature folder. Details: [docs/resources-layout.de.md](docs/resources-layout.de.md).
 
 ### Catalogs (JSON)
 
@@ -83,7 +86,13 @@ resources/
     shared/ui/
     domains/
 config/foundations/
-  taxonomy.php
+  taxonomy.php            # TaxonomyFoundation data only
+app/Foundations/
+  Taxonomy.php
+content/
+  stories/                # playbook Markdown
+  sprint-plans/
+  catalogs/{suppliers,glossary}/
 ```
 
 Migration is incremental: existing paths may remain until a domain is moved; delete parallel/dead code after tests are green (**delete-after-green**).

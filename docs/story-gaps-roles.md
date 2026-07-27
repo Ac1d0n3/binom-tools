@@ -5,7 +5,7 @@ Stand: 2026-07-26
 Arbeitsliste für **neue** Playbooks, die woanders geschrieben werden.  
 Keine Story-Bodies in diesem Dokument — nur Briefs.
 
-Nach Ablage als `content/{slug}.en.md` + `content/{slug}.de.md` im Hub verdrahten (Roles-/Path-/Glossary-Config).
+Nach Ablage als `content/stories/{slug}.en.md` + `content/stories/{slug}.de.md` im Hub verdrahten (Roles-/Path-/Glossary-Config).
 
 ---
 

@@ -166,7 +166,7 @@ Parsing and validation: `SprintFenceParser`, `SprintPlanValidator`, `SprintPlanR
 - [ ] `.de.md` and `.en.md` with the same `slug` and the same IDs
 - [ ] `type: sprint-plan` and required frontmatter
 - [ ] Per sprint: fence with `id` / `number` / `title` / `goal`
-- [ ] Story slugs exist under `content/`
+- [ ] Story slugs exist under `content/stories/`
 - [ ] After changes: reload the app and check the template under `/sprint-planner/templates`
 
 ## Next
