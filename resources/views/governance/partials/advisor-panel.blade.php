@@ -27,15 +27,43 @@
 
             <div class="governance-hub__personas" data-governance-personas role="group" aria-label="Role shortcuts">
                 <span class="governance-hub__personas-label" data-text-de="Rolle" data-text-en="Role">Role</span>
-                <button type="button" class="governance-hub__persona" data-governance-persona="architect" data-persona-scenario="new" data-persona-goal="stack">
-                    <span data-text-de="Architect" data-text-en="Architect">Architect</span>
+                <button type="button" class="governance-hub__persona governance-hub__persona--active" data-governance-persona="all" aria-pressed="true">
+                    <span data-text-de="Alle" data-text-en="All">All</span>
                 </button>
-                <button type="button" class="governance-hub__persona" data-governance-persona="analyst" data-persona-scenario="extend" data-persona-goal="kpi">
-                    <span data-text-de="Analyst" data-text-en="Analyst">Analyst</span>
-                </button>
-                <button type="button" class="governance-hub__persona" data-governance-persona="dpo" data-persona-scenario="help" data-persona-goal="pii">
-                    <span data-text-de="DPO" data-text-en="DPO">DPO</span>
-                </button>
+                @php
+                    $advisorRoleDefaults = [
+                        'steward' => ['scenario' => 'extend', 'goal' => 'dq'],
+                        'owner' => ['scenario' => 'help', 'goal' => 'pii'],
+                        'product-owner' => ['scenario' => 'extend', 'goal' => 'kpi'],
+                        'architect' => ['scenario' => 'new', 'goal' => 'stack'],
+                        'custodian' => ['scenario' => 'extend', 'goal' => 'stack'],
+                        'consumer' => ['scenario' => 'help', 'goal' => 'kpi'],
+                    ];
+                    $hubRoles = collect(config('roles.roles', []))
+                        ->sortBy(fn ($role) => (int) ($role['order'] ?? 999))
+                        ->values();
+                @endphp
+                @foreach ($hubRoles as $role)
+                    @php
+                        $roleId = (string) ($role['id'] ?? '');
+                        if ($roleId === '') {
+                            continue;
+                        }
+                        $titleEn = (string) ($role['title']['en'] ?? $roleId);
+                        $titleDe = (string) ($role['title']['de'] ?? $titleEn);
+                        $defaults = $advisorRoleDefaults[$roleId] ?? ['scenario' => 'help', 'goal' => 'learning'];
+                    @endphp
+                    <button
+                        type="button"
+                        class="governance-hub__persona"
+                        data-governance-persona="{{ $roleId }}"
+                        data-persona-scenario="{{ $defaults['scenario'] }}"
+                        data-persona-goal="{{ $defaults['goal'] }}"
+                        aria-pressed="false"
+                    >
+                        <span data-text-de="{{ $titleDe }}" data-text-en="{{ $titleEn }}">{{ $titleEn }}</span>
+                    </button>
+                @endforeach
             </div>
 
             <div class="governance-advisor__layout">
@@ -98,36 +126,40 @@
                     </div>
 
                     <div class="governance-advisor__select-grid">
-                        <label>
-                            <span
-                                data-governance-domain-label
-                                data-text-de="Quelltyp"
-                                data-text-en="Source type"
-                            >Source type</span>
-                            <select name="domain">
-                                <option value="unknown" data-text-de="Noch offen / gemischt" data-text-en="Open / mixed">Open / mixed</option>
-                                <option value="crm" data-text-de="CRM & Revenue" data-text-en="CRM & revenue">CRM & revenue</option>
-                                <option value="erp" data-text-de="ERP, Finance & Procurement" data-text-en="ERP, finance & procurement">ERP, finance & procurement</option>
-                                <option value="hcm" data-text-de="HCM & Workforce" data-text-en="HCM & workforce">HCM & workforce</option>
-                                <option value="collab" data-text-de="Collaboration & Service" data-text-en="Collaboration & service">Collaboration & service</option>
-                                <option value="finance" data-text-de="Reguliertes Finance Reporting" data-text-en="Regulated finance reporting">Regulated finance reporting</option>
-                            </select>
-                        </label>
-                        <label>
-                            <span
-                                data-governance-platform-label
-                                data-text-de="Ziel-Stack"
-                                data-text-en="Target stack"
-                            >Target stack</span>
-                            <select name="platform">
-                                <option value="unknown" data-text-de="Noch offen / mehrere" data-text-en="Open / multiple">Open / multiple</option>
-                                <option value="fabric" data-text-de="Microsoft Fabric / Power BI" data-text-en="Microsoft Fabric / Power BI">Microsoft Fabric / Power BI</option>
-                                <option value="databricks" data-text-de="Databricks Lakehouse" data-text-en="Databricks Lakehouse">Databricks Lakehouse</option>
-                                <option value="snowflake-dbt" data-text-de="Snowflake / dbt" data-text-en="Snowflake / dbt">Snowflake / dbt</option>
-                                <option value="sap" data-text-de="SAP-nahe Landschaft" data-text-en="SAP-near landscape">SAP-near landscape</option>
-                                <option value="opensource" data-text-de="Open Source / leichtgewichtig" data-text-en="Open source / lightweight">Open source / lightweight</option>
-                            </select>
-                        </label>
+                        <span
+                            class="governance-advisor__select-label governance-advisor__select-label--a"
+                            data-governance-domain-label
+                            data-text-de="Quelltyp"
+                            data-text-en="Source type"
+                        >Source type</span>
+                        <span
+                            class="governance-advisor__select-label governance-advisor__select-label--b"
+                            data-governance-platform-label
+                            data-text-de="Ziel-Stack"
+                            data-text-en="Target stack"
+                        >Target stack</span>
+                        <select class="governance-advisor__select-control--a" name="domain">
+                            <option value="unknown" data-text-de="Noch offen / gemischt" data-text-en="Open / mixed">Open / mixed</option>
+                            <option value="crm" data-text-de="CRM & Revenue" data-text-en="CRM & revenue">CRM & revenue</option>
+                            <option value="erp" data-text-de="ERP, Finance & Procurement" data-text-en="ERP, finance & procurement">ERP, finance & procurement</option>
+                            <option value="hcm" data-text-de="HCM & Workforce" data-text-en="HCM & workforce">HCM & workforce</option>
+                            <option value="collab" data-text-de="Collaboration & Service" data-text-en="Collaboration & service">Collaboration & service</option>
+                            <option value="finance" data-text-de="Reguliertes Finance Reporting" data-text-en="Regulated finance reporting">Regulated finance reporting</option>
+                        </select>
+                        <select class="governance-advisor__select-control--b" name="platform">
+                            <option value="unknown" data-text-de="Noch offen / mehrere" data-text-en="Open / multiple">Open / multiple</option>
+                            <option value="fabric" data-text-de="Microsoft Fabric / Power BI" data-text-en="Microsoft Fabric / Power BI">Microsoft Fabric / Power BI</option>
+                            <option value="databricks" data-text-de="Databricks Lakehouse" data-text-en="Databricks Lakehouse">Databricks Lakehouse</option>
+                            <option value="snowflake-dbt" data-text-de="Snowflake / dbt" data-text-en="Snowflake / dbt">Snowflake / dbt</option>
+                            <option value="sap" data-text-de="SAP-nahe Landschaft" data-text-en="SAP-near landscape">SAP-near landscape</option>
+                            <option value="opensource" data-text-de="Open Source / leichtgewichtig" data-text-en="Open source / lightweight">Open source / lightweight</option>
+                            <option value="custom" data-text-de="Eigener Stack…" data-text-en="Custom stack…">Custom stack…</option>
+                        </select>
+                        <span class="governance-advisor__select-spacer governance-advisor__select-action--a" aria-hidden="true"></span>
+                        <button type="button" class="governance-hub__button governance-hub__button--compact governance-advisor__stack-edit governance-advisor__select-action--b" data-governance-stack-builder-open hidden>
+                            <i class="fa-solid fa-cubes" aria-hidden="true"></i>
+                            <span data-text-de="Stack Builder öffnen" data-text-en="Open Stack Builder">Open Stack Builder</span>
+                        </button>
                     </div>
 
                     <div class="governance-advisor__dq" data-governance-dq-panel>
@@ -141,28 +173,24 @@
                             data-text-en="Data quality is a governance path here: narrow down problem and layer first, then derive rules, monitoring, and gates."
                         >Data quality is a governance path here: narrow down problem and layer first, then derive rules, monitoring, and gates.</p>
                         <div class="governance-advisor__select-grid">
-                            <label>
-                                <span data-text-de="DQ Ziel" data-text-en="DQ goal">DQ goal</span>
-                                <select name="dqMode">
-                                    <option value="health_check" data-text-de="Health Check" data-text-en="Health check">Health check</option>
-                                    <option value="known_issue" data-text-de="Bekanntes Problem" data-text-en="Known issue">Known issue</option>
-                                    <option value="new_source_gate" data-text-de="Neue Quelle absichern" data-text-en="Gate a new source">Gate a new source</option>
-                                    <option value="report_stabilization" data-text-de="Report stabilisieren" data-text-en="Stabilize a report">Stabilize a report</option>
-                                    <option value="mart_quality_gate" data-text-de="Mart Quality Gate" data-text-en="Mart quality gate">Mart quality gate</option>
-                                </select>
-                            </label>
-                            <label>
-                                <span data-text-de="DQ Schicht" data-text-en="DQ layer">DQ layer</span>
-                                <select name="dqLayer">
-                                    <option value="source" data-text-de="Source/API" data-text-en="Source/API">Source/API</option>
-                                    <option value="raw" data-text-de="Raw/Ingestion" data-text-en="Raw/ingestion">Raw/ingestion</option>
-                                    <option value="transform" data-text-de="Transformation" data-text-en="Transformation">Transformation</option>
-                                    <option value="mart" data-text-de="Mart" data-text-en="Mart">Mart</option>
-                                    <option value="semantic" data-text-de="Semantic Layer" data-text-en="Semantic layer">Semantic layer</option>
-                                    <option value="bi" data-text-de="BI Report" data-text-en="BI report">BI report</option>
-                                    <option value="master_data" data-text-de="Stammdaten" data-text-en="Master data">Master data</option>
-                                </select>
-                            </label>
+                            <span class="governance-advisor__select-label governance-advisor__select-label--a" data-text-de="DQ Ziel" data-text-en="DQ goal">DQ goal</span>
+                            <span class="governance-advisor__select-label governance-advisor__select-label--b" data-text-de="DQ Schicht" data-text-en="DQ layer">DQ layer</span>
+                            <select class="governance-advisor__select-control--a" name="dqMode">
+                                <option value="health_check" data-text-de="Health Check" data-text-en="Health check">Health check</option>
+                                <option value="known_issue" data-text-de="Bekanntes Problem" data-text-en="Known issue">Known issue</option>
+                                <option value="new_source_gate" data-text-de="Neue Quelle absichern" data-text-en="Gate a new source">Gate a new source</option>
+                                <option value="report_stabilization" data-text-de="Report stabilisieren" data-text-en="Stabilize a report">Stabilize a report</option>
+                                <option value="mart_quality_gate" data-text-de="Mart Quality Gate" data-text-en="Mart quality gate">Mart quality gate</option>
+                            </select>
+                            <select class="governance-advisor__select-control--b" name="dqLayer">
+                                <option value="source" data-text-de="Source/API" data-text-en="Source/API">Source/API</option>
+                                <option value="raw" data-text-de="Raw/Ingestion" data-text-en="Raw/ingestion">Raw/ingestion</option>
+                                <option value="transform" data-text-de="Transformation" data-text-en="Transformation">Transformation</option>
+                                <option value="mart" data-text-de="Mart" data-text-en="Mart">Mart</option>
+                                <option value="semantic" data-text-de="Semantic Layer" data-text-en="Semantic layer">Semantic layer</option>
+                                <option value="bi" data-text-de="BI Report" data-text-en="BI report">BI report</option>
+                                <option value="master_data" data-text-de="Stammdaten" data-text-en="Master data">Master data</option>
+                            </select>
                         </div>
                         <fieldset class="governance-advisor__fieldset">
                             <legend data-text-de="Fehlerklasse" data-text-en="Issue class">Issue class</legend>

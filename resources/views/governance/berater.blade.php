@@ -90,6 +90,7 @@
             <x-governance.author-byline compact />
         </header>
 
+        @include('governance.partials.stack-builder-modal')
         @include('governance.partials.advisor-panel', ['standalone' => true])
 
         <x-governance.seo-guide

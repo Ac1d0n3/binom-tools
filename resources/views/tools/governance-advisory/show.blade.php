@@ -306,6 +306,13 @@
                             <p data-text-de="Diese Ansicht ist mit Beispielwerten aus dem Finance Governance Workspace gefüllt. Du siehst dadurch direkt, wie Eingaben, Ergebnisreport und Plan-Übergabe zusammenarbeiten." data-text-en="This view is filled with example values from the Finance Governance Workspace. It shows how inputs, result report, and plan handoff work together.">This view is filled with example values from the Finance Governance Workspace. It shows how inputs, result report, and plan handoff work together.</p>
                         </div>
                     @endif
+                    @if ($toolId === 'custom-stack-builder')
+                        <div
+                            class="stack-builder stack-builder--tool"
+                            data-stack-builder-root
+                            data-stack-builder-mode="tool"
+                        ></div>
+                    @endif
                     <label>
                         <span data-text-de="Kurznotiz" data-text-en="Short note">Short note</span>
                         <input type="text" class="tools-input" name="note" data-governance-tool-note placeholder="Workshop note, owner, decision context">

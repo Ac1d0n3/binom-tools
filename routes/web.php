@@ -349,6 +349,9 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/tools/governance-stack-advisor', [GovernanceAdvisoryToolController::class, 'show'])
         ->defaults('toolId', 'governance-stack-advisor')
         ->name($name('tools.governance-stack-advisor'));
+    Route::get('/tools/custom-stack-builder', [GovernanceAdvisoryToolController::class, 'show'])
+        ->defaults('toolId', 'custom-stack-builder')
+        ->name($name('tools.custom-stack-builder'));
     Route::get('/tools/pii-dsdr-readiness-checker', [GovernanceAdvisoryToolController::class, 'show'])
         ->defaults('toolId', 'pii-dsdr-readiness-checker')
         ->name($name('tools.pii-dsdr-readiness-checker'));

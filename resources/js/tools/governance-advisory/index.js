@@ -3,6 +3,7 @@ import { downloadTextFile } from '../discovery-shared/download.js';
 import { bindPlanTransferUi } from '../discovery-shared/plan-transfer-ui.js';
 import { deleteGovernanceToolRecord, recordsForTool, upsertGovernanceToolRecord } from '../governance-tool-workspace-store.js';
 import { acceptKpiIntake, deleteKpiIntake, loadKpiWorkspace, upsertKpiIntake } from '../kpi-workspace-store.js';
+import { mountStackBuilder, readCustomStack, syncSelectionToToolFields } from '../../governance/stack-builder.js';
 
 const texts = {
     'discovery.applyEmpty': 'Bitte erst Eingaben erfassen.',
@@ -756,6 +757,20 @@ function mount(root) {
 
     render();
     kpiManager?.renderList();
+
+    if (config.id === 'custom-stack-builder') {
+        const builderHost = root.querySelector('[data-stack-builder-root]');
+        if (builderHost) {
+            const initial = readCustomStack();
+            mountStackBuilder(builderHost, {
+                selection: initial,
+                onChange: (selection) => {
+                    syncSelectionToToolFields(root, selection);
+                },
+            });
+            syncSelectionToToolFields(root, initial);
+        }
+    }
 }
 
 document.querySelectorAll('[data-governance-tool-root]').forEach(mount);

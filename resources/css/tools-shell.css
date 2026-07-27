@@ -243,6 +243,8 @@ html:has(.tools-shell__main--sprint-planner) body {
     height: 100%;
     max-height: 100dvh;
     overflow: hidden;
+    /* Scroll lives in main/sidebar — do not reserve a document gutter (looks like a shrink). */
+    scrollbar-gutter: auto;
 }
 
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__body,
@@ -275,6 +277,7 @@ html:has(.tools-shell__main--sprint-planner) body {
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__main,
@@ -285,6 +288,8 @@ html:has(.tools-shell__main--sprint-planner) body {
     max-height: 100%;
     overflow-x: clip;
     overflow-y: auto;
+    /* Keep content width stable when advisor/tabs change height. */
+    scrollbar-gutter: stable;
 }
 
 @media (min-width: 769px) {
@@ -1320,7 +1325,7 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     width: 100%;
     max-width: none;
     display: grid;
-    gap: 0.25rem;
+    gap: 0;
 }
 
 .governance-hub__hero,
@@ -1337,6 +1342,7 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.34fr);
     gap: 0.85rem;
     overflow-anchor: none;
+    margin-bottom: 0.25rem;
     padding: clamp(0.75rem, 1.3vw, 1rem);
     border-color: color-mix(in srgb, var(--theme-color-primary) 18%, var(--base-border-color));
     background:
@@ -1563,9 +1569,10 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 
 .governance-hub__tab--active {
     border-color: color-mix(in srgb, var(--theme-color-primary) 34%, var(--base-border-color));
-    border-bottom-color: var(--content-background-color);
-    background: var(--content-background-color);
+    border-bottom-color: color-mix(in srgb, var(--content-background-color) 88%, var(--surface-background-color));
+    background: color-mix(in srgb, var(--content-background-color) 88%, var(--surface-background-color));
     color: var(--content-font-color);
+    z-index: 1;
 }
 
 .governance-hub__tab:focus-visible {
@@ -2065,6 +2072,8 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 
 .governance-advisor {
     border-color: color-mix(in srgb, var(--theme-color-primary) 34%, var(--base-border-color));
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
 }
 
 .governance-advisor__heading {
@@ -2097,14 +2106,18 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 }
 
 .governance-advisor__fieldset legend,
-.governance-advisor__select-grid label > span {
+.governance-advisor__select-label {
     display: block;
-    margin: 0 0 0.68rem;
+    margin: 0;
     color: color-mix(in srgb, var(--content-font-color) 82%, transparent);
     font-size: 0.78rem;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.25;
     text-transform: uppercase;
+}
+
+.governance-advisor__fieldset legend {
+    margin: 0 0 0.68rem;
 }
 
 .governance-advisor__options {
@@ -2205,15 +2218,32 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 .governance-advisor__select-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    grid-template-areas:
+        "label-a label-b"
+        "control-a control-b"
+        "action-a action-b";
+    column-gap: 0.75rem;
+    row-gap: 0.4rem;
+    align-items: stretch;
 }
 
-.governance-advisor__select-grid label {
-    min-width: 0;
+.governance-advisor__select-label {
+    min-height: 2.5em;
+    display: flex;
+    align-items: flex-end;
 }
+
+.governance-advisor__select-label--a { grid-area: label-a; }
+.governance-advisor__select-label--b { grid-area: label-b; }
+.governance-advisor__select-control--a { grid-area: control-a; }
+.governance-advisor__select-control--b { grid-area: control-b; }
+.governance-advisor__select-action--a { grid-area: action-a; }
+.governance-advisor__select-action--b { grid-area: action-b; }
 
 .governance-advisor__select-grid select {
+    box-sizing: border-box;
     width: 100%;
+    min-width: 0;
     min-height: 2.55rem;
     border: 1px solid color-mix(in srgb, var(--base-border-color) 82%, transparent);
     border-radius: 8px;
@@ -2222,6 +2252,188 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     font: inherit;
     font-weight: 700;
     padding: 0.55rem 0.7rem;
+}
+
+.governance-advisor__select-spacer {
+    min-height: 0;
+}
+
+.governance-advisor__stack-edit[hidden] {
+    display: none !important;
+}
+
+.governance-advisor__stack-edit {
+    justify-self: start;
+    width: fit-content;
+    margin-top: 0.1rem;
+}
+
+.governance-advisor__pill--preferred > span {
+    border-color: color-mix(in srgb, var(--theme-color-primary) 55%, var(--base-border-color));
+    background: color-mix(in srgb, var(--theme-color-primary) 10%, var(--content-background-color));
+}
+
+.governance-advisor__pill--muted {
+    opacity: 0.38;
+}
+
+.governance-advisor__pill--muted > span {
+    border-style: dashed;
+}
+
+.governance-hub__card--filtered-out {
+    opacity: 0.22;
+    filter: grayscale(0.35);
+    pointer-events: none;
+}
+
+.governance-hub__tab-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    margin-left: 0.25rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-color-primary) 16%, transparent);
+    color: var(--theme-color-primary);
+    font-size: 0.72em;
+    font-weight: 700;
+}
+
+.governance-hub__tab-filter[hidden] {
+    display: none !important;
+}
+
+.governance-hub__filter-panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.85rem;
+}
+
+.governance-hub__hero-actions [data-governance-header-filter-reset][hidden] {
+    display: none !important;
+}
+
+.governance-hub__filter-empty {
+    margin: 0.75rem 0;
+    padding: 0.7rem 0.85rem;
+    border: 1px dashed color-mix(in srgb, var(--base-border-color) 80%, transparent);
+    border-radius: 8px;
+    font-size: 0.92rem;
+}
+
+.governance-hub__filter-empty button {
+    margin-left: 0.35rem;
+    border: 0;
+    background: transparent;
+    color: var(--theme-color-primary);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.stack-builder {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 1rem;
+}
+
+.stack-builder__head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.stack-builder__summary {
+    color: color-mix(in srgb, var(--content-font-color) 72%, transparent);
+    font-size: 0.9rem;
+}
+
+.stack-builder__layer {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.stack-builder__layer-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, var(--content-font-color) 78%, transparent);
+}
+
+.stack-builder__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.stack-builder__chip {
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 82%, transparent);
+    border-radius: 999px;
+    background: var(--content-background-color);
+    color: var(--content-font-color);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 650;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+}
+
+.stack-builder__chip--active,
+.stack-builder__chip[aria-pressed="true"] {
+    border-color: var(--theme-color-primary);
+    background: color-mix(in srgb, var(--theme-color-primary) 14%, var(--content-background-color));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-color-primary) 35%, transparent);
+}
+
+.stack-builder-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    width: min(720px, calc(100vw - 1.5rem));
+    max-width: calc(100vw - 1.5rem);
+    height: fit-content;
+    max-height: min(88vh, 900px);
+    overflow: auto;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--base-border-color) 70%, transparent);
+    border-radius: 12px;
+    background: var(--content-background-color);
+    color: var(--content-font-color);
+    box-shadow: 0 18px 48px color-mix(in srgb, #000 24%, transparent);
+}
+
+.stack-builder-modal::backdrop {
+    background: color-mix(in srgb, #0b1220 55%, transparent);
+}
+
+.stack-builder-modal__sheet {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+}
+
+.stack-builder-modal__header,
+.stack-builder-modal__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stack-builder-modal__footer {
+    border-top: 1px solid color-mix(in srgb, var(--base-border-color) 70%, transparent);
+    padding-top: 0.75rem;
 }
 
 .governance-advisor__followup {
@@ -5142,7 +5354,6 @@ html[data-color-scheme='dark'] .governance-radar__item-icon--editorial {
     .governance-advisory-tool__grid,
     .governance-advisor__options,
     .governance-advisor__options--three,
-    .governance-advisor__select-grid,
     .governance-advisor__save-grid,
     .governance-sessions__facts,
     .governance-report__facts,
@@ -5151,6 +5362,17 @@ html[data-color-scheme='dark'] .governance-radar__item-icon--editorial {
     .governance-hub__panel-tabs,
     .governance-hub__tabs {
         grid-template-columns: 1fr;
+    }
+
+    .governance-advisor__select-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "label-a"
+            "control-a"
+            "action-a"
+            "label-b"
+            "control-b"
+            "action-b";
     }
 
     .governance-hub__decision-card {

@@ -515,6 +515,10 @@ const shellLabels = {
         'card.governance-stack-advisor.title': 'Governance-Stack auswählen',
         'card.governance-stack-advisor.description':
             'Stack-Shortlist nach Cloud, BI, Catalog, Residency, Skills, Zertifikaten und Risiko vorbereiten.',
+        'nav.custom-stack-builder': 'Stack Builder',
+        'card.custom-stack-builder.title': 'Eigenen Stack bauen',
+        'card.custom-stack-builder.description':
+            'Ist- oder Ziel-Stack je Funktion dokumentieren: Produkte wählen und Platform-Tags ableiten.',
         'nav.pii-dsdr-readiness-checker': 'PII/DSDR Readiness',
         'card.pii-dsdr-readiness-checker.title': 'PII/DSDR Readiness prüfen',
         'card.pii-dsdr-readiness-checker.description':
@@ -1658,6 +1662,10 @@ const shellLabels = {
         'card.governance-stack-advisor.title': 'Governance Stack Advisor',
         'card.governance-stack-advisor.description':
             'Prepare a stack shortlist by cloud, BI, catalog, residency, skills, certifications, and risk.',
+        'nav.custom-stack-builder': 'Stack Builder',
+        'card.custom-stack-builder.title': 'Custom Stack Builder',
+        'card.custom-stack-builder.description':
+            'Document current or target stack by function: pick products and derive platform tags.',
         'nav.pii-dsdr-readiness-checker': 'PII/DSDR Readiness',
         'card.pii-dsdr-readiness-checker.title': 'PII/DSDR Readiness Checker',
         'card.pii-dsdr-readiness-checker.description':

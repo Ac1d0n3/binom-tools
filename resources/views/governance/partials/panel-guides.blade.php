@@ -32,12 +32,12 @@
                 $leadEn = $journey['lead']['en'] ?? '';
                 $leadDe = $journey['lead']['de'] ?? $leadEn;
                 $persona = match ($journey['id'] ?? '') {
-                    'stack' => 'architect',
-                    'kpi' => 'analyst',
-                    'pii' => 'dpo',
-                    'supplier' => 'architect dpo',
-                    'collect' => 'analyst architect dpo',
-                    default => 'architect analyst dpo',
+                    'stack' => 'architect custodian',
+                    'kpi' => 'product-owner consumer',
+                    'pii' => 'owner steward custodian',
+                    'supplier' => 'architect owner steward custodian',
+                    'collect' => 'product-owner architect owner steward consumer custodian',
+                    default => 'architect product-owner owner steward custodian consumer',
                 };
             @endphp
             <article class="governance-hub__journey" data-persona="{{ $persona }}">
@@ -78,7 +78,8 @@
             @foreach ([
                 [
                     'icon' => 'fa-layer-group',
-                    'persona' => 'architect',
+                    'persona' => 'architect custodian',
+                    'goal' => 'stack',
                     'question' => ['de' => 'Welcher Stack passt?', 'en' => 'Which stack fits?'],
                     'helps' => ['de' => 'Vergleicht Fabric, Databricks, Snowflake/dbt, GCP, SAP und Open Source nach Cloud, BI, Catalog, Residency und Zertifikaten.', 'en' => 'Compares Fabric, Databricks, Snowflake/dbt, GCP, SAP, and open source by cloud, BI, catalog, residency, and certifications.'],
                     'outcome' => ['de' => 'Shortlist, offene Architekturfragen und Lern-/Zertifikatspfad.', 'en' => 'Shortlist, open architecture questions, and learning/certification path.'],
@@ -89,7 +90,8 @@
                 ],
                 [
                     'icon' => 'fa-database',
-                    'persona' => 'architect dpo',
+                    'persona' => 'architect owner custodian',
+                    'goal' => 'supplier',
                     'question' => ['de' => 'Welche Quelle zuerst laden?', 'en' => 'Which source should load first?'],
                     'helps' => ['de' => 'Zeigt pro Supplier Kernobjekte, Skip-Tabellen, PII/DSDR-Risiken und typische KPI-Kandidaten.', 'en' => 'Shows core entities, skip tables, PII/DSDR risks, and typical KPI candidates per supplier.'],
                     'outcome' => ['de' => 'Source Scope mit must-have, optional, skip und Review-Fragen.', 'en' => 'Source scope with must-have, optional, skip, and review questions.'],
@@ -100,7 +102,8 @@
                 ],
                 [
                     'icon' => 'fa-gauge-high',
-                    'persona' => 'analyst',
+                    'persona' => 'product-owner consumer',
+                    'goal' => 'kpi',
                     'question' => ['de' => 'Welche KPI wird zu welcher Tabelle?', 'en' => 'Which KPI becomes which table?'],
                     'helps' => ['de' => 'Klärt Geschäftsfrage, Formel, Grain, Dimensionen, Owner, Akzeptanzbeispiel und BI-Verwendung.', 'en' => 'Clarifies business question, formula, grain, dimensions, owner, acceptance example, and BI usage.'],
                     'outcome' => ['de' => 'KPI Card plus erste Fact-/Dimension-Kandidaten.', 'en' => 'KPI card plus first fact/dimension candidates.'],
@@ -111,7 +114,8 @@
                 ],
                 [
                     'icon' => 'fa-shield-halved',
-                    'persona' => 'dpo',
+                    'persona' => 'owner steward custodian',
+                    'goal' => 'pii',
                     'question' => ['de' => 'Welche Risiken blockieren den Start?', 'en' => 'Which risks block the start?'],
                     'helps' => ['de' => 'Prüft PII, Freitext, DSDR-Suchkeys, Access, Retention, DQ-Gates und Compliance-Nachweise.', 'en' => 'Reviews PII, free text, DSDR search keys, access, retention, DQ gates, and compliance evidence.'],
                     'outcome' => ['de' => 'Risiko-Backlog, Policy-Entscheidungen und erste Governance Gates.', 'en' => 'Risk backlog, policy decisions, and first governance gates.'],
@@ -129,7 +133,7 @@
                     $outcomeEn = $decision['outcome']['en'];
                     $outcomeDe = $decision['outcome']['de'];
                 @endphp
-                <article class="governance-hub__decision-card" data-persona="{{ $decision['persona'] }}">
+                <article class="governance-hub__decision-card" data-persona="{{ $decision['persona'] }}" data-goal="{{ $decision['goal'] ?? '' }}">
                     <div class="governance-hub__decision-icon">
                         <i class="fa-solid {{ $decision['icon'] }}" aria-hidden="true"></i>
                     </div>

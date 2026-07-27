@@ -646,6 +646,7 @@ class GovernanceHubController extends Controller
             'source-scope-builder',
             'mart-design-brief-generator',
             'governance-stack-advisor',
+            'custom-stack-builder',
             'pii-dsdr-readiness-checker',
             'decision-brief-generator',
             'vendor-learning-path-builder',
@@ -692,6 +693,7 @@ class GovernanceHubController extends Controller
         return [
             'tools' => [
                 'governance-stack-advisor' => locale_route('tools.governance-stack-advisor'),
+                'custom-stack-builder' => locale_route('tools.custom-stack-builder'),
                 'source-scope-builder' => locale_route('tools.source-scope-builder'),
                 'kpi-requirements-intake' => locale_route('tools.kpi-requirements-intake'),
                 'mart-design-brief-generator' => locale_route('tools.mart-design-brief-generator'),

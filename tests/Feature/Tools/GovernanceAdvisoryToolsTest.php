@@ -17,6 +17,7 @@ class GovernanceAdvisoryToolsTest extends TestCase
             ['/tools/source-scope-builder', 'Source Scope Builder'],
             ['/tools/mart-design-brief-generator', 'Mart Design Brief Generator'],
             ['/tools/governance-stack-advisor', 'Governance Stack Advisor'],
+            ['/tools/custom-stack-builder', 'Custom Stack Builder'],
             ['/tools/pii-dsdr-readiness-checker', 'PII/DSDR Readiness Checker'],
             ['/tools/decision-brief-generator', 'Decision Brief Generator'],
             ['/tools/vendor-learning-path-builder', 'Vendor Learning Path Builder'],

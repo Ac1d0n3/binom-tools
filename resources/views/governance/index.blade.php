@@ -64,13 +64,13 @@
                     <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
                     <span data-text-de="Speichern" data-text-en="Save">Save</span>
                 </button>
+                <button type="button" class="governance-hub__panel-tab" id="governance-panel-tab-filter" data-governance-panel-toggle="governance-filter-panel" role="tab" aria-controls="governance-filter-panel" aria-selected="false" tabindex="-1">
+                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                    <span data-text-de="Filter" data-text-en="Filter">Filter</span>
+                </button>
                 <button type="button" class="governance-hub__panel-tab" id="governance-panel-tab-help" data-governance-panel-toggle="governance-help-panel" role="tab" aria-controls="governance-help-panel" aria-selected="false" tabindex="-1">
                     <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
-                    <span data-text-de="Hilfe · FAQ" data-text-en="Help · FAQ">Help · FAQ</span>
-                </button>
-                <button type="button" class="governance-hub__panel-tab" id="governance-panel-tab-tool-info" data-governance-panel-toggle="governance-tool-info-panel" role="tab" aria-controls="governance-tool-info-panel" aria-selected="false" tabindex="-1">
-                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    <span data-text-de="Tool-Info" data-text-en="Tool info">Tool info</span>
+                    <span data-text-de="Hilfe" data-text-en="Help">Help</span>
                 </button>
             </nav>
 
@@ -151,6 +151,39 @@
                 </div>
             </section>
 
+            <article class="governance-advisor__helpbox" id="governance-filter-panel" aria-labelledby="governance-panel-tab-filter" data-governance-panel role="tabpanel" hidden>
+                <div class="governance-advisor__helpbox-head">
+                    <span class="governance-advisor__helpbox-icon">
+                        <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <span class="governance-hub__eyebrow" data-text-de="Hub-Filter" data-text-en="Hub filter">Hub filter</span>
+                        <strong data-text-de="Rolle, Goal, Domain und Stack steuern Advisor, Guides, Workshop und Tools." data-text-en="Role, goal, domain, and stack steer advisor, guides, workshop, and tools.">Role, goal, domain, and stack steer advisor, guides, workshop, and tools.</strong>
+                    </span>
+                </div>
+                <div class="governance-advisor__helpbox-content">
+                    <p
+                        data-governance-hub-context-label
+                        data-text-de="Kein Filter aktiv — Rolle „Alle“ und offene Domain/Stack."
+                        data-text-en="No filter active — role “All” and open domain/stack."
+                    >No filter active — role “All” and open domain/stack.</p>
+                    <ol>
+                        <li data-text-de="Rolle im Advisor wählen: Goals werden priorisiert, Guides/Tools gefiltert." data-text-en="Pick a role in the advisor: goals are prioritized, guides/tools are filtered.">Pick a role in the advisor: goals are prioritized, guides/tools are filtered.</li>
+                        <li data-text-de="Domain oder Stack setzen: Empfehlungen und Karten werden enger." data-text-en="Set domain or stack: recommendations and cards get narrower.">Set domain or stack: recommendations and cards get narrower.</li>
+                        <li data-text-de="Eigener Stack: Platform „Custom“ öffnet den Stack Builder." data-text-en="Custom stack: platform “Custom” opens the Stack Builder.">Custom stack: platform “Custom” opens the Stack Builder.</li>
+                    </ol>
+                    <div class="governance-hub__filter-panel-actions">
+                        <button type="button" class="governance-hub__button governance-hub__button--primary" data-governance-hub-filter-clear>
+                            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                            <span data-text-de="Filter zurücksetzen" data-text-en="Reset filter">Reset filter</span>
+                        </button>
+                        <button type="button" class="governance-hub__button" data-governance-open-panel="governance-save-panel" data-text-de="Zum Speichern" data-text-en="Go to save">
+                            <span data-text-de="Zum Speichern" data-text-en="Go to save">Go to save</span>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
             <article class="governance-advisor__helpbox" id="governance-help-panel" aria-labelledby="governance-panel-tab-help" data-governance-panel role="tabpanel" hidden>
                 <div class="governance-advisor__helpbox-head">
                     <span class="governance-advisor__helpbox-icon">
@@ -174,6 +207,12 @@
                         <li data-text-de="Speichere die Session, wenn daraus Report, Plan-Aufgabe oder Change Request entstehen soll." data-text-en="Save the session when it should become a report, plan task, or change request.">Save the session when it should become a report, plan task, or change request.</li>
                     </ol>
 
+                    <h3 data-text-de="Zusammenspiel der Tools" data-text-en="How the tools connect">How the tools connect</h3>
+                    <p
+                        data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report. KPI Intake erzeugt KPI-Karten, Source Scope den Ladeumfang, Mart Design Tabellenentscheidungen, Data Quality Regeln/Gates, Decision Brief die Freigabe."
+                        data-text-en="Each tool works standalone, but contributes a block to the same governance report. KPI Intake creates KPI cards, Source Scope the load scope, Mart Design table decisions, Data Quality rules/gates, Decision Brief the approval."
+                    >Each tool works standalone, but contributes a block to the same governance report. KPI Intake creates KPI cards, Source Scope the load scope, Mart Design table decisions, Data Quality rules/gates, Decision Brief the approval.</p>
+
                     @if (! empty($hubFaqs))
                         <div class="governance-hub__faq" id="governance-faq" aria-labelledby="governance-faq-title">
                             <h3 id="governance-faq-title" data-text-de="Häufige Fragen" data-text-en="FAQ">FAQ</h3>
@@ -187,29 +226,6 @@
                             </div>
                         </div>
                     @endif
-                </div>
-            </article>
-
-            <article class="governance-advisor__helpbox" id="governance-tool-info-panel" aria-labelledby="governance-panel-tab-tool-info" data-governance-panel role="tabpanel" hidden>
-                <div class="governance-advisor__helpbox-head">
-                    <span class="governance-advisor__helpbox-icon">
-                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    </span>
-                    <span>
-                        <span class="governance-hub__eyebrow" data-text-de="Zusammenspiel der Tools" data-text-en="How the tools connect">How the tools connect</span>
-                        <strong data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report." data-text-en="Each tool works standalone, but contributes a block to the same governance report.">Each tool works standalone, but contributes a block to the same governance report.</strong>
-                    </span>
-                </div>
-                <div class="governance-advisor__helpbox-content">
-                    <p
-                        data-text-de="Die Empfehlungen rechts sind nicht zufällig: Sie zeigen die nächste sinnvolle Arbeitsfläche für deine Auswahl. KPI Intake erzeugt KPI-Karten, Source Scope erzeugt Ladeumfang und PII-Fragen, Mart Design macht daraus Tabellenentscheidungen, Data Quality ergänzt Regeln und Gates, Decision Brief fasst alles für Freigabe oder Change Request zusammen."
-                        data-text-en="The recommendations on the right are not random: they show the next useful workspace for your selection. KPI Intake creates KPI cards, Source Scope creates load scope and PII questions, Mart Design turns this into table decisions, Data Quality adds rules and gates, and Decision Brief summarizes everything for approval or change request."
-                    >The recommendations on the right are not random: they show the next useful workspace for your selection. KPI Intake creates KPI cards, Source Scope creates load scope and PII questions, Mart Design turns this into table decisions, Data Quality adds rules and gates, and Decision Brief summarizes everything for approval or change request.</p>
-                    <ol>
-                        <li data-text-de="Standalone: Du kannst ein Tool öffnen, Eingaben erfassen, den Report-Baustein ansehen und kopieren oder als Demo speichern." data-text-en="Standalone: open a tool, capture inputs, review the report block, then copy it or save a demo.">Standalone: open a tool, capture inputs, review the report block, then copy it or save a demo.</li>
-                        <li data-text-de="Aus einem Plan: Der Tool-Report kann in die passende Aufgabe zurückgeschrieben werden, ohne dass die ganze Session ersetzt wird." data-text-en="From a plan: the tool report can be written back into the matching task without replacing the whole session.">From a plan: the tool report can be written back into the matching task without replacing the whole session.</li>
-                        <li data-text-de="Mit Login: Die Governance Session bleibt dauerhaft verfügbar und kann später als Report, Workflow-Grundlage oder Change-Request-Ausgangspunkt weitergeführt werden." data-text-en="With sign-in: the governance session stays permanently available and can later continue as a report, workflow basis, or change request starting point.">With sign-in: the governance session stays permanently available and can later continue as a report, workflow basis, or change request starting point.</li>
-                    </ol>
                 </div>
             </article>
             </div>
@@ -230,8 +246,12 @@
                 >This hub connects playbooks, tools, vendor resources, supplier library, and compliance into one guided starting point: first the right question, then the right path.</p>
                 <div class="governance-hub__hero-actions" aria-label="Governance Hub Panels">
                     <button type="button" class="governance-hub__button" data-governance-drawer-toggle aria-controls="governance-header-drawer" aria-expanded="false">
-                        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-                        <span data-text-de="Speichern & Hilfe" data-text-en="Save & help">Save & help</span>
+                        <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
+                        <span data-text-de="Speichern / Filter / Hilfe" data-text-en="Save / Filter / Help">Save / Filter / Help</span>
+                    </button>
+                    <button type="button" class="governance-hub__button" data-governance-hub-filter-clear data-governance-header-filter-reset hidden>
+                        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                        <span data-text-de="Filter zurücksetzen" data-text-en="Reset filter">Reset filter</span>
                     </button>
                     <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-report') }}">
                         <i class="fa-solid fa-eye" aria-hidden="true"></i>
@@ -272,16 +292,30 @@
             <button type="button" class="governance-hub__tab" id="governance-tab-button-guides" data-governance-tab-toggle="guides" role="tab" aria-controls="governance-tab-guides" aria-selected="false" tabindex="-1">
                 <i class="fa-solid fa-route" aria-hidden="true"></i>
                 <span data-text-de="Guides" data-text-en="Guides">Guides</span>
+                <span class="governance-hub__tab-filter" data-governance-hub-filter-badge hidden aria-hidden="true" title="Clear filter">
+                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                    <b data-governance-hub-filter-count></b>
+                </span>
             </button>
             <button type="button" class="governance-hub__tab" id="governance-tab-button-canvas" data-governance-tab-toggle="canvas" role="tab" aria-controls="governance-tab-canvas" aria-selected="false" tabindex="-1">
                 <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i>
                 <span data-text-de="Workshop" data-text-en="Workshop">Workshop</span>
+                <span class="governance-hub__tab-filter" data-governance-hub-filter-badge hidden aria-hidden="true" title="Clear filter">
+                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                    <b data-governance-hub-filter-count></b>
+                </span>
             </button>
             <button type="button" class="governance-hub__tab phone-hide-tools" id="governance-tab-button-tools" data-phone-hide-tools data-governance-tab-toggle="tools" role="tab" aria-controls="governance-tab-tools" aria-selected="false" tabindex="-1">
                 <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
                 <span data-text-de="Tools" data-text-en="Tools">Tools</span>
+                <span class="governance-hub__tab-filter" data-governance-hub-filter-badge hidden aria-hidden="true" title="Clear filter">
+                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                    <b data-governance-hub-filter-count></b>
+                </span>
             </button>
         </nav>
+
+        @include('governance.partials.stack-builder-modal')
 
         @include('governance.partials.advisor-panel')
 

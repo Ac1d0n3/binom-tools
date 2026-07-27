@@ -225,6 +225,7 @@ return [
                 'source-scope-builder',
                 'mart-design-brief-generator',
                 'governance-stack-advisor',
+                'custom-stack-builder',
                 'pii-dsdr-readiness-checker',
                 'decision-brief-generator',
                 'vendor-learning-path-builder',
@@ -855,6 +856,23 @@ return [
             'workflowStep' => 4,
         ],
         [
+            'id' => 'custom-stack-builder',
+            'route' => 'tools.custom-stack-builder',
+            'label' => [
+                'de' => 'Eigenen Stack bauen',
+                'en' => 'Custom Stack Builder',
+            ],
+            'description' => [
+                'de' => 'Ist- oder Ziel-Stack je Funktion dokumentieren: Produkte wählen und Platform-Tags ableiten.',
+                'en' => 'Document current or target stack by function: pick products and derive platform tags.',
+            ],
+            'example' => true,
+            'icon' => 'fa-cubes',
+            'accent' => 'primary',
+            'workflow' => 'governance-decision-support',
+            'workflowStep' => 4,
+        ],
+        [
             'id' => 'pii-dsdr-readiness-checker',
             'route' => 'tools.pii-dsdr-readiness-checker',
             'label' => [
@@ -1211,6 +1229,7 @@ return [
         'source-scope-builder' => filter_var(env('TOOL_SOURCE_SCOPE_BUILDER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'mart-design-brief-generator' => filter_var(env('TOOL_MART_DESIGN_BRIEF_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'governance-stack-advisor' => filter_var(env('TOOL_GOVERNANCE_STACK_ADVISOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'custom-stack-builder' => filter_var(env('TOOL_CUSTOM_STACK_BUILDER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'pii-dsdr-readiness-checker' => filter_var(env('TOOL_PII_DSDR_READINESS_CHECKER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'decision-brief-generator' => filter_var(env('TOOL_DECISION_BRIEF_GENERATOR_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'vendor-learning-path-builder' => filter_var(env('TOOL_VENDOR_LEARNING_PATH_BUILDER_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
@@ -1257,6 +1276,7 @@ return [
         'source-scope-builder' => filter_var(env('TOOL_SOURCE_SCOPE_BUILDER_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'mart-design-brief-generator' => filter_var(env('TOOL_MART_DESIGN_BRIEF_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'governance-stack-advisor' => filter_var(env('TOOL_GOVERNANCE_STACK_ADVISOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
+        'custom-stack-builder' => filter_var(env('TOOL_CUSTOM_STACK_BUILDER_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'pii-dsdr-readiness-checker' => filter_var(env('TOOL_PII_DSDR_READINESS_CHECKER_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'decision-brief-generator' => filter_var(env('TOOL_DECISION_BRIEF_GENERATOR_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),
         'vendor-learning-path-builder' => filter_var(env('TOOL_VENDOR_LEARNING_PATH_BUILDER_LOGIN_REQUIRED', false), FILTER_VALIDATE_BOOLEAN),

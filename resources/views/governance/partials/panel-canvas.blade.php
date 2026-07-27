@@ -16,7 +16,7 @@
                 $outEn = $step['output']['en'] ?? '';
                 $outDe = $step['output']['de'] ?? $outEn;
             @endphp
-            <li class="governance-discovery-steps__item" data-discovery-step="{{ $step['id'] }}">
+            <li class="governance-discovery-steps__item" data-discovery-step="{{ $step['id'] }}" data-tool-id="{{ $step['toolId'] ?? '' }}">
                 <details class="governance-discovery-steps__details" @if ($index === 0) open @endif>
                     <summary class="governance-discovery-steps__summary">
                         <span class="governance-discovery-steps__num">{{ $index + 1 }}</span>

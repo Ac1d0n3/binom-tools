@@ -1,3 +1,11 @@
+import {
+    derivePlatformTags,
+    mountStackBuilder,
+    readCustomStack,
+    summarizeSelection,
+    writeCustomStack,
+} from './stack-builder.js';
+
 const texts = {
     de: {
         summary: {
@@ -20,20 +28,49 @@ const texts = {
         saveFailed: 'Session konnte nicht gespeichert werden.',
         viewReport: 'Report ansehen',
         followup: {
-            new: 'Welche Zielplattform und welche Quellfamilie müssen für den Start entschieden werden?',
-            extend: 'Welcher Stack ist bereits gesetzt, und welche neue Quelle oder Lücke soll ergänzt werden?',
-            help: 'Wo existiert schon Material, und in welchem Stack sollen Stories, Links oder Vorlagen helfen?',
+            new: {
+                default: 'Welche Zielplattform und welche Quellfamilie müssen für den Start entschieden werden?',
+                stack: 'Welcher Ziel-Stack soll zuerst bewertet werden?',
+                supplier: 'Welche Quellfamilie soll zuerst angebunden werden?',
+                kpi: 'Welche erste Kennzahl oder welcher Mart soll definiert werden?',
+                pii: 'Welche Domäne hat den höchsten PII-/DSDR-Druck?',
+                dq: 'Welches DQ-Problem und welche Schicht sollen zuerst geklärt werden?',
+                learning: 'Welcher Stack braucht zuerst Lernpfade oder Zertifikate?',
+            },
+            extend: {
+                default: 'Welcher Stack ist bereits gesetzt, und welche neue Quelle oder Lücke soll ergänzt werden?',
+                stack: 'Welcher bestehende Stack wird erweitert — und wohin?',
+                supplier: 'Welche neue Quelle oder Domäne kommt dazu?',
+                kpi: 'Welche KPI oder welcher Mart fehlt im bestehenden Setup?',
+                pii: 'Welche bestehende Domäne braucht jetzt PII-/Access-Gates?',
+                dq: 'Welches bekannte DQ-Problem oder Gate soll nachgezogen werden?',
+                learning: 'Für welchen Stack brauchst du Orientierung oder Zertifikate?',
+            },
+            help: {
+                default: 'Wo existiert schon Material, und in welchem Stack sollen Stories, Links oder Vorlagen helfen?',
+                stack: 'In welchem Stack suchst du Stories, Vergleiche oder Vorlagen?',
+                supplier: 'Zu welcher Domäne brauchst du Beispiele und Playbooks?',
+                kpi: 'Welche Kennzahl oder welcher Report braucht Orientierung?',
+                pii: 'Wo brauchst du PII-/Compliance-Beispiele und Nachweise?',
+                dq: 'Welche DQ-Schicht oder Fehlerklasse soll erklärt werden?',
+                learning: 'Welcher Lern- oder Zertifikatspfad fehlt noch?',
+            },
         },
         domainLabel: {
             new: 'Welche Quellfamilie soll zuerst angebunden werden?',
             extend: 'Welche Quelle oder Domäne kommt dazu?',
             help: 'Zu welcher Domäne brauchst du Orientierung?',
+            dq: 'Welche Domäne ist vom DQ-Thema betroffen?',
         },
         platformLabel: {
             new: 'Welcher Ziel-Stack ist geplant?',
             extend: 'Welcher Stack wird aktuell genutzt?',
             help: 'In welchem Stack suchst du Hilfe?',
+            dq: 'In welchem Stack sollen DQ-Regeln greifen?',
         },
+        contextFiltered: 'Gefiltert',
+        contextClear: 'Filter löschen',
+        filterEmpty: 'Keine Treffer für diesen Filter.',
     },
     en: {
         summary: {
@@ -56,20 +93,112 @@ const texts = {
         saveFailed: 'Session could not be saved.',
         viewReport: 'View report',
         followup: {
-            new: 'Which target platform and source family need to be decided for the start?',
-            extend: 'Which stack is already in use, and which new source or gap is being added?',
-            help: 'Where does material already exist, and which stack needs stories, links, or templates?',
+            new: {
+                default: 'Which target platform and source family need to be decided for the start?',
+                stack: 'Which target stack should be evaluated first?',
+                supplier: 'Which source family should be onboarded first?',
+                kpi: 'Which first metric or mart should be defined?',
+                pii: 'Which domain has the highest PII/DSDR pressure?',
+                dq: 'Which DQ problem and layer should be clarified first?',
+                learning: 'Which stack needs learning paths or certifications first?',
+            },
+            extend: {
+                default: 'Which stack is already in use, and which new source or gap is being added?',
+                stack: 'Which existing stack is being extended — and toward what?',
+                supplier: 'Which new source or domain is being added?',
+                kpi: 'Which KPI or mart is missing in the current setup?',
+                pii: 'Which existing domain now needs PII/access gates?',
+                dq: 'Which known DQ issue or gate should be tightened?',
+                learning: 'Which stack needs orientation or certifications?',
+            },
+            help: {
+                default: 'Where does material already exist, and which stack needs stories, links, or templates?',
+                stack: 'Which stack needs stories, comparisons, or templates?',
+                supplier: 'Which domain needs examples and playbooks?',
+                kpi: 'Which metric or report needs orientation?',
+                pii: 'Where do you need PII/compliance examples and evidence?',
+                dq: 'Which DQ layer or issue class needs explanation?',
+                learning: 'Which learning or certification path is still missing?',
+            },
         },
         domainLabel: {
             new: 'Which source family should be onboarded first?',
             extend: 'Which source or domain is being added?',
             help: 'Which domain do you need orientation for?',
+            dq: 'Which domain is affected by the DQ topic?',
         },
         platformLabel: {
             new: 'Which target stack is planned?',
             extend: 'Which stack is currently used?',
             help: 'Which stack do you need help with?',
+            dq: 'Which stack should DQ rules apply in?',
         },
+        contextFiltered: 'Filtered',
+        contextClear: 'Clear filter',
+        filterEmpty: 'No matches for this filter.',
+    },
+};
+
+const ROLE_PREFERRED_GOALS = {
+    steward: ['dq', 'supplier'],
+    owner: ['pii', 'learning'],
+    'product-owner': ['kpi', 'stack'],
+    architect: ['stack', 'supplier'],
+    custodian: ['stack', 'dq'],
+    consumer: ['kpi', 'learning'],
+};
+
+const HUB_CONTEXT_STORAGE_KEY = 'binom-governance-hub-context';
+const CONTEXT_LABELS = {
+    de: {
+        steward: 'Data Steward',
+        owner: 'Data Owner',
+        'product-owner': 'Data Product Owner',
+        architect: 'Data Architect',
+        custodian: 'Data Custodian',
+        consumer: 'Data Consumer',
+        stack: 'Stack',
+        supplier: 'Quelle',
+        kpi: 'KPI',
+        pii: 'PII',
+        dq: 'DQ',
+        learning: 'Lernen',
+        crm: 'CRM',
+        erp: 'ERP',
+        hcm: 'HCM',
+        collab: 'Collab',
+        finance: 'Finance',
+        fabric: 'Fabric',
+        databricks: 'Databricks',
+        'snowflake-dbt': 'Snowflake/dbt',
+        sap: 'SAP',
+        opensource: 'Open Source',
+        custom: 'Eigener Stack',
+    },
+    en: {
+        steward: 'Data Steward',
+        owner: 'Data Owner',
+        'product-owner': 'Data Product Owner',
+        architect: 'Data Architect',
+        custodian: 'Data Custodian',
+        consumer: 'Data Consumer',
+        stack: 'Stack',
+        supplier: 'Source',
+        kpi: 'KPI',
+        pii: 'PII',
+        dq: 'DQ',
+        learning: 'Learning',
+        crm: 'CRM',
+        erp: 'ERP',
+        hcm: 'HCM',
+        collab: 'Collab',
+        finance: 'Finance',
+        fabric: 'Fabric',
+        databricks: 'Databricks',
+        'snowflake-dbt': 'Snowflake/dbt',
+        sap: 'SAP',
+        opensource: 'Open source',
+        custom: 'Custom stack',
     },
 };
 
@@ -82,7 +211,17 @@ const labels = {
             de: 'Vergleicht Fabric, Databricks, Snowflake/dbt, SAP und Open Source nach Zielbild, Betrieb und Governance.',
             en: 'Compares Fabric, Databricks, Snowflake/dbt, SAP, and open source by target architecture, operations, and governance.',
         },
-        tags: ['stack', 'new', 'learning'],
+        tags: ['stack', 'new', 'learning', 'fabric', 'databricks', 'snowflake-dbt', 'sap', 'opensource', 'architect', 'custodian', 'custom'],
+    },
+    'custom-stack-builder': {
+        group: 'tools',
+        icon: 'fa-cubes',
+        title: { de: 'Eigenen Stack bauen', en: 'Custom Stack Builder' },
+        reason: {
+            de: 'Dokumentiert den Ist-/Ziel-Stack je Funktion und leitet Platform-Tags für Advisor und Filter ab.',
+            en: 'Documents the current/target stack by function and derives platform tags for advisor and filters.',
+        },
+        tags: ['stack', 'new', 'extend', 'help', 'custom', 'fabric', 'databricks', 'snowflake-dbt', 'opensource', 'architect', 'custodian'],
     },
     'source-scope-builder': {
         group: 'tools',
@@ -92,7 +231,7 @@ const labels = {
             de: 'Sammelt Objekte, Must-have, Skip, PII, Owner und offene Review-Fragen für die erste Ladeentscheidung.',
             en: 'Collects objects, must-haves, skips, PII, owners, and open review questions for the first load decision.',
         },
-        tags: ['supplier', 'new', 'extend', 'crm', 'erp', 'hcm', 'collab', 'finance'],
+        tags: ['supplier', 'new', 'extend', 'crm', 'erp', 'hcm', 'collab', 'finance', 'architect', 'steward'],
     },
     'kpi-requirements-intake': {
         group: 'tools',
@@ -102,7 +241,7 @@ const labels = {
             de: 'Macht aus Stakeholder-Wünschen Formel, Grain, Owner, Dimensionen und Akzeptanzbeispiele.',
             en: 'Turns stakeholder needs into formula, grain, owner, dimensions, and acceptance examples.',
         },
-        tags: ['kpi', 'new', 'help', 'finance'],
+        tags: ['kpi', 'new', 'help', 'finance', 'product-owner', 'consumer'],
     },
     'mart-design-brief-generator': {
         group: 'tools',
@@ -112,7 +251,7 @@ const labels = {
             de: 'Führt von KPI-Karten zu Fact-/Dimension-Kandidaten, Grain und offenen Modellierungsentscheidungen.',
             en: 'Moves KPI cards into fact/dimension candidates, grain, and open modelling decisions.',
         },
-        tags: ['kpi', 'new', 'extend', 'dq', 'mart_quality_gate'],
+        tags: ['kpi', 'new', 'extend', 'dq', 'mart_quality_gate', 'product-owner', 'architect'],
     },
     'pii-dsdr-readiness-checker': {
         group: 'tools',
@@ -122,7 +261,7 @@ const labels = {
             de: 'Prüft PII, Freitext, Lösch-/Auskunftskeys, Retention und Access-Risiken vor der Umsetzung.',
             en: 'Checks PII, free text, deletion/access keys, retention, and access risks before implementation.',
         },
-        tags: ['pii', 'new', 'extend', 'hcm', 'collab', 'finance'],
+        tags: ['pii', 'new', 'extend', 'hcm', 'collab', 'finance', 'owner'],
     },
     'decision-brief-generator': {
         group: 'tools',
@@ -132,7 +271,7 @@ const labels = {
             de: 'Verdichtet Optionen, Annahmen, Risiken und nächste Schritte in eine entscheidbare Vorlage.',
             en: 'Condenses options, assumptions, risks, and next steps into a decision-ready brief.',
         },
-        tags: ['stack', 'supplier', 'kpi', 'new', 'extend'],
+        tags: ['stack', 'supplier', 'kpi', 'new', 'extend', 'architect', 'product-owner'],
     },
     'vendor-learning-path-builder': {
         group: 'tools',
@@ -142,7 +281,7 @@ const labels = {
             de: 'Ordnet Hersteller-Doku, Lernpfade und Zertifikate passend zu Stack und Rolle.',
             en: 'Maps vendor docs, learning paths, and certifications to stack and role.',
         },
-        tags: ['learning', 'help', 'new', 'fabric', 'databricks', 'snowflake-dbt', 'sap'],
+        tags: ['learning', 'help', 'new', 'fabric', 'databricks', 'snowflake-dbt', 'sap', 'owner', 'architect', 'consumer'],
     },
     'architecture-fit': {
         group: 'tools',
@@ -152,7 +291,7 @@ const labels = {
             de: 'Klärt, ob die Ergänzung zur bestehenden Architektur, zum Betrieb und zu Governance-Auflagen passt.',
             en: 'Checks whether the extension fits the existing architecture, operations, and governance constraints.',
         },
-        tags: ['stack', 'extend', 'opensource'],
+        tags: ['stack', 'extend', 'opensource', 'fabric', 'databricks', 'snowflake-dbt', 'sap', 'architect'],
     },
     'impact-effort': {
         group: 'tools',
@@ -162,7 +301,7 @@ const labels = {
             de: 'Sortiert Ideen nach Nutzen, Aufwand und Risiko, wenn mehrere nächste Schritte konkurrieren.',
             en: 'Ranks ideas by value, effort, and risk when several next steps compete.',
         },
-        tags: ['extend', 'help', 'kpi', 'supplier'],
+        tags: ['extend', 'help', 'kpi', 'supplier', 'product-owner', 'architect'],
     },
     'meta-export-generator': {
         group: 'tools',
@@ -172,7 +311,7 @@ const labels = {
             de: 'Hilft bei existierenden Systemen, Tabellen, Spalten und Ownership als Entscheidungsinput zu sammeln.',
             en: 'Helps collect existing systems, tables, columns, and ownership as decision input.',
         },
-        tags: ['extend', 'supplier', 'dq', 'unknown', 'health_check', 'source', 'raw'],
+        tags: ['extend', 'supplier', 'dq', 'unknown', 'health_check', 'source', 'raw', 'fabric', 'databricks', 'snowflake-dbt', 'steward', 'architect'],
     },
     'report-inventory': {
         group: 'tools',
@@ -182,7 +321,7 @@ const labels = {
             de: 'Findet vorhandene Reports, echte Geschäftsfragen, Owner und wiederkehrende KPI-Kandidaten.',
             en: 'Finds existing reports, real business questions, owners, and recurring KPI candidates.',
         },
-        tags: ['help', 'kpi', 'extend', 'dq', 'report_stabilization', 'bi'],
+        tags: ['help', 'kpi', 'extend', 'dq', 'report_stabilization', 'bi', 'product-owner'],
     },
     'kpi-definition': {
         group: 'tools',
@@ -192,7 +331,7 @@ const labels = {
             de: 'Schärft eine einzelne Kennzahl, bevor daraus Modell, Measure oder Report entsteht.',
             en: 'Sharpens one metric before it becomes a model, measure, or report.',
         },
-        tags: ['kpi', 'help', 'finance'],
+        tags: ['kpi', 'help', 'finance', 'product-owner'],
     },
     'pii-policy-generator': {
         group: 'tools',
@@ -202,7 +341,7 @@ const labels = {
             de: 'Erzeugt erste Regeln für Klassifizierung, Maskierung, Rollen und Review-Punkte.',
             en: 'Creates first rules for classification, masking, roles, and review points.',
         },
-        tags: ['pii', 'hcm', 'collab', 'finance'],
+        tags: ['pii', 'hcm', 'collab', 'finance', 'owner'],
     },
     'pii-recommend-generator': {
         group: 'tools',
@@ -212,7 +351,7 @@ const labels = {
             de: 'Gibt Feldempfehlungen für sensible Daten und Prioritäten in der Umsetzung.',
             en: 'Suggests sensitive-field handling and priorities for implementation.',
         },
-        tags: ['pii', 'supplier', 'hcm', 'collab'],
+        tags: ['pii', 'supplier', 'hcm', 'collab', 'owner'],
     },
     'schema-yml-editor': {
         group: 'tools',
@@ -222,7 +361,7 @@ const labels = {
             de: 'Bringt beschriebene Modelle, Tests und Metadaten in eine dbt-nahe Arbeitsform.',
             en: 'Turns described models, tests, and metadata into a dbt-friendly working format.',
         },
-        tags: ['dq', 'snowflake-dbt', 'opensource', 'transform', 'mart', 'semantic'],
+        tags: ['dq', 'snowflake-dbt', 'opensource', 'transform', 'mart', 'semantic', 'steward'],
     },
     'dbt-dq-macro-generator': {
         group: 'tools',
@@ -232,7 +371,7 @@ const labels = {
             de: 'Erstellt die technische Basis für wiederverwendbare DQ-Checks und Governance-Makros.',
             en: 'Creates the technical base for reusable DQ checks and governance macros.',
         },
-        tags: ['dq', 'snowflake-dbt', 'opensource', 'transform', 'business_rule', 'referential_integrity'],
+        tags: ['dq', 'snowflake-dbt', 'opensource', 'transform', 'business_rule', 'referential_integrity', 'steward'],
     },
     'dbt-dq-rules-generator': {
         group: 'tools',
@@ -242,7 +381,7 @@ const labels = {
             de: 'Leitet aus Regeln und Erwartungen konkrete Data-Quality-Checks für dbt ab.',
             en: 'Turns rules and expectations into concrete data-quality checks for dbt.',
         },
-        tags: ['dq', 'snowflake-dbt', 'opensource', 'completeness', 'duplicates', 'freshness', 'value_range', 'referential_integrity', 'business_rule'],
+        tags: ['dq', 'snowflake-dbt', 'opensource', 'completeness', 'duplicates', 'freshness', 'value_range', 'referential_integrity', 'business_rule', 'steward'],
     },
     'dbt-dq-history-generator': {
         group: 'tools',
@@ -252,7 +391,7 @@ const labels = {
             de: 'Plant Historie und Monitoring für DQ-Findings, Trends und wiederkehrende Gates.',
             en: 'Plans history and monitoring for DQ findings, trends, and recurring gates.',
         },
-        tags: ['dq', 'health_check', 'known_issue', 'freshness', 'report_stabilization'],
+        tags: ['dq', 'health_check', 'known_issue', 'freshness', 'report_stabilization', 'steward'],
     },
     'fabric-pii-governance-pattern-generator': {
         group: 'tools',
@@ -262,7 +401,7 @@ const labels = {
             de: 'Passt, wenn Fabric/Power BI schon gesetzt ist und PII-Gates konkret werden müssen.',
             en: 'Fits when Fabric/Power BI is selected and PII gates need to become concrete.',
         },
-        tags: ['fabric', 'pii', 'dq'],
+        tags: ['fabric', 'pii', 'dq', 'owner', 'steward', 'custodian'],
     },
     'databricks-pii-governance-pattern-generator': {
         group: 'tools',
@@ -272,7 +411,7 @@ const labels = {
             de: 'Passt für Unity Catalog, Grants, Tags, Maskierung und Lakehouse-Governance.',
             en: 'Fits Unity Catalog, grants, tags, masking, and lakehouse governance.',
         },
-        tags: ['databricks', 'pii', 'dq'],
+        tags: ['databricks', 'pii', 'dq', 'owner', 'steward', 'custodian'],
     },
     'unity-catalog-governance-generator': {
         group: 'tools',
@@ -282,7 +421,7 @@ const labels = {
             de: 'Hilft bei Unity-Catalog-Standards für Owner, Tags, Grants und PII-Spalten.',
             en: 'Helps with Unity Catalog standards for owners, tags, grants, and PII columns.',
         },
-        tags: ['databricks', 'pii', 'dq'],
+        tags: ['databricks', 'pii', 'dq', 'architect', 'steward'],
     },
 };
 
@@ -295,7 +434,7 @@ const hubItems = {
             de: 'Startpunkt für Salesforce, HubSpot, SAP, Workday, ServiceNow, SharePoint und weitere Quellen.',
             en: 'Starting point for Salesforce, HubSpot, SAP, Workday, ServiceNow, SharePoint, and more sources.',
         },
-        tags: ['supplier', 'new', 'extend', 'crm', 'erp', 'hcm', 'collab', 'finance'],
+        tags: ['supplier', 'new', 'extend', 'crm', 'erp', 'hcm', 'collab', 'finance', 'architect', 'steward'],
     },
     resources: {
         group: 'resources',
@@ -305,7 +444,7 @@ const hubItems = {
             de: 'Offizielle Docs, Governance-Seiten, Lernpfade, Cloud-Residency und Zertifikate sammeln.',
             en: 'Collect official docs, governance pages, learning paths, cloud residency, and certifications.',
         },
-        tags: ['learning', 'help', 'stack', 'fabric', 'databricks', 'snowflake-dbt', 'sap'],
+        tags: ['learning', 'help', 'stack', 'fabric', 'databricks', 'snowflake-dbt', 'sap', 'owner', 'architect'],
     },
     compliance: {
         group: 'resources',
@@ -315,7 +454,7 @@ const hubItems = {
             de: 'Nutzen, wenn PII, DSDR, Retention, Access oder Nachweise zur Entscheidung gehoeren.',
             en: 'Use when PII, DSDR, retention, access, or evidence are part of the decision.',
         },
-        tags: ['pii', 'finance', 'hcm', 'collab', 'new', 'extend'],
+        tags: ['pii', 'finance', 'hcm', 'collab', 'new', 'extend', 'owner'],
     },
     playbooks: {
         group: 'resources',
@@ -325,7 +464,7 @@ const hubItems = {
             de: 'Gut, wenn schon vieles vorhanden ist und du Beispiele, Stories und Vorgehen brauchst.',
             en: 'Useful when much already exists and you need examples, stories, and next actions.',
         },
-        tags: ['help', 'learning', 'kpi', 'dq', 'supplier'],
+        tags: ['help', 'learning', 'kpi', 'dq', 'supplier', 'steward', 'product-owner'],
     },
     learningPaths: {
         group: 'resources',
@@ -335,7 +474,7 @@ const hubItems = {
             de: 'Geführte Journeys (PII, DQ, Warehouse, Foundations) — enden im passenden Sprint-Plan.',
             en: 'Guided journeys (PII, DQ, warehouse, foundations) — each ends in a matching sprint plan.',
         },
-        tags: ['help', 'learning', 'new', 'pii', 'dq', 'stack'],
+        tags: ['help', 'learning', 'new', 'pii', 'dq', 'stack', 'owner', 'steward', 'architect'],
     },
     roles: {
         group: 'resources',
@@ -345,7 +484,7 @@ const hubItems = {
             de: 'Decision Rights klären: Steward, Owner, Architect, Custodian, Consumer.',
             en: 'Clarify decision rights: steward, owner, architect, custodian, consumer.',
         },
-        tags: ['help', 'learning', 'new', 'kpi'],
+        tags: ['help', 'learning', 'new', 'kpi', 'architect', 'steward', 'owner', 'product-owner', 'custodian', 'consumer'],
     },
     sprintPlanner: {
         group: 'resources',
@@ -355,7 +494,7 @@ const hubItems = {
             de: 'Lern- oder Umsetzungsplan aus einer Vorlage starten und im Team abarbeiten.',
             en: 'Start a learning or delivery plan from a template and work it as a team.',
         },
-        tags: ['help', 'learning', 'new', 'extend', 'dq', 'stack'],
+        tags: ['help', 'learning', 'new', 'extend', 'dq', 'stack', 'product-owner', 'architect'],
     },
 };
 
@@ -429,18 +568,48 @@ function readConfig(root) {
     }
 }
 
-function getState(form) {
+function getActiveRole(root) {
+    const active = root.querySelector('[data-governance-persona].governance-hub__persona--active');
+    const role = active?.dataset.governancePersona || '';
+    return !role || role === 'all' ? '' : role;
+}
+
+function getState(form, root = null) {
     const formData = new FormData(form);
+    const scope = root || form?.closest('[data-governance-advisor]') || document;
 
     return {
         scenario: formData.get('scenario') || 'new',
         goal: formData.get('goal') || 'stack',
         domain: formData.get('domain') || 'unknown',
         platform: formData.get('platform') || 'unknown',
+        role: getActiveRole(scope),
         dqMode: formData.get('dqMode') || 'health_check',
         dqLayer: formData.get('dqLayer') || 'source',
         dqIssues: formData.getAll('dqIssues[]').map(String),
     };
+}
+
+function resolveFollowup(copy, scenario, goal) {
+    const byScenario = copy.followup?.[scenario] || copy.followup?.new;
+    if (typeof byScenario === 'string') {
+        return byScenario;
+    }
+    return byScenario?.[goal] || byScenario?.default || '';
+}
+
+function resolveDomainLabel(copy, scenario, goal) {
+    if (goal === 'dq' && copy.domainLabel?.dq) {
+        return copy.domainLabel.dq;
+    }
+    return copy.domainLabel?.[scenario] || copy.domainLabel?.new || '';
+}
+
+function resolvePlatformLabel(copy, scenario, goal) {
+    if (goal === 'dq' && copy.platformLabel?.dq) {
+        return copy.platformLabel.dq;
+    }
+    return copy.platformLabel?.[scenario] || copy.platformLabel?.new || '';
 }
 
 function itemUrl(item, config) {
@@ -464,11 +633,23 @@ function scoreItem(item, state) {
     }
 
     if (state.domain !== 'unknown' && tags.has(state.domain)) {
-        score += 4;
+        score += 7;
     }
 
-    if (state.platform !== 'unknown' && tags.has(state.platform)) {
-        score += 4;
+    if (state.platform === 'custom') {
+        const derived = derivePlatformTags(readCustomStack());
+        if (derived.some((tag) => tags.has(tag)) || tags.has('custom')) {
+            score += 7;
+        }
+        if (item.id === 'custom-stack-builder' || item.id === 'governance-stack-advisor') {
+            score += 5;
+        }
+    } else if (state.platform !== 'unknown' && tags.has(state.platform)) {
+        score += 7;
+    }
+
+    if (state.role && tags.has(state.role)) {
+        score += 6;
     }
 
     if (state.goal === 'dq') {
@@ -592,7 +773,7 @@ function currentPayload(root, config) {
     const title = root.querySelector('[data-governance-session-title]');
     const company = root.querySelector('[data-governance-session-company]');
     const project = root.querySelector('[data-governance-session-project]');
-    const state = getState(form);
+    const state = getState(form, root);
     const recommendations = buildRecommendations(state, config);
 
     return {
@@ -920,7 +1101,7 @@ function render(root, config) {
         return;
     }
 
-    const state = getState(form);
+    const state = getState(form, root);
     const followup = root.querySelector('[data-governance-followup-copy]');
     const domainLabel = root.querySelector('[data-governance-domain-label]');
     const platformLabel = root.querySelector('[data-governance-platform-label]');
@@ -937,14 +1118,15 @@ function render(root, config) {
         summary.textContent = copy.summary.dq;
     }
     if (followup) {
-        followup.textContent = copy.followup?.[state.scenario] || copy.followup.new;
+        followup.textContent = resolveFollowup(copy, state.scenario, state.goal);
     }
     if (domainLabel) {
-        domainLabel.textContent = copy.domainLabel?.[state.scenario] || copy.domainLabel.new;
+        domainLabel.textContent = resolveDomainLabel(copy, state.scenario, state.goal);
     }
     if (platformLabel) {
-        platformLabel.textContent = copy.platformLabel?.[state.scenario] || copy.platformLabel.new;
+        platformLabel.textContent = resolvePlatformLabel(copy, state.scenario, state.goal);
     }
+    syncGoalPillPreference(form, state.role);
     results.replaceChildren();
 
     ['tools', 'suppliers', 'resources'].forEach((group) => {
@@ -967,6 +1149,8 @@ function render(root, config) {
         section.append(heading, list);
         results.append(section);
     });
+
+    persistAndApplyHubContext(root, state);
 }
 
 function createScrollLock() {
@@ -1025,6 +1209,17 @@ function initPanelToggles(root) {
         });
     };
 
+    const openPanel = (targetId) => {
+        if (!targetId || !root.querySelector(`#${CSS.escape(targetId)}`)) {
+            return;
+        }
+        scrollLock.run(() => {
+            controls.hidden = false;
+            activatePanel(targetId);
+            drawerToggle.setAttribute('aria-expanded', 'true');
+        });
+    };
+
     const sync = () => {
         drawerToggle.setAttribute('aria-expanded', String(!controls.hidden));
     };
@@ -1040,16 +1235,14 @@ function initPanelToggles(root) {
     toggles.forEach((toggle) => {
         scrollLock.bindTrigger(toggle);
         toggle.addEventListener('click', () => {
-            const target = root.querySelector(`#${toggle.dataset.governancePanelToggle}`);
-            if (!(target instanceof HTMLElement)) {
-                return;
-            }
-            scrollLock.run(() => {
-                controls.hidden = false;
-                activatePanel(target.id);
-                toggle.blur();
-                sync();
-            });
+            openPanel(toggle.dataset.governancePanelToggle || '');
+        });
+    });
+
+    root.querySelectorAll('[data-governance-panel] [data-governance-open-panel]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            openPanel(button.dataset.governanceOpenPanel || '');
         });
     });
 
@@ -1067,8 +1260,398 @@ function setRadioValue(form, name, value) {
     }
 }
 
-function applyPersonaHighlight() {
-    // Intentionally empty: outlining/dimming whole guide blocks made nested frames.
+function setSelectValue(form, name, value) {
+    const select = form.querySelector(`select[name="${name}"]`);
+    if (select instanceof HTMLSelectElement) {
+        select.value = value;
+    }
+}
+
+function syncGoalPillPreference(form, role) {
+    const preferred = new Set(ROLE_PREFERRED_GOALS[role] || []);
+    form.querySelectorAll('.governance-advisor__pill').forEach((pill) => {
+        const input = pill.querySelector('input[name="goal"]');
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+        const isPreferred = preferred.size === 0 || preferred.has(input.value);
+        pill.classList.toggle('governance-advisor__pill--preferred', preferred.size > 0 && preferred.has(input.value));
+        pill.classList.toggle('governance-advisor__pill--muted', preferred.size > 0 && !isPreferred);
+    });
+}
+
+function contextIsActive(ctx) {
+    return Boolean(
+        ctx?.role
+        || (ctx?.domain && ctx.domain !== 'unknown')
+        || (ctx?.platform && ctx.platform !== 'unknown'),
+    );
+}
+
+function writeHubContext(ctx) {
+    try {
+        sessionStorage.setItem(HUB_CONTEXT_STORAGE_KEY, JSON.stringify(ctx));
+    } catch {
+        // ignore storage failures
+    }
+}
+
+function contextLabelParts(ctx, locale) {
+    const labels = CONTEXT_LABELS[locale] || CONTEXT_LABELS.en;
+    const parts = [];
+    if (ctx.role) {
+        parts.push(labels[ctx.role] || ctx.role);
+    }
+    if (ctx.goal) {
+        parts.push(labels[ctx.goal] || ctx.goal);
+    }
+    if (ctx.domain && ctx.domain !== 'unknown') {
+        parts.push(labels[ctx.domain] || ctx.domain);
+    }
+    if (ctx.platform && ctx.platform !== 'unknown') {
+        parts.push(labels[ctx.platform] || ctx.platform);
+    }
+    return parts;
+}
+
+function itemMatchesHubFilter(tagList, ctx) {
+    if (!contextIsActive(ctx)) {
+        return true;
+    }
+    const tags = new Set(tagList || []);
+
+    // Role filter is strict: role tag or that role's preferred goals.
+    if (ctx.role) {
+        if (tags.has(ctx.role)) {
+            return true;
+        }
+        const preferredGoals = ROLE_PREFERRED_GOALS[ctx.role] || [];
+        if (preferredGoals.some((goal) => tags.has(goal))) {
+            return true;
+        }
+        return false;
+    }
+
+    // Domain / platform without role: match constraint, allow goal as soft fallback.
+    let hasConstraint = false;
+    let matchedConstraint = false;
+
+    if (ctx.domain && ctx.domain !== 'unknown') {
+        hasConstraint = true;
+        if (tags.has(ctx.domain)) {
+            matchedConstraint = true;
+        }
+    }
+
+    if (ctx.platform === 'custom') {
+        hasConstraint = true;
+        const derived = derivePlatformTags(readCustomStack());
+        if (derived.some((tag) => tags.has(tag)) || tags.has('custom')) {
+            matchedConstraint = true;
+        }
+    } else if (ctx.platform && ctx.platform !== 'unknown') {
+        hasConstraint = true;
+        if (tags.has(ctx.platform)) {
+            matchedConstraint = true;
+        }
+    }
+
+    if (!hasConstraint) {
+        return true;
+    }
+
+    return matchedConstraint || tags.has(ctx.goal);
+}
+
+function personaMatches(dataPersona, role) {
+    if (!role) {
+        return true;
+    }
+    const set = new Set(String(dataPersona || '').split(/\s+/).filter(Boolean));
+    return set.has(role);
+}
+
+function ensureFilterEmpty(container, locale, onClear) {
+    let empty = container.querySelector('[data-governance-hub-filter-empty]');
+    if (!empty) {
+        empty = document.createElement('p');
+        empty.className = 'governance-hub__filter-empty';
+        empty.setAttribute('data-governance-hub-filter-empty', '');
+        const copy = texts[locale];
+        empty.append(document.createTextNode(copy.filterEmpty + ' '));
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = copy.contextClear;
+        button.addEventListener('click', onClear);
+        empty.append(button);
+        container.append(empty);
+    }
+    return empty;
+}
+
+function applyHubContextFilter(root, ctx) {
+    const locale = pickLocale();
+    const copy = texts[locale];
+    const active = contextIsActive(ctx);
+    const clearFilter = () => clearHubContext(root);
+
+    const barLabel = root.querySelector('[data-governance-hub-context-label]');
+    const headerReset = root.querySelector('[data-governance-header-filter-reset]');
+    const idleCopy = locale === 'de'
+        ? 'Kein Filter aktiv — Rolle „Alle“ und offene Domain/Stack.'
+        : 'No filter active — role “All” and open domain/stack.';
+
+    if (barLabel) {
+        const parts = contextLabelParts(ctx, locale);
+        barLabel.textContent = active && parts.length
+            ? `${copy.contextFiltered}: ${parts.join(' · ')}`
+            : idleCopy;
+    }
+    if (headerReset) {
+        headerReset.hidden = !active;
+    }
+
+    const counts = { guides: 0, canvas: 0, tools: 0 };
+
+    root.querySelectorAll('[data-persona]').forEach((card) => {
+        let show = true;
+        if (active) {
+            if (ctx.role) {
+                show = personaMatches(card.getAttribute('data-persona'), ctx.role);
+            } else {
+                const goalTags = String(card.getAttribute('data-goal') || '').split(/\s+/).filter(Boolean);
+                show = goalTags.length === 0 || itemMatchesHubFilter(goalTags, ctx);
+            }
+        }
+        card.classList.toggle('governance-hub__card--filtered-out', !show);
+        card.toggleAttribute('aria-hidden', !show);
+        if (!show) {
+            counts.guides += 1;
+        }
+    });
+
+    const guidesPanel = root.querySelector('[data-governance-tab-panel="guides"]');
+    if (guidesPanel) {
+        const cards = Array.from(guidesPanel.querySelectorAll('[data-persona]'));
+        const allHidden = active && cards.length > 0 && cards.every((card) => card.classList.contains('governance-hub__card--filtered-out'));
+        const empty = ensureFilterEmpty(guidesPanel, locale, clearFilter);
+        empty.hidden = !allHidden;
+    }
+
+    root.querySelectorAll('[data-discovery-step][data-tool-id]').forEach((step) => {
+        const toolId = step.getAttribute('data-tool-id') || '';
+        const tags = labels[toolId]?.tags || [];
+        const show = !active || itemMatchesHubFilter(tags, ctx);
+        step.classList.toggle('governance-hub__card--filtered-out', !show);
+        step.toggleAttribute('aria-hidden', !show);
+        if (!show) {
+            counts.canvas += 1;
+        }
+    });
+
+    const canvasPanel = root.querySelector('[data-governance-tab-panel="canvas"]');
+    if (canvasPanel) {
+        const steps = Array.from(canvasPanel.querySelectorAll('[data-discovery-step][data-tool-id]'));
+        const allHidden = active && steps.length > 0 && steps.every((step) => step.classList.contains('governance-hub__card--filtered-out'));
+        const empty = ensureFilterEmpty(canvasPanel, locale, clearFilter);
+        empty.hidden = !allHidden;
+    }
+
+    root.querySelectorAll('[data-tool-id].governance-hub__tool, a.governance-hub__tool[data-tool-id]').forEach((tool) => {
+        const toolId = tool.getAttribute('data-tool-id') || '';
+        const tags = labels[toolId]?.tags || [];
+        const show = !active || itemMatchesHubFilter(tags, ctx);
+        tool.classList.toggle('governance-hub__card--filtered-out', !show);
+        tool.toggleAttribute('aria-hidden', !show);
+        if (!show) {
+            counts.tools += 1;
+        }
+    });
+
+    root.querySelectorAll('[data-governance-setup-workflow]').forEach((workflow) => {
+        const ids = String(workflow.getAttribute('data-tool-ids') || '').split(/\s+/).filter(Boolean);
+        const show = !active || ids.some((id) => itemMatchesHubFilter(labels[id]?.tags || [], ctx));
+        workflow.classList.toggle('governance-hub__card--filtered-out', !show);
+        workflow.toggleAttribute('aria-hidden', !show);
+        if (!show) {
+            counts.tools += 1;
+        }
+    });
+
+    const toolsPanel = root.querySelector('[data-governance-tab-panel="tools"]');
+    if (toolsPanel) {
+        const items = Array.from(toolsPanel.querySelectorAll('[data-tool-id].governance-hub__tool, [data-governance-setup-workflow]'));
+        const allHidden = active && items.length > 0 && items.every((item) => item.classList.contains('governance-hub__card--filtered-out'));
+        const empty = ensureFilterEmpty(toolsPanel, locale, clearFilter);
+        empty.hidden = !allHidden;
+    }
+
+    ['guides', 'canvas', 'tools'].forEach((tabId) => {
+        const tab = root.querySelector(`[data-governance-tab-toggle="${tabId}"]`);
+        if (!tab) {
+            return;
+        }
+        const badge = tab.querySelector('[data-governance-hub-filter-badge]');
+        const countEl = tab.querySelector('[data-governance-hub-filter-count]');
+        // Show filter icon whenever a hub filter is active (role / domain / platform).
+        const filtered = active;
+        if (badge) {
+            badge.hidden = !filtered;
+            badge.setAttribute('aria-hidden', String(!filtered));
+            badge.title = filtered
+                ? (locale === 'de' ? 'Filter aktiv — Klick zum Zurücksetzen' : 'Filter active — click to clear')
+                : '';
+        }
+        if (countEl) {
+            countEl.textContent = filtered && counts[tabId] > 0 ? String(counts[tabId]) : '';
+            countEl.hidden = !(filtered && counts[tabId] > 0);
+        }
+    });
+}
+
+function persistAndApplyHubContext(root, state) {
+    const ctx = {
+        role: state.role || '',
+        goal: state.goal || 'stack',
+        scenario: state.scenario || 'new',
+        domain: state.domain || 'unknown',
+        platform: state.platform || 'unknown',
+    };
+    writeHubContext(ctx);
+    applyHubContextFilter(root, ctx);
+}
+
+function clearHubContext(root) {
+    const form = root.querySelector('[data-governance-advisor-form]');
+    const chips = Array.from(root.querySelectorAll('[data-governance-persona]'));
+    chips.forEach((chip) => {
+        const isAll = chip.dataset.governancePersona === 'all';
+        chip.classList.toggle('governance-hub__persona--active', isAll);
+        chip.setAttribute('aria-pressed', String(isAll));
+    });
+    try {
+        localStorage.removeItem(PERSONA_STORAGE_KEY);
+    } catch {
+        // ignore
+    }
+    if (form) {
+        setSelectValue(form, 'domain', 'unknown');
+        setSelectValue(form, 'platform', 'unknown');
+        syncGoalPillPreference(form, '');
+        form.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+        writeHubContext({ role: '', goal: 'stack', scenario: 'new', domain: 'unknown', platform: 'unknown' });
+        applyHubContextFilter(root, { role: '', goal: 'stack', scenario: 'new', domain: 'unknown', platform: 'unknown' });
+    }
+}
+
+function initStackBuilderModal(root) {
+    const dialog = root.querySelector('[data-governance-stack-builder]');
+    const form = root.querySelector('[data-governance-advisor-form]');
+    const openButtons = Array.from(root.querySelectorAll('[data-governance-stack-builder-open]'));
+    const platformSelect = form?.querySelector('select[name="platform"]');
+    if (!form || openButtons.length === 0) {
+        return;
+    }
+
+    const host = dialog?.querySelector('[data-stack-builder-root]') || null;
+    let api = null;
+    const locale = () => (document.documentElement.lang === 'de' ? 'de' : 'en');
+    const defaultButtonLabel = () => (locale() === 'de' ? 'Stack Builder öffnen' : 'Open Stack Builder');
+
+    const syncOpenButton = () => {
+        const isCustom = platformSelect?.value === 'custom';
+        openButtons.forEach((button) => {
+            button.hidden = !isCustom;
+            const label = button.querySelector('span');
+            if (!label || !isCustom) {
+                return;
+            }
+            const selection = readCustomStack();
+            const hasProducts = Object.values(selection).some((items) => Array.isArray(items) && items.length > 0);
+            label.textContent = hasProducts ? summarizeSelection(selection) : defaultButtonLabel();
+        });
+    };
+
+    const openModal = () => {
+        if (!(dialog instanceof HTMLDialogElement)) {
+            const link = document.querySelector('a[href*="custom-stack-builder"]');
+            if (link instanceof HTMLAnchorElement) {
+                window.location.href = link.href;
+            }
+            return;
+        }
+
+        if (host && !api) {
+            api = mountStackBuilder(host, {
+                compact: true,
+                selection: readCustomStack(),
+                onChange: (selection) => {
+                    writeCustomStack(selection);
+                    syncOpenButton();
+                },
+            });
+        } else if (api) {
+            api.setSelection(readCustomStack());
+        }
+
+        if (typeof dialog.showModal === 'function' && !dialog.open) {
+            // Escape overflow/transform ancestors so fixed centering is viewport-relative.
+            if (dialog.parentElement !== document.body) {
+                document.body.appendChild(dialog);
+            }
+            dialog.showModal();
+        }
+    };
+
+    openButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal();
+        });
+    });
+
+    const onPlatformChange = () => {
+        syncOpenButton();
+        if (platformSelect?.value === 'custom') {
+            openModal();
+        }
+    };
+
+    platformSelect?.addEventListener('change', onPlatformChange);
+    // Form-level change is a backup if the select event is composed/rewritten
+    form.addEventListener('change', (event) => {
+        if (event.target === platformSelect) {
+            onPlatformChange();
+        } else {
+            syncOpenButton();
+        }
+    });
+
+    dialog?.querySelector('[data-governance-stack-builder-save]')?.addEventListener('click', () => {
+        writeCustomStack(api?.getSelection?.() || readCustomStack());
+        setSelectValue(form, 'platform', 'custom');
+        syncOpenButton();
+        form.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    syncOpenButton();
+}
+
+function initHubContextControls(root) {
+    root.querySelectorAll('[data-governance-hub-filter-clear]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            clearHubContext(root);
+        });
+    });
+    root.querySelectorAll('[data-governance-hub-filter-badge]').forEach((badge) => {
+        badge.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            clearHubContext(root);
+        });
+    });
 }
 
 function initPersonas(root, onChange) {
@@ -1078,35 +1661,53 @@ function initPersonas(root, onChange) {
     }
 
     const form = root.querySelector('[data-governance-advisor-form]');
-    let active = '';
+    let active = 'all';
     try {
-        active = localStorage.getItem(PERSONA_STORAGE_KEY) || '';
+        active = localStorage.getItem(PERSONA_STORAGE_KEY) || 'all';
     } catch {
-        active = '';
+        active = 'all';
+    }
+
+    // Migrate legacy persona ids
+    if (active === 'analyst') {
+        active = 'product-owner';
+    }
+    if (active === 'dpo') {
+        active = 'owner';
+    }
+    const knownPersonas = new Set(chips.map((chip) => chip.dataset.governancePersona || ''));
+    if (!knownPersonas.has(active)) {
+        active = 'all';
     }
 
     const apply = (persona, persist) => {
-        active = persona;
+        const normalized = !persona || persona === 'all' ? 'all' : persona;
+        active = normalized;
         chips.forEach((chip) => {
-            const isActive = chip.dataset.governancePersona === persona;
+            const isActive = chip.dataset.governancePersona === normalized;
             chip.classList.toggle('governance-hub__persona--active', isActive);
             chip.setAttribute('aria-pressed', String(isActive));
         });
-        applyPersonaHighlight(root, persona || null);
-        if (persona && form) {
-            const chip = chips.find((item) => item.dataset.governancePersona === persona);
+
+        if (normalized !== 'all' && form) {
+            const chip = chips.find((item) => item.dataset.governancePersona === normalized);
             if (chip) {
                 setRadioValue(form, 'scenario', chip.dataset.personaScenario || '');
                 setRadioValue(form, 'goal', chip.dataset.personaGoal || '');
-                form.dispatchEvent(new Event('change', { bubbles: true }));
             }
+            syncGoalPillPreference(form, normalized);
+            form.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (form) {
+            syncGoalPillPreference(form, '');
+            form.dispatchEvent(new Event('change', { bubbles: true }));
         }
+
         if (persist) {
             try {
-                if (persona) {
-                    localStorage.setItem(PERSONA_STORAGE_KEY, persona);
-                } else {
+                if (normalized === 'all') {
                     localStorage.removeItem(PERSONA_STORAGE_KEY);
+                } else {
+                    localStorage.setItem(PERSONA_STORAGE_KEY, normalized);
                 }
             } catch {
                 // ignore storage failures
@@ -1117,14 +1718,17 @@ function initPersonas(root, onChange) {
 
     chips.forEach((chip) => {
         chip.addEventListener('click', () => {
-            const next = chip.dataset.governancePersona || '';
-            apply(active === next ? '' : next, true);
+            const next = chip.dataset.governancePersona || 'all';
+            // Second click on a concrete role returns to All
+            if (active === next && next !== 'all') {
+                apply('all', true);
+                return;
+            }
+            apply(next, true);
         });
     });
 
-    if (active) {
-        apply(active, false);
-    }
+    apply(active, false);
 }
 
 function normalizeGuidesFragment(fragment) {
@@ -1286,6 +1890,8 @@ function initAdvisor(root) {
     initPanelToggles(root);
     initSubtabs(root);
     initTabs(root);
+    initHubContextControls(root);
+    initStackBuilderModal(root);
     initPersonas(root, () => {
         if (form) {
             render(root, config);
@@ -1297,7 +1903,7 @@ function initAdvisor(root) {
     }
 
     const syncDqPanel = () => {
-        const state = getState(form);
+        const state = getState(form, root);
         if (dqPanel) {
             dqPanel.hidden = state.goal !== 'dq';
         }

@@ -23,7 +23,7 @@
                 $descEn = $tool['description']['en'] ?? '';
                 $descDe = $tool['description']['de'] ?? $descEn;
             @endphp
-            <a class="governance-hub__tool" href="{{ locale_route($tool['route']) }}">
+            <a class="governance-hub__tool" href="{{ locale_route($tool['route']) }}" data-tool-id="{{ $tool['id'] ?? '' }}">
                 @if (! empty($tool['icon']))
                     <i class="fa-solid {{ $tool['icon'] }}" aria-hidden="true"></i>
                 @endif
@@ -73,6 +73,7 @@
                     class="tools-workflow-flowchart tools-workflow-flowchart--chevron governance-hub__setup-workflow"
                     aria-labelledby="governance-workflow-{{ $workflowId }}-title"
                     data-governance-setup-workflow="{{ $workflowId }}"
+                    data-tool-ids="{{ implode(' ', array_column($flowchartSteps, 'id')) }}"
                 >
                     <h3 id="governance-workflow-{{ $workflowId }}-title" class="governance-hub__workflow-title">
                         @if (! empty($workflow['icon']))
