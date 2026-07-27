@@ -22,8 +22,22 @@ Public Governance Help Hub — single-site Laravel app. **v1.0.0**. Not a SaaS p
 | Domain pages | `resources/views/domains/<domain>/` (during migration: existing `views/<domain>/`) |
 | Domain JS/CSS | `resources/js/domains/<domain>/`, `resources/css/domains/<domain>/` |
 | Playbook content | `content/*.md` only |
+| Catalog data (suppliers, glossary, …) | `content/catalogs/{name}/*.json` — **never** new `config/*wave*.php` |
 
-**Rule of thumb:** domain page → `domains/<name>/`; button/toggle/tabs/modal → `shared/ui/`; shell/theme → `foundations/`; shared IDs/labels → taxonomy.
+**Rule of thumb:** domain page → `domains/<name>/`; button/toggle/tabs/modal → `shared/ui/`; shell/theme → `foundations/`; shared IDs/labels → taxonomy; **catalog entries → JSON**.
+
+### Catalogs (JSON)
+
+Suppliers and Glossary load from `content/catalogs/` via `App\Catalog\CatalogJsonLoader`. Thin PHP facades remain in `config/suppliers.php` and `config/glossary.php`.
+
+- Add/edit a supplier product → `content/catalogs/suppliers/products.json` (and overlays in `governance.json` / `quality.json` / `sql.json` if needed).
+- Add/edit a glossary term → `content/catalogs/glossary/terms-core.json` or `terms-buzzwords.json`.
+- **Do not** add `config/*wave*.php` files.
+- Optional re-export (legacy): `php -d memory_limit=512M scripts/export-catalog-json.php` — only useful if PHP sources still exist.
+- Optional MySQL cache: `php artisan bn-tools:catalog-sync` (repo JSON stays source of truth).
+- Admin link checker: `php artisan bn-tools:link-check` / UI `/account/link-check` (`canManageUsers` only).
+
+Runtime Dual Store (`BINOM_TOOLS_STORAGE_DRIVER=file|mysql`) covers users/plans/sessions/likes — **not** catalog bodies or story markdown.
 
 ## Setup
 

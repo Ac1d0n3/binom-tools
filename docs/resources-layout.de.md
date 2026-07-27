@@ -23,12 +23,20 @@ Stand: 2026-07-27 (v1.0.0 wave)
 | Governance JS | `js/domains/governance/` + thin re-exports under `js/governance/` |
 | Shared tabs / layout-toggle / modal | Blade under `components/shared/ui/`; JS `shared/tabs.js`, `shared/modal.js` |
 | Taxonomy | `config/foundations/taxonomy.php` |
+| Catalog JSON | `content/catalogs/suppliers/`, `content/catalogs/glossary/` (+ thin `config/*.php` facades) |
 
 Keep **existing CSS class names on the DOM**. Delete parallel/dead code after tests are green (**delete-after-green**).
+
+## Catalogs
+
+Repo JSON under `content/catalogs/` is the source of truth (cloneable without DB). `CatalogJsonLoader` merges supplier facets; glossary merges core + buzzword term lists. Wave PHP files are gone — do not reintroduce them.
+
+Optional later: `bn-tools:catalog-sync` mirrors JSON into `bn_catalog_documents` when MySQL storage is enabled (cache/override only).
 
 ## Out of scope for this map
 
 - PHP `platform/core` SaaS modules
-- Taxonomy CMS / DB
+- Taxonomy CMS / DB story editor
 - Story upload UI
 - BI workbench modal redesign
+- Catalog live-edit admin CMS

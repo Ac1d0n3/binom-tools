@@ -1,0 +1,50 @@
+{
+    "schemaVersion": 1,
+    "catalog": "glossary",
+    "categories": {
+        "roles": {
+            "de": "Rollen",
+            "en": "Roles"
+        },
+        "data": {
+            "de": "Daten & Produkte",
+            "en": "Data & products"
+        },
+        "architecture": {
+            "de": "Architektur",
+            "en": "Architecture"
+        },
+        "modeling": {
+            "de": "Modellierung",
+            "en": "Modeling"
+        },
+        "bi": {
+            "de": "BI & Reporting",
+            "en": "BI & Reporting"
+        },
+        "quality": {
+            "de": "Qualität",
+            "en": "Quality"
+        },
+        "privacy": {
+            "de": "Privacy & Schutz",
+            "en": "Privacy & protection"
+        },
+        "security": {
+            "de": "Zugriff & Security",
+            "en": "Access & security"
+        },
+        "metadata": {
+            "de": "Metadaten",
+            "en": "Metadata"
+        },
+        "process": {
+            "de": "Prozess",
+            "en": "Process"
+        },
+        "ai": {
+            "de": "KI & ML",
+            "en": "AI & ML"
+        }
+    }
+}

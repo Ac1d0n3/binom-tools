@@ -260,6 +260,13 @@
                                 role="menuitem"
                                 data-i18n="nav.accountStoryAccess"
                             >Story access</a>
+                            <a
+                                href="{{ locale_route('accounts.link-check') }}"
+                                class="tools-header__account-menu-item {{ Locale::routeIs('accounts.link-check') ? 'tools-header__account-menu-item--active' : '' }}"
+                                role="menuitem"
+                                data-text-de="Link-Checker"
+                                data-text-en="Link checker"
+                            >Link checker</a>
                         @endif
                         @if (! empty($accountUser['canManageTeams']))
                             <a

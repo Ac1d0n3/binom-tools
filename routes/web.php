@@ -5,6 +5,7 @@ require_once __DIR__.'/../app/Support/helpers.php';
 use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Accounts\GlossaryQuizResultApiController;
 use App\Http\Controllers\Accounts\AuthController;
+use App\Http\Controllers\Accounts\LinkCheckController;
 use App\Http\Controllers\Accounts\PlanApiController;
 use App\Http\Controllers\Accounts\PlanAttachmentController;
 use App\Http\Controllers\Accounts\PromptStudioLibraryApiController;
@@ -192,6 +193,10 @@ $registerRoutes = static function (bool $localized): void {
         Route::put('/account/story-access/{slug}', [StoryAclController::class, 'update'])
             ->where('slug', '[a-z0-9-]+')
             ->name($name('accounts.story-acl.update'));
+        Route::get('/account/link-check', [LinkCheckController::class, 'index'])->name($name('accounts.link-check'));
+        Route::post('/account/link-check/run', [LinkCheckController::class, 'run'])
+            ->middleware('throttle:3,1')
+            ->name($name('accounts.link-check.run'));
         Route::post('/playbooks/{slug}/read', [StoryAclController::class, 'markRead'])
             ->where('slug', '[a-z0-9-]+')
             ->name($name('accounts.playbooks.read'));
