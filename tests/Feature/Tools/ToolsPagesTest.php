@@ -78,6 +78,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('v0.1.0', false);
         $response->assertSee('data-i18n="footer.about"', false);
         $response->assertSee('data-i18n="footer.disclaimer"', false);
+        $response->assertSee('data-i18n="footer.sitemap"', false);
+        $response->assertSee('/sitemap.xml', false);
         $response->assertSee('data-disclaimer-banner', false);
         $response->assertSee('data-disclaimer-dismiss', false);
         $response->assertSee('/disclaimer', false);

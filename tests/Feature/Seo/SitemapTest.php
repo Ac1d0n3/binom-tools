@@ -32,19 +32,20 @@ class SitemapTest extends TestCase
         $response->assertSee('/sitemap-suppliers.xml', false);
     }
 
-    public function test_pages_sitemap_includes_governance_www_landings(): void
+    public function test_pages_sitemap_includes_governance_hub_not_redirect_landings(): void
     {
         $response = $this->get('/sitemap-pages.xml');
 
         $response->assertOk();
         $response->assertSee('<urlset', false);
         $response->assertSee('/governance</loc>', false);
-        $response->assertSee('/governance/berater</loc>', false);
-        $response->assertSee('/governance/stacks</loc>', false);
-        $response->assertSee('/governance/kpi-requirements</loc>', false);
-        $response->assertSee('/governance/supplier-discovery</loc>', false);
-        $response->assertSee('/governance/discovery-canvas</loc>', false);
-        $response->assertSee('/de/governance/berater</loc>', false);
+        $response->assertSee('/governance/radar</loc>', false);
+        $response->assertDontSee('/governance/berater</loc>', false);
+        $response->assertDontSee('/governance/stacks</loc>', false);
+        $response->assertDontSee('/governance/kpi-requirements</loc>', false);
+        $response->assertDontSee('/governance/supplier-discovery</loc>', false);
+        $response->assertDontSee('/governance/discovery-canvas</loc>', false);
+        $response->assertDontSee('/de/governance/berater</loc>', false);
         $response->assertDontSee('/governance/sessions', false);
     }
 

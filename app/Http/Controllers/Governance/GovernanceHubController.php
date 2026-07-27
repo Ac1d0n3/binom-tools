@@ -66,27 +66,27 @@ class GovernanceHubController extends Controller
 
     public function advisor(): RedirectResponse
     {
-        return redirect()->to(locale_route('governance.index').'?tab=advisor');
+        return redirect()->to(locale_route('governance.index').'?tab=advisor', 301);
     }
 
     public function stacks(): RedirectResponse
     {
-        return redirect()->to(locale_route('governance.index').'?tab=guides#stacks');
+        return redirect()->to(locale_route('governance.index').'?tab=guides#stacks', 301);
     }
 
     public function kpiRequirements(): RedirectResponse
     {
-        return redirect()->to(locale_route('governance.index').'?tab=guides#kpi');
+        return redirect()->to(locale_route('governance.index').'?tab=guides#kpi', 301);
     }
 
     public function supplierDiscovery(): RedirectResponse
     {
-        return redirect()->to(locale_route('governance.index').'?tab=guides#supplier');
+        return redirect()->to(locale_route('governance.index').'?tab=guides#supplier', 301);
     }
 
     public function discoveryCanvas(): RedirectResponse
     {
-        return redirect()->to(locale_route('governance.index').'?tab=canvas');
+        return redirect()->to(locale_route('governance.index').'?tab=canvas', 301);
     }
 
     /**
