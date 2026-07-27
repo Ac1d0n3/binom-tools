@@ -28,8 +28,33 @@ class RolesPagesTest extends TestCase
         $show = $this->get('/roles/architect');
         $show->assertOk();
         $show->assertSee('Data Architect', false);
+        $show->assertSee('data-i18n="roles.boundariesTitle"', false);
+        $show->assertSee('data-i18n="roles.ownsTitle"', false);
+        $show->assertSee('data-i18n="roles.doesNotTitle"', false);
+        $show->assertSee('data-i18n="roles.tasksTitle"', false);
+        $show->assertSee('data-i18n="roles.worksWithTitle"', false);
+        $show->assertSee('data-i18n="roles.pathsTitle"', false);
+        $show->assertSee('data-i18n="roles.toolsTitle"', false);
+        $show->assertSee('data-i18n="roles.glossaryTitle"', false);
+        $show->assertDontSee('roles.hubLinksTitle', false);
+        $show->assertSee(route('learning-paths.show', ['slug' => 'modernize-warehouse']), false);
+        $show->assertSee(route('tools.architecture-fit'), false);
+        $show->assertSee(route('roles.show', ['slug' => 'steward']), false);
         $show->assertSee(route('glossary.show', ['slug' => 'data-architect']), false);
         $show->assertSee(route('playbooks.show', ['slug' => 'data-architect-role']), false);
+
+        // Glossary is a secondary section — boundaries come before it in the HTML.
+        $html = $show->getContent();
+        $boundariesPos = strpos($html, 'id="roles-boundaries"');
+        $glossaryPos = strpos($html, 'id="roles-glossary"');
+        $this->assertNotFalse($boundariesPos);
+        $this->assertNotFalse($glossaryPos);
+        $this->assertLessThan($glossaryPos, $boundariesPos);
+
+        $productOwner = $this->get('/roles/product-owner');
+        $productOwner->assertOk();
+        $productOwner->assertSee(route('glossary.show', ['slug' => 'data-product-owner']), false);
+        $productOwner->assertSee('href="'.route('glossary.show', ['slug' => 'data-product-owner']).'"', false);
 
         $this->get('/de/roles')->assertOk();
         $this->get('/en/roles/steward')->assertOk();

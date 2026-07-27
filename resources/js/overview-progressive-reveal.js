@@ -63,13 +63,17 @@ function findRevealHost(root) {
         const grid =
             scrollPane.classList.contains('tools-card-grid')
                 ? scrollPane
-                : scrollPane.querySelector('.tools-card-grid');
+                : scrollPane.querySelector(
+                      '.tools-card-grid, .glossary-hub-grid, .learning-paths-hub-grid, .roles-hub-grid',
+                  );
         if (grid instanceof HTMLElement && grid.closest('[hidden]') === null) {
             return grid;
         }
     }
 
-    const anyGrid = root.querySelector('.tools-card-grid');
+    const anyGrid = root.querySelector(
+        '.tools-card-grid, .glossary-hub-grid, .learning-paths-hub-grid, .roles-hub-grid',
+    );
     return anyGrid instanceof HTMLElement ? anyGrid : null;
 }
 

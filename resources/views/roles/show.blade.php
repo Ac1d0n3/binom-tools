@@ -14,8 +14,16 @@
     $leadDe = (string) ($item['lead']['de'] ?? $leadEn);
     $persona = (string) ($item['persona'] ?? $id);
     $personaLabel = $personas[$persona] ?? ['de' => $persona, 'en' => $persona];
+    $ownsEn = is_array($item['owns']['en'] ?? null) ? array_values(array_filter($item['owns']['en'], 'is_string')) : [];
+    $ownsDe = is_array($item['owns']['de'] ?? null) ? array_values(array_filter($item['owns']['de'], 'is_string')) : $ownsEn;
+    $doesNotEn = is_array($item['doesNot']['en'] ?? null) ? array_values(array_filter($item['doesNot']['en'], 'is_string')) : [];
+    $doesNotDe = is_array($item['doesNot']['de'] ?? null) ? array_values(array_filter($item['doesNot']['de'], 'is_string')) : $doesNotEn;
+    $tasks = is_array($item['tasks'] ?? null) ? $item['tasks'] : [];
+    $worksWithLinks = is_array($item['worksWithLinks'] ?? null) ? $item['worksWithLinks'] : [];
+    $pathLinks = is_array($item['pathLinks'] ?? null) ? $item['pathLinks'] : [];
+    $toolLinks = is_array($item['toolLinks'] ?? null) ? $item['toolLinks'] : [];
     $storyLinks = is_array($item['storyLinks'] ?? null) ? $item['storyLinks'] : [];
-    $hubLinks = is_array($item['hubLinks'] ?? null) ? $item['hubLinks'] : [];
+    $glossaryLink = is_array($item['glossaryLink'] ?? null) ? $item['glossaryLink'] : null;
     $pending = is_array($item['pendingStories'] ?? null) ? $item['pendingStories'] : [];
 @endphp
 
@@ -63,15 +71,131 @@
             <p class="tools-page-lead" data-text-de="{{ $leadDe }}" data-text-en="{{ $leadEn }}">{{ $leadEn }}</p>
         </header>
 
-        @if (count($hubLinks) > 0)
-            <section class="roles-detail__section" aria-labelledby="roles-hub-links">
-                <h2 id="roles-hub-links" class="roles-detail__section-title" data-i18n="roles.hubLinksTitle">Start here</h2>
+        @if (count($ownsEn) > 0 || count($doesNotEn) > 0)
+            <section class="roles-detail__section" aria-labelledby="roles-boundaries">
+                <h2 id="roles-boundaries" class="roles-detail__section-title" data-i18n="roles.boundariesTitle">Decision boundaries</h2>
+                <div class="roles-detail__boundaries">
+                    @if (count($ownsEn) > 0)
+                        <div class="roles-detail__boundary">
+                            <h3 class="roles-detail__boundary-title" data-i18n="roles.ownsTitle">Owns</h3>
+                            <ul class="roles-detail__bullets">
+                                @foreach ($ownsEn as $i => $lineEn)
+                                    @php $lineDe = (string) ($ownsDe[$i] ?? $lineEn); @endphp
+                                    <li data-text-de="{{ $lineDe }}" data-text-en="{{ $lineEn }}">{{ $lineEn }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    @if (count($doesNotEn) > 0)
+                        <div class="roles-detail__boundary">
+                            <h3 class="roles-detail__boundary-title" data-i18n="roles.doesNotTitle">Does not</h3>
+                            <ul class="roles-detail__bullets">
+                                @foreach ($doesNotEn as $i => $lineEn)
+                                    @php $lineDe = (string) ($doesNotDe[$i] ?? $lineEn); @endphp
+                                    <li data-text-de="{{ $lineDe }}" data-text-en="{{ $lineEn }}">{{ $lineEn }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+            </section>
+        @endif
+
+        @if (count($tasks) > 0)
+            <section class="roles-detail__section" aria-labelledby="roles-tasks">
+                <h2 id="roles-tasks" class="roles-detail__section-title" data-i18n="roles.tasksTitle">Typical tasks</h2>
+                <ul class="roles-detail__tasks">
+                    @foreach ($tasks as $task)
+                        @if (! is_array($task))
+                            @continue
+                        @endif
+                        @php
+                            $taskTitleEn = (string) ($task['title']['en'] ?? '');
+                            $taskTitleDe = (string) ($task['title']['de'] ?? $taskTitleEn);
+                            $taskWhereEn = (string) ($task['where']['en'] ?? '');
+                            $taskWhereDe = (string) ($task['where']['de'] ?? $taskWhereEn);
+                        @endphp
+                        @if ($taskTitleEn === '' && $taskTitleDe === '')
+                            @continue
+                        @endif
+                        <li class="roles-detail__task">
+                            <span
+                                class="roles-detail__task-title"
+                                data-text-de="{{ $taskTitleDe }}"
+                                data-text-en="{{ $taskTitleEn }}"
+                            >{{ $taskTitleEn !== '' ? $taskTitleEn : $taskTitleDe }}</span>
+                            @if ($taskWhereEn !== '' || $taskWhereDe !== '')
+                                <span
+                                    class="roles-detail__task-where"
+                                    data-text-de="{{ $taskWhereDe }}"
+                                    data-text-en="{{ $taskWhereEn }}"
+                                >{{ $taskWhereEn !== '' ? $taskWhereEn : $taskWhereDe }}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
+        @if (count($worksWithLinks) > 0)
+            <section class="roles-detail__section" aria-labelledby="roles-works-with">
+                <h2 id="roles-works-with" class="roles-detail__section-title" data-i18n="roles.worksWithTitle">Works with</h2>
                 <ul class="roles-detail__links">
-                    @foreach ($hubLinks as $link)
+                    @foreach ($worksWithLinks as $link)
                         <li>
                             <a href="{{ $link['href'] }}">
                                 <span data-text-de="{{ $link['label']['de'] }}" data-text-en="{{ $link['label']['en'] }}">{{ $link['label']['en'] }}</span>
-                                <span class="roles-detail__kind" data-i18n="search.type.{{ $link['kind'] }}">{{ $link['kind'] }}</span>
+                                <span class="roles-detail__kind" data-i18n="search.type.role">role</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
+        @if (count($pathLinks) > 0)
+            <section class="roles-detail__section" aria-labelledby="roles-paths">
+                <h2 id="roles-paths" class="roles-detail__section-title" data-i18n="roles.pathsTitle">Recommended learning paths</h2>
+                <ul class="roles-detail__links">
+                    @foreach ($pathLinks as $link)
+                        <li>
+                            <a href="{{ $link['href'] }}">
+                                <span class="roles-detail__link-main">
+                                    <span data-text-de="{{ $link['label']['de'] }}" data-text-en="{{ $link['label']['en'] }}">{{ $link['label']['en'] }}</span>
+                                    @if (($link['why']['en'] ?? '') !== '' || ($link['why']['de'] ?? '') !== '')
+                                        <span
+                                            class="roles-detail__why"
+                                            data-text-de="{{ $link['why']['de'] }}"
+                                            data-text-en="{{ $link['why']['en'] }}"
+                                        >{{ $link['why']['en'] !== '' ? $link['why']['en'] : $link['why']['de'] }}</span>
+                                    @endif
+                                </span>
+                                <span class="roles-detail__kind" data-i18n="search.type.path">path</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
+        @if (count($toolLinks) > 0)
+            <section class="roles-detail__section" aria-labelledby="roles-tools">
+                <h2 id="roles-tools" class="roles-detail__section-title" data-i18n="roles.toolsTitle">Recommended tools</h2>
+                <ul class="roles-detail__links">
+                    @foreach ($toolLinks as $link)
+                        <li>
+                            <a href="{{ $link['href'] }}">
+                                <span class="roles-detail__link-main">
+                                    <span data-text-de="{{ $link['label']['de'] }}" data-text-en="{{ $link['label']['en'] }}">{{ $link['label']['en'] }}</span>
+                                    @if (($link['why']['en'] ?? '') !== '' || ($link['why']['de'] ?? '') !== '')
+                                        <span
+                                            class="roles-detail__why"
+                                            data-text-de="{{ $link['why']['de'] }}"
+                                            data-text-en="{{ $link['why']['en'] }}"
+                                        >{{ $link['why']['en'] !== '' ? $link['why']['en'] : $link['why']['de'] }}</span>
+                                    @endif
+                                </span>
+                                <span class="roles-detail__kind" data-i18n="search.type.tool">tool</span>
                             </a>
                         </li>
                     @endforeach
@@ -97,6 +221,23 @@
                         Dedicated role stories are still planned — see docs/story-gaps-roles.md.
                     </p>
                 @endif
+            </section>
+        @endif
+
+        @if ($glossaryLink !== null)
+            <section class="roles-detail__section roles-detail__section--glossary" aria-labelledby="roles-glossary">
+                <h2 id="roles-glossary" class="roles-detail__section-title" data-i18n="roles.glossaryTitle">Glossary</h2>
+                <p class="roles-detail__glossary-lead" data-i18n="roles.glossaryLead">
+                    Short definition for shared language — not the starting point for this role.
+                </p>
+                <ul class="roles-detail__links">
+                    <li>
+                        <a href="{{ $glossaryLink['href'] }}">
+                            <span data-text-de="{{ $glossaryLink['label']['de'] }}" data-text-en="{{ $glossaryLink['label']['en'] }}">{{ $glossaryLink['label']['en'] }}</span>
+                            <span class="roles-detail__kind" data-i18n="search.type.glossary">glossary</span>
+                        </a>
+                    </li>
+                </ul>
             </section>
         @endif
     </div>

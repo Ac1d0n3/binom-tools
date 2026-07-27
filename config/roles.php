@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Roles Hub — destination cards for governance personas.
+ * Roles Hub — operating guides for governance personas.
  *
  * storyPreferred is used when the playbook exists; otherwise storyFallback.
  * See docs/story-gaps-roles.md for the story briefs.
@@ -32,9 +32,144 @@ return [
                 'de' => 'Hält Bedeutungen, Qualitätsregeln und Nutzung in der Domäne arbeitsfähig — der operative Motor hinter Katalog, Contracts und DQ. Eskaliert an den Owner, entscheidet nicht allein über Zweck und Zugriff.',
                 'en' => 'Keeps meanings, quality rules, and use workable in the domain — the operational engine behind catalog, contracts, and DQ. Escalates to the owner; does not alone decide purpose and access.',
             ],
+            'owns' => [
+                'de' => [
+                    'Begriffs- und Felddefinitionen in der Domäne',
+                    'DQ-Regeln, Gates und Issue-Triage',
+                    'Katalogpflege und Contract-Reviews mit Architect',
+                    'Eskalation an Owner, wenn Zweck oder Zugriff unklar ist',
+                ],
+                'en' => [
+                    'Term and field definitions in the domain',
+                    'DQ rules, gates, and issue triage',
+                    'Catalog care and contract reviews with the architect',
+                    'Escalation to the owner when purpose or access is unclear',
+                ],
+            ],
+            'doesNot' => [
+                'de' => [
+                    'Zweckbindung und Zugriffsfreigaben (Owner)',
+                    'Produkt-Roadmap und Priorisierung (Product Owner)',
+                    'Plattform-Runtime und Rechteumsetzung (Custodian)',
+                    'Grain und Interface-Standards allein festlegen (Architect)',
+                ],
+                'en' => [
+                    'Purpose binding and access approvals (owner)',
+                    'Product roadmap and prioritization (product owner)',
+                    'Platform runtime and rights enforcement (custodian)',
+                    'Setting grain and interface standards alone (architect)',
+                ],
+            ],
+            'tasks' => [
+                [
+                    'title' => [
+                        'de' => 'Definitionen und Synonyme im Katalog halten',
+                        'en' => 'Keep definitions and synonyms current in the catalog',
+                    ],
+                    'where' => [
+                        'de' => 'Katalog / Glossar der Domäne',
+                        'en' => 'Domain catalog / glossary',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'DQ-Gates und Exception-Listen betreiben',
+                        'en' => 'Operate DQ gates and exception lists',
+                    ],
+                    'where' => [
+                        'de' => 'Pipeline / DQ-Dashboard',
+                        'en' => 'Pipeline / DQ dashboard',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Contract-Änderungen mit Architect reviewen',
+                        'en' => 'Review contract changes with the architect',
+                    ],
+                    'where' => [
+                        'de' => 'Data-Contract-Review',
+                        'en' => 'Data contract review',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Consumer-Gaps sammeln und priorisieren',
+                        'en' => 'Collect and prioritize consumer gaps',
+                    ],
+                    'where' => [
+                        'de' => 'Intake / Stewardship-Cadence',
+                        'en' => 'Intake / stewardship cadence',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Zugriffskonflikte an den Owner eskalieren',
+                        'en' => 'Escalate access conflicts to the owner',
+                    ],
+                    'where' => [
+                        'de' => 'Freigabe-Cadence',
+                        'en' => 'Approval cadence',
+                    ],
+                ],
+            ],
+            'worksWith' => ['owner', 'product-owner', 'architect', 'custodian', 'consumer'],
+            'pathIds' => [
+                [
+                    'id' => 'governance-foundations',
+                    'why' => [
+                        'de' => 'Gemeinsame Sprache und Decision Rights für Stewardship',
+                        'en' => 'Shared language and decision rights for stewardship',
+                    ],
+                ],
+                [
+                    'id' => 'dq-with-dbt',
+                    'why' => [
+                        'de' => 'DQ-Regeln operativ in dbt verankern',
+                        'en' => 'Anchor DQ rules operationally in dbt',
+                    ],
+                ],
+                [
+                    'id' => 'trusted-metrics',
+                    'why' => [
+                        'de' => 'KPI-Contracts mit Owner und Architect schreiben',
+                        'en' => 'Write KPI contracts with owner and architect',
+                    ],
+                ],
+                [
+                    'id' => 'metadata-operating-model',
+                    'why' => [
+                        'de' => 'Katalog und Metadata als Betriebsauftrag',
+                        'en' => 'Catalog and metadata as an operating mandate',
+                    ],
+                ],
+            ],
+            'tools' => [
+                [
+                    'route' => 'tools.stakeholder-matrix',
+                    'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix'],
+                    'why' => [
+                        'de' => 'R vs A bei Domänenentscheidungen klären',
+                        'en' => 'Clarify R vs A for domain decisions',
+                    ],
+                ],
+                [
+                    'route' => 'tools.kpi-definition',
+                    'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition'],
+                    'why' => [
+                        'de' => 'Metrik-Verträge mit Owner festziehen',
+                        'en' => 'Lock metric contracts with the owner',
+                    ],
+                ],
+                [
+                    'route' => 'tools.dbt-dq-rules-generator',
+                    'label' => ['de' => 'dbt DQ Rules', 'en' => 'dbt DQ rules'],
+                    'why' => [
+                        'de' => 'Gates aus Definitionen ableiten',
+                        'en' => 'Derive gates from definitions',
+                    ],
+                ],
+            ],
             'glossaryId' => 'data-steward',
-            'pathId' => 'governance-foundations',
-            'toolRoute' => 'tools.stakeholder-matrix',
             'storyPreferred' => 'stewardship-capacity',
             'storyFallback' => 'data-ownership-stewardship',
             'storyLabel' => [
@@ -73,9 +208,144 @@ return [
                 'de' => 'Fachlich accountable für Zweckbindung, Zugriffsregeln und Freigaben in der Domäne. Setzt Decision Rights, ohne jedes Ticket zu bearbeiten — Steward und Custodian liefern die operative und technische Umsetzung.',
                 'en' => 'Business-accountable for purpose, access rules, and approvals in the domain. Sets decision rights without working every ticket — steward and custodian deliver operational and technical execution.',
             ],
+            'owns' => [
+                'de' => [
+                    'Zweckbindung der Domäne oder des Datenprodukts',
+                    'Zugriffsregeln und Freigaben (Accountable)',
+                    'Eskalationsentscheidungen bei Konflikten',
+                    'Sponsor-Evidence für kritische Domänen',
+                ],
+                'en' => [
+                    'Purpose binding for the domain or data product',
+                    'Access rules and approvals (accountable)',
+                    'Escalation decisions when conflicts arise',
+                    'Sponsor evidence for critical domains',
+                ],
+            ],
+            'doesNot' => [
+                'de' => [
+                    'Jeden Katalogeintrag oder jedes DQ-Ticket bearbeiten (Steward)',
+                    'Produkt-Backlog priorisieren (Product Owner)',
+                    'Rechte technisch umsetzen (Custodian)',
+                    'Grain und Mart-Schnittstellen designen (Architect)',
+                ],
+                'en' => [
+                    'Work every catalog entry or DQ ticket (steward)',
+                    'Prioritize the product backlog (product owner)',
+                    'Enforce rights technically (custodian)',
+                    'Design grain and mart interfaces (architect)',
+                ],
+            ],
+            'tasks' => [
+                [
+                    'title' => [
+                        'de' => 'Zweck und Nutzungspolitik festlegen',
+                        'en' => 'Set purpose and use policy',
+                    ],
+                    'where' => [
+                        'de' => 'Domain Charter / Policy',
+                        'en' => 'Domain charter / policy',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Zugriffsanträge freigeben oder ablehnen',
+                        'en' => 'Approve or reject access requests',
+                    ],
+                    'where' => [
+                        'de' => 'Freigabe-Cadence',
+                        'en' => 'Approval cadence',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'RACI mit Steward und Custodian nachschärfen',
+                        'en' => 'Retune RACI with steward and custodian',
+                    ],
+                    'where' => [
+                        'de' => 'Governance Cadence',
+                        'en' => 'Governance cadence',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'KPI-Änderungen accountabel freigeben',
+                        'en' => 'Accountably approve KPI changes',
+                    ],
+                    'where' => [
+                        'de' => 'Metric Change Board',
+                        'en' => 'Metric change board',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'PII-/Risiko-Freigaben entscheiden',
+                        'en' => 'Decide PII / risk approvals',
+                    ],
+                    'where' => [
+                        'de' => 'Privacy / Access Review',
+                        'en' => 'Privacy / access review',
+                    ],
+                ],
+            ],
+            'worksWith' => ['steward', 'product-owner', 'custodian', 'architect', 'consumer'],
+            'pathIds' => [
+                [
+                    'id' => 'governance-foundations',
+                    'why' => [
+                        'de' => 'Decision Rights und Ownership-Modell verstehen',
+                        'en' => 'Understand decision rights and the ownership model',
+                    ],
+                ],
+                [
+                    'id' => 'access-security-ops',
+                    'why' => [
+                        'de' => 'Zugriff und Masking als Owner steuern',
+                        'en' => 'Steer access and masking as owner',
+                    ],
+                ],
+                [
+                    'id' => 'trusted-metrics',
+                    'why' => [
+                        'de' => 'KPI-Accountability und Change-Prozess',
+                        'en' => 'KPI accountability and change process',
+                    ],
+                ],
+                [
+                    'id' => 'close-the-gaps',
+                    'why' => [
+                        'de' => 'Ownership-Gaps und Capacity sichtbar machen',
+                        'en' => 'Surface ownership gaps and capacity',
+                    ],
+                ],
+            ],
+            'tools' => [
+                [
+                    'route' => 'tools.stakeholder-matrix',
+                    'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix'],
+                    'why' => [
+                        'de' => 'Accountable vs Responsible trennen',
+                        'en' => 'Separate accountable vs responsible',
+                    ],
+                ],
+                [
+                    'route' => 'tools.kpi-definition',
+                    'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition'],
+                    'why' => [
+                        'de' => 'Owner-Sign-off auf Metrik-Verträge',
+                        'en' => 'Owner sign-off on metric contracts',
+                    ],
+                ],
+                [
+                    'route' => 'tools.pii-policy-generator',
+                    'label' => ['de' => 'PII Policy Generator', 'en' => 'PII policy generator'],
+                    'why' => [
+                        'de' => 'Zweckbindung bei sensiblen Daten festziehen',
+                        'en' => 'Lock purpose binding for sensitive data',
+                    ],
+                ],
+            ],
             'glossaryId' => 'data-owner',
-            'pathId' => 'governance-foundations',
-            'toolRoute' => 'tools.stakeholder-matrix',
             'storyPreferred' => 'data-product-owner-vs-data-owner',
             'storyFallback' => 'data-ownership-stewardship',
             'storyLabel' => [
@@ -114,9 +384,137 @@ return [
                 'de' => 'Priorisiert Scope, Roadmap und Consumer-Nutzen eines Data Products. Getrennt von Domain-Ownership (Zweck/Zugriff) und Stewardship (Definition/Qualität) — vermeidet, dass drei Hüte stillschweigend zusammenfallen.',
                 'en' => 'Prioritizes scope, roadmap, and consumer value of a data product. Distinct from domain ownership (purpose/access) and stewardship (definition/quality) — avoids three hats collapsing into one person by default.',
             ],
-            'glossaryId' => 'data-product',
-            'pathId' => 'governance-foundations',
-            'toolRoute' => 'tools.stakeholder-matrix',
+            'owns' => [
+                'de' => [
+                    'Scope und Roadmap des Data Products',
+                    'Priorisierung von Consumer-Value und Delivery',
+                    'Lifecycle-Entscheidungen (Go-Live, Deprecation)',
+                    'Abstimmung mit Steward zu Definitionen im Produkt',
+                ],
+                'en' => [
+                    'Scope and roadmap of the data product',
+                    'Prioritization of consumer value and delivery',
+                    'Lifecycle decisions (go-live, deprecation)',
+                    'Alignment with the steward on product definitions',
+                ],
+            ],
+            'doesNot' => [
+                'de' => [
+                    'Domain-Zweck und Zugriffsfreigaben (Data Owner)',
+                    'DQ-Betrieb und Katalogpflege allein (Steward)',
+                    'Architekturstandards und Grain (Architect)',
+                    'Plattform-Runtime (Custodian)',
+                ],
+                'en' => [
+                    'Domain purpose and access approvals (data owner)',
+                    'DQ operations and catalog care alone (steward)',
+                    'Architecture standards and grain (architect)',
+                    'Platform runtime (custodian)',
+                ],
+            ],
+            'tasks' => [
+                [
+                    'title' => [
+                        'de' => 'Backlog und Sprint-Scope des Data Products führen',
+                        'en' => 'Run the data product backlog and sprint scope',
+                    ],
+                    'where' => [
+                        'de' => 'Product Cadence',
+                        'en' => 'Product cadence',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Consumer-Feedback in Prioritäten übersetzen',
+                        'en' => 'Turn consumer feedback into priorities',
+                    ],
+                    'where' => [
+                        'de' => 'Intake / Discovery',
+                        'en' => 'Intake / discovery',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Go-Live und Deprecation mit Owner und Architect abstimmen',
+                        'en' => 'Align go-live and deprecation with owner and architect',
+                    ],
+                    'where' => [
+                        'de' => 'Release / Lifecycle Review',
+                        'en' => 'Release / lifecycle review',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Interface-Stabilität mit Architect sichern',
+                        'en' => 'Protect interface stability with the architect',
+                    ],
+                    'where' => [
+                        'de' => 'Contract / Mart Review',
+                        'en' => 'Contract / mart review',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Drei-Hüte-Konflikte sichtbar machen und trennen',
+                        'en' => 'Surface and separate three-hat conflicts',
+                    ],
+                    'where' => [
+                        'de' => 'RACI / Operating Cadence',
+                        'en' => 'RACI / operating cadence',
+                    ],
+                ],
+            ],
+            'worksWith' => ['owner', 'steward', 'architect', 'consumer', 'custodian'],
+            'pathIds' => [
+                [
+                    'id' => 'governance-foundations',
+                    'why' => [
+                        'de' => 'Rollen trennen: Owner vs Product Owner vs Steward',
+                        'en' => 'Separate roles: owner vs product owner vs steward',
+                    ],
+                ],
+                [
+                    'id' => 'trusted-metrics',
+                    'why' => [
+                        'de' => 'Consumer-Value über vertrauenswürdige Metriken',
+                        'en' => 'Consumer value through trusted metrics',
+                    ],
+                ],
+                [
+                    'id' => 'simplest-viable-stack',
+                    'why' => [
+                        'de' => 'Scope klein und lieferbar halten',
+                        'en' => 'Keep scope small and deliverable',
+                    ],
+                ],
+            ],
+            'tools' => [
+                [
+                    'route' => 'tools.stakeholder-matrix',
+                    'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix'],
+                    'why' => [
+                        'de' => 'Product- vs Domain-Entscheidungen trennen',
+                        'en' => 'Separate product vs domain decisions',
+                    ],
+                ],
+                [
+                    'route' => 'tools.kpi-requirements-intake',
+                    'label' => ['de' => 'KPI Requirements Intake', 'en' => 'KPI requirements intake'],
+                    'why' => [
+                        'de' => 'Consumer-Bedarf in Contracts überführen',
+                        'en' => 'Turn consumer need into contracts',
+                    ],
+                ],
+                [
+                    'route' => 'tools.decision-brief-generator',
+                    'label' => ['de' => 'Decision Brief', 'en' => 'Decision brief'],
+                    'why' => [
+                        'de' => 'Lifecycle-Entscheidungen dokumentieren',
+                        'en' => 'Document lifecycle decisions',
+                    ],
+                ],
+            ],
+            'glossaryId' => 'data-product-owner',
             'storyPreferred' => 'data-product-owner-vs-data-owner',
             'storyFallback' => 'one-data-product-multiple-consumers',
             'storyLabel' => [
@@ -150,9 +548,144 @@ return [
                 'de' => 'Sichert Grain, Interface-Stabilität und architektonische Konsistenz über Domänen und Marts. Arbeitet mit Steward und Platform zusammen — ohne zum Bottleneck für jedes Ticket zu werden.',
                 'en' => 'Secures grain, interface stability, and architectural consistency across domains and marts. Works with steward and platform — without becoming the bottleneck for every ticket.',
             ],
+            'owns' => [
+                'de' => [
+                    'Grain und Modellkonsistenz über Domänen',
+                    'Data Contracts und Interface-Stabilität',
+                    'Mitwirkung an Stack- und Mart-Entscheidungen',
+                    'Anti-Pattern-Prävention (Bottleneck, Papier-Architektur)',
+                ],
+                'en' => [
+                    'Grain and model consistency across domains',
+                    'Data contracts and interface stability',
+                    'Input on stack and mart decisions',
+                    'Anti-pattern prevention (bottleneck, paper architecture)',
+                ],
+            ],
+            'doesNot' => [
+                'de' => [
+                    'Fachliche Zweckbindung und Zugriff (Owner)',
+                    'Tägliche Katalog- und DQ-Arbeit (Steward)',
+                    'Produkt-Priorisierung (Product Owner)',
+                    'Runtime-Ops und Backup allein (Custodian)',
+                ],
+                'en' => [
+                    'Business purpose and access (owner)',
+                    'Day-to-day catalog and DQ work (steward)',
+                    'Product prioritization (product owner)',
+                    'Runtime ops and backup alone (custodian)',
+                ],
+            ],
+            'tasks' => [
+                [
+                    'title' => [
+                        'de' => 'Grain und Entitätsgrenzen festlegen',
+                        'en' => 'Set grain and entity boundaries',
+                    ],
+                    'where' => [
+                        'de' => 'Architecture Review',
+                        'en' => 'Architecture review',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Data Contracts und Breaking Changes steuern',
+                        'en' => 'Govern data contracts and breaking changes',
+                    ],
+                    'where' => [
+                        'de' => 'Contract / Interface Board',
+                        'en' => 'Contract / interface board',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Mart- und Stack-Fit mit Platform prüfen',
+                        'en' => 'Check mart and stack fit with platform',
+                    ],
+                    'where' => [
+                        'de' => 'Stack / Fit Review',
+                        'en' => 'Stack / fit review',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Stewardship bei Modellfragen coachen',
+                        'en' => 'Coach stewardship on modeling questions',
+                    ],
+                    'where' => [
+                        'de' => 'Office Hours / Design Crit',
+                        'en' => 'Office hours / design crit',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'KPI-Contracts auf Grain-Konsistenz prüfen',
+                        'en' => 'Check KPI contracts for grain consistency',
+                    ],
+                    'where' => [
+                        'de' => 'Metric Contract Review',
+                        'en' => 'Metric contract review',
+                    ],
+                ],
+            ],
+            'worksWith' => ['steward', 'custodian', 'owner', 'product-owner'],
+            'pathIds' => [
+                [
+                    'id' => 'modernize-warehouse',
+                    'why' => [
+                        'de' => 'Grain, Zielbild und Modernisierungspfad',
+                        'en' => 'Grain, target picture, and modernization path',
+                    ],
+                ],
+                [
+                    'id' => 'end-to-end-governance',
+                    'why' => [
+                        'de' => 'Architektur als Steuerungskette, nicht Einzeltool',
+                        'en' => 'Architecture as a control chain, not a single tool',
+                    ],
+                ],
+                [
+                    'id' => 'simplest-viable-stack',
+                    'why' => [
+                        'de' => 'Fit prüfen ohne Over-Engineering',
+                        'en' => 'Check fit without over-engineering',
+                    ],
+                ],
+                [
+                    'id' => 'dq-with-dbt',
+                    'why' => [
+                        'de' => 'DQ und Transforms in die Architektur einbinden',
+                        'en' => 'Embed DQ and transforms into the architecture',
+                    ],
+                ],
+            ],
+            'tools' => [
+                [
+                    'route' => 'tools.architecture-fit',
+                    'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit'],
+                    'why' => [
+                        'de' => 'Stack- und Mart-Fit strukturiert prüfen',
+                        'en' => 'Check stack and mart fit structurally',
+                    ],
+                ],
+                [
+                    'route' => 'tools.governance-stack-advisor',
+                    'label' => ['de' => 'Stack Advisor', 'en' => 'Stack advisor'],
+                    'why' => [
+                        'de' => 'Governance-Stack-Empfehlungen ableiten',
+                        'en' => 'Derive governance stack recommendations',
+                    ],
+                ],
+                [
+                    'route' => 'tools.decision-brief-generator',
+                    'label' => ['de' => 'Decision Brief', 'en' => 'Decision brief'],
+                    'why' => [
+                        'de' => 'Architekturentscheidungen dokumentieren',
+                        'en' => 'Document architecture decisions',
+                    ],
+                ],
+            ],
             'glossaryId' => 'data-architect',
-            'pathId' => 'modernize-warehouse',
-            'toolRoute' => 'tools.architecture-fit',
             'storyPreferred' => 'data-architect-role',
             'storyFallback' => 'operating-and-governing-the-platform',
             'storyLabel' => [
@@ -191,9 +724,144 @@ return [
                 'de' => 'Technische Obhut über Plattform, Speicher und Zugriffsmechanismen — Laufzeit, Backup, Rechteumsetzung. Führt Policy aus, setzt sie nicht fachlich — das bleibt Owner und Steward.',
                 'en' => 'Technical custody of platform, storage, and access mechanisms — runtime, backup, rights enforcement. Executes policy; does not set business purpose — that stays with owner and steward.',
             ],
+            'owns' => [
+                'de' => [
+                    'Plattform-, Speicher- und Runtime-Betrieb',
+                    'Technische Umsetzung von Zugriffsrechten und Masking',
+                    'Backup, Recovery und Betriebsstabilität',
+                    'Umsetzung von Policy-Entscheidungen des Owners',
+                ],
+                'en' => [
+                    'Platform, storage, and runtime operations',
+                    'Technical enforcement of access rights and masking',
+                    'Backup, recovery, and operational stability',
+                    'Executing the owner’s policy decisions',
+                ],
+            ],
+            'doesNot' => [
+                'de' => [
+                    'Zweck und Freigaben fachlich setzen (Owner)',
+                    'Definitionen und DQ-Gates allein pflegen (Steward)',
+                    'Grain und Contracts designen (Architect)',
+                    'Produkt-Roadmap priorisieren (Product Owner)',
+                ],
+                'en' => [
+                    'Set purpose and approvals as business decisions (owner)',
+                    'Maintain definitions and DQ gates alone (steward)',
+                    'Design grain and contracts (architect)',
+                    'Prioritize the product roadmap (product owner)',
+                ],
+            ],
+            'tasks' => [
+                [
+                    'title' => [
+                        'de' => 'Rechte und Masking technisch umsetzen',
+                        'en' => 'Enforce rights and masking technically',
+                    ],
+                    'where' => [
+                        'de' => 'IAM / Platform Controls',
+                        'en' => 'IAM / platform controls',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Laufzeit, Jobs und Speicher überwachen',
+                        'en' => 'Monitor runtime, jobs, and storage',
+                    ],
+                    'where' => [
+                        'de' => 'Ops / Observability',
+                        'en' => 'Ops / observability',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Backup- und Recovery-Pfade testen',
+                        'en' => 'Test backup and recovery paths',
+                    ],
+                    'where' => [
+                        'de' => 'Platform Cadence',
+                        'en' => 'Platform cadence',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Architect bei Stack- und Fit-Fragen unterstützen',
+                        'en' => 'Support the architect on stack and fit questions',
+                    ],
+                    'where' => [
+                        'de' => 'Architecture / Fit Review',
+                        'en' => 'Architecture / fit review',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'PII-/Löschpfade technisch absichern',
+                        'en' => 'Secure PII / deletion paths technically',
+                    ],
+                    'where' => [
+                        'de' => 'Privacy Ops',
+                        'en' => 'Privacy ops',
+                    ],
+                ],
+            ],
+            'worksWith' => ['architect', 'owner', 'steward', 'product-owner'],
+            'pathIds' => [
+                [
+                    'id' => 'modernize-warehouse',
+                    'why' => [
+                        'de' => 'Platform- und Warehouse-Betrieb modernisieren',
+                        'en' => 'Modernize platform and warehouse operations',
+                    ],
+                ],
+                [
+                    'id' => 'access-security-ops',
+                    'why' => [
+                        'de' => 'Zugriff, Masking und Security Ops',
+                        'en' => 'Access, masking, and security ops',
+                    ],
+                ],
+                [
+                    'id' => 'end-to-end-governance',
+                    'why' => [
+                        'de' => 'Runtime als Teil der Steuerungskette',
+                        'en' => 'Runtime as part of the control chain',
+                    ],
+                ],
+                [
+                    'id' => 'pii-in-five-steps',
+                    'why' => [
+                        'de' => 'Lösch- und Privacy-Pfade technisch denken',
+                        'en' => 'Think deletion and privacy paths technically',
+                    ],
+                ],
+            ],
+            'tools' => [
+                [
+                    'route' => 'tools.architecture-fit',
+                    'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit'],
+                    'why' => [
+                        'de' => 'Platform-Fit mit Architect prüfen',
+                        'en' => 'Check platform fit with the architect',
+                    ],
+                ],
+                [
+                    'route' => 'tools.pii-dsdr-readiness-checker',
+                    'label' => ['de' => 'PII/DSDR Readiness', 'en' => 'PII/DSDR readiness'],
+                    'why' => [
+                        'de' => 'Technische Readiness für Privacy-Pfade',
+                        'en' => 'Technical readiness for privacy paths',
+                    ],
+                ],
+                [
+                    'route' => 'tools.governance-stack-advisor',
+                    'label' => ['de' => 'Stack Advisor', 'en' => 'Stack advisor'],
+                    'why' => [
+                        'de' => 'Ops-relevante Stack-Empfehlungen',
+                        'en' => 'Ops-relevant stack recommendations',
+                    ],
+                ],
+            ],
             'glossaryId' => 'data-custodian',
-            'pathId' => 'modernize-warehouse',
-            'toolRoute' => 'tools.architecture-fit',
             'storyPreferred' => null,
             'storyFallback' => 'data-ownership-stewardship',
             'storyLabel' => [
@@ -227,9 +895,127 @@ return [
                 'de' => 'Nutzt Data Products und Reports für Entscheidungen. Meldet Gaps und Qualitätsprobleme — entscheidet nicht allein über Definition, Zugriff oder Produkt-Roadmap, sondern speist Steward und Product Owner.',
                 'en' => 'Uses data products and reports for decisions. Raises gaps and quality issues — does not alone decide definition, access, or product roadmap, but feeds steward and product owner.',
             ],
+            'owns' => [
+                'de' => [
+                    'Fachliche Nutzung von Data Products und Reports',
+                    'Feedback zu Qualität, Lücken und Usability',
+                    'Signal an Steward bei Definitions- oder DQ-Problemen',
+                    'Bedarfsmeldung an Product Owner',
+                ],
+                'en' => [
+                    'Business use of data products and reports',
+                    'Feedback on quality, gaps, and usability',
+                    'Signal to the steward on definition or DQ issues',
+                    'Demand signals to the product owner',
+                ],
+            ],
+            'doesNot' => [
+                'de' => [
+                    'Definitionen oder DQ-Regeln allein ändern (Steward)',
+                    'Zugriff freigeben (Owner)',
+                    'Produkt-Roadmap entscheiden (Product Owner)',
+                    'Architektur oder Runtime steuern (Architect / Custodian)',
+                ],
+                'en' => [
+                    'Change definitions or DQ rules alone (steward)',
+                    'Approve access (owner)',
+                    'Decide the product roadmap (product owner)',
+                    'Steer architecture or runtime (architect / custodian)',
+                ],
+            ],
+            'tasks' => [
+                [
+                    'title' => [
+                        'de' => 'Zertifizierte Produkte und Reports nutzen',
+                        'en' => 'Use certified products and reports',
+                    ],
+                    'where' => [
+                        'de' => 'BI / Analytics Workspace',
+                        'en' => 'BI / analytics workspace',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Gaps und Qualitätsprobleme melden',
+                        'en' => 'Report gaps and quality issues',
+                    ],
+                    'where' => [
+                        'de' => 'Intake / Support Channel',
+                        'en' => 'Intake / support channel',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Report-Inventar und Shadow-BI sichtbar machen',
+                        'en' => 'Surface report inventory and shadow BI',
+                    ],
+                    'where' => [
+                        'de' => 'Report Inventory',
+                        'en' => 'Report inventory',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'de' => 'Anforderungen an Product Owner und Steward geben',
+                        'en' => 'Feed requirements to product owner and steward',
+                    ],
+                    'where' => [
+                        'de' => 'Discovery / Feedback Cadence',
+                        'en' => 'Discovery / feedback cadence',
+                    ],
+                ],
+            ],
+            'worksWith' => ['steward', 'product-owner', 'owner'],
+            'pathIds' => [
+                [
+                    'id' => 'governance-foundations',
+                    'why' => [
+                        'de' => 'Verstehen, wen man bei Gaps anspricht',
+                        'en' => 'Know who to contact when gaps appear',
+                    ],
+                ],
+                [
+                    'id' => 'trusted-metrics',
+                    'why' => [
+                        'de' => 'Zahlen vertrauen und Abweichungen melden',
+                        'en' => 'Trust numbers and report divergence',
+                    ],
+                ],
+                [
+                    'id' => 'pii-in-five-steps',
+                    'why' => [
+                        'de' => 'Sensible Daten korrekt anfordern und nutzen',
+                        'en' => 'Request and use sensitive data correctly',
+                    ],
+                ],
+            ],
+            'tools' => [
+                [
+                    'route' => 'tools.report-inventory',
+                    'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory'],
+                    'why' => [
+                        'de' => 'Shadow-BI und Report-Wildwuchs sichtbar machen',
+                        'en' => 'Surface shadow BI and report sprawl',
+                    ],
+                ],
+                [
+                    'route' => 'tools.kpi-requirements-intake',
+                    'label' => ['de' => 'KPI Requirements Intake', 'en' => 'KPI requirements intake'],
+                    'why' => [
+                        'de' => 'Bedarf strukturiert an Steward/PO geben',
+                        'en' => 'Hand need structured to steward / PO',
+                    ],
+                ],
+                [
+                    'route' => 'tools.stakeholder-matrix',
+                    'label' => ['de' => 'Stakeholder & RACI Matrix', 'en' => 'Stakeholder & RACI matrix'],
+                    'why' => [
+                        'de' => 'Sehen, wer entscheidet und wer liefert',
+                        'en' => 'See who decides and who delivers',
+                    ],
+                ],
+            ],
             'glossaryId' => 'data-consumer',
-            'pathId' => 'governance-foundations',
-            'toolRoute' => 'tools.report-inventory',
             'storyPreferred' => null,
             'storyFallback' => 'data-ownership-stewardship',
             'storyLabel' => [

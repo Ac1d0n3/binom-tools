@@ -110,4 +110,31 @@ describe('attachOverviewProgressiveReveal', () => {
         const storyItems = Array.from(storiesGrid.querySelectorAll('[data-overview-item]'));
         expect(storyItems.every((el) => !el.classList.contains(OVERVIEW_ITEM_UNREVEALED_CLASS))).toBe(true);
     });
+
+    it('places the sentinel in glossary hub grids', () => {
+        const root = document.createElement('div');
+        root.setAttribute('data-overview-filter-root', '');
+        const scroll = document.createElement('div');
+        scroll.className = 'tools-overview-scroll';
+        const grid = document.createElement('div');
+        grid.className = 'glossary-hub-grid';
+
+        for (let i = 0; i < OVERVIEW_REVEAL_BATCH + 4; i += 1) {
+            const item = document.createElement('a');
+            item.setAttribute('data-overview-item', '');
+            grid.appendChild(item);
+        }
+
+        scroll.appendChild(grid);
+        root.appendChild(scroll);
+        document.body.appendChild(root);
+
+        const api = attachOverviewProgressiveReveal(root, { getSearchQuery: () => '' });
+
+        expect(grid.querySelector('[data-overview-reveal-sentinel]')).not.toBeNull();
+        const items = Array.from(grid.querySelectorAll('[data-overview-item]'));
+        expect(items.filter((el) => el.classList.contains(OVERVIEW_ITEM_UNREVEALED_CLASS))).toHaveLength(4);
+
+        api.destroy();
+    });
 });

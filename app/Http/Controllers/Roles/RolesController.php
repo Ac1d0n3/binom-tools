@@ -113,35 +113,11 @@ class RolesController extends Controller
             ];
         }
 
-        $glossaryId = is_string($role['glossaryId'] ?? null) ? $role['glossaryId'] : '';
-        $pathId = is_string($role['pathId'] ?? null) ? $role['pathId'] : '';
-        $toolRoute = is_string($role['toolRoute'] ?? null) ? $role['toolRoute'] : '';
-
-        $links = [];
-        if ($glossaryId !== '') {
-            $links[] = [
-                'kind' => 'glossary',
-                'href' => locale_route('glossary.show', ['slug' => $glossaryId]),
-                'label' => ['de' => 'Glossary', 'en' => 'Glossary'],
-            ];
-        }
-        if ($pathId !== '') {
-            $links[] = [
-                'kind' => 'path',
-                'href' => locale_route('learning-paths.show', ['slug' => $pathId]),
-                'label' => ['de' => 'Learning Path', 'en' => 'Learning path'],
-            ];
-        }
-        if ($toolRoute !== '') {
-            $links[] = [
-                'kind' => 'tool',
-                'href' => locale_route($toolRoute),
-                'label' => ['de' => 'Tool', 'en' => 'Tool'],
-            ];
-        }
-
         $role['storyLinks'] = $storyLinks;
-        $role['hubLinks'] = $links;
+        $role['pathLinks'] = $this->hydratePathLinks($role);
+        $role['toolLinks'] = $this->hydrateToolLinks($role);
+        $role['worksWithLinks'] = $this->hydrateWorksWithLinks($role);
+        $role['glossaryLink'] = $this->hydrateGlossaryLink($role);
         $role['pendingStories'] = array_values(array_filter([
             is_string($role['storyPreferred'] ?? null)
                 && $this->playbooks->find((string) $role['storyPreferred']) === null
@@ -150,6 +126,207 @@ class RolesController extends Controller
         ]));
 
         return $role;
+    }
+
+    /**
+     * @param  array<string, mixed>  $role
+     * @return list<array{href: string, label: array{de: string, en: string}, why: array{de: string, en: string}}>
+     */
+    private function hydratePathLinks(array $role): array
+    {
+        $entries = $this->normalizePathEntries($role);
+        if ($entries === []) {
+            return [];
+        }
+
+        /** @var list<array<string, mixed>> $paths */
+        $paths = config('learning-paths.paths', []);
+        $byId = [];
+        foreach ($paths as $path) {
+            if (! is_array($path)) {
+                continue;
+            }
+            $id = (string) ($path['id'] ?? '');
+            if ($id !== '') {
+                $byId[$id] = $path;
+            }
+        }
+
+        $links = [];
+        foreach ($entries as $entry) {
+            $pathId = (string) ($entry['id'] ?? '');
+            if ($pathId === '' || ! isset($byId[$pathId])) {
+                continue;
+            }
+            $path = $byId[$pathId];
+            $links[] = [
+                'href' => locale_route('learning-paths.show', ['slug' => $pathId]),
+                'label' => [
+                    'en' => (string) ($path['title']['en'] ?? $pathId),
+                    'de' => (string) ($path['title']['de'] ?? $path['title']['en'] ?? $pathId),
+                ],
+                'why' => $this->bilingualLabel(
+                    is_array($entry['why'] ?? null) ? $entry['why'] : null,
+                    ['de' => '', 'en' => ''],
+                ),
+            ];
+        }
+
+        return $links;
+    }
+
+    /**
+     * @param  array<string, mixed>  $role
+     * @return list<array{id: string, why?: array{de?: string, en?: string}}>
+     */
+    private function normalizePathEntries(array $role): array
+    {
+        $pathIds = $role['pathIds'] ?? null;
+        if (is_array($pathIds) && $pathIds !== []) {
+            $entries = [];
+            foreach ($pathIds as $entry) {
+                if (is_string($entry) && $entry !== '') {
+                    $entries[] = ['id' => $entry];
+                    continue;
+                }
+                if (is_array($entry) && is_string($entry['id'] ?? null) && $entry['id'] !== '') {
+                    $entries[] = $entry;
+                }
+            }
+
+            return $entries;
+        }
+
+        $legacy = is_string($role['pathId'] ?? null) ? (string) $role['pathId'] : '';
+
+        return $legacy !== '' ? [['id' => $legacy]] : [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $role
+     * @return list<array{href: string, label: array{de: string, en: string}, why: array{de: string, en: string}}>
+     */
+    private function hydrateToolLinks(array $role): array
+    {
+        $entries = $this->normalizeToolEntries($role);
+        $links = [];
+        foreach ($entries as $entry) {
+            $routeName = (string) ($entry['route'] ?? '');
+            if ($routeName === '') {
+                continue;
+            }
+
+            try {
+                $href = locale_route($routeName);
+            } catch (\Throwable) {
+                continue;
+            }
+
+            $defaultLabel = [
+                'en' => $routeName,
+                'de' => $routeName,
+            ];
+            $links[] = [
+                'href' => $href,
+                'label' => $this->bilingualLabel(
+                    is_array($entry['label'] ?? null) ? $entry['label'] : null,
+                    $defaultLabel,
+                ),
+                'why' => $this->bilingualLabel(
+                    is_array($entry['why'] ?? null) ? $entry['why'] : null,
+                    ['de' => '', 'en' => ''],
+                ),
+            ];
+        }
+
+        return $links;
+    }
+
+    /**
+     * @param  array<string, mixed>  $role
+     * @return list<array{route: string, label?: array{de?: string, en?: string}, why?: array{de?: string, en?: string}}>
+     */
+    private function normalizeToolEntries(array $role): array
+    {
+        $tools = $role['tools'] ?? null;
+        if (is_array($tools) && $tools !== []) {
+            $entries = [];
+            foreach ($tools as $entry) {
+                if (is_string($entry) && $entry !== '') {
+                    $entries[] = ['route' => $entry];
+                    continue;
+                }
+                if (is_array($entry) && is_string($entry['route'] ?? null) && $entry['route'] !== '') {
+                    $entries[] = $entry;
+                }
+            }
+
+            return $entries;
+        }
+
+        $legacy = is_string($role['toolRoute'] ?? null) ? (string) $role['toolRoute'] : '';
+
+        return $legacy !== '' ? [['route' => $legacy]] : [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $role
+     * @return list<array{href: string, label: array{de: string, en: string}}>
+     */
+    private function hydrateWorksWithLinks(array $role): array
+    {
+        $ids = is_array($role['worksWith'] ?? null) ? $role['worksWith'] : [];
+        if ($ids === []) {
+            return [];
+        }
+
+        /** @var list<array<string, mixed>> $roles */
+        $roles = config('roles.roles', []);
+        $byId = [];
+        foreach ($roles as $peer) {
+            if (! is_array($peer)) {
+                continue;
+            }
+            $id = (string) ($peer['id'] ?? '');
+            if ($id !== '') {
+                $byId[$id] = $peer;
+            }
+        }
+
+        $selfId = (string) ($role['id'] ?? '');
+        $links = [];
+        foreach ($ids as $peerId) {
+            if (! is_string($peerId) || $peerId === '' || $peerId === $selfId || ! isset($byId[$peerId])) {
+                continue;
+            }
+            $peer = $byId[$peerId];
+            $links[] = [
+                'href' => locale_route('roles.show', ['slug' => $peerId]),
+                'label' => [
+                    'en' => (string) ($peer['title']['en'] ?? $peerId),
+                    'de' => (string) ($peer['title']['de'] ?? $peer['title']['en'] ?? $peerId),
+                ],
+            ];
+        }
+
+        return $links;
+    }
+
+    /**
+     * @param  array<string, mixed>  $role
+     * @return array{href: string, label: array{de: string, en: string}}|null
+     */
+    private function hydrateGlossaryLink(array $role): ?array
+    {
+        $glossaryId = is_string($role['glossaryId'] ?? null) ? $role['glossaryId'] : '';
+        if ($glossaryId === '') {
+            return null;
+        }
+
+        return [
+            'href' => locale_route('glossary.show', ['slug' => $glossaryId]),
+            'label' => ['de' => 'Begriff nachschlagen', 'en' => 'Look up the term'],
+        ];
     }
 
     private function resolveStorySlug(?string $preferred, ?string $fallback): ?string

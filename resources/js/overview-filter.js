@@ -16,6 +16,7 @@ const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
 const OVERVIEW_LAYOUT_STORAGE_KEY = 'binom-tools-overview-layout';
 const OVERVIEW_HIDE_READ_STORAGE_KEY = 'binom-tools-overview-hide-read-v2';
 const FILTER_TAG_MODE_STORAGE_KEY = 'binom-tools-filter-tag-mode';
+const GLOSSARY_AZ_PANEL_STORAGE_KEY = 'binom-tools-glossary-az-panel';
 
 /** @typedef {'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'} OverviewSortKey */
 /** @typedef {'grid' | 'list'} OverviewLayoutMode */
@@ -34,10 +35,12 @@ export function initOverviewFilters() {
     initTagSidebarSearch(root);
     initOverviewViewToggle(root);
     initOverviewLayoutToggle(root);
+    initGlossaryAzFilter(root);
 
     const searchInput = /** @type {HTMLInputElement | null} */ (
         root.querySelector('[data-overview-search]')
     );
+    const letterButtons = root.querySelectorAll('[data-glossary-letter]');
     const productSelect = /** @type {HTMLSelectElement | null} */ (
         root.querySelector('select[data-overview-product]')
     );
@@ -77,6 +80,9 @@ export function initOverviewFilters() {
 
     /** @type {string} */
     let activeProductKey = 'all';
+
+    /** @type {string} */
+    let activeLetterKey = 'all';
 
     /** @type {Set<string>} */
     const activeTags = new Set();
@@ -230,6 +236,54 @@ export function initOverviewFilters() {
 
     /** @param {string[]} stacks */
     const matchesStackFilter = (stacks) => activeStack() === 'all' || stacks.includes(activeStack());
+
+    /** @param {Element} item */
+    const matchesLetterFilter = (item) => {
+        if (activeLetterKey === 'all' || letterButtons.length === 0) {
+            return true;
+        }
+
+        const attr = locale() === 'de' ? 'data-letter-de' : 'data-letter-en';
+        const letter = item.getAttribute(attr) ?? item.getAttribute('data-letter-en') ?? '';
+
+        return letter === activeLetterKey;
+    };
+
+    const syncLetterChips = () => {
+        if (letterButtons.length === 0) {
+            return;
+        }
+
+        const loc = locale();
+        letterButtons.forEach((button) => {
+            if (!(button instanceof HTMLButtonElement)) {
+                return;
+            }
+
+            const key = button.getAttribute('data-glossary-letter') ?? '';
+            button.classList.toggle('tools-filter-chip--active', key === activeLetterKey);
+
+            if (key === 'all') {
+                button.disabled = false;
+                button.removeAttribute('aria-disabled');
+                return;
+            }
+
+            const available =
+                button.getAttribute(loc === 'de' ? 'data-letter-available-de' : 'data-letter-available-en') ===
+                '1';
+            button.disabled = !available;
+            button.setAttribute('aria-disabled', available ? 'false' : 'true');
+            if (!available && activeLetterKey === key) {
+                activeLetterKey = 'all';
+            }
+        });
+
+        letterButtons.forEach((button) => {
+            const key = button.getAttribute('data-glossary-letter') ?? '';
+            button.classList.toggle('tools-filter-chip--active', key === activeLetterKey);
+        });
+    };
 
     /** @param {number} count */
     const syncResultCount = (count) => {
@@ -479,7 +533,8 @@ export function initOverviewFilters() {
             activeModel() !== 'all' ||
             activeResidency() !== 'all' ||
             activeVendor() !== 'all' ||
-            activeStack() !== 'all';
+            activeStack() !== 'all' ||
+            activeLetterKey !== 'all';
         filterResetButton.disabled = !hasFilters;
         filterResetButton.setAttribute('aria-disabled', hasFilters ? 'false' : 'true');
     };
@@ -547,6 +602,7 @@ export function initOverviewFilters() {
             const matchesResidency = residencySelect === null || matchesResidencyFilter(residencies);
             const matchesVendor = vendorSelect === null || matchesVendorFilter(vendor);
             const matchesStack = stackSelect === null || matchesStackFilter(stacks);
+            const matchesLetter = matchesLetterFilter(item);
             const read = isPlaybookRead(slug);
 
             if (
@@ -558,6 +614,7 @@ export function initOverviewFilters() {
                 matchesResidency &&
                 matchesVendor &&
                 matchesStack &&
+                matchesLetter &&
                 hideRead &&
                 read
             ) {
@@ -573,6 +630,7 @@ export function initOverviewFilters() {
                 matchesResidency &&
                 matchesVendor &&
                 matchesStack &&
+                matchesLetter &&
                 (!hideRead || !read);
 
             item.hidden = !show;
@@ -725,6 +783,7 @@ export function initOverviewFilters() {
         const vendor = params.get('vendor');
         const product = params.get('product');
         const query = params.get('q') ?? params.get('search');
+        const letter = params.get('letter');
 
         if (vendor && selectHasOption(vendorSelect, vendor) && vendorSelect) {
             vendorSelect.value = vendor;
@@ -736,6 +795,20 @@ export function initOverviewFilters() {
                 syncProductChips();
             } else if (selectHasOption(productSelect, product) && productSelect) {
                 productSelect.value = product;
+            }
+        }
+
+        if (letter !== null && letterButtons.length > 0) {
+            const normalized = letter.trim().toUpperCase();
+            const exists = Array.from(letterButtons).some(
+                (button) => (button.getAttribute('data-glossary-letter') ?? '') === normalized
+                    || (normalized === 'ALL' && (button.getAttribute('data-glossary-letter') ?? '') === 'all'),
+            );
+
+            if (normalized === 'ALL' || normalized === '') {
+                activeLetterKey = 'all';
+            } else if (exists) {
+                activeLetterKey = normalized;
             }
         }
 
@@ -766,6 +839,10 @@ export function initOverviewFilters() {
 
         if (hasProductFilter()) {
             setOrDelete('product', activeProduct());
+        }
+
+        if (letterButtons.length > 0) {
+            setOrDelete('letter', activeLetterKey);
         }
 
         if (searchInput) {
@@ -818,6 +895,7 @@ export function initOverviewFilters() {
     const resetFilters = () => {
         activeCategoryKey = 'all';
         activeProductKey = 'all';
+        activeLetterKey = 'all';
         activeTags.clear();
 
         if (productSelect) {
@@ -846,6 +924,7 @@ export function initOverviewFilters() {
         });
 
         syncProductChips();
+        syncLetterChips();
 
         tagButtons.forEach((button) => {
             const tag = button.getAttribute('data-overview-tag') ?? '';
@@ -880,6 +959,18 @@ export function initOverviewFilters() {
         button.addEventListener('click', () => {
             activeProductKey = button.getAttribute('data-overview-product') ?? 'all';
             syncProductChips();
+            apply();
+        });
+    });
+
+    letterButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            if (button instanceof HTMLButtonElement && button.disabled) {
+                return;
+            }
+
+            activeLetterKey = button.getAttribute('data-glossary-letter') ?? 'all';
+            syncLetterChips();
             apply();
         });
     });
@@ -976,6 +1067,8 @@ export function initOverviewFilters() {
     window.addEventListener('binom-tools:locale', () => {
         syncStackBanner();
         syncOverviewReadControls(hideReadToggle, readResetButton, hideRead);
+        syncLetterChips();
+        apply();
     });
 
     initOverviewSort(root);
@@ -985,10 +1078,54 @@ export function initOverviewFilters() {
     }
 
     readFiltersFromUrl();
+    syncLetterChips();
+
+    if (activeLetterKey !== 'all') {
+        const azPanel = root.querySelector('[data-glossary-az-panel]');
+        const azToggle = root.querySelector('[data-glossary-az-toggle]');
+        if (azPanel instanceof HTMLElement && azToggle instanceof HTMLElement) {
+            azPanel.hidden = false;
+            azToggle.setAttribute('aria-expanded', 'true');
+            localStorage.setItem(GLOSSARY_AZ_PANEL_STORAGE_KEY, 'open');
+        }
+    }
+
     progressiveReveal = attachOverviewProgressiveReveal(root, {
         getSearchQuery: () => searchInput?.value ?? '',
     });
     apply();
+}
+
+/**
+ * Collapsible A–Z letter strip for the glossary hub header.
+ *
+ * @param {ParentNode} root
+ */
+function initGlossaryAzFilter(root) {
+    const toggle = root.querySelector('[data-glossary-az-toggle]');
+    const panel = root.querySelector('[data-glossary-az-panel]');
+
+    if (!(toggle instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+        return;
+    }
+
+    const stored = localStorage.getItem(GLOSSARY_AZ_PANEL_STORAGE_KEY);
+    const expanded = stored === 'open';
+
+    /**
+     * @param {boolean} open
+     */
+    const setExpanded = (open) => {
+        panel.hidden = !open;
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        localStorage.setItem(GLOSSARY_AZ_PANEL_STORAGE_KEY, open ? 'open' : 'collapsed');
+    };
+
+    toggle.addEventListener('click', () => {
+        setExpanded(panel.hidden);
+    });
+
+    setExpanded(expanded);
 }
 
 /**

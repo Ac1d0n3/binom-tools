@@ -6,6 +6,11 @@
 @section('meta_description', 'Governance glossary — steward, lineage, DSDR, grain, data product, PII, catalog and more, linked to stories and tools.')
 
 @section('content')
+    @php
+        $azLetters = is_array($azLetters ?? null) ? $azLetters : array_merge(range('A', 'Z'), ['#']);
+        $availableLettersEn = is_array($availableLettersEn ?? null) ? $availableLettersEn : [];
+        $availableLettersDe = is_array($availableLettersDe ?? null) ? $availableLettersDe : [];
+    @endphp
     <div class="tools-content tools-content--overview tools-content--glossary" data-overview-filter-root>
         <div class="tools-overview-sticky-header glossary-hub-sticky">
             <h1 class="tools-page-title" data-i18n="glossary.indexTitle">Glossary</h1>
@@ -47,6 +52,57 @@
                         <i class="fa-solid fa-chevron-down tools-overview-sort__icon" aria-hidden="true"></i>
                     </span>
                 </label>
+                <button
+                    type="button"
+                    class="glossary-az-toggle"
+                    data-glossary-az-toggle
+                    aria-expanded="false"
+                    aria-controls="glossary-az-panel"
+                    data-i18n-aria="glossary.azToggle"
+                    aria-label="A–Z"
+                    title="A–Z"
+                >
+                    <span data-i18n="glossary.azToggle">A–Z</span>
+                    <i class="fa-solid fa-chevron-down glossary-az-toggle__icon" aria-hidden="true"></i>
+                </button>
+                <span
+                    class="tools-overview-count-badge"
+                    data-overview-result-count
+                    data-overview-count-mode="items"
+                    data-overview-count-badge
+                    aria-live="polite"
+                >{{ count($terms) }}</span>
+            </div>
+
+            <div
+                id="glossary-az-panel"
+                class="glossary-az-filter"
+                data-glossary-az-panel
+                hidden
+            >
+                <span class="sr-only" data-i18n="glossary.azLabel">Filter by letter</span>
+                <div class="glossary-az-filter__chips" role="group" aria-label="A–Z">
+                    <button
+                        type="button"
+                        class="tools-filter-chip glossary-az-chip tools-filter-chip--active"
+                        data-glossary-letter="all"
+                        data-i18n="glossary.azAll"
+                    >All</button>
+                    @foreach ($azLetters as $letter)
+                        @php
+                            $hasEn = in_array($letter, $availableLettersEn, true);
+                            $hasDe = in_array($letter, $availableLettersDe, true);
+                        @endphp
+                        <button
+                            type="button"
+                            class="tools-filter-chip glossary-az-chip"
+                            data-glossary-letter="{{ $letter }}"
+                            data-letter-available-en="{{ $hasEn ? '1' : '0' }}"
+                            data-letter-available-de="{{ $hasDe ? '1' : '0' }}"
+                            @if (! $hasEn && ! $hasDe) disabled aria-disabled="true" @endif
+                        >{{ $letter }}</button>
+                    @endforeach
+                </div>
             </div>
         </div>
 
@@ -77,6 +133,24 @@
                             $categoryId,
                             implode(' ', $aliases),
                         ])));
+
+                        $letterFrom = static function (string $label): string {
+                            $trimmed = trim($label);
+                            if ($trimmed === '') {
+                                return '#';
+                            }
+                            $first = mb_strtoupper(mb_substr($trimmed, 0, 1));
+                            $folded = match ($first) {
+                                'Ä' => 'A',
+                                'Ö' => 'O',
+                                'Ü' => 'U',
+                                default => $first,
+                            };
+
+                            return preg_match('/^[A-Z]$/', $folded) === 1 ? $folded : '#';
+                        };
+                        $letterEn = $letterFrom($termEn);
+                        $letterDe = $letterFrom($termDe);
                     @endphp
                     <a
                         href="{{ locale_route('glossary.show', ['slug' => $id]) }}"
@@ -85,6 +159,8 @@
                         data-overview-item
                         data-search-text="{{ $searchText }}"
                         data-products="{{ $categoryId }}"
+                        data-letter-en="{{ $letterEn }}"
+                        data-letter-de="{{ $letterDe }}"
                     >
                         <span class="glossary-hub-card__meta">
                             <span data-text-de="{{ $catDe }}" data-text-en="{{ $catEn }}">{{ $catEn }}</span>

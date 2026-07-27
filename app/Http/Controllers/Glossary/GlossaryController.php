@@ -42,11 +42,48 @@ class GlossaryController extends Controller
             return ($posA === false ? PHP_INT_MAX : $posA) <=> ($posB === false ? PHP_INT_MAX : $posB);
         });
 
+        $lettersEn = [];
+        $lettersDe = [];
+        foreach ($terms as $term) {
+            $termEn = (string) ($term['term']['en'] ?? $term['id'] ?? '');
+            $termDe = (string) ($term['term']['de'] ?? $termEn);
+            $lettersEn[$this->glossaryLetter($termEn)] = true;
+            $lettersDe[$this->glossaryLetter($termDe)] = true;
+        }
+
         return view('glossary.index', [
             'terms' => $terms,
             'categories' => $categories,
             'availableCategories' => $availableCategories,
+            'availableLettersEn' => array_keys($lettersEn),
+            'availableLettersDe' => array_keys($lettersDe),
+            'azLetters' => array_merge(range('A', 'Z'), ['#']),
         ]);
+    }
+
+    /**
+     * First index letter for A–Z filter (umlauts fold to A/O/U).
+     */
+    private function glossaryLetter(string $term): string
+    {
+        $trimmed = trim($term);
+        if ($trimmed === '') {
+            return '#';
+        }
+
+        $first = mb_strtoupper(mb_substr($trimmed, 0, 1));
+        $folded = match ($first) {
+            'Ä' => 'A',
+            'Ö' => 'O',
+            'Ü' => 'U',
+            default => $first,
+        };
+
+        if (preg_match('/^[A-Z]$/', $folded) === 1) {
+            return $folded;
+        }
+
+        return '#';
     }
 
     public function show(Request $request): View|Response
@@ -104,7 +141,12 @@ class GlossaryController extends Controller
                 'compliance' => $id !== '' ? locale_route('compliance.show', ['slug' => $id]) : null,
                 'path' => $id !== '' ? locale_route('learning-paths.show', ['slug' => $id]) : null,
                 'glossary' => $id !== '' ? locale_route('glossary.show', ['slug' => $id]) : null,
-                'route' => is_string($entry['route'] ?? null) ? locale_route((string) $entry['route']) : null,
+                'route' => is_string($entry['route'] ?? null)
+                    ? locale_route(
+                        (string) $entry['route'],
+                        is_array($entry['params'] ?? null) ? $entry['params'] : [],
+                    )
+                    : null,
                 default => null,
             };
 
