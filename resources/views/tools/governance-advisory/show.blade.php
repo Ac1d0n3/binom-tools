@@ -386,10 +386,6 @@
                         </a>
                     @endif
                 @endforeach
-                <a href="{{ locale_route('governance.index') }}">
-                    <span data-text-de="Zurück zum Governance Hub" data-text-en="Back to Governance Hub">Back to Governance Hub</span>
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </a>
             </div>
         </section>
 

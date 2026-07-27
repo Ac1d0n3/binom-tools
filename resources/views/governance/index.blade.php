@@ -261,6 +261,17 @@
                         <i class="fa-solid fa-rss" aria-hidden="true"></i>
                         <span data-text-de="Radar" data-text-en="Radar">Radar</span>
                     </a>
+                    <button
+                        type="button"
+                        class="governance-hub__sidebar-toggle tools-btn tools-btn--ghost"
+                        data-shell-sidebar-button
+                        aria-pressed="false"
+                        data-i18n-aria="settings.hideNavigation"
+                        title="Hide navigation"
+                    >
+                        <i class="fa-solid fa-arrows-left-right-to-line" aria-hidden="true"></i>
+                        <span class="sr-only" data-shell-sidebar-label data-i18n="settings.hideNavigation">Hide navigation</span>
+                    </button>
                 </div>
             </div>
 
@@ -284,8 +295,18 @@
             </aside>
         </header>
 
+        <aside class="governance-hub__phone-hint" data-phone-only role="note">
+            <i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i>
+            <div class="governance-hub__phone-hint-body">
+                <strong data-i18n="governance.phoneHintTitle">Advisor &amp; Tools ab Tablet</strong>
+                <p data-i18n="governance.phoneHintLead">
+                    Am Phone sind Guides und Workshop verfügbar. Advisor und Tools brauchen mehr Platz — bitte auf ein Tablet oder den Desktop wechseln.
+                </p>
+            </div>
+        </aside>
+
         <nav class="governance-hub__tabs" aria-label="Governance Bereiche" data-governance-tabs role="tablist" data-governance-initial-tab="{{ $initialTab ?? 'advisor' }}" data-governance-initial-fragment="{{ $initialFragment ?? '' }}">
-            <button type="button" class="governance-hub__tab" id="governance-tab-button-advisor" data-governance-tab-toggle="advisor" role="tab" aria-controls="governance-tab-advisor" aria-selected="false" tabindex="-1">
+            <button type="button" class="governance-hub__tab phone-hide-advisor" id="governance-tab-button-advisor" data-phone-hide-advisor data-governance-tab-toggle="advisor" role="tab" aria-controls="governance-tab-advisor" aria-selected="false" tabindex="-1">
                 <i class="fa-solid fa-compass" aria-hidden="true"></i>
                 <span data-text-de="Advisor" data-text-en="Advisor">Advisor</span>
             </button>

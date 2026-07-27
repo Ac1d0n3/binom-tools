@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\EnsureToolEnabled::class,
             \App\Http\Middleware\EnsureToolLogin::class,
             \App\Http\Middleware\EnsureAccountPasswordChanged::class,
+            \App\Http\Middleware\PreventHtmlCaching::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

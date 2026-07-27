@@ -647,6 +647,39 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('dataset.hideHubLeads', false);
     }
 
+    public function test_shared_shell_header_markup_on_hub_views(): void
+    {
+        $paths = [
+            '/',
+            '/playbooks',
+            '/playbooks/help-hub-platform',
+            '/governance',
+            '/roles',
+            '/glossary',
+            '/glossary/bingo',
+            '/learning-paths',
+            '/resources',
+            '/suppliers',
+            '/compliance',
+            '/search',
+            '/calendar',
+            '/sprint-planner',
+            '/about',
+        ];
+
+        foreach ($paths as $path) {
+            $response = $this->get($path);
+            $html = $response->getContent();
+
+            $this->assertSame(200, $response->status(), "Expected HTTP 200 for {$path}");
+            $this->assertStringContainsString('tools-shell__header', $html, "Missing shell header on {$path}");
+            $this->assertStringContainsString('tools-header__search', $html, "Missing header search form on {$path}");
+            $this->assertStringContainsString('tools-header__search-link', $html, "Missing mobile search link on {$path}");
+            $this->assertStringContainsString('data-header-search-link', $html, "Missing search link hook on {$path}");
+            $this->assertStringNotContainsString('tools-header__mission', $html, "Mission text must stay removed on {$path}");
+        }
+    }
+
     public function test_landing_page_shows_hub_overview(): void
     {
         $response = $this->get('/');
@@ -686,8 +719,11 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-card__badge--date', false);
         $response->assertSee('fa-arrows-rotate', false);
         $response->assertSee('data-series-teaser', false);
-        $response->assertSee('data-i18n="header.mission"', false);
+        $response->assertDontSee('data-i18n="header.mission"', false);
+        $response->assertDontSee('tools-header__mission', false);
         $response->assertSee('tools-header__search', false);
+        $response->assertSee('tools-header__search-link', false);
+        $response->assertSee('data-header-search-link', false);
         $response->assertSee(route('governance.index'), false);
         $response->assertSee(route('governance.radar'), false);
         $response->assertSee(route('tools.overview'), false);

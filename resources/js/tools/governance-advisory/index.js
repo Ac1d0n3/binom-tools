@@ -590,7 +590,8 @@ function initHeaderDrawer(root) {
     let scrollAnchor = null;
 
     const rememberScroll = () => {
-        scrollAnchor = { x: window.scrollX, y: window.scrollY };
+        // Intentionally no-op: window.scroll restore fights touch scrolling in the shell.
+        scrollAnchor = null;
     };
 
     const activatePanel = (targetId) => {
@@ -606,16 +607,8 @@ function initHeaderDrawer(root) {
     };
 
     const keepScrollPosition = (callback) => {
-        const scrollX = scrollAnchor?.x ?? window.scrollX;
-        const scrollY = scrollAnchor?.y ?? window.scrollY;
         callback();
-        window.requestAnimationFrame(() => {
-            window.scrollTo(scrollX, scrollY);
-            window.setTimeout(() => {
-                window.scrollTo(scrollX, scrollY);
-                scrollAnchor = null;
-            }, 40);
-        });
+        scrollAnchor = null;
     };
 
     const sync = () => {

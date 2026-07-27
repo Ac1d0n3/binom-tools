@@ -70,6 +70,14 @@ function restorePosition(root, panel, slug, locale) {
 
     if (typeof saved.scrollY === 'number') {
         const container = getScrollContainer(panel);
+        const maxScroll =
+            container === window
+                ? Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+                : Math.max(0, container.scrollHeight - container.clientHeight);
+        // Ignore near-bottom saves — they trap users after close/reopen on iPad.
+        if (saved.scrollY >= maxScroll - 64) {
+            return;
+        }
 
         if (container === window) {
             window.scrollTo({ top: saved.scrollY, behavior: 'auto' });

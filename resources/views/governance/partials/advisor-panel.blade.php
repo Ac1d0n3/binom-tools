@@ -2,7 +2,7 @@
     $standalone = $standalone ?? false;
     $sectionAttrs = $standalone
         ? 'class="governance-hub__section governance-advisor" id="governance-advisor" aria-labelledby="governance-advisor-title"'
-        : 'class="governance-hub__section governance-advisor" id="governance-tab-advisor" aria-labelledby="governance-tab-button-advisor" data-governance-tab-panel="advisor" role="tabpanel"';
+        : 'class="governance-hub__section governance-advisor phone-hide-advisor" id="governance-tab-advisor" aria-labelledby="governance-tab-button-advisor" data-phone-hide-advisor data-governance-tab-panel="advisor" role="tabpanel"';
 @endphp
 
         <section {!! $sectionAttrs !!}>

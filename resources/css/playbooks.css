@@ -90,7 +90,8 @@
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    z-index: 30;
+    /* Below tools-shell__header (50) so settings/account menus are never covered */
+    z-index: 10;
     display: flex;
     justify-content: flex-end;
     align-items: center;

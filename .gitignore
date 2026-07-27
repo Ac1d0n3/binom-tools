@@ -29,6 +29,9 @@
 !/storage/app/bn-tools/.gitkeep
 !/storage/app/bn-tools/*.example.json
 /vendor
+/test-results/
+/playwright-report/
+/blob-report/
 /app/Playbooks/stats-seed/*
 !/app/Playbooks/stats-seed/.gitkeep
 /app/SprintPlanner/bn-tools-seed/**

@@ -13,6 +13,11 @@ class GovernanceHubTest extends TestCase
         $response->assertOk();
         $response->assertSee('data-phone-hide-tools', false);
         $response->assertSee('phone-hide-tools', false);
+        $response->assertSee('data-phone-hide-advisor', false);
+        $response->assertSee('phone-hide-advisor', false);
+        $response->assertSee('governance-hub__phone-hint', false);
+        $response->assertSee('data-phone-only', false);
+        $response->assertSee('governance.phoneHintTitle', false);
         $response->assertSee('Governance Hub');
         $response->assertSee('governance-hub', false);
         $response->assertSee('Governance control hub');
@@ -40,6 +45,7 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('Workspace Report', false);
         $response->assertSee('>Radar</span>', false);
         $response->assertSee('/governance/radar', false);
+        $response->assertSee('data-shell-sidebar-button', false);
         $response->assertDontSee('/governance/berater', false);
         $response->assertDontSee('/governance/stacks', false);
         $response->assertDontSee('/governance/discovery-canvas', false);
@@ -187,18 +193,6 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('Thomas Lindackers');
         $response->assertSee('governance-hub__tool-grid', false);
         $response->assertSee('Related tools', false);
-    }
-
-    public function test_tool_pages_show_governance_hub_backlink(): void
-    {
-        $this->get('/tools/source-scope-builder')
-            ->assertOk()
-            ->assertSee('governance-hub-backlink', false)
-            ->assertSee('Back to Governance Hub', false);
-
-        $this->get('/governance')
-            ->assertOk()
-            ->assertDontSee('governance-hub-backlink', false);
     }
 
     public function test_governance_radar_renders_sources_filters_and_seo(): void

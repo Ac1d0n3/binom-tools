@@ -1153,36 +1153,26 @@ function render(root, config) {
     persistAndApplyHubContext(root, state);
 }
 
+/**
+ * Keep scroll position stable across drawer/tab toggles without fighting touch scroll.
+ * Overview/hub pages scroll inside `.tools-shell__main`, not `window` — restoring
+ * window.scrollY (often 0) or re-applying a stale anchor after 40ms made iPad feel
+ * "stuck" until refresh. Layout shift is handled by CSS scrollbar-gutter instead.
+ */
 function createScrollLock() {
-    let scrollAnchor = null;
-
-    const remember = () => {
-        scrollAnchor = { x: window.scrollX, y: window.scrollY };
+    return {
+        remember() {},
+        /**
+         * @param {() => void} callback
+         */
+        run(callback) {
+            callback();
+        },
+        /**
+         * @param {Element} _element
+         */
+        bindTrigger(_element) {},
     };
-
-    const run = (callback) => {
-        const scrollX = scrollAnchor?.x ?? window.scrollX;
-        const scrollY = scrollAnchor?.y ?? window.scrollY;
-        callback();
-        window.requestAnimationFrame(() => {
-            window.scrollTo(scrollX, scrollY);
-            window.setTimeout(() => {
-                window.scrollTo(scrollX, scrollY);
-                scrollAnchor = null;
-            }, 40);
-        });
-    };
-
-    const bindTrigger = (element) => {
-        element.addEventListener('pointerdown', remember);
-        element.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                remember();
-            }
-        });
-    };
-
-    return { remember, run, bindTrigger };
 }
 
 function initPanelToggles(root) {
@@ -1828,9 +1818,14 @@ function initTabs(root) {
         supplier: 'supplier',
     };
     const allowed = new Set(tabs.map((tab) => tab.dataset.governanceTabToggle || ''));
+    const isPhone = window.matchMedia('(max-width: 768px)').matches;
     let initial = aliases[fromQuery] || fromQuery || fromAttr || 'advisor';
+    // Advisor is desktop-only; on phone open Guides instead.
+    if (isPhone && initial === 'advisor') {
+        initial = 'guides';
+    }
     if (!allowed.has(initial)) {
-        initial = 'advisor';
+        initial = isPhone ? 'guides' : 'advisor';
     }
     let pendingFragment = window.location.hash.replace(/^#/, '') || fromFragmentAttr || fragmentAliases[fromQuery] || '';
 

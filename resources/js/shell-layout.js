@@ -71,6 +71,27 @@ export function applyShellSidebarCollapsed(collapsed) {
             input.checked = collapsed;
         }
     });
+
+    document.querySelectorAll('[data-shell-sidebar-button]').forEach((button) => {
+        if (!(button instanceof HTMLElement)) {
+            return;
+        }
+
+        button.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
+        button.classList.toggle('governance-hub__sidebar-toggle--active', collapsed);
+        button.setAttribute(
+            'data-i18n-aria',
+            collapsed ? 'settings.showNavigation' : 'settings.hideNavigation',
+        );
+        button.setAttribute('title', collapsed ? 'Show navigation' : 'Hide navigation');
+        const label = button.querySelector('[data-shell-sidebar-label]');
+        if (label) {
+            label.setAttribute(
+                'data-i18n',
+                collapsed ? 'settings.showNavigation' : 'settings.hideNavigation',
+            );
+        }
+    });
 }
 
 /** @param {boolean} enabled */
@@ -184,6 +205,8 @@ export function setShellSidebarCollapsed(collapsed) {
     localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, collapsed ? 'true' : 'false');
     applyShellSidebarCollapsed(collapsed);
     window.dispatchEvent(new CustomEvent('binom-tools:shell-layout', { detail: { sidebarCollapsed: collapsed } }));
+    const locale = getLocale();
+    window.dispatchEvent(new CustomEvent('binom-tools:locale', { detail: { locale } }));
 }
 
 /** @param {boolean} enabled */
@@ -322,6 +345,12 @@ export function initShellLayoutControls() {
         }
 
         setShellSidebarCollapsed(input.checked);
+    });
+
+    document.querySelectorAll('[data-shell-sidebar-button]').forEach((button) => {
+        button.addEventListener('click', () => {
+            setShellSidebarCollapsed(!getShellSidebarCollapsed());
+        });
     });
 
     document.querySelector('[data-shell-hide-hub-leads-toggle]')?.addEventListener('change', (event) => {

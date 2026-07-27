@@ -40,6 +40,7 @@ function mountRadarCompact(root) {
     const toggle = root.querySelector('[data-governance-radar-compact-toggle]');
     const label = toggle?.querySelector('[data-compact-label]');
     const icon = toggle?.querySelector('[data-compact-icon]');
+    const phoneMq = window.matchMedia('(max-width: 768px)');
 
     const applyCompact = (enabled) => {
         root.classList.toggle('is-compact', enabled);
@@ -58,10 +59,30 @@ function mountRadarCompact(root) {
         }
     };
 
-    applyCompact(readRadarCompact());
+    const syncPhone = () => {
+        if (phoneMq.matches) {
+            // Phone: always compact, no expand/collapse control.
+            applyCompact(true);
+            toggle?.setAttribute('hidden', '');
+            return;
+        }
+        toggle?.removeAttribute('hidden');
+        applyCompact(readRadarCompact());
+    };
+
+    syncPhone();
     document.documentElement.removeAttribute('data-radar-compact-boot');
 
+    if (typeof phoneMq.addEventListener === 'function') {
+        phoneMq.addEventListener('change', syncPhone);
+    } else if (typeof phoneMq.addListener === 'function') {
+        phoneMq.addListener(syncPhone);
+    }
+
     toggle?.addEventListener('click', () => {
+        if (phoneMq.matches) {
+            return;
+        }
         const next = !root.classList.contains('is-compact');
         writeRadarCompact(next);
         applyCompact(next);

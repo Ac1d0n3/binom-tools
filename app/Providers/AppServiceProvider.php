@@ -36,6 +36,7 @@ use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use App\Playbooks\Database\DatabasePlaybookStatsStore;
 use App\Playbooks\PlaybookStatsStore;
 use App\Support\StorageDriver;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -59,6 +60,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Bust Safari/iPad caches of truncated FTP uploads: same hash file + ?b=deploy
+        // must not use "immutable" alone (a bad first response sticks forever).
+        Vite::createAssetPathsUsing(function (string $path, $secure = null): string {
+            static $buildToken;
+            $buildToken ??= (string) (@filemtime(public_path('build/manifest.json')) ?: time());
+
+            return asset($path, $secure).'?b='.$buildToken;
+        });
+
         if (StorageDriver::isMysql()) {
             try {
                 StorageDriver::assertMysqlReady();

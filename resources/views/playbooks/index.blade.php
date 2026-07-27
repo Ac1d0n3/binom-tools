@@ -250,6 +250,15 @@
                 :product-counts="$productCounts ?? []"
                 :story-count="count($playbooks)"
             />
+            <button
+                type="button"
+                class="tools-tag-sidebar-backdrop"
+                data-tag-sidebar-backdrop
+                hidden
+                tabindex="-1"
+                data-i18n-aria="overview.filterHide"
+                aria-label="Hide filters"
+            ></button>
         </div>
     </div>
 

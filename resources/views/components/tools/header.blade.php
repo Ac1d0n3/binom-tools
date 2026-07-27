@@ -88,14 +88,12 @@
     </div>
 
     <div class="tools-header__center">
-        <p class="tools-header__mission" data-i18n="header.mission">
-            Data governance online: quality, PII, catalog, compliance — hub, stories, paths, and tools.
-        </p>
         <form
             class="tools-header__search"
             method="get"
             action="{{ locale_route('search.index') }}"
             role="search"
+            data-header-search-form
         >
             <label class="tools-header__search-field">
                 <span class="sr-only" data-i18n="search.queryLabel">Search the hub</span>
@@ -111,6 +109,16 @@
                 />
             </label>
         </form>
+        <a
+            class="tools-icon-button tools-header__search-link"
+            href="{{ locale_route('search.index') }}"
+            data-header-search-link
+            data-i18n-aria="search.queryLabel"
+            title="Search the hub"
+        >
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <span class="sr-only" data-i18n="search.queryLabel">Search the hub</span>
+        </a>
     </div>
 
     <div class="tools-header__actions">
@@ -272,7 +280,16 @@
                         </form>
                     </div>
                 @else
-                    <a href="{{ locale_route('accounts.login') }}" class="tools-btn tools-btn--ghost" data-i18n="accounts.signIn">Sign in</a>
+                    <a
+                        href="{{ locale_route('accounts.login') }}"
+                        class="tools-btn tools-btn--ghost tools-header__sign-in"
+                        data-i18n="accounts.signIn"
+                        data-i18n-aria="accounts.signIn"
+                        title="Sign in"
+                    >
+                        <i class="fa-solid fa-right-to-bracket tools-header__sign-in-icon" aria-hidden="true"></i>
+                        <span class="tools-header__sign-in-label">Sign in</span>
+                    </a>
                 @endif
             </div>
         @endif

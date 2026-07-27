@@ -45,11 +45,31 @@ const copyOpts = { recursive: true, preserveTimestamps: true };
 const cliArgs = new Set(process.argv.slice(2));
 const resyncContent = cliArgs.has('--resync-content');
 const forceDeltaAll = cliArgs.has('--force-delta-all');
+/** Skip bulky media/content unless explicitly opted in — otherwise FTP takes hours. */
+const withImages = cliArgs.has('--with-images') || resyncContent || forceDeltaAll;
+const withContent = cliArgs.has('--with-content') || resyncContent || forceDeltaAll;
+const withStorage = cliArgs.has('--with-storage') || forceDeltaAll;
+/** Code/config/views/routes + full Vite build — never playbook images/content. */
+const codeOnly = cliArgs.has('--code-only');
+/**
+ * ALWAYS ship the full hashed Vite tree in the delta (default).
+ * Partial build uploads cause "CSS not found" (manifest points at new hashes, files missing).
+ * Opt out only with --no-include-build (debug).
+ */
+const includeBuild = !cliArgs.has('--no-include-build');
 
 /** Always force these trees into the delta when --resync-content is set. */
 const resyncContentPrefixes = [
     'content/',
     'public/images/playbooks/',
+];
+
+const codeOnlyExcludePrefixes = [
+    'public/images/',
+    'content/',
+    'storage/',
+    'app/Playbooks/stats-seed/',
+    'app/SprintPlanner/bn-tools-seed/',
 ];
 
 const metaSkipNames = new Set([
@@ -70,7 +90,8 @@ const deployPaths = [
     'app',
     'config',
     'resources/views',
-    'content',
+    // content/ only with --with-content / --resync-content (no MD spam in default packs)
+    ...(withContent ? ['content'] : []),
     'database/migrations',
     'lang',
     'routes',
@@ -133,9 +154,13 @@ const requiredMirrorTrees = [
     'resources/views',
     'routes',
     'database/migrations',
-    'content',
     'lang',
 ];
+
+// content/ only when opted in — default packs stay free of story markdown.
+if (withContent || forceDeltaAll) {
+    requiredMirrorTrees.push('content');
+}
 
 /** Never mirror these from public/ (dev-only or replaced below). */
 const publicSkipNames = new Set([
@@ -193,15 +218,21 @@ async function sha256File(filePath) {
 }
 
 /**
- * Mirror public/ so Font Awesome fonts, favicons, build hashes and images stay in sync.
+ * Mirror public/ so Font Awesome fonts, favicons and build hashes stay in sync.
+ * Playbook images are omitted unless --with-images (keeps deploy folders upload-safe).
  * @param {string} srcDir
  * @param {string} destDir
+ * @param {{ includeImages?: boolean }} [opts]
  */
-function copyPublicTree(srcDir, destDir) {
+function copyPublicTree(srcDir, destDir, opts = {}) {
+    const includeImages = opts.includeImages === true;
     mkdirSync(destDir, { recursive: true });
 
     for (const name of readdirSync(srcDir)) {
         if (publicSkipNames.has(name)) {
+            continue;
+        }
+        if (!includeImages && name === 'images') {
             continue;
         }
 
@@ -336,6 +367,94 @@ function matchesAnyPrefix(rel, prefixes) {
 }
 
 /**
+ * Drop bulky trees from the upload delta unless the caller opted in.
+ * Full pack (deploy-ftp/) still contains everything for rare full syncs.
+ *
+ * @param {string[]} rels
+ * @param {string[]} allPackedRels
+ * @returns {string[]}
+ */
+function filterUploadDelta(rels, allPackedRels) {
+    /** @type {Set<string>} */
+    const out = new Set(rels);
+
+    // Default: entire hashed Vite tree — prevents CSS/JS 404 after hash rename.
+    if (includeBuild) {
+        for (const rel of allPackedRels) {
+            if (rel.startsWith('public/build/')) {
+                out.add(rel);
+            }
+        }
+    }
+
+    // code-only: force PHP/Blade/config that the live site needs, never media.
+    if (codeOnly) {
+        const codePrefixes = [
+            'app/',
+            'config/',
+            'resources/views/',
+            'routes/',
+            'bootstrap/',
+            'database/migrations/',
+            'lang/',
+        ];
+        for (const rel of allPackedRels) {
+            if (rel === 'public/.htaccess' || matchesAnyPrefix(rel, codePrefixes)) {
+                out.add(rel);
+            }
+        }
+    }
+
+    /** @type {string[]} */
+    const effectiveExclude = [];
+    if (codeOnly) {
+        effectiveExclude.push(...codeOnlyExcludePrefixes);
+    } else {
+        if (!withImages) {
+            effectiveExclude.push('public/images/');
+        }
+        if (!withContent) {
+            effectiveExclude.push('content/');
+        }
+        if (!withStorage) {
+            effectiveExclude.push('storage/app/bn-tools/', 'app/SprintPlanner/bn-tools-seed/');
+        }
+    }
+
+    return [...out]
+        .filter((rel) => !matchesAnyPrefix(rel, effectiveExclude))
+        .sort();
+}
+
+/**
+ * Hard-fail if bulky trees leaked into the upload delta without an opt-in flag.
+ * @param {string[]} changed
+ */
+function assertDeltaHasNoBulkySurprises(changed) {
+    const images = changed.filter((rel) => rel.startsWith('public/images/'));
+    const markdown = changed.filter((rel) => rel.startsWith('content/') && rel.endsWith('.md'));
+
+    if (!withImages && images.length > 0) {
+        throw new Error(
+            `FTP delta contains ${images.length} image file(s) but --with-images was not set. `
+            + 'Refusing to write deploy-ftp-delta/. This is a packer bug — fix filterUploadDelta.',
+        );
+    }
+    if (!withContent && markdown.length > 0) {
+        throw new Error(
+            `FTP delta contains ${markdown.length} markdown file(s) but --with-content was not set. `
+            + 'Refusing to write deploy-ftp-delta/. This is a packer bug — fix filterUploadDelta.',
+        );
+    }
+
+    const buildCount = changed.filter((rel) => rel.startsWith('public/build/')).length;
+    console.log(
+        `Delta hygiene: images=${images.length}, markdown=${markdown.length}, build=${buildCount}`
+        + (includeBuild ? ' (full public/build forced)' : ''),
+    );
+}
+
+/**
  * Compare new pack to previous pack by content hash.
  * Unchanged files get previous mtimes so FTP "upload newer only" can skip them.
  * Upload delta is computed separately against the last acknowledged upload.
@@ -416,9 +535,25 @@ async function stabilizeMtimesAndCollectDelta(nextRoot, previousRoot, uploadedBy
         uploadedByRel.delete(rel);
     }
 
-    const deleted = usedUploadBaseline
+    const deletedRaw = usedUploadBaseline
         ? [...uploadedByRel.keys()].sort()
         : [...prevByRel.keys()].sort();
+    // Intentionally omitted bulky trees are NOT server deletions.
+    const deleted = deletedRaw.filter((rel) => {
+        if (!withImages && rel.startsWith('public/images/')) {
+            return false;
+        }
+        if (!withContent && (rel === 'content' || rel.startsWith('content/'))) {
+            return false;
+        }
+        if (!withStorage && (
+            rel.startsWith('storage/app/bn-tools/')
+            || rel.startsWith('app/SprintPlanner/bn-tools-seed/')
+        )) {
+            return false;
+        }
+        return true;
+    });
     packChanged.sort();
     uploadChanged.sort();
 
@@ -525,26 +660,30 @@ if (existsSync(outDir)) {
 
 mkdirSync(outDir, { recursive: true });
 
-copyPublicTree(join(root, 'public'), join(outDir, 'public'));
+copyPublicTree(join(root, 'public'), join(outDir, 'public'), { includeImages: withImages });
 cpSync(join(root, 'public/.htaccess.production'), join(outDir, 'public/.htaccess'), copyOpts);
 
 assertFontAwesomeBuildAssets(join(outDir, 'public/build/assets'));
 
-const playbookImagesDir = join(outDir, 'public/images/playbooks');
-const pngCount = existsSync(playbookImagesDir)
-    ? readdirSync(playbookImagesDir).filter((name) => name.endsWith('.png')).length
-    : 0;
-const webpCount = existsSync(playbookImagesDir)
-    ? readdirSync(playbookImagesDir).filter((name) => name.endsWith('.webp')).length
-    : 0;
+if (withImages) {
+    const playbookImagesDir = join(outDir, 'public/images/playbooks');
+    const pngCount = existsSync(playbookImagesDir)
+        ? readdirSync(playbookImagesDir).filter((name) => name.endsWith('.png')).length
+        : 0;
+    const webpCount = existsSync(playbookImagesDir)
+        ? readdirSync(playbookImagesDir).filter((name) => name.endsWith('.webp')).length
+        : 0;
 
-if (pngCount > 0 && webpCount < pngCount) {
-    throw new Error(
-        `WebP sync incomplete in deploy package (${webpCount}/${pngCount} playbook images). Run npm run sync:images before deploy.`,
-    );
+    if (pngCount > 0 && webpCount < pngCount) {
+        throw new Error(
+            `WebP sync incomplete in deploy package (${webpCount}/${pngCount} playbook images). Run npm run sync:images before deploy.`,
+        );
+    }
+
+    console.log(`Playbook images packed: ${webpCount} WebP / ${pngCount} PNG`);
+} else {
+    console.log('Playbook images NOT packed (default). Opt in: --with-images / --resync-content');
 }
-
-console.log(`Playbook images packed: ${webpCount} WebP / ${pngCount} PNG`);
 
 for (const rel of deployPaths) {
     const src = join(root, rel);
@@ -588,6 +727,20 @@ if (resyncContent) {
 if (forceDeltaAll) {
     console.log('Force-resync: ALL packed files → delta');
 }
+if (codeOnly) {
+    console.log('Code-only delta: no images/content/storage seeds (use --with-images if needed)');
+}
+if (includeBuild) {
+    console.log('Include-build: all public/build/** forced into delta (avoids CSS hash 404s)');
+} else {
+    console.warn('WARNING: --no-include-build set — CSS/JS hash mismatches are likely on the server.');
+}
+if (!withImages && !forceDeltaAll) {
+    console.log('Images excluded from pack + delta by default (override: --with-images)');
+}
+if (!withContent && !forceDeltaAll) {
+    console.log('content/*.md excluded from pack + delta by default (override: --with-content)');
+}
 
 const {
     packChanged,
@@ -598,7 +751,16 @@ const {
     usedUploadBaseline,
 } = await stabilizeMtimesAndCollectDelta(outDir, prevDir, uploadedByRel);
 
-const changed = uploadChanged;
+const allPackedRels = Object.keys(nextManifest);
+const changed = filterUploadDelta(uploadChanged, allPackedRels);
+assertDeltaHasNoBulkySurprises(changed);
+const excludedByFilter = uploadChanged.filter((rel) => !changed.includes(rel));
+if (excludedByFilter.length > 0) {
+    console.log(
+        `Delta filter dropped ${excludedByFilter.length} bulky file(s) `
+        + `(images/content/storage/…). Not in deploy-ftp-delta/.`,
+    );
+}
 
 writeDeltaTree(outDir, changed, deltaDir);
 
@@ -630,44 +792,44 @@ const buildStamp = new Date().toISOString();
 const uploadHelp = `FTP-Deploy für governance.binom.net
 ===================================
 
-Zwei Upload-Modi:
+WICHTIG — schnell & korrekt:
+   - Lade NUR deploy-ftp-delta/ hoch (NICHT den ganzen deploy-ftp/ Ordner).
+   - public/build/** ist IMMER komplett im Delta (Vite-Hashes / CSS sonst 404).
+   - Bilder + Story-Markdown sind standardmäßig NICHT im Pack/Delta:
+       npm run deploy:ftp -- --with-images
+       npm run deploy:ftp -- --with-content
+       npm run deploy:ftp -- --resync-content   (= beides)
+   - Nur Code + Build (empfohlen nach CSS/Layout-Fixes):
+       npm run deploy:ftp:code
 
-A) Inkrementell (empfohlen nach dem 1. Full-Upload)
+A) Inkrementell (immer bevorzugen)
    - Ordner: deploy-ftp-delta/
-   - Enthält NUR Dateien vs. ${baselineLabel} (${changed.length} Datei(en))
+   - Enthält Diff vs. ${baselineLabel} + volles public/build (${changed.length} Datei(en))
    - FTP: diesen Baum ins Webroot mergen / überschreiben
    - Nach erfolgreichem Upload: npm run deploy:ftp:ack
-     (sonst verschwinden Stories/Bilder beim nächsten Pack wieder aus dem Delta)
+     (ohne Ack kein zuverlässiges Diff)
 
-B) Full pack + „nur Neuere“
+B) Full pack — NUR Erst-Setup / Notfall
    - Ordner: deploy-ftp/
-   - Unveränderte Inhalte behalten die mtime vom letzten Pack
-     (${unchanged} unverändert lokal, ${packChanged.length} lokal geändert, ${changed.length} im Upload-Delta)
-   - FTP-Client: „nur neuere Dateien hochladen“ funktioniert dann
-   - Beim ersten Pack nach diesem Update wirkt noch alles neu — ab dem 2. Lauf greift’s
+   - Ohne --with-images/--with-content ebenfalls OHNE Bilder/MDs
 
 Gelöschte Pfade vs. Baseline: siehe DELETED.txt (${deleted.length})
 Upload-Delta: siehe CHANGED.txt
 Lokal vs. letzter Pack: siehe PACK-CHANGED.txt
 
-Resync (wenn Delta „leer“ wirkt, Server aber Stories/Bilder fehlen):
-   npm run deploy:ftp -- --resync-content
-
-Pflicht bei Full-Replace (oder wenn Delta unsicher):
-   - public/build/ komplett (neue hashed Assets, inkl. calendar-public / glossary-quiz / glossary-bingo)
-   - app/, config/, resources/views/, routes/, database/migrations/ (komplett gespiegelt)
-   - bootstrap/app.php + bootstrap/providers.php
-   - storage/app/bn-tools/ (Accounts + lokaler Calendar unter calendar/)
-   - content/, lang/, public/images/playbooks/
+Flags:
+   --code-only         Code/Views/Config + public/build, OHNE Bilder/Content/Storage
+   --no-include-build  Build NICHT erzwingen (vermeiden — CSS-404-Risiko)
+   --with-images       Playbook-Bilder ins Pack/Delta
+   --with-content      content/*.md ins Pack/Delta
+   --with-storage      bn-tools Runtime/Seeds ins Delta
+   --resync-content    content/ + Playbook-Bilder erzwingen
+   --force-delta-all   ALLES (vermeiden — Stunden-Upload)
 
 Nach Upload:
-   - npm run deploy:ftp:ack
-   - Hard-Refresh (Cmd+Shift+R)
-   - Optional: storage/framework/views/*.php löschen
-   - Bei MySQL: php artisan migrate (Calendar-Holidays, Glossary-Quiz, Radar, …)
-   - Kontrolle: /roles, /glossary, /calendar, /governance/radar ohne Class-not-found
-
-Falls vorhanden, LÖSCHEN: public/tools/
+   - NUR lokal: npm run deploy:ftp:ack
+   - Kein Browser-Cache leeren, keine Server-Console, kein views-löschen.
+     HTML ist no-store; Vite-Hashes kommen mit dem nächsten Seitenaufruf.
 
 Build: ${buildStamp}
 `;
@@ -678,6 +840,6 @@ writeFileSync(join(deltaDir, 'UPLOAD.txt'), uploadHelp);
 console.log(`\nReady full:  ${outDir}`);
 console.log(`Ready delta: ${deltaDir} (${changed.length} upload-delta file(s), ${packChanged.length} pack-changed, ${unchanged} mtime-stable, ${deleted.length} deleted)`);
 console.log(`Delta baseline: ${baselineLabel}`);
-console.log('Upload deploy-ftp-delta/ for incremental updates, or deploy-ftp/ with "newer only".');
+console.log('Upload ONLY deploy-ftp-delta/. Default pack has 0 images and 0 markdown.');
 console.log('After FTP succeeds: npm run deploy:ftp:ack');
 console.log('Verified: Governance Radar PHP + config + migrations + radar-*.js + fa-regular fonts are in the pack.');

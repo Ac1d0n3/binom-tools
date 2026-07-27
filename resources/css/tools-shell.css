@@ -191,7 +191,8 @@ html[data-shell-full-width='true'] .tools-content--overview {
 .tools-shell__header {
     position: sticky;
     top: 0;
-    z-index: 20;
+    /* Above playbook toolbar (30) / focus sidebar (30) so settings + account menus stay usable */
+    z-index: 50;
     flex-shrink: 0;
     height: var(--tools-header-height);
     background: var(--content-background-color);
@@ -390,38 +391,35 @@ html:has(.tools-shell__main--sprint-planner) body {
     color: var(--theme-color-accent);
 }
 
-.tools-header__mission {
-    margin: 0;
-    min-width: 0;
-    padding-inline: 0.75rem 1rem;
-    color: var(--bn-color-text-secondary, color-mix(in srgb, var(--content-font-color) 68%, transparent));
-    font-size: 0.8125rem;
-    font-weight: 500;
-    line-height: 1.35;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .tools-header__center {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
     min-width: 0;
     padding-inline: 0.25rem 0.75rem;
 }
 
-.tools-header__center .tools-header__mission {
-    flex: 0 1 auto;
-    max-width: 42%;
-    padding-inline: 0;
-}
-
 .tools-header__search {
     flex: 1 1 12rem;
     min-width: 0;
-    max-width: 22rem;
+    max-width: 28rem;
     margin: 0;
+}
+
+.tools-header__search-link {
+    display: none;
+    flex-shrink: 0;
+}
+
+.tools-header__sign-in {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.tools-header__sign-in-icon {
+    display: none;
 }
 
 .tools-header__search-field {
@@ -460,10 +458,12 @@ html:has(.tools-shell__main--sprint-planner) body {
 
 .tools-header__actions {
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 0.5rem;
     justify-self: end;
     padding-right: var(--tools-shell-padding-inline);
+    min-width: 0;
 }
 
 .tools-header__theme,
@@ -484,7 +484,7 @@ html:has(.tools-shell__main--sprint-planner) body {
     position: absolute;
     top: calc(100% + 0.35rem);
     right: 0;
-    z-index: 40;
+    z-index: 60;
     min-width: 11.5rem;
     padding: 0.35rem;
     border: 1px solid var(--base-border-color);
@@ -692,7 +692,8 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 @media (min-width: 769px) {
     html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-header,
     html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--sprint-planner) .tools-header {
-        grid-template-columns: auto minmax(0, 1fr);
+        /* Keep 3 columns — 2 columns pushed settings/theme/locale/sign-in onto a second row. */
+        grid-template-columns: auto minmax(0, 1fr) auto;
     }
 
     html[data-playbook-focus='true'] .tools-shell:has(.tools-shell__main--playbook) .tools-header__menu-btn,
@@ -1605,6 +1606,42 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     min-height: 2.1rem;
     padding: 0.45rem 0.65rem;
     font-size: 0.84rem;
+}
+
+.governance-hub__sidebar-toggle.tools-btn {
+    display: none !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    min-height: 2.25rem;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--base-text-color) 12%, transparent);
+    background: color-mix(in srgb, var(--content-background-color) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+@media (min-width: 769px) {
+    .governance-hub__sidebar-toggle.tools-btn {
+        display: inline-flex !important;
+    }
+}
+
+.governance-hub__sidebar-toggle i {
+    width: auto;
+    margin: 0;
+}
+
+.governance-hub__sidebar-toggle--active {
+    border-color: color-mix(in srgb, var(--theme-color-primary) 45%, var(--base-border-color));
+    color: var(--theme-color-primary);
+    background: color-mix(in srgb, var(--theme-color-primary) 12%, var(--content-background-color));
 }
 
 .governance-hub__hero-copy,
@@ -3166,24 +3203,6 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     line-height: 1.35;
 }
 
-.governance-hub-backlink {
-    margin: 0 0 0.85rem;
-}
-
-.governance-hub-backlink__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: var(--theme-color-primary);
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.governance-hub-backlink__link:hover {
-    text-decoration: underline;
-}
-
 .governance-landing__supplier-card-title {
     display: block;
     margin-bottom: 0.35rem;
@@ -4079,7 +4098,8 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 .tools-content--governance-radar .governance-radar-sticky {
     position: sticky;
     top: 0;
-    z-index: 30;
+    /* Below shell header (50) and mobile off-canvas sidebar — never compete with nav. */
+    z-index: 8;
     margin: 0;
     padding: 0 0 0.65rem;
     background: var(--content-background-color);
@@ -4121,6 +4141,8 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     overflow-y: hidden;
     padding-bottom: 0.15rem;
     scrollbar-width: thin;
+    /* Prevent flex children from shrinking into each other on narrow widths. */
+    overscroll-behavior-x: contain;
 }
 
 .tools-content--governance-radar .governance-radar__toolbar .tools-overview-search {
@@ -4138,12 +4160,13 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 }
 
 .tools-content--governance-radar .governance-radar__toolbar .tools-overview-product-filter {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
 }
 
 .tools-content--governance-radar .governance-radar__toolbar .tools-overview-sort__select {
     min-width: 6.25rem;
     max-width: 8rem;
+    flex-shrink: 0;
 }
 
 .tools-content--governance-radar .governance-radar__toolbar .governance-radar__count {
@@ -4257,7 +4280,8 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
 
 .governance-radar__multi-panel {
     position: fixed;
-    z-index: 80;
+    /* Above sticky bars (8), below mobile sidebar (45) and shell header (50). */
+    z-index: 20;
     display: grid;
     gap: 0.15rem;
     min-width: 14rem;
@@ -5331,16 +5355,6 @@ html[data-color-scheme='dark'] .governance-radar__item-icon--editorial {
 }
 
 @media (max-width: 560px) {
-    .tools-disclaimer-banner {
-        grid-template-columns: 1fr;
-        margin-inline: 1rem;
-    }
-
-    .tools-disclaimer-banner__dismiss {
-        width: 100%;
-        justify-content: center;
-    }
-
     .governance-hub {
         gap: 1rem;
     }
@@ -7606,9 +7620,9 @@ html[data-color-scheme='dark'] .tools-hero {
 }
 
 .tools-overview-toolbar--playbooks .tools-overview-sort__select {
-    /* Fits "Neueste zuerst" / "Newest first" without clipping. */
+    /* Fixed control width — never `100%` inside a nowrap flex row (that blew past the viewport). */
     min-width: 10.25rem;
-    width: max(10.25rem, 100%);
+    width: 10.25rem;
     max-width: 11.5rem;
 }
 
@@ -8023,13 +8037,14 @@ html[data-color-scheme='dark'] .tools-hero {
     display: none;
 }
 
-@media (min-width: 769px) {
+.tools-overview-layout--view-series .tools-tag-sidebar,
+.tools-overview-layout--view-series .tools-tag-sidebar-backdrop {
+    display: none !important;
+}
+
+@media (min-width: 1025px), (min-width: 769px) and (min-height: 600px) and (orientation: landscape) {
     .tools-overview-layout--view-series.tools-overview-layout--with-tags {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .tools-overview-layout--view-series .tools-tag-sidebar {
-        display: none;
     }
 }
 
@@ -8512,7 +8527,8 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     padding-top: 10px;
 }
 
-@media (min-width: 769px) {
+/* Docked filter column: desktop + iPad landscape (phone landscape stays overlay). */
+@media (min-width: 1025px), (min-width: 769px) and (min-height: 600px) and (orientation: landscape) {
     .tools-overview-layout--with-tags {
         grid-template-columns: minmax(0, 1fr) minmax(15rem, 17.5rem);
         gap: 1.25rem;
@@ -8532,6 +8548,94 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     .tools-overview-layout--with-tags.tools-overview-layout--tags-collapsed .tools-tag-sidebar {
         display: none;
     }
+
+    .tools-tag-sidebar-backdrop {
+        display: none !important;
+    }
+}
+
+/*
+ * Filter overlay: phone (any orientation) + iPad portrait.
+ * Drawer slides over content — never parked under the story grid.
+ */
+@media (max-width: 768px), (max-height: 599px), (max-width: 1024px) and (orientation: portrait) {
+    .tools-overview-layout--with-tags {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tools-tag-sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 34;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: color-mix(in srgb, #0f172a 42%, transparent);
+        cursor: pointer;
+    }
+
+    .tools-tag-sidebar-backdrop[hidden] {
+        display: none !important;
+    }
+
+    .tools-shell__main--overview .tools-tag-sidebar,
+    .tools-tag-sidebar {
+        position: fixed;
+        top: var(--tools-header-height, 3.25rem);
+        right: 0;
+        bottom: 0;
+        left: auto;
+        z-index: 35;
+        order: 0;
+        width: min(20rem, 92vw);
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        align-self: stretch;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: var(--content-background-color);
+        border-left: 1px solid var(--base-border-color);
+        box-shadow: -12px 0 28px color-mix(in srgb, #000 18%, transparent);
+        transform: translateX(100%);
+        transition: transform 0.2s ease;
+        pointer-events: none;
+    }
+
+    .tools-tag-sidebar[data-collapsed='true'] {
+        /* Fully remove from hit-testing — off-screen transforms still steal touches on iOS. */
+        display: none !important;
+    }
+
+    .tools-overview-layout--with-tags:not(.tools-overview-layout--tags-collapsed) .tools-tag-sidebar,
+    .tools-tag-sidebar[data-collapsed='false'] {
+        display: flex;
+        flex-direction: column;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+
+    .tools-tag-sidebar[data-collapsed='true'] .tools-tag-sidebar__panel {
+        display: flex;
+    }
+
+    .tools-shell__main--overview .tools-tag-sidebar__panel,
+    .tools-tag-sidebar__panel {
+        height: 100%;
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+        overflow: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Prevent background scroll while the filter drawer is open. */
+    html.tools-filter-overlay-open,
+    html.tools-filter-overlay-open body {
+        overflow: hidden;
+    }
 }
 
 .tools-overview-main {
@@ -8542,59 +8646,62 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     order: 1;
 }
 
-.tools-shell__main--overview .tools-tag-sidebar {
-    position: static;
-    display: flex;
-    flex-direction: column;
-    align-self: stretch;
-    min-height: 0;
-    height: auto;
-    max-height: 100%;
-    overflow: hidden;
-}
+/* Docked column chrome (overlay mode overrides position to fixed). */
+@media (min-width: 1025px), (min-width: 769px) and (min-height: 600px) and (orientation: landscape) {
+    .tools-shell__main--overview .tools-tag-sidebar {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        align-self: stretch;
+        min-height: 0;
+        height: auto;
+        max-height: 100%;
+        overflow: hidden;
+    }
 
-.tools-shell__main--overview .tools-tag-sidebar__panel {
-    flex: 1 1 auto;
-    min-height: 0;
-    max-height: 100%;
-    overflow: hidden;
-    gap: 0.55rem;
-}
+    .tools-shell__main--overview .tools-tag-sidebar__panel {
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: 100%;
+        overflow: hidden;
+        gap: 0.55rem;
+    }
 
-.tools-shell__main--overview .tools-filter-sidebar__panels {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
+    .tools-shell__main--overview .tools-filter-sidebar__panels {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
 
-.tools-shell__main--overview .tools-filter-sidebar__section--panel {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: hidden;
-}
+    .tools-shell__main--overview .tools-filter-sidebar__section--panel {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
 
-.tools-shell__main--overview .tools-filter-sidebar__section--panel[hidden] {
-    display: none !important;
-}
+    .tools-shell__main--overview .tools-filter-sidebar__section--panel[hidden] {
+        display: none !important;
+    }
 
-.tools-shell__main--overview .tools-tag-sidebar__list--stack,
-.tools-shell__main--overview .tools-tag-sidebar__list--tags {
-    flex: 1 1 auto;
-    min-height: 0;
-    max-height: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-}
+    .tools-shell__main--overview .tools-tag-sidebar__list--stack,
+    .tools-shell__main--overview .tools-tag-sidebar__list--tags {
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: none;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+    }
 
-.tools-shell__main--overview .tools-filter-sidebar__section--tags {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    min-height: 0;
+    .tools-shell__main--overview .tools-filter-sidebar__section--tags {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        min-height: 0;
+    }
 }
 
 .tools-tag-sidebar {
@@ -8953,12 +9060,6 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     display: none;
 }
 
-@media (max-width: 768px) {
-    .tools-tag-sidebar[data-collapsed='true'] {
-        display: none;
-    }
-}
-
 .tools-tag-sidebar__list {
     display: flex;
     flex-direction: column;
@@ -9069,8 +9170,15 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
 
 @media (max-width: 768px) {
     .phone-hide-tools,
-    [data-phone-hide-tools] {
+    [data-phone-hide-tools],
+    .phone-hide-advisor,
+    [data-phone-hide-advisor] {
         display: none !important;
+    }
+
+    .phone-only,
+    [data-phone-only] {
+        display: flex !important;
     }
 
     .tools-shell--phone-gate .tools-shell__main > :not([data-tools-phone-gate]) {
@@ -9080,6 +9188,47 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     .tools-shell--phone-gate [data-tools-phone-gate] {
         display: flex !important;
     }
+}
+
+.phone-only,
+[data-phone-only] {
+    display: none;
+}
+
+.governance-hub__phone-hint {
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin: 0 0 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary, #2563eb) 28%, var(--base-border-color));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 8%, var(--content-background-color));
+    color: var(--content-font-color);
+}
+
+.governance-hub__phone-hint > i {
+    margin-top: 0.15rem;
+    color: var(--theme-color-primary, #2563eb);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.governance-hub__phone-hint-body {
+    min-width: 0;
+}
+
+.governance-hub__phone-hint-body strong {
+    display: block;
+    margin: 0 0 0.2rem;
+    font-size: 0.88rem;
+    line-height: 1.3;
+}
+
+.governance-hub__phone-hint-body p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--base-text-color-secondary, #64748b);
 }
 
 .tools-phone-gate {
@@ -9122,37 +9271,71 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     .tools-header {
         display: flex;
         justify-content: space-between;
-        gap: 0.75rem;
+        align-items: center;
+        gap: 0.45rem;
         padding: 0 var(--tools-shell-padding-inline);
     }
 
     .tools-header__brand {
-        gap: 0.5rem;
+        gap: 0.4rem;
         min-width: 0;
         padding-left: 0;
+        flex: 0 0 auto;
     }
 
-    .tools-header__mission {
+    .tools-header__wordmark {
         display: none;
     }
 
     .tools-header__center {
-        flex: 1 1 auto;
+        flex: 0 0 auto;
         min-width: 0;
         padding-inline: 0;
-        justify-content: stretch;
+        justify-content: center;
     }
 
+    /* Full hub search field is too wide on phone/tablet shell; icon opens /search. */
     .tools-header__search {
-        max-width: none;
-        flex: 1 1 auto;
+        display: none;
+    }
+
+    .tools-header__search-link {
+        display: inline-flex;
     }
 
     .tools-header__actions {
+        flex: 0 0 auto;
         flex-shrink: 0;
         justify-self: auto;
         padding-right: 0;
-        gap: 0.35rem;
+        gap: 0.2rem;
+    }
+
+    .tools-header__actions .tools-btn {
+        min-height: 2rem;
+        padding-inline: 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .tools-header__sign-in {
+        min-width: 2rem;
+        min-height: 2rem;
+        padding-inline: 0.45rem;
+    }
+
+    .tools-header__sign-in-icon {
+        display: inline-flex;
+    }
+
+    .tools-header__sign-in-label {
+        display: none;
+    }
+
+    .tools-header__settings-menu,
+    .tools-header__account-menu {
+        right: 0;
+        left: auto;
+        max-width: min(16rem, calc(100vw - 1rem));
     }
 
     .tools-header__menu-btn {
@@ -9160,8 +9343,13 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     }
 
     .tools-header__locale .tools-btn {
-        min-width: 2.25rem;
-        padding-inline: 0.5rem;
+        min-width: 2rem;
+        padding-inline: 0.35rem;
+    }
+
+    .tools-header__logo {
+        width: 36px;
+        height: 36px;
     }
 
     .tools-content {
@@ -9207,23 +9395,154 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     }
 
     .tools-overview-toolbar {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+        gap: 0.4rem;
     }
 
+    /* Hub toolbars: pack left, wrap tightly — never space-between / opposite corners. */
+    .tools-overview-toolbar,
+    .tools-overview-toolbar__row--controls,
+    .tools-content--governance-radar .governance-radar__toolbar {
+        justify-content: flex-start;
+        align-content: flex-start;
+    }
+
+    .tools-overview-count-badge {
+        margin-left: 0;
+    }
+
+    /* Stories: dense flex wrap, no multi-row grid dead space. */
     .tools-overview-toolbar--playbooks .tools-overview-toolbar__row--controls {
-        gap: 0.4rem;
-        padding-bottom: 0.15rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        overflow-x: visible;
+        padding-bottom: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-view-toggle {
+        order: 1;
+        flex: 0 0 auto;
+        min-width: 0;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-layout-toggle {
+        order: 2;
+        flex: 0 0 auto;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-read-controls {
+        order: 3;
+        flex: 0 0 auto;
+    }
+
+    .tools-overview-toolbar--playbooks .playbook-offline {
+        order: 4;
+        flex: 0 0 auto;
+    }
+
+    /* Soft line break before Filter + Sort (+ count). */
+    .tools-overview-toolbar--playbooks .tools-overview-toolbar__row--controls::before {
+        content: '';
+        order: 10;
+        flex: 0 0 100%;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-tag-sidebar__toggle {
+        order: 11;
+        flex: 0 0 auto;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-sort {
+        order: 12;
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-count-badge {
+        order: 13;
+        flex: 0 0 auto;
+        margin-left: 0;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-sort__select {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
     }
 
     .tools-overview-toolbar--playbooks .tools-overview-toolbar__row--controls .tools-btn,
-    .tools-overview-toolbar--playbooks .tools-overview-read-controls__button {
-        min-height: 2.5rem;
-        min-width: 2.5rem;
+    .tools-overview-toolbar--playbooks .tools-overview-read-controls__button,
+    .tools-overview-toolbar--playbooks .tools-overview-layout-toggle__button {
+        min-height: 2.15rem;
+        min-width: 2.15rem;
+    }
+
+    .tools-overview-toolbar--playbooks .playbook-offline__btn > span:not(.playbook-offline__count):not(.sr-only) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .tools-overview-toolbar--playbooks .tools-overview-view-toggle__button {
+        padding-inline: 0.55rem;
+        font-size: 0.8rem;
+    }
+
+    /* Radar + generic overview toolbars: wrap packed, search full width. */
+    .tools-content--governance-radar .governance-radar__toolbar {
+        flex-wrap: wrap;
+        overflow-x: visible;
+        overflow-y: visible;
+        gap: 0.35rem;
+        row-gap: 0.35rem;
+    }
+
+    .tools-content--governance-radar .governance-radar__toolbar .tools-overview-search,
+    .tools-overview-toolbar > .tools-overview-search {
+        flex: 1 1 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .tools-overview-toolbar .tools-overview-product-filter,
+    .tools-overview-toolbar .tools-overview-sort {
+        flex: 1 1 8rem;
+        min-width: 0;
+    }
+
+    .tools-overview-toolbar .tools-overview-sort__select,
+    .tools-overview-toolbar .tools-overview-product-filter .tools-overview-sort__select {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .tools-overview-toolbar__row--controls {
+        overflow-x: visible;
+        flex-wrap: wrap;
+        gap: 0.35rem;
     }
 
     .tools-shell:has(.tools-shell__main--overview) {
         height: auto;
         max-height: none;
+        /* Both axes visible — overflow-x clip + overflow-y visible collapses to auto and kills sticky header. */
         overflow: visible;
     }
 
@@ -9234,6 +9553,20 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         overflow: visible;
     }
 
+    /* Keep shell header visible while Stories / overview pages scroll on phone. */
+    .tools-shell:has(.tools-shell__main--overview) > .tools-shell__header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 50;
+    }
+
+    .tools-shell:has(.tools-shell__main--overview) {
+        padding-top: var(--tools-header-height);
+    }
+
     .tools-shell__main--overview {
         overflow: visible;
     }
@@ -9241,7 +9574,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     .tools-content--overview {
         overflow: visible;
         flex: none;
-        padding-block: 1rem 0;
+        padding-block: 0.65rem 0;
         padding-inline: var(--tools-shell-padding-inline);
     }
 
@@ -9258,14 +9591,13 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     }
 
     .tools-shell__main--overview .tools-tag-sidebar {
+        /* Overlay media query owns phone/tablet-portrait positioning. */
         height: auto;
         max-height: none;
-        overflow: visible;
     }
 
     .tools-shell__main--overview .tools-tag-sidebar__panel {
         flex: none;
-        overflow: visible;
         max-height: none;
     }
 
@@ -9275,24 +9607,6 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         flex: none;
         overflow: visible;
         min-height: 0;
-    }
-
-    .tools-shell__main--overview .tools-tag-sidebar__list--stack,
-    .tools-shell__main--overview .tools-tag-sidebar__list--tags {
-        max-height: min(16rem, 40dvh);
-        overflow-y: auto;
-    }
-
-    .tools-tag-sidebar {
-        position: static;
-    }
-
-    .tools-tag-sidebar__panel {
-        max-height: none;
-    }
-
-    .tools-tag-sidebar__list:not(.tools-tag-sidebar__list--wrap) {
-        max-height: min(16rem, 40dvh);
     }
 
     .tools-site-bar {
@@ -9366,24 +9680,37 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         font-size: 0.7rem;
     }
 
-    .tools-shell__sidebar {
+    /* Off-canvas nav on small screens — must beat overview/playbook/calendar `position: relative` */
+    .tools-shell__sidebar,
+    .tools-shell:has(.tools-shell__main--playbook) .tools-shell__sidebar,
+    .tools-shell:has(.tools-shell__main--overview) .tools-shell__sidebar,
+    .tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar,
+    .tools-shell:has(.tools-shell__main--calendar) .tools-shell__sidebar {
         position: fixed;
         top: var(--tools-header-height);
         left: 0;
         bottom: 0;
-        z-index: 30;
+        /* Above sticky page toolbars; below shell header (50) so settings/account menus stay usable. */
+        z-index: 45;
         width: min(100vw, 20rem);
-        flex: none;
+        flex: 0 0 auto;
         max-height: none;
+        min-height: 0;
         height: auto;
         align-self: auto;
         transform: translateX(-100%);
         transition: transform 0.2s ease;
         box-shadow: 0 12px 40px rgba(16, 39, 52, 0.18);
+        overflow-x: hidden;
         overflow-y: auto;
+        background: color-mix(in srgb, var(--surface-background-color) 96%, transparent);
     }
 
-    .tools-sidenav {
+    .tools-sidenav,
+    .tools-shell:has(.tools-shell__main--playbook) .tools-sidenav,
+    .tools-shell:has(.tools-shell__main--overview) .tools-sidenav,
+    .tools-shell:has(.tools-shell__main--sprint-planner) .tools-sidenav,
+    .tools-shell:has(.tools-shell__main--calendar) .tools-sidenav {
         position: static;
         top: auto;
         max-height: none;
@@ -9392,8 +9719,22 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         scrollbar-gutter: auto;
     }
 
-    .tools-shell--sidebar-open .tools-shell__sidebar {
+    .tools-shell--sidebar-open .tools-shell__sidebar,
+    .tools-shell--sidebar-open:has(.tools-shell__main--playbook) .tools-shell__sidebar,
+    .tools-shell--sidebar-open:has(.tools-shell__main--overview) .tools-shell__sidebar,
+    .tools-shell--sidebar-open:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar,
+    .tools-shell--sidebar-open:has(.tools-shell__main--calendar) .tools-shell__sidebar {
         transform: translateX(0);
+    }
+
+    .tools-shell__main,
+    .tools-shell:has(.tools-shell__main--playbook) .tools-shell__main,
+    .tools-shell:has(.tools-shell__main--overview) .tools-shell__main,
+    .tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__main,
+    .tools-shell:has(.tools-shell__main--calendar) .tools-shell__main {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
     }
 
     .tools-sidebar-backdrop {
@@ -9401,7 +9742,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         position: fixed;
         inset: 0;
         top: var(--tools-header-height);
-        z-index: 25;
+        z-index: 40;
         background: rgba(16, 39, 52, 0.35);
         opacity: 0;
         pointer-events: none;
@@ -9412,16 +9753,169 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         opacity: 1;
         pointer-events: auto;
     }
-}
 
-@media (max-width: 480px) {
-    .tools-header__wordmark {
+    /* Sticky hub toolbars must not paint over the open off-canvas nav. */
+    .tools-shell--sidebar-open .tools-overview-sticky-header,
+    .tools-shell--sidebar-open .governance-radar-sticky {
+        z-index: 1;
+    }
+
+    /* Contain horizontal scroll inside overview toolbars (Stories controls row, Radar filters).
+       Must beat `.tools-shell:has(.tools-shell__main--overview) { overflow: visible }` below. */
+    .tools-shell,
+    .tools-shell:has(.tools-shell__main--overview),
+    .tools-shell:has(.tools-shell__main--playbook),
+    .tools-shell:has(.tools-shell__main--sprint-planner),
+    .tools-shell:has(.tools-shell__main--calendar) {
+        overflow-x: clip;
+    }
+
+    .tools-overview-toolbar__row--controls,
+    .tools-content--governance-radar .governance-radar__toolbar {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    /* Compact legal notice: no card frame, no full-width dismiss stacking. */
+    .tools-disclaimer-banner {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.35rem 0.5rem;
+        align-items: center;
+        margin: 0;
+        padding: 0.4rem var(--tools-shell-padding-inline);
+        border: 0;
+        border-bottom: 1px solid color-mix(in srgb, var(--theme-color-primary) 22%, var(--base-border-color));
+        border-radius: 0;
+        background: color-mix(in srgb, var(--theme-color-primary) 6%, var(--content-background-color));
+    }
+
+    .tools-disclaimer-banner__icon {
         display: none;
     }
 
+    .tools-disclaimer-banner__body strong {
+        margin: 0;
+        font-size: 0.78rem;
+    }
+
+    .tools-disclaimer-banner__body p {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        font-size: 0.72rem;
+        line-height: 1.3;
+    }
+
+    .tools-disclaimer-banner__body a {
+        margin-top: 0.15rem;
+        font-size: 0.7rem;
+    }
+
+    .tools-disclaimer-banner__dismiss {
+        width: auto;
+        min-height: 1.75rem;
+        padding: 0.25rem 0.4rem;
+        border: 0;
+        background: transparent;
+    }
+
+    .tools-disclaimer-banner__dismiss span {
+        display: none;
+    }
+
+    /* Radar: always compact on phone — no expand toggle. */
+    .governance-radar__compact-toggle {
+        display: none !important;
+    }
+
+    .tools-content--governance-radar .governance-radar__intro,
+    .governance-radar.is-compact .governance-radar__intro {
+        display: none !important;
+    }
+
+    /* Radar: title row + filter bar first; hide verbose intro chrome on phone. */
+    .tools-content--governance-radar .governance-radar__summary,
+    .tools-content--governance-radar .governance-radar-sticky__lead,
+    .tools-content--governance-radar .governance-radar__notice,
+    .tools-content--governance-radar .governance-radar__actions,
+    .tools-content--governance-radar .governance-radar__feed-status,
+    .tools-content--governance-radar .governance-radar__feed-errors {
+        display: none;
+    }
+
+    .tools-content--governance-radar .governance-radar-sticky {
+        padding-bottom: 0.4rem;
+    }
+
+    .tools-content--governance-radar .governance-radar-sticky__heading {
+        margin-bottom: 0.25rem;
+    }
+
+    .tools-content--governance-radar .governance-radar-sticky .tools-page-title {
+        font-size: 1.05rem;
+        line-height: 1.25;
+    }
+
+    /* Resources / Sources / Compliance: drop page titles & leads — search + filters first. */
+    .tools-content--resources .vendor-resources-sticky__heading,
+    .tools-content--resources .vendor-resources-sticky__lead,
+    .tools-content--suppliers .supplier-hub-sticky__heading,
+    .tools-content--suppliers .supplier-hub-sticky__lead,
+    .tools-content--compliance .compliance-hub-sticky > .tools-page-title,
+    .tools-content--compliance .compliance-hub-sticky__lead {
+        display: none !important;
+    }
+
+    .tools-content--resources .vendor-resources-sticky,
+    .tools-content--suppliers .supplier-hub-sticky,
+    .tools-content--compliance .compliance-hub-sticky {
+        padding-bottom: 0.35rem;
+    }
+
+    /* Vendor card section labels (HELP / GOVERNANCE / …) — keep for a11y, hide visually. */
+    .vendor-resources-group__title {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .vendor-resources-group {
+        padding: 0.55rem 0.7rem;
+    }
+
+    .vendor-resources-card__content {
+        gap: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .tools-header {
+        gap: 0.3rem;
+    }
+
+    .tools-header__actions {
+        gap: 0.12rem;
+    }
+
+    .tools-header__actions .tools-btn,
+    .tools-header__locale .tools-btn {
+        min-width: 1.85rem;
+        padding-inline: 0.28rem;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
     .tools-header__logo {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
     }
 
     .tools-card {

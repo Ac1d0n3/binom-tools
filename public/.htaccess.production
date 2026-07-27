@@ -29,11 +29,27 @@
 </IfModule>
 
 <IfModule mod_headers.c>
+    # Fingerprinted Vite assets — long cache, but NOT immutable.
+    # immutable + a truncated FTP upload sticks broken CSS on Safari/iPad forever.
     <FilesMatch "\.(js|css|woff2)$">
-        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header set Cache-Control "public, max-age=604800, must-revalidate"
     </FilesMatch>
 
     <FilesMatch "\.(png|webp|svg|ico)$">
         Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+
+    # Manifest must stay fresh so servers/tools never pin an old build map.
+    <Files "manifest.json">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </Files>
+
+    # PHP front controller / HTML: never cache — stale HTML pins old Vite hashes (CSS 404).
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-store, no-cache, max-age=0, must-revalidate, private"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+        Header unset ETag
+        Header unset Last-Modified
     </FilesMatch>
 </IfModule>

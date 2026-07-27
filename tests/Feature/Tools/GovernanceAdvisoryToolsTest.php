@@ -76,7 +76,6 @@ class GovernanceAdvisoryToolsTest extends TestCase
         $response->assertSee('data-field-help', false);
         $response->assertSee('Capture structure and field help');
         $response->assertSee('Which information belongs in the report');
-        $response->assertSee('Back to Governance Hub');
         $response->assertSee('/governance', false);
         $response->assertSee('rel="canonical"', false);
     }

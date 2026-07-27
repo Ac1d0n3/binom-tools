@@ -10,6 +10,9 @@ import {
 import { attachOverviewProgressiveReveal } from './overview-progressive-reveal.js';
 
 const TAG_SIDEBAR_STORAGE_KEY = 'binom-tools-tag-sidebar';
+/** Keep in sync with tools-shell.css filter overlay media queries. */
+const FILTER_OVERLAY_MQ =
+    '(max-width: 768px), (max-height: 599px), ((max-width: 1024px) and (orientation: portrait))';
 const FILTER_TAB_STORAGE_KEY = 'binom-tools-filter-tab';
 const OVERVIEW_VIEW_STORAGE_KEY = 'binom-tools-overview-view';
 const OVERVIEW_SORT_STORAGE_KEY = 'binom-tools-overview-sort';
@@ -1302,28 +1305,79 @@ function initOverviewSort(root) {
 }
 
 /**
+ * Phone + iPad portrait: filter drawer overlays content (not stacked under the grid).
+ * @returns {boolean}
+ */
+function isFilterOverlayMode() {
+    return window.matchMedia(FILTER_OVERLAY_MQ).matches;
+}
+
+/**
  * @param {ParentNode} root
  */
 function initTagSidebar(root) {
     const sidebar = root.querySelector('[data-tag-sidebar]');
     const toggles = root.querySelectorAll('[data-tag-sidebar-toggle]');
+    const backdrop = root.querySelector('[data-tag-sidebar-backdrop]');
 
     if (!(sidebar instanceof HTMLElement) || toggles.length === 0) {
         return;
     }
 
     const stored = localStorage.getItem(TAG_SIDEBAR_STORAGE_KEY);
-    const collapsed = stored === 'collapsed';
 
-    setTagSidebarCollapsed(sidebar, toggles, collapsed);
+    /**
+     * @param {boolean} collapsed
+     * @param {{ persist?: boolean }} [opts]
+     */
+    const apply = (collapsed, opts = {}) => {
+        setTagSidebarCollapsed(sidebar, toggles, collapsed, backdrop);
+        if (opts.persist !== false && !isFilterOverlayMode()) {
+            localStorage.setItem(TAG_SIDEBAR_STORAGE_KEY, collapsed ? 'collapsed' : 'open');
+        }
+    };
+
+    // Overlay: always start closed so the drawer is not stuck under/over content.
+    const initialCollapsed = isFilterOverlayMode() ? true : stored === 'collapsed';
+    apply(initialCollapsed, { persist: false });
+    document.documentElement.classList.remove('tools-filter-overlay-open');
 
     toggles.forEach((toggle) => {
         toggle.addEventListener('click', () => {
             const nextCollapsed = sidebar.dataset.collapsed !== 'true';
-            setTagSidebarCollapsed(sidebar, toggles, nextCollapsed);
-            localStorage.setItem(TAG_SIDEBAR_STORAGE_KEY, nextCollapsed ? 'collapsed' : 'open');
+            apply(nextCollapsed);
         });
     });
+
+    if (backdrop instanceof HTMLElement) {
+        backdrop.addEventListener('click', () => {
+            apply(true);
+        });
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+        if (!isFilterOverlayMode() || sidebar.dataset.collapsed === 'true') {
+            return;
+        }
+        apply(true);
+    });
+
+    const mq = window.matchMedia(FILTER_OVERLAY_MQ);
+    const onModeChange = () => {
+        if (isFilterOverlayMode()) {
+            apply(true, { persist: false });
+            return;
+        }
+        apply(localStorage.getItem(TAG_SIDEBAR_STORAGE_KEY) === 'collapsed', { persist: false });
+    };
+    if (typeof mq.addEventListener === 'function') {
+        mq.addEventListener('change', onModeChange);
+    } else if (typeof mq.addListener === 'function') {
+        mq.addListener(onModeChange);
+    }
 }
 
 /**
@@ -1507,12 +1561,31 @@ function initOverviewViewToggle(root) {
  * @param {HTMLElement} sidebar
  * @param {NodeListOf<Element> | Element[]} toggles
  * @param {boolean} collapsed
+ * @param {Element | null} [backdrop]
  */
-function setTagSidebarCollapsed(sidebar, toggles, collapsed) {
+function setTagSidebarCollapsed(sidebar, toggles, collapsed, backdrop = null) {
     sidebar.dataset.collapsed = collapsed ? 'true' : 'false';
 
     const layout = sidebar.closest('.tools-overview-layout');
     layout?.classList.toggle('tools-overview-layout--tags-collapsed', collapsed);
+    layout?.classList.toggle('tools-overview-layout--filter-overlay-open', !collapsed && isFilterOverlayMode());
+
+    const backdropEl =
+        backdrop instanceof HTMLElement
+            ? backdrop
+            : layout?.querySelector('[data-tag-sidebar-backdrop]');
+    if (backdropEl instanceof HTMLElement) {
+        const showBackdrop = !collapsed && isFilterOverlayMode();
+        backdropEl.hidden = !showBackdrop;
+    }
+
+    const overlayOpen = !collapsed && isFilterOverlayMode();
+    document.documentElement.classList.toggle('tools-filter-overlay-open', overlayOpen);
+    if (!overlayOpen) {
+        // Belt-and-suspenders: never leave a stuck scroll lock after close.
+        document.documentElement.classList.remove('tools-filter-overlay-open');
+        document.body?.classList.remove('tools-filter-overlay-open');
+    }
 
     Array.from(toggles).forEach((toggle) => {
         if (!(toggle instanceof HTMLElement)) {
