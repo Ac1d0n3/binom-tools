@@ -24,6 +24,7 @@ series: building-modern-data-warehouse
 seriesPart: 3
 seriesTitle: Ein modernes Data Warehouse aufbauen
 hero: images/playbooks/bp-start3-hero.png
+publishedAt: 2026-07-20 10:00
 ---
 
 ## Ein moderner Stack ist nicht automatisch die bessere Architektur

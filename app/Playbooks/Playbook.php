@@ -2,6 +2,7 @@
 
 namespace App\Playbooks;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 
 final readonly class Playbook
@@ -23,9 +24,17 @@ final readonly class Playbook
         public ?PlaybookNavRef $next = null,
     ) {}
 
+    /**
+     * Editorial sort key for overview / catalog / series cards.
+     * Uses frontmatter publishedAt only — never file mtime (FTP/deploy rewrites mtime).
+     */
     public function sortDate(): CarbonInterface
     {
-        return $this->publishedAt ?? $this->modifiedAt;
+        if ($this->publishedAt !== null) {
+            return $this->publishedAt;
+        }
+
+        return Carbon::createFromTimestampUTC(0);
     }
 
     /**
@@ -90,6 +99,7 @@ final readonly class Playbook
             'heroUrl' => $this->heroUrl,
             'order' => $this->order,
             'modifiedAt' => $this->modifiedAt,
+            'publishedAt' => $this->publishedAt,
             'sortDate' => $this->sortDate(),
             'indexSortTimestamp' => $this->indexSortTimestamp(),
             'locales' => $locales,

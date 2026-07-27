@@ -19,6 +19,7 @@ series: roles-hub
 seriesPart: 1
 seriesTitle: Roles and Decision Rights
 hero: images/playbooks/data-architect-role-hero.png
+publishedAt: 2026-07-19 10:00
 ---
 
 ## Architecture fails at the boundaries

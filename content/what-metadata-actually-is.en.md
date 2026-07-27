@@ -21,6 +21,7 @@ series: metadata-deep-dive
 seriesPart: 1
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/what-metadata-actually-is-hero.png
+publishedAt: 2026-06-20 10:00
 ---
 
 ## Metadata is often reduced to the smallest visible part

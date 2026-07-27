@@ -21,6 +21,7 @@ series: ai-foundations
 seriesPart: 7
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-gov-hero.png
+publishedAt: 2026-07-14 10:00
 ---
 
 ## AI Governance ist ein Betriebsmodell — kein Policy-Dokument

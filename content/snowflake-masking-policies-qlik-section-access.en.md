@@ -23,6 +23,7 @@ series: end-to-end-data-governance
 seriesPart: 5
 seriesTitle: End-to-End Data Governance
 hero: images/playbooks/snowflake-masking-policies-qlik-section-access-hero.png
+publishedAt: 2026-07-09 10:00
 ---
 
 ## Governance metadata becomes useful when it changes the runtime result

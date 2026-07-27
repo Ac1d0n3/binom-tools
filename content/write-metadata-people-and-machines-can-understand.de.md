@@ -21,6 +21,7 @@ series: metadata-deep-dive
 seriesPart: 5
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/write-metadata-people-and-machines-can-understand-hero.png
+publishedAt: 2026-06-24 10:00
 ---
 
 ## Ein technisch korrekter Name ist noch keine brauchbare Beschreibung

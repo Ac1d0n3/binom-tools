@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 17
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/operate-metadata-as-a-product-hero.png
+publishedAt: 2026-07-06 10:00
 ---
 
 Metadatenplattformen beginnen häufig als Projekte: als Katalogeinführung, Lineage-Initiative, Klassifizierungskampagne oder Governance-Programm. Projekte können Technologie und erste Inhalte etablieren. Sie schaffen jedoch allein noch keine dauerhaft tragfähige Betriebsfähigkeit. Sobald das Implementierungsteam weiterzieht, fallen Konnektoren aus, Definitionen veralten, Verantwortlichkeiten werden unklar und das Vertrauen der Nutzer sinkt.

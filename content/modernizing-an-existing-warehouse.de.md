@@ -27,6 +27,7 @@ series: building-modern-data-warehouse
 seriesPart: 5
 seriesTitle: Building a Modern Data Warehouse – From First Source to Governed Data Products
 hero: images/playbooks/bp-start5-hero.png
+publishedAt: 2026-07-22 10:00
 ---
 
 ## Brownfield-Modernisierung beginnt mit einem anderen Problem

@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 16
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/use-ai-to-improve-metadata-hero.png
+publishedAt: 2026-07-05 10:00
 ---
 
 ## Metadata work does not scale when every decision begins with a blank field

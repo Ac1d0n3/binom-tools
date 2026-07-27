@@ -17,6 +17,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/define-kpi-hero.png
+publishedAt: 2026-07-17 12:00
 ---
 
 ## Eine Formel ist noch keine KPI

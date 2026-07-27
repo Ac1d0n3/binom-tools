@@ -21,6 +21,7 @@ series: metadata-deep-dive
 seriesPart: 3
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/keep-metadata-close-to-the-source-hero.png
+publishedAt: 2026-06-22 10:00
 ---
 
 ## Metadata becomes unreliable when it is maintained in the wrong place

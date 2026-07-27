@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 17
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/operate-metadata-as-a-product-hero.png
+publishedAt: 2026-07-06 10:00
 ---
 
 Metadata platforms often begin as projects: a catalog rollout, a lineage initiative, a classification campaign or a governance program. Projects can establish technology and initial content, but they do not create a durable operating capability by themselves. Once the implementation team moves on, connectors fail, definitions become stale, ownership becomes unclear and users lose trust.

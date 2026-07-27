@@ -23,6 +23,7 @@ series: metadata-deep-dive
 seriesPart: 8
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/centralized-federated-or-distributed-metadata-hero.png
+publishedAt: 2026-06-27 10:00
 ---
 
 ## Metadata architecture is not a binary platform decision

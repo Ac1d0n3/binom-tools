@@ -19,6 +19,7 @@ series: ai-foundations
 seriesPart: 1
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-basics-hero.png
+publishedAt: 2026-07-08 10:00
 ---
 
 ## AI is not one single technology

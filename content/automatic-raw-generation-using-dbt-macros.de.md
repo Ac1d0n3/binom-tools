@@ -22,6 +22,7 @@ series: end-to-end-data-governance
 seriesPart: 3
 seriesTitle: End-to-End Data Governance
 hero: images/playbooks/automatic-raw-generation-using-dbt-macros-hero.png
+publishedAt: 2026-07-07 10:00
 ---
 
 ## RAW-Modelle sind einfach — die Pflege von Hunderten ist es nicht

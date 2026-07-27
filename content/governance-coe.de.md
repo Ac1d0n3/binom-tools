@@ -14,6 +14,7 @@ hero: images/playbooks/governance-coe-hero.png
 series: roles-hub
 seriesTitle: Rollen und Entscheidungsrechte
 seriesPart: 5
+publishedAt: 2026-07-19 14:00
 ---
 
 # Ein Data-Governance-Center of Excellence aufbauen

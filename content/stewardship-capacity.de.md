@@ -14,6 +14,7 @@ hero: images/playbooks/stewardship-capacity-hero.png
 series: roles-hub
 seriesTitle: Rollen und Entscheidungsrechte
 seriesPart: 4
+publishedAt: 2026-07-19 13:00
 ---
 
 # Stewardship staffen — Capacity-Modelle für domain-eingebettete Rollen

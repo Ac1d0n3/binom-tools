@@ -23,6 +23,7 @@ series: metadata-deep-dive
 seriesPart: 10
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/lineage-impact-and-metadata-propagation-hero.png
+publishedAt: 2026-06-29 10:00
 ---
 
 ## Lineage wird erst wertvoll, wenn sie Konsequenzen erklärt

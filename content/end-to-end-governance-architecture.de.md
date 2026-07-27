@@ -23,6 +23,7 @@ series: end-to-end-data-governance
 seriesPart: 1
 seriesTitle: End-to-End Data Governance
 hero: images/playbooks/end-to-end-governance-architecture-hero.png
+publishedAt: 2026-07-05 10:00
 ---
 
 ## Governance ist eine Architektur — kein Katalog neben der Plattform

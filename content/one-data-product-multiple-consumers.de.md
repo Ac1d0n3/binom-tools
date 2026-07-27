@@ -31,6 +31,7 @@ series: building-modern-data-warehouse
 seriesPart: 7
 seriesTitle: Building a Modern Data Warehouse – From First Source to Governed Data Products
 hero: images/playbooks/bp-start7-hero.png
+publishedAt: 2026-07-24 10:00
 ---
 
 ## Eine fachliche Wahrheit darf nicht an ein einziges Consumer-Tool gebunden sein

@@ -19,6 +19,7 @@ series: ai-foundations
 seriesPart: 3
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-rag-hero.png
+publishedAt: 2026-07-10 10:00
 ---
 
 ## The model does not automatically know your enterprise

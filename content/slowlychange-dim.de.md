@@ -18,6 +18,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/slowlychange-dim-hero.png
+publishedAt: 2026-07-17 16:00
 ---
 
 ## Slowly Changing bedeutet nicht unwichtig

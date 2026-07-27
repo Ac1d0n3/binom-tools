@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 12
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/measure-and-improve-metadata-quality-hero.png
+publishedAt: 2026-07-01 10:00
 ---
 
 ## Metadaten können vollständig wirken und trotzdem unzuverlässig sein

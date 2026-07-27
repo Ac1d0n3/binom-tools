@@ -14,6 +14,7 @@ hero: images/playbooks/raci-for-data-governance-hero.png
 series: roles-hub
 seriesTitle: Roles and Decision Rights
 seriesPart: 2
+publishedAt: 2026-07-19 11:00
 ---
 
 RACI is often introduced as a simple matrix: roles in columns, activities in rows, and the letters R, A, C and I in the cells. That format is easy to produce. A useful RACI operating model is harder.

@@ -21,6 +21,7 @@ series: operational-data-quality
 seriesPart: 5
 seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test5-hero.png
+publishedAt: 2026-07-13 10:00
 ---
 
 ## Eine Regel ist fachlich — ihre Implementierung ist technisch

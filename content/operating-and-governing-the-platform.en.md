@@ -36,6 +36,7 @@ series: building-modern-data-warehouse
 seriesPart: 10
 seriesTitle: Building a Modern Data Warehouse – From First Source to Governed Data Products
 hero: images/playbooks/bp-start10-hero.png
+publishedAt: 2026-07-27 10:00
 ---
 
 ## A warehouse is not finished when the first report goes live

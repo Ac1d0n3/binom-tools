@@ -22,6 +22,7 @@ series: operational-data-quality
 seriesPart: 6
 seriesTitle: Operative Datenqualität
 hero: images/playbooks/dq-test6-hero.png
+publishedAt: 2026-07-14 10:00
 ---
 
 ## Ein Dashboard ist erst dann ein Data Quality Cockpit, wenn daraus gehandelt wird

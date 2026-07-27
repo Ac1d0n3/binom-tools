@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 9
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/native-metadata-across-the-data-stack-hero.png
+publishedAt: 2026-06-28 10:00
 ---
 
 ## Every platform already knows something important

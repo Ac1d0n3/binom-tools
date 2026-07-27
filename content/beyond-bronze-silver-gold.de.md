@@ -23,6 +23,7 @@ series: building-modern-data-warehouse
 seriesPart: 2
 seriesTitle: Ein modernes Data Warehouse aufbauen
 hero: images/playbooks/bp-start2-hero.png
+publishedAt: 2026-07-19 10:00
 ---
 
 ## Ein nützliches Muster ist noch keine vollständige Architektur

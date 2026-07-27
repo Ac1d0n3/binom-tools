@@ -24,6 +24,7 @@ series: building-modern-data-warehouse
 seriesPart: 3
 seriesTitle: Building a Modern Data Warehouse
 hero: images/playbooks/bp-start3-hero.png
+publishedAt: 2026-07-20 10:00
 ---
 
 ## A modern stack is not automatically a better architecture

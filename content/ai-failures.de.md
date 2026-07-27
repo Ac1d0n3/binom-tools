@@ -19,6 +19,7 @@ series: ai-foundations
 seriesPart: 5
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-failures-hero.png
+publishedAt: 2026-07-12 10:00
 ---
 
 ## Leistungsfähig bedeutet nicht automatisch verlässlich

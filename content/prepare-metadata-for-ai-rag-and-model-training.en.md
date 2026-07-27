@@ -25,6 +25,7 @@ series: metadata-deep-dive
 seriesPart: 15
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/prepare-metadata-for-ai-rag-and-model-training-hero.png
+publishedAt: 2026-07-04 10:00
 ---
 
 ## AI systems fail when context is available but not trustworthy

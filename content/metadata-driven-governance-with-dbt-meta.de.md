@@ -21,6 +21,7 @@ series: end-to-end-data-governance
 seriesPart: 2
 seriesTitle: End-to-End Data Governance
 hero: images/playbooks/metadata-driven-governance-with-dbt-meta-hero.png
+publishedAt: 2026-07-06 10:00
 ---
 
 ## Governance-Entscheidungen benötigen einen maschinenlesbaren Vertrag

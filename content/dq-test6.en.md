@@ -22,6 +22,7 @@ series: operational-data-quality
 seriesPart: 6
 seriesTitle: Operational Data Quality
 hero: images/playbooks/dq-test6-hero.png
+publishedAt: 2026-07-14 10:00
 ---
 
 ## A dashboard becomes a Data Quality Cockpit only when it drives action

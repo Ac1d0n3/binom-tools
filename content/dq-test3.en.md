@@ -22,6 +22,7 @@ series: operational-data-quality
 seriesPart: 3
 seriesTitle: Operational Data Quality
 hero: images/playbooks/dq-test3-hero.png
+publishedAt: 2026-07-11 10:00
 ---
 
 ## dbt tests data — historical quality management must be added

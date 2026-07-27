@@ -23,6 +23,7 @@ series: operational-data-quality
 seriesPart: 2
 seriesTitle: Operational Data Quality
 hero: images/playbooks/dq-test2-hero.png
+publishedAt: 2026-07-10 10:00
 ---
 
 ## Fabric provides several test mechanisms — the result still needs one shared contract

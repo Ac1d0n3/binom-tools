@@ -23,6 +23,7 @@ series: building-modern-data-warehouse
 seriesPart: 2
 seriesTitle: Building a Modern Data Warehouse
 hero: images/playbooks/bp-start2-hero.png
+publishedAt: 2026-07-19 10:00
 ---
 
 ## A useful pattern is not yet a complete architecture

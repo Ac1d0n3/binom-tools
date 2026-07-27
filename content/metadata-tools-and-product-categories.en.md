@@ -25,6 +25,7 @@ series: metadata-deep-dive
 seriesPart: 14
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/metadata-tools-and-product-categories-hero.png
+publishedAt: 2026-07-03 10:00
 ---
 
 ## Product labels create false certainty

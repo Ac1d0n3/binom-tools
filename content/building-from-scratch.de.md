@@ -25,6 +25,7 @@ series: building-modern-data-warehouse
 seriesPart: 4
 seriesTitle: Building a Modern Data Warehouse – From First Source to Governed Data Products
 hero: images/playbooks/bp-start4-hero.png
+publishedAt: 2026-07-21 10:00
 ---
 
 ## Greenfield-Freiheit kann die falsche Komplexität erzeugen

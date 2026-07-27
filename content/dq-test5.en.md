@@ -21,6 +21,7 @@ series: operational-data-quality
 seriesPart: 5
 seriesTitle: Operational Data Quality
 hero: images/playbooks/dq-test5-hero.png
+publishedAt: 2026-07-13 10:00
 ---
 
 ## A rule is a business definition — its implementation is technical

@@ -19,6 +19,7 @@ series: ai-foundations
 seriesPart: 2
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-language-models-hero.png
+publishedAt: 2026-07-09 10:00
 ---
 
 ## Language models are not knowledge databases

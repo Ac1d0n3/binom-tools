@@ -55,7 +55,7 @@ class LandingCatalogTest extends TestCase
         }
     }
 
-    public function test_latest_stories_sorts_by_modified_at_descending(): void
+    public function test_latest_stories_sorts_by_sort_date_descending(): void
     {
         $catalog = app(LandingCatalog::class);
         $latest = $catalog->latestStories();
@@ -63,8 +63,8 @@ class LandingCatalogTest extends TestCase
         $this->assertLessThanOrEqual(LandingCatalog::STORIES_PREVIEW_LIMIT, count($latest));
 
         if (count($latest) > 1) {
-            $first = $latest[0]['modifiedAt']->getTimestamp();
-            $second = $latest[1]['modifiedAt']->getTimestamp();
+            $first = (int) ($latest[0]['indexSortTimestamp'] ?? $latest[0]['sortDate']->getTimestamp());
+            $second = (int) ($latest[1]['indexSortTimestamp'] ?? $latest[1]['sortDate']->getTimestamp());
             $this->assertGreaterThanOrEqual($second, $first);
         }
     }

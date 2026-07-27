@@ -22,6 +22,7 @@ series: metadata-deep-dive
 seriesPart: 7
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/build-a-unified-metadata-model-hero.png
+publishedAt: 2026-06-26 10:00
 ---
 
 ## Metadata becomes fragmented before it becomes unified

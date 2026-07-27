@@ -21,6 +21,7 @@ series: operational-data-quality
 seriesPart: 1
 seriesTitle: Operational Data Quality
 hero: images/playbooks/dq-test-kpis-hero.png
+publishedAt: 2026-07-09 10:00
 ---
 
 ## A passed or failed test is not yet monitoring

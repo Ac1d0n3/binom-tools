@@ -21,6 +21,7 @@ series: ai-foundations
 seriesPart: 6
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-eval-hero.png
+publishedAt: 2026-07-13 10:00
 ---
 
 ## Vom überzeugenden Prototyp zum messbaren System

@@ -21,6 +21,7 @@ series: metadata-deep-dive
 seriesPart: 2
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/where-metadata-is-born-hero.png
+publishedAt: 2026-06-21 10:00
 ---
 
 ## Metadaten beginnen nicht im Katalog

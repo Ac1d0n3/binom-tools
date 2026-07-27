@@ -19,6 +19,7 @@ series: ai-foundations
 seriesPart: 4
 seriesTitle: AI Foundations
 hero: images/playbooks/ai-agents-hero.png
+publishedAt: 2026-07-11 10:00
 ---
 
 ## From response to action

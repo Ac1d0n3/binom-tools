@@ -23,6 +23,7 @@ series: operational-data-quality
 seriesPart: 4
 seriesTitle: Operational Data Quality
 hero: images/playbooks/dq-test4-hero.png
+publishedAt: 2026-07-12 10:00
 ---
 
 ## Expectations put data quality directly into the Databricks pipeline

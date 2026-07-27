@@ -34,6 +34,7 @@ series: building-modern-data-warehouse
 seriesPart: 8
 seriesTitle: Building a Modern Data Warehouse – From First Source to Governed Data Products
 hero: images/playbooks/bp-start8-hero.png
+publishedAt: 2026-07-25 10:00
 ---
 
 ## Transformation technology is a design choice, not the architecture

@@ -14,6 +14,7 @@ hero: images/playbooks/stewardship-capacity-hero.png
 series: roles-hub
 seriesTitle: Roles and Decision Rights
 seriesPart: 4
+publishedAt: 2026-07-19 13:00
 ---
 
 # Staffing Stewardship — Capacity Models for Domain-Embedded Roles

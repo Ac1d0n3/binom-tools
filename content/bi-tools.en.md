@@ -19,6 +19,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/bi-tools-hero.png
+publishedAt: 2026-07-17 10:00
 ---
 
 ## Reporting tools do more than display the same data differently

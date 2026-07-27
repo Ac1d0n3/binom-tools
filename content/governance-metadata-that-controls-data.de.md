@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 11
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/governance-metadata-that-controls-data-hero.png
+publishedAt: 2026-06-30 10:00
 ---
 
 ## Governance-Metadaten erzeugen erst Wert, wenn sie Verhalten verändern

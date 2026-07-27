@@ -24,6 +24,7 @@ series: metadata-deep-dive
 seriesPart: 13
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/activate-metadata-through-automation-hero.png
+publishedAt: 2026-07-02 10:00
 ---
 
 ## Metadata remains passive until it changes what happens next

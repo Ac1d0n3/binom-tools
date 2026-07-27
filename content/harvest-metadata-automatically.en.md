@@ -21,6 +21,7 @@ series: metadata-deep-dive
 seriesPart: 4
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/harvest-metadata-automatically-hero.png
+publishedAt: 2026-06-23 10:00
 ---
 
 ## Metadata collection becomes a bottleneck when machines wait for manual documentation

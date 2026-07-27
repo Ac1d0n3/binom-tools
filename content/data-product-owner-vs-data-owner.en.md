@@ -15,6 +15,7 @@ hero: images/playbooks/data-product-owner-vs-data-owner-hero.png
 series: roles-hub
 seriesTitle: Roles and Decision Rights
 seriesPart: 3
+publishedAt: 2026-07-19 12:00
 ---
 
 # Data Product Owner vs Data Owner vs Steward — Who Decides What

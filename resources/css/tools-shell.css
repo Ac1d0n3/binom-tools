@@ -407,7 +407,8 @@ html:has(.tools-shell__main--sprint-planner) body {
     margin: 0;
 }
 
-.tools-header__search-link {
+/* Must beat .tools-icon-button { display: inline-flex } (same single-class specificity). */
+.tools-icon-button.tools-header__search-link {
     display: none;
     flex-shrink: 0;
 }
@@ -9299,7 +9300,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         display: none;
     }
 
-    .tools-header__search-link {
+    .tools-icon-button.tools-header__search-link {
         display: inline-flex;
     }
 

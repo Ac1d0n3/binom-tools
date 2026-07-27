@@ -14,6 +14,7 @@ hero: images/playbooks/governance-coe-hero.png
 series: roles-hub
 seriesTitle: Roles and Decision Rights
 seriesPart: 5
+publishedAt: 2026-07-19 14:00
 ---
 
 # Building a Data Governance Center of Excellence

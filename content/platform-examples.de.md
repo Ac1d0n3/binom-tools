@@ -35,6 +35,7 @@ series: building-modern-data-warehouse
 seriesPart: 9
 seriesTitle: Building a Modern Data Warehouse – From First Source to Governed Data Products
 hero: images/playbooks/bp-start9-hero.png
+publishedAt: 2026-07-26 10:00
 ---
 
 ## Die Plattform ist eine Umsetzung — nicht die Architektur

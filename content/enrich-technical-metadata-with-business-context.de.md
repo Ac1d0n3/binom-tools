@@ -22,6 +22,7 @@ series: metadata-deep-dive
 seriesPart: 6
 seriesTitle: MetaData Deep Dive
 hero: images/playbooks/enrich-technical-metadata-with-business-context-hero.png
+publishedAt: 2026-06-25 10:00
 ---
 
 ## Ein gescanntes Schema ist noch keine fachliche Metadatenbasis

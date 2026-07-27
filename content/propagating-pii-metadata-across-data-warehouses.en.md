@@ -21,6 +21,7 @@ series: end-to-end-data-governance
 seriesPart: 4
 seriesTitle: End-to-End Data Governance
 hero: images/playbooks/propagating-pii-metadata-across-data-warehouses-hero.png
+publishedAt: 2026-07-08 10:00
 ---
 
 ## PII metadata must follow the data

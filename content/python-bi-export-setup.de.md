@@ -13,6 +13,7 @@ tags:
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/py-install-hero.png
+publishedAt: 2026-07-17 14:00
 ---
 
 ## Warum überhaupt lokal ausführen?
