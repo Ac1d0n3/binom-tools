@@ -21,6 +21,9 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('Governance Hub');
         $response->assertSee('governance-hub', false);
         $response->assertSee('Public online advisor');
+        $response->assertSee('governance-author-byline', false);
+        $response->assertSee('governance-hub__explore', false);
+        $response->assertSee(route('playbooks.index'), false);
         $response->assertSee('data-governance-advisor', false);
         $response->assertSee('data-governance-advisor-config', false);
         $response->assertSee(route('learning-paths.index'), false);

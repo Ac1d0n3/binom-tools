@@ -4,6 +4,28 @@
 @section('meta_description', 'Public online advisor for data governance: start with the right question, then stories, learning paths, glossary, radar, and copy-paste tools — by Thomas Lindackers.')
 
 @push('head')
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="{{ config('app.name') }}">
+    <meta property="og:description" content="Public online advisor for data governance: orientation first, then stories, tools, and evidence — by Thomas Lindackers.">
+    <script type="application/ld+json">
+        {!! json_encode([
+            chr(64).'context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => config('app.name'),
+            'description' => 'Public online advisor for data governance by Thomas Lindackers: orientation, stories, learning paths, and copy-paste tools.',
+            'url' => url()->current(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => 'Thomas Lindackers',
+                'url' => config('playbooks.author_url', 'https://binom.net'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
     @if (count($metaKeywords) > 0)
         <meta name="keywords" content="{{ implode(', ', $metaKeywords) }}">
     @endif

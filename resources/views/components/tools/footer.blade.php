@@ -53,6 +53,14 @@
             <span class="tools-site-bar__sep" aria-hidden="true">·</span>
             <a
                 class="tools-site-bar__link"
+                href="{{ route('seo.sitemap') }}"
+                data-i18n="footer.sitemapXml"
+            >
+                Sitemap XML
+            </a>
+            <span class="tools-site-bar__sep" aria-hidden="true">·</span>
+            <a
+                class="tools-site-bar__link"
                 href="{{ $links['website'] ?? 'https://binom.net' }}"
                 target="_blank"
                 rel="noopener noreferrer"

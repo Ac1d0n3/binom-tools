@@ -30,11 +30,16 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-card--hub', false);
         $response->assertSee('tools-card--top-stories', false);
         $response->assertSee('data-i18n="home.topStories.title"', false);
-        $response->assertDontSee('data-i18n="home.hero.ctaGovernance"', false);
+        $response->assertSee('data-i18n="home.hero.ctaGovernance"', false);
+        $response->assertSee('data-i18n="home.hero.ctaBi"', false);
+        $response->assertSee('data-i18n="home.hero.ctaSources"', false);
         $response->assertDontSee('data-i18n="home.hero.ctaSdk"', false);
         $response->assertSee('data-i18n="home.hero.notice"', false);
         $response->assertSee('name="keywords"', false);
         $response->assertSee('Governance Hub', false);
+        $response->assertSee('og:title', false);
+        $response->assertSee(route('learning-paths.show', ['slug' => 'trusted-metrics']), false);
+        $response->assertSee(route('suppliers.index'), false);
         $response->assertDontSee('tools-hero__pills', false);
         $response->assertDontSee('tools-hero__pill', false);
         $response->assertSee(route('governance.index'), false);
@@ -80,6 +85,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-i18n="footer.disclaimer"', false);
         $response->assertSee('data-i18n="footer.sitemap"', false);
         $response->assertSee('href="'.route('seo.sitemap.html').'"', false);
+        $response->assertSee('data-i18n="footer.sitemapXml"', false);
+        $response->assertSee('href="'.route('seo.sitemap').'"', false);
         $response->assertSee('data-disclaimer-banner', false);
         $response->assertSee('data-disclaimer-dismiss', false);
         $response->assertSee('/disclaimer', false);

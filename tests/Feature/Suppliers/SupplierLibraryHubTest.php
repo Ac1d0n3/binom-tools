@@ -12,6 +12,8 @@ class SupplierLibraryHubTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('data-overview-filter-root', false);
+        $response->assertSee('governance-author-byline', false);
+        $response->assertSee('data-i18n="suppliers.nextGovernance"', false);
         $response->assertSee('data-overview-search', false);
         $response->assertSee('data-overview-product', false);
         $response->assertSee('data-overview-result-count', false);

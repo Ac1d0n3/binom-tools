@@ -12,7 +12,7 @@
 @endphp
 
 @section('title', 'Data Governance Advisor - ' . config('app.name'))
-@section('meta_description', 'Guided online advisor by Thomas Lindackers: answer six questions, get matching tools, suppliers, stacks, and next artifacts — no login required.')
+@section('meta_description', 'Guided governance questions: answer six prompts, get matching tools, suppliers, stacks, and next artifacts — no login required. By Thomas Lindackers.')
 
 @push('head')
     <link rel="canonical" href="{{ url()->current() }}">
@@ -74,7 +74,7 @@
 
         <header class="governance-hub__hero governance-landing__hero">
             <div class="governance-hub__hero-copy">
-                <p class="governance-hub__eyebrow" data-text-de="Online-Berater von Thomas Lindackers" data-text-en="Online advisor by Thomas Lindackers">Online advisor by Thomas Lindackers</p>
+                <p class="governance-hub__eyebrow" data-text-de="Geführter Einstieg" data-text-en="Guided start">Guided start</p>
                 <h1
                     class="tools-page-title governance-hub__title"
                     data-text-de="Data Governance beraten: erst fragen, dann Tools und Nachweise"
@@ -87,7 +87,6 @@
                     data-text-en="Six short questions on starting point, goal, domain, and platform. Then: recommended workflows, tools, suppliers, and playbooks — no sign-in. Optionally open the demo workspace and report as sample artifacts."
                 >Six short questions on starting point, goal, domain, and platform. Then: recommended workflows, tools, suppliers, and playbooks — no sign-in. Optionally open the demo workspace and report as sample artifacts.</p>
             </div>
-            <x-governance.author-byline compact />
         </header>
 
         @include('governance::partials.stack-builder-modal')

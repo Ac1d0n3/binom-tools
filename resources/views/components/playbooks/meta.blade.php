@@ -1,6 +1,7 @@
 @props([
     'variant',
     'modifiedAt',
+    'publishedAt' => null,
 ])
 
 <dl class="playbook-meta">
@@ -34,10 +35,21 @@
         <dd class="playbook-meta__value">{{ format_reading_time($variant->readingTimeMinutes, $variant->locale ?? current_locale()) }}</dd>
     </div>
 
+    @if ($publishedAt)
+        <div class="playbook-meta__item">
+            <dt class="playbook-meta__label" data-i18n="playbooks.published">Published</dt>
+            <dd class="playbook-meta__value">
+                <time itemprop="datePublished" datetime="{{ $publishedAt->toIso8601String() }}">
+                    {{ $publishedAt->format('M j, Y') }}
+                </time>
+            </dd>
+        </div>
+    @endif
+
     <div class="playbook-meta__item">
         <dt class="playbook-meta__label" data-i18n="playbooks.updated">Updated</dt>
         <dd class="playbook-meta__value">
-            <time datetime="{{ $modifiedAt->toIso8601String() }}">
+            <time itemprop="dateModified" datetime="{{ $modifiedAt->toIso8601String() }}">
                 {{ $modifiedAt->format('M j, Y') }}
             </time>
         </dd>

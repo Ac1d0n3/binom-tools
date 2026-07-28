@@ -162,6 +162,9 @@ class PlaybookPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('playbook-series', false);
+        $response->assertSee('data-i18n="playbooks.published"', false);
+        $response->assertSee('itemprop="datePublished"', false);
+        $response->assertSee('itemprop="dateModified"', false);
         $response->assertSee('Part 1 of 9', false);
         $response->assertSee('playbook-series__option--active', false);
         $response->assertSee('/playbooks/data-ownership-stewardship', false);

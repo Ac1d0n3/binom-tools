@@ -17,6 +17,21 @@
 
             <div class="tools-hero__actions">
                 <x-tools.repo-clone-link variant="primary" />
+                <a
+                    class="tools-btn tools-btn--ghost"
+                    href="{{ locale_route('governance.index') }}"
+                    data-i18n="home.hero.ctaGovernance"
+                >Open Governance Hub</a>
+                <a
+                    class="tools-btn tools-btn--ghost"
+                    href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}"
+                    data-i18n="home.hero.ctaBi"
+                >Trust BI metrics</a>
+                <a
+                    class="tools-btn tools-btn--ghost"
+                    href="{{ locale_route('suppliers.index') }}"
+                    data-i18n="home.hero.ctaSources"
+                >Connect a source</a>
             </div>
 
             <p class="tools-hero__hint" data-i18n="home.hero.notice">
@@ -25,7 +40,7 @@
 
             <p class="tools-hero__attribution">
                 <span data-i18n="home.hero.attribution">Public advisor by</span>
-                <a href="https://binom.net" target="_blank" rel="noopener noreferrer">Thomas Lindackers</a>
+                <a href="{{ config('playbooks.author_url', 'https://binom.net') }}" target="_blank" rel="noopener noreferrer author">Thomas Lindackers</a>
             </p>
         </div>
 

@@ -85,7 +85,11 @@
                                     <p class="tools-page-lead">{{ $variant->description }}</p>
                                 @endif
 
-                                <x-playbooks.meta :variant="$variant" :modified-at="$playbook->modifiedAt" />
+                                <x-playbooks.meta
+                                    :variant="$variant"
+                                    :modified-at="$playbook->modifiedAt"
+                                    :published-at="$playbook->publishedAt"
+                                />
 
                                 <x-playbooks.engagement
                                     :slug="$playbook->slug"

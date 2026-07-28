@@ -5,6 +5,31 @@
 @section('title', 'Sources — ' . config('app.name'))
 @section('meta_description', 'Supplier library for analytics governance — core fields, dimensions, PII/DSDR and KPI templates per source (Salesforce, HubSpot, GA4). Start here, then adapt per customer.')
 
+@push('head')
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="Sources — {{ config('app.name') }}">
+    <meta property="og:description" content="Supplier library for analytics governance by Thomas Lindackers — fields, PII/DSDR and KPI templates per source.">
+    <script type="application/ld+json">
+        {!! json_encode([
+            chr(64).'context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => 'Sources',
+            'description' => 'Supplier library for analytics governance by Thomas Lindackers — core fields, PII/DSDR and KPI templates per source.',
+            'url' => url()->current(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => 'Thomas Lindackers',
+                'url' => config('playbooks.author_url', 'https://binom.net'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+@endpush
+
 @section('content')
     <div class="tools-content tools-content--overview tools-content--suppliers" data-overview-filter-root>
         <div class="tools-overview-sticky-header supplier-hub-sticky">
@@ -26,6 +51,13 @@
             </p>
             <p class="supplier-hub-disclaimer" data-i18n="suppliers.disclaimer">
                 Templates only — grain, filters, custom fields and ownership are firm-specific.
+            </p>
+            <p class="supplier-hub-next-tools">
+                <a href="{{ locale_route('governance.index') }}" data-i18n="suppliers.nextGovernance">Open Governance Hub</a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ locale_route('tools.kpi-definition') }}" data-i18n="suppliers.nextKpi">KPI Definition</a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ locale_route('tools.pii-recommend-generator') }}" data-i18n="suppliers.nextPii">PII Recommend</a>
             </p>
 
             <div class="tools-overview-toolbar">

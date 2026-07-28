@@ -1,19 +1,44 @@
 @extends('foundations.layouts.tools')
 
 @section('title', 'About — ' . config('app.name'))
-@section('meta_description', 'About Binom Governance — public online advisor by Thomas Lindackers: orientation, tools, and evidence for data governance. Open source, not a commercial product.')
+@section('meta_description', 'About Binom Governance — open-source governance help hub by Thomas Lindackers: orientation, tools, and evidence. Not a commercial product.')
+
+@push('head')
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="About — {{ config('app.name') }}">
+    <meta property="og:description" content="Open-source governance help hub by Thomas Lindackers — orientation, tools, and evidence.">
+    <script type="application/ld+json">
+        {!! json_encode([
+            chr(64).'context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => 'About Binom Governance',
+            'description' => 'Open-source governance help hub by Thomas Lindackers: orientation, tools, and evidence.',
+            'url' => url()->current(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => 'Thomas Lindackers',
+                'url' => config('playbooks.author_url', 'https://binom.net'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+@endpush
 
 @section('content')
     <div class="tools-content">
         <h1 class="tools-page-title" data-i18n="about.title">About binom-tools</h1>
         <p class="tools-page-lead" data-hub-lead data-i18n="about.lead">
-            Public online advisor for data governance — orientation, questions, tools, and evidence by Thomas Lindackers.
+            Governance help hub for orientation, questions, tools, and evidence — by Thomas Lindackers.
         </p>
 
         <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.project.title">What is binom-tools?</h2>
             <p class="tools-about-body" data-i18n="about.project.body">
-                binom-tools is an open-source project by Thomas Lindackers: a usable public online advisor and governance help hub with Markdown stories and interactive reference workflows — not a commercial product and not legal advice.
+                binom-tools is an open-source project by Thomas Lindackers: a usable governance help hub with Markdown stories and interactive reference workflows — not a commercial product and not legal advice.
             </p>
         </section>
 
@@ -27,7 +52,7 @@
         <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.governanceWhy.title">Why governance?</h2>
             <p class="tools-about-body" data-i18n="about.governanceWhy.body">
-                Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a public online advisor by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.
+                Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a help hub by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.
             </p>
             <div class="tools-about-actions">
                 <a class="tools-btn tools-btn--ghost" href="{{ locale_route('governance.index') }}">

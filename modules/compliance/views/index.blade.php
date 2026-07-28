@@ -5,6 +5,31 @@
 @section('title', 'Compliance — ' . config('app.name'))
 @section('meta_description', 'Compliance frameworks for data platforms — GDPR, BSI C5, EU AI Act, ISO 27001 and more. CDMP/DMBOK bridge via the certification roadmap and the 8 pillars.')
 
+@push('head')
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="Compliance — {{ config('app.name') }}">
+    <meta property="og:description" content="Compliance frameworks for data platforms — curated orientation by Thomas Lindackers, not legal advice.">
+    <script type="application/ld+json">
+        {!! json_encode([
+            chr(64).'context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => 'Compliance',
+            'description' => 'Compliance frameworks for data platforms by Thomas Lindackers — GDPR, BSI C5, EU AI Act, ISO 27001 and more.',
+            'url' => url()->current(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => 'Thomas Lindackers',
+                'url' => config('playbooks.author_url', 'https://binom.net'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+@endpush
+
 @section('content')
     <div class="tools-content tools-content--overview tools-content--compliance" data-overview-filter-root>
         <div class="tools-overview-sticky-header compliance-hub-sticky">

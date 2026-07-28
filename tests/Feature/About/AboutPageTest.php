@@ -14,6 +14,7 @@ class AboutPageTest extends TestCase
         $response->assertSee('data-i18n="about.title"', false);
         $response->assertSee('data-i18n="about.stories.body"', false);
         $response->assertSee('data-i18n="about.governanceWhy.title"', false);
+        $response->assertSee('governance-author-byline', false);
         $response->assertSee('data-i18n="about.feedback.title"', false);
         $response->assertSee('tools-release-meta', false);
         $response->assertSee('v1.0.0', false);

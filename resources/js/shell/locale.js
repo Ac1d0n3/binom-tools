@@ -133,6 +133,7 @@ const shellLabels = {
         'footer.disclaimer': 'Disclaimer',
         'footer.about': 'Über das Projekt',
         'footer.sitemap': 'Sitemap',
+        'footer.sitemapXml': 'Sitemap XML',
         'meta.beta': 'BETA',
         'tools.overviewBetaNote': 'Referenz-Workflows — kontinuierlich gepflegt, lokal klonbar.',
         'about.learnMore': 'Über das Projekt',
@@ -193,6 +194,8 @@ const shellLabels = {
         'home.hero.notice':
             'Open Source — klonbar als Startvorlage für euren internen Hub.',
         'home.hero.ctaGovernance': 'Governance Hub öffnen',
+        'home.hero.ctaBi': 'BI-Metriken vertrauen',
+        'home.hero.ctaSources': 'Quelle anbinden',
         'home.hero.ctaWorkflows': 'Binom-Tools öffnen',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Öffentlicher Berater von',
@@ -280,6 +283,8 @@ const shellLabels = {
         'resources.indexTitle': 'Hersteller-Ressourcen',
         'resources.indexLead':
             'Offizielle Hilfe, Governance, Lernpfade, Cloud-Residenz (DSGVO) und Compliance — kuratiert, kein Verkaufskatalog. Filter nach Hersteller, Familie, SaaS/Open Source oder Residenz.',
+        'resources.curatedNote':
+            'Kuratiert, nicht gesponsert — praktische Einstiege für Governance-Entscheidungen.',
         'resources.searchPlaceholder': 'Produkte, DSGVO, C5, ISO, Miro… suchen',
         'resources.helpTitle': 'Hilfe',
         'resources.governanceTitle': 'Governance',
@@ -958,6 +963,9 @@ const shellLabels = {
             'Wiederverwendbare Kernfelder, Dimensionen, PII/DSDR-Hinweise und Measure-Vorlagen je Quellprodukt — Einstieg für Governance-Discovery, dann pro Kunde anpassen.',
         'suppliers.disclaimer':
             'Nur Vorlagen — Grain, Filter, Custom Fields und Ownership sind firmenspezifisch.',
+        'suppliers.nextGovernance': 'Governance Hub öffnen',
+        'suppliers.nextKpi': 'KPI Definition',
+        'suppliers.nextPii': 'PII Recommend',
         'suppliers.searchPlaceholder': 'Suche Salesforce, ARR, PII…',
         'suppliers.domainLabel': 'Domain',
         'suppliers.domainAll': 'Alle Domains',
@@ -1206,6 +1214,7 @@ const shellLabels = {
         'playbooks.category': 'Kategorie',
         'playbooks.author': 'Autor',
         'playbooks.readingTime': 'Lesezeit',
+        'playbooks.published': 'Veröffentlicht',
         'playbooks.updated': 'Aktualisiert',
         'playbooks.tags': 'Tags',
         'playbooks.views': 'Aufrufe',
@@ -1288,6 +1297,7 @@ const shellLabels = {
         'footer.disclaimer': 'Disclaimer',
         'footer.about': 'About',
         'footer.sitemap': 'Sitemap',
+        'footer.sitemapXml': 'Sitemap XML',
         'meta.beta': 'BETA',
         'tools.overviewBetaNote': 'Reference workflows — continuously curated, cloneable locally.',
         'about.learnMore': 'About this project',
@@ -1348,6 +1358,8 @@ const shellLabels = {
         'home.hero.notice':
             'Open source — cloneable as a starter for your internal hub.',
         'home.hero.ctaGovernance': 'Open Governance Hub',
+        'home.hero.ctaBi': 'Trust BI metrics',
+        'home.hero.ctaSources': 'Connect a source',
         'home.hero.ctaWorkflows': 'Open Binom-Tools',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Public advisor by',
@@ -1435,6 +1447,8 @@ const shellLabels = {
         'resources.indexTitle': 'Vendor resources',
         'resources.indexLead':
             'Official help, governance, learning paths, cloud residency (GDPR) and compliance — curated, not a sales catalog. Filter by vendor, family, SaaS/Open Source or residency.',
+        'resources.curatedNote':
+            'Curated, not sponsored — practical entry points for governance decisions.',
         'resources.searchPlaceholder': 'Search products, GDPR, C5, ISO, Miro…',
         'resources.helpTitle': 'Help',
         'resources.governanceTitle': 'Governance',
@@ -2113,6 +2127,9 @@ const shellLabels = {
             'Reusable core fields, dimensions, PII/DSDR hints and measure templates per source product — start for governance discovery, then adapt per customer.',
         'suppliers.disclaimer':
             'Templates only — grain, filters, custom fields and ownership are firm-specific.',
+        'suppliers.nextGovernance': 'Open Governance Hub',
+        'suppliers.nextKpi': 'KPI Definition',
+        'suppliers.nextPii': 'PII Recommend',
         'suppliers.searchPlaceholder': 'Search Salesforce, ARR, PII…',
         'suppliers.domainLabel': 'Domain',
         'suppliers.domainAll': 'All domains',
@@ -2361,6 +2378,7 @@ const shellLabels = {
         'playbooks.category': 'Category',
         'playbooks.author': 'Author',
         'playbooks.readingTime': 'Reading time',
+        'playbooks.published': 'Published',
         'playbooks.updated': 'Updated',
         'playbooks.tags': 'Tags',
         'playbooks.views': 'Views',

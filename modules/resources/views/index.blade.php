@@ -5,6 +5,31 @@
 @section('title', 'Resources — ' . config('app.name'))
 @section('meta_description', 'Curated vendor help, governance, learning and compliance links — not a sales directory. Filter by family, SaaS/OSS and cloud residency (GDPR).')
 
+@push('head')
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="Resources — {{ config('app.name') }}">
+    <meta property="og:description" content="Curated vendor help, governance, learning and compliance links — curated by Thomas Lindackers, not sponsored.">
+    <script type="application/ld+json">
+        {!! json_encode([
+            chr(64).'context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => 'Vendor resources',
+            'description' => 'Curated vendor help, governance, learning and compliance links by Thomas Lindackers — not a sales directory.',
+            'url' => url()->current(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => 'Thomas Lindackers',
+                'url' => config('playbooks.author_url', 'https://binom.net'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+@endpush
+
 @section('content')
     <div class="tools-content tools-content--overview tools-content--resources" data-overview-filter-root>
         <div class="tools-overview-sticky-header vendor-resources-sticky">
@@ -25,6 +50,9 @@
             </div>
             <p class="tools-page-lead vendor-resources-sticky__lead" data-hub-lead data-i18n="resources.indexLead">
                 Official help, governance, learning paths, cloud residency (GDPR) and compliance — filter by vendor, family, SaaS/Open Source or residency.
+            </p>
+            <p class="tools-page-curation" data-i18n="resources.curatedNote">
+                Curated, not sponsored — practical entry points for governance decisions.
             </p>
 
             <div class="tools-overview-toolbar">

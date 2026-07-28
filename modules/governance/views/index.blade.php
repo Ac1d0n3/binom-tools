@@ -15,18 +15,18 @@
 @endphp
 
 @section('title', 'Governance Hub - ' . config('app.name'))
-@section('meta_description', 'Public data governance advisor by Thomas Lindackers: clarify decisions, stacks, sources, and risks — then open matching tools, suppliers, playbooks, and evidence.')
+@section('meta_description', 'Data governance help hub by Thomas Lindackers: clarify decisions, stacks, sources, and risks — then open matching tools, suppliers, playbooks, and evidence.')
 
 @push('head')
     <link rel="canonical" href="{{ url()->current() }}">
     <meta property="og:title" content="Governance Hub - {{ config('app.name') }}">
-    <meta property="og:description" content="Public advisor for data governance decisions: orientation first, then tools, suppliers, and evidence — by Thomas Lindackers.">
+    <meta property="og:description" content="Data governance help hub: orientation first, then tools, suppliers, and evidence — by Thomas Lindackers.">
     <script type="application/ld+json">
         {!! json_encode([
             chr(64).'context' => 'https://schema.org',
             '@type' => 'WebPage',
             'name' => 'Governance Hub',
-            'description' => 'Public online advisor by Thomas Lindackers for data governance decisions, KPI requirements, supplier discovery, PII checks, and stack selection.',
+            'description' => 'Data governance help hub by Thomas Lindackers for decisions, KPI requirements, supplier discovery, PII checks, and stack selection.',
             'url' => url()->current(),
             'author' => [
                 '@type' => 'Person',
@@ -232,7 +232,7 @@
         </section>
 
             <div class="governance-hub__hero-copy">
-                <p class="governance-hub__eyebrow" data-text-de="Öffentlicher Online-Berater" data-text-en="Public online advisor">Public online advisor</p>
+                <p class="governance-hub__eyebrow" data-text-de="Governance Help Hub" data-text-en="Governance Help Hub">Governance Help Hub</p>
                 <h1
                     class="tools-page-title governance-hub__title"
                     data-text-de="Data Governance entscheiden, sammeln und umsetzen"
@@ -241,9 +241,18 @@
                 <p
                     class="tools-page-lead governance-hub__lead"
                     data-hub-lead
-                    data-text-de="Berater von Thomas Lindackers: erst die richtige Frage, dann Playbooks, Tools, Vendor Resources, Supplier Library und Compliance. Beispielweg ohne Login: Demo-Workspace und Beispiel-Report."
-                    data-text-en="Advisor by Thomas Lindackers: first the right question, then playbooks, tools, vendor resources, supplier library, and compliance. Example path without login: demo workspace and sample report."
-                >Advisor by Thomas Lindackers: first the right question, then playbooks, tools, vendor resources, supplier library, and compliance. Example path without login: demo workspace and sample report.</p>
+                    data-text-de="Von Thomas Lindackers: erst die richtige Frage, dann Playbooks, Tools, Vendor Resources, Supplier Library und Compliance. Beispielweg ohne Login: Demo-Workspace und Beispiel-Report."
+                    data-text-en="By Thomas Lindackers: first the right question, then playbooks, tools, vendor resources, supplier library, and compliance. Example path without login: demo workspace and sample report."
+                >By Thomas Lindackers: first the right question, then playbooks, tools, vendor resources, supplier library, and compliance. Example path without login: demo workspace and sample report.</p>
+                <nav class="governance-hub__explore" aria-label="Related hubs">
+                    <a href="{{ locale_route('playbooks.index') }}" data-text-de="Playbooks" data-text-en="Playbooks">Playbooks</a>
+                    <a href="{{ locale_route('learning-paths.index') }}" data-text-de="Learning Paths" data-text-en="Learning Paths">Learning Paths</a>
+                    <a href="{{ locale_route('roles.index') }}" data-text-de="Rollen" data-text-en="Roles">Roles</a>
+                    <a href="{{ locale_route('tools.overview') }}" data-text-de="Tools" data-text-en="Tools">Tools</a>
+                    <a href="{{ locale_route('resources.index') }}" data-text-de="Resources" data-text-en="Resources">Resources</a>
+                    <a href="{{ locale_route('suppliers.index') }}" data-text-de="Sources" data-text-en="Sources">Sources</a>
+                    <a href="{{ locale_route('compliance.index') }}" data-text-de="Compliance" data-text-en="Compliance">Compliance</a>
+                </nav>
                 <div class="governance-hub__hero-actions" aria-label="Governance Hub Panels">
                     <button type="button" class="governance-hub__button" data-governance-drawer-toggle aria-controls="governance-header-drawer" aria-expanded="false">
                         <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
