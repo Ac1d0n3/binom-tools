@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
+use App\Admin\Content\ContentOwnership;
 use App\Admin\Content\MarkdownContentWriter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,16 +23,23 @@ class PlanTemplatesController extends AdminController
 
     public function index(): View
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::PLAN_TEMPLATES);
+        $templates = $this->writer->listSlugs();
+        if (! $user->canManageContent) {
+            $templates = array_values(array_filter(
+                $templates,
+                fn (array $row): bool => $this->templateOwner((string) $row['slug']) === $user->id
+            ));
+        }
 
         return $this->adminView('admin::content.plan-templates-index', [
-            'templates' => $this->writer->listSlugs(),
+            'templates' => $templates,
         ]);
     }
 
     public function create(): View
     {
-        $this->assertCanManageUsers();
+        $this->assertContentArea(ContentAreas::PLAN_TEMPLATES);
 
         return $this->adminView('admin::content.plan-templates-form', [
             'slug' => '',
@@ -42,8 +51,8 @@ class PlanTemplatesController extends AdminController
 
     public function edit(string $slug): View
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
+        $this->assertContentMutation(ContentAreas::PLAN_TEMPLATES, $this->templateOwner($slug));
 
         return $this->adminView('admin::content.plan-templates-form', [
             'slug' => $slug,
@@ -55,7 +64,7 @@ class PlanTemplatesController extends AdminController
 
     public function store(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::PLAN_TEMPLATES);
         $data = $request->validate([
             'slug' => ['required', 'regex:/^[a-z0-9-]+$/', 'max:120'],
             'body_de' => ['nullable', 'string'],
@@ -63,7 +72,7 @@ class PlanTemplatesController extends AdminController
         ]);
 
         try {
-            $this->writePair($data['slug'], (string) ($data['body_de'] ?? ''), (string) ($data['body_en'] ?? ''));
+            $this->writePair($data['slug'], (string) ($data['body_de'] ?? ''), (string) ($data['body_en'] ?? ''), $user->id);
         } catch (RuntimeException $e) {
             return back()->withErrors(['slug' => $e->getMessage()])->withInput();
         }
@@ -73,15 +82,15 @@ class PlanTemplatesController extends AdminController
 
     public function update(Request $request, string $slug): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
+        $user = $this->assertContentMutation(ContentAreas::PLAN_TEMPLATES, $this->templateOwner($slug));
         $data = $request->validate([
             'body_de' => ['nullable', 'string'],
             'body_en' => ['nullable', 'string'],
         ]);
 
         try {
-            $this->writePair($slug, (string) ($data['body_de'] ?? ''), (string) ($data['body_en'] ?? ''));
+            $this->writePair($slug, (string) ($data['body_de'] ?? ''), (string) ($data['body_en'] ?? ''), $user->id);
         } catch (RuntimeException $e) {
             return back()->withErrors(['body_de' => $e->getMessage()])->withInput();
         }
@@ -91,14 +100,14 @@ class PlanTemplatesController extends AdminController
 
     public function destroy(string $slug): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
+        $this->assertContentMutation(ContentAreas::PLAN_TEMPLATES, $this->templateOwner($slug));
         $this->writer->delete($slug);
 
         return redirect()->to(locale_route('admin.plan-templates.index'))->with('status', 'template-deleted');
     }
 
-    private function writePair(string $slug, string $de, string $en): void
+    private function writePair(string $slug, string $de, string $en, string $userId): void
     {
         foreach (['de' => $de, 'en' => $en] as $locale => $body) {
             if (trim($body) === '') {
@@ -107,8 +116,24 @@ class PlanTemplatesController extends AdminController
             if (! str_contains($body, 'type: sprint-plan') && ! str_contains($body, 'type:sprint-plan')) {
                 throw new RuntimeException('Plan templates must include frontmatter type: sprint-plan.');
             }
-            $this->writer->write($slug, $locale, $body);
+            $this->writer->write($slug, $locale, ContentOwnership::ensureMarkdownOwner($body, $userId));
         }
+    }
+
+    private function templateOwner(string $slug): ?string
+    {
+        foreach (['en', 'de'] as $locale) {
+            $raw = $this->writer->read($slug, $locale);
+            if ($raw === null || trim($raw) === '') {
+                continue;
+            }
+            $owner = ContentOwnership::ownerFromMarkdown($raw);
+            if ($owner !== null) {
+                return $owner;
+            }
+        }
+
+        return null;
     }
 
     private function draftStub(string $locale): string

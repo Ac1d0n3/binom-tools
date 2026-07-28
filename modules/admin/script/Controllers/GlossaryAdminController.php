@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
 use App\Admin\Content\CatalogJsonWriter;
+use App\Admin\Content\ContentOwnership;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -22,8 +24,15 @@ class GlossaryAdminController extends AdminController
 
     public function index(Request $request): View
     {
-        $this->assertCanManageUsers();
-        $terms = $this->safeReadList();
+        $user = $this->assertContentArea(ContentAreas::GLOSSARY);
+        $allTerms = $this->safeReadList();
+        if (! $user->canManageContent) {
+            $allTerms = array_values(array_filter(
+                $allTerms,
+                static fn (array $row): bool => ContentOwnership::ownerFromRow($row) === $user->id
+            ));
+        }
+        $terms = $allTerms;
         $q = trim((string) $request->query('q', ''));
         if ($q !== '') {
             $needle = mb_strtolower($q);
@@ -36,14 +45,14 @@ class GlossaryAdminController extends AdminController
 
         return $this->adminView('admin::catalogs.glossary-index', [
             'terms' => array_slice($terms, 0, 200),
-            'total' => count($this->safeReadList()),
+            'total' => count($allTerms),
             'q' => $q,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::GLOSSARY);
         $data = $request->validate([
             'id' => ['nullable', 'regex:/^[a-z0-9-]+$/', 'max:80'],
             'term_de' => ['required', 'string', 'max:160'],
@@ -61,7 +70,7 @@ class GlossaryAdminController extends AdminController
                     return back()->withErrors(['id' => 'Term id already exists.'])->withInput();
                 }
             }
-            $terms[] = [
+            $terms[] = ContentOwnership::stampRow([
                 'id' => $id,
                 'order' => count($terms) + 1,
                 'category' => $data['category'] ?: 'data',
@@ -69,7 +78,7 @@ class GlossaryAdminController extends AdminController
                 'aliases' => [],
                 'definition' => ['de' => $data['definition_de'], 'en' => $data['definition_en']],
                 'related' => [],
-            ];
+            ], $user->id);
             $this->writer->write($terms);
         } catch (RuntimeException $e) {
             return back()->withErrors(['term_en' => $e->getMessage()])->withInput();
@@ -80,8 +89,8 @@ class GlossaryAdminController extends AdminController
 
     public function update(Request $request, string $termId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $termId) === 1, 404);
+        $this->assertContentMutation(ContentAreas::GLOSSARY, $this->termOwner($termId));
         $data = $request->validate([
             'term_de' => ['required', 'string', 'max:160'],
             'term_en' => ['required', 'string', 'max:160'],
@@ -116,8 +125,8 @@ class GlossaryAdminController extends AdminController
 
     public function destroy(string $termId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $termId) === 1, 404);
+        $this->assertContentMutation(ContentAreas::GLOSSARY, $this->termOwner($termId));
         try {
             $terms = array_values(array_filter(
                 $this->safeReadList(),
@@ -129,6 +138,19 @@ class GlossaryAdminController extends AdminController
         }
 
         return back()->with('status', 'glossary-term-deleted');
+    }
+
+    private function termOwner(string $termId): ?string
+    {
+        foreach ($this->safeReadList() as $term) {
+            if (($term['id'] ?? '') !== $termId) {
+                continue;
+            }
+
+            return ContentOwnership::ownerFromRow($term);
+        }
+
+        return null;
     }
 
     /**

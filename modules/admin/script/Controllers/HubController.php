@@ -23,6 +23,8 @@ class HubController extends AdminController
         return $this->adminView('admin::index', [
             'canManageUsers' => $user->canManageUsers,
             'canManageTeams' => $user->canManageTeams,
+            'canManageContent' => $user->canManageContent,
+            'contentAreas' => $user->contentAreas,
             'storyCount' => $storyCount,
             'templateCount' => $templateCount,
         ]);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
+use App\Admin\Content\ContentOwnership;
 use App\Admin\Content\MarkdownContentWriter;
 use App\Admin\Content\PlaybookImageUploader;
 use App\Admin\Content\StoryDraftTemplates;
@@ -26,16 +28,23 @@ class StoriesController extends AdminController
 
     public function index(): View
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::STORIES);
+        $stories = $this->writer->listSlugs();
+        if (! $user->canManageContent) {
+            $stories = array_values(array_filter(
+                $stories,
+                fn (array $row): bool => $this->storyOwner((string) $row['slug']) === $user->id
+            ));
+        }
 
         return $this->adminView('admin::content.stories-index', [
-            'stories' => $this->writer->listSlugs(),
+            'stories' => $stories,
         ]);
     }
 
     public function create(Request $request): View
     {
-        $this->assertCanManageUsers();
+        $this->assertContentArea(ContentAreas::STORIES);
 
         $template = (string) $request->query('template', 'single');
         if (! in_array($template, ['single', 'series'], true)) {
@@ -65,8 +74,8 @@ class StoriesController extends AdminController
 
     public function edit(string $slug): View
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
+        $this->assertContentMutation(ContentAreas::STORIES, $this->storyOwner($slug));
 
         $bodyDe = $this->writer->read($slug, 'de') ?? '';
         $bodyEn = $this->writer->read($slug, 'en') ?? '';
@@ -86,7 +95,7 @@ class StoriesController extends AdminController
 
     public function store(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::STORIES);
         $data = $request->validate([
             'slug' => ['required', 'regex:/^[a-z0-9-]+$/', 'max:120'],
             'body_de' => ['nullable', 'string'],
@@ -95,10 +104,18 @@ class StoriesController extends AdminController
 
         try {
             if (trim((string) ($data['body_de'] ?? '')) !== '') {
-                $this->writer->write($data['slug'], 'de', (string) $data['body_de']);
+                $this->writer->write(
+                    $data['slug'],
+                    'de',
+                    ContentOwnership::ensureMarkdownOwner((string) $data['body_de'], $user->id)
+                );
             }
             if (trim((string) ($data['body_en'] ?? '')) !== '') {
-                $this->writer->write($data['slug'], 'en', (string) $data['body_en']);
+                $this->writer->write(
+                    $data['slug'],
+                    'en',
+                    ContentOwnership::ensureMarkdownOwner((string) $data['body_en'], $user->id)
+                );
             }
         } catch (RuntimeException $e) {
             return back()->withErrors(['slug' => $e->getMessage()])->withInput();
@@ -109,16 +126,24 @@ class StoriesController extends AdminController
 
     public function update(Request $request, string $slug): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
+        $user = $this->assertContentMutation(ContentAreas::STORIES, $this->storyOwner($slug));
         $data = $request->validate([
             'body_de' => ['nullable', 'string'],
             'body_en' => ['nullable', 'string'],
         ]);
 
         try {
-            $this->writer->write($slug, 'de', (string) ($data['body_de'] ?? ''));
-            $this->writer->write($slug, 'en', (string) ($data['body_en'] ?? ''));
+            $this->writer->write(
+                $slug,
+                'de',
+                ContentOwnership::ensureMarkdownOwner((string) ($data['body_de'] ?? ''), $user->id)
+            );
+            $this->writer->write(
+                $slug,
+                'en',
+                ContentOwnership::ensureMarkdownOwner((string) ($data['body_en'] ?? ''), $user->id)
+            );
         } catch (RuntimeException $e) {
             return back()->withErrors(['body_de' => $e->getMessage()])->withInput();
         }
@@ -128,8 +153,8 @@ class StoriesController extends AdminController
 
     public function destroy(string $slug): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
+        $this->assertContentMutation(ContentAreas::STORIES, $this->storyOwner($slug));
         $this->writer->delete($slug);
 
         return redirect()->to(locale_route('admin.stories.index'))->with('status', 'story-deleted');
@@ -137,7 +162,12 @@ class StoriesController extends AdminController
 
     public function uploadImage(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $slug = (string) $request->input('slug', '');
+        if ($slug !== '' && preg_match('/^[a-z0-9-]+$/', $slug) === 1) {
+            $this->assertContentMutation(ContentAreas::STORIES, $this->storyOwner($slug));
+        } else {
+            $this->assertContentArea(ContentAreas::STORIES);
+        }
         $request->validate([
             'image' => ['required', 'file', 'max:10240', 'mimes:png,jpg,jpeg,gif,webp'],
             'slug' => ['nullable', 'regex:/^[a-z0-9-]+$/'],
@@ -156,9 +186,23 @@ class StoriesController extends AdminController
         return back()->with('status', 'image-uploaded')->with('imageUrl', $result['url'])->with('flashDetail', $message);
     }
 
+    private function storyOwner(string $slug): ?string
+    {
+        foreach (['en', 'de'] as $locale) {
+            $raw = $this->writer->read($slug, $locale);
+            if ($raw === null || trim($raw) === '') {
+                continue;
+            }
+            $owner = ContentOwnership::ownerFromMarkdown($raw);
+            if ($owner !== null) {
+                return $owner;
+            }
+        }
+
+        return null;
+    }
+
     /**
-     * Images referenced from story markdown (DE + EN).
-     *
      * @return list<array{name: string, url: string, previewUrl: string, markdownPath: string, webpUrl: ?string}>
      */
     private function imagesForStory(string $bodyDe, string $bodyEn): array

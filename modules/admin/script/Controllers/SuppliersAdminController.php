@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
 use App\Admin\Content\CatalogJsonWriter;
+use App\Admin\Content\ContentOwnership;
 use App\Catalog\CatalogJsonLoader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,8 +28,14 @@ class SuppliersAdminController extends AdminController
 
     public function index(): View
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::VENDORS_SOURCES);
         $products = $this->readProducts();
+        if (! $user->canManageContent) {
+            $products = array_values(array_filter(
+                $products,
+                static fn (array $row): bool => ContentOwnership::ownerFromRow($row) === $user->id
+            ));
+        }
         usort($products, static function (array $a, array $b): int {
             return ((int) ($a['order'] ?? 0)) <=> ((int) ($b['order'] ?? 0));
         });
@@ -40,7 +48,7 @@ class SuppliersAdminController extends AdminController
 
     public function store(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::VENDORS_SOURCES);
         $data = $this->validateProduct($request, true);
 
         try {
@@ -50,7 +58,7 @@ class SuppliersAdminController extends AdminController
                     return back()->withErrors(['id' => 'Source id already exists.'])->withInput();
                 }
             }
-            $products[] = $this->buildProduct($data, null);
+            $products[] = ContentOwnership::stampRow($this->buildProduct($data, null), $user->id);
             $this->writeProducts($products);
         } catch (RuntimeException $e) {
             return back()->withErrors(['id' => $e->getMessage()])->withInput();
@@ -61,8 +69,8 @@ class SuppliersAdminController extends AdminController
 
     public function update(Request $request, string $supplierId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $supplierId) === 1, 404);
+        $this->assertContentMutation(ContentAreas::VENDORS_SOURCES, $this->productOwner($supplierId));
         $data = $this->validateProduct($request, false);
 
         try {
@@ -87,8 +95,8 @@ class SuppliersAdminController extends AdminController
 
     public function destroy(string $supplierId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $supplierId) === 1, 404);
+        $this->assertContentMutation(ContentAreas::VENDORS_SOURCES, $this->productOwner($supplierId));
 
         try {
             $products = $this->readProducts();
@@ -107,6 +115,19 @@ class SuppliersAdminController extends AdminController
         }
 
         return back()->with('status', 'supplier-deleted');
+    }
+
+    private function productOwner(string $supplierId): ?string
+    {
+        foreach ($this->readProducts() as $product) {
+            if (($product['id'] ?? '') !== $supplierId) {
+                continue;
+            }
+
+            return ContentOwnership::ownerFromRow($product);
+        }
+
+        return null;
     }
 
     /**

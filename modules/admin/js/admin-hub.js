@@ -704,6 +704,79 @@ function initAdminStoryDraft(root = document) {
     });
 }
 
+function initAdminConfirmDelete(root = document) {
+    const dialog = document.querySelector('[data-admin-confirm-delete-modal]');
+    if (!(dialog instanceof HTMLDialogElement)) {
+        return;
+    }
+
+    const messageEl = dialog.querySelector('[data-admin-confirm-message]');
+    const titleEl = dialog.querySelector('[data-admin-confirm-title]');
+    const okBtn = dialog.querySelector('[data-admin-confirm-ok]');
+    let pendingForm = null;
+
+    okBtn?.addEventListener('click', () => {
+        const form = pendingForm;
+        pendingForm = null;
+        closeSharedModal(dialog);
+        if (form instanceof HTMLFormElement) {
+            form.dataset.adminConfirmAccepted = 'true';
+            form.requestSubmit();
+        }
+    });
+
+    root.querySelectorAll('form[data-admin-confirm-delete]').forEach((form) => {
+        if (!(form instanceof HTMLFormElement) || form.dataset.adminConfirmBound === 'true') {
+            return;
+        }
+        form.dataset.adminConfirmBound = 'true';
+        form.addEventListener('submit', (event) => {
+            if (form.dataset.adminConfirmAccepted === 'true') {
+                delete form.dataset.adminConfirmAccepted;
+                return;
+            }
+            event.preventDefault();
+            pendingForm = form;
+            const message = form.getAttribute('data-confirm-message') || 'Are you sure?';
+            if (messageEl) {
+                messageEl.textContent = message;
+            }
+            if (titleEl) {
+                titleEl.textContent = form.getAttribute('data-confirm-title') || 'Delete?';
+            }
+            openSharedModal(dialog);
+        });
+    });
+}
+
+function initAdminContentAreas(root = document) {
+    root.querySelectorAll('[data-admin-content-admin]').forEach((adminToggle) => {
+        if (!(adminToggle instanceof HTMLInputElement)) {
+            return;
+        }
+        const fieldset = adminToggle.closest('form')?.querySelector('[data-admin-content-areas]');
+        if (!(fieldset instanceof HTMLElement)) {
+            return;
+        }
+        const sync = () => {
+            const on = adminToggle.checked;
+            fieldset.querySelectorAll('[data-admin-content-area]').forEach((input) => {
+                if (!(input instanceof HTMLInputElement)) {
+                    return;
+                }
+                if (on) {
+                    input.checked = true;
+                    input.disabled = true;
+                } else {
+                    input.disabled = false;
+                }
+            });
+        };
+        adminToggle.addEventListener('change', sync);
+        sync();
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initAdminHelp();
     initAdminTabs();
@@ -716,4 +789,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initAdminImagesRail();
     initAdminCopy();
     initAdminStoryDraft();
+    initAdminConfirmDelete();
+    initAdminContentAreas();
 });

@@ -45,7 +45,7 @@
                         data-text-de="Bearbeiten"
                         data-text-en="Edit"
                     >Edit</button>
-                    <form method="post" action="{{ locale_route('admin.radar.items.destroy', ['itemId' => $item['id']]) }}" onsubmit="return confirm('Delete news item?');">
+                    <form method="post" action="{{ locale_route('admin.radar.items.destroy', ['itemId' => $item['id']]) }}" data-admin-confirm-delete data-confirm-message="Delete news item?">
                         @csrf
                         @method('DELETE')
                         <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
@@ -123,7 +123,7 @@
                                 data-text-de="Bearbeiten"
                                 data-text-en="Edit"
                             >Edit</button>
-                            <form method="post" action="{{ locale_route('admin.radar.sources.destroy', ['sourceId' => $sid]) }}" style="display:inline" onsubmit="return confirm('Delete source?');">
+                            <form method="post" action="{{ locale_route('admin.radar.sources.destroy', ['sourceId' => $sid]) }}" style="display:inline" data-admin-confirm-delete data-confirm-message="Delete source?">
                                 @csrf
                                 @method('DELETE')
                                 <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>

@@ -129,6 +129,37 @@
                 <span data-i18n="accounts.canManageTeams">Can manage teams</span>
             </label>
             <label class="sp-check">
+                <input type="checkbox" name="canManageContent" value="1" @checked(old('canManageContent', $user['canManageContent'] ?? false)) data-admin-content-admin>
+                <span data-i18n="accounts.canManageContent">Content admin (all content, including without owner)</span>
+            </label>
+
+            @php
+                $areas = old('contentAreas', $user['contentAreas'] ?? []);
+                $areaDefs = [
+                    'stories' => ['de' => 'Stories', 'en' => 'Stories'],
+                    'planTemplates' => ['de' => 'Plan-Templates', 'en' => 'Plan templates'],
+                    'vendorsSources' => ['de' => 'Vendors & Sources', 'en' => 'Vendors & Sources'],
+                    'news' => ['de' => 'News (Radar)', 'en' => 'News (Radar)'],
+                    'glossary' => ['de' => 'Glossary', 'en' => 'Glossary'],
+                ];
+            @endphp
+            <fieldset class="admin-hub__content-areas" data-admin-content-areas>
+                <legend data-i18n="accounts.contentAreas">Content areas (own items if not content admin)</legend>
+                @foreach ($areaDefs as $areaKey => $labels)
+                    <label class="sp-check">
+                        <input
+                            type="checkbox"
+                            name="contentAreas[{{ $areaKey }}]"
+                            value="1"
+                            @checked(! empty($areas[$areaKey]))
+                            data-admin-content-area
+                        >
+                        <span data-text-de="{{ $labels['de'] }}" data-text-en="{{ $labels['en'] }}">{{ $labels['en'] }}</span>
+                    </label>
+                @endforeach
+            </fieldset>
+
+            <label class="sp-check">
                 <input type="checkbox" name="active" value="1" @checked(old('active', $user['active'] ?? true))>
                 <span data-i18n="accounts.active">Active</span>
             </label>
@@ -147,7 +178,7 @@
                 action="{{ locale_route('accounts.users.destroy', ['userId' => $user['id']]) }}"
                 class="sp-lock-form"
                 style="max-width:40rem;margin-top:1.5rem"
-                onsubmit="return confirm(@json(__('Delete this user?')));"
+                data-admin-confirm-delete data-confirm-message="Delete this user?"
             >
                 @csrf
                 @method('DELETE')

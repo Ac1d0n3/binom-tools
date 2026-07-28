@@ -148,7 +148,7 @@
                 action="{{ locale_route('accounts.teams.destroy', ['teamId' => $team['id']]) }}"
                 class="sp-lock-form"
                 style="max-width:40rem;margin-top:1.5rem"
-                onsubmit="return confirm(@json(__('Delete this team?')));"
+                data-admin-confirm-delete data-confirm-message="Delete this team?"
             >
                 @csrf
                 @method('DELETE')

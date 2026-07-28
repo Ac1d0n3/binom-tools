@@ -66,7 +66,7 @@ final class DatabaseUserRepository implements UserRepositoryInterface
             throw new InvalidArgumentException('passwordHash is required and must be a password_hash() digest.');
         }
 
-        $user = AccountUser::fromArray([
+        $payload = [
             'id' => $id,
             'email' => $email,
             'displayName' => $input['displayName'] ?? $current?->displayName ?? $email,
@@ -86,7 +86,19 @@ final class DatabaseUserRepository implements UserRepositoryInterface
             'mustChangePassword' => array_key_exists('mustChangePassword', $input)
                 ? (bool) $input['mustChangePassword']
                 : ($current?->mustChangePassword ?? false),
-        ]);
+        ];
+        if (array_key_exists('canManageContent', $input)) {
+            $payload['canManageContent'] = (bool) $input['canManageContent'];
+        } elseif ($current !== null) {
+            $payload['canManageContent'] = $current->canManageContent;
+        }
+        if (array_key_exists('contentAreas', $input)) {
+            $payload['contentAreas'] = $input['contentAreas'];
+        } elseif ($current !== null) {
+            $payload['contentAreas'] = $current->contentAreas;
+        }
+
+        $user = AccountUser::fromArray($payload);
 
         BnUser::query()->updateOrCreate(
             ['id' => $user->id],
@@ -97,6 +109,8 @@ final class DatabaseUserRepository implements UserRepositoryInterface
                 'team_ids' => $user->teamIds,
                 'can_manage_users' => $user->canManageUsers,
                 'can_manage_teams' => $user->canManageTeams,
+                'can_manage_content' => $user->canManageContent,
+                'content_areas' => $user->contentAreas,
                 'active' => $user->active,
                 'pending_approval' => $user->pendingApproval,
                 'short_name' => $user->shortName,
@@ -141,6 +155,8 @@ final class DatabaseUserRepository implements UserRepositoryInterface
             'teamIds' => is_array($row->team_ids) ? $row->team_ids : [],
             'canManageUsers' => (bool) $row->can_manage_users,
             'canManageTeams' => (bool) $row->can_manage_teams,
+            'canManageContent' => (bool) ($row->can_manage_content ?? false),
+            'contentAreas' => is_array($row->content_areas ?? null) ? $row->content_areas : null,
             'active' => (bool) $row->active,
             'pendingApproval' => (bool) $row->pending_approval,
             'shortName' => (string) $row->short_name,

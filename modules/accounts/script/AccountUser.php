@@ -10,6 +10,7 @@ final class AccountUser
 {
     /**
      * @param  list<string>  $teamIds
+     * @param  array<string, bool>  $contentAreas
      */
     public function __construct(
         public readonly string $id,
@@ -19,6 +20,8 @@ final class AccountUser
         public readonly array $teamIds,
         public readonly bool $canManageUsers,
         public readonly bool $canManageTeams,
+        public readonly bool $canManageContent,
+        public readonly array $contentAreas,
         public readonly bool $active,
         public readonly string $shortName = '',
         public readonly string $colorToken = 'accent-1',
@@ -58,6 +61,14 @@ final class AccountUser
         }
 
         $displayName = trim((string) ($data['displayName'] ?? $email));
+        $canManageUsers = (bool) ($data['canManageUsers'] ?? false);
+        $legacyContentAdmin = ! array_key_exists('canManageContent', $data) && $canManageUsers;
+        $canManageContent = array_key_exists('canManageContent', $data)
+            ? (bool) $data['canManageContent']
+            : $legacyContentAdmin;
+        $areasRaw = is_array($data['contentAreas'] ?? null) ? $data['contentAreas'] : null;
+        $legacyAreas = $areasRaw === null && ($canManageContent || $canManageUsers);
+        $contentAreas = ContentAreas::normalize($areasRaw, $legacyAreas);
 
         return new self(
             id: $id,
@@ -65,8 +76,10 @@ final class AccountUser
             displayName: $displayName,
             passwordHash: $hash,
             teamIds: $teamIds,
-            canManageUsers: (bool) ($data['canManageUsers'] ?? false),
+            canManageUsers: $canManageUsers,
             canManageTeams: (bool) ($data['canManageTeams'] ?? false),
+            canManageContent: $canManageContent,
+            contentAreas: $contentAreas,
             active: (bool) ($data['active'] ?? true),
             shortName: ShortName::normalize($data['shortName'] ?? ''),
             colorToken: AccentColors::normalize($data['colorToken'] ?? null),
@@ -74,6 +87,41 @@ final class AccountUser
             mustChangePassword: (bool) ($data['mustChangePassword'] ?? false),
             pendingApproval: (bool) ($data['pendingApproval'] ?? false),
         );
+    }
+
+    public function canAccessContentArea(string $area): bool
+    {
+        if ($this->canManageContent) {
+            return true;
+        }
+
+        return (bool) ($this->contentAreas[$area] ?? false);
+    }
+
+    public function hasAnyContentAccess(): bool
+    {
+        if ($this->canManageContent) {
+            return true;
+        }
+
+        return in_array(true, $this->contentAreas, true);
+    }
+
+    public function canAccessAdminHub(): bool
+    {
+        return $this->canManageUsers || $this->canManageTeams || $this->hasAnyContentAccess();
+    }
+
+    /**
+     * Create always allowed when area is open; mutate needs content admin or matching owner.
+     */
+    public function canMutateOwnedContent(?string $ownerUserId): bool
+    {
+        if ($this->canManageContent) {
+            return true;
+        }
+
+        return is_string($ownerUserId) && $ownerUserId !== '' && $ownerUserId === $this->id;
     }
 
     /**
@@ -89,6 +137,8 @@ final class AccountUser
             'teamIds' => $this->teamIds,
             'canManageUsers' => $this->canManageUsers,
             'canManageTeams' => $this->canManageTeams,
+            'canManageContent' => $this->canManageContent,
+            'contentAreas' => $this->contentAreas,
             'active' => $this->active,
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,
@@ -112,6 +162,8 @@ final class AccountUser
             'teamIds' => $this->teamIds,
             'canManageUsers' => $this->canManageUsers,
             'canManageTeams' => $this->canManageTeams,
+            'canManageContent' => $this->canManageContent,
+            'contentAreas' => $this->contentAreas,
             'active' => $this->active,
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,

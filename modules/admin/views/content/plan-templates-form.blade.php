@@ -69,7 +69,7 @@
                         <form
                             method="post"
                             action="{{ locale_route('admin.plan-templates.destroy', ['slug' => $slug]) }}"
-                            onsubmit="return confirm('Delete both locales?');"
+                            data-admin-confirm-delete data-confirm-message="Delete both locales?"
                             class="admin-hub__md-danger"
                         >
                             @csrf

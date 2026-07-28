@@ -2,6 +2,17 @@
     $accountUser = $accountUser ?? null;
     $canUsers = ! empty($accountUser['canManageUsers']);
     $canTeams = ! empty($accountUser['canManageTeams']);
+    $canContent = ! empty($accountUser['canManageContent']);
+    $areas = is_array($accountUser['contentAreas'] ?? null) ? $accountUser['contentAreas'] : [];
+    $canArea = static function (string $key) use ($canContent, $areas): bool {
+        return $canContent || ! empty($areas[$key]);
+    };
+    $canNews = $canArea('news');
+    $canStories = $canArea('stories');
+    $canPlans = $canArea('planTemplates');
+    $canVendorsSources = $canArea('vendorsSources');
+    $canGlossary = $canArea('glossary');
+    $showAdminSection = $canUsers || $canTeams || $canNews || $canStories || $canPlans || $canVendorsSources || $canGlossary;
 @endphp
 
 <nav class="tools-sidenav admin-sidenav" aria-label="Admin navigation">
@@ -16,28 +27,39 @@
                 <span data-text-de="Admin Hub" data-text-en="Admin Hub">Admin Hub</span>
             </a>
         </li>
+        <li>
+            <a href="{{ locale_route('profile.index') }}" class="tools-sidenav__link {{ request()->routeIs('profile.index') ? 'tools-sidenav__link--active' : '' }}">
+                <span data-text-de="Profil Hub" data-text-en="Profile Hub">Profile Hub</span>
+            </a>
+        </li>
     </ul>
 
-    @if ($canUsers || $canTeams)
+    @if ($showAdminSection)
         <div class="tools-sidenav__group admin-sidenav__section">
             <p class="admin-sidenav__label" data-text-de="Administration" data-text-en="Administration">Administration</p>
             <ul class="tools-sidenav__list">
-                @if ($canUsers)
+                @if ($canNews)
                     <li>
                         <a href="{{ locale_route('admin.radar.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.radar.*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Radar" data-text-en="Radar">Radar</span>
                         </a>
                     </li>
+                @endif
+                @if ($canStories)
                     <li>
                         <a href="{{ locale_route('admin.stories.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.stories.*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Stories" data-text-en="Stories">Stories</span>
                         </a>
                     </li>
+                @endif
+                @if ($canPlans)
                     <li>
                         <a href="{{ locale_route('admin.plan-templates.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.plan-templates.*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Plan-Templates" data-text-en="Plan templates">Plan templates</span>
                         </a>
                     </li>
+                @endif
+                @if ($canVendorsSources)
                     <li>
                         <a href="{{ locale_route('admin.vendors.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.vendors.*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Vendors" data-text-en="Vendors">Vendors</span>
@@ -48,11 +70,15 @@
                             <span data-text-de="Sources" data-text-en="Sources">Sources</span>
                         </a>
                     </li>
+                @endif
+                @if ($canGlossary)
                     <li>
                         <a href="{{ locale_route('admin.glossary.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.glossary.*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Glossary" data-text-en="Glossary">Glossary</span>
                         </a>
                     </li>
+                @endif
+                @if ($canUsers)
                     <li>
                         <a href="{{ locale_route('admin.users.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.users.*') || request()->routeIs('accounts.users*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Users" data-text-en="Users">Users</span>

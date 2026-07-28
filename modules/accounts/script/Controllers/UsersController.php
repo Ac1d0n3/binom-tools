@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
 use App\Accounts\MembershipSync;
 use App\Accounts\Contracts\TeamRepositoryInterface;
 use App\Accounts\Contracts\UserRepositoryInterface;
@@ -78,6 +79,9 @@ class UsersController extends Controller
             'teamIds.*' => ['string'],
             'canManageUsers' => ['sometimes', 'boolean'],
             'canManageTeams' => ['sometimes', 'boolean'],
+            'canManageContent' => ['sometimes', 'boolean'],
+            'contentAreas' => ['nullable', 'array'],
+            'contentAreas.*' => ['sometimes', 'boolean'],
             'active' => ['sometimes', 'boolean'],
             'shortName' => ShortName::rules(),
             'colorToken' => ['nullable', 'string', Rule::in(AccentColors::TOKENS)],
@@ -92,6 +96,10 @@ class UsersController extends Controller
             : (string) $data['password'];
 
         $mustChange = $request->boolean('mustChangePassword');
+        $canManageContent = $request->boolean('canManageContent');
+        $contentAreas = $canManageContent
+            ? ContentAreas::normalize(null, true)
+            : ContentAreas::fromRequestInput($request->input('contentAreas'));
 
         $user = $this->users->upsert([
             'email' => $data['email'],
@@ -100,6 +108,8 @@ class UsersController extends Controller
             'teamIds' => $data['teamIds'] ?? [],
             'canManageUsers' => $request->boolean('canManageUsers'),
             'canManageTeams' => $request->boolean('canManageTeams'),
+            'canManageContent' => $canManageContent,
+            'contentAreas' => $contentAreas,
             'active' => $request->boolean('active', true),
             'shortName' => $data['shortName'] ?? '',
             'colorToken' => $data['colorToken'] ?? 'accent-1',
@@ -150,6 +160,9 @@ class UsersController extends Controller
             'teamIds.*' => ['string'],
             'canManageUsers' => ['sometimes', 'boolean'],
             'canManageTeams' => ['sometimes', 'boolean'],
+            'canManageContent' => ['sometimes', 'boolean'],
+            'contentAreas' => ['nullable', 'array'],
+            'contentAreas.*' => ['sometimes', 'boolean'],
             'active' => ['sometimes', 'boolean'],
             'shortName' => ShortName::rules(),
             'colorToken' => ['nullable', 'string', Rule::in(AccentColors::TOKENS)],
@@ -159,6 +172,11 @@ class UsersController extends Controller
             'mustChangePassword' => ['sometimes', 'boolean'],
         ]);
 
+        $canManageContent = $request->boolean('canManageContent');
+        $contentAreas = $canManageContent
+            ? ContentAreas::normalize(null, true)
+            : ContentAreas::fromRequestInput($request->input('contentAreas'));
+
         $payload = [
             ...$existing->toArray(),
             'email' => $data['email'],
@@ -166,6 +184,8 @@ class UsersController extends Controller
             'teamIds' => $data['teamIds'] ?? [],
             'canManageUsers' => $request->boolean('canManageUsers'),
             'canManageTeams' => $request->boolean('canManageTeams'),
+            'canManageContent' => $canManageContent,
+            'contentAreas' => $contentAreas,
             'active' => $request->boolean('active', true),
             'shortName' => $data['shortName'] ?? '',
             'colorToken' => $data['colorToken'] ?? 'accent-1',

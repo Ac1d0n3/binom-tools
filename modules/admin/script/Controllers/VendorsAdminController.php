@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
 use App\Admin\Content\CatalogJsonWriter;
+use App\Admin\Content\ContentOwnership;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,10 +25,22 @@ class VendorsAdminController extends AdminController
 
     public function index(): View
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::VENDORS_SOURCES);
         $doc = $this->safeRead();
         $vendors = is_array($doc['vendors'] ?? null) ? $doc['vendors'] : [];
         $products = array_values(array_filter($doc['products'] ?? [], 'is_array'));
+
+        if (! $user->canManageContent) {
+            $vendors = array_filter(
+                $vendors,
+                static fn (mixed $value): bool => is_array($value) && ContentOwnership::ownerFromRow($value) === $user->id
+            );
+            $products = array_values(array_filter(
+                $products,
+                static fn (array $row): bool => ContentOwnership::ownerFromRow($row) === $user->id
+            ));
+        }
+
         $byVendor = [];
         foreach ($products as $product) {
             $vendorId = (string) ($product['vendor'] ?? '');
@@ -46,7 +60,7 @@ class VendorsAdminController extends AdminController
 
     public function store(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::VENDORS_SOURCES);
         $data = $request->validate([
             'id' => ['required', 'regex:/^[a-z0-9-]+$/', 'max:80'],
             'name_de' => ['required', 'string', 'max:120'],
@@ -59,7 +73,10 @@ class VendorsAdminController extends AdminController
             if (isset($vendors[$data['id']])) {
                 return back()->withErrors(['id' => 'Vendor already exists.'])->withInput();
             }
-            $vendors[$data['id']] = ['de' => $data['name_de'], 'en' => $data['name_en']];
+            $vendors[$data['id']] = ContentOwnership::stampRow([
+                'de' => $data['name_de'],
+                'en' => $data['name_en'],
+            ], $user->id);
             $doc['vendors'] = $vendors;
             $this->writer->write($doc);
         } catch (RuntimeException $e) {
@@ -71,18 +88,22 @@ class VendorsAdminController extends AdminController
 
     public function update(Request $request, string $vendorId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $vendorId) === 1, 404);
+        $doc = $this->safeRead();
+        $vendors = is_array($doc['vendors'] ?? null) ? $doc['vendors'] : [];
+        abort_unless(isset($vendors[$vendorId]), 404);
+        $existing = is_array($vendors[$vendorId]) ? $vendors[$vendorId] : [];
+        $this->assertContentMutation(ContentAreas::VENDORS_SOURCES, ContentOwnership::ownerFromRow($existing));
         $data = $request->validate([
             'name_de' => ['required', 'string', 'max:120'],
             'name_en' => ['required', 'string', 'max:120'],
         ]);
 
         try {
-            $doc = $this->safeRead();
-            $vendors = is_array($doc['vendors'] ?? null) ? $doc['vendors'] : [];
-            abort_unless(isset($vendors[$vendorId]), 404);
-            $vendors[$vendorId] = ['de' => $data['name_de'], 'en' => $data['name_en']];
+            $vendors[$vendorId] = array_merge($existing, [
+                'de' => $data['name_de'],
+                'en' => $data['name_en'],
+            ]);
             $doc['vendors'] = $vendors;
             $this->writer->write($doc);
         } catch (RuntimeException $e) {
@@ -94,11 +115,12 @@ class VendorsAdminController extends AdminController
 
     public function destroy(string $vendorId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $vendorId) === 1, 404);
+        $doc = $this->safeRead();
+        $vendors = is_array($doc['vendors'] ?? null) ? $doc['vendors'] : [];
+        $existing = is_array($vendors[$vendorId] ?? null) ? $vendors[$vendorId] : [];
+        $this->assertContentMutation(ContentAreas::VENDORS_SOURCES, ContentOwnership::ownerFromRow($existing));
         try {
-            $doc = $this->safeRead();
-            $vendors = is_array($doc['vendors'] ?? null) ? $doc['vendors'] : [];
             unset($vendors[$vendorId]);
             $doc['vendors'] = $vendors;
             $this->writer->write($doc);
@@ -111,7 +133,7 @@ class VendorsAdminController extends AdminController
 
     public function storeProduct(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::VENDORS_SOURCES);
         $data = $this->validateProduct($request);
 
         try {
@@ -122,7 +144,7 @@ class VendorsAdminController extends AdminController
                     return back()->withErrors(['id' => 'Product already exists.'])->withInput();
                 }
             }
-            $products[] = $this->buildProduct($data, null);
+            $products[] = ContentOwnership::stampRow($this->buildProduct($data, null), $user->id);
             $doc['products'] = $products;
             $this->writer->write($doc);
         } catch (RuntimeException $e) {
@@ -134,8 +156,8 @@ class VendorsAdminController extends AdminController
 
     public function updateProduct(Request $request, string $productId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $productId) === 1, 404);
+        $this->assertContentMutation(ContentAreas::VENDORS_SOURCES, $this->productOwner($productId));
         $data = $this->validateProduct($request, requireId: false);
         $data['id'] = $productId;
 
@@ -163,8 +185,8 @@ class VendorsAdminController extends AdminController
 
     public function destroyProduct(string $productId): RedirectResponse
     {
-        $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $productId) === 1, 404);
+        $this->assertContentMutation(ContentAreas::VENDORS_SOURCES, $this->productOwner($productId));
         try {
             $doc = $this->safeRead();
             $doc['products'] = array_values(array_filter(
@@ -177,6 +199,20 @@ class VendorsAdminController extends AdminController
         }
 
         return back()->with('status', 'product-deleted');
+    }
+
+    private function productOwner(string $productId): ?string
+    {
+        $doc = $this->safeRead();
+        foreach (array_filter($doc['products'] ?? [], 'is_array') as $product) {
+            if (($product['id'] ?? '') !== $productId) {
+                continue;
+            }
+
+            return ContentOwnership::ownerFromRow($product);
+        }
+
+        return null;
     }
 
     /**

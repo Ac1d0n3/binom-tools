@@ -76,7 +76,7 @@
                                 data-text-de="Bearbeiten"
                                 data-text-en="Edit"
                             >Edit</button>
-                            <form method="post" action="{{ locale_route('admin.vendors.destroy', ['vendorId' => $id]) }}" style="display:inline" onsubmit="return confirm('Delete vendor label?');">
+                            <form method="post" action="{{ locale_route('admin.vendors.destroy', ['vendorId' => $id]) }}" style="display:inline" data-admin-confirm-delete data-confirm-message="Delete vendor label?">
                                 @csrf
                                 @method('DELETE')
                                 <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
@@ -103,7 +103,7 @@
                                         data-text-de="Bearbeiten"
                                         data-text-en="Edit"
                                     >Edit</button>
-                                    <form method="post" action="{{ locale_route('admin.vendors.products.destroy', ['productId' => $product['id']]) }}" onsubmit="return confirm('Delete product?');">
+                                    <form method="post" action="{{ locale_route('admin.vendors.products.destroy', ['productId' => $product['id']]) }}" data-admin-confirm-delete data-confirm-message="Delete product?">
                                         @csrf
                                         @method('DELETE')
                                         <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>

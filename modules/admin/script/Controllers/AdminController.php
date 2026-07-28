@@ -44,6 +44,29 @@ abstract class AdminController extends Controller
         return $user;
     }
 
+    protected function assertContentArea(string $area): AccountUser
+    {
+        $user = $this->user();
+        if (! $user->canAccessContentArea($area)) {
+            abort(403);
+        }
+
+        return $user;
+    }
+
+    /**
+     * Area access + ownership (content admin may mutate anything).
+     */
+    protected function assertContentMutation(string $area, ?string $ownerUserId): AccountUser
+    {
+        $user = $this->assertContentArea($area);
+        if (! $user->canMutateOwnedContent($ownerUserId)) {
+            abort(403);
+        }
+
+        return $user;
+    }
+
     /**
      * @param  array<string, mixed>  $data
      */

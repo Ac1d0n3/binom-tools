@@ -213,7 +213,8 @@ class AdminCatalogUxTest extends TestCase
         $this->get('/admin/stories/create')
             ->assertOk()
             ->assertSee('admin-hub__locale-tabs', false)
-            ->assertSee('admin-hub__sticky', false)
+            ->assertSee('admin-hub--md-editor', false)
+            ->assertSee('data-admin-confirm-delete-modal', false)
             ->assertDontSee('admin-hub__editor-grid--split', false);
     }
 

@@ -55,7 +55,7 @@
                             data-admin-glossary-id="{{ $term['id'] }}"
                             data-admin-fill="{{ json_encode($termFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
                         >Edit</button>
-                        <form method="post" action="{{ locale_route('admin.glossary.destroy', ['termId' => $term['id']]) }}" onsubmit="return confirm('Delete term?');">
+                        <form method="post" action="{{ locale_route('admin.glossary.destroy', ['termId' => $term['id']]) }}" data-admin-confirm-delete data-confirm-message="Delete term?">
                             @csrf
                             @method('DELETE')
                             <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>

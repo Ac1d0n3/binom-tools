@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Restricts Admin Hub routes to users with manage-users or manage-teams flags.
+ * Restricts Admin Hub routes to users with users/teams/content access.
  */
 final class EnsureAdminHubAccess
 {
@@ -26,7 +26,7 @@ final class EnsureAdminHubAccess
             abort(401);
         }
 
-        if (! $user->canManageUsers && ! $user->canManageTeams) {
+        if (! $user->canAccessAdminHub()) {
             if ($request->expectsJson()) {
                 abort(403);
             }

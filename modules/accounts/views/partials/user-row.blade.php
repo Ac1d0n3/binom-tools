@@ -61,7 +61,7 @@
                 @csrf
                 <button type="submit" class="tools-btn tools-btn--primary tools-btn--small" data-i18n="accounts.approve">Approve</button>
             </form>
-            <form method="post" action="{{ locale_route('accounts.users.reject', ['userId' => $user['id']]) }}" onsubmit="return confirm('Reject and delete this registration?');">
+            <form method="post" action="{{ locale_route('accounts.users.reject', ['userId' => $user['id']]) }}" data-admin-confirm-delete data-confirm-message="Reject and delete this registration?">
                 @csrf
                 <button type="submit" class="tools-btn tools-btn--secondary tools-btn--small" data-i18n="accounts.reject">Reject</button>
             </form>

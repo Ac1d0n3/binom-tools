@@ -86,7 +86,7 @@ final class UserRepository implements UserRepositoryInterface
             throw new InvalidArgumentException('passwordHash is required and must be a password_hash() digest.');
         }
 
-        $user = AccountUser::fromArray([
+        $payload = [
             'id' => $id,
             'email' => $email,
             'displayName' => $input['displayName'] ?? $current?->displayName ?? $email,
@@ -106,7 +106,19 @@ final class UserRepository implements UserRepositoryInterface
             'mustChangePassword' => array_key_exists('mustChangePassword', $input)
                 ? (bool) $input['mustChangePassword']
                 : ($current?->mustChangePassword ?? false),
-        ]);
+        ];
+        if (array_key_exists('canManageContent', $input)) {
+            $payload['canManageContent'] = (bool) $input['canManageContent'];
+        } elseif ($current !== null) {
+            $payload['canManageContent'] = $current->canManageContent;
+        }
+        if (array_key_exists('contentAreas', $input)) {
+            $payload['contentAreas'] = $input['contentAreas'];
+        } elseif ($current !== null) {
+            $payload['contentAreas'] = $current->contentAreas;
+        }
+
+        $user = AccountUser::fromArray($payload);
 
         $users[$id] = $user;
         $this->persist($users);

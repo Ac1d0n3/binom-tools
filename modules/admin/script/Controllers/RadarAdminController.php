@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\ContentAreas;
 use App\Admin\Content\CatalogJsonWriter;
+use App\Admin\Content\ContentOwnership;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -22,10 +24,21 @@ class RadarAdminController extends AdminController
 
     public function index(): View
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::NEWS);
         $doc = $this->safeRead();
         $sources = array_values($doc['sources'] ?? []);
         $items = array_values($doc['items'] ?? []);
+
+        if (! $user->canManageContent) {
+            $sources = array_values(array_filter(
+                $sources,
+                static fn (array $row): bool => ContentOwnership::ownerFromRow($row) === $user->id
+            ));
+            $items = array_values(array_filter(
+                $items,
+                static fn (array $row): bool => ContentOwnership::ownerFromRow($row) === $user->id
+            ));
+        }
 
         $sourceIds = [];
         foreach ($sources as $source) {
@@ -54,7 +67,7 @@ class RadarAdminController extends AdminController
 
     public function storeSource(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::NEWS);
         $request->merge([
             'feed_url' => $request->filled('feed_url') ? $request->input('feed_url') : null,
         ]);
@@ -77,7 +90,7 @@ class RadarAdminController extends AdminController
                     return back()->withErrors(['id' => 'Source id already exists.'])->withInput();
                 }
             }
-            $sources[] = [
+            $sources[] = ContentOwnership::stampRow([
                 'id' => $id,
                 'name' => $data['name'],
                 'short_name' => $data['short_name'] ?: Str::upper(Str::substr($id, 0, 8)),
@@ -87,7 +100,7 @@ class RadarAdminController extends AdminController
                 'feed_url' => $data['feed_url'] ?: null,
                 'ingest' => false,
                 'priority' => 'medium',
-            ];
+            ], $user->id);
             $doc['sources'] = $sources;
             $this->writer->write($doc);
         } catch (RuntimeException $e) {
@@ -99,7 +112,8 @@ class RadarAdminController extends AdminController
 
     public function updateSource(Request $request, string $sourceId): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $doc = $this->safeRead();
+        $this->assertContentMutation(ContentAreas::NEWS, $this->sourceOwner($doc, $sourceId));
         $request->merge([
             'feed_url' => $request->filled('feed_url') ? $request->input('feed_url') : null,
         ]);
@@ -113,7 +127,6 @@ class RadarAdminController extends AdminController
         ]);
 
         try {
-            $doc = $this->safeRead();
             $sources = array_values($doc['sources'] ?? []);
             $found = false;
             foreach ($sources as $i => $source) {
@@ -144,10 +157,10 @@ class RadarAdminController extends AdminController
 
     public function destroySource(string $sourceId): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $doc = $this->safeRead();
+        $this->assertContentMutation(ContentAreas::NEWS, $this->sourceOwner($doc, $sourceId));
 
         try {
-            $doc = $this->safeRead();
             $before = count($doc['sources'] ?? []);
             $doc['sources'] = array_values(array_filter(
                 array_values($doc['sources'] ?? []),
@@ -164,7 +177,7 @@ class RadarAdminController extends AdminController
 
     public function storeItem(Request $request): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $user = $this->assertContentArea(ContentAreas::NEWS);
         $data = $request->validate([
             'title_de' => ['required', 'string', 'max:240'],
             'title_en' => ['required', 'string', 'max:240'],
@@ -181,7 +194,7 @@ class RadarAdminController extends AdminController
             $id = 'manual-'.Str::slug(substr($data['title_en'], 0, 40)).'-'.bin2hex(random_bytes(3));
             $sourceId = $data['source_id'] ?: 'manual';
             $language = $this->resolveItemLanguage($doc, $sourceId);
-            $items[] = [
+            $items[] = ContentOwnership::stampRow([
                 'id' => $id,
                 'title' => $language === 'de' ? $data['title_de'] : $data['title_en'],
                 'title_i18n' => ['de' => $data['title_de'], 'en' => $data['title_en']],
@@ -196,7 +209,7 @@ class RadarAdminController extends AdminController
                 'published_at' => now()->toDateString(),
                 'source_id' => $sourceId,
                 'origin' => 'manual',
-            ];
+            ], $user->id);
             $doc['items'] = $items;
             $this->writer->write($doc);
         } catch (RuntimeException $e) {
@@ -208,7 +221,8 @@ class RadarAdminController extends AdminController
 
     public function updateItem(Request $request, string $itemId): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $doc = $this->safeRead();
+        $this->assertContentMutation(ContentAreas::NEWS, $this->itemOwner($doc, $itemId));
         $data = $request->validate([
             'title_de' => ['required', 'string', 'max:240'],
             'title_en' => ['required', 'string', 'max:240'],
@@ -220,7 +234,6 @@ class RadarAdminController extends AdminController
         ]);
 
         try {
-            $doc = $this->safeRead();
             $items = array_values($doc['items'] ?? []);
             $found = false;
             foreach ($items as $i => $item) {
@@ -257,10 +270,10 @@ class RadarAdminController extends AdminController
 
     public function destroyItem(string $itemId): RedirectResponse
     {
-        $this->assertCanManageUsers();
+        $doc = $this->safeRead();
+        $this->assertContentMutation(ContentAreas::NEWS, $this->itemOwner($doc, $itemId));
 
         try {
-            $doc = $this->safeRead();
             $before = count($doc['items'] ?? []);
             $doc['items'] = array_values(array_filter(
                 array_values($doc['items'] ?? []),
@@ -285,6 +298,38 @@ class RadarAdminController extends AdminController
         } catch (RuntimeException) {
             return ['sources' => [], 'items' => []];
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $doc
+     */
+    private function sourceOwner(array $doc, string $sourceId): ?string
+    {
+        foreach ($doc['sources'] ?? [] as $source) {
+            if (! is_array($source) || ($source['id'] ?? '') !== $sourceId) {
+                continue;
+            }
+
+            return ContentOwnership::ownerFromRow($source);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $doc
+     */
+    private function itemOwner(array $doc, string $itemId): ?string
+    {
+        foreach ($doc['items'] ?? [] as $item) {
+            if (! is_array($item) || ($item['id'] ?? '') !== $itemId) {
+                continue;
+            }
+
+            return ContentOwnership::ownerFromRow($item);
+        }
+
+        return null;
     }
 
     /**

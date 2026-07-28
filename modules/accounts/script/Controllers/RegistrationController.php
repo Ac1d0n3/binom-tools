@@ -60,6 +60,8 @@ class RegistrationController extends Controller
                 'teamIds' => [],
                 'canManageUsers' => false,
                 'canManageTeams' => false,
+                'canManageContent' => false,
+                'contentAreas' => [],
                 'active' => false,
                 'pendingApproval' => true,
                 'mustChangePassword' => false,

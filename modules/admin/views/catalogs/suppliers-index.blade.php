@@ -55,7 +55,7 @@
                             data-text-de="Bearbeiten"
                             data-text-en="Edit"
                         >Edit</button>
-                        <form method="post" action="{{ locale_route('admin.suppliers.destroy', ['supplierId' => $id]) }}" onsubmit="return confirm('Delete source {{ $id }}?');">
+                        <form method="post" action="{{ locale_route('admin.suppliers.destroy', ['supplierId' => $id]) }}" data-admin-confirm-delete data-confirm-message="Delete source {{ $id }}?">
                             @csrf
                             @method('DELETE')
                             <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>

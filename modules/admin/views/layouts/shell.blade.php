@@ -21,4 +21,5 @@
 
 @section('content')
     @yield('admin_content')
+    @include('admin::partials.confirm-delete-modal')
 @endsection
