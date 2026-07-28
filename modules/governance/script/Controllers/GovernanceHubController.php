@@ -611,6 +611,7 @@ class GovernanceHubController extends Controller
                     ['href' => $route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI-Anforderungen', 'en' => 'KPI Requirements Intake']],
                     ['href' => $route('tools.kpi-definition'), 'label' => ['de' => 'KPI Definition Card', 'en' => 'KPI Definition Card']],
                     ['href' => $route('tools.mart-design-brief-generator'), 'label' => ['de' => 'Mart Design Brief', 'en' => 'Mart Design Brief']],
+                    ['href' => $route('playbooks.show', ['slug' => 'define-kpi']), 'label' => ['de' => 'KPI Playbook', 'en' => 'KPI playbook']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
             [
@@ -657,6 +658,25 @@ class GovernanceHubController extends Controller
                     ['href' => $route('tools.pii-policy-generator'), 'label' => ['de' => 'PII Policy', 'en' => 'PII Policy']],
                     ['href' => $route('tools.pii-unreviewed-gate-generator'), 'label' => ['de' => 'PII Table Gate', 'en' => 'PII Table Gate']],
                     ['href' => $route('tools.decision-brief-generator'), 'label' => ['de' => 'Entscheidungsbrief', 'en' => 'Decision Brief']],
+                    ['href' => $route('playbooks.show', ['slug' => 'pii-privacy-governance']), 'label' => ['de' => 'PII Playbook', 'en' => 'PII playbook']],
+                ], static fn (array $link): bool => is_string($link['href'] ?? null))),
+            ],
+            [
+                'id' => 'bi',
+                'icon' => 'fa-chart-column',
+                'label' => ['de' => 'Trusted Metrics / BI', 'en' => 'Trusted metrics / BI'],
+                'lead' => [
+                    'de' => 'Report Inventory → KPI Definition → Grain/Owner → Mart → Formel-Tool → Evidence.',
+                    'en' => 'Report inventory → KPI definition → grain/owner → mart → formula tool → evidence.',
+                ],
+                'links' => array_values(array_filter([
+                    ['href' => $route('tools.report-inventory'), 'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory']],
+                    ['href' => $route('tools.kpi-definition'), 'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition']],
+                    ['href' => $route('playbooks.show', ['slug' => 'define-kpi']), 'label' => ['de' => 'Grain & Owner', 'en' => 'Grain & owner']],
+                    ['href' => $route('tools.mart-design-brief-generator'), 'label' => ['de' => 'Mart Design', 'en' => 'Mart design']],
+                    ['href' => $route('tools.powerbi-dax-generator'), 'label' => ['de' => 'Power BI DAX', 'en' => 'Power BI DAX']],
+                    ['href' => $route('learning-paths.show', ['slug' => 'trusted-metrics']), 'label' => ['de' => 'Trusted Metrics Path', 'en' => 'Trusted metrics path']],
+                    ['href' => $route('playbooks.show', ['slug' => 'missing-pieces-trusted-metrics']), 'label' => ['de' => 'Evidence / Missing Piece', 'en' => 'Evidence / missing piece']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
             ],
             [
@@ -1007,6 +1027,12 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'RACI und Interviewliste', 'en' => 'RACI and interview list'],
                 'toolId' => 'stakeholder-matrix',
+                'playbooks' => [
+                    [
+                        'slug' => 'raci-for-data-governance',
+                        'label' => ['de' => 'RACI für Data Governance', 'en' => 'RACI for data governance'],
+                    ],
+                ],
             ],
             [
                 'id' => 'business-questions',
@@ -1017,6 +1043,16 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'Priorisierte Frageliste', 'en' => 'Prioritized question list'],
                 'toolId' => 'report-inventory',
+                'playbooks' => [
+                    [
+                        'slug' => 'define-kpi',
+                        'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition'],
+                    ],
+                    [
+                        'slug' => 'before-building-the-first-table',
+                        'label' => ['de' => 'Bevor die erste Tabelle entsteht', 'en' => 'Before building the first table'],
+                    ],
+                ],
             ],
             [
                 'id' => 'kpi',
@@ -1027,6 +1063,16 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'KPI Cards', 'en' => 'KPI cards'],
                 'toolId' => 'kpi-requirements-intake',
+                'playbooks' => [
+                    [
+                        'slug' => 'define-kpi',
+                        'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition'],
+                    ],
+                    [
+                        'slug' => 'kpi-metric-governance',
+                        'label' => ['de' => 'KPI & Metric Governance', 'en' => 'KPI & metric governance'],
+                    ],
+                ],
             ],
             [
                 'id' => 'sources',
@@ -1037,6 +1083,12 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'Source Scope', 'en' => 'Source scope'],
                 'toolId' => 'source-scope-builder',
+                'playbooks' => [
+                    [
+                        'slug' => 'before-building-the-first-table',
+                        'label' => ['de' => 'Bevor die erste Tabelle entsteht', 'en' => 'Before building the first table'],
+                    ],
+                ],
             ],
             [
                 'id' => 'risk',
@@ -1047,6 +1099,16 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'PII/DSDR Review Sheet', 'en' => 'PII/DSDR review sheet'],
                 'toolId' => 'pii-dsdr-readiness-checker',
+                'playbooks' => [
+                    [
+                        'slug' => 'pii-privacy-governance',
+                        'label' => ['de' => 'PII & Privacy Governance', 'en' => 'PII & privacy governance'],
+                    ],
+                    [
+                        'slug' => 'dsdr-governance',
+                        'label' => ['de' => 'DSDR Governance', 'en' => 'DSDR governance'],
+                    ],
+                ],
             ],
             [
                 'id' => 'dq',
@@ -1057,6 +1119,12 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'DQ Rule Backlog', 'en' => 'DQ rule backlog'],
                 'toolId' => 'dbt-dq-rules-generator',
+                'playbooks' => [
+                    [
+                        'slug' => 'data-quality-governance',
+                        'label' => ['de' => 'Data Quality Governance', 'en' => 'Data quality governance'],
+                    ],
+                ],
             ],
             [
                 'id' => 'mart',
@@ -1067,6 +1135,16 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'Mart Design Brief', 'en' => 'Mart design brief'],
                 'toolId' => 'mart-design-brief-generator',
+                'playbooks' => [
+                    [
+                        'slug' => 'data-architect-role',
+                        'label' => ['de' => 'Rolle Data Architect', 'en' => 'Data architect role'],
+                    ],
+                    [
+                        'slug' => 'before-building-the-first-table',
+                        'label' => ['de' => 'Bevor die erste Tabelle entsteht', 'en' => 'Before building the first table'],
+                    ],
+                ],
             ],
             [
                 'id' => 'decision',
@@ -1077,6 +1155,12 @@ class GovernanceHubController extends Controller
                 ],
                 'output' => ['de' => 'Decision Brief', 'en' => 'Decision brief'],
                 'toolId' => 'decision-brief-generator',
+                'playbooks' => [
+                    [
+                        'slug' => 'choosing-the-simplest-viable-architecture',
+                        'label' => ['de' => 'Einfachste tragfähige Architektur', 'en' => 'Simplest viable architecture'],
+                    ],
+                ],
             ],
         ];
 
@@ -1084,6 +1168,23 @@ class GovernanceHubController extends Controller
             $toolId = (string) ($step['toolId'] ?? '');
             $step['href'] = $toolHref($toolId);
             $step['tool'] = $toolsById[$toolId] ?? null;
+            $playbooks = [];
+            foreach ($step['playbooks'] ?? [] as $playbook) {
+                $slug = is_string($playbook['slug'] ?? null) ? $playbook['slug'] : '';
+                if ($slug === '' || ! Route::has('playbooks.show')) {
+                    continue;
+                }
+                $label = is_array($playbook['label'] ?? null) ? $playbook['label'] : [];
+                $playbooks[] = [
+                    'slug' => $slug,
+                    'href' => locale_route('playbooks.show', ['slug' => $slug]),
+                    'label' => [
+                        'de' => (string) ($label['de'] ?? $slug),
+                        'en' => (string) ($label['en'] ?? $slug),
+                    ],
+                ];
+            }
+            $step['playbooks'] = $playbooks;
         }
         unset($step);
 

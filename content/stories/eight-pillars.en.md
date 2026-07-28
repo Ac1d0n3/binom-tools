@@ -1,6 +1,6 @@
 ---
 title: The 8 Pillars of Data Governance
-description: A practical governance model for ownership, metadata, privacy, DSDR, data quality, metrics, access and the data lifecycle — with a bridge to DMBOK, CDMP and DCAM.
+description: The eight pillars of data governance — ownership through to lifecycle.
 author: Thomas Lindackers
 category: Data Governance
 tags:

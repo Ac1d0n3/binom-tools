@@ -18,11 +18,18 @@ final readonly class PlaybookSeriesOverview
         public int $totalReadingTimeEn,
         public array $parts,
         public array $products = [],
+        public string $descriptionDe = '',
+        public string $descriptionEn = '',
     ) {}
 
     public function title(string $locale = 'en'): string
     {
         return $locale === 'de' ? $this->titleDe : $this->titleEn;
+    }
+
+    public function description(string $locale = 'en'): string
+    {
+        return $locale === 'de' ? $this->descriptionDe : $this->descriptionEn;
     }
 
     public function totalReadingTime(string $locale = 'en'): int

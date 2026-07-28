@@ -10,6 +10,8 @@
     $searchText = strtolower(implode(' ', array_filter([
         $series->titleDe,
         $series->titleEn,
+        $series->descriptionDe,
+        $series->descriptionEn,
         $series->id,
         ...collect($series->parts)->flatMap(fn ($part) => [$part->titleDe, $part->titleEn])->all(),
         ...$productLabels,
@@ -17,6 +19,7 @@
     ])));
     $firstPart = $series->firstPart();
     $seriesHref = locale_route('playbooks.series', ['seriesId' => $series->id]);
+    $hasSummary = $series->descriptionDe !== '' || $series->descriptionEn !== '';
 @endphp
 
 <article
@@ -59,39 +62,52 @@
                 >{{ $series->titleEn }}</a>
             </h3>
 
-            <p
-                class="tools-series-card__meta"
-                data-playbook-series-card-meta
-                data-part-count="{{ $series->partCount() }}"
-                data-reading-time-de="{{ $series->totalReadingTimeDe }}"
-                data-reading-time-en="{{ $series->totalReadingTimeEn }}"
-            >
-                {{ $series->partCount() }} parts · {{ format_reading_time($series->totalReadingTimeEn, 'en') }} total
-            </p>
+            @if ($hasSummary)
+                <p
+                    class="tools-series-card__summary"
+                    data-playbook-series-card-summary
+                    data-text-de="{{ $series->descriptionDe }}"
+                    data-text-en="{{ $series->descriptionEn }}"
+                >{{ $series->descriptionEn !== '' ? $series->descriptionEn : $series->descriptionDe }}</p>
+            @endif
 
-            <ol class="tools-series-card__parts">
-                @foreach ($series->parts as $part)
-                    <li class="tools-series-card__part">
-                        <a
-                            href="{{ locale_route('playbooks.show', ['slug' => $part->slug]) }}"
-                            class="tools-series-card__part-link"
-                            data-playbook-series-part
-                            data-slug="{{ $part->slug }}"
-                            data-reading-time-de="{{ $part->readingTimeDe }}"
-                            data-reading-time-en="{{ $part->readingTimeEn }}"
-                        >
-                            <span class="tools-series-card__part-index">{{ $part->part }}.</span>
-                            <span
-                                class="tools-series-card__part-title"
+            <div class="tools-series-card__status">
+                <p
+                    class="tools-series-card__meta"
+                    data-playbook-series-card-meta
+                    data-part-count="{{ $series->partCount() }}"
+                    data-reading-time-de="{{ $series->totalReadingTimeDe }}"
+                    data-reading-time-en="{{ $series->totalReadingTimeEn }}"
+                >
+                    {{ $series->partCount() }} parts · {{ format_reading_time($series->totalReadingTimeEn, 'en') }} total
+                </p>
+
+                <ol
+                    class="tools-series-card__progress"
+                    aria-label="Series parts"
+                    data-i18n-aria="overview.seriesPartsProgress"
+                >
+                    @foreach ($series->parts as $part)
+                        <li class="tools-series-card__progress-item">
+                            <a
+                                href="{{ locale_route('playbooks.show', ['slug' => $part->slug]) }}"
+                                class="tools-series-card__progress-dot"
+                                data-playbook-series-part
+                                data-slug="{{ $part->slug }}"
+                                data-reading-time-de="{{ $part->readingTimeDe }}"
+                                data-reading-time-en="{{ $part->readingTimeEn }}"
                                 data-playbook-series-card-part-title
                                 data-text-de="{{ $part->titleDe }}"
                                 data-text-en="{{ $part->titleEn }}"
-                            >{{ $part->titleEn }}</span>
-                            <i class="fa-solid fa-arrow-right tools-series-card__part-arrow" aria-hidden="true"></i>
-                        </a>
-                    </li>
-                @endforeach
-            </ol>
+                                title="{{ $part->titleEn }}"
+                                aria-label="{{ $part->part }}. {{ $part->titleEn }}"
+                            >
+                                <span class="sr-only">{{ $part->part }}. {{ $part->titleEn }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
         </div>
 
         <div class="tools-series-card__footer">

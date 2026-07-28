@@ -140,6 +140,12 @@ tasks:
       - label: Roles Hub
         href: /roles
         description: Decision rights for steward and owner.
+      - label: Keep business logic outside BI
+        href: /playbooks/keeping-business-logic-outside-bi-apps
+        description: Decide where metrics logic lives before formula tools.
+      - label: Power BI DAX Generator
+        href: /tools/powerbi-dax-generator
+        description: Formula helper after grain and owner are clear.
       - label: Sprint Planner
         href: /sprint-planner
         description: Continue with delivery templates.

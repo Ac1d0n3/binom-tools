@@ -1,6 +1,6 @@
 ---
 title: What Metadata Actually Is — Beyond Names, Types and Descriptions
-description: A practical foundation for understanding technical, business, operational, governance, security, quality, usage, semantic and AI metadata as one connected context for trusted data.
+description: Metadata as connected context — catalogs, lineage, automation and AI readiness.
 category: Data Governance
 tags:
   - metadata

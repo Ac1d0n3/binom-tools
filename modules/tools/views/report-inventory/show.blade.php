@@ -20,6 +20,16 @@
                 <li data-i18n="reportInventory.howto.step3"></li>
             </ol>
             <p data-i18n="reportInventory.howto.tip"></p>
+            <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="reportInventory.playbookLink">
+                    KPI Definition Playbook — from inventory to trusted metric
+                </a>
+            </p>
+            <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'keeping-business-logic-outside-bi-apps']) }}" data-i18n="reportInventory.logicPlaybookLink">
+                    Keep business logic outside BI apps
+                </a>
+            </p>
         </x-tools.collapsible-info>
 
         <x-tools.discovery-canvas />

@@ -36,6 +36,7 @@
                     'kpi' => 'product-owner consumer',
                     'pii' => 'owner steward custodian',
                     'supplier' => 'architect owner steward custodian',
+                    'bi' => 'product-owner consumer steward architect',
                     'collect' => 'product-owner architect owner steward consumer custodian',
                     default => 'architect product-owner owner steward custodian consumer',
                 };
@@ -86,6 +87,7 @@
                     'links' => [
                         ['href' => locale_route('tools.governance-stack-advisor'), 'label' => ['de' => 'Stack Advisor', 'en' => 'Stack advisor']],
                         ['href' => locale_route('tools.architecture-fit'), 'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'eight-pillars']), 'label' => ['de' => '8 Pillars / Zertifikate', 'en' => '8 pillars / certifications']],
                     ],
                 ],
                 [
@@ -98,6 +100,7 @@
                     'links' => [
                         ['href' => locale_route('tools.source-scope-builder'), 'label' => ['de' => 'Source Scope Builder', 'en' => 'Source Scope Builder']],
                         ['href' => locale_route('tools.meta-export-generator'), 'label' => ['de' => 'Meta Export', 'en' => 'Meta export']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'before-building-the-first-table']), 'label' => ['de' => 'Vor der ersten Tabelle', 'en' => 'Before the first table']],
                     ],
                 ],
                 [
@@ -110,6 +113,8 @@
                     'links' => [
                         ['href' => locale_route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI Intake', 'en' => 'KPI intake']],
                         ['href' => locale_route('tools.report-inventory'), 'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'define-kpi']), 'label' => ['de' => 'KPI Definition Playbook', 'en' => 'KPI definition playbook']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'kpi-metric-governance']), 'label' => ['de' => 'KPI & Metric Governance', 'en' => 'KPI & metric governance']],
                     ],
                 ],
                 [
@@ -122,6 +127,21 @@
                     'links' => [
                         ['href' => locale_route('tools.pii-dsdr-readiness-checker'), 'label' => ['de' => 'PII/DSDR Check', 'en' => 'PII/DSDR check']],
                         ['href' => locale_route('compliance.index'), 'label' => ['de' => 'Compliance Hub', 'en' => 'Compliance hub']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']), 'label' => ['de' => 'PII & Privacy', 'en' => 'PII & privacy']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'dsdr-governance']), 'label' => ['de' => 'DSDR Governance', 'en' => 'DSDR governance']],
+                    ],
+                ],
+                [
+                    'icon' => 'fa-code',
+                    'persona' => 'architect steward product-owner',
+                    'goal' => 'stack',
+                    'question' => ['de' => 'Wo lebt Business Logic und Governance-Meta?', 'en' => 'Where do business logic and governance meta live?'],
+                    'helps' => ['de' => 'Hält Logik außerhalb der BI-App und zeigt dbt meta / schema.yml als Steuerungsort.', 'en' => 'Keeps logic outside the BI app and points to dbt meta / schema.yml as the control plane.'],
+                    'outcome' => ['de' => 'Entscheidung: Warehouse/Semantic Layer vs. Report-Measure; dbt-Governance-Felder.', 'en' => 'Decision: warehouse/semantic layer vs report measure; dbt governance fields.'],
+                    'links' => [
+                        ['href' => locale_route('playbooks.show', ['slug' => 'keeping-business-logic-outside-bi-apps']), 'label' => ['de' => 'Logic außerhalb BI', 'en' => 'Logic outside BI']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'metadata-driven-governance-with-dbt-meta']), 'label' => ['de' => 'dbt meta Governance', 'en' => 'dbt meta governance']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'before-building-the-first-table']), 'label' => ['de' => 'Vor der ersten Tabelle', 'en' => 'Before the first table']],
                     ],
                 ],
             ] as $decision)

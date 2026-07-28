@@ -1,6 +1,15 @@
 {
     "revisions": [
         {
+            "id": "rev_b209f44177271651",
+            "planId": "plan_20260817_acid1",
+            "createdAt": "2026-07-27T22:18:32+00:00",
+            "actorUserId": "user_acidone",
+            "actorLabel": "Acidone",
+            "action": "assign-workspace",
+            "summary": "Assigned workspace"
+        },
+        {
             "id": "rev_6d6e9c079e115291",
             "planId": "plan_20260817_acid1",
             "createdAt": "2026-07-20T13:37:49+00:00",

@@ -1,6 +1,6 @@
 ---
 title: End-to-End-Governance-Architektur
-description: Eine praxisnahe Architektur, die Richtlinien, Ownership, Metadaten, dbt-Transformation, Snowflake-Schutz und governte Qlik-Nutzung über den vollständigen Datenlebenszyklus verbindet.
+description: End-to-End Governance — Richtlinien, Metadaten, dbt, Schutz und governte BI.
 category: Data Governance
 tags:
   - data-governance

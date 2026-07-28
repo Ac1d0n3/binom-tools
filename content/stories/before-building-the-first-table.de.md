@@ -1,6 +1,6 @@
 ---
 title: "Bevor die erste Tabelle entsteht"
-description: "Beginne mit Entscheidungen, nicht mit Tools"
+description: "Moderne Data Warehouses aus Entscheidungen — Grain, Quellen, Schichten und BI."
 author: "Thomas Lindackers"
 category: Datenarchitektur
 tags:

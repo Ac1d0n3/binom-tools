@@ -6,7 +6,7 @@ const labels = mergeDiscoveryLabels({
     de: {
         'reportInventory.pageTitle': 'Report Inventory Canvas',
         'reportInventory.pageLead':
-            'Aktive Reports und Dashboards erfassen — Owner, Tool, Rhythmus und Geschäftsfrage. Export als Markdown/CSV oder Download — für Notizen, Wiki oder Plan.',
+            'Bevor du KPIs und Marts baust: erfasse aktive Reports und Dashboards — Owner, Tool, Rhythmus und Geschäftsfrage. Export als Markdown/CSV.',
         'reportInventory.howto.intro':
             'Baue ein schlankes Report-Inventar für den First-Quarter-Plan (Woche 2). Lieber Belege als Annahmen.',
         'reportInventory.howto.step1': 'Pro aktivem Report eine Zeile anlegen.',
@@ -14,6 +14,10 @@ const labels = mergeDiscoveryLabels({
         'reportInventory.howto.step3': 'Markdown/CSV kopieren oder herunterladen — für Notizen, Wiki, Tickets oder den Sprint Planner.',
         'reportInventory.howto.tip':
             'Nichts wird im Tool gespeichert. Ergebnis übernehmen (Copy/Download); Persistenz liegt bei dir (Doku/Plan). Schatten-Excel und verwaiste Dashboards mit aufnehmen.',
+        'reportInventory.playbookLink':
+            'KPI Definition Playbook — vom Inventar zur vertrauenswürdigen Kennzahl',
+        'reportInventory.logicPlaybookLink':
+            'Business Logic außerhalb der BI-Apps halten',
         'reportInventory.col.report': 'Report',
         'reportInventory.col.owner': 'Owner',
         'reportInventory.col.tool': 'Tool',
@@ -36,7 +40,7 @@ const labels = mergeDiscoveryLabels({
     en: {
         'reportInventory.pageTitle': 'Report Inventory Canvas',
         'reportInventory.pageLead':
-            'Capture active reports and dashboards — owner, tool, cadence, and business question. Export Markdown/CSV or download — for notes, wiki, or a plan.',
+            'Before you build KPIs and marts: capture active reports and dashboards — owner, tool, cadence, and business question. Export Markdown/CSV.',
         'reportInventory.howto.intro':
             'Build a lean report inventory for the first-quarter plan (week 2). Prefer evidence over assumptions.',
         'reportInventory.howto.step1': 'Add one row per active report.',
@@ -44,6 +48,10 @@ const labels = mergeDiscoveryLabels({
         'reportInventory.howto.step3': 'Copy or download Markdown/CSV — for notes, wiki, tickets, or the Sprint Planner.',
         'reportInventory.howto.tip':
             'Nothing is stored in the tool. Transfer the result (copy/download); persistence is yours (docs/plan). Include shadow Excel and orphaned dashboards.',
+        'reportInventory.playbookLink':
+            'KPI Definition playbook — from inventory to trusted metric',
+        'reportInventory.logicPlaybookLink':
+            'Keep business logic outside BI apps',
         'reportInventory.col.report': 'Report',
         'reportInventory.col.owner': 'Owner',
         'reportInventory.col.tool': 'Tool',

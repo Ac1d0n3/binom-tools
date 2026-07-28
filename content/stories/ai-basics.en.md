@@ -1,6 +1,6 @@
 ---
 title: AI Foundations — How Artificial Intelligence Actually Works
-description: An accessible technical introduction to the difference between classical software and machine learning, the training process, inference, model parameters and the step-by-step construction of generative outputs.
+description: AI foundations for data teams — ML basics, generative models and failure modes.
 category: Artificial Intelligence
 tags:
   - ai

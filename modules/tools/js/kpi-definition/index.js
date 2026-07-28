@@ -7,7 +7,7 @@ const labels = mergeDiscoveryLabels({
     de: {
         'kpiDefinition.pageTitle': 'KPI Definition Card',
         'kpiDefinition.pageLead':
-            'KPIs mit Formel, Grain, Filtern und Owner erfassen. Status tracken und Inventar plus Definitions-Backlog exportieren.',
+            'Ohne Grain und Owner bleibt jede Report-Kennzahl unklar. Erfasse KPIs mit Formel, Grain, Filtern und Owner — dann Inventar und Definitions-Backlog exportieren.',
         'kpiDefinition.howto.intro':
             'Das KPI-Register ist die Tabelle nach dem Intake: geprüfte KPI-Klärungen landen hier als Zeilen, weitere KPIs kannst du direkt ergänzen.',
         'kpiDefinition.howto.step1': 'KPI-Namen und Synonyme aus Reports und Interviews eintragen.',
@@ -15,6 +15,9 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.howto.step3': 'Status setzen, dann Report prüfen, kopieren, laden oder in den Plan übernehmen.',
         'kpiDefinition.howto.tip':
             'KPI-Intakes werden im lokalen Workspace mit dem Register verbunden. Beim späteren DB-Store bleibt dieselbe Struktur nutzbar.',
+        'kpiDefinition.playbookLink':
+            'KPI Definition Playbook — Grain, Owner, Versioning',
+        'kpiDefinition.trustedMetricsLink': 'Lernpfad: Trusted Metrics',
         'kpiDefinition.col.name': 'KPI',
         'kpiDefinition.col.synonyms': 'Synonyme',
         'kpiDefinition.col.formula': 'Formel',
@@ -60,7 +63,7 @@ const labels = mergeDiscoveryLabels({
     en: {
         'kpiDefinition.pageTitle': 'KPI Definition Card',
         'kpiDefinition.pageLead':
-            'Capture KPIs with formula, grain, filters, and owner. Track status and export inventory plus definition backlog.',
+            'Without grain and owner, every report metric stays ambiguous. Capture KPIs with formula, grain, filters, and owner — then export inventory plus definition backlog.',
         'kpiDefinition.howto.intro':
             'The KPI register is the table after intake: reviewed KPI clarifications become rows, and more KPIs can be added directly.',
         'kpiDefinition.howto.step1': 'Add KPI names and synonyms from reports and interviews.',
@@ -68,6 +71,9 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.howto.step3': 'Set status, then review, copy, download, or move the report into the plan.',
         'kpiDefinition.howto.tip':
             'KPI intakes are connected to the register through the local workspace. The same shape can move to the database store later.',
+        'kpiDefinition.playbookLink':
+            'KPI Definition playbook — grain, owner, versioning',
+        'kpiDefinition.trustedMetricsLink': 'Learning path: Trusted metrics',
         'kpiDefinition.col.name': 'KPI',
         'kpiDefinition.col.synonyms': 'Synonyms',
         'kpiDefinition.col.formula': 'Formula',

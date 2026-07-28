@@ -28,6 +28,16 @@
                     Python setup guide: install Python, initialize a folder, run the exports
                 </a>
             </p>
+            <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="biPythonToolkit.kpiPlaybookLink">
+                    KPI Definition Playbook — Grain, Owner, Versioning
+                </a>
+            </p>
+            <p>
+                <a href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="biPythonToolkit.trustedMetricsLink">
+                    Learning path: Trusted metrics
+                </a>
+            </p>
         </x-tools.collapsible-info>
 
         <section class="tools-panel discovery-canvas" aria-labelledby="bi-python-purpose-title">

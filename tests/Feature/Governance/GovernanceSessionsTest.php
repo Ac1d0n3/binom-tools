@@ -191,6 +191,7 @@ class GovernanceSessionsTest extends TestCase
     {
         $this->get('/governance/demo-report')
             ->assertOk()
+            ->assertSee('name="robots" content="noindex,nofollow"', false)
             ->assertSee('Sample report / proof path')
             ->assertSee('Demo: Finance Governance Discovery')
             ->assertSee('Anonymized sample artifact from a guided discovery', false)
@@ -217,6 +218,7 @@ class GovernanceSessionsTest extends TestCase
     {
         $this->get('/governance/demo-workspace')
             ->assertOk()
+            ->assertSee('name="robots" content="noindex,nofollow"', false)
             ->assertSee('Governance Demo Workspace')
             ->assertSee('Proof path / example')
             ->assertSee('Aktiver Hauptplan', false)
@@ -272,6 +274,7 @@ class GovernanceSessionsTest extends TestCase
 
         $this->get('/governance/sessions/'.$sessionId.'/report')
             ->assertOk()
+            ->assertSee('name="robots" content="noindex,nofollow"', false)
             ->assertSee('Report view')
             ->assertSee('Print/PDF')
             ->assertSee('Governance Stack Advisor')

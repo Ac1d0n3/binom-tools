@@ -23,6 +23,10 @@
                             <a class="qlik-set-help__link" href="https://learn.microsoft.com/power-bi/" target="_blank" rel="noopener noreferrer" data-powerbi-i18n="powerbiDax.help.productHelpLink">Power BI Hilfe-Portal</a>
                             <a class="qlik-set-help__link" href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener noreferrer" data-powerbi-i18n="powerbiDax.help.calculateLink">CALCULATE Dokumentation</a>
                             <a class="qlik-set-help__link" href="https://learn.microsoft.com/en-us/power-bi/transform-model/desktop-measures" target="_blank" rel="noopener noreferrer" data-powerbi-i18n="powerbiDax.help.measuresLink">Measures Dokumentation</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-powerbi-i18n="powerbiDax.help.kpiPlaybookLink">KPI Definition Playbook</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'keeping-business-logic-outside-bi-apps']) }}" data-powerbi-i18n="powerbiDax.help.logicPlaybookLink">Business Logic außerhalb BI</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']) }}" data-powerbi-i18n="powerbiDax.help.piiPlaybookLink">PII &amp; Privacy</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-powerbi-i18n="powerbiDax.help.trustedMetricsLink">Trusted Metrics Path</a>
                         </div>
                     </div>
                     <button type="button" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-powerbi-help-toggle data-powerbi-i18n="powerbiDax.help.show">Hilfe anzeigen</button>

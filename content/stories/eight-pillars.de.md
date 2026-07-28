@@ -1,6 +1,6 @@
 ---
 title: Die 8 Säulen der Data Governance
-description: Ein praxisnahes Governance-Modell für Verantwortung, Metadaten, Datenschutz, DSDR, Datenqualität, Kennzahlen, Zugriffe und den Datenlebenszyklus — mit Anschluss an DMBOK, CDMP und DCAM.
+description: Die acht Säulen der Data Governance — von Ownership bis zum Lebenszyklus.
 author: Thomas Lindackers
 category: Data Governance
 tags:

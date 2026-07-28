@@ -1,6 +1,6 @@
 ---
 title: From Tests to Measurable Data Quality — Operational Data Quality Monitoring
-description: How to design technical data quality tests so that every execution produces a standardized result row that can be analyzed historically, consistently and operationally in Qlik and Power BI.
+description: Operational data quality as monitoring — tests, KPIs, history and BI.
 category: Data Quality
 tags:
   - data-quality

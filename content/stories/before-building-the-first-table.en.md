@@ -1,6 +1,6 @@
 ---
 title: "Before Building the First Table"
-description: "Start with decisions, not with tools"
+description: "Modern data warehouses from decisions first — grain, sources, layers and BI."
 author: "Thomas Lindackers"
 category: Data Architecture
 tags:

@@ -1,6 +1,6 @@
 ---
 title: AI-Grundlagen — Wie KI wirklich funktioniert
-description: Eine verständliche technische Einführung in den Unterschied zwischen klassischer Software und Machine Learning, den Trainingsprozess, Inferenz, Modellparameter und die schrittweise Erzeugung generativer Ausgaben.
+description: AI-Grundlagen für Data-Teams — ML-Basics, generative Modelle und Fehlerbilder.
 category: Künstliche Intelligenz
 tags:
   - ai

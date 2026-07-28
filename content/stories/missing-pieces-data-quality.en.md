@@ -1,6 +1,6 @@
 ---
 title: "The Missing Pieces – Part 1: Data Quality"
-description: "Why corrected downstream data does not automatically mean that the source cause has been resolved – and how governance can close the loop."
+description: "Close missing governance loops — fixes need source cause and feedback."
 author: Thomas Lindackers
 category: Data Governance
 tags:

@@ -34,6 +34,8 @@
                         class="playbook-series__option playbook-series__option--active"
                         role="listitem"
                         aria-current="true"
+                        data-playbook-series-part
+                        data-slug="{{ $part->slug }}"
                     >
                         <span class="playbook-series__option-label">
                             <span data-i18n="playbooks.seriesPartLabel">Part</span>
@@ -50,6 +52,8 @@
                         href="{{ locale_route('playbooks.show', ['slug' => $part->slug]) }}"
                         class="playbook-series__option"
                         role="listitem"
+                        data-playbook-series-part
+                        data-slug="{{ $part->slug }}"
                     >
                         <span class="playbook-series__option-label">
                             <span data-i18n="playbooks.seriesPartLabel">Part</span>

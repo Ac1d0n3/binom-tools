@@ -1,6 +1,6 @@
 ---
 title: Die Rolle Data Architect — Grain, Contracts und architektonische Konsistenz
-description: Wie Data Architects Konsistenz über Grain, Modellgrenzen, Data Contracts, Plattformentscheidungen und Änderungen schaffen, ohne Business Ownership, Stewardship oder Betrieb zu ersetzen.
+description: Rollen und Entscheidungsrechte — Architects, Owner, Stewards und Betrieb.
 category: Data Governance
 tags:
   - data-governance

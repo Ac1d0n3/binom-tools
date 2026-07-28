@@ -23,6 +23,10 @@
                             <a class="qlik-set-help__link" href="https://help.tableau.com/" target="_blank" rel="noopener noreferrer" data-tableau-i18n="tableauCalc.help.productHelpLink">Tableau Hilfe-Portal</a>
                             <a class="qlik-set-help__link" href="https://help.tableau.com/current/pro/desktop/en-us/calculations_calculatedfields_create.htm" target="_blank" rel="noopener noreferrer" data-tableau-i18n="tableauCalc.help.calculatedFieldsLink">Calculated Fields Dokumentation</a>
                             <a class="qlik-set-help__link" href="https://help.tableau.com/current/pro/desktop/en-us/calculations_calculatedfields_lod.htm" target="_blank" rel="noopener noreferrer" data-tableau-i18n="tableauCalc.help.lodLink">LOD Expressions Dokumentation</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-tableau-i18n="tableauCalc.help.kpiPlaybookLink">KPI Definition Playbook</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'keeping-business-logic-outside-bi-apps']) }}" data-tableau-i18n="tableauCalc.help.logicPlaybookLink">Business Logic außerhalb BI</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']) }}" data-tableau-i18n="tableauCalc.help.piiPlaybookLink">PII &amp; Privacy</a>
+                            <a class="qlik-set-help__link" href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-tableau-i18n="tableauCalc.help.trustedMetricsLink">Trusted Metrics Path</a>
                         </div>
                     </div>
                     <button type="button" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-tableau-help-toggle data-tableau-i18n="tableauCalc.help.show">Hilfe anzeigen</button>

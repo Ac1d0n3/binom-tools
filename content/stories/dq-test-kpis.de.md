@@ -1,6 +1,6 @@
 ---
 title: Von Tests zu messbarer Datenqualität — Operatives Data-Quality-Monitoring
-description: Wie technische Datenqualitätstests so aufgebaut werden, dass jeder Lauf eine standardisierte Ergebniszeile erzeugt und dadurch in Qlik und Power BI historisch, vergleichbar und operativ auswertbar wird.
+description: Operative Datenqualität als Monitoring — Tests, KPIs, Historie und BI.
 category: Datenqualität
 tags:
   - data-quality

@@ -64,7 +64,14 @@
                 data-text-en="{{ $series->titleEn }}"
             >{{ $series->titleEn }}</h3>
 
-            @if ($firstPart)
+            @if ($series->descriptionEn !== '' || $series->descriptionDe !== '')
+                <p
+                    class="tools-card__desc tools-card__desc--story"
+                    data-playbook-series-card-summary
+                    data-text-de="{{ $series->descriptionDe }}"
+                    data-text-en="{{ $series->descriptionEn }}"
+                >{{ $series->descriptionEn !== '' ? $series->descriptionEn : $series->descriptionDe }}</p>
+            @elseif ($firstPart)
                 <p
                     class="tools-card__desc tools-card__desc--story"
                     data-text-de="{{ $partCount }} Teile — starten mit „{{ $firstPart->titleDe }}“."

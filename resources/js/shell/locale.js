@@ -208,7 +208,7 @@ const shellLabels = {
             'Prompt Studio und AI Sanitizer als Kette in der Governance-Werkbank — vor dem Versand an externe KI.',
         'home.biTitle': 'BI-Formel-Tools',
         'home.biLead':
-            'Qlik Set Analysis, Tableau Calculations und Power BI DAX — Teil der Governance-Werkbank für nachvollziehbare Report-Logik.',
+            'Pfad: Report Inventory → KPI Definition → Grain/Owner → Mart → Formel-Tool → Evidence. Qlik, Tableau und Power BI erzeugen nachvollziehbare Report-Logik — Business Logic bleibt außerhalb der BI-App.',
         'home.storiesTitle': 'Governance-Stories',
         'home.storiesLead':
             'Playbooks zu allen Themen rund um Data Governance — Schritt für Schritt, von der Idee bis zur Umsetzung.',
@@ -391,6 +391,7 @@ const shellLabels = {
         'overview.seriesStart': 'Serie starten',
         'overview.seriesView': 'Serie ansehen',
         'overview.seriesNoResults': 'Keine passenden Serien.',
+        'overview.seriesPartsProgress': 'Serienteile',
         'overview.noIncompleteSeries': 'Alle passenden Serien sind bereits abgeschlossen.',
         'playbooks.seriesPartLabel': 'Teil',
         'playbooks.seriesBack': 'Alle Serien',
@@ -542,7 +543,7 @@ const shellLabels = {
         'card.vendor-learning-path-builder.description':
             'Rollenbasierte Lernpfade mit offiziellen Zertifikatslinks, Playbooks und praktischen Übungen planen.',
         'tableauCalc.pageTitle': 'Tableau Calculation Generator',
-        'tableauCalc.pageLead': 'Erzeuge Tableau Calculated Fields, LOD-Varianten und Dokumentations-CSV aus Base Measures plus wiederverwendbaren Definitionen.',
+        'tableauCalc.pageLead': 'Wenn Report-Formeln und LOD-Logik nur im Workbook leben, fehlt Grain und Owner. Dieses Tool erzeugt Calculated Fields und Dokumentations-CSV aus Base Measures plus Definitionen — bevor Business Logic im BI kleben bleibt.',
         'tableauCalc.help.title': 'Tableau Calculation Hilfe',
         'tableauCalc.help.lead': 'Workflow-Hilfe für Katalog, Definitionen, Base Measures, Hierarchie und Calculated Fields.',
         'tableauCalc.help.show': 'Hilfe anzeigen',
@@ -551,6 +552,10 @@ const shellLabels = {
         'tableauCalc.help.productHelpLink': 'Tableau Hilfe-Portal',
         'tableauCalc.help.calculatedFieldsLink': 'Calculated Fields Dokumentation',
         'tableauCalc.help.lodLink': 'LOD Expressions Dokumentation',
+        'tableauCalc.help.kpiPlaybookLink': 'KPI Definition Playbook',
+        'tableauCalc.help.logicPlaybookLink': 'Business Logic außerhalb BI',
+        'tableauCalc.help.piiPlaybookLink': 'PII & Privacy',
+        'tableauCalc.help.trustedMetricsLink': 'Trusted Metrics Path',
         'tableauCalc.help.summary': 'Kurzlogik',
         'tableauCalc.help.step1': 'Katalog pflegen: Dimensionen, Measures und verfügbare Werte aus deiner Tableau Workbook-Struktur eintragen.',
         'tableauCalc.help.step2': 'Definitionen bauen: Eine Definition ist eine wiederverwendbare Bedingung wie Region DACH oder Current Year.',
@@ -660,7 +665,7 @@ const shellLabels = {
         'tableauCalc.tree.dropOnNode': 'Unter {level} ablegen',
         'tableauCalc.tree.remove': 'Entfernen',
         'powerbiDax.pageTitle': 'Power BI DAX Measure Generator',
-        'powerbiDax.pageLead': 'Erzeuge DAX Measures, Time-Intelligence-Vorlagen, Hierarchie-Hinweise und Dokumentations-CSV aus Base Measures plus Definitionen.',
+        'powerbiDax.pageLead': 'Wenn DAX-Measures ohne KPI-Contract entstehen, weichen Reports voneinander ab. Dieses Tool erzeugt DAX Measures, Time-Intelligence und Dokumentations-CSV aus Base Measures plus Definitionen — nach Grain und Owner.',
         'powerbiDax.help.title': 'Power BI DAX Hilfe',
         'powerbiDax.help.lead': 'Workflow-Hilfe für Katalog, Definitionen, Base Measures, Hierarchie und DAX Measures.',
         'powerbiDax.help.show': 'Hilfe anzeigen',
@@ -669,6 +674,10 @@ const shellLabels = {
         'powerbiDax.help.productHelpLink': 'Power BI Hilfe-Portal',
         'powerbiDax.help.calculateLink': 'CALCULATE Dokumentation',
         'powerbiDax.help.measuresLink': 'Measures Dokumentation',
+        'powerbiDax.help.kpiPlaybookLink': 'KPI Definition Playbook',
+        'powerbiDax.help.logicPlaybookLink': 'Business Logic außerhalb BI',
+        'powerbiDax.help.piiPlaybookLink': 'PII & Privacy',
+        'powerbiDax.help.trustedMetricsLink': 'Trusted Metrics Path',
         'powerbiDax.help.summary': 'Kurzlogik',
         'powerbiDax.help.step1': 'Katalog pflegen: Tabellen, Spalten, Measures und Werte aus dem Power-BI-Modell eintragen.',
         'powerbiDax.help.step2': 'Definitionen bauen: Eine Definition wird zu einem DAX-Filter in CALCULATE.',
@@ -779,7 +788,7 @@ const shellLabels = {
         'powerbiDax.tree.remove': 'Entfernen',
         'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
         'biPythonToolkit.pageLead':
-            'Lade Python-Tools herunter, führe sie lokal aus und nutze die Outputs als CSV, Markdown oder Plan-JSON.',
+            'Wenn KPI-Formeln und Report-Inventar nur in BI-Dateien stecken, fehlt der Governance-Nachweis. Lade Python-Tools, führe sie lokal aus und nutze CSV, Markdown oder Plan-JSON für KPI Definition und Trusted Metrics.',
         'biPythonToolkit.howto.intro':
             'Die Tools laufen auf deinem Rechner. Dieses Web-Tool speichert keine API Keys und verbindet sich nicht direkt mit Qlik, Power BI oder Tableau.',
         'biPythonToolkit.howto.step1': 'Python installieren und einen Projektordner mit virtuellem Environment anlegen.',
@@ -789,6 +798,9 @@ const shellLabels = {
             'Für Qlik-Sheets wird zusätzlich websocket-client benötigt. Ohne --include-sheets reicht die Python-Standardbibliothek.',
         'biPythonToolkit.setupStoryLink':
             'Python-Anleitung: Python installieren, Ordner initialisieren, Exports ausführen',
+        'biPythonToolkit.kpiPlaybookLink':
+            'KPI Definition Playbook — Grain, Owner, Versioning',
+        'biPythonToolkit.trustedMetricsLink': 'Lernpfad: Trusted Metrics',
         'biPythonToolkit.openSetupStory': 'Python Setup Story',
         'biPythonToolkit.downloads.title': 'Downloads',
         'biPythonToolkit.downloads.lead': 'Speichere die Dateien lokal in deinem Python-Projektordner.',
@@ -1372,7 +1384,7 @@ const shellLabels = {
             'Prompt Studio and AI Sanitizer as a chain in the governance workbench — before sending to external AI.',
         'home.biTitle': 'BI formula tools',
         'home.biLead':
-            'Qlik Set Analysis, Tableau calculations, and Power BI DAX — part of the governance workbench for traceable report logic.',
+            'Path: Report Inventory → KPI Definition → Grain/Owner → Mart → formula tool → Evidence. Qlik, Tableau, and Power BI produce traceable report logic — business logic stays outside the BI app.',
         'home.storiesTitle': 'Governance stories',
         'home.storiesLead':
             'Playbooks on data governance topics — step by step, from idea to implementation.',
@@ -1555,6 +1567,7 @@ const shellLabels = {
         'overview.seriesStart': 'Start series',
         'overview.seriesView': 'View series',
         'overview.seriesNoResults': 'No matching series.',
+        'overview.seriesPartsProgress': 'Series parts',
         'overview.noIncompleteSeries': 'All matching series are already completed.',
         'playbooks.seriesPartLabel': 'Part',
         'playbooks.seriesBack': 'All series',
@@ -1706,7 +1719,7 @@ const shellLabels = {
         'card.vendor-learning-path-builder.description':
             'Plan role-based learning paths with official certification links, playbooks, and practical exercises.',
         'tableauCalc.pageTitle': 'Tableau Calculation Generator',
-        'tableauCalc.pageLead': 'Generate Tableau calculated fields, LOD variants and documentation CSV from base measures plus reusable definitions.',
+        'tableauCalc.pageLead': 'When report formulas and LOD logic live only in the workbook, grain and owner are missing. This tool generates calculated fields and documentation CSV from base measures plus definitions — before business logic sticks in BI.',
         'tableauCalc.help.title': 'Tableau Calculation help',
         'tableauCalc.help.lead': 'Workflow help for catalog, definitions, base measures, hierarchy, and calculated fields.',
         'tableauCalc.help.show': 'Show help',
@@ -1715,6 +1728,10 @@ const shellLabels = {
         'tableauCalc.help.productHelpLink': 'Tableau help portal',
         'tableauCalc.help.calculatedFieldsLink': 'Calculated fields documentation',
         'tableauCalc.help.lodLink': 'LOD expressions documentation',
+        'tableauCalc.help.kpiPlaybookLink': 'KPI Definition playbook',
+        'tableauCalc.help.logicPlaybookLink': 'Business logic outside BI',
+        'tableauCalc.help.piiPlaybookLink': 'PII & privacy',
+        'tableauCalc.help.trustedMetricsLink': 'Trusted metrics path',
         'tableauCalc.help.summary': 'Quick logic',
         'tableauCalc.help.step1': 'Maintain the catalog: add dimensions, measures and available values from your Tableau workbook structure.',
         'tableauCalc.help.step2': 'Build definitions: a definition is a reusable condition such as Region DACH or Current Year.',
@@ -1824,7 +1841,7 @@ const shellLabels = {
         'tableauCalc.tree.dropOnNode': 'Drop under {level}',
         'tableauCalc.tree.remove': 'Remove',
         'powerbiDax.pageTitle': 'Power BI DAX Measure Generator',
-        'powerbiDax.pageLead': 'Generate DAX measures, time-intelligence snippets, hierarchy guidance and documentation CSV from base measures plus definitions.',
+        'powerbiDax.pageLead': 'When DAX measures appear without a KPI contract, reports diverge. This tool generates DAX measures, time intelligence, and documentation CSV from base measures plus definitions — after grain and owner.',
         'powerbiDax.help.title': 'Power BI DAX help',
         'powerbiDax.help.lead': 'Workflow help for catalog, definitions, base measures, hierarchy, and DAX measures.',
         'powerbiDax.help.show': 'Show help',
@@ -1833,6 +1850,10 @@ const shellLabels = {
         'powerbiDax.help.productHelpLink': 'Power BI help portal',
         'powerbiDax.help.calculateLink': 'CALCULATE documentation',
         'powerbiDax.help.measuresLink': 'Measures documentation',
+        'powerbiDax.help.kpiPlaybookLink': 'KPI Definition playbook',
+        'powerbiDax.help.logicPlaybookLink': 'Business logic outside BI',
+        'powerbiDax.help.piiPlaybookLink': 'PII & privacy',
+        'powerbiDax.help.trustedMetricsLink': 'Trusted metrics path',
         'powerbiDax.help.summary': 'Quick logic',
         'powerbiDax.help.step1': 'Maintain the catalog: add tables, columns, measures and values from your Power BI model.',
         'powerbiDax.help.step2': 'Build definitions: a definition becomes a DAX filter inside CALCULATE.',
@@ -1943,7 +1964,7 @@ const shellLabels = {
         'powerbiDax.tree.remove': 'Remove',
         'biPythonToolkit.pageTitle': 'BI Python Export Toolkit',
         'biPythonToolkit.pageLead':
-            'Download Python tools, run them locally, and use the outputs as CSV, Markdown or plan JSON.',
+            'When KPI formulas and report inventory live only inside BI files, governance evidence is missing. Download Python tools, run them locally, and use CSV, Markdown, or plan JSON for KPI Definition and Trusted Metrics.',
         'biPythonToolkit.howto.intro':
             'The tools run on your machine. This web tool does not store API keys and does not connect directly to Qlik, Power BI or Tableau.',
         'biPythonToolkit.howto.step1': 'Install Python and create a project folder with a virtual environment.',
@@ -1953,6 +1974,9 @@ const shellLabels = {
             'Qlik sheet extraction additionally needs websocket-client. Without --include-sheets, the Python standard library is enough.',
         'biPythonToolkit.setupStoryLink':
             'Python setup guide: install Python, initialize a folder, run the exports',
+        'biPythonToolkit.kpiPlaybookLink':
+            'KPI Definition playbook — grain, owner, versioning',
+        'biPythonToolkit.trustedMetricsLink': 'Learning path: Trusted metrics',
         'biPythonToolkit.openSetupStory': 'Python Setup Story',
         'biPythonToolkit.downloads.title': 'Downloads',
         'biPythonToolkit.downloads.lead': 'Save the files locally in your Python project folder.',

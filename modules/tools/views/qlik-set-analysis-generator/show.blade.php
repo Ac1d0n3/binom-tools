@@ -21,6 +21,10 @@
                         <a class="qlik-set-help__link" href="https://www.qlik.com/" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.productLink">Qlik Produktseite</a>
                         <a class="qlik-set-help__link" href="https://help.qlik.com/" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.productHelpLink">Qlik Hilfe-Portal</a>
                         <a class="qlik-set-help__link" href="https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/SetAnalysis/set-analysis-expressions.htm" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.setAnalysisLink">Set Analysis Dokumentation</a>
+                        <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="qlikSet.help.kpiPlaybookLink">KPI Definition Playbook</a>
+                        <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'keeping-business-logic-outside-bi-apps']) }}" data-i18n="qlikSet.help.logicPlaybookLink">Business Logic außerhalb BI</a>
+                        <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']) }}" data-i18n="qlikSet.help.piiPlaybookLink">PII &amp; Privacy</a>
+                        <a class="qlik-set-help__link" href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="qlikSet.help.trustedMetricsLink">Trusted Metrics Path</a>
                     </div>
                 </div>
                 <button type="button" id="qlik-set-help-toggle" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-i18n="qlikSet.help.show">Hilfe anzeigen</button>

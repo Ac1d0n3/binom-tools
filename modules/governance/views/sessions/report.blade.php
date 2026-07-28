@@ -4,6 +4,7 @@
 @section('meta_description', ! empty($isDemo)
     ? 'Sample governance discovery report: advisor inputs, recommendations, and validation findings — example path without login.'
     : 'Governance Discovery report view with saved advisor inputs, recommendations and validation findings.')
+@section('robots', 'noindex,nofollow')
 
 @section('content')
     @php

@@ -194,7 +194,8 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('/playbooks/series/', false);
         $response->assertSee('data-i18n-aria="overview.seriesView"', false);
         $response->assertSee('data-i18n-aria="overview.seriesStart"', false);
-        $response->assertSee('tools-series-card__parts', false);
+        $response->assertSee('tools-series-card__progress', false);
+        $response->assertSee('tools-series-card__summary', false);
         $response->assertSee('data-overview-layout-toggle="grid"', false);
         $response->assertSee('data-overview-view-panel="series"', false);
     }
@@ -331,7 +332,7 @@ class PlaybookPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('<meta name="description"', false);
         $response->assertSee(
-            'Why corrected downstream data does not automatically mean that the source cause has been resolved',
+            'Close missing governance loops — fixes need source cause and feedback.',
             false,
         );
     }

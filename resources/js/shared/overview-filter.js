@@ -616,6 +616,8 @@ export function initOverviewFilters() {
             const matchesStack = stackSelect === null || matchesStackFilter(stacks);
             const matchesLetter = matchesLetterFilter(item);
             const read = isPlaybookRead(slug);
+            item.classList.toggle('is-read', read);
+            item.dataset.read = read ? '1' : '0';
 
             if (
                 matchesSearch &&
@@ -714,6 +716,8 @@ export function initOverviewFilters() {
                 }
             });
             const allPartsRead = partLinks.length > 0 && readParts === partLinks.length;
+            item.classList.toggle('is-read', allPartsRead);
+            item.dataset.read = allPartsRead ? '1' : '0';
             const matchesSearch = query === '' || text.includes(query);
             const matchesProduct = !hasProductFilter() || matchesProductFilter(products);
             const matchesModel = modelSelect === null || matchesModelFilter(models);

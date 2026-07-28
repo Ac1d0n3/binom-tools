@@ -25,11 +25,13 @@ export function formatReadingTime(minutes, locale = 'en') {
 
 /**
  * Build series card meta text, optionally including read progress.
+ * Shows completed reading time as "read", never as remaining (total − read).
  *
  * @param {{
  *   partCount: number,
  *   totalMinutes: number,
  *   readMinutes?: number,
+ *   readPartCount?: number,
  *   locale: 'de' | 'en',
  * }} options
  * @returns {string}
@@ -38,13 +40,17 @@ export function buildSeriesCardMetaText({
     partCount,
     totalMinutes,
     readMinutes = 0,
+    readPartCount = 0,
     locale = 'en',
 }) {
-    const partsLabel = locale === 'de'
-        ? `${partCount} Teile`
-        : `${partCount} parts`;
+    const parts = Math.max(0, Math.floor(Number(partCount) || 0));
+    const readParts = Math.min(parts, Math.max(0, Math.floor(Number(readPartCount) || 0)));
     const totalLabel = formatReadingTime(totalMinutes, locale);
     const read = Math.max(0, Math.floor(Number(readMinutes) || 0));
+
+    const partsLabel = readParts > 0
+        ? (locale === 'de' ? `${readParts}/${parts} Teile` : `${readParts}/${parts} parts`)
+        : (locale === 'de' ? `${parts} Teile` : `${parts} parts`);
 
     if (read <= 0) {
         return locale === 'de'
@@ -55,6 +61,6 @@ export function buildSeriesCardMetaText({
     const readLabel = formatReadingTime(read, locale);
 
     return locale === 'de'
-        ? `${partsLabel} · ${readLabel} von ${totalLabel}`
-        : `${partsLabel} · ${readLabel} of ${totalLabel}`;
+        ? `${partsLabel} · ${readLabel} gelesen · ${totalLabel} gesamt`
+        : `${partsLabel} · ${readLabel} read · ${totalLabel} total`;
 }

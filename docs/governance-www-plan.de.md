@@ -2,6 +2,8 @@
 
 Stand: 2026-07-27
 
+**Abarbeiten:** Phasen-Checklisten unter [authority-plan/index.de.md](authority-plan/index.de.md) (A–E).
+
 Ziel: governance.binom.net soll bei Suchen rund um Data Governance, Metadata, KPI Definition, DQ, PII, DSDR, Tool-Auswahl und Stack-Entscheidungen als praktischer Einstieg auffallen. Die Seite soll nicht wie ein Vendor-Verzeichnis wirken, sondern wie ein öffentlicher Online-Berater von Thomas Lindackers: erst Orientierung, dann konkrete Fragen, dann Tools, dann Nachweise.
 
 ## Authority-Feinschliff (Leitlinie)

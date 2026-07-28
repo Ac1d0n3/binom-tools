@@ -39,19 +39,21 @@ describe('buildSeriesCardMetaText', () => {
         })).toBe('9 Teile · 2 Std 22 min gesamt');
     });
 
-    it('shows read progress when parts are read', () => {
+    it('shows read progress as completed time, not remaining', () => {
         expect(buildSeriesCardMetaText({
             partCount: 9,
             totalMinutes: 142,
             readMinutes: 22,
+            readPartCount: 2,
             locale: 'en',
-        })).toBe('9 parts · 22 min of 2 h 22 min');
+        })).toBe('2/9 parts · 22 min read · 2 h 22 min total');
 
         expect(buildSeriesCardMetaText({
             partCount: 9,
             totalMinutes: 142,
             readMinutes: 22,
+            readPartCount: 2,
             locale: 'de',
-        })).toBe('9 Teile · 22 min von 2 Std 22 min');
+        })).toBe('2/9 Teile · 22 min gelesen · 2 Std 22 min gesamt');
     });
 });

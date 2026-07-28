@@ -20,6 +20,16 @@
                 <li data-i18n="kpiDefinition.howto.step3"></li>
             </ol>
             <p data-i18n="kpiDefinition.howto.tip"></p>
+            <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="kpiDefinition.playbookLink">
+                    KPI Definition Playbook — Grain, Owner, Versioning
+                </a>
+            </p>
+            <p>
+                <a href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="kpiDefinition.trustedMetricsLink">
+                    Learning path: Trusted metrics
+                </a>
+            </p>
         </x-tools.collapsible-info>
 
         <x-tools.discovery-canvas />

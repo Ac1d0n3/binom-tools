@@ -1,6 +1,6 @@
 ---
 title: "Die fehlenden Bausteine – Teil 1: Datenqualität"
-description: "Warum korrigierte Daten downstream nicht automatisch bedeuten, dass die Ursache an der Quelle behoben wurde – und wie Governance den Kreislauf schließen kann."
+description: "Fehlende Governance-Schleifen schließen — Fixes brauchen Ursache und Feedback."
 author: Thomas Lindackers
 category: Data Governance
 tags:

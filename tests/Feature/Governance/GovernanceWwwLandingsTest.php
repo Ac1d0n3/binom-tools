@@ -52,6 +52,9 @@ class GovernanceWwwLandingsTest extends TestCase
         $response->assertSee('data-discovery-step="decision"', false);
         $response->assertSee('data-discovery-copy-md', false);
         $response->assertSee('data-discovery-copy-json', false);
+        $response->assertSee('/playbooks/raci-for-data-governance', false);
+        $response->assertSee('/playbooks/define-kpi', false);
+        $response->assertSee('Markdown/JSON here; CSV via the tools per step', false);
 
         $guides = $this->get('/governance?tab=guides');
         $guides->assertOk();
@@ -61,6 +64,14 @@ class GovernanceWwwLandingsTest extends TestCase
         $guides->assertSee('Microsoft Fabric', false);
         $guides->assertSee('Start with these 3 tools', false);
         $guides->assertSee(route('tools.kpi-requirements-intake'), false);
+        $guides->assertSee('/playbooks/define-kpi', false);
+        $guides->assertSee('/playbooks/before-building-the-first-table', false);
+        $guides->assertSee('/playbooks/keeping-business-logic-outside-bi-apps', false);
+        $guides->assertSee('/playbooks/metadata-driven-governance-with-dbt-meta', false);
+        $guides->assertSee('/playbooks/eight-pillars', false);
+        $guides->assertSee('/playbooks/pii-privacy-governance', false);
+        $guides->assertSee('Trusted metrics / BI', false);
+        $guides->assertSee('/learning-paths/trusted-metrics', false);
     }
 
     public function test_legacy_tab_aliases_resolve_to_guides(): void

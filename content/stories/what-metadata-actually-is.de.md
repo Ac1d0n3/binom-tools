@@ -1,6 +1,6 @@
 ---
 title: Was Metadaten wirklich sind — Jenseits von Namen, Datentypen und Beschreibungen
-description: Eine praxisnahe Grundlage für technische, fachliche, operative, Governance-, Sicherheits-, Qualitäts-, Nutzungs-, semantische und AI-Metadaten als gemeinsamen Kontext für vertrauenswürdige Daten.
+description: Metadaten als verbundener Kontext — Katalog, Lineage, Automation und AI-Readiness.
 category: Data Governance
 tags:
   - metadata

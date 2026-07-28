@@ -3474,6 +3474,7 @@
     "teamId": null,
     "viewerUserIds": [],
     "linkedStorySlugs": [],
-    "updatedAt": "2026-07-20T13:37:49+00:00",
-    "updatedBy": "user_acidone"
+    "updatedAt": "2026-07-27T22:18:32+00:00",
+    "updatedBy": "user_acidone",
+    "workspaceId": null
 }

@@ -617,6 +617,10 @@ final class PlaybookRepository
             $playbooks,
         ));
 
+        // Series card summary comes from part 1 description (editorial series intro).
+        $descriptionDe = trim((string) ($heroPlaybook?->variant('de')?->description ?? ''));
+        $descriptionEn = trim((string) ($heroPlaybook?->variant('en')?->description ?? ''));
+
         return new PlaybookSeriesOverview(
             id: $seriesId,
             titleDe: $titleDe,
@@ -627,6 +631,8 @@ final class PlaybookRepository
             totalReadingTimeEn: $totalReadingTimeEn,
             parts: $parts,
             products: $products,
+            descriptionDe: $descriptionDe,
+            descriptionEn: $descriptionEn,
         );
     }
 

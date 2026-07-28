@@ -2,7 +2,7 @@
 
 **Governance Help Hub** (v1.0.0) for data, BI, and analytics teams — Markdown playbooks, interactive reference workflows, and bilingual UI. Cloneable starter template, no CMS.
 
-> Open-source public advisor by [Binom](https://binom.net) / Thomas Lindackers — not a commercial SaaS product. Dual store (file default, MySQL optional). Stories stay Markdown under `content/stories/`.
+> Open-source governance help hub by [Binom](https://binom.net) / Thomas Lindackers — not a commercial SaaS product. Dual store (file default, MySQL optional). Stories stay Markdown under `content/stories/`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for where new code belongs (mega-modules / shell / shared). New feature checklist: [docs/new-module-checklist.de.md](docs/new-module-checklist.de.md).
 

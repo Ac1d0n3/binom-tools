@@ -140,6 +140,12 @@ tasks:
       - label: Roles Hub
         href: /roles
         description: Decision Rights für Steward und Owner.
+      - label: Business Logic außerhalb BI
+        href: /playbooks/keeping-business-logic-outside-bi-apps
+        description: Entscheiden, wo Metrik-Logik lebt, bevor Formel-Tools genutzt werden.
+      - label: Power BI DAX Generator
+        href: /tools/powerbi-dax-generator
+        description: Formel-Hilfe, nachdem Grain und Owner klar sind.
       - label: Sprint Planner
         href: /sprint-planner
         description: Weiter mit Delivery-Vorlagen.

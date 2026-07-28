@@ -1,6 +1,6 @@
 ---
 title: The Data Architect Role — Grain, Contracts and Architectural Consistency
-description: How Data Architects create coherence across grain, model boundaries, Data Contracts, platform choices and change without replacing business ownership, stewardship or operations.
+description: Roles and decision rights — architects, owners, stewards and operators.
 category: Data Governance
 tags:
   - data-governance
