@@ -4,11 +4,12 @@
 
 @section('admin_content')
     <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
-        <x-admin.sticky-header>
+        <x-admin.sticky-header :count="count($terms)">
             <x-slot:search>
                 <input type="search" class="tools-input" data-overview-search value="{{ $q }}" placeholder="Search terms…" aria-label="Search">
             </x-slot:search>
             <x-slot:actions>
+                <x-admin.layout-toggle />
                 <button type="button" class="tools-btn tools-btn--primary" data-admin-open-modal="admin-glossary-create-modal" data-text-de="Term anlegen" data-text-en="Add term">Add term</button>
             </x-slot:actions>
         </x-admin.sticky-header>
@@ -20,49 +21,118 @@
 
         <p class="admin-hub__meta" data-overview-empty hidden>No matches.</p>
 
-        <div class="sp-list">
-            @foreach ($terms as $term)
-                @php
-                    $searchText = implode(' ', [
-                        $term['id'] ?? '',
-                        $term['term']['de'] ?? '',
-                        $term['term']['en'] ?? '',
-                        $term['definition']['de'] ?? '',
-                        $term['definition']['en'] ?? '',
-                        $term['category'] ?? '',
-                    ]);
-                @endphp
-                <div class="sp-list__row" data-overview-item data-search-text="{{ $searchText }}">
-                    <div class="sp-list__identity">
-                        <strong>{{ $term['term']['en'] ?? $term['id'] ?? '-' }}</strong>
-                        <span class="admin-hub__meta">{{ $term['id'] ?? '' }} · {{ $term['category'] ?? '' }} · DE {{ $term['term']['de'] ?? '—' }}</span>
-                    </div>
-                    <div class="sp-list__actions">
-                        @php
-                            $termFill = [
-                                'term_de' => $term['term']['de'] ?? '',
-                                'term_en' => $term['term']['en'] ?? '',
-                                'definition_de' => $term['definition']['de'] ?? '',
-                                'definition_en' => $term['definition']['en'] ?? '',
-                                'category' => $term['category'] ?? 'data',
-                            ];
-                        @endphp
-                        <button
-                            type="button"
-                            class="tools-btn tools-btn--small"
-                            data-admin-open-modal="admin-glossary-edit-modal"
-                            data-admin-modal-title="Edit {{ $term['id'] ?? '' }}"
-                            data-admin-glossary-id="{{ $term['id'] }}"
-                            data-admin-fill="{{ json_encode($termFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
-                        >Edit</button>
-                        <form method="post" action="{{ locale_route('admin.glossary.destroy', ['termId' => $term['id']]) }}" data-admin-confirm-delete data-confirm-message="Delete term?">
-                            @csrf
-                            @method('DELETE')
-                            <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            @endforeach
+        <div class="admin-hub__overview" data-admin-overview-root data-layout="table">
+            <div class="admin-hub__card-grid" data-admin-overview-panel="cards" hidden>
+                @foreach ($terms as $term)
+                    @php
+                        $termId = $term['id'] ?? '';
+                        $termEn = $term['term']['en'] ?? $termId ?: '-';
+                        $termDe = $term['term']['de'] ?? '';
+                        $category = $term['category'] ?? '';
+                        $searchText = implode(' ', [
+                            $termId,
+                            $termDe,
+                            $termEn,
+                            $term['definition']['de'] ?? '',
+                            $term['definition']['en'] ?? '',
+                            $category,
+                        ]);
+                        $termFill = [
+                            'term_de' => $termDe,
+                            'term_en' => $term['term']['en'] ?? '',
+                            'definition_de' => $term['definition']['de'] ?? '',
+                            'definition_en' => $term['definition']['en'] ?? '',
+                            'category' => $term['category'] ?? 'data',
+                        ];
+                        $fillJson = json_encode($termFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                    @endphp
+                    <article class="admin-hub__card" data-overview-item data-search-text="{{ $searchText }}">
+                        <h3 class="admin-hub__card-title">{{ $termEn }}</h3>
+                        <p class="admin-hub__card-meta">
+                            {{ $termId }} · {{ $category }}
+                            @if ($termDe !== '' && $termDe !== $termEn)
+                                · DE {{ $termDe }}
+                            @endif
+                        </p>
+                        <div class="admin-hub__card-actions">
+                            <x-admin.icon-btn
+                                kind="edit"
+                                type="button"
+                                data-admin-open-modal="admin-glossary-edit-modal"
+                                data-admin-modal-title="Edit {{ $termId }}"
+                                data-admin-glossary-id="{{ $termId }}"
+                                data-admin-fill="{{ $fillJson }}"
+                            />
+                            <form method="post" action="{{ locale_route('admin.glossary.destroy', ['termId' => $termId]) }}" data-admin-confirm-delete data-confirm-message="Delete term?">
+                                @csrf
+                                @method('DELETE')
+                                <x-admin.icon-btn kind="delete" type="submit" />
+                            </form>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+
+            <div class="supplier-table-wrap" data-admin-overview-panel="table">
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Term EN</th>
+                            <th>Term DE</th>
+                            <th>Category</th>
+                            <th>Id</th>
+                            <th class="admin-hub__table-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($terms as $term)
+                            @php
+                                $termId = $term['id'] ?? '';
+                                $termEn = $term['term']['en'] ?? $termId ?: '-';
+                                $termDe = $term['term']['de'] ?? '';
+                                $category = $term['category'] ?? '';
+                                $searchText = implode(' ', [
+                                    $termId,
+                                    $termDe,
+                                    $termEn,
+                                    $term['definition']['de'] ?? '',
+                                    $term['definition']['en'] ?? '',
+                                    $category,
+                                ]);
+                                $termFill = [
+                                    'term_de' => $termDe,
+                                    'term_en' => $term['term']['en'] ?? '',
+                                    'definition_de' => $term['definition']['de'] ?? '',
+                                    'definition_en' => $term['definition']['en'] ?? '',
+                                    'category' => $term['category'] ?? 'data',
+                                ];
+                                $fillJson = json_encode($termFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                            @endphp
+                            <tr data-overview-item data-search-text="{{ $searchText }}">
+                                <td><strong>{{ $termEn }}</strong></td>
+                                <td>{{ $termDe !== '' ? $termDe : '—' }}</td>
+                                <td>{{ $category }}</td>
+                                <td><code>{{ $termId }}</code></td>
+                                <td class="admin-hub__table-actions">
+                                    <x-admin.icon-btn
+                                        kind="edit"
+                                        type="button"
+                                        data-admin-open-modal="admin-glossary-edit-modal"
+                                        data-admin-modal-title="Edit {{ $termId }}"
+                                        data-admin-glossary-id="{{ $termId }}"
+                                        data-admin-fill="{{ $fillJson }}"
+                                    />
+                                    <form method="post" action="{{ locale_route('admin.glossary.destroy', ['termId' => $termId]) }}" data-admin-confirm-delete data-confirm-message="Delete term?">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-admin.icon-btn kind="delete" type="submit" />
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <x-admin.modal id="admin-glossary-create-modal" title="Add term" titleDe="Term anlegen" titleEn="Add term">

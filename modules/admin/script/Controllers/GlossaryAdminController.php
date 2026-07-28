@@ -14,12 +14,15 @@ use RuntimeException;
 
 class GlossaryAdminController extends AdminController
 {
-    private CatalogJsonWriter $writer;
+    private const CATALOG_DIR = 'content/catalogs/glossary';
+
+    private const CORE_FILE = 'terms-core.json';
+
+    private const BUZZ_FILE = 'terms-buzzwords.json';
 
     public function __construct(AccountAuth $auth)
     {
         parent::__construct($auth);
-        $this->writer = new CatalogJsonWriter(base_path('content/catalogs/glossary'), 'terms-core.json');
     }
 
     public function index(Request $request): View
@@ -44,7 +47,7 @@ class GlossaryAdminController extends AdminController
         }
 
         return $this->adminView('admin::catalogs.glossary-index', [
-            'terms' => array_slice($terms, 0, 200),
+            'terms' => $terms,
             'total' => count($allTerms),
             'q' => $q,
         ]);
@@ -63,23 +66,24 @@ class GlossaryAdminController extends AdminController
         ]);
 
         try {
-            $terms = $this->safeReadList();
             $id = $data['id'] ?: Str::slug($data['term_en']);
-            foreach ($terms as $term) {
+            foreach ($this->safeReadList() as $term) {
                 if (($term['id'] ?? '') === $id) {
                     return back()->withErrors(['id' => 'Term id already exists.'])->withInput();
                 }
             }
-            $terms[] = ContentOwnership::stampRow([
+
+            $core = $this->readFile(self::CORE_FILE);
+            $core[] = ContentOwnership::stampRow([
                 'id' => $id,
-                'order' => count($terms) + 1,
+                'order' => count($this->safeReadList()) + 1,
                 'category' => $data['category'] ?: 'data',
                 'term' => ['de' => $data['term_de'], 'en' => $data['term_en']],
                 'aliases' => [],
                 'definition' => ['de' => $data['definition_de'], 'en' => $data['definition_en']],
                 'related' => [],
             ], $user->id);
-            $this->writer->write($terms);
+            $this->writeFile(self::CORE_FILE, $core);
         } catch (RuntimeException $e) {
             return back()->withErrors(['term_en' => $e->getMessage()])->withInput();
         }
@@ -100,7 +104,9 @@ class GlossaryAdminController extends AdminController
         ]);
 
         try {
-            $terms = $this->safeReadList();
+            $file = $this->fileForTerm($termId);
+            abort_unless($file !== null, 404);
+            $terms = $this->readFile($file);
             $found = false;
             foreach ($terms as $i => $term) {
                 if (($term['id'] ?? '') !== $termId) {
@@ -115,7 +121,7 @@ class GlossaryAdminController extends AdminController
                 break;
             }
             abort_unless($found, 404);
-            $this->writer->write($terms);
+            $this->writeFile($file, $terms);
         } catch (RuntimeException $e) {
             return back()->withErrors(['term_en' => $e->getMessage()])->withInput();
         }
@@ -128,11 +134,13 @@ class GlossaryAdminController extends AdminController
         abort_unless(preg_match('/^[a-z0-9-]+$/', $termId) === 1, 404);
         $this->assertContentMutation(ContentAreas::GLOSSARY, $this->termOwner($termId));
         try {
+            $file = $this->fileForTerm($termId);
+            abort_unless($file !== null, 404);
             $terms = array_values(array_filter(
-                $this->safeReadList(),
+                $this->readFile($file),
                 static fn (array $term): bool => ($term['id'] ?? '') !== $termId
             ));
-            $this->writer->write($terms);
+            $this->writeFile($file, $terms);
         } catch (RuntimeException $e) {
             return back()->withErrors(['id' => $e->getMessage()]);
         }
@@ -158,12 +166,49 @@ class GlossaryAdminController extends AdminController
      */
     private function safeReadList(): array
     {
+        return array_values(array_merge(
+            $this->readFile(self::CORE_FILE),
+            $this->readFile(self::BUZZ_FILE),
+        ));
+    }
+
+    private function fileForTerm(string $termId): ?string
+    {
+        foreach ([self::CORE_FILE, self::BUZZ_FILE] as $file) {
+            foreach ($this->readFile($file) as $term) {
+                if (($term['id'] ?? '') === $termId) {
+                    return $file;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function readFile(string $file): array
+    {
         try {
-            $data = $this->writer->read();
+            $data = $this->writerFor($file)->read();
         } catch (RuntimeException) {
             return [];
         }
 
         return array_values(array_filter($data, 'is_array'));
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $terms
+     */
+    private function writeFile(string $file, array $terms): void
+    {
+        $this->writerFor($file)->write(array_values($terms));
+    }
+
+    private function writerFor(string $file): CatalogJsonWriter
+    {
+        return new CatalogJsonWriter(base_path(self::CATALOG_DIR), $file);
     }
 }

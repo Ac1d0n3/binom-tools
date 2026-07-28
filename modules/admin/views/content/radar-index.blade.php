@@ -35,20 +35,18 @@
                     <span class="admin-hub__meta">{{ $item['id'] ?? '' }} · {{ $item['published_at'] ?? '' }} · {{ $item['language'] ?? '' }}</span>
                 </div>
                 <div class="sp-list__actions">
-                    <button
+                    <x-admin.icon-btn
+                        kind="edit"
                         type="button"
-                        class="tools-btn tools-btn--small tools-btn--primary"
                         data-admin-open-modal="admin-radar-news-edit-modal"
                         data-admin-modal-title="Edit {{ $item['id'] ?? '' }}"
                         data-admin-item-id="{{ $item['id'] }}"
                         data-admin-fill="{{ json_encode($itemFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
-                        data-text-de="Bearbeiten"
-                        data-text-en="Edit"
-                    >Edit</button>
+                    />
                     <form method="post" action="{{ locale_route('admin.radar.items.destroy', ['itemId' => $item['id']]) }}" data-admin-confirm-delete data-confirm-message="Delete news item?">
                         @csrf
                         @method('DELETE')
-                        <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
+                        <x-admin.icon-btn kind="delete" type="submit" />
                     </form>
                 </div>
             </div>
@@ -56,11 +54,12 @@
         };
     @endphp
     <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
-        <x-admin.sticky-header>
+        <x-admin.sticky-header :count="count($sources) + (count($orphanItems) > 0 ? 1 : 0)">
             <x-slot:search>
                 <input type="search" class="tools-input" data-overview-search placeholder="Search sources / news…" aria-label="Search">
             </x-slot:search>
             <x-slot:actions>
+                <x-admin.layout-toggle />
                 <button type="button" class="tools-btn" data-admin-open-modal="admin-radar-news-create-modal" data-text-de="News anlegen" data-text-en="Add news">Add news</button>
                 <button type="button" class="tools-btn tools-btn--primary" data-admin-open-modal="admin-radar-source-create-modal" data-text-de="Quelle hinzufügen" data-text-en="Add source">Add source</button>
             </x-slot:actions>
@@ -75,30 +74,32 @@
 
         <p class="admin-hub__meta" data-overview-empty hidden data-text-de="Keine Treffer." data-text-en="No matches.">No matches.</p>
 
-        <div class="sp-list">
-            @foreach ($sources as $source)
-                @php
-                    $sid = (string) ($source['id'] ?? '');
-                    $news = $itemsBySource[$sid] ?? [];
-                    $sourceUrl = $source['source_url'] ?? $source['url'] ?? '';
-                    $feedUrl = $source['feed_url'] ?? '';
-                    $searchBits = [$sid, $source['name'] ?? '', $source['short_name'] ?? '', $sourceUrl, $feedUrl, $source['language'] ?? '', $source['type'] ?? ''];
-                    foreach ($news as $item) {
-                        $searchBits[] = $item['id'] ?? '';
-                        $searchBits[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['en'] ?? '') : ($item['title'] ?? '');
-                        $searchBits[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['de'] ?? '') : '';
-                    }
-                    $sourceFill = [
-                        'name' => $source['name'] ?? '',
-                        'short_name' => $source['short_name'] ?? '',
-                        'source_url' => $sourceUrl,
-                        'feed_url' => $feedUrl,
-                        'language' => $source['language'] ?? 'en',
-                        'type' => $source['type'] ?? 'Governance News',
-                    ];
-                @endphp
-                <div class="admin-hub__expand-block" data-overview-item data-search-text="{{ implode(' ', $searchBits) }}">
-                    <div class="sp-list__row admin-hub__expand-head">
+        <div class="admin-hub__overview" data-admin-overview-root data-layout="table">
+            <div class="admin-hub__card-grid" data-admin-overview-panel="cards" hidden>
+                @foreach ($sources as $source)
+                    @php
+                        $sid = (string) ($source['id'] ?? '');
+                        $news = $itemsBySource[$sid] ?? [];
+                        $sourceUrl = $source['source_url'] ?? $source['url'] ?? '';
+                        $feedUrl = $source['feed_url'] ?? '';
+                        $searchBits = [$sid, $source['name'] ?? '', $source['short_name'] ?? '', $sourceUrl, $feedUrl, $source['language'] ?? '', $source['type'] ?? ''];
+                        foreach ($news as $item) {
+                            $searchBits[] = $item['id'] ?? '';
+                            $searchBits[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['en'] ?? '') : ($item['title'] ?? '');
+                            $searchBits[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['de'] ?? '') : '';
+                        }
+                        $sourceFill = [
+                            'name' => $source['name'] ?? '',
+                            'short_name' => $source['short_name'] ?? '',
+                            'source_url' => $sourceUrl,
+                            'feed_url' => $feedUrl,
+                            'language' => $source['language'] ?? 'en',
+                            'type' => $source['type'] ?? 'Governance News',
+                        ];
+                        $sourceFillJson = json_encode($sourceFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                        $sourceName = $source['name'] ?? $sid;
+                    @endphp
+                    <article class="admin-hub__card" data-overview-item data-search-text="{{ implode(' ', $searchBits) }}">
                         <button
                             type="button"
                             class="admin-hub__expand-toggle"
@@ -107,49 +108,45 @@
                             data-admin-expand-toggle
                         >
                             <span class="admin-hub__expand-chevron" aria-hidden="true"></span>
-                            <span class="sp-list__identity">
-                                <strong>{{ $source['name'] ?? $sid }}</strong>
-                                <span class="admin-hub__meta">{{ $sid }} · {{ count($news) }} news · {{ $source['language'] ?? '' }} · {{ $source['type'] ?? '' }}</span>
+                            <span>
+                                <h3 class="admin-hub__card-title">{{ $sourceName }}</h3>
+                                <p class="admin-hub__card-meta">{{ $sid }} · {{ count($news) }} news · {{ $source['language'] ?? '' }} · {{ $source['type'] ?? '' }}</p>
                             </span>
                         </button>
-                        <div class="sp-list__actions">
-                            <button
+                        <div class="admin-hub__card-actions">
+                            <x-admin.icon-btn
+                                kind="edit"
                                 type="button"
-                                class="tools-btn tools-btn--small tools-btn--primary"
                                 data-admin-open-modal="admin-radar-source-edit-modal"
-                                data-admin-modal-title="Edit {{ $source['name'] ?? $sid }}"
+                                data-admin-modal-title="Edit {{ $sourceName }}"
                                 data-admin-source-id="{{ $sid }}"
-                                data-admin-fill="{{ json_encode($sourceFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
-                                data-text-de="Bearbeiten"
-                                data-text-en="Edit"
-                            >Edit</button>
+                                data-admin-fill="{{ $sourceFillJson }}"
+                            />
                             <form method="post" action="{{ locale_route('admin.radar.sources.destroy', ['sourceId' => $sid]) }}" style="display:inline" data-admin-confirm-delete data-confirm-message="Delete source?">
                                 @csrf
                                 @method('DELETE')
-                                <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
+                                <x-admin.icon-btn kind="delete" type="submit" />
                             </form>
                         </div>
-                    </div>
-                    <div class="admin-hub__expand-children" id="admin-radar-news-{{ $sid }}" hidden>
-                        @forelse ($news as $item)
-                            @php $renderNewsRow($item); @endphp
-                        @empty
-                            <p class="admin-hub__meta" data-text-de="Keine News für diese Quelle." data-text-en="No news for this source.">No news for this source.</p>
-                        @endforelse
-                    </div>
-                </div>
-            @endforeach
+                        <div class="admin-hub__expand-children" id="admin-radar-news-{{ $sid }}" hidden>
+                            @forelse ($news as $item)
+                                @php $renderNewsRow($item); @endphp
+                            @empty
+                                <p class="admin-hub__meta" data-text-de="Keine News für diese Quelle." data-text-en="No news for this source.">No news for this source.</p>
+                            @endforelse
+                        </div>
+                    </article>
+                @endforeach
 
-            @if (count($orphanItems) > 0)
-                @php
-                    $orphanSearch = ['manual', 'orphan', 'unassigned'];
-                    foreach ($orphanItems as $item) {
-                        $orphanSearch[] = $item['id'] ?? '';
-                        $orphanSearch[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['en'] ?? '') : ($item['title'] ?? '');
-                    }
-                @endphp
-                <div class="admin-hub__expand-block" data-overview-item data-search-text="{{ implode(' ', $orphanSearch) }}">
-                    <div class="sp-list__row admin-hub__expand-head">
+                @if (count($orphanItems) > 0)
+                    @php
+                        $orphanSearch = ['manual', 'orphan', 'unassigned'];
+                        foreach ($orphanItems as $item) {
+                            $orphanSearch[] = $item['id'] ?? '';
+                            $orphanSearch[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['en'] ?? '') : ($item['title'] ?? '');
+                        }
+                    @endphp
+                    <article class="admin-hub__card" data-overview-item data-search-text="{{ implode(' ', $orphanSearch) }}">
                         <button
                             type="button"
                             class="admin-hub__expand-toggle"
@@ -158,19 +155,104 @@
                             data-admin-expand-toggle
                         >
                             <span class="admin-hub__expand-chevron" aria-hidden="true"></span>
-                            <span class="sp-list__identity">
-                                <strong data-text-de="Ohne Quelle / Manual" data-text-en="Unassigned / manual">Unassigned / manual</strong>
-                                <span class="admin-hub__meta">{{ count($orphanItems) }} news</span>
+                            <span>
+                                <h3 class="admin-hub__card-title" data-text-de="Ohne Quelle / Manual" data-text-en="Unassigned / manual">Unassigned / manual</h3>
+                                <p class="admin-hub__card-meta">{{ count($orphanItems) }} news</p>
                             </span>
                         </button>
-                    </div>
-                    <div class="admin-hub__expand-children" id="admin-radar-news-manual" hidden>
-                        @foreach ($orphanItems as $item)
-                            @php $renderNewsRow($item); @endphp
+                        <div class="admin-hub__expand-children" id="admin-radar-news-manual" hidden>
+                            @foreach ($orphanItems as $item)
+                                @php $renderNewsRow($item); @endphp
+                            @endforeach
+                        </div>
+                    </article>
+                @endif
+            </div>
+
+            <div class="supplier-table-wrap" data-admin-overview-panel="table">
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Id</th>
+                            <th>News</th>
+                            <th>Lang</th>
+                            <th>Type</th>
+                            <th class="admin-hub__table-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($sources as $source)
+                            @php
+                                $sid = (string) ($source['id'] ?? '');
+                                $news = $itemsBySource[$sid] ?? [];
+                                $sourceUrl = $source['source_url'] ?? $source['url'] ?? '';
+                                $feedUrl = $source['feed_url'] ?? '';
+                                $searchBits = [$sid, $source['name'] ?? '', $source['short_name'] ?? '', $sourceUrl, $feedUrl, $source['language'] ?? '', $source['type'] ?? ''];
+                                foreach ($news as $item) {
+                                    $searchBits[] = $item['id'] ?? '';
+                                    $searchBits[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['en'] ?? '') : ($item['title'] ?? '');
+                                    $searchBits[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['de'] ?? '') : '';
+                                }
+                                $sourceFill = [
+                                    'name' => $source['name'] ?? '',
+                                    'short_name' => $source['short_name'] ?? '',
+                                    'source_url' => $sourceUrl,
+                                    'feed_url' => $feedUrl,
+                                    'language' => $source['language'] ?? 'en',
+                                    'type' => $source['type'] ?? 'Governance News',
+                                ];
+                                $sourceFillJson = json_encode($sourceFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                                $sourceName = $source['name'] ?? $sid;
+                            @endphp
+                            <tr data-overview-item data-search-text="{{ implode(' ', $searchBits) }}">
+                                <td><strong>{{ $sourceName }}</strong></td>
+                                <td><code>{{ $sid }}</code></td>
+                                <td>{{ count($news) }}</td>
+                                <td>{{ $source['language'] ?? '' }}</td>
+                                <td>{{ $source['type'] ?? '' }}</td>
+                                <td class="admin-hub__table-actions">
+                                    <x-admin.icon-btn
+                                        kind="edit"
+                                        type="button"
+                                        data-admin-open-modal="admin-radar-source-edit-modal"
+                                        data-admin-modal-title="Edit {{ $sourceName }}"
+                                        data-admin-source-id="{{ $sid }}"
+                                        data-admin-fill="{{ $sourceFillJson }}"
+                                    />
+                                    <form method="post" action="{{ locale_route('admin.radar.sources.destroy', ['sourceId' => $sid]) }}" style="display:inline" data-admin-confirm-delete data-confirm-message="Delete source?">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-admin.icon-btn kind="delete" type="submit" />
+                                    </form>
+                                </td>
+                            </tr>
                         @endforeach
-                    </div>
-                </div>
-            @endif
+
+                        @if (count($orphanItems) > 0)
+                            @php
+                                $orphanSearch = ['manual', 'orphan', 'unassigned'];
+                                foreach ($orphanItems as $item) {
+                                    $orphanSearch[] = $item['id'] ?? '';
+                                    $orphanSearch[] = is_array($item['title_i18n'] ?? null) ? ($item['title_i18n']['en'] ?? '') : ($item['title'] ?? '');
+                                }
+                            @endphp
+                            <tr data-overview-item data-search-text="{{ implode(' ', $orphanSearch) }}">
+                                <td>
+                                    <strong data-text-de="Ohne Quelle / Manual" data-text-en="Unassigned / manual">Unassigned / manual</strong>
+                                </td>
+                                <td><code>manual</code></td>
+                                <td>{{ count($orphanItems) }}</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td class="admin-hub__table-actions">
+                                    <span class="admin-hub__meta" data-text-de="News in Karten-Ansicht" data-text-en="Edit news in Cards view">Edit news in Cards view</span>
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <x-admin.modal id="admin-radar-news-create-modal" title="Add news" titleDe="News anlegen" titleEn="Add news">

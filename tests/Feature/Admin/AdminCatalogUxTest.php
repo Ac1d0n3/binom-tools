@@ -155,8 +155,9 @@ class AdminCatalogUxTest extends TestCase
             ->assertSee('admin-radar-news-edit-modal', false)
             ->assertSee('admin-radar-source-create-modal', false)
             ->assertSee('admin-radar-source-edit-modal', false)
-            ->assertSee('admin-hub__expand-block', false)
+            ->assertSee('admin-hub__expand-children', false)
             ->assertSee('data-admin-expand-toggle', false)
+            ->assertSee('data-admin-overview-root', false)
             ->assertSee('admin-hub__sticky', false);
     }
 
@@ -216,6 +217,52 @@ class AdminCatalogUxTest extends TestCase
             ->assertSee('admin-hub--md-editor', false)
             ->assertSee('data-admin-confirm-delete-modal', false)
             ->assertDontSee('admin-hub__editor-grid--split', false);
+    }
+
+    public function test_admin_overviews_expose_cards_and_table_layout_toggle(): void
+    {
+        $this->login();
+
+        foreach ([
+            '/admin/suppliers',
+            '/admin/vendors',
+            '/admin/glossary',
+            '/admin/radar',
+            '/admin/stories',
+            '/admin/plan-templates',
+            '/admin/users',
+            '/admin/teams',
+        ] as $path) {
+            $this->get($path)
+                ->assertOk()
+                ->assertSee('data-admin-layout-toggle-group', false)
+                ->assertSee('data-admin-layout-toggle="cards"', false)
+                ->assertSee('data-admin-layout-toggle="table"', false)
+                ->assertSee('fa-grip', false)
+                ->assertSee('fa-table', false)
+                ->assertDontSee('data-text-de="Karten"', false)
+                ->assertDontSee('data-text-en="Cards"', false)
+                ->assertSee('data-admin-overview-root', false)
+                ->assertSee('data-layout="table"', false)
+                ->assertSee('data-admin-overview-panel="cards"', false)
+                ->assertSee('data-admin-overview-panel="table"', false)
+                ->assertSee('admin-hub__card-grid', false)
+                ->assertSee('supplier-table', false);
+        }
+
+        // Catalog/content pages always have rows → icon actions must be present.
+        foreach (['/admin/suppliers', '/admin/stories', '/admin/glossary'] as $path) {
+            $this->get($path)
+                ->assertOk()
+                ->assertSee('admin-hub__icon-btn', false)
+                ->assertSee('fa-pen', false);
+        }
+
+        // Full glossary (core + buzzwords), not the old 200-term slice.
+        $this->get('/admin/glossary')
+            ->assertOk()
+            ->assertSee('medallion-architecture', false)
+            ->assertSee('data-admin-glossary-id="pii"', false);
     }
 
     private function login(): void

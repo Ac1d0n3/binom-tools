@@ -259,24 +259,43 @@ function productsForVendor(vendorId) {
     /** @type {Array<Record<string, unknown>>} */
     const products = [];
     const seen = new Set();
-    document.querySelectorAll(`[data-admin-edit-vendor][data-admin-vendor-id="${CSS.escape(vendorId)}"][data-admin-edit-product]`).forEach((btn) => {
+
+    const pushProduct = (parsed) => {
+        if (!parsed || typeof parsed !== 'object') {
+            return;
+        }
+        const id = String(parsed.id || '');
+        if (!id || seen.has(id)) {
+            return;
+        }
+        seen.add(id);
+        products.push(/** @type {Record<string, unknown>} */ (parsed));
+    };
+
+    document.querySelectorAll(`[data-admin-vendor-id="${CSS.escape(vendorId)}"][data-admin-vendor-products]`).forEach((el) => {
         try {
-            const parsed = JSON.parse(btn.getAttribute('data-admin-edit-product') || '{}');
-            const id = String(parsed.id || '');
-            if (!id || seen.has(id)) {
-                return;
+            const parsed = JSON.parse(el.getAttribute('data-admin-vendor-products') || '[]');
+            if (Array.isArray(parsed)) {
+                parsed.forEach((item) => pushProduct(item));
             }
-            seen.add(id);
-            products.push(/** @type {Record<string, unknown>} */ (parsed));
         } catch {
             // ignore
         }
     });
+
+    document.querySelectorAll(`[data-admin-edit-vendor][data-admin-vendor-id="${CSS.escape(vendorId)}"][data-admin-edit-product]`).forEach((btn) => {
+        try {
+            pushProduct(JSON.parse(btn.getAttribute('data-admin-edit-product') || '{}'));
+        } catch {
+            // ignore
+        }
+    });
+
     return products;
 }
 
 /**
- * Resolve full product payload from list-row edit buttons.
+ * Resolve full product payload from vendor product caches / legacy edit buttons.
  * @param {string} productId
  * @returns {Record<string, unknown>|null}
  */
@@ -284,10 +303,30 @@ function findProductPayload(productId) {
     if (!productId) {
         return null;
     }
-    const buttons = document.querySelectorAll('[data-admin-edit-product]');
-    for (const btn of buttons) {
+
+    const nodes = document.querySelectorAll('[data-admin-vendor-products], [data-admin-edit-product]');
+    for (const node of nodes) {
+        const bulk = node.getAttribute('data-admin-vendor-products');
+        if (bulk) {
+            try {
+                const parsed = JSON.parse(bulk);
+                if (Array.isArray(parsed)) {
+                    const match = parsed.find((item) => item && String(item.id || '') === productId);
+                    if (match && typeof match === 'object') {
+                        return /** @type {Record<string, unknown>} */ (match);
+                    }
+                }
+            } catch {
+                // ignore
+            }
+        }
+
+        const single = node.getAttribute('data-admin-edit-product');
+        if (!single) {
+            continue;
+        }
         try {
-            const parsed = JSON.parse(btn.getAttribute('data-admin-edit-product') || '{}');
+            const parsed = JSON.parse(single || '{}');
             if (parsed && typeof parsed === 'object' && String(parsed.id || '') === productId) {
                 return /** @type {Record<string, unknown>} */ (parsed);
             }
@@ -295,6 +334,7 @@ function findProductPayload(productId) {
             // ignore
         }
     }
+
     return null;
 }
 
@@ -556,30 +596,104 @@ function initAdminFilter(root = document) {
         }
         filterRoot.dataset.adminFilterBound = 'true';
         const search = filterRoot.querySelector('[data-overview-search]');
-        const items = filterRoot.querySelectorAll('[data-overview-item]');
         const empty = filterRoot.querySelector('[data-overview-empty]');
-        if (!(search instanceof HTMLInputElement) || items.length === 0) {
+        const countEl = filterRoot.querySelector('[data-overview-result-count]');
+        if (!(search instanceof HTMLInputElement)) {
             return;
         }
 
         const apply = () => {
             const q = search.value.trim().toLowerCase();
+            const items = filterRoot.querySelectorAll('[data-overview-item]');
             let visible = 0;
             items.forEach((item) => {
                 const text = (item.getAttribute('data-search-text') || item.textContent || '').toLowerCase();
-                const show = q === '' || text.includes(q);
-                item.hidden = !show;
-                if (show) {
-                    visible += 1;
+                const match = q === '' || text.includes(q);
+                item.hidden = !match;
+                if (! match) {
+                    return;
                 }
+                const panel = item.closest('[data-admin-overview-panel]');
+                if (panel instanceof HTMLElement && panel.hidden) {
+                    return;
+                }
+                const overview = item.closest('[data-admin-overview-root]');
+                if (overview instanceof HTMLElement) {
+                    const layout = overview.getAttribute('data-layout') || 'table';
+                    if (panel instanceof HTMLElement && panel.getAttribute('data-admin-overview-panel') !== layout) {
+                        return;
+                    }
+                }
+                visible += 1;
             });
             if (empty instanceof HTMLElement) {
                 empty.hidden = visible > 0;
             }
+            if (countEl instanceof HTMLElement) {
+                countEl.textContent = String(visible);
+                countEl.setAttribute('data-i18n-count', String(visible));
+            }
         };
 
+        filterRoot._adminFilterApply = apply;
         search.addEventListener('input', apply);
         apply();
+    });
+}
+
+function initAdminOverviewLayout(root = document) {
+    const STORAGE_KEY = 'binom-tools-admin-overview-layout';
+
+    root.querySelectorAll('[data-admin-overview-root]').forEach((overview) => {
+        if (!(overview instanceof HTMLElement) || overview.dataset.adminOverviewLayoutBound === 'true') {
+            return;
+        }
+        overview.dataset.adminOverviewLayoutBound = 'true';
+
+        let stored = 'table';
+        try {
+            const value = localStorage.getItem(STORAGE_KEY);
+            if (value === 'cards' || value === 'table') {
+                stored = value;
+            }
+        } catch {
+            // ignore
+        }
+
+        const setLayout = (layout) => {
+            const mode = layout === 'cards' ? 'cards' : 'table';
+            overview.setAttribute('data-layout', mode);
+            overview.querySelectorAll('[data-admin-overview-panel]').forEach((panel) => {
+                if (!(panel instanceof HTMLElement)) {
+                    return;
+                }
+                panel.hidden = panel.getAttribute('data-admin-overview-panel') !== mode;
+            });
+            const scope = overview.closest('[data-overview-filter-root]') || overview;
+            scope.querySelectorAll('[data-admin-layout-toggle]').forEach((btn) => {
+                const active = btn.getAttribute('data-admin-layout-toggle') === mode;
+                btn.classList.toggle('is-active', active);
+                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+            try {
+                localStorage.setItem(STORAGE_KEY, mode);
+            } catch {
+                // ignore
+            }
+            const filterRoot = overview.closest('[data-overview-filter-root]');
+            if (filterRoot && typeof filterRoot._adminFilterApply === 'function') {
+                filterRoot._adminFilterApply();
+            }
+        };
+
+        const scope = overview.closest('[data-overview-filter-root]') || overview;
+        scope.querySelectorAll('[data-admin-layout-toggle]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                setLayout(btn.getAttribute('data-admin-layout-toggle') || 'table');
+            });
+        });
+
+        setLayout(stored);
     });
 }
 
@@ -785,6 +899,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initVendorWorkspace();
     initExpandToggles();
     initAdminFilter();
+    initAdminOverviewLayout();
     initAdminUploadAuto();
     initAdminImagesRail();
     initAdminCopy();

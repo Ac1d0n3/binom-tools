@@ -4,7 +4,7 @@
 
 @section('admin_content')
     <div class="tools-content tools-content--wide admin-hub" data-overview-filter-root>
-        <x-admin.sticky-header>
+        <x-admin.sticky-header :count="count($results)">
             <x-slot:search>
                 <input type="search" class="tools-input" data-overview-search placeholder="Search URLs / sources…" aria-label="Search">
             </x-slot:search>

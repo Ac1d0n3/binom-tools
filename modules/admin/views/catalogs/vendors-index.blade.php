@@ -14,11 +14,12 @@
         $familyOptions = $families ?? [];
     @endphp
     <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
-        <x-admin.sticky-header>
+        <x-admin.sticky-header :count="count($vendors)">
             <x-slot:search>
                 <input type="search" class="tools-input" data-overview-search placeholder="Search vendors / products…" aria-label="Search">
             </x-slot:search>
             <x-slot:actions>
+                <x-admin.layout-toggle />
                 <button type="button" class="tools-btn" data-admin-open-modal="admin-product-create-modal" data-text-de="Produkt anlegen" data-text-en="Add product">Add product</button>
                 <button type="button" class="tools-btn tools-btn--primary" data-admin-open-modal="admin-vendor-create-modal" data-text-de="Vendor anlegen" data-text-en="Add vendor">Add vendor</button>
             </x-slot:actions>
@@ -33,89 +34,110 @@
 
         <p class="admin-hub__meta" data-overview-empty hidden data-text-de="Keine Treffer." data-text-en="No matches.">No matches.</p>
 
-        <div class="sp-list">
-            @foreach ($vendors as $id => $labels)
-                @php
-                    $products = $productsByVendor[$id] ?? [];
-                    $searchBits = [$id, $labels['de'] ?? '', $labels['en'] ?? ''];
-                    foreach ($products as $product) {
-                        $searchBits[] = $product['id'] ?? '';
-                        $searchBits[] = $product['label']['en'] ?? '';
-                        $searchBits[] = $product['label']['de'] ?? '';
-                    }
-                    $vendorFill = [
-                        'name_de' => $labels['de'] ?? '',
-                        'name_en' => $labels['en'] ?? '',
-                    ];
-                    $firstProductId = $products[0]['id'] ?? '';
-                @endphp
-                <div class="admin-hub__vendor-block" data-overview-item data-search-text="{{ implode(' ', $searchBits) }}">
-                    <div class="sp-list__row admin-hub__vendor-head">
-                        <button
-                            type="button"
-                            class="admin-hub__vendor-toggle"
-                            aria-expanded="false"
-                            aria-controls="admin-vendor-products-{{ $id }}"
-                            data-admin-vendor-toggle
-                        >
-                            <span class="admin-hub__vendor-chevron" aria-hidden="true"></span>
-                            <span class="sp-list__identity">
-                                <strong>{{ $labels['en'] ?? $id }}</strong>
-                                <span class="admin-hub__meta">{{ $id }} · {{ count($products) }} products · DE {{ $labels['de'] ?? '—' }}</span>
-                            </span>
-                        </button>
-                        <div class="sp-list__actions">
-                            <button
+        <div class="admin-hub__overview" data-admin-overview-root data-layout="table">
+            <div class="admin-hub__card-grid" data-admin-overview-panel="cards" hidden>
+                @foreach ($vendors as $id => $labels)
+                    @php
+                        $products = $productsByVendor[$id] ?? [];
+                        $searchBits = [$id, $labels['de'] ?? '', $labels['en'] ?? ''];
+                        foreach ($products as $product) {
+                            $searchBits[] = $product['id'] ?? '';
+                            $searchBits[] = $product['label']['en'] ?? '';
+                            $searchBits[] = $product['label']['de'] ?? '';
+                        }
+                        $vendorFill = [
+                            'name_de' => $labels['de'] ?? '',
+                            'name_en' => $labels['en'] ?? '',
+                        ];
+                        $vendorFillJson = json_encode($vendorFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                        $productsJson = json_encode(array_values($products), JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                        $firstProductId = $products[0]['id'] ?? '';
+                        $nameEn = $labels['en'] ?? $id;
+                        $nameDe = $labels['de'] ?? '';
+                    @endphp
+                    <article class="admin-hub__card" data-overview-item data-search-text="{{ implode(' ', $searchBits) }}">
+                        <h3 class="admin-hub__card-title">{{ $nameEn }}</h3>
+                        <p class="admin-hub__card-meta">
+                            {{ $id }} · {{ count($products) }} products
+                            @if ($nameDe !== '' && $nameDe !== $nameEn)
+                                · DE {{ $nameDe }}
+                            @endif
+                        </p>
+                        <div class="admin-hub__card-actions">
+                            <x-admin.icon-btn
+                                kind="edit"
                                 type="button"
-                                class="tools-btn tools-btn--small tools-btn--primary"
                                 data-admin-edit-vendor
-                                data-admin-modal-title="Edit {{ $labels['en'] ?? $id }}"
-                                data-admin-fill="{{ json_encode($vendorFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
+                                data-admin-modal-title="Edit {{ $nameEn }}"
+                                data-admin-fill="{{ $vendorFillJson }}"
                                 data-admin-vendor-id="{{ $id }}"
                                 data-admin-product-id="{{ $firstProductId }}"
-                                data-text-de="Bearbeiten"
-                                data-text-en="Edit"
-                            >Edit</button>
+                                data-admin-vendor-products="{{ $productsJson }}"
+                            />
                             <form method="post" action="{{ locale_route('admin.vendors.destroy', ['vendorId' => $id]) }}" style="display:inline" data-admin-confirm-delete data-confirm-message="Delete vendor label?">
                                 @csrf
                                 @method('DELETE')
-                                <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
+                                <x-admin.icon-btn kind="delete" type="submit" />
                             </form>
                         </div>
-                    </div>
-                    <div class="admin-hub__product-list" id="admin-vendor-products-{{ $id }}" hidden>
-                        @forelse ($products as $product)
-                            <div class="sp-list__row">
-                                <div class="sp-list__identity">
-                                    <strong>{{ $product['label']['en'] ?? $product['id'] ?? '-' }}</strong>
-                                    <span class="admin-hub__meta">{{ $product['id'] ?? '' }} · {{ $product['family'] ?? '' }}</span>
-                                </div>
-                                <div class="sp-list__actions">
-                                    <button
+                    </article>
+                @endforeach
+            </div>
+
+            <div class="supplier-table-wrap" data-admin-overview-panel="table">
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Id</th>
+                            <th>Products</th>
+                            <th class="admin-hub__table-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($vendors as $id => $labels)
+                            @php
+                                $products = $productsByVendor[$id] ?? [];
+                                $searchBits = [$id, $labels['de'] ?? '', $labels['en'] ?? ''];
+                                foreach ($products as $product) {
+                                    $searchBits[] = $product['id'] ?? '';
+                                    $searchBits[] = $product['label']['en'] ?? '';
+                                    $searchBits[] = $product['label']['de'] ?? '';
+                                }
+                                $vendorFill = [
+                                    'name_de' => $labels['de'] ?? '',
+                                    'name_en' => $labels['en'] ?? '',
+                                ];
+                                $vendorFillJson = json_encode($vendorFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                                $firstProductId = $products[0]['id'] ?? '';
+                                $nameEn = $labels['en'] ?? $id;
+                                $nameDe = $labels['de'] ?? '';
+                            @endphp
+                            <tr data-overview-item data-search-text="{{ implode(' ', $searchBits) }}">
+                                <td><strong>{{ $nameEn }}</strong></td>
+                                <td><code>{{ $id }}</code></td>
+                                <td>{{ count($products) }}</td>
+                                <td class="admin-hub__table-actions">
+                                    <x-admin.icon-btn
+                                        kind="edit"
                                         type="button"
-                                        class="tools-btn tools-btn--small tools-btn--primary"
                                         data-admin-edit-vendor
-                                        data-admin-modal-title="Edit {{ $labels['en'] ?? $id }}"
-                                        data-admin-fill="{{ json_encode($vendorFill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
+                                        data-admin-modal-title="Edit {{ $nameEn }}"
+                                        data-admin-fill="{{ $vendorFillJson }}"
                                         data-admin-vendor-id="{{ $id }}"
-                                        data-admin-product-id="{{ $product['id'] }}"
-                                        data-admin-edit-product="{{ json_encode($product, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
-                                        data-text-de="Bearbeiten"
-                                        data-text-en="Edit"
-                                    >Edit</button>
-                                    <form method="post" action="{{ locale_route('admin.vendors.products.destroy', ['productId' => $product['id']]) }}" data-admin-confirm-delete data-confirm-message="Delete product?">
+                                        data-admin-product-id="{{ $firstProductId }}"
+                                    />
+                                    <form method="post" action="{{ locale_route('admin.vendors.destroy', ['vendorId' => $id]) }}" style="display:inline" data-admin-confirm-delete data-confirm-message="Delete vendor label?">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
+                                        <x-admin.icon-btn kind="delete" type="submit" />
                                     </form>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="admin-hub__meta">No products for this vendor.</p>
-                        @endforelse
-                    </div>
-                </div>
-            @endforeach
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <x-admin.modal id="admin-vendor-create-modal" title="Add vendor" titleDe="Vendor anlegen" titleEn="Add vendor">

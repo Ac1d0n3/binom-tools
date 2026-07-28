@@ -31,6 +31,15 @@ export function initOverviewFilters() {
         return;
     }
 
+    // Admin hub uses admin-hub.js filter + dual cards/table panels. Shared progressive
+    // reveal would clip table rows (batch size) with no sentinel host to load more.
+    if (
+        root.classList.contains('admin-hub')
+        || root.querySelector('[data-admin-overview-root]')
+    ) {
+        return;
+    }
+
     root.dataset.overviewFiltersBound = 'true';
 
     initTagSidebar(root);

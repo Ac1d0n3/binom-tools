@@ -4,7 +4,7 @@
 
 @section('admin_content')
     <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
-        <x-admin.sticky-header>
+        <x-admin.sticky-header :count="count($stories)">
             <x-slot:search>
                 <input
                     type="search"
@@ -57,11 +57,7 @@
                                 </span>
                             </div>
                         </div>
-                        <a
-                            href="{{ locale_route('accounts.story-acl.edit', ['slug' => $story['slug']]) }}"
-                            class="tools-btn tools-btn--secondary tools-btn--small"
-                            data-i18n="accounts.edit"
-                        >Edit</a>
+                        <x-admin.icon-btn kind="edit" :href="locale_route('accounts.story-acl.edit', ['slug' => $story['slug']])" />
                     </div>
                 @empty
                     <p class="tools-page-lead" data-i18n="accounts.noStories">No stories found.</p>

@@ -211,4 +211,28 @@ describe('attachOverviewProgressiveReveal', () => {
         expect(items.every((el) => !el.classList.contains(OVERVIEW_ITEM_UNREVEALED_CLASS))).toBe(true);
         expect(/** @type {HTMLElement} */ (sentinel).hidden).toBe(true);
     });
+
+    it('does not hide items when there is no reveal host (admin tables)', () => {
+        const root = document.createElement('div');
+        root.className = 'admin-hub';
+        root.setAttribute('data-overview-filter-root', '');
+        const table = document.createElement('table');
+        const tbody = document.createElement('tbody');
+
+        for (let i = 0; i < OVERVIEW_REVEAL_BATCH + 10; i += 1) {
+            const row = document.createElement('tr');
+            row.setAttribute('data-overview-item', '');
+            tbody.appendChild(row);
+        }
+
+        table.appendChild(tbody);
+        root.appendChild(table);
+        document.body.appendChild(root);
+
+        attachOverviewProgressiveReveal(root, { getSearchQuery: () => '' });
+
+        const items = Array.from(root.querySelectorAll('[data-overview-item]'));
+        expect(items).toHaveLength(OVERVIEW_REVEAL_BATCH + 10);
+        expect(items.every((el) => !el.classList.contains(OVERVIEW_ITEM_UNREVEALED_CLASS))).toBe(true);
+    });
 });

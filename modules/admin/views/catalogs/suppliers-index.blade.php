@@ -4,11 +4,12 @@
 
 @section('admin_content')
     <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
-        <x-admin.sticky-header>
+        <x-admin.sticky-header :count="count($products)">
             <x-slot:search>
                 <input type="search" class="tools-input" data-overview-search placeholder="Search sources…" aria-label="Search">
             </x-slot:search>
             <x-slot:actions>
+                <x-admin.layout-toggle />
                 <button type="button" class="tools-btn tools-btn--primary" data-admin-open-modal="admin-supplier-create-modal" data-text-de="Quelle anlegen" data-text-en="Add source">Add source</button>
             </x-slot:actions>
         </x-admin.sticky-header>
@@ -20,49 +21,110 @@
 
         <p class="admin-hub__meta" data-overview-empty hidden data-text-de="Keine Treffer." data-text-en="No matches.">No matches.</p>
 
-        <div class="sp-list">
-            @foreach ($products as $product)
-                @php
-                    $id = (string) ($product['id'] ?? '');
-                    $labelEn = $product['label']['en'] ?? $id;
-                    $labelDe = $product['label']['de'] ?? '';
-                    $domain = (string) ($product['domain'] ?? '');
-                    $domainLabel = is_array($domains[$domain] ?? null) ? ($domains[$domain]['en'] ?? $domain) : $domain;
-                    $entityCount = count($product['entities'] ?? []);
-                    $searchText = implode(' ', [$id, $labelEn, $labelDe, $domain, $domainLabel]);
-                    $fill = [
-                        'domain' => $domain,
-                        'order' => (string) ($product['order'] ?? 100),
-                        'label_de' => $labelDe,
-                        'label_en' => $labelEn,
-                        'purpose_de' => $product['shortPurpose']['de'] ?? '',
-                        'purpose_en' => $product['shortPurpose']['en'] ?? '',
-                    ];
-                @endphp
-                <div class="sp-list__row" data-overview-item data-search-text="{{ $searchText }}">
-                    <div class="sp-list__identity">
-                        <strong>{{ $labelEn }}</strong>
-                        <span class="admin-hub__meta">{{ $id }} · {{ $domainLabel }} · {{ $entityCount }} entities · DE {{ $labelDe !== '' ? $labelDe : '—' }}</span>
-                    </div>
-                    <div class="sp-list__actions">
-                        <button
-                            type="button"
-                            class="tools-btn tools-btn--small tools-btn--primary"
-                            data-admin-open-modal="admin-supplier-edit-modal"
-                            data-admin-modal-title="Edit {{ $labelEn }}"
-                            data-admin-supplier-id="{{ $id }}"
-                            data-admin-fill="{{ json_encode($fill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
-                            data-text-de="Bearbeiten"
-                            data-text-en="Edit"
-                        >Edit</button>
-                        <form method="post" action="{{ locale_route('admin.suppliers.destroy', ['supplierId' => $id]) }}" data-admin-confirm-delete data-confirm-message="Delete source {{ $id }}?">
-                            @csrf
-                            @method('DELETE')
-                            <button class="tools-btn tools-btn--small tools-btn--danger" type="submit">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            @endforeach
+        <div class="admin-hub__overview" data-admin-overview-root data-layout="table">
+            <div class="admin-hub__card-grid" data-admin-overview-panel="cards" hidden>
+                @foreach ($products as $product)
+                    @php
+                        $id = (string) ($product['id'] ?? '');
+                        $labelEn = $product['label']['en'] ?? $id;
+                        $labelDe = $product['label']['de'] ?? '';
+                        $domain = (string) ($product['domain'] ?? '');
+                        $domainLabel = is_array($domains[$domain] ?? null) ? ($domains[$domain]['en'] ?? $domain) : $domain;
+                        $entityCount = count($product['entities'] ?? []);
+                        $searchText = implode(' ', [$id, $labelEn, $labelDe, $domain, $domainLabel]);
+                        $fill = [
+                            'domain' => $domain,
+                            'order' => (string) ($product['order'] ?? 100),
+                            'label_de' => $labelDe,
+                            'label_en' => $labelEn,
+                            'purpose_de' => $product['shortPurpose']['de'] ?? '',
+                            'purpose_en' => $product['shortPurpose']['en'] ?? '',
+                        ];
+                        $fillJson = json_encode($fill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                    @endphp
+                    <article class="admin-hub__card" data-overview-item data-search-text="{{ $searchText }}">
+                        <h3 class="admin-hub__card-title">{{ $labelEn }}</h3>
+                        <p class="admin-hub__card-meta">
+                            {{ $id }} · {{ $domainLabel }} · {{ $entityCount }} entities
+                            @if ($labelDe !== '' && $labelDe !== $labelEn)
+                                · DE {{ $labelDe }}
+                            @endif
+                        </p>
+                        <div class="admin-hub__card-actions">
+                            <x-admin.icon-btn
+                                kind="edit"
+                                type="button"
+                                data-admin-open-modal="admin-supplier-edit-modal"
+                                data-admin-modal-title="Edit {{ $labelEn }}"
+                                data-admin-supplier-id="{{ $id }}"
+                                data-admin-fill="{{ $fillJson }}"
+                            />
+                            <form method="post" action="{{ locale_route('admin.suppliers.destroy', ['supplierId' => $id]) }}" data-admin-confirm-delete data-confirm-message="Delete source {{ $id }}?">
+                                @csrf
+                                @method('DELETE')
+                                <x-admin.icon-btn kind="delete" type="submit" />
+                            </form>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+
+            <div class="supplier-table-wrap" data-admin-overview-panel="table">
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Id</th>
+                            <th>Domain</th>
+                            <th>Entities</th>
+                            <th class="admin-hub__table-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($products as $product)
+                            @php
+                                $id = (string) ($product['id'] ?? '');
+                                $labelEn = $product['label']['en'] ?? $id;
+                                $labelDe = $product['label']['de'] ?? '';
+                                $domain = (string) ($product['domain'] ?? '');
+                                $domainLabel = is_array($domains[$domain] ?? null) ? ($domains[$domain]['en'] ?? $domain) : $domain;
+                                $entityCount = count($product['entities'] ?? []);
+                                $searchText = implode(' ', [$id, $labelEn, $labelDe, $domain, $domainLabel]);
+                                $fill = [
+                                    'domain' => $domain,
+                                    'order' => (string) ($product['order'] ?? 100),
+                                    'label_de' => $labelDe,
+                                    'label_en' => $labelEn,
+                                    'purpose_de' => $product['shortPurpose']['de'] ?? '',
+                                    'purpose_en' => $product['shortPurpose']['en'] ?? '',
+                                ];
+                                $fillJson = json_encode($fill, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+                            @endphp
+                            <tr data-overview-item data-search-text="{{ $searchText }}">
+                                <td><strong>{{ $labelEn }}</strong></td>
+                                <td><code>{{ $id }}</code></td>
+                                <td>{{ $domainLabel }}</td>
+                                <td>{{ $entityCount }}</td>
+                                <td class="admin-hub__table-actions">
+                                    <x-admin.icon-btn
+                                        kind="edit"
+                                        type="button"
+                                        data-admin-open-modal="admin-supplier-edit-modal"
+                                        data-admin-modal-title="Edit {{ $labelEn }}"
+                                        data-admin-supplier-id="{{ $id }}"
+                                        data-admin-fill="{{ $fillJson }}"
+                                    />
+                                    <form method="post" action="{{ locale_route('admin.suppliers.destroy', ['supplierId' => $id]) }}" data-admin-confirm-delete data-confirm-message="Delete source {{ $id }}?">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-admin.icon-btn kind="delete" type="submit" />
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <x-admin.modal id="admin-supplier-create-modal" title="Add source" titleDe="Quelle anlegen" titleEn="Add source">

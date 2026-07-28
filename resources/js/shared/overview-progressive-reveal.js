@@ -171,6 +171,19 @@ export function attachOverviewProgressiveReveal(root, options = {}) {
 
     const applyReveal = () => {
         const items = collectRevealItems(root);
+        const host = findRevealHost(root);
+
+        // Without a card-grid host there is nowhere to put the sentinel — do not hide rows.
+        if (!(host instanceof HTMLElement)) {
+            items.forEach((item) => {
+                item.classList.remove(OVERVIEW_ITEM_UNREVEALED_CLASS);
+            });
+            if (sentinel instanceof HTMLElement) {
+                sentinel.hidden = true;
+            }
+            return;
+        }
+
         const active = items.filter((item) => isActivelyShown(item));
         const query = (getSearchQuery() ?? '').trim();
         const revealAll = query !== '' && active.length <= OVERVIEW_REVEAL_BATCH * 2;
