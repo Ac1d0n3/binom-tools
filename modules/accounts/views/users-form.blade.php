@@ -12,14 +12,15 @@
 @section('title', ($isEdit ? 'Edit user' : 'Add user') . ' — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app">
-        <p class="sp-action-row">
-            <a href="{{ locale_route('admin.users.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToUsers">Back to users</a>
-        </p>
+    <div class="tools-content tools-content--wide sp-app admin-hub">
+        <x-admin.sticky-header>
+            <x-slot:actions>
+                <a href="{{ locale_route('admin.users.index') }}" class="tools-btn" data-i18n="accounts.backToUsers">Back to users</a>
+            </x-slot:actions>
+        </x-admin.sticky-header>
 
-        <h1 class="tools-page-title" data-i18n="{{ $titleKey }}">{{ $isEdit ? 'Edit user' : 'Add user' }}</h1>
         @if ($isEdit)
-            <p class="tools-page-lead"><code>{{ $user['id'] }}</code></p>
+            <p class="admin-hub__meta"><code>{{ $user['id'] }}</code></p>
         @endif
 
         <x-accounts.flash />

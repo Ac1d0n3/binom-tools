@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\HubController as AdminHubController;
 use App\Http\Controllers\Admin\PlanTemplatesController;
 use App\Http\Controllers\Admin\RadarAdminController;
 use App\Http\Controllers\Admin\StoriesController;
+use App\Http\Controllers\Admin\SuppliersAdminController;
 use App\Http\Controllers\Admin\VendorsAdminController;
 use App\Http\Controllers\Profile\HubController as ProfileHubController;
 use App\Http\Controllers\Profile\MyPlansController;
@@ -323,7 +324,16 @@ $registerRoutes = static function (bool $localized): void {
             Route::put('/admin/radar/sources/{sourceId}', [RadarAdminController::class, 'updateSource'])
                 ->where('sourceId', '[a-z0-9-]+')
                 ->name($name('admin.radar.sources.update'));
+            Route::delete('/admin/radar/sources/{sourceId}', [RadarAdminController::class, 'destroySource'])
+                ->where('sourceId', '[a-z0-9-]+')
+                ->name($name('admin.radar.sources.destroy'));
             Route::post('/admin/radar/items', [RadarAdminController::class, 'storeItem'])->name($name('admin.radar.items.store'));
+            Route::put('/admin/radar/items/{itemId}', [RadarAdminController::class, 'updateItem'])
+                ->where('itemId', '[a-z0-9-]+')
+                ->name($name('admin.radar.items.update'));
+            Route::delete('/admin/radar/items/{itemId}', [RadarAdminController::class, 'destroyItem'])
+                ->where('itemId', '[a-z0-9-]+')
+                ->name($name('admin.radar.items.destroy'));
 
             Route::get('/admin/vendors', [VendorsAdminController::class, 'index'])->name($name('admin.vendors.index'));
             Route::post('/admin/vendors', [VendorsAdminController::class, 'store'])->name($name('admin.vendors.store'));
@@ -333,6 +343,14 @@ $registerRoutes = static function (bool $localized): void {
             Route::delete('/admin/vendors/{vendorId}', [VendorsAdminController::class, 'destroy'])
                 ->where('vendorId', '[a-z0-9-]+')
                 ->name($name('admin.vendors.destroy'));
+            Route::post('/admin/vendors/products', [VendorsAdminController::class, 'storeProduct'])
+                ->name($name('admin.vendors.products.store'));
+            Route::put('/admin/vendors/products/{productId}', [VendorsAdminController::class, 'updateProduct'])
+                ->where('productId', '[a-z0-9-]+')
+                ->name($name('admin.vendors.products.update'));
+            Route::delete('/admin/vendors/products/{productId}', [VendorsAdminController::class, 'destroyProduct'])
+                ->where('productId', '[a-z0-9-]+')
+                ->name($name('admin.vendors.products.destroy'));
 
             Route::get('/admin/glossary', [GlossaryAdminController::class, 'index'])->name($name('admin.glossary.index'));
             Route::post('/admin/glossary', [GlossaryAdminController::class, 'store'])->name($name('admin.glossary.store'));
@@ -342,6 +360,15 @@ $registerRoutes = static function (bool $localized): void {
             Route::delete('/admin/glossary/{termId}', [GlossaryAdminController::class, 'destroy'])
                 ->where('termId', '[a-z0-9-]+')
                 ->name($name('admin.glossary.destroy'));
+
+            Route::get('/admin/suppliers', [SuppliersAdminController::class, 'index'])->name($name('admin.suppliers.index'));
+            Route::post('/admin/suppliers', [SuppliersAdminController::class, 'store'])->name($name('admin.suppliers.store'));
+            Route::put('/admin/suppliers/{supplierId}', [SuppliersAdminController::class, 'update'])
+                ->where('supplierId', '[a-z0-9-]+')
+                ->name($name('admin.suppliers.update'));
+            Route::delete('/admin/suppliers/{supplierId}', [SuppliersAdminController::class, 'destroy'])
+                ->where('supplierId', '[a-z0-9-]+')
+                ->name($name('admin.suppliers.destroy'));
         });
 
         Route::post('/playbooks/{slug}/read', [StoryAclController::class, 'markRead'])
@@ -382,6 +409,8 @@ $registerRoutes = static function (bool $localized): void {
                 ->name($name('governance.radar.api.sources.delete'));
             Route::post('/api/governance/radar/feeds/sync', [GovernanceHubController::class, 'apiSyncRadarFeeds'])
                 ->name($name('governance.radar.api.feeds.sync'));
+            Route::post('/api/governance/radar/news', [GovernanceHubController::class, 'apiStoreRadarNews'])
+                ->name($name('governance.radar.api.news.store'));
             Route::get('/api/governance/radar/items/{itemId}/overlay', [GovernanceHubController::class, 'apiRadarItemOverlay'])
                 ->where('itemId', '[a-zA-Z0-9][a-zA-Z0-9_-]{1,118}')
                 ->name($name('governance.radar.api.items.overlay.show'));

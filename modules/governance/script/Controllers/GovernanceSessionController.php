@@ -7,6 +7,7 @@ use App\Accounts\Contracts\PlanStoreInterface;
 use App\Governance\GovernanceDemoWorkspace;
 use App\Governance\GovernanceSessionStore;
 use App\Http\Controllers\Controller;
+use App\Profile\Contracts\WorkspaceStoreInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class GovernanceSessionController extends Controller
         private readonly GovernanceSessionStore $sessions,
         private readonly PlanStoreInterface $plans,
         private readonly GovernanceDemoWorkspace $demo,
+        private readonly WorkspaceStoreInterface $workspaces,
     ) {}
 
     public function index(Request $request): View
@@ -26,9 +28,13 @@ class GovernanceSessionController extends Controller
         $user = $this->auth->user();
         abort_if($user === null, 401);
 
+        $activeId = $this->workspaces->activeId($user);
+        $activeWorkspace = $activeId !== null ? $this->workspaces->find($activeId, $user) : null;
+
         return view('governance::sessions.index', [
             'sessions' => $this->sessions->listFor($user, $request->boolean('archived')),
             'showArchived' => $request->boolean('archived'),
+            'activeWorkspace' => $activeWorkspace,
         ]);
     }
 

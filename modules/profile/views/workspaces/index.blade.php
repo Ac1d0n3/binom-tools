@@ -5,9 +5,6 @@
 @section('profile_content')
     <div class="tools-content tools-content--wide sp-app admin-hub">
         <h1 class="tools-page-title">My Workspaces</h1>
-        <x-admin.help id="workspaces">
-            <p data-text-de="Lege pro Kunde/Stack einen Workspace an. Plans kannst du zuweisen oder duplizieren." data-text-en="Create one workspace per client/stack. Assign or duplicate plans into them.">Create one workspace per client/stack. Assign or duplicate plans into them.</p>
-        </x-admin.help>
         <x-accounts.flash :status-map="[
             'workspace-saved' => 'Saved',
             'workspace-active' => 'Active workspace updated',

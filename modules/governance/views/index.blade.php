@@ -129,7 +129,7 @@
                         @if (! empty($accountUser))
                             <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
                                 <i class="fa-solid fa-table-list" aria-hidden="true"></i>
-                                <span data-text-de="Sessions verwalten" data-text-en="Manage sessions">Manage sessions</span>
+                                <span data-text-de="Gespeicherte Discoveries" data-text-en="Saved discoveries">Saved discoveries</span>
                             </a>
                         @elseif (! empty($accountsEnabled))
                             <a class="governance-hub__button" href="{{ locale_route('accounts.login') }}">

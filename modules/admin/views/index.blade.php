@@ -4,15 +4,7 @@
 
 @section('admin_content')
     <div class="tools-content tools-content--wide sp-app admin-hub">
-        <h1 class="tools-page-title" data-text-de="Admin Hub" data-text-en="Admin Hub">Admin Hub</h1>
-        <p class="tools-page-lead" data-hub-lead data-text-de="Content- und Organisations-Administration — Speichern ohne Git-Commit." data-text-en="Content and org administration — save without git commit.">Content and org administration — save without git commit.</p>
-
-        <x-admin.help id="hub" titleDe="Kurzhilfe" titleEn="Quick help">
-            <p data-text-de="Sidebar links führt zu den Admin-Seiten. Hier nur ein Statusüberblick — keine doppelten Linklisten." data-text-en="Use the sidebar for admin pages. This dashboard is status only — no duplicate link lists.">Use the sidebar for admin pages. This dashboard is status only — no duplicate link lists.</p>
-        </x-admin.help>
-
         <section class="sp-section">
-            <x-admin.page-header title="Overview" titleDe="Übersicht" titleEn="Overview" />
             <div class="sp-list">
                 @if (!empty($canManageUsers))
                     <div class="sp-list__row">

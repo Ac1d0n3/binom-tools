@@ -3,39 +3,37 @@
 @section('title', 'Link check — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide">
-        <h1 class="tools-page-title" data-text-de="Link-Checker" data-text-en="Link checker">Link checker</h1>
-        <p class="tools-page-lead" data-text-de="Externe URLs aus Katalogen und Stories — nur für Admins." data-text-en="External URLs from catalogs and stories — admins only.">
-            External URLs from catalogs and stories — admins only.
-        </p>
+    <div class="tools-content tools-content--wide admin-hub" data-overview-filter-root>
+        <x-admin.sticky-header>
+            <x-slot:search>
+                <input type="search" class="tools-input" data-overview-search placeholder="Search URLs / sources…" aria-label="Search">
+            </x-slot:search>
+            <x-slot:actions>
+                <form method="post" action="{{ locale_route('accounts.link-check.run') }}">
+                    @csrf
+                    <button type="submit" class="tools-btn tools-btn--primary" data-text-de="Scan starten" data-text-en="Run scan">Run scan</button>
+                    <input type="hidden" name="limit" value="0">
+                </form>
+            </x-slot:actions>
+        </x-admin.sticky-header>
 
         @if (session('status') === 'link-check-done')
             <p class="tools-flash tools-flash--success" data-text-de="Scan gespeichert." data-text-en="Scan saved.">Scan saved.</p>
         @endif
 
-        <div class="tools-overview-toolbar" style="gap: 0.75rem; flex-wrap: wrap;">
-            <form method="post" action="{{ locale_route('accounts.link-check.run') }}">
-                @csrf
-                <button type="submit" class="tools-btn tools-btn--primary" data-text-de="Scan starten" data-text-en="Run scan">Run scan</button>
-                <input type="hidden" name="limit" value="0">
-            </form>
-            <p class="tools-page-lead" style="margin: 0;">
-                <span data-text-de="Inventar (Vorkommen)" data-text-en="Inventory (occurrences)">Inventory (occurrences)</span>:
-                <strong>{{ $inventoryCount }}</strong>
-                @if (! empty($latest['checkedAt']))
-                    · <span data-text-de="Zuletzt" data-text-en="Last">Last</span>: {{ $latest['checkedAt'] }}
-                @endif
-            </p>
-        </div>
-
-        @if (! empty($latest['summary']))
-            <p class="tools-page-lead">
-                ok {{ $latest['summary']['ok'] ?? 0 }}
+        <p class="admin-hub__meta">
+            <span data-text-de="Inventar (Vorkommen)" data-text-en="Inventory (occurrences)">Inventory (occurrences)</span>:
+            <strong>{{ $inventoryCount }}</strong>
+            @if (! empty($latest['checkedAt']))
+                · <span data-text-de="Zuletzt" data-text-en="Last">Last</span>: {{ $latest['checkedAt'] }}
+            @endif
+            @if (! empty($latest['summary']))
+                · ok {{ $latest['summary']['ok'] ?? 0 }}
                 · redirect {{ $latest['summary']['redirect'] ?? 0 }}
                 · broken {{ $latest['summary']['broken'] ?? 0 }}
                 · error {{ $latest['summary']['error'] ?? 0 }}
-            </p>
-        @endif
+            @endif
+        </p>
 
         <nav class="tools-filter-sidebar__tabs" role="tablist" aria-label="Filter" style="margin-bottom: 1rem;">
             @foreach (['all' => 'All', 'broken' => 'Broken', 'error' => 'Error', 'redirect' => 'Redirect', 'ok' => 'OK'] as $key => $label)
@@ -45,6 +43,8 @@
                 >{{ $label }}</a>
             @endforeach
         </nav>
+
+        <p class="admin-hub__meta" data-overview-empty hidden data-text-de="Keine Treffer." data-text-en="No matches.">No matches.</p>
 
         @if ($results === [])
             <p data-text-de="Noch kein Scan — oder keine Treffer für diesen Filter." data-text-en="No scan yet — or no rows for this filter.">
@@ -63,7 +63,16 @@
                     </thead>
                     <tbody>
                         @foreach ($results as $row)
-                            <tr>
+                            @php
+                                $searchText = strtolower(implode(' ', array_filter([
+                                    $row['url'] ?? '',
+                                    $row['bucket'] ?? '',
+                                    $row['error'] ?? '',
+                                    $row['redirectTo'] ?? '',
+                                    implode(' ', $row['sources'] ?? []),
+                                ])));
+                            @endphp
+                            <tr data-overview-item data-search-text="{{ $searchText }}">
                                 <td>
                                     <strong>{{ $row['bucket'] ?? '?' }}</strong>
                                     @if (! empty($row['status']))

@@ -9,11 +9,15 @@
 @section('title', 'Users — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app">
-        <h1 class="tools-page-title" data-i18n="accounts.usersTitle">Users</h1>
-        <p class="tools-page-lead" data-i18n="accounts.usersLead">
-            Managed accounts — passwords are hashed only.
-        </p>
+    <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
+        <x-admin.sticky-header>
+            <x-slot:search>
+                <input type="search" class="tools-input" data-overview-search placeholder="Search users…" aria-label="Search" data-i18n-placeholder="accounts.filterUsers">
+            </x-slot:search>
+            <x-slot:actions>
+                <a href="{{ locale_route('admin.users.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addUser">Add user</a>
+            </x-slot:actions>
+        </x-admin.sticky-header>
 
         <x-accounts.flash :status-map="[
             'user-created' => 'accounts.flash.userCreated',
@@ -29,11 +33,10 @@
             'user-rejected' => 'accounts.flash.userRejected',
         ]" />
 
+        <p class="admin-hub__meta" data-overview-empty hidden data-i18n="accounts.noUsers">No matches.</p>
+
         @if ($pendingUsers !== [])
-            <section class="sp-section" aria-labelledby="accounts-pending-heading">
-                <div class="sp-section__header">
-                    <h2 id="accounts-pending-heading" class="sp-section__title" data-i18n="accounts.pendingUsers">Pending approval</h2>
-                </div>
+            <section class="sp-section">
                 <div class="sp-list">
                     @foreach ($pendingUsers as $user)
                         @include('accounts::partials.user-row', ['user' => $user, 'teams' => $teams, 'pending' => true])
@@ -42,19 +45,14 @@
             </section>
         @endif
 
-        <section class="sp-section" aria-labelledby="accounts-users-heading">
-            <div class="sp-section__header">
-                <h2 id="accounts-users-heading" class="sp-section__title" data-i18n="accounts.existingUsers">Users</h2>
-                <a href="{{ locale_route('admin.users.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addUser">
-                    Add user
-                </a>
-            </div>
-
+        <section class="sp-section">
             <div class="sp-list">
                 @forelse ($activeUsers as $user)
                     @include('accounts::partials.user-row', ['user' => $user, 'teams' => $teams, 'pending' => false])
                 @empty
-                    <p class="tools-page-lead" data-i18n="accounts.noUsers">No users yet.</p>
+                    @if ($pendingUsers === [])
+                        <p class="tools-page-lead" data-i18n="accounts.noUsers">No users yet.</p>
+                    @endif
                 @endforelse
             </div>
         </section>

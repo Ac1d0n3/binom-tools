@@ -31,12 +31,11 @@ class PlanTemplatesController extends AdminController
     public function create(): View
     {
         $this->assertCanManageUsers();
-        $stub = "---\ntype: sprint-plan\ntitle: \"\"\n---\n\n```sprint\n# Sprint 1\n- [ ] Task\n```\n";
 
         return $this->adminView('admin::content.plan-templates-form', [
             'slug' => '',
-            'bodyDe' => $stub,
-            'bodyEn' => $stub,
+            'bodyDe' => $this->draftStub('de'),
+            'bodyEn' => $this->draftStub('en'),
             'isNew' => true,
         ]);
     }
@@ -110,5 +109,50 @@ class PlanTemplatesController extends AdminController
             }
             $this->writer->write($slug, $locale, $body);
         }
+    }
+
+    private function draftStub(string $locale): string
+    {
+        $intro = $locale === 'de'
+            ? 'Kurzer Intro-Text für Leser (optionales Markdown).'
+            : 'Short intro for readers (optional markdown).';
+
+        return <<<MD
+---
+type: sprint-plan
+title: ""
+slug: ""
+description: ""
+duration: 1
+unit: week
+category: ""
+author: Thomas Lindackers
+version: 1
+locale: {$locale}
+tags:
+  - 
+---
+
+{$intro}
+
+```sprint
+id: week-01
+number: 1
+title: ""
+goal: ""
+
+tasks:
+  - id: first-task
+    label: ""
+    assigneeType: person
+    assigneeId: null
+
+deliverables:
+  - id: first-deliverable
+    label: ""
+
+notes: true
+```
+MD;
     }
 }

@@ -26,8 +26,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ locale_route('governance.sessions.index') }}" class="tools-sidenav__link {{ request()->routeIs('governance.sessions.*') ? 'tools-sidenav__link--active' : '' }}">
-                    <span data-text-de="Governance Sessions" data-text-en="Governance Sessions">Governance Sessions</span>
+                <a href="{{ locale_route('governance.sessions.index') }}" class="tools-sidenav__link {{ request()->routeIs('governance.sessions.index', 'governance.sessions.report') ? 'tools-sidenav__link--active' : '' }}">
+                    <span data-text-de="Gespeicherte Discoveries" data-text-en="Saved discoveries">Saved discoveries</span>
                 </a>
             </li>
             <li>

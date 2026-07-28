@@ -73,7 +73,7 @@
                 </a>
                 <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index') }}">
                     <i class="fa-solid fa-table-list" aria-hidden="true"></i>
-                    <span data-text-de="Sessions" data-text-en="Sessions">Sessions</span>
+                    <span data-text-de="Gespeicherte Discoveries" data-text-en="Saved discoveries">Saved discoveries</span>
                 </a>
             </div>
         </header>

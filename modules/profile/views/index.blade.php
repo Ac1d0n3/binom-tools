@@ -7,10 +7,6 @@
         <h1 class="tools-page-title" data-text-de="Profil Hub" data-text-en="Profile Hub">Profile Hub</h1>
         <p class="tools-page-lead" data-hub-lead data-text-de="Dein persönlicher Arbeitsbereich — Workspaces, Pläne und Lernfortschritt." data-text-en="Your personal area — workspaces, plans, and learning progress.">Your personal area — workspaces, plans, and learning progress.</p>
 
-        <x-admin.help id="profile-hub" titleDe="Kurzhilfe" titleEn="Quick help">
-            <p data-text-de="Workspaces trennen Kunden/Stacks. Navigation links führt zu den Detailseiten — hier nur der aktuelle Stand." data-text-en="Workspaces separate clients/stacks. Use the sidebar for detail pages — this dashboard shows status only.">Workspaces separate clients/stacks. Use the sidebar for detail pages — this dashboard shows status only.</p>
-        </x-admin.help>
-
         <section class="sp-section">
             <x-admin.page-header title="Active workspace" titleDe="Aktiver Workspace" titleEn="Active workspace" />
             @if ($activeWorkspace)

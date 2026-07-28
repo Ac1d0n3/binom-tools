@@ -15,7 +15,16 @@
         $user['teamIds'] ?? []
     )));
 @endphp
-<div class="sp-list__row">
+@php
+    $searchText = strtolower(trim(implode(' ', array_filter([
+        $user['displayName'] ?? '',
+        $user['email'] ?? '',
+        $user['id'] ?? '',
+        $user['shortName'] ?? '',
+        implode(' ', $userTeams),
+    ]))));
+@endphp
+<div class="sp-list__row" data-overview-item data-search-text="{{ $searchText }}">
     <div class="sp-list__identity">
         <span
             class="sp-avatar sp-avatar--{{ $color }} sp-avatar--person{{ $iconSvg !== '' ? ' sp-avatar--icon' : '' }}{{ $iconSvg === '' && strlen($chip) >= 3 ? ' sp-avatar--trigram-3' : '' }}"

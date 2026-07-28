@@ -69,6 +69,9 @@
         @if ($radarOverlaysApiUrl ?? null)
             data-radar-overlays-api-url="{{ $radarOverlaysApiUrl }}"
         @endif
+        @if ($radarNewsApiUrl ?? null)
+            data-radar-news-api-url="{{ $radarNewsApiUrl }}"
+        @endif
     >
         <div class="tools-overview-sticky-header governance-radar-sticky">
             <div class="governance-radar__intro" id="governance-radar-intro" data-governance-radar-intro>
@@ -105,12 +108,26 @@
                         data-text-en="The radar does not replace legal, regulatory, or technical review. It helps spot and filter changes early. Jump to the advisor only when there is clearer action needed."
                     >The radar does not replace legal, regulatory, or technical review. It helps spot and filter changes early. Jump to the advisor only when there is clearer action needed.</span>
                 </p>
-                @if ($radarSourcesApiUrl)
+                @if ($radarSourcesApiUrl || ($canEnrichRadarItems ?? false))
                     <div class="governance-radar__actions">
-                        <a class="governance-hub__button" href="#governance-radar-manage">
-                            <i class="fa-solid fa-rss" aria-hidden="true"></i>
-                            <span data-text-de="RSS verwalten" data-text-en="Manage RSS">Manage RSS</span>
-                        </a>
+                        @if ($canEnrichRadarItems ?? false)
+                            <button
+                                type="button"
+                                class="governance-hub__button governance-hub__button--primary"
+                                data-governance-radar-news-open
+                                data-text-de="News posten"
+                                data-text-en="Post news"
+                            >
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                <span data-text-de="News posten" data-text-en="Post news">Post news</span>
+                            </button>
+                        @endif
+                        @if ($radarSourcesApiUrl)
+                            <a class="governance-hub__button" href="#governance-radar-manage">
+                                <i class="fa-solid fa-rss" aria-hidden="true"></i>
+                                <span data-text-de="RSS verwalten" data-text-en="Manage RSS">Manage RSS</span>
+                            </a>
+                        @endif
                         @if ($radarFeedSyncApiUrl ?? null)
                             <button
                                 type="button"
@@ -470,6 +487,49 @@
             </section>
 
             @if ($canEnrichRadarItems ?? false)
+                <dialog class="governance-radar__enrich-dialog" data-governance-radar-news-dialog>
+                    <form method="dialog" class="governance-radar__enrich-form" data-governance-radar-news-form>
+                        <div class="governance-radar__enrich-head">
+                            <h2 data-text-de="Eigene News posten" data-text-en="Post your news">Post your news</h2>
+                            <button type="submit" class="governance-hub__button" value="cancel" data-text-de="Schließen" data-text-en="Close">Close</button>
+                        </div>
+                        <label>
+                            <span data-text-de="URL" data-text-en="URL">URL</span>
+                            <input class="tools-input" type="url" name="url" required maxlength="500" placeholder="https://…">
+                        </label>
+                        <label>
+                            <span data-text-de="Sprache" data-text-en="Language">Language</span>
+                            <select class="tools-input" name="language">
+                                <option value="de">de</option>
+                                <option value="en">en</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span data-text-de="Titel DE" data-text-en="Title DE">Title DE</span>
+                            <input class="tools-input" type="text" name="title_de" required maxlength="240">
+                        </label>
+                        <label>
+                            <span data-text-de="Titel EN" data-text-en="Title EN">Title EN</span>
+                            <input class="tools-input" type="text" name="title_en" required maxlength="240">
+                        </label>
+                        <label>
+                            <span data-text-de="Summary DE" data-text-en="Summary DE">Summary DE</span>
+                            <textarea class="tools-input" name="summary_de" rows="3" maxlength="2000"></textarea>
+                        </label>
+                        <label>
+                            <span data-text-de="Summary EN" data-text-en="Summary EN">Summary EN</span>
+                            <textarea class="tools-input" name="summary_en" rows="3" maxlength="2000"></textarea>
+                        </label>
+                        <p class="governance-radar__source-status" data-governance-radar-news-status hidden></p>
+                        <div class="governance-radar__form-actions">
+                            <button type="button" class="governance-hub__button governance-hub__button--primary" data-governance-radar-news-save>
+                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                                <span data-text-de="Veröffentlichen" data-text-en="Publish">Publish</span>
+                            </button>
+                        </div>
+                    </form>
+                </dialog>
+
                 <dialog class="governance-radar__enrich-dialog" data-governance-radar-enrich-dialog>
                     <form method="dialog" class="governance-radar__enrich-form" data-governance-radar-enrich-form>
                         <div class="governance-radar__enrich-head">

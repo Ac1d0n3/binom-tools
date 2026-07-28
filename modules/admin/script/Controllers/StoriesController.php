@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Accounts\AccountAuth;
 use App\Admin\Content\MarkdownContentWriter;
 use App\Admin\Content\PlaybookImageUploader;
+use App\Admin\Content\StoryDraftTemplates;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,10 +15,13 @@ class StoriesController extends AdminController
 {
     private MarkdownContentWriter $writer;
 
+    private StoryDraftTemplates $drafts;
+
     public function __construct(AccountAuth $auth)
     {
         parent::__construct($auth);
         $this->writer = new MarkdownContentWriter((string) config('admin.stories_path', base_path('content/stories')));
+        $this->drafts = new StoryDraftTemplates($this->writer);
     }
 
     public function index(): View
@@ -29,15 +33,33 @@ class StoriesController extends AdminController
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
         $this->assertCanManageUsers();
 
+        $template = (string) $request->query('template', 'single');
+        if (! in_array($template, ['single', 'series'], true)) {
+            $template = 'single';
+        }
+        $seriesId = $request->query('series');
+        $seriesId = is_string($seriesId) && preg_match('/^[a-z0-9-]+$/', $seriesId) === 1
+            ? $seriesId
+            : null;
+
+        $draft = $this->drafts->draft($template, $seriesId);
+        $bodyDe = old('body_de', $draft['bodyDe']);
+        $bodyEn = old('body_en', $draft['bodyEn']);
+
         return $this->adminView('admin::content.stories-form', [
-            'slug' => '',
-            'bodyDe' => "---\ntitle: \"\"\n---\n\n",
-            'bodyEn' => "---\ntitle: \"\"\n---\n\n",
+            'slug' => old('slug', ''),
+            'bodyDe' => $bodyDe,
+            'bodyEn' => $bodyEn,
+            'images' => $this->imagesForStory((string) $bodyDe, (string) $bodyEn),
             'isNew' => true,
+            'draftTemplate' => $draft['template'],
+            'draftSeriesId' => $draft['seriesId'],
+            'draftSeriesLabel' => $draft['seriesLabel'],
+            'seriesOptions' => $this->drafts->listSeries(),
         ]);
     }
 
@@ -46,11 +68,19 @@ class StoriesController extends AdminController
         $this->assertCanManageUsers();
         abort_unless(preg_match('/^[a-z0-9-]+$/', $slug) === 1, 404);
 
+        $bodyDe = $this->writer->read($slug, 'de') ?? '';
+        $bodyEn = $this->writer->read($slug, 'en') ?? '';
+
         return $this->adminView('admin::content.stories-form', [
             'slug' => $slug,
-            'bodyDe' => $this->writer->read($slug, 'de') ?? '',
-            'bodyEn' => $this->writer->read($slug, 'en') ?? '',
+            'bodyDe' => $bodyDe,
+            'bodyEn' => $bodyEn,
+            'images' => $this->imagesForStory($bodyDe, $bodyEn),
             'isNew' => false,
+            'draftTemplate' => null,
+            'draftSeriesId' => null,
+            'draftSeriesLabel' => null,
+            'seriesOptions' => [],
         ]);
     }
 
@@ -124,5 +154,53 @@ class StoriesController extends AdminController
         $message = 'Uploaded: '.$result['url'].($result['webp'] ? ' (+webp)' : '');
 
         return back()->with('status', 'image-uploaded')->with('imageUrl', $result['url'])->with('flashDetail', $message);
+    }
+
+    /**
+     * Images referenced from story markdown (DE + EN).
+     *
+     * @return list<array{name: string, url: string, previewUrl: string, markdownPath: string, webpUrl: ?string}>
+     */
+    private function imagesForStory(string $bodyDe, string $bodyEn): array
+    {
+        $text = $bodyDe."\n".$bodyEn;
+        if (! preg_match_all('#(?:/?|\./)?images/playbooks/([a-zA-Z0-9._-]+\.(?:png|jpe?g|gif|webp))#i', $text, $matches)) {
+            return [];
+        }
+
+        $dir = (string) config('admin.playbook_images_path', public_path('images/playbooks'));
+        $seen = [];
+        $out = [];
+        foreach ($matches[1] as $filename) {
+            $filename = (string) $filename;
+            $key = strtolower($filename);
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+
+            $absolute = $dir.DIRECTORY_SEPARATOR.$filename;
+            if (! is_file($absolute)) {
+                $lower = $dir.DIRECTORY_SEPARATOR.strtolower($filename);
+                if (! is_file($lower)) {
+                    continue;
+                }
+                $absolute = $lower;
+                $filename = basename($lower);
+            }
+
+            $webpName = (string) preg_replace('/\.[^.]+$/', '.webp', $filename);
+            $hasWebp = $webpName !== $filename && is_file($dir.DIRECTORY_SEPARATOR.$webpName);
+            $url = asset('images/playbooks/'.$filename);
+            $out[] = [
+                'name' => $filename,
+                'url' => $url,
+                'previewUrl' => $hasWebp ? asset('images/playbooks/'.$webpName) : $url,
+                'markdownPath' => 'images/playbooks/'.$filename,
+                'webpUrl' => $hasWebp ? asset('images/playbooks/'.$webpName) : null,
+            ];
+        }
+
+        return $out;
     }
 }

@@ -139,6 +139,54 @@ class GovernanceSessionsTest extends TestCase
             ->assertJsonPath('overlay', null);
     }
 
+    public function test_admin_can_post_radar_news(): void
+    {
+        app(UserRepository::class)->upsert([
+            'id' => 'user_gov_news',
+            'email' => 'gov-news@example.com',
+            'displayName' => 'Governance News Admin',
+            'passwordHash' => password_hash('password123', PASSWORD_DEFAULT),
+            'canManageUsers' => true,
+            'canManageTeams' => true,
+            'active' => true,
+            'teamIds' => [],
+        ]);
+
+        $this->post('/login', [
+            'email' => 'gov-news@example.com',
+            'password' => 'password123',
+        ])->assertRedirect();
+
+        $this->get('/governance/radar')
+            ->assertOk()
+            ->assertSee('data-radar-news-api-url', false)
+            ->assertSee('data-governance-radar-news-open', false);
+
+        $response = $this->postJson('/api/governance/radar/news', [
+            'title_de' => 'UX Radar News DE',
+            'title_en' => 'UX Radar News EN',
+            'summary_de' => 'Zusammenfassung',
+            'summary_en' => 'Summary',
+            'url' => 'https://example.com/ux-radar-news',
+            'language' => 'de',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true);
+
+        $itemId = (string) $response->json('item.id');
+        $this->assertNotSame('', $itemId);
+
+        $writer = new \App\Admin\Content\CatalogJsonWriter(base_path('content/catalogs/governance-radar'));
+        $doc = $writer->read();
+        $items = array_values(array_filter(
+            array_values($doc['items'] ?? []),
+            static fn (array $item): bool => ($item['id'] ?? '') !== $itemId
+        ));
+        $doc['items'] = $items;
+        $writer->write($doc);
+        \App\Catalog\CatalogJsonLoader::clearCache();
+    }
+
     public function test_demo_report_shows_a_filled_example_session(): void
     {
         $this->get('/governance/demo-report')
@@ -212,14 +260,15 @@ class GovernanceSessionsTest extends TestCase
         $this->get('/governance/sessions')
             ->assertOk()
             ->assertSee('ERP Data Mart Discovery')
-            ->assertSee('Beispiel-Report ansehen', false)
-            ->assertSee('Governance Sessions verwalten', false);
+            ->assertSee('Saved discoveries', false)
+            ->assertSee('Continue in Governance Hub', false)
+            ->assertSee('tools-sidenav__link--active', false);
 
         $this->get('/governance')
             ->assertOk()
             ->assertSee('tools-header__account-menu-item', false)
-            ->assertSee('Governance Sessions')
-            ->assertDontSee('tools-sidenav__link--active" data-text-de="Governance Sessions"', false);
+            ->assertSee('Saved discoveries', false)
+            ->assertDontSee('tools-sidenav__link--active" data-text-de="Gespeicherte Discoveries"', false);
 
         $this->get('/governance/sessions/'.$sessionId.'/report')
             ->assertOk()

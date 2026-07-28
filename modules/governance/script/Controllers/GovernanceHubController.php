@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Governance;
 
 use App\Accounts\AccountAuth;
+use App\Admin\Content\CatalogJsonWriter;
+use App\Catalog\CatalogJsonLoader;
 use App\Profile\Contracts\WorkspaceStoreInterface;
 use App\Governance\GovernanceRadarFeedDisplay;
 use App\Governance\GovernanceRadarFeedItemStore;
@@ -15,8 +17,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use InvalidArgumentException;
+use RuntimeException;
 
 class GovernanceHubController extends Controller
 {
@@ -272,6 +276,7 @@ class GovernanceHubController extends Controller
             'radarSourcesApiUrl' => $user !== null ? url('/api/governance/radar/sources') : null,
             'radarFeedSyncApiUrl' => $user !== null ? url('/api/governance/radar/feeds/sync') : null,
             'radarOverlaysApiUrl' => $canEnrich ? url('/api/governance/radar/items') : null,
+            'radarNewsApiUrl' => $canEnrich ? url('/api/governance/radar/news') : null,
             'canEnrichRadarItems' => $canEnrich,
             'items' => $displayItems,
             'sourceNames' => $sourceNames,
@@ -512,6 +517,62 @@ class GovernanceHubController extends Controller
             ] : null,
             'enrichable' => $origin !== 'vendor' && $origin !== 'feed',
         ];
+    }
+
+    public function apiStoreRadarNews(Request $request): JsonResponse
+    {
+        $this->requireRadarEnrichAdmin();
+
+        $data = $request->validate([
+            'title_de' => ['required', 'string', 'max:240'],
+            'title_en' => ['required', 'string', 'max:240'],
+            'summary_de' => ['nullable', 'string', 'max:2000'],
+            'summary_en' => ['nullable', 'string', 'max:2000'],
+            'url' => ['required', 'url', 'max:500'],
+            'language' => ['required', 'in:de,en'],
+            'type' => ['nullable', 'string', 'max:80'],
+            'impact' => ['nullable', 'string', 'max:64'],
+        ]);
+
+        try {
+            $writer = new CatalogJsonWriter(base_path('content/catalogs/governance-radar'));
+            $doc = $writer->read();
+            $items = array_values(array_filter($doc['items'] ?? [], 'is_array'));
+            $id = 'manual-'.Str::slug(substr($data['title_en'], 0, 40)).'-'.bin2hex(random_bytes(3));
+            $item = [
+                'id' => $id,
+                'source_id' => 'binom-editorial',
+                'title' => $data['language'] === 'de' ? $data['title_de'] : $data['title_en'],
+                'title_i18n' => ['de' => $data['title_de'], 'en' => $data['title_en']],
+                'summary' => $data['language'] === 'de' ? ($data['summary_de'] ?? '') : ($data['summary_en'] ?? ''),
+                'summary_i18n' => [
+                    'de' => $data['summary_de'] ?? '',
+                    'en' => $data['summary_en'] ?? '',
+                ],
+                'url' => $data['url'],
+                'language' => $data['language'],
+                'type' => $data['type'] ?? 'Binom News',
+                'impact' => $data['impact'] ?? 'Prüfen',
+                'published_at' => now()->toDateString(),
+                'region' => 'DE',
+                'topics' => ['Binom News'],
+                'stack' => ['Alle Stacks'],
+                'recommended_action' => '',
+                'origin' => 'manual',
+                'ingest' => false,
+            ];
+            $items[] = $item;
+            $doc['items'] = $items;
+            $writer->write($doc);
+            CatalogJsonLoader::clearCache();
+        } catch (RuntimeException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'item' => $item,
+        ]);
     }
 
     private function requireRadarEnrichAdmin(): \App\Accounts\AccountUser

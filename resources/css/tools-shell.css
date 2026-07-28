@@ -168,11 +168,14 @@ html[data-color-scheme='dark'] input[type='radio']:checked {
 .tools-shell {
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
     min-height: 100dvh;
     max-width: 1400px;
     margin-inline: auto;
     width: 100%;
     --tools-shell-padding-inline: 1rem;
+    /* Reserve space for fixed shell header (out of flex flow). */
+    padding-top: var(--tools-header-height);
     position: relative;
     z-index: 1;
     box-shadow: 0 6px 28px color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
@@ -189,14 +192,25 @@ html[data-shell-full-width='true'] .tools-content--overview {
 }
 
 .tools-shell__header {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100%, 1400px);
     /* Above playbook toolbar (30) / focus sidebar (30) so settings + account menus stay usable */
     z-index: 50;
     flex-shrink: 0;
     height: var(--tools-header-height);
     background: var(--content-background-color);
     border-bottom: 1px solid var(--base-border-color);
+}
+
+html[data-shell-full-width='true'] .tools-shell__header,
+.tools-shell--full-width .tools-shell__header {
+    left: 0;
+    transform: none;
+    width: 100%;
+    max-width: none;
 }
 
 .tools-shell__body {
@@ -229,7 +243,8 @@ html[data-shell-full-width='true'] .tools-content--overview {
 /* App-like pages keep a fixed viewport; regular tools use normal page scroll. */
 .tools-shell:has(.tools-shell__main--playbook),
 .tools-shell:has(.tools-shell__main--overview),
-.tools-shell:has(.tools-shell__main--sprint-planner) {
+.tools-shell:has(.tools-shell__main--sprint-planner),
+.tools-shell:has(.tools-shell__main--admin-md) {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
@@ -238,9 +253,11 @@ html[data-shell-full-width='true'] .tools-content--overview {
 html:has(.tools-shell__main--playbook),
 html:has(.tools-shell__main--overview),
 html:has(.tools-shell__main--sprint-planner),
+html:has(.tools-shell__main--admin-md),
 html:has(.tools-shell__main--playbook) body,
 html:has(.tools-shell__main--overview) body,
-html:has(.tools-shell__main--sprint-planner) body {
+html:has(.tools-shell__main--sprint-planner) body,
+html:has(.tools-shell__main--admin-md) body {
     height: 100%;
     max-height: 100dvh;
     overflow: hidden;
@@ -250,7 +267,8 @@ html:has(.tools-shell__main--sprint-planner) body {
 
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__body,
 .tools-shell:has(.tools-shell__main--overview) .tools-shell__body,
-.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__body {
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__body,
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__body {
     align-items: stretch;
     flex: 1 1 0;
     min-height: 0;
@@ -259,7 +277,8 @@ html:has(.tools-shell__main--sprint-planner) body {
 
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__sidebar,
 .tools-shell:has(.tools-shell__main--overview) .tools-shell__sidebar,
-.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar {
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar,
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__sidebar {
     position: relative;
     top: auto;
     max-height: none;
@@ -271,7 +290,8 @@ html:has(.tools-shell__main--sprint-planner) body {
 
 .tools-shell:has(.tools-shell__main--playbook) .tools-sidenav,
 .tools-shell:has(.tools-shell__main--overview) .tools-sidenav,
-.tools-shell:has(.tools-shell__main--sprint-planner) .tools-sidenav {
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-sidenav,
+.tools-shell:has(.tools-shell__main--admin-md) .tools-sidenav {
     position: static;
     top: auto;
     max-height: none;
@@ -283,7 +303,8 @@ html:has(.tools-shell__main--sprint-planner) body {
 
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__main,
 .tools-shell:has(.tools-shell__main--overview) .tools-shell__main,
-.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__main {
+.tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__main,
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__main {
     flex: 1 1 0;
     min-height: 0;
     max-height: 100%;
@@ -313,6 +334,29 @@ html:has(.tools-shell__main--sprint-planner) body {
     min-width: 0;
     min-height: 0;
     overflow: hidden;
+}
+
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__footer {
+    display: none;
+}
+
+.tools-shell__main--admin-md {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.tools-shell__main--admin-md > .tools-content.admin-hub--md-editor {
+    flex: 1 1 0;
+    align-self: stretch;
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .tools-shell__main--sprint-planner {
@@ -2496,6 +2540,30 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     background: var(--content-background-color);
     color: var(--content-font-color);
     box-shadow: 0 18px 48px color-mix(in srgb, #000 24%, transparent);
+}
+
+/* Shared native <dialog> — center/center (admin, stack builder sibling pattern). */
+.bn-shared-modal:not(.stack-builder-modal):not(.playbook-offline-modal) {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    border: none;
+    padding: 0;
+    background: transparent;
+    width: fit-content;
+    max-width: calc(100vw - 2rem);
+    height: fit-content;
+    max-height: calc(100dvh - 2rem);
+    overflow: visible;
+    color: inherit;
+}
+
+.bn-shared-modal:not(.stack-builder-modal):not(.playbook-offline-modal)::backdrop {
+    background: color-mix(in srgb, #0b1220 55%, transparent);
 }
 
 .stack-builder-modal::backdrop {
@@ -9685,6 +9753,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         top: 0;
         left: 0;
         right: 0;
+        transform: none;
         width: 100%;
         z-index: 50;
     }

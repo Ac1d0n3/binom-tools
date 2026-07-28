@@ -3,45 +3,41 @@
 @section('title', 'Story access — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app">
-        <h1 class="tools-page-title" data-i18n="accounts.storyAclTitle">Story access</h1>
-        <p class="tools-page-lead" data-i18n="accounts.storyAclLead">
-            Playbooks are public by default. Restrict individual stories to selected users or teams.
-        </p>
+    <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
+        <x-admin.sticky-header>
+            <x-slot:search>
+                <input
+                    type="search"
+                    class="tools-input"
+                    data-overview-search
+                    placeholder="Filter stories…"
+                    aria-label="Filter stories"
+                    data-i18n-placeholder="accounts.filterStories"
+                    autocomplete="off"
+                >
+            </x-slot:search>
+        </x-admin.sticky-header>
 
         <x-accounts.flash :status-map="[
             'acl-updated' => 'accounts.flash.aclUpdated',
         ]" />
 
-        <section class="sp-section" aria-labelledby="accounts-story-acl-heading">
-            <div class="sp-section__header">
-                <h2 id="accounts-story-acl-heading" class="sp-section__title" data-i18n="accounts.storyAclStories">Stories</h2>
-            </div>
+        <p class="admin-hub__meta" data-overview-empty hidden data-i18n="accounts.noStories">No matches.</p>
 
-            <label class="sp-field sp-field--compact" style="max-width:20rem;margin-bottom:0.85rem">
-                <span class="visually-hidden" data-i18n="accounts.filterStories">Filter stories…</span>
-                <input
-                    type="search"
-                    class="tools-input"
-                    id="accounts-story-filter"
-                    placeholder="Filter stories…"
-                    data-i18n-placeholder="accounts.filterStories"
-                    autocomplete="off"
-                >
-            </label>
-
-            <div class="sp-list" id="accounts-story-list">
+        <section class="sp-section">
+            <div class="sp-list">
                 @php $isDe = current_locale() === 'de'; @endphp
                 @forelse ($stories as $story)
                     @php
                         $isRestricted = ($story['acl']['visibility'] ?? 'public') === 'restricted';
                         $userCount = count($story['acl']['userIds'] ?? []);
                         $teamCount = count($story['acl']['teamIds'] ?? []);
+                        $searchText = strtolower(($story['title'] ?? '').' '.($story['slug'] ?? ''));
                     @endphp
                     <div
                         class="sp-list__row"
-                        data-accounts-story-row
-                        data-filter-text="{{ strtolower(($story['title'] ?? '').' '.($story['slug'] ?? '')) }}"
+                        data-overview-item
+                        data-search-text="{{ $searchText }}"
                     >
                         <div class="sp-list__identity">
                             <div>
@@ -73,19 +69,4 @@
             </div>
         </section>
     </div>
-
-    <script>
-    (() => {
-        const input = document.getElementById('accounts-story-filter');
-        const list = document.getElementById('accounts-story-list');
-        if (!input || !list) return;
-        input.addEventListener('input', () => {
-            const q = String(input.value || '').trim().toLowerCase();
-            list.querySelectorAll('[data-accounts-story-row]').forEach((row) => {
-                const text = row.getAttribute('data-filter-text') || '';
-                row.hidden = q !== '' && !text.includes(q);
-            });
-        });
-    })();
-    </script>
 @endsection

@@ -18,14 +18,15 @@
 @section('title', ($isEdit ? 'Edit team' : 'Add team') . ' — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app">
-        <p class="sp-action-row">
-            <a href="{{ locale_route('admin.teams.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToTeams">Back to teams</a>
-        </p>
+    <div class="tools-content tools-content--wide sp-app admin-hub">
+        <x-admin.sticky-header>
+            <x-slot:actions>
+                <a href="{{ locale_route('admin.teams.index') }}" class="tools-btn" data-i18n="accounts.backToTeams">Back to teams</a>
+            </x-slot:actions>
+        </x-admin.sticky-header>
 
-        <h1 class="tools-page-title" data-i18n="{{ $titleKey }}">{{ $isEdit ? 'Edit team' : 'Add team' }}</h1>
         @if ($isEdit)
-            <p class="tools-page-lead"><code>{{ $team['id'] }}</code></p>
+            <p class="admin-hub__meta"><code>{{ $team['id'] }}</code></p>
         @endif
 
         <x-accounts.flash />

@@ -5,9 +5,6 @@
 @section('profile_content')
     <div class="tools-content tools-content--wide sp-app admin-hub">
         <h1 class="tools-page-title">My Plans</h1>
-        <x-admin.help id="plans">
-            <p data-text-de="Filtert nach aktivem Workspace (plus Pläne ohne Workspace). Du kannst zuweisen oder in einen anderen Workspace duplizieren." data-text-en="Filtered by active workspace (plus unassigned plans). Assign or duplicate into another workspace.">Filtered by active workspace (plus unassigned plans). Assign or duplicate into another workspace.</p>
-        </x-admin.help>
         <p class="admin-hub__meta">Active workspace: {{ $activeWorkspaceId ?? 'none' }}</p>
         <div class="sp-list">
             @forelse ($plans as $plan)

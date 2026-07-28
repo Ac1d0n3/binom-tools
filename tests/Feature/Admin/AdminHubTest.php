@@ -94,6 +94,37 @@ class AdminHubTest extends TestCase
         $this->get('/admin/glossary')->assertOk();
     }
 
+    public function test_stories_create_prefills_single_template(): void
+    {
+        $this->login('admin@example.com');
+        $this->get('/admin/stories/create')
+            ->assertOk()
+            ->assertSee('Single story', false)
+            ->assertSee('Series episode', false)
+            ->assertSee('author: Thomas Lindackers', false)
+            ->assertSee('Apply template', false);
+    }
+
+    public function test_stories_create_series_template_shows_series_picker(): void
+    {
+        $this->login('admin@example.com');
+        $this->get('/admin/stories/create?template=series')
+            ->assertOk()
+            ->assertSee('New series…', false)
+            ->assertSee('seriesPart: 1', false);
+    }
+
+    public function test_plan_templates_create_has_help_rail(): void
+    {
+        $this->login('admin@example.com');
+        $this->get('/admin/plan-templates/create')
+            ->assertOk()
+            ->assertSee('Hide side panel', false)
+            ->assertSee('```sprint', false)
+            ->assertSee('type: sprint-plan', false)
+            ->assertSee('Hilfe', false);
+    }
+
     private function login(string $email): void
     {
         $this->post('/login', [

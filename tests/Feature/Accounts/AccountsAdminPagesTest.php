@@ -179,12 +179,15 @@ class AccountsAdminPagesTest extends TestCase
         $this->loginAdmin();
 
         $index = $this->get('/admin/story-access');
-        $index->assertOk()->assertSee('accounts.storyAclTitle', false);
+        $index->assertOk()
+            ->assertSee('data-overview-search', false)
+            ->assertSee('Story access', false);
 
         $slug = 'ai-basics';
         $this->get('/account/story-access/'.$slug.'/edit')
             ->assertOk()
-            ->assertSee('accounts.editStoryAcl', false);
+            ->assertSee('accounts.backToStoryAcl', false)
+            ->assertSee($slug);
 
         $this->put('/account/story-access/'.$slug, [
             'visibility' => 'restricted',

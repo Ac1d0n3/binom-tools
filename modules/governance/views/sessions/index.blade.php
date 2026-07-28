@@ -1,34 +1,33 @@
-@extends('foundations.layouts.tools')
+@extends('profile::layouts.shell')
 
-@section('title', 'Governance Sessions - ' . config('app.name'))
-@section('meta_description', 'Manage saved Governance Discovery Sessions, reports, validation states and workflow handoff.')
+@section('title', 'Saved discoveries — ' . config('app.name'))
+@section('meta_description', 'Saved Governance Hub discoveries — reports, copies, and archives.')
 @section('robots', 'noindex,nofollow')
 
-@section('content')
+@section('profile_content')
     <div class="tools-content governance-sessions">
         <header class="governance-sessions__header">
             <div>
-                <p class="governance-hub__eyebrow" data-text-de="Permanente Arbeitsstände" data-text-en="Persistent work sessions">Persistent work sessions</p>
-                <h1 class="tools-page-title" data-text-de="Governance Sessions verwalten" data-text-en="Manage governance sessions">Manage governance sessions</h1>
+                <p class="governance-hub__eyebrow" data-text-de="Gespeicherte Discoveries" data-text-en="Saved discoveries">Saved discoveries</p>
+                <h1 class="tools-page-title" data-text-de="Gespeicherte Discoveries" data-text-en="Saved discoveries">Saved discoveries</h1>
                 <p
                     class="tools-page-lead"
                     data-hub-lead
-                    data-text-de="Gespeicherte Discovery-Ergebnisse bleiben mit Login dauerhaft verfügbar und können als Report, Kopie oder Workflow weiterverwendet werden."
-                    data-text-en="Signed-in discovery results stay permanently available and can continue as reports, copies, or workflows."
-                >Signed-in discovery results stay permanently available and can continue as reports, copies, or workflows.</p>
+                    data-text-de="Ergebnisse, die du im Governance Hub dauerhaft gespeichert hast — Reports, Kopien und Archiv. Neu starten und Speichern passiert im Hub, nicht hier."
+                    data-text-en="Results you permanently saved from the Governance Hub — reports, copies, and archive. Starting and saving happens in the Hub, not here."
+                >Results you permanently saved from the Governance Hub — reports, copies, and archive. Starting and saving happens in the Hub, not here.</p>
+                @if (! empty($activeWorkspace))
+                    <p class="tools-page-lead" style="margin-top:.35rem">
+                        <span data-text-de="Aktiver Workspace:" data-text-en="Active workspace:">Active workspace:</span>
+                        <strong>{{ $activeWorkspace['name'] ?? '' }}</strong>
+                        <span> · {{ $activeWorkspace['stack'] ?? 'unknown' }}</span>
+                    </p>
+                @endif
             </div>
             <div class="governance-sessions__header-actions">
                 <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.index') }}#governance-advisor">
                     <i class="fa-solid fa-compass" aria-hidden="true"></i>
-                    <span data-text-de="Neue Session starten" data-text-en="Start new session">Start new session</span>
-                </a>
-                <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-report') }}">
-                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                    <span data-text-de="Beispiel-Report ansehen" data-text-en="View example report">View example report</span>
-                </a>
-                <a class="governance-hub__button" href="{{ locale_route('governance.sessions.demo-workspace') }}">
-                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    <span data-text-de="Demo Workspace ansehen" data-text-en="View demo workspace">View demo workspace</span>
+                    <span data-text-de="Im Governance Hub weiterarbeiten" data-text-en="Continue in Governance Hub">Continue in Governance Hub</span>
                 </a>
                 <a class="governance-hub__button" href="{{ locale_route('governance.sessions.index', $showArchived ? [] : ['archived' => 1]) }}">
                     <i class="fa-solid fa-box-archive" aria-hidden="true"></i>
@@ -44,15 +43,20 @@
         @if ($sessions === [])
             <section class="governance-sessions__empty">
                 <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
-                <h2 data-text-de="Noch keine Sessions" data-text-en="No sessions yet">No sessions yet</h2>
-                <p data-text-de="Starte im Governance Hub den Advisor und speichere die Ergebnisse als permanente Session." data-text-en="Start the advisor in the Governance Hub and save the results as a persistent session.">Start the advisor in the Governance Hub and save the results as a persistent session.</p>
-                <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.sessions.demo-workspace') }}">
-                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    <span data-text-de="Gefüllten Demo Workspace ansehen" data-text-en="View filled demo workspace">View filled demo workspace</span>
+                <h2 data-text-de="Noch nichts gespeichert" data-text-en="Nothing saved yet">Nothing saved yet</h2>
+                <p data-text-de="Öffne den Governance Hub, nutze den Advisor und speichere dort dein Ergebnis. Hier erscheinen danach deine dauerhaften Discoveries." data-text-en="Open the Governance Hub, use the advisor, and save your result there. Your permanent discoveries will show up here.">Open the Governance Hub, use the advisor, and save your result there. Your permanent discoveries will show up here.</p>
+                <a class="governance-hub__button governance-hub__button--primary" href="{{ locale_route('governance.index') }}#governance-advisor">
+                    <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                    <span data-text-de="Zum Governance Hub" data-text-en="Go to Governance Hub">Go to Governance Hub</span>
                 </a>
+                <p style="margin-top:1rem">
+                    <a class="tools-btn tools-btn--ghost" href="{{ locale_route('governance.sessions.demo-workspace') }}">
+                        <span data-text-de="Nur Demo ansehen (ohne Speichern)" data-text-en="View demo only (no save)">View demo only (no save)</span>
+                    </a>
+                </p>
             </section>
         @else
-            <section class="governance-sessions__grid" aria-label="Governance sessions">
+            <section class="governance-sessions__grid" aria-label="Saved discoveries">
                 @foreach ($sessions as $session)
                     @php
                         $validation = is_array($session['validationSummary'] ?? null) ? $session['validationSummary'] : [];

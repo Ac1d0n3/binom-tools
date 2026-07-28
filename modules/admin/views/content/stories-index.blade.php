@@ -3,19 +3,21 @@
 @section('title', 'Stories — Admin — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app admin-hub">
-        <h1 class="tools-page-title">Stories</h1>
-        <x-admin.help id="stories-admin">
-            <p data-text-de="Markdown unter content/stories — Speichern ohne Git. Bilder landen in public/images/playbooks (+ WebP)." data-text-en="Markdown under content/stories — save without git. Images go to public/images/playbooks (+ WebP).">Markdown under content/stories — save without git. Images go to public/images/playbooks (+ WebP).</p>
-        </x-admin.help>
-        <x-admin.page-header title="Stories" titleDe="Stories" titleEn="Stories">
+    <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
+        <x-admin.sticky-header>
+            <x-slot:search>
+                <input type="search" class="tools-input" data-overview-search placeholder="Search stories…" aria-label="Search">
+            </x-slot:search>
             <x-slot:actions>
                 <a class="tools-btn tools-btn--primary" href="{{ locale_route('admin.stories.create') }}">New story</a>
             </x-slot:actions>
-        </x-admin.page-header>
+        </x-admin.sticky-header>
+
+        <p class="admin-hub__meta" data-overview-empty hidden>No matches.</p>
+
         <div class="sp-list">
             @foreach ($stories as $story)
-                <div class="sp-list__row">
+                <div class="sp-list__row" data-overview-item data-search-text="{{ $story['slug'] }}">
                     <div class="sp-list__identity">
                         <strong>{{ $story['slug'] }}</strong>
                         <span class="admin-hub__meta">DE {{ $story['de'] ? '✓' : '—' }} · EN {{ $story['en'] ? '✓' : '—' }}</span>

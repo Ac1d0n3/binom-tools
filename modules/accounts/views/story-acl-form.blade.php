@@ -3,15 +3,16 @@
 @section('title', 'Edit story access — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app">
-        <p class="sp-action-row">
-            <a href="{{ locale_route('admin.story-acl.index') }}" class="tools-btn tools-btn--secondary" data-i18n="accounts.backToStoryAcl">
-                Back to story access
-            </a>
-        </p>
+    <div class="tools-content tools-content--wide sp-app admin-hub">
+        <x-admin.sticky-header>
+            <x-slot:actions>
+                <a href="{{ locale_route('admin.story-acl.index') }}" class="tools-btn" data-i18n="accounts.backToStoryAcl">
+                    Back to story access
+                </a>
+            </x-slot:actions>
+        </x-admin.sticky-header>
 
-        <h1 class="tools-page-title" data-i18n="accounts.editStoryAcl">Edit story access</h1>
-        <p class="tools-page-lead">
+        <p class="admin-hub__meta">
             <strong>{{ $story['title'] }}</strong>
             · <code>{{ $story['slug'] }}</code>
         </p>

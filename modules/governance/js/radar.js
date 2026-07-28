@@ -569,6 +569,69 @@ document.querySelectorAll('[data-governance-radar]').forEach(mountRadar);
 document.querySelectorAll('[data-governance-radar]').forEach(mountSourceAdmin);
 document.querySelectorAll('[data-governance-radar]').forEach(mountFeedSync);
 document.querySelectorAll('[data-governance-radar]').forEach(mountEnrichAdmin);
+document.querySelectorAll('[data-governance-radar]').forEach(mountNewsComposer);
+
+function mountNewsComposer(root) {
+    const apiUrl = root.dataset.radarNewsApiUrl;
+    const openBtn = root.querySelector('[data-governance-radar-news-open]');
+    const dialog = root.querySelector('[data-governance-radar-news-dialog]');
+    const form = root.querySelector('[data-governance-radar-news-form]');
+    const saveBtn = root.querySelector('[data-governance-radar-news-save]');
+    const statusEl = root.querySelector('[data-governance-radar-news-status]');
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    if (!apiUrl || !(dialog instanceof HTMLDialogElement) || !form || !openBtn) {
+        return;
+    }
+
+    const setStatus = (message, isError = false) => {
+        if (!(statusEl instanceof HTMLElement)) {
+            return;
+        }
+        statusEl.hidden = !message;
+        statusEl.textContent = message || '';
+        statusEl.dataset.state = isError ? 'error' : 'ok';
+    };
+
+    openBtn.addEventListener('click', () => {
+        setStatus('');
+        if (typeof dialog.showModal === 'function') {
+            dialog.showModal();
+        }
+    });
+
+    saveBtn?.addEventListener('click', async () => {
+        const data = new FormData(form);
+        try {
+            setStatus('Veröffentliche…');
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    ...(csrf ? {'X-CSRF-TOKEN': csrf} : {}),
+                },
+                body: JSON.stringify({
+                    url: data.get('url'),
+                    language: data.get('language') || 'de',
+                    title_de: data.get('title_de'),
+                    title_en: data.get('title_en'),
+                    summary_de: data.get('summary_de') || '',
+                    summary_en: data.get('summary_en') || '',
+                }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload.message || 'News konnte nicht gespeichert werden.');
+            }
+            setStatus('Gespeichert — lade neu…');
+            window.location.reload();
+        } catch (error) {
+            setStatus(error instanceof Error ? error.message : 'Fehler', true);
+        }
+    });
+}
 
 function mountFeedSync(root) {
     const apiUrl = root.dataset.radarFeedSyncApiUrl;

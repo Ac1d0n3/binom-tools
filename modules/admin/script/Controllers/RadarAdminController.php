@@ -24,20 +24,46 @@ class RadarAdminController extends AdminController
     {
         $this->assertCanManageUsers();
         $doc = $this->safeRead();
+        $sources = array_values($doc['sources'] ?? []);
+        $items = array_values($doc['items'] ?? []);
+
+        $sourceIds = [];
+        foreach ($sources as $source) {
+            $id = (string) ($source['id'] ?? '');
+            if ($id !== '') {
+                $sourceIds[$id] = true;
+            }
+        }
+
+        $itemsBySource = [];
+        foreach ($items as $item) {
+            $sid = (string) ($item['source_id'] ?? 'manual');
+            if ($sid === '' || ! isset($sourceIds[$sid])) {
+                $sid = 'manual';
+            }
+            $itemsBySource[$sid][] = $item;
+        }
 
         return $this->adminView('admin::content.radar-index', [
-            'sources' => array_values($doc['sources'] ?? []),
-            'items' => array_values($doc['items'] ?? []),
+            'sources' => $sources,
+            'items' => $items,
+            'itemsBySource' => $itemsBySource,
+            'orphanItems' => $itemsBySource['manual'] ?? [],
         ]);
     }
 
     public function storeSource(Request $request): RedirectResponse
     {
         $this->assertCanManageUsers();
+        $request->merge([
+            'feed_url' => $request->filled('feed_url') ? $request->input('feed_url') : null,
+        ]);
         $data = $request->validate([
             'id' => ['nullable', 'regex:/^[a-z0-9-]+$/', 'max:80'],
             'name' => ['required', 'string', 'max:160'],
-            'url' => ['required', 'url', 'max:500'],
+            'short_name' => ['nullable', 'string', 'max:40'],
+            'source_url' => ['required', 'url', 'max:500'],
+            'feed_url' => ['nullable', 'url', 'max:500'],
             'language' => ['required', 'in:de,en'],
             'type' => ['nullable', 'string', 'max:80'],
         ]);
@@ -54,9 +80,13 @@ class RadarAdminController extends AdminController
             $sources[] = [
                 'id' => $id,
                 'name' => $data['name'],
-                'url' => $data['url'],
-                'language' => $data['language'],
+                'short_name' => $data['short_name'] ?: Str::upper(Str::substr($id, 0, 8)),
                 'type' => $data['type'] ?: 'Governance News',
+                'language' => $data['language'],
+                'source_url' => $data['source_url'],
+                'feed_url' => $data['feed_url'] ?: null,
+                'ingest' => false,
+                'priority' => 'medium',
             ];
             $doc['sources'] = $sources;
             $this->writer->write($doc);
@@ -70,9 +100,14 @@ class RadarAdminController extends AdminController
     public function updateSource(Request $request, string $sourceId): RedirectResponse
     {
         $this->assertCanManageUsers();
+        $request->merge([
+            'feed_url' => $request->filled('feed_url') ? $request->input('feed_url') : null,
+        ]);
         $data = $request->validate([
             'name' => ['required', 'string', 'max:160'],
-            'url' => ['required', 'url', 'max:500'],
+            'short_name' => ['nullable', 'string', 'max:40'],
+            'source_url' => ['required', 'url', 'max:500'],
+            'feed_url' => ['nullable', 'url', 'max:500'],
             'language' => ['required', 'in:de,en'],
             'type' => ['nullable', 'string', 'max:80'],
         ]);
@@ -87,10 +122,13 @@ class RadarAdminController extends AdminController
                 }
                 $sources[$i] = array_merge($source, [
                     'name' => $data['name'],
-                    'url' => $data['url'],
+                    'short_name' => $data['short_name'] ?: ($source['short_name'] ?? ''),
+                    'source_url' => $data['source_url'],
+                    'feed_url' => $data['feed_url'] ?? null,
                     'language' => $data['language'],
                     'type' => $data['type'] ?: ($source['type'] ?? 'Governance News'),
                 ]);
+                unset($sources[$i]['url']);
                 $found = true;
                 break;
             }
@@ -104,6 +142,26 @@ class RadarAdminController extends AdminController
         return back()->with('status', 'radar-source-saved');
     }
 
+    public function destroySource(string $sourceId): RedirectResponse
+    {
+        $this->assertCanManageUsers();
+
+        try {
+            $doc = $this->safeRead();
+            $before = count($doc['sources'] ?? []);
+            $doc['sources'] = array_values(array_filter(
+                array_values($doc['sources'] ?? []),
+                static fn (array $source): bool => ($source['id'] ?? '') !== $sourceId
+            ));
+            abort_unless(count($doc['sources']) < $before, 404);
+            $this->writer->write($doc);
+        } catch (RuntimeException $e) {
+            return back()->withErrors(['name' => $e->getMessage()]);
+        }
+
+        return back()->with('status', 'radar-source-deleted');
+    }
+
     public function storeItem(Request $request): RedirectResponse
     {
         $this->assertCanManageUsers();
@@ -111,30 +169,33 @@ class RadarAdminController extends AdminController
             'title_de' => ['required', 'string', 'max:240'],
             'title_en' => ['required', 'string', 'max:240'],
             'url' => ['required', 'url', 'max:500'],
-            'language' => ['required', 'in:de,en'],
             'type' => ['nullable', 'string', 'max:80'],
             'summary_de' => ['nullable', 'string', 'max:2000'],
             'summary_en' => ['nullable', 'string', 'max:2000'],
+            'source_id' => ['nullable', 'string', 'max:80'],
         ]);
 
         try {
             $doc = $this->safeRead();
             $items = array_values($doc['items'] ?? []);
             $id = 'manual-'.Str::slug(substr($data['title_en'], 0, 40)).'-'.bin2hex(random_bytes(3));
+            $sourceId = $data['source_id'] ?: 'manual';
+            $language = $this->resolveItemLanguage($doc, $sourceId);
             $items[] = [
                 'id' => $id,
-                'title' => $data['language'] === 'de' ? $data['title_de'] : $data['title_en'],
+                'title' => $language === 'de' ? $data['title_de'] : $data['title_en'],
                 'title_i18n' => ['de' => $data['title_de'], 'en' => $data['title_en']],
-                'summary' => $data['language'] === 'de' ? ($data['summary_de'] ?? '') : ($data['summary_en'] ?? ''),
+                'summary' => $language === 'de' ? ($data['summary_de'] ?? '') : ($data['summary_en'] ?? ''),
                 'summary_i18n' => [
                     'de' => $data['summary_de'] ?? '',
                     'en' => $data['summary_en'] ?? '',
                 ],
                 'url' => $data['url'],
-                'language' => $data['language'],
+                'language' => $language,
                 'type' => $data['type'] ?: 'Governance News',
                 'published_at' => now()->toDateString(),
-                'source_id' => 'manual',
+                'source_id' => $sourceId,
+                'origin' => 'manual',
             ];
             $doc['items'] = $items;
             $this->writer->write($doc);
@@ -143,6 +204,75 @@ class RadarAdminController extends AdminController
         }
 
         return back()->with('status', 'radar-item-saved');
+    }
+
+    public function updateItem(Request $request, string $itemId): RedirectResponse
+    {
+        $this->assertCanManageUsers();
+        $data = $request->validate([
+            'title_de' => ['required', 'string', 'max:240'],
+            'title_en' => ['required', 'string', 'max:240'],
+            'url' => ['required', 'url', 'max:500'],
+            'type' => ['nullable', 'string', 'max:80'],
+            'summary_de' => ['nullable', 'string', 'max:2000'],
+            'summary_en' => ['nullable', 'string', 'max:2000'],
+            'source_id' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        try {
+            $doc = $this->safeRead();
+            $items = array_values($doc['items'] ?? []);
+            $found = false;
+            foreach ($items as $i => $item) {
+                if (($item['id'] ?? '') !== $itemId) {
+                    continue;
+                }
+                $sourceId = $data['source_id'] ?: ($item['source_id'] ?? 'manual');
+                $language = $this->resolveItemLanguage($doc, $sourceId, is_string($item['language'] ?? null) ? (string) $item['language'] : null);
+                $items[$i] = array_merge($item, [
+                    'title' => $language === 'de' ? $data['title_de'] : $data['title_en'],
+                    'title_i18n' => ['de' => $data['title_de'], 'en' => $data['title_en']],
+                    'summary' => $language === 'de' ? ($data['summary_de'] ?? '') : ($data['summary_en'] ?? ''),
+                    'summary_i18n' => [
+                        'de' => $data['summary_de'] ?? '',
+                        'en' => $data['summary_en'] ?? '',
+                    ],
+                    'url' => $data['url'],
+                    'language' => $language,
+                    'type' => $data['type'] ?: ($item['type'] ?? 'Governance News'),
+                    'source_id' => $sourceId,
+                ]);
+                $found = true;
+                break;
+            }
+            abort_unless($found, 404);
+            $doc['items'] = $items;
+            $this->writer->write($doc);
+        } catch (RuntimeException $e) {
+            return back()->withErrors(['title_en' => $e->getMessage()])->withInput();
+        }
+
+        return back()->with('status', 'radar-item-saved');
+    }
+
+    public function destroyItem(string $itemId): RedirectResponse
+    {
+        $this->assertCanManageUsers();
+
+        try {
+            $doc = $this->safeRead();
+            $before = count($doc['items'] ?? []);
+            $doc['items'] = array_values(array_filter(
+                array_values($doc['items'] ?? []),
+                static fn (array $item): bool => ($item['id'] ?? '') !== $itemId
+            ));
+            abort_unless(count($doc['items']) < $before, 404);
+            $this->writer->write($doc);
+        } catch (RuntimeException $e) {
+            return back()->withErrors(['title_en' => $e->getMessage()]);
+        }
+
+        return back()->with('status', 'radar-item-deleted');
     }
 
     /**
@@ -155,5 +285,28 @@ class RadarAdminController extends AdminController
         } catch (RuntimeException) {
             return ['sources' => [], 'items' => []];
         }
+    }
+
+    /**
+     * Prefer the source language; bilingual copy lives in title_i18n / summary_i18n.
+     *
+     * @param  array<string, mixed>  $doc
+     */
+    private function resolveItemLanguage(array $doc, string $sourceId, ?string $fallback = null): string
+    {
+        foreach ($doc['sources'] ?? [] as $source) {
+            if (($source['id'] ?? '') !== $sourceId) {
+                continue;
+            }
+            $language = strtolower(trim((string) ($source['language'] ?? '')));
+            if (in_array($language, ['de', 'en'], true)) {
+                return $language;
+            }
+            break;
+        }
+
+        $fallback = is_string($fallback) ? strtolower(trim($fallback)) : '';
+
+        return in_array($fallback, ['de', 'en'], true) ? $fallback : 'en';
     }
 }

@@ -7,11 +7,15 @@
 @section('title', 'Teams — ' . config('app.name'))
 
 @section('admin_content')
-    <div class="tools-content tools-content--wide sp-app">
-        <h1 class="tools-page-title" data-i18n="accounts.teamsTitle">Teams</h1>
-        <p class="tools-page-lead" data-i18n="accounts.teamsLead">
-            Create and edit teams one at a time. Membership syncs to user accounts.
-        </p>
+    <div class="tools-content tools-content--wide sp-app admin-hub" data-overview-filter-root>
+        <x-admin.sticky-header>
+            <x-slot:search>
+                <input type="search" class="tools-input" data-overview-search placeholder="Search teams…" aria-label="Search">
+            </x-slot:search>
+            <x-slot:actions>
+                <a href="{{ locale_route('admin.teams.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addTeam">Add team</a>
+            </x-slot:actions>
+        </x-admin.sticky-header>
 
         <x-accounts.flash :status-map="[
             'team-created' => 'accounts.flash.teamCreated',
@@ -19,14 +23,9 @@
             'team-deleted' => 'accounts.flash.teamDeleted',
         ]" />
 
-        <section class="sp-section" aria-labelledby="accounts-teams-heading">
-            <div class="sp-section__header">
-                <h2 id="accounts-teams-heading" class="sp-section__title" data-i18n="accounts.existingTeams">Teams</h2>
-                <a href="{{ locale_route('admin.teams.create') }}" class="tools-btn tools-btn--primary" data-i18n="accounts.addTeam">
-                    Add team
-                </a>
-            </div>
+        <p class="admin-hub__meta" data-overview-empty hidden data-i18n="accounts.noTeams">No matches.</p>
 
+        <section class="sp-section">
             <div class="sp-list">
                 @forelse ($teams as $team)
                     @php
@@ -58,8 +57,15 @@
                         } elseif (strlen($short) >= 3) {
                             $avatarClasses[] = 'sp-avatar--trigram-3';
                         }
+                        $searchText = strtolower(trim(implode(' ', array_filter([
+                            $label,
+                            $team['id'] ?? '',
+                            $team['name']['de'] ?? '',
+                            $team['name']['en'] ?? '',
+                            $short,
+                        ]))));
                     @endphp
-                    <div class="sp-list__row">
+                    <div class="sp-list__row" data-overview-item data-search-text="{{ $searchText }}">
                         <div class="sp-list__identity">
                             <span
                                 class="{{ implode(' ', $avatarClasses) }}"
