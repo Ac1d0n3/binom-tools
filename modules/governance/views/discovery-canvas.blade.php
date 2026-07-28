@@ -68,7 +68,6 @@
                 data-text-de="Acht Schritte als crawlbarer HTML-Inhalt. Jeder Schritt verlinkt bestehende Tools. Exportiere eine Markdown-Checkliste für Workshops — individuelle Arbeitsstände bleiben optional und nicht indexiert."
                 data-text-en="Eight steps as crawlable HTML. Each step links existing tools. Export a Markdown checklist for workshops — individual workstates stay optional and non-indexed."
             >Eight steps as crawlable HTML. Each step links existing tools. Export a Markdown checklist for workshops — individual workstates stay optional and non-indexed.</p>
-            <x-governance.author-byline compact />
         </header>
 
         <ol class="governance-discovery-steps" data-discovery-steps>

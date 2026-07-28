@@ -78,7 +78,6 @@
                     <span data-text-de="Discovery Canvas" data-text-en="Discovery canvas">Discovery canvas</span>
                 </a>
             </div>
-            <x-governance.author-byline compact />
         </header>
 
         <ol class="governance-landing__steps">

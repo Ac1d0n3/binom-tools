@@ -68,7 +68,6 @@
                 data-text-de="Einstieg über CRM, ERP, HCM und Collaboration. Die Supplier Library sagt: Welche Entitäten laden? Was skippen? Wo ist PII? Welche KPIs sind plausibel?"
                 data-text-en="Entry via CRM, ERP, HCM, and collaboration. The supplier library answers: which entities to load, what to skip, where PII sits, and which KPIs are plausible."
             >Entry via CRM, ERP, HCM, and collaboration. The supplier library answers: which entities to load, what to skip, where PII sits, and which KPIs are plausible.</p>
-            <x-governance.author-byline compact />
         </header>
 
         <section class="governance-landing__supplier-grid" aria-labelledby="featured-suppliers-title">

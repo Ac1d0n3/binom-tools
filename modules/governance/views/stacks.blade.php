@@ -68,7 +68,6 @@
                 data-text-de="Kein Vendor-Verzeichnis. Pro Stack siehst du typische Komponenten, Governance-Fragen und drei Tools, mit denen du praktisch startest."
                 data-text-en="Not a vendor directory. For each stack you see typical components, governance questions, and three tools to start practically."
             >Not a vendor directory. For each stack you see typical components, governance questions, and three tools to start practically.</p>
-            <x-governance.author-byline compact />
         </header>
 
         <div class="governance-landing__stack-grid">

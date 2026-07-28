@@ -12,7 +12,7 @@
                 <span class="tools-hero__headline-accent" data-i18n="home.hero.headlineAccent">orientation first — then decisions, artifacts, and evidence.</span>
             </h1>
             <p class="tools-hero__tagline" data-i18n="home.hero.tagline">
-                Public online advisor for data governance: first the right question, then stories, glossary, learning paths, radar, and tools. Cloneable for your internal hub.
+                Governance help hub: first the right question, then stories, glossary, learning paths, radar, and tools. Cloneable for your internal hub.
             </p>
 
             <div class="tools-hero__actions">
@@ -39,7 +39,7 @@
             </p>
 
             <p class="tools-hero__attribution">
-                <span data-i18n="home.hero.attribution">Public advisor by</span>
+                <span data-i18n="home.hero.attribution">By</span>
                 <a href="{{ config('playbooks.author_url', 'https://binom.net') }}" target="_blank" rel="noopener noreferrer author">Thomas Lindackers</a>
             </p>
         </div>

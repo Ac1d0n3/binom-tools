@@ -19,9 +19,9 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('data-phone-only', false);
         $response->assertSee('governance.phoneHintTitle', false);
         $response->assertSee('Governance Hub');
+        $response->assertSee('Governance Help Hub');
         $response->assertSee('governance-hub', false);
-        $response->assertSee('Public online advisor');
-        $response->assertSee('governance-author-byline', false);
+        $response->assertDontSee('governance-author-byline', false);
         $response->assertSee('governance-hub__explore', false);
         $response->assertSee(route('playbooks.index'), false);
         $response->assertSee('data-governance-advisor', false);

@@ -138,19 +138,19 @@ const shellLabels = {
         'tools.overviewBetaNote': 'Referenz-Workflows — kontinuierlich gepflegt, lokal klonbar.',
         'about.learnMore': 'Über das Projekt',
         'about.title': 'Über binom-tools',
-        'about.lead': 'Öffentlicher Online-Berater für Data Governance — Orientierung, Fragen, Tools und Nachweise von Thomas Lindackers.',
+        'about.lead': 'Governance Help Hub für Orientierung, Fragen, Tools und Nachweise — von Thomas Lindackers.',
         'about.project.title': 'Was ist binom-tools?',
         'about.project.body':
-            'binom-tools ist ein Open-Source-Projekt von Thomas Lindackers: ein nutzbarer öffentlicher Online-Berater und Governance Help Hub mit Markdown-Stories und interaktiven Referenz-Workflows — kein kommerzielles Produkt und keine Rechtsberatung.',
+            'binom-tools ist ein Open-Source-Projekt von Thomas Lindackers: ein nutzbarer Governance Help Hub mit Markdown-Stories und interaktiven Referenz-Workflows — kein kommerzielles Produkt und keine Rechtsberatung.',
         'about.stories.title': 'Stories',
         'about.stories.body':
             'Die Playbooks geben einen generellen Einblick in Governance und die Welten darum — von Datenplattformen und BI über Prozesse bis zu den Themen, die in der Praxis wirklich zählen. Es ist Wissen, das ich über die Jahre zusammengetragen habe: Erfahrungen, Modelle und Denkanstöße, nicht ein fertiges Handbuch.',
         'about.tools.title': 'Governance',
         'about.tools.body':
-            'Interaktive Referenz-Workflows machen Ideen aus den Stories praktisch umsetzbar — Schritt für Schritt, copy-paste-fähig für Warehouse oder Governance-Setup. Ein Beispielweg: Berater → Demo-Workspace → Report.',
+            'Interaktive Referenz-Workflows machen Ideen aus den Stories praktisch umsetzbar — Schritt für Schritt, copy-paste-fähig für Warehouse oder Governance-Setup. Ein Beispielweg: Advisor → Demo-Workspace → Report.',
         'about.governanceWhy.title': 'Warum Governance?',
         'about.governanceWhy.body':
-            'Data Governance beginnt mit praktischen Entscheidungen: welcher Stack, welche Quelle, welches KPI-Grain, welche PII-Controls. Binom Governance ist ein öffentlicher Online-Berater von Thomas Lindackers — erst Orientierung, dann Tools und Nachweise — kein Vendor-Verzeichnis und keine Rechtsberatung.',
+            'Data Governance beginnt mit praktischen Entscheidungen: welcher Stack, welche Quelle, welches KPI-Grain, welche PII-Controls. Binom Governance ist ein Help Hub von Thomas Lindackers — erst Orientierung, dann Tools und Nachweise — kein Vendor-Verzeichnis und keine Rechtsberatung.',
         'about.governanceWhy.cta': 'Governance Hub öffnen',
         'about.governanceWhy.author': 'Thomas Lindackers auf binom.net',
         'about.visuals.title': 'Visuals',
@@ -190,7 +190,7 @@ const shellLabels = {
         'home.hero.headline': 'Data Governance Hub',
         'home.hero.headlineAccent': 'Orientierung zuerst — dann Entscheidungen, Artefakte und Nachweise.',
         'home.hero.tagline':
-            'Öffentlicher Online-Berater für Data Governance: erst die richtige Frage, dann Stories, Glossar, Learning Paths, Radar und Tools. Klonbar für euren internen Hub.',
+            'Governance Help Hub: erst die richtige Frage, dann Stories, Glossar, Learning Paths, Radar und Tools. Klonbar für euren internen Hub.',
         'home.hero.notice':
             'Open Source — klonbar als Startvorlage für euren internen Hub.',
         'home.hero.ctaGovernance': 'Governance Hub öffnen',
@@ -198,7 +198,7 @@ const shellLabels = {
         'home.hero.ctaSources': 'Quelle anbinden',
         'home.hero.ctaWorkflows': 'Binom-Tools öffnen',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
-        'home.hero.attribution': 'Öffentlicher Berater von',
+        'home.hero.attribution': 'Von',
         'home.workflowsTitle': 'Workflow-Beispiele',
         'home.workflowsLead':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
@@ -262,10 +262,10 @@ const shellLabels = {
             'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
         'home.featuredGovernance.title': 'Governance Hub',
         'home.featuredGovernance.description':
-            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report. Berater von Thomas Lindackers.',
+            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report.',
         'card.featured-governance.title': 'Governance Hub',
         'card.featured-governance.description':
-            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report. Berater von Thomas Lindackers.',
+            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Inventare, KPI-Funde und offene Entscheidungen in nachvollziehbare Aufgaben überführen.',
@@ -1302,10 +1302,10 @@ const shellLabels = {
         'tools.overviewBetaNote': 'Reference workflows — continuously curated, cloneable locally.',
         'about.learnMore': 'About this project',
         'about.title': 'About binom-tools',
-        'about.lead': 'Public online advisor for data governance — orientation, questions, tools, and evidence by Thomas Lindackers.',
+        'about.lead': 'Governance help hub for orientation, questions, tools, and evidence — by Thomas Lindackers.',
         'about.project.title': 'What is binom-tools?',
         'about.project.body':
-            'binom-tools is an open-source project by Thomas Lindackers: a usable public online advisor and governance help hub with Markdown stories and interactive reference workflows — not a commercial product and not legal advice.',
+            'binom-tools is an open-source project by Thomas Lindackers: a usable governance help hub with Markdown stories and interactive reference workflows — not a commercial product and not legal advice.',
         'about.stories.title': 'Stories',
         'about.stories.body':
             'The playbooks offer a general introduction to governance and the worlds around it — from data platforms and BI to processes and the topics that matter in practice. It is knowledge collected over the years: experience, models, and ideas to explore, not a finished handbook.',
@@ -1314,7 +1314,7 @@ const shellLabels = {
             'Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup. Example path: advisor → demo workspace → report.',
         'about.governanceWhy.title': 'Why governance?',
         'about.governanceWhy.body':
-            'Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a public online advisor by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.',
+            'Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a help hub by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.',
         'about.governanceWhy.cta': 'Open Governance Hub',
         'about.governanceWhy.author': 'Thomas Lindackers on binom.net',
         'about.visuals.title': 'Visuals',
@@ -1354,7 +1354,7 @@ const shellLabels = {
         'home.hero.headline': 'Data Governance Hub',
         'home.hero.headlineAccent': 'orientation first — then decisions, artifacts, and evidence.',
         'home.hero.tagline':
-            'Public online advisor for data governance: first the right question, then stories, glossary, learning paths, radar, and tools. Cloneable for your internal hub.',
+            'Governance help hub: first the right question, then stories, glossary, learning paths, radar, and tools. Cloneable for your internal hub.',
         'home.hero.notice':
             'Open source — cloneable as a starter for your internal hub.',
         'home.hero.ctaGovernance': 'Open Governance Hub',
@@ -1362,7 +1362,7 @@ const shellLabels = {
         'home.hero.ctaSources': 'Connect a source',
         'home.hero.ctaWorkflows': 'Open Binom-Tools',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
-        'home.hero.attribution': 'Public advisor by',
+        'home.hero.attribution': 'By',
         'home.workflowsTitle': 'Workflow examples',
         'home.workflowsLead':
             'Interactive reference workflows — step by step, copy-paste ready.',
@@ -1426,10 +1426,10 @@ const shellLabels = {
             'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
         'home.featuredGovernance.title': 'Governance Hub',
         'home.featuredGovernance.description':
-            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report. Advisor by Thomas Lindackers.',
+            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report.',
         'card.featured-governance.title': 'Governance Hub',
         'card.featured-governance.description':
-            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report. Advisor by Thomas Lindackers.',
+            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks.',

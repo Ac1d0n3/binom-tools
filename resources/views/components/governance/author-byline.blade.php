@@ -2,8 +2,9 @@
     'compact' => false,
 ])
 
+{{-- Unused on public pages: personal consulting framing removed. Keep for optional future use. --}}
 <aside {{ $attributes->class(['governance-author-byline', $compact ? 'governance-author-byline--compact' : null]) }}>
-    <p class="governance-author-byline__label" data-text-de="Öffentlicher Berater" data-text-en="Public advisor">Public advisor</p>
+    <p class="governance-author-byline__label" data-text-de="Autor" data-text-en="Author">Author</p>
     <p class="governance-author-byline__name">
         <a href="{{ config('playbooks.author_url', 'https://binom.net') }}" rel="author">
             {{ config('playbooks.default_author', 'Thomas Lindackers') }}
@@ -11,9 +12,9 @@
     </p>
     <p
         class="governance-author-byline__bio"
-        data-text-de="Praktische Data-Governance-Discovery: Stacks vergleichen, Quellen verstehen, KPI-Anforderungen sammeln und Artefakte für Plan und Workflow erzeugen."
-        data-text-en="Practical data governance discovery: compare stacks, understand sources, collect KPI requirements, and produce artifacts for plans and workflows."
-    >Practical data governance discovery: compare stacks, understand sources, collect KPI requirements, and produce artifacts for plans and workflows.</p>
+        data-text-de="Governance Help Hub: Stacks vergleichen, Quellen verstehen, KPI-Anforderungen sammeln und Artefakte für Plan und Workflow erzeugen."
+        data-text-en="Governance help hub: compare stacks, understand sources, collect KPI requirements, and produce artifacts for plans and workflows."
+    >Governance help hub: compare stacks, understand sources, collect KPI requirements, and produce artifacts for plans and workflows.</p>
     @unless ($compact)
         <p class="governance-author-byline__cta">
             <a class="governance-hub__button" href="{{ locale_route('governance.advisor') }}">

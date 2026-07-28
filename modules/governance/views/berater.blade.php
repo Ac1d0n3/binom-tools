@@ -23,7 +23,7 @@
             chr(64).'context' => 'https://schema.org',
             '@type' => 'WebPage',
             'name' => 'Data Governance Advisor',
-            'description' => 'Guided online advisor by Thomas Lindackers for data governance decisions without login.',
+            'description' => 'Guided governance questions by Thomas Lindackers for decisions without login.',
             'url' => url()->current(),
             'author' => [
                 '@type' => 'Person',

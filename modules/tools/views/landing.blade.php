@@ -1,18 +1,18 @@
 @extends('foundations.layouts.tools')
 
 @section('title', config('app.name'))
-@section('meta_description', 'Public online advisor for data governance: start with the right question, then stories, learning paths, glossary, radar, and copy-paste tools — by Thomas Lindackers.')
+@section('meta_description', 'Governance help hub: start with the right question, then stories, learning paths, glossary, radar, and copy-paste tools — by Thomas Lindackers.')
 
 @push('head')
     <link rel="canonical" href="{{ url()->current() }}">
     <meta property="og:title" content="{{ config('app.name') }}">
-    <meta property="og:description" content="Public online advisor for data governance: orientation first, then stories, tools, and evidence — by Thomas Lindackers.">
+    <meta property="og:description" content="Governance help hub: orientation first, then stories, tools, and evidence — by Thomas Lindackers.">
     <script type="application/ld+json">
         {!! json_encode([
             chr(64).'context' => 'https://schema.org',
             '@type' => 'WebPage',
             'name' => config('app.name'),
-            'description' => 'Public online advisor for data governance by Thomas Lindackers: orientation, stories, learning paths, and copy-paste tools.',
+            'description' => 'Governance help hub by Thomas Lindackers: orientation, stories, learning paths, and copy-paste tools.',
             'url' => url()->current(),
             'author' => [
                 '@type' => 'Person',
@@ -53,7 +53,7 @@
                         <x-tools.card
                             :href="locale_route('governance.index')"
                             title="Governance Hub"
-                            description="The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report. Advisor by Thomas Lindackers."
+                            description="The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report."
                             title-key="home.featuredGovernance.title"
                             description-key="home.featuredGovernance.description"
                             icon="fa-shield-halved"
