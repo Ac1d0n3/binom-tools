@@ -12,6 +12,14 @@ tags:
   - quality-rules
   - monitoring
   - data-products
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-06
 series: governance-pillars

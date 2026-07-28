@@ -229,4 +229,32 @@ MD);
             $german['html'],
         );
     }
+
+    public function test_reading_time_uses_word_count_only_without_images(): void
+    {
+        $renderer = new PlaybookMarkdownRenderer;
+        // 200 words => 1 minute at 200 wpm
+        $words = implode(' ', array_fill(0, 200, 'word'));
+
+        $this->assertSame(1, $renderer->readingTimeMinutes($words));
+        $this->assertSame(2, $renderer->readingTimeMinutes($words.' '.implode(' ', array_fill(0, 200, 'word'))));
+    }
+
+    public function test_reading_time_adds_time_for_markdown_and_html_images(): void
+    {
+        $renderer = new PlaybookMarkdownRenderer;
+        // Very short text would be 1 min floor; four images * 15s = 60s => +1 min on top of words
+        $markdown = <<<'MD'
+Intro text here.
+
+![One](images/playbooks/one.png)
+![Two](images/playbooks/two.png)
+
+<img src="images/playbooks/three.png" alt="Three" />
+<img src="images/playbooks/four.png" alt="Four" />
+MD;
+
+        // words alone are far below 200 => 1 min; images add 4 * 15s = 1 min => ceil(small + 1) = 2
+        $this->assertSame(2, $renderer->readingTimeMinutes($markdown));
+    }
 }

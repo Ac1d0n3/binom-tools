@@ -19,6 +19,13 @@ tags:
   - ai-governance
   - explainable-ai
   - semantic-search
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

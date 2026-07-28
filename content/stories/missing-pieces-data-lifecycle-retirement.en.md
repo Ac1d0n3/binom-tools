@@ -13,6 +13,12 @@ tags:
   - data-minimization
   - data-governance
   - cloud-governance
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: -1
 hero: images/playbooks/mp-life-hero.png
 publishedAt: 2026-07-13

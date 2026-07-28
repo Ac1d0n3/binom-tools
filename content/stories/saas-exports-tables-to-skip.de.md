@@ -8,6 +8,13 @@ tags:
   - data ingestion
   - data governance
   - PII
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 publishedAt: 2026-07-28
 category: Data Governance
 order: -1

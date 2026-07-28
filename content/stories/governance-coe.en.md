@@ -8,6 +8,13 @@ tags:
   - decision-rights
   - data-stewardship
   - governance-evidence
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/governance-coe-hero.png

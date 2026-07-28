@@ -13,6 +13,14 @@ tags:
   - storage-optimization
   - compliance
   - records-management
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-09
 series: governance-pillars

@@ -14,7 +14,9 @@ tags:
   - data-contract
   - analytics-engineering
 products:
+  - snowflake
   - dbt
+  - qlik
 order: -1
 author: Thomas Lindackers
 series: end-to-end-data-governance

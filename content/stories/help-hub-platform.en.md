@@ -7,6 +7,12 @@ tags:
   - help-hub
   - markdown
   - governance
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: 0
 publishedAt: 2026-05-01
 series: governance-help-hub

@@ -24,8 +24,8 @@ export function formatReadingTime(minutes, locale = 'en') {
 }
 
 /**
- * Build series card meta text, optionally including read progress.
- * Shows completed reading time as "read", never as remaining (total − read).
+ * Split series card meta into a stable primary line + optional progress line.
+ * Progress never uses remaining time (total − read).
  *
  * @param {{
  *   partCount: number,
@@ -34,9 +34,9 @@ export function formatReadingTime(minutes, locale = 'en') {
  *   readPartCount?: number,
  *   locale: 'de' | 'en',
  * }} options
- * @returns {string}
+ * @returns {{ primary: string, progress: string }}
  */
-export function buildSeriesCardMetaText({
+export function buildSeriesCardMetaLines({
     partCount,
     totalMinutes,
     readMinutes = 0,
@@ -48,19 +48,35 @@ export function buildSeriesCardMetaText({
     const totalLabel = formatReadingTime(totalMinutes, locale);
     const read = Math.max(0, Math.floor(Number(readMinutes) || 0));
 
-    const partsLabel = readParts > 0
-        ? (locale === 'de' ? `${readParts}/${parts} Teile` : `${readParts}/${parts} parts`)
-        : (locale === 'de' ? `${parts} Teile` : `${parts} parts`);
+    const primary = locale === 'de'
+        ? `${parts} Teile · ${totalLabel} gesamt`
+        : `${parts} parts · ${totalLabel} total`;
 
-    if (read <= 0) {
-        return locale === 'de'
-            ? `${partsLabel} · ${totalLabel} gesamt`
-            : `${partsLabel} · ${totalLabel} total`;
+    if (read <= 0 || readParts <= 0) {
+        return { primary, progress: '' };
     }
 
     const readLabel = formatReadingTime(read, locale);
+    const progress = locale === 'de'
+        ? `${readParts}/${parts} · ${readLabel} gelesen`
+        : `${readParts}/${parts} · ${readLabel} read`;
 
-    return locale === 'de'
-        ? `${partsLabel} · ${readLabel} gelesen · ${totalLabel} gesamt`
-        : `${partsLabel} · ${readLabel} read · ${totalLabel} total`;
+    return { primary, progress };
+}
+
+/**
+ * Build series card meta as a single string (tests / plain text).
+ *
+ * @param {{
+ *   partCount: number,
+ *   totalMinutes: number,
+ *   readMinutes?: number,
+ *   readPartCount?: number,
+ *   locale: 'de' | 'en',
+ * }} options
+ * @returns {string}
+ */
+export function buildSeriesCardMetaText(options) {
+    const { primary, progress } = buildSeriesCardMetaLines(options);
+    return progress === '' ? primary : `${primary}\n${progress}`;
 }

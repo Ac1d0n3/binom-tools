@@ -9,6 +9,13 @@ tags:
   - data-product
   - data-architecture
   - governance
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 publishedAt: 2026-07-18
 series: building-modern-data-warehouse

@@ -667,7 +667,7 @@ final class PlaybookRepository
         $products = PlaybookProducts::resolve($meta['products'] ?? [], $tags);
 
         $hero = $meta['hero'] ?? null;
-        $heroUrl = PlaybookImagePath::assetUrl(is_string($hero) ? $hero : null);
+        $heroUrl = PlaybookImagePath::existingAssetUrl(is_string($hero) ? $hero : null);
 
         $series = $meta['series'] ?? null;
         $seriesPart = $meta['seriespart'] ?? $meta['seriesPart'] ?? null;

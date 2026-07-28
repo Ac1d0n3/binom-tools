@@ -82,6 +82,33 @@ class PlaybookImagePathTest extends TestCase
         }
     }
 
+    public function test_existing_asset_url_returns_null_when_file_is_missing(): void
+    {
+        $this->assertNull(
+            PlaybookImagePath::existingAssetUrl('images/playbooks/nonexistent-playbook-image.png'),
+        );
+    }
+
+    public function test_existing_asset_url_returns_asset_when_file_exists(): void
+    {
+        $pngPath = public_path('images/playbooks/playbook-image-path-existing-test.png');
+
+        try {
+            if (! is_dir(dirname($pngPath))) {
+                mkdir(dirname($pngPath), 0755, true);
+            }
+
+            file_put_contents($pngPath, 'png');
+
+            $this->assertSame(
+                asset('images/playbooks/playbook-image-path-existing-test.png'),
+                PlaybookImagePath::existingAssetUrl('images/playbooks/playbook-image-path-existing-test.png'),
+            );
+        } finally {
+            @unlink($pngPath);
+        }
+    }
+
     public function test_picture_sources_returns_null_without_webp_file(): void
     {
         $this->assertNull(

@@ -13,6 +13,12 @@ tags:
   - business-context
   - data-stewardship
   - data-governance
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: -1
 hero: images/playbooks/mp-meta-hero.png
 publishedAt: 2026-07-13

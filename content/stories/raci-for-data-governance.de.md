@@ -8,6 +8,13 @@ tags:
   - data-governance
   - data-owner
   - data-steward
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/raci-for-data-governance-hero.png

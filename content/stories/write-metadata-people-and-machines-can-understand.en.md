@@ -15,6 +15,13 @@ tags:
   - data-products
   - kpi-governance
   - data-contracts
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

@@ -18,6 +18,13 @@ tags:
   - audit-evidence
   - human-in-the-loop
   - ai-governance
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

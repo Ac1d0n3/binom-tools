@@ -15,6 +15,13 @@ tags:
   - active-metadata
   - ai-governance
   - data-products
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

@@ -93,23 +93,33 @@
         aria-labelledby="{{ $titleId }}"
     >
         <div class="tools-card__media">
-            @if ($heroUrl)
-                <div class="tools-card__hero">
+            @php
+                $hasHero = filled($heroUrl);
+            @endphp
+            <div
+                @class([
+                    'tools-card__hero',
+                    'tools-card__hero--placeholder' => ! $hasHero,
+                ])
+                data-playbook-hero-root
+                aria-hidden="true"
+            >
+                <div class="tools-card__hero-fallback" aria-hidden="true">
+                    <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
+                        <i class="fa-solid fa-book-open tools-card__icon"></i>
+                    </div>
+                </div>
+                @if ($hasHero)
                     <x-playbooks.responsive-image
                         :src="$heroUrl"
                         alt=""
                         class="tools-card__hero-image"
                         loading="lazy"
                         decoding="async"
+                        :fallback-on-error="true"
                     />
-                </div>
-            @else
-                <div class="tools-card__hero tools-card__hero--placeholder" aria-hidden="true">
-                    <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
-                        <i class="fa-solid fa-book-open tools-card__icon"></i>
-                    </div>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
 
         <div class="tools-card__story-body">

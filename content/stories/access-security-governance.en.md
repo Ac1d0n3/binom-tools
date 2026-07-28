@@ -14,6 +14,14 @@ tags:
   - segregation-of-duties
   - data-security
   - audit
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-08
 series: governance-pillars

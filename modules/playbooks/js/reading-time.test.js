@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildSeriesCardMetaText, formatReadingTime } from './reading-time.js';
+import { buildSeriesCardMetaLines, buildSeriesCardMetaText, formatReadingTime } from './reading-time.js';
 
 describe('formatReadingTime', () => {
     it('formats minutes below one hour', () => {
@@ -23,37 +23,61 @@ describe('formatReadingTime', () => {
     });
 });
 
-describe('buildSeriesCardMetaText', () => {
-    it('shows total without progress when nothing is read', () => {
-        expect(buildSeriesCardMetaText({
+describe('buildSeriesCardMetaLines', () => {
+    it('keeps totals on the primary line without progress', () => {
+        expect(buildSeriesCardMetaLines({
             partCount: 9,
             totalMinutes: 142,
             readMinutes: 0,
             locale: 'en',
-        })).toBe('9 parts · 2 h 22 min total');
+        })).toEqual({
+            primary: '9 parts · 2 h 22 min total',
+            progress: '',
+        });
 
-        expect(buildSeriesCardMetaText({
+        expect(buildSeriesCardMetaLines({
             partCount: 9,
             totalMinutes: 142,
             locale: 'de',
-        })).toBe('9 Teile · 2 Std 22 min gesamt');
+        })).toEqual({
+            primary: '9 Teile · 2 Std 22 min gesamt',
+            progress: '',
+        });
     });
 
-    it('shows read progress as completed time, not remaining', () => {
+    it('puts read progress on a second line', () => {
+        expect(buildSeriesCardMetaLines({
+            partCount: 9,
+            totalMinutes: 142,
+            readMinutes: 22,
+            readPartCount: 2,
+            locale: 'en',
+        })).toEqual({
+            primary: '9 parts · 2 h 22 min total',
+            progress: '2/9 · 22 min read',
+        });
+
+        expect(buildSeriesCardMetaLines({
+            partCount: 9,
+            totalMinutes: 142,
+            readMinutes: 22,
+            readPartCount: 2,
+            locale: 'de',
+        })).toEqual({
+            primary: '9 Teile · 2 Std 22 min gesamt',
+            progress: '2/9 · 22 min gelesen',
+        });
+    });
+});
+
+describe('buildSeriesCardMetaText', () => {
+    it('joins primary and progress with a newline', () => {
         expect(buildSeriesCardMetaText({
             partCount: 9,
             totalMinutes: 142,
             readMinutes: 22,
             readPartCount: 2,
             locale: 'en',
-        })).toBe('2/9 parts · 22 min read · 2 h 22 min total');
-
-        expect(buildSeriesCardMetaText({
-            partCount: 9,
-            totalMinutes: 142,
-            readMinutes: 22,
-            readPartCount: 2,
-            locale: 'de',
-        })).toBe('2/9 Teile · 22 min gelesen · 2 Std 22 min gesamt');
+        })).toBe('9 parts · 2 h 22 min total\n2/9 · 22 min read');
     });
 });

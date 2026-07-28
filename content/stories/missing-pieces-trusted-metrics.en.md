@@ -12,6 +12,12 @@ tags:
   - data-stewardship
   - self-service-bi
   - data-governance
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: -1
 hero: images/playbooks/mp-metrics-hero.png
 publishedAt: 2026-07-13

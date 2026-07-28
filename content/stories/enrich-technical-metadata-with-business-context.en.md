@@ -16,6 +16,13 @@ tags:
   - semantic-layer
   - active-metadata
   - ai-ready-metadata
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

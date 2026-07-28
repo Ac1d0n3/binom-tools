@@ -12,6 +12,10 @@ tags:
   - qlik
   - data-modeling
   - report-governance
+products:
+  - qlik
+  - fabric
+  - powerbi
 publishedAt: 2026-07-28
 category: Data Governance
 order: -1

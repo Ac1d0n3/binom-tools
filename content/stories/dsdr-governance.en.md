@@ -12,6 +12,14 @@ tags:
   - data-deletion
   - retention
   - lineage
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-05
 series: governance-pillars

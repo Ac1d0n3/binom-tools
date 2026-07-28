@@ -342,10 +342,30 @@ final class PlaybookMarkdownRenderer
         return $href;
     }
 
+    /**
+     * Approximate reading time from body markdown.
+     * Words at ~200 wpm, plus ~15 seconds per figure/diagram (markdown or HTML img).
+     */
     public function readingTimeMinutes(string $markdown): int
     {
         $words = preg_split('/\s+/u', trim(strip_tags(Str::markdown($markdown)))) ?: [];
+        $wordCount = count(array_filter($words));
+        $wordMinutes = $wordCount / 200;
 
-        return max(1, (int) ceil(count(array_filter($words)) / 200));
+        $imageCount = $this->countBodyImages($markdown);
+        $imageMinutes = $imageCount * (15 / 60);
+
+        return max(1, (int) ceil($wordMinutes + $imageMinutes));
+    }
+
+    /**
+     * Count markdown images and HTML <img> tags in the story body.
+     */
+    private function countBodyImages(string $markdown): int
+    {
+        $markdownImages = preg_match_all('/!\[[^\]]*]\([^)]+\)/', $markdown);
+        $htmlImages = preg_match_all('/<img\b/i', $markdown);
+
+        return max(0, (int) $markdownImages) + max(0, (int) $htmlImages);
     }
 }

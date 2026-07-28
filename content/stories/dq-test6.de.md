@@ -16,6 +16,13 @@ tags:
   - remediation
   - ownership
   - data-governance
+products:
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 author: Thomas Lindackers
 series: operational-data-quality

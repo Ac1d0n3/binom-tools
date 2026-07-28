@@ -9,6 +9,13 @@ tags:
   - decision-rights
   - data-product
   - operating-model
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/data-product-owner-vs-data-owner-hero.png

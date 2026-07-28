@@ -1503,17 +1503,44 @@ a.playbook-series__option:hover {
 }
 
 .playbook-series-page__hero {
+    position: relative;
     overflow: hidden;
     border-radius: 12px;
     aspect-ratio: 16 / 7;
     background: color-mix(in srgb, var(--theme-color-primary) 8%, var(--surface-background-color));
 }
 
-.playbook-series-page__hero-image {
+.playbook-series-page__hero-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+}
+
+.playbook-series-page__hero-fallback .tools-card__icon-wrap {
+    width: 3.75rem;
+    height: 3.75rem;
+    font-size: 1.65rem;
+}
+
+.playbook-series-page__hero-image,
+.playbook-series-page__hero picture {
+    position: relative;
+    z-index: 1;
     display: block;
     width: 100%;
     height: 100%;
+}
+
+.playbook-series-page__hero-image {
     object-fit: cover;
+}
+
+.playbook-series-page__hero.is-hero-failed .playbook-series-page__hero-image,
+.playbook-series-page__hero.is-hero-failed picture {
+    display: none;
 }
 
 .playbook-series-page__intro {

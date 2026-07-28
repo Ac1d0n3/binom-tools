@@ -8,6 +8,13 @@ tags:
   - Operating Model
   - Capacity Management
   - Decision Rights
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 hero: images/playbooks/stewardship-capacity-hero.png

@@ -32,23 +32,35 @@
     data-sort-part-count="{{ $series->partCount() }}"
     @if (count($products) > 0) data-products="{{ implode(',', $products) }}" @endif
 >
-    @if ($series->heroUrl)
-        <a href="{{ $seriesHref }}" class="tools-series-card__hero" tabindex="-1" aria-hidden="true">
+    @php
+        $hasHero = filled($series->heroUrl);
+    @endphp
+    <a
+        href="{{ $seriesHref }}"
+        @class([
+            'tools-series-card__hero',
+            'tools-series-card__hero--placeholder' => ! $hasHero,
+        ])
+        data-playbook-hero-root
+        tabindex="-1"
+        aria-hidden="true"
+    >
+        <div class="tools-series-card__hero-fallback" aria-hidden="true">
+            <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
+                <i class="fa-solid fa-layer-group tools-card__icon"></i>
+            </div>
+        </div>
+        @if ($hasHero)
             <x-playbooks.responsive-image
                 :src="$series->heroUrl"
                 alt=""
                 class="tools-series-card__hero-image"
                 loading="lazy"
                 decoding="async"
+                :fallback-on-error="true"
             />
-        </a>
-    @else
-        <a href="{{ $seriesHref }}" class="tools-series-card__hero tools-series-card__hero--placeholder" tabindex="-1" aria-hidden="true">
-            <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
-                <i class="fa-solid fa-layer-group tools-card__icon"></i>
-            </div>
-        </a>
-    @endif
+        @endif
+    </a>
 
     <div class="tools-series-card__body">
         <div class="tools-series-card__main">
@@ -72,15 +84,22 @@
             @endif
 
             <div class="tools-series-card__status">
-                <p
+                <div
                     class="tools-series-card__meta"
                     data-playbook-series-card-meta
                     data-part-count="{{ $series->partCount() }}"
                     data-reading-time-de="{{ $series->totalReadingTimeDe }}"
                     data-reading-time-en="{{ $series->totalReadingTimeEn }}"
                 >
-                    {{ $series->partCount() }} parts · {{ format_reading_time($series->totalReadingTimeEn, 'en') }} total
-                </p>
+                    <p class="tools-series-card__meta-primary" data-playbook-series-card-meta-primary>
+                        {{ $series->partCount() }} parts · {{ format_reading_time($series->totalReadingTimeEn, 'en') }} total
+                    </p>
+                    <p
+                        class="tools-series-card__meta-progress is-empty"
+                        data-playbook-series-card-meta-progress
+                        aria-hidden="true"
+                    ></p>
+                </div>
 
                 <ol
                     class="tools-series-card__progress"

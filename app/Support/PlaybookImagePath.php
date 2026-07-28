@@ -38,6 +38,27 @@ final class PlaybookImagePath
         return $normalized !== null ? asset($normalized) : null;
     }
 
+    /**
+     * Like assetUrl(), but only when the file exists under public/.
+     */
+    public static function existingAssetUrl(?string $path): ?string
+    {
+        $normalized = self::publicRelativePath($path);
+
+        if ($normalized === null || ! self::fileExists($normalized)) {
+            return null;
+        }
+
+        return asset($normalized);
+    }
+
+    public static function fileExists(?string $path): bool
+    {
+        $normalized = self::publicRelativePath($path);
+
+        return $normalized !== null && is_file(public_path($normalized));
+    }
+
     public static function webpPath(?string $path): ?string
     {
         $normalized = self::publicRelativePath($path);

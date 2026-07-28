@@ -12,6 +12,14 @@ tags:
   - masking
   - privacy-by-design
   - gdpr
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-04
 series: governance-pillars

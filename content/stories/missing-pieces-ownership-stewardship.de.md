@@ -12,6 +12,12 @@ tags:
   - data-governance
   - data-products
   - governance-usability
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: -1
 hero: images/playbooks/mp-ownership-hero.png
 publishedAt: 2026-07-13

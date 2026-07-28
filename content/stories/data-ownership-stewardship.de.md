@@ -11,6 +11,14 @@ tags:
   - operating-model
   - data-domains
   - data-products
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-02
 series: governance-pillars

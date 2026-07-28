@@ -8,6 +8,12 @@ tags:
   - sprint-planner
   - markdown
   - templates
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: 2
 publishedAt: 2026-05-01
 series: governance-help-hub

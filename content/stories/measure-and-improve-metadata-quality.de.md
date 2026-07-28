@@ -18,6 +18,13 @@ tags:
   - kpi-governance
   - ai-ready-metadata
   - continuous-improvement
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

@@ -11,6 +11,14 @@ tags:
   - business-glossary
   - impact-analysis
   - data-discovery
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
+  - pureview
 order: -1
 publishedAt: 2026-06-03
 series: governance-pillars

@@ -8,6 +8,13 @@ tags:
   - grain
   - stakeholder-interviews
   - mart-design
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 publishedAt: 2026-07-28
 category: Data Governance
 order: -1

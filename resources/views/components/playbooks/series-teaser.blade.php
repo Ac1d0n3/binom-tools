@@ -8,7 +8,12 @@
 @endphp
 
 <article
-    class="tools-card tools-card--story tools-card--story-has-hero tools-card--series-teaser"
+    @class([
+        'tools-card',
+        'tools-card--story',
+        'tools-card--story-has-hero' => filled($series->heroUrl),
+        'tools-card--series-teaser',
+    ])
     data-series-teaser
     data-series-id="{{ $series->id }}"
 >
@@ -18,23 +23,33 @@
         aria-labelledby="{{ $titleId }}"
     >
         <div class="tools-card__media">
-            @if ($series->heroUrl)
-                <div class="tools-card__hero">
+            @php
+                $hasHero = filled($series->heroUrl);
+            @endphp
+            <div
+                @class([
+                    'tools-card__hero',
+                    'tools-card__hero--placeholder' => ! $hasHero,
+                ])
+                data-playbook-hero-root
+                aria-hidden="true"
+            >
+                <div class="tools-card__hero-fallback" aria-hidden="true">
+                    <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
+                        <i class="fa-solid fa-layer-group tools-card__icon"></i>
+                    </div>
+                </div>
+                @if ($hasHero)
                     <x-playbooks.responsive-image
                         :src="$series->heroUrl"
                         alt=""
                         class="tools-card__hero-image"
                         loading="lazy"
                         decoding="async"
+                        :fallback-on-error="true"
                     />
-                </div>
-            @else
-                <div class="tools-card__hero tools-card__hero--placeholder" aria-hidden="true">
-                    <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
-                        <i class="fa-solid fa-layer-group tools-card__icon"></i>
-                    </div>
-                </div>
-            @endif
+                @endif
+            </div>
 
             <span class="tools-card__series-badge">
                 <i class="fa-solid fa-layer-group" aria-hidden="true"></i>

@@ -31,14 +31,23 @@
         </nav>
 
         <header class="playbook-series-page__header">
-            @if ($series->heroUrl)
-                <div class="playbook-series-page__hero">
+            @php
+                $hasHero = filled($series->heroUrl);
+            @endphp
+            @if ($hasHero)
+                <div class="playbook-series-page__hero" data-playbook-hero-root>
+                    <div class="playbook-series-page__hero-fallback" aria-hidden="true">
+                        <div class="tools-card__icon-wrap tools-card__icon-wrap--primary">
+                            <i class="fa-solid fa-layer-group tools-card__icon"></i>
+                        </div>
+                    </div>
                     <x-playbooks.responsive-image
                         :src="$series->heroUrl"
                         alt=""
                         class="playbook-series-page__hero-image"
                         loading="eager"
                         decoding="async"
+                        :fallback-on-error="true"
                     />
                 </div>
             @endif

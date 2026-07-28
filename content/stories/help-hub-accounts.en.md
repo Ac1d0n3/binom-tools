@@ -8,6 +8,12 @@ tags:
   - accounts
   - acl
   - login
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: 1
 publishedAt: 2026-05-01
 series: governance-help-hub

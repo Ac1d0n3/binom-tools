@@ -13,6 +13,13 @@ tags:
   - data-product
   - semantic-model
   - platform-operations
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: roles-hub

@@ -11,6 +11,12 @@ tags:
   - data-stewardship
   - dbt
   - data-pipelines
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - powerbi
 order: -1
 hero: images/playbooks/mp-dq-hero.png
 publishedAt: 2026-07-13

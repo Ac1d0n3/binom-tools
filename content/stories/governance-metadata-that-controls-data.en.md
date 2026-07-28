@@ -18,6 +18,13 @@ tags:
   - ci-cd
   - ai-governance
   - audit-evidence
+products:
+  - snowflake
+  - dbt
+  - qlik
+  - fabric
+  - databricks
+  - powerbi
 order: -1
 author: Thomas Lindackers
 series: metadata-deep-dive

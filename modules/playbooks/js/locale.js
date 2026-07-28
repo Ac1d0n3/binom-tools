@@ -1,6 +1,6 @@
 import { getLocale } from '../../../resources/js/shell/locale';
 import { isPlaybookRead } from './read-state';
-import { buildSeriesCardMetaText } from './reading-time';
+import { buildSeriesCardMetaLines } from './reading-time';
 
 /** @typedef {'de' | 'en'} ToolsLocale */
 
@@ -60,14 +60,30 @@ export function refreshSeriesCardMeta(locale = getLocale()) {
             10,
         ) || 0;
         const { readMinutes, readPartCount } = readProgressForSeriesCard(element, locale);
-
-        element.textContent = buildSeriesCardMetaText({
+        const { primary, progress } = buildSeriesCardMetaLines({
             partCount,
             totalMinutes,
             readMinutes,
             readPartCount,
             locale,
         });
+
+        const primaryEl = element.querySelector('[data-playbook-series-card-meta-primary]');
+        const progressEl = element.querySelector('[data-playbook-series-card-meta-progress]');
+
+        if (primaryEl instanceof HTMLElement) {
+            primaryEl.textContent = primary;
+        } else {
+            element.textContent = progress === '' ? primary : `${primary}\n${progress}`;
+            return;
+        }
+
+        if (progressEl instanceof HTMLElement) {
+            const hasProgress = progress !== '';
+            progressEl.textContent = progress;
+            progressEl.classList.toggle('is-empty', !hasProgress);
+            progressEl.setAttribute('aria-hidden', hasProgress ? 'false' : 'true');
+        }
     });
 }
 
