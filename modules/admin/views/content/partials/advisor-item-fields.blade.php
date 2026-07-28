@@ -12,6 +12,7 @@
     <select class="tools-input" name="kind" required data-admin-advisor-kind>
         @if ($canCreateStory)
             <option value="story">Story</option>
+            <option value="series">Series</option>
         @endif
         @if ($canCreateVendorSource)
             <option value="supplier">Source (supplier)</option>
@@ -24,6 +25,14 @@
     <select class="tools-input" name="ref" data-admin-advisor-ref="story">
         @foreach ($storyOptions as $slug => $label)
             <option value="{{ $slug }}">{{ $label }}</option>
+        @endforeach
+    </select>
+</label>
+<label class="admin-hub__field" data-admin-advisor-ref-wrap="series" hidden>
+    <span>Series</span>
+    <select class="tools-input" data-admin-advisor-ref="series" disabled>
+        @foreach ($seriesOptions as $id => $label)
+            <option value="{{ $id }}">{{ $label }}</option>
         @endforeach
     </select>
 </label>

@@ -17,9 +17,9 @@ final class LinkCheckRunner
     /**
      * @param  list<array{url: string, source: string}>  $inventory
      * @param  callable(int $done, int $total, array $row): void|null  $onProgress
-     * @return array{checkedAt: string, results: list<array<string, mixed>>, summary: array<string, int>, total: int}
+     * @return array{status: string, checkedAt: string, results: list<array<string, mixed>>, summary: array<string, int>, total: int}
      */
-    public function run(array $inventory, ?callable $onProgress = null): array
+    public function run(array $inventory, ?callable $onProgress = null, int $limit = 0): array
     {
         $byUrl = [];
         foreach ($inventory as $hit) {
@@ -29,6 +29,9 @@ final class LinkCheckRunner
         }
 
         $urls = array_values($byUrl);
+        if ($limit > 0) {
+            $urls = array_slice($urls, 0, $limit);
+        }
         $total = count($urls);
         $results = [];
         $summary = ['ok' => 0, 'redirect' => 0, 'broken' => 0, 'error' => 0];
@@ -48,6 +51,7 @@ final class LinkCheckRunner
         }
 
         return [
+            'status' => 'done',
             'checkedAt' => now()->toIso8601String(),
             'results' => $results,
             'summary' => $summary,

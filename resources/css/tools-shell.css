@@ -635,7 +635,9 @@ html:has(.tools-shell__main--admin-md) body {
 }
 
 .tools-header__account-menu-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     width: 100%;
     box-sizing: border-box;
     margin: 0;
@@ -650,6 +652,14 @@ html:has(.tools-shell__main--admin-md) body {
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.15s ease;
+}
+
+.tools-header__account-menu-item > .fa-solid {
+    flex-shrink: 0;
+    width: 1rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    opacity: 0.9;
 }
 
 .tools-header__account-menu-item:hover {

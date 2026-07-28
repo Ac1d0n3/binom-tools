@@ -40,6 +40,7 @@ class LinkCheckController extends Controller
             'results' => $results,
             'filter' => $filter,
             'inventoryCount' => count($this->scanner->scan()),
+            'isRunning' => $this->store->isRunning(),
         ]);
     }
 
@@ -47,18 +48,29 @@ class LinkCheckController extends Controller
     {
         $this->assertCanManage();
 
-        $limit = (int) $request->input('limit', 0);
-        $inventory = $this->scanner->scan();
-        if ($limit > 0) {
-            $inventory = array_slice($inventory, 0, $limit);
+        if ($this->store->isRunning()) {
+            return redirect()
+                ->to(locale_route('admin.link-check.index'))
+                ->with('status', 'link-check-running');
         }
 
-        $payload = $this->runner->run($inventory);
-        $this->store->save($payload);
+        $limit = max(0, (int) $request->input('limit', 0));
+        $this->store->markRunning();
+
+        // Full inventory is ~1k unique URLs — finish after the HTTP response so the
+        // browser/proxy does not time out waiting on the sync request.
+        dispatch(function () use ($limit): void {
+            if (function_exists('set_time_limit')) {
+                @set_time_limit(0);
+            }
+            $inventory = app(LinkInventoryScanner::class)->scan();
+            $payload = app(LinkCheckRunner::class)->run($inventory, null, $limit);
+            app(LinkCheckStore::class)->save($payload);
+        })->afterResponse();
 
         return redirect()
             ->to(locale_route('admin.link-check.index'))
-            ->with('status', 'link-check-done');
+            ->with('status', 'link-check-started');
     }
 
     private function assertCanManage(): void

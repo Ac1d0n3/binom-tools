@@ -238,17 +238,19 @@
                             href="{{ locale_route('profile.index') }}"
                             class="tools-header__account-menu-item {{ Locale::routeIs('profile.*') || Locale::routeIs('accounts.profile*') ? 'tools-header__account-menu-item--active' : '' }}"
                             role="menuitem"
-                            data-text-de="Profil Hub"
-                            data-text-en="Profile Hub"
-                        >Profile Hub</a>
-                        @if (! empty($accountUser['canManageUsers']) || ! empty($accountUser['canManageTeams']))
+                        >
+                            <i class="fa-solid fa-user" aria-hidden="true"></i>
+                            <span data-text-de="Profil Hub" data-text-en="Profile Hub">Profile Hub</span>
+                        </a>
+                        @if (! empty($accountUser['canManageUsers']) || ! empty($accountUser['canManageTeams']) || ! empty($accountUser['canManageContent']))
                             <a
                                 href="{{ locale_route('admin.index') }}"
                                 class="tools-header__account-menu-item {{ Locale::routeIs('admin.*') ? 'tools-header__account-menu-item--active' : '' }}"
                                 role="menuitem"
-                                data-text-de="Admin Hub"
-                                data-text-en="Admin Hub"
-                            >Admin Hub</a>
+                            >
+                                <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+                                <span data-text-de="Admin Hub" data-text-en="Admin Hub">Admin Hub</span>
+                            </a>
                         @endif
                         <form method="post" action="{{ locale_route('accounts.logout') }}" class="tools-header__account-menu-form">
                             @csrf
@@ -256,8 +258,10 @@
                                 type="submit"
                                 class="tools-header__account-menu-item tools-header__account-menu-item--danger"
                                 role="menuitem"
-                                data-i18n="accounts.signOut"
-                            >Sign out</button>
+                            >
+                                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                                <span data-i18n="accounts.signOut">Sign out</span>
+                            </button>
                         </form>
                     </div>
                 @else

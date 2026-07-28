@@ -6,6 +6,7 @@
     @php
         $kindLabels = [
             'story' => 'Story',
+            'series' => 'Series',
             'supplier' => 'Source',
             'vendor' => 'Vendor',
         ];

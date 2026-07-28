@@ -56,7 +56,9 @@ class AdvisorAdminTest extends TestCase
             ->assertSee('admin-hub__sticky', false)
             ->assertSee('admin-advisor-create-modal', false)
             ->assertSee('story-eight-pillars', false)
-            ->assertSee('Add recommendation', false);
+            ->assertSee('series-governance-pillars', false)
+            ->assertSee('Add recommendation', false)
+            ->assertSee('data-admin-advisor-ref="series"', false);
     }
 
     public function test_story_item_crud_roundtrip(): void
@@ -147,7 +149,46 @@ class AdvisorAdminTest extends TestCase
         $this->get('/governance')
             ->assertOk()
             ->assertSee('contentCards', false)
-            ->assertSee('story-eight-pillars', false);
+            ->assertSee('story-eight-pillars', false)
+            ->assertSee('series-governance-pillars', false)
+            ->assertSee('story-pii-privacy-governance', false);
+    }
+
+    public function test_series_item_can_be_stored(): void
+    {
+        $this->login();
+        $itemId = 'series-ux-'.bin2hex(random_bytes(3));
+
+        $this->post('/admin/advisor/items', [
+            'id' => $itemId,
+            'kind' => 'series',
+            'ref' => 'roles-hub',
+            'enabled' => '1',
+            'group' => 'resources',
+            'icon' => 'fa-layer-group',
+            'score' => 71,
+            'tags' => 'learning, help',
+            'title_de' => 'Serie Test DE',
+            'title_en' => 'Series Test EN',
+            'reason_de' => 'Grund DE',
+            'reason_en' => 'Reason EN',
+            'when_goals' => 'learning',
+        ])->assertRedirect();
+
+        $writer = new CatalogJsonWriter(base_path('content/catalogs/advisor-recommendations'));
+        $doc = $writer->read();
+        $found = null;
+        foreach ($doc['items'] ?? [] as $item) {
+            if (($item['id'] ?? '') === $itemId) {
+                $found = $item;
+                break;
+            }
+        }
+        $this->assertNotNull($found);
+        $this->assertSame('series', $found['kind'] ?? null);
+        $this->assertSame('roles-hub', $found['ref'] ?? null);
+
+        $this->delete('/admin/advisor/items/'.$itemId)->assertRedirect();
     }
 
     private function login(): void

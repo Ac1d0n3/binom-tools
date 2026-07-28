@@ -1,15 +1,32 @@
+@php
+    $accountUser = $accountUser ?? null;
+    $showDashboard = ! empty($accountUser['canManageUsers'])
+        || ! empty($accountUser['canManageTeams'])
+        || ! empty($accountUser['canManageContent'])
+        || (is_array($accountUser['contentAreas'] ?? null) && in_array(true, $accountUser['contentAreas'], true));
+@endphp
 <nav class="tools-sidenav admin-sidenav" aria-label="Profile navigation">
     <ul class="tools-sidenav__list tools-sidenav__list--home">
         <li>
-            <a href="{{ locale_route('tools.landing') }}" class="tools-sidenav__link">
+            <a href="{{ locale_route('tools.landing') }}" class="tools-sidenav__link tools-sidenav__link--standalone">
+                <i class="fa-solid fa-arrow-left tools-sidenav__link-icon" aria-hidden="true"></i>
                 <span data-text-de="Zurück zur App" data-text-en="Back to app">Back to app</span>
             </a>
         </li>
         <li>
-            <a href="{{ locale_route('profile.index') }}" class="tools-sidenav__link {{ request()->routeIs('profile.index') ? 'tools-sidenav__link--active' : '' }}">
+            <a href="{{ locale_route('profile.index') }}" class="tools-sidenav__link tools-sidenav__link--standalone {{ request()->routeIs('profile.index') ? 'tools-sidenav__link--active' : '' }}">
+                <i class="fa-solid fa-user tools-sidenav__link-icon" aria-hidden="true"></i>
                 <span data-text-de="Profil Hub" data-text-en="Profile Hub">Profile Hub</span>
             </a>
         </li>
+        @if ($showDashboard)
+            <li>
+                <a href="{{ locale_route('admin.index') }}" class="tools-sidenav__link tools-sidenav__link--standalone {{ request()->routeIs('admin.index') ? 'tools-sidenav__link--active' : '' }}">
+                    <i class="fa-solid fa-gauge-high tools-sidenav__link-icon" aria-hidden="true"></i>
+                    <span data-text-de="Dashboard" data-text-en="Dashboard">Dashboard</span>
+                </a>
+            </li>
+        @endif
     </ul>
 
     <div class="tools-sidenav__group admin-sidenav__section">

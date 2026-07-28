@@ -3,11 +3,11 @@
 namespace App\Governance;
 
 /**
- * Resolve curated Advisor content cards (stories, suppliers, vendors) from catalog JSON.
+ * Resolve curated Advisor content cards (stories, series, suppliers, vendors) from catalog JSON.
  */
 final class AdvisorContentCardResolver
 {
-    private const KINDS = ['story', 'supplier', 'vendor'];
+    private const KINDS = ['story', 'series', 'supplier', 'vendor'];
 
     private const GUIDANCE_STORY_KEYS = [
         'eight-pillars' => 'eightPillars',
@@ -22,6 +22,7 @@ final class AdvisorContentCardResolver
     public function resolveContentCards(array $catalog): array
     {
         $storySlugs = $this->storySlugSet();
+        $seriesIds = $this->seriesIdSet();
         $supplierIds = $this->supplierIdSet();
         $vendorIds = $this->vendorIdSet();
 
@@ -30,7 +31,7 @@ final class AdvisorContentCardResolver
             if (! is_array($raw)) {
                 continue;
             }
-            $card = $this->normalizeItem($raw, $storySlugs, $supplierIds, $vendorIds);
+            $card = $this->normalizeItem($raw, $storySlugs, $seriesIds, $supplierIds, $vendorIds);
             if ($card !== null) {
                 $cards[] = $card;
             }
@@ -78,12 +79,18 @@ final class AdvisorContentCardResolver
     /**
      * @param  array<string, mixed>  $raw
      * @param  array<string, true>  $storySlugs
+     * @param  array<string, true>  $seriesIds
      * @param  array<string, true>  $supplierIds
      * @param  array<string, true>  $vendorIds
      * @return array<string, mixed>|null
      */
-    private function normalizeItem(array $raw, array $storySlugs, array $supplierIds, array $vendorIds): ?array
-    {
+    private function normalizeItem(
+        array $raw,
+        array $storySlugs,
+        array $seriesIds,
+        array $supplierIds,
+        array $vendorIds,
+    ): ?array {
         if (! ($raw['enabled'] ?? true)) {
             return null;
         }
@@ -101,6 +108,9 @@ final class AdvisorContentCardResolver
         $url = match ($kind) {
             'story' => isset($storySlugs[$ref])
                 ? locale_route('playbooks.show', ['slug' => $ref])
+                : null,
+            'series' => isset($seriesIds[$ref])
+                ? locale_route('playbooks.series', ['seriesId' => $ref])
                 : null,
             'supplier' => isset($supplierIds[$ref])
                 ? locale_route('suppliers.show', ['slug' => $ref])
@@ -209,6 +219,35 @@ final class AdvisorContentCardResolver
                 continue;
             }
             $set[$m[1]] = true;
+        }
+
+        return $set;
+    }
+
+    /**
+     * Series IDs discovered from story frontmatter (`series:`).
+     *
+     * @return array<string, true>
+     */
+    private function seriesIdSet(): array
+    {
+        $set = [];
+        $dir = base_path('content/stories');
+        if (! is_dir($dir)) {
+            return $set;
+        }
+        foreach (glob($dir.DIRECTORY_SEPARATOR.'*.md') ?: [] as $path) {
+            $raw = @file_get_contents($path);
+            if (! is_string($raw) || $raw === '') {
+                continue;
+            }
+            if (! preg_match('/^---\r?\n(.*?)\r?\n---/s', $raw, $m)) {
+                continue;
+            }
+            if (! preg_match('/^series:\s*([a-z0-9-]+)\s*$/m', $m[1], $sm)) {
+                continue;
+            }
+            $set[$sm[1]] = true;
         }
 
         return $set;

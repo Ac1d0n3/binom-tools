@@ -16,7 +16,7 @@ use RuntimeException;
 
 class AdvisorAdminController extends AdminController
 {
-    private const KINDS = ['story', 'supplier', 'vendor'];
+    private const KINDS = ['story', 'series', 'supplier', 'vendor'];
 
     private CatalogJsonWriter $writer;
 
@@ -42,6 +42,7 @@ class AdvisorAdminController extends AdminController
         return $this->adminView('admin::content.advisor-index', [
             'items' => $items,
             'storyOptions' => $this->storyOptions(),
+            'seriesOptions' => $this->seriesOptions(),
             'supplierOptions' => $this->supplierOptions(),
             'vendorOptions' => $this->vendorOptions(),
             'canCreateStory' => $user->canAccessContentArea(ContentAreas::STORIES),
@@ -155,7 +156,9 @@ class AdvisorAdminController extends AdminController
 
     private function areaForKind(string $kind): string
     {
-        return $kind === 'story' ? ContentAreas::STORIES : ContentAreas::VENDORS_SOURCES;
+        return in_array($kind, ['story', 'series'], true)
+            ? ContentAreas::STORIES
+            : ContentAreas::VENDORS_SOURCES;
     }
 
     /**
@@ -164,7 +167,7 @@ class AdvisorAdminController extends AdminController
     private function validatedItem(Request $request, bool $requireId): array
     {
         $rules = [
-            'kind' => ['required', 'in:story,supplier,vendor'],
+            'kind' => ['required', 'in:story,series,supplier,vendor'],
             'ref' => ['required', 'regex:/^[a-z0-9-]+$/', 'max:80'],
             'enabled' => ['nullable', 'boolean'],
             'group' => ['nullable', 'in:resources,suppliers,certs,gaps'],
@@ -261,6 +264,7 @@ class AdvisorAdminController extends AdminController
         return match ($kind) {
             'supplier' => 'fa-plug',
             'vendor' => 'fa-book-open',
+            'series' => 'fa-layer-group',
             default => 'fa-book',
         };
     }
@@ -269,6 +273,7 @@ class AdvisorAdminController extends AdminController
     {
         return match ($kind) {
             'story' => isset($this->storyOptions()[$ref]),
+            'series' => isset($this->seriesOptions()[$ref]),
             'supplier' => isset($this->supplierOptions()[$ref]),
             'vendor' => isset($this->vendorOptions()[$ref]),
             default => false,
@@ -289,6 +294,43 @@ class AdvisorAdminController extends AdminController
             }
         }
         ksort($options);
+
+        return $options;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function seriesOptions(): array
+    {
+        $options = [];
+        $dir = base_path('content/stories');
+        if (! is_dir($dir)) {
+            return $options;
+        }
+        foreach (glob($dir.DIRECTORY_SEPARATOR.'*.md') ?: [] as $path) {
+            $raw = @file_get_contents($path);
+            if (! is_string($raw) || $raw === '') {
+                continue;
+            }
+            if (! preg_match('/^---\r?\n(.*?)\r?\n---/s', $raw, $m)) {
+                continue;
+            }
+            $fm = $m[1];
+            if (! preg_match('/^series:\s*([a-z0-9-]+)\s*$/m', $fm, $sm)) {
+                continue;
+            }
+            $id = $sm[1];
+            if (isset($options[$id])) {
+                continue;
+            }
+            $title = $id;
+            if (preg_match('/^seriesTitle:\s*(.+)$/m', $fm, $tm)) {
+                $title = trim($tm[1], " \t\"'");
+            }
+            $options[$id] = $title !== '' ? "{$title} ({$id})" : $id;
+        }
+        asort($options);
 
         return $options;
     }

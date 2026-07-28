@@ -11,9 +11,13 @@ use RuntimeException;
  */
 final class LinkCheckStore
 {
+    public function __construct(
+        private readonly ?string $pathOverride = null,
+    ) {}
+
     public function path(): string
     {
-        return storage_path('app/bn-tools/link-checks/latest.json');
+        return $this->pathOverride ?? storage_path('app/bn-tools/link-checks/latest.json');
     }
 
     /**
@@ -76,5 +80,33 @@ final class LinkCheckStore
                 // File write already succeeded; mysql optional.
             }
         }
+    }
+
+    public function isRunning(): bool
+    {
+        $latest = $this->latest();
+
+        return is_array($latest) && ($latest['status'] ?? '') === 'running';
+    }
+
+    /**
+     * Mark a scan as in progress while keeping the previous result visible.
+     */
+    public function markRunning(): void
+    {
+        $previous = $this->latest() ?? [];
+        $this->save([
+            'status' => 'running',
+            'startedAt' => now()->toIso8601String(),
+            'checkedAt' => $previous['checkedAt'] ?? null,
+            'results' => is_array($previous['results'] ?? null) ? $previous['results'] : [],
+            'summary' => is_array($previous['summary'] ?? null) ? $previous['summary'] : [
+                'ok' => 0,
+                'redirect' => 0,
+                'broken' => 0,
+                'error' => 0,
+            ],
+            'total' => (int) ($previous['total'] ?? 0),
+        ]);
     }
 }

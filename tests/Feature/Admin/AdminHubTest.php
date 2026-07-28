@@ -65,11 +65,53 @@ class AdminHubTest extends TestCase
         $this->login('admin@example.com');
         $this->get('/admin')
             ->assertOk()
-            ->assertSee('Admin Hub', false)
+            ->assertSee('Dashboard', false)
             ->assertSee('Administration', false)
             ->assertSee('Back to app', false)
             ->assertDontSee('My Workspaces', false)
-            ->assertSee('admin-sidenav', false);
+            ->assertSee('admin-sidenav', false)
+            ->assertSee('admin-hub__dashboard', false);
+    }
+
+    public function test_dashboard_counts_match_admin_lists(): void
+    {
+        $this->login('admin@example.com');
+        $html = $this->get('/admin')->assertOk()->getContent();
+
+        $storyCount = count((new \App\Admin\Content\MarkdownContentWriter(
+            (string) config('admin.stories_path')
+        ))->listSlugs());
+        $advisorCount = count((new \App\Admin\Content\CatalogJsonWriter(
+            base_path('content/catalogs/advisor-recommendations')
+        ))->read()['items'] ?? []);
+        $radarSources = count((new \App\Admin\Content\CatalogJsonWriter(
+            base_path('content/catalogs/governance-radar')
+        ))->read()['sources'] ?? []);
+        $vendors = count((new \App\Admin\Content\CatalogJsonWriter(
+            base_path('content/catalogs/vendor-resources')
+        ))->read()['vendors'] ?? []);
+        $suppliers = count((new \App\Admin\Content\CatalogJsonWriter(
+            base_path('content/catalogs/suppliers'),
+            'products.json'
+        ))->read());
+        $glossary = count((new \App\Admin\Content\CatalogJsonWriter(
+            base_path('content/catalogs/glossary'),
+            'terms-core.json'
+        ))->read()) + count((new \App\Admin\Content\CatalogJsonWriter(
+            base_path('content/catalogs/glossary'),
+            'terms-buzzwords.json'
+        ))->read());
+
+        $this->assertStringContainsString('admin-hub__dashboard', $html);
+        $this->assertStringContainsString('tools-card--hub', $html);
+        $this->assertStringContainsString('tools-section__art', $html);
+        $this->assertStringNotContainsString('data-overview-search', $html);
+        $this->assertStringContainsString('tools-card__count">'.$storyCount.'<', $html);
+        $this->assertStringContainsString('tools-card__count">'.$advisorCount.'<', $html);
+        $this->assertStringContainsString('tools-card__count">'.$radarSources.'<', $html);
+        $this->assertStringContainsString('tools-card__count">'.$vendors.'<', $html);
+        $this->assertStringContainsString('tools-card__count">'.$suppliers.'<', $html);
+        $this->assertStringContainsString('tools-card__count">'.$glossary.'<', $html);
     }
 
     public function test_legacy_users_url_redirects_to_admin(): void

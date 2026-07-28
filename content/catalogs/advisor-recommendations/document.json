@@ -8,10 +8,10 @@
             "group": "resources",
             "icon": "fa-landmark",
             "score": 80,
-            "tags": ["help", "learning", "new", "stack", "owner", "architect", "steward"],
+            "tags": ["help", "learning", "new", "owner", "architect", "steward"],
             "when": {
-                "goals": [],
-                "scenarios": [],
+                "goals": ["learning"],
+                "scenarios": ["help", "new"],
                 "domains": [],
                 "platforms": [],
                 "roles": []
@@ -73,6 +73,1081 @@
             "reason": {
                 "de": "Stack ohne Catalog/Metadata-Säule bleibt blind — Pillar-Story parallel öffnen.",
                 "en": "A stack without a catalog/metadata pillar stays blind — open the pillar story too."
+            }
+        },
+        {
+            "id": "series-governance-pillars",
+            "kind": "series",
+            "ref": "governance-pillars",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-landmark",
+            "score": 84,
+            "tags": ["help", "learning", "new", "owner", "steward", "architect"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": ["help", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: 8 Säulen der Data Governance",
+                "en": "Series: The 8 pillars of data governance"
+            },
+            "reason": {
+                "de": "Gesamte Pillar-Reise — Ownership bis Lifecycle — als kuratierte Serie starten.",
+                "en": "Start the full pillar journey — ownership through lifecycle — as a curated series."
+            }
+        },
+        {
+            "id": "series-missing-pieces",
+            "kind": "series",
+            "ref": "missing-pieces",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-puzzle-piece",
+            "score": 80,
+            "tags": ["help", "learning", "extend", "architect", "steward", "owner"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": ["extend", "help"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: The Missing Pieces",
+                "en": "Series: The missing pieces"
+            },
+            "reason": {
+                "de": "Lücken in DQ, Metrics, Ownership, Catalog, Access und Lifecycle schließen.",
+                "en": "Close gaps in DQ, metrics, ownership, catalog, access, and lifecycle."
+            }
+        },
+        {
+            "id": "series-metadata-deep-dive",
+            "kind": "series",
+            "ref": "metadata-deep-dive",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-diagram-project",
+            "score": 83,
+            "tags": ["stack", "learning", "architect", "steward"],
+            "when": {
+                "goals": ["stack", "learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: Metadata Deep Dive",
+                "en": "Series: Metadata deep dive"
+            },
+            "reason": {
+                "de": "17-teilige Journey von Metadata-Grundlagen bis Betrieb als Produkt — statt Einzelkarten.",
+                "en": "17-part journey from metadata basics to operating it as a product — instead of single cards."
+            }
+        },
+        {
+            "id": "series-building-warehouse",
+            "kind": "series",
+            "ref": "building-modern-data-warehouse",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-warehouse",
+            "score": 82,
+            "tags": ["stack", "new", "extend", "architect"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": ["new", "extend"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: Modern Data Warehouse bauen",
+                "en": "Series: Building a modern data warehouse"
+            },
+            "reason": {
+                "de": "Von erster Tabelle bis Plattform-Betrieb — Architektur-Journey für Stack-Entscheidungen.",
+                "en": "From the first table to platform ops — architecture journey for stack decisions."
+            }
+        },
+        {
+            "id": "series-roles-hub",
+            "kind": "series",
+            "ref": "roles-hub",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-user-group",
+            "score": 81,
+            "tags": ["help", "learning", "new", "architect", "steward", "owner", "product-owner", "custodian", "consumer"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": ["help", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: Rollen & Decision Rights",
+                "en": "Series: Roles and decision rights"
+            },
+            "reason": {
+                "de": "RACI, Stewardship, Product Owner vs Owner und CoE als Rollen-Journey.",
+                "en": "RACI, stewardship, product owner vs owner, and CoE as a roles journey."
+            }
+        },
+        {
+            "id": "series-end-to-end-gov",
+            "kind": "series",
+            "ref": "end-to-end-data-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-route",
+            "score": 79,
+            "tags": ["stack", "architect", "steward", "snowflake-dbt"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["snowflake-dbt"],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: End-to-End Data Governance",
+                "en": "Series: End-to-end data governance"
+            },
+            "reason": {
+                "de": "Architektur, dbt-meta, Raw-Macros, PII-Propagation und Masking in einem Pfad.",
+                "en": "Architecture, dbt-meta, raw macros, PII propagation, and masking in one path."
+            }
+        },
+        {
+            "id": "series-ai-foundations",
+            "kind": "series",
+            "ref": "ai-foundations",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-robot",
+            "score": 76,
+            "tags": ["help", "learning"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": ["help"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: AI Foundations",
+                "en": "Series: AI foundations"
+            },
+            "reason": {
+                "de": "Von Basics über RAG/Agents bis Eval und AI-Governance — als Serie, nicht Einzel-Noise.",
+                "en": "From basics through RAG/agents to eval and AI governance — as a series, not single-card noise."
+            }
+        },
+        {
+            "id": "series-help-hub",
+            "kind": "series",
+            "ref": "governance-help-hub",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-life-ring",
+            "score": 74,
+            "tags": ["help"],
+            "when": {
+                "goals": [],
+                "scenarios": ["help"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: Governance Help Hub",
+                "en": "Series: Governance help hub"
+            },
+            "reason": {
+                "de": "Hilfe zu Platform, Accounts und Sprint Planner — wenn du Orientierung brauchst.",
+                "en": "Help for platform, accounts, and sprint planner — when you need orientation."
+            }
+        },
+        {
+            "id": "series-operational-dq",
+            "kind": "series",
+            "ref": "operational-data-quality",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-vial-circle-check",
+            "score": 78,
+            "tags": ["dq", "steward"],
+            "when": {
+                "goals": ["dq"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Serie: Operational Data Quality",
+                "en": "Series: Operational data quality"
+            },
+            "reason": {
+                "de": "Operative DQ-Journey als Serie — ohne Draft-Einzelteile zu fluten.",
+                "en": "Operational DQ journey as a series — without flooding draft single parts."
+            }
+        },
+        {
+            "id": "story-data-ownership-stewardship",
+            "kind": "story",
+            "ref": "data-ownership-stewardship",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-handshake",
+            "score": 81,
+            "tags": ["learning", "supplier", "owner", "steward"],
+            "when": {
+                "goals": ["learning", "supplier"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Ownership & Stewardship",
+                "en": "Ownership & stewardship"
+            },
+            "reason": {
+                "de": "Wer ist accountable — Owner, Steward und Eskalation klarziehen.",
+                "en": "Clarify who is accountable — owner, steward, and escalation."
+            }
+        },
+        {
+            "id": "story-pii-privacy-governance",
+            "kind": "story",
+            "ref": "pii-privacy-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-user-shield",
+            "score": 86,
+            "tags": ["pii", "owner", "steward", "custodian"],
+            "when": {
+                "goals": ["pii"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "PII & Privacy Governance",
+                "en": "PII & privacy governance"
+            },
+            "reason": {
+                "de": "Klassifikation, Schutzregeln und kontrollierte Verarbeitung persönlicher Daten.",
+                "en": "Classification, protection rules, and controlled processing of personal data."
+            }
+        },
+        {
+            "id": "story-dsdr-governance",
+            "kind": "story",
+            "ref": "dsdr-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-eraser",
+            "score": 84,
+            "tags": ["pii", "owner", "steward"],
+            "when": {
+                "goals": ["pii"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "DSDR Governance",
+                "en": "DSDR governance"
+            },
+            "reason": {
+                "de": "Löschanfragen nachweisbar, vollständig und sicher umsetzen.",
+                "en": "Execute deletion requests with evidence, completeness, and control."
+            }
+        },
+        {
+            "id": "story-data-quality-governance",
+            "kind": "story",
+            "ref": "data-quality-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-check-double",
+            "score": 85,
+            "tags": ["dq", "steward"],
+            "when": {
+                "goals": ["dq"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Data Quality Governance",
+                "en": "Data quality governance"
+            },
+            "reason": {
+                "de": "Messbare Qualitätsstandards und kontinuierliche Verbesserung verankern.",
+                "en": "Anchor measurable quality standards and continuous improvement."
+            }
+        },
+        {
+            "id": "story-kpi-metric-governance",
+            "kind": "story",
+            "ref": "kpi-metric-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-gauge-high",
+            "score": 85,
+            "tags": ["kpi", "product-owner", "steward", "consumer"],
+            "when": {
+                "goals": ["kpi"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "KPI & Metric Governance",
+                "en": "KPI & metric governance"
+            },
+            "reason": {
+                "de": "Einheitliche Kennzahldefinitionen und Trusted Metrics absichern.",
+                "en": "Secure shared metric definitions and trusted KPIs."
+            }
+        },
+        {
+            "id": "story-access-security-governance",
+            "kind": "story",
+            "ref": "access-security-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-lock",
+            "score": 80,
+            "tags": ["pii", "learning", "custodian", "architect"],
+            "when": {
+                "goals": ["pii", "learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Access & Security Governance",
+                "en": "Access & security governance"
+            },
+            "reason": {
+                "de": "Least Privilege, Rollen und Auditierbarkeit für Datenzugriff.",
+                "en": "Least privilege, roles, and auditability for data access."
+            }
+        },
+        {
+            "id": "story-data-lifecycle-retention",
+            "kind": "story",
+            "ref": "data-lifecycle-retention",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-clock-rotate-left",
+            "score": 79,
+            "tags": ["pii", "learning", "owner", "steward"],
+            "when": {
+                "goals": ["pii", "learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Data Lifecycle & Retention",
+                "en": "Data lifecycle & retention"
+            },
+            "reason": {
+                "de": "Aufbewahrung, Archivierung und Löschung automatisierbar machen.",
+                "en": "Make retention, archival, and deletion automatable."
+            }
+        },
+        {
+            "id": "story-define-kpi",
+            "kind": "story",
+            "ref": "define-kpi",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-pen-ruler",
+            "score": 83,
+            "tags": ["kpi", "product-owner"],
+            "when": {
+                "goals": ["kpi"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "KPI sauber definieren",
+                "en": "Define KPIs cleanly"
+            },
+            "reason": {
+                "de": "Praktischer Einstieg in Metric Governance für Product Owner.",
+                "en": "Practical entry into metric governance for product owners."
+            }
+        },
+        {
+            "id": "story-big-five",
+            "kind": "story",
+            "ref": "big-five",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-cloud",
+            "score": 81,
+            "tags": ["stack", "new", "architect", "snowflake-dbt", "databricks", "fabric"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": ["new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Big Five Data Platforms",
+                "en": "Big five data platforms"
+            },
+            "reason": {
+                "de": "Überblick über die großen Cloud-/Warehouse-Optionen für die Stack-Wahl.",
+                "en": "Overview of the major cloud/warehouse options for stack choice."
+            }
+        },
+        {
+            "id": "story-sap-overview",
+            "kind": "story",
+            "ref": "sap-overview",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-building",
+            "score": 82,
+            "tags": ["stack", "sap", "architect"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["sap"],
+                "roles": []
+            },
+            "title": {
+                "de": "SAP Overview",
+                "en": "SAP overview"
+            },
+            "reason": {
+                "de": "SAP-Landschaft (BW, Datasphere, BDC) im Governance- und Stack-Kontext.",
+                "en": "SAP landscape (BW, Datasphere, BDC) in governance and stack context."
+            }
+        },
+        {
+            "id": "story-host-vs-cloud",
+            "kind": "story",
+            "ref": "host-vs-cloud",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-server",
+            "score": 77,
+            "tags": ["stack", "new", "architect", "custodian", "opensource"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": ["new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Host vs Cloud",
+                "en": "Host vs cloud"
+            },
+            "reason": {
+                "de": "Hosting-Modell klären bevor Stack und Betrieb festgezurrt werden.",
+                "en": "Clarify hosting model before locking stack and operations."
+            }
+        },
+        {
+            "id": "story-data-architect-role",
+            "kind": "story",
+            "ref": "data-architect-role",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-drafting-compass",
+            "score": 80,
+            "tags": ["learning", "architect"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": ["architect"]
+            },
+            "title": {
+                "de": "Rolle: Data Architect",
+                "en": "Role: Data architect"
+            },
+            "reason": {
+                "de": "Decision Rights und typische Deliverables der Architect-Persona.",
+                "en": "Decision rights and typical deliverables for the architect persona."
+            }
+        },
+        {
+            "id": "story-stewardship-capacity",
+            "kind": "story",
+            "ref": "stewardship-capacity",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-people-carry-box",
+            "score": 79,
+            "tags": ["learning", "dq", "steward"],
+            "when": {
+                "goals": ["learning", "dq"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": ["steward"]
+            },
+            "title": {
+                "de": "Stewardship Capacity",
+                "en": "Stewardship capacity"
+            },
+            "reason": {
+                "de": "Kapazität und Operating Model für Stewardship aufbauen.",
+                "en": "Build capacity and an operating model for stewardship."
+            }
+        },
+        {
+            "id": "story-data-product-owner-vs-data-owner",
+            "kind": "story",
+            "ref": "data-product-owner-vs-data-owner",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-users",
+            "score": 78,
+            "tags": ["learning", "product-owner", "owner"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": ["product-owner", "owner"]
+            },
+            "title": {
+                "de": "Product Owner vs Data Owner",
+                "en": "Product owner vs data owner"
+            },
+            "reason": {
+                "de": "Rollenkonflikt auflösen — Produktverantwortung vs Daten-Accountability.",
+                "en": "Resolve the role clash — product accountability vs data ownership."
+            }
+        },
+        {
+            "id": "story-raci-for-data-governance",
+            "kind": "story",
+            "ref": "raci-for-data-governance",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-table",
+            "score": 77,
+            "tags": ["help", "learning", "new", "owner"],
+            "when": {
+                "goals": [],
+                "scenarios": ["help", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": ["owner"]
+            },
+            "title": {
+                "de": "RACI für Data Governance",
+                "en": "RACI for data governance"
+            },
+            "reason": {
+                "de": "Verantwortlichkeiten in einer RACI-Matrix für Governance-Entscheidungen.",
+                "en": "Accountabilities in a RACI matrix for governance decisions."
+            }
+        },
+        {
+            "id": "story-governance-coe",
+            "kind": "story",
+            "ref": "governance-coe",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-building-columns",
+            "score": 75,
+            "tags": ["learning", "owner", "architect"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": ["owner"]
+            },
+            "title": {
+                "de": "Governance CoE",
+                "en": "Governance CoE"
+            },
+            "reason": {
+                "de": "Center of Excellence als Skalierungsmodell für Governance.",
+                "en": "Center of excellence as a scaling model for governance."
+            }
+        },
+        {
+            "id": "story-propagating-pii-metadata",
+            "kind": "story",
+            "ref": "propagating-pii-metadata-across-data-warehouses",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-share-nodes",
+            "score": 83,
+            "tags": ["pii", "snowflake-dbt", "fabric", "databricks", "steward", "architect"],
+            "when": {
+                "goals": ["pii"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["snowflake-dbt", "fabric", "databricks"],
+                "roles": []
+            },
+            "title": {
+                "de": "PII-Metadata durchs Warehouse propagen",
+                "en": "Propagating PII metadata across warehouses"
+            },
+            "reason": {
+                "de": "Klassifikation und Schutzlabels entlang der Pipeline weiterreichen.",
+                "en": "Carry classification and protection labels along the pipeline."
+            }
+        },
+        {
+            "id": "story-metadata-driven-governance-dbt",
+            "kind": "story",
+            "ref": "metadata-driven-governance-with-dbt-meta",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-code",
+            "score": 81,
+            "tags": ["stack", "dq", "snowflake-dbt", "architect", "steward"],
+            "when": {
+                "goals": ["stack", "dq"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["snowflake-dbt"],
+                "roles": []
+            },
+            "title": {
+                "de": "Metadata-driven Governance mit dbt meta",
+                "en": "Metadata-driven governance with dbt meta"
+            },
+            "reason": {
+                "de": "Governance-Steuerung über dbt-Meta statt paralleler Spreadsheets.",
+                "en": "Drive governance via dbt meta instead of parallel spreadsheets."
+            }
+        },
+        {
+            "id": "story-snowflake-masking-qlik",
+            "kind": "story",
+            "ref": "snowflake-masking-policies-qlik-section-access",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-mask",
+            "score": 82,
+            "tags": ["pii", "snowflake-dbt", "custodian", "architect"],
+            "when": {
+                "goals": ["pii"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["snowflake-dbt"],
+                "roles": []
+            },
+            "title": {
+                "de": "Snowflake Masking & Qlik Section Access",
+                "en": "Snowflake masking & Qlik section access"
+            },
+            "reason": {
+                "de": "Schutz von Warehouse bis BI-Schicht durchgängig ziehen.",
+                "en": "Carry protection from warehouse through to the BI layer."
+            }
+        },
+        {
+            "id": "story-dbt-role",
+            "kind": "story",
+            "ref": "dbt-role",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-database",
+            "score": 76,
+            "tags": ["snowflake-dbt", "architect", "steward"],
+            "when": {
+                "goals": [],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["snowflake-dbt"],
+                "roles": []
+            },
+            "title": {
+                "de": "dbt in der Plattform-Rolle",
+                "en": "dbt’s role on the platform"
+            },
+            "reason": {
+                "de": "Wo dbt in Transform, Governance und Ownership sitzt.",
+                "en": "Where dbt sits in transform, governance, and ownership."
+            }
+        },
+        {
+            "id": "story-self-hosted-data-platform",
+            "kind": "story",
+            "ref": "self-hosted-data-platform",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-hard-drive",
+            "score": 78,
+            "tags": ["stack", "opensource", "architect", "custodian"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["opensource"],
+                "roles": []
+            },
+            "title": {
+                "de": "Self-hosted Data Platform",
+                "en": "Self-hosted data platform"
+            },
+            "reason": {
+                "de": "Open-Source-/Self-Host-Pfad mit Betrieb und Governance abwägen.",
+                "en": "Weigh the open-source/self-host path with ops and governance."
+            }
+        },
+        {
+            "id": "story-bi-tools",
+            "kind": "story",
+            "ref": "bi-tools",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-chart-pie",
+            "score": 74,
+            "tags": ["kpi", "learning", "consumer", "product-owner"],
+            "when": {
+                "goals": ["kpi", "learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "BI Tools Überblick",
+                "en": "BI tools overview"
+            },
+            "reason": {
+                "de": "Reporting-Tools im Kontext Trusted Metrics und Consumer-Nutzung.",
+                "en": "Reporting tools in the context of trusted metrics and consumer use."
+            }
+        },
+        {
+            "id": "story-slowlychange-dim",
+            "kind": "story",
+            "ref": "slowlychange-dim",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-clock",
+            "score": 73,
+            "tags": ["stack", "kpi", "architect"],
+            "when": {
+                "goals": ["stack", "kpi"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": ["architect"]
+            },
+            "title": {
+                "de": "Slowly Changing Dimensions",
+                "en": "Slowly changing dimensions"
+            },
+            "reason": {
+                "de": "SCD-Muster für historisierte Dimensionen im Warehouse.",
+                "en": "SCD patterns for historized dimensions in the warehouse."
+            }
+        },
+        {
+            "id": "story-one-app",
+            "kind": "story",
+            "ref": "one-app",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-window-maximize",
+            "score": 76,
+            "tags": ["kpi", "stack", "product-owner", "consumer", "architect"],
+            "when": {
+                "goals": ["kpi", "stack"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "One App — Decision Surface",
+                "en": "One app — decision surface"
+            },
+            "reason": {
+                "de": "Entscheidung als Produkt denken — weniger Report-Wildwuchs, klarer Consumer-Pfad.",
+                "en": "Treat the decision as a product — less report sprawl, clearer consumer path."
+            }
+        },
+        {
+            "id": "story-one-billion",
+            "kind": "story",
+            "ref": "one-billion",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-chart-line",
+            "score": 75,
+            "tags": ["stack", "kpi", "architect", "product-owner"],
+            "when": {
+                "goals": ["stack", "kpi"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "One Billion — Decision Data",
+                "en": "One billion — decision data"
+            },
+            "reason": {
+                "de": "Architektur für Decision Data und Semantic Layer statt reiner Report-Schicht.",
+                "en": "Architecture for decision data and a semantic layer — not just reporting."
+            }
+        },
+        {
+            "id": "story-one-data-product-multiple-consumers",
+            "kind": "story",
+            "ref": "one-data-product-multiple-consumers",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-diagram-next",
+            "score": 77,
+            "tags": ["kpi", "stack", "product-owner", "architect"],
+            "when": {
+                "goals": ["kpi", "stack"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Ein Data Product, viele Consumer",
+                "en": "One data product, multiple consumers"
+            },
+            "reason": {
+                "de": "Wiederverwendbare Datenprodukte statt Copy-Paste-Marts pro Report.",
+                "en": "Reusable data products instead of copy-paste marts per report."
+            }
+        },
+        {
+            "id": "story-cloud-hosting",
+            "kind": "story",
+            "ref": "cloud-hosting",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-cloud",
+            "score": 74,
+            "tags": ["stack", "new", "architect", "custodian"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": ["new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Cloud Hosting Modelle",
+                "en": "Cloud hosting models"
+            },
+            "reason": {
+                "de": "IaaS/PaaS/SaaS und Residency-Fragen vor dem Stack-Lock-in klären.",
+                "en": "Clarify IaaS/PaaS/SaaS and residency before locking the stack."
+            }
+        },
+        {
+            "id": "story-python-bi-export-setup",
+            "kind": "story",
+            "ref": "python-bi-export-setup",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-file-export",
+            "score": 72,
+            "tags": ["kpi", "learning", "architect", "steward"],
+            "when": {
+                "goals": ["kpi", "learning"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Python BI Export Setup",
+                "en": "Python BI export setup"
+            },
+            "reason": {
+                "de": "Metadata/KPI-Export aus BI-Tools (Qlik/Power BI/Tableau) operationalisieren.",
+                "en": "Operationalize metadata/KPI export from BI tools (Qlik/Power BI/Tableau)."
+            }
+        },
+        {
+            "id": "story-end-to-end-governance-architecture",
+            "kind": "story",
+            "ref": "end-to-end-governance-architecture",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-sitemap",
+            "score": 80,
+            "tags": ["stack", "architect", "steward", "owner"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": ["new", "extend"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "End-to-End Governance Architecture",
+                "en": "End-to-end governance architecture"
+            },
+            "reason": {
+                "de": "Zielbild-Architektur für Governance über den Stack — auch ohne Snowflake-Filter.",
+                "en": "Target architecture for governance across the stack — even without a Snowflake filter."
+            }
+        },
+        {
+            "id": "story-automatic-raw-generation-dbt",
+            "kind": "story",
+            "ref": "automatic-raw-generation-using-dbt-macros",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-gears",
+            "score": 78,
+            "tags": ["stack", "dq", "snowflake-dbt", "architect", "steward"],
+            "when": {
+                "goals": ["stack", "dq"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": ["snowflake-dbt"],
+                "roles": []
+            },
+            "title": {
+                "de": "Automatische Raw-Generation mit dbt Macros",
+                "en": "Automatic raw generation using dbt macros"
+            },
+            "reason": {
+                "de": "Raw-Schicht und Governance-Muster über Macros skalieren.",
+                "en": "Scale the raw layer and governance patterns via macros."
+            }
+        },
+        {
+            "id": "story-keeping-business-logic-outside-bi",
+            "kind": "story",
+            "ref": "keeping-business-logic-outside-bi-apps",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-layer-group",
+            "score": 79,
+            "tags": ["kpi", "stack", "architect", "product-owner"],
+            "when": {
+                "goals": ["kpi", "stack"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Business Logic außerhalb der BI-Apps",
+                "en": "Keeping business logic outside BI apps"
+            },
+            "reason": {
+                "de": "Kennzahl- und Transformationslogik zentral halten — nicht in jedem Report.",
+                "en": "Keep metric and transform logic central — not in every report."
+            }
+        },
+        {
+            "id": "story-operating-and-governing-platform",
+            "kind": "story",
+            "ref": "operating-and-governing-the-platform",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-screwdriver-wrench",
+            "score": 77,
+            "tags": ["stack", "extend", "architect", "custodian"],
+            "when": {
+                "goals": ["stack"],
+                "scenarios": ["extend", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Plattform betreiben & regieren",
+                "en": "Operating and governing the platform"
+            },
+            "reason": {
+                "de": "Betrieb, Ownership und Gatekeeping nachdem der Stack steht.",
+                "en": "Ops, ownership, and gatekeeping once the stack is in place."
+            }
+        },
+        {
+            "id": "story-ai-gov",
+            "kind": "story",
+            "ref": "ai-gov",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-shield-halved",
+            "score": 76,
+            "tags": ["learning", "help", "owner", "architect"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": ["help"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "AI Governance",
+                "en": "AI governance"
+            },
+            "reason": {
+                "de": "Gezielter AI-Gov-Einstieg — ergänzt die AI-Foundations-Serie.",
+                "en": "Focused AI governance entry — complements the AI foundations series."
+            }
+        },
+        {
+            "id": "story-what-metadata-actually-is",
+            "kind": "story",
+            "ref": "what-metadata-actually-is",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-circle-info",
+            "score": 74,
+            "tags": ["learning", "help", "new", "steward", "architect"],
+            "when": {
+                "goals": ["learning"],
+                "scenarios": ["help", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Was Metadata wirklich ist",
+                "en": "What metadata actually is"
+            },
+            "reason": {
+                "de": "Kurzer Einstieg bevor die volle Metadata-Deep-Dive-Serie startet.",
+                "en": "Short on-ramp before starting the full metadata deep-dive series."
             }
         }
     ]

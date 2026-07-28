@@ -35,15 +35,11 @@ class LinkCheckCommand extends Command
         }
 
         $limit = (int) $this->option('limit');
-        if ($limit > 0) {
-            $inventory = array_slice($inventory, 0, $limit);
-        }
-
         $payload = $runner->run($inventory, function (int $done, int $total, array $row): void {
             if ($done === 1 || $done === $total || $done % 25 === 0) {
                 $this->line("[{$done}/{$total}] ".($row['bucket'] ?? '?').' '.$row['url']);
             }
-        });
+        }, $limit);
         $store->save($payload);
 
         $summary = $payload['summary'] ?? [];

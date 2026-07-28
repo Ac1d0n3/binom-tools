@@ -1007,3 +1007,52 @@
     color: var(--bn-muted, #5f6f82);
     margin: 0 0 0.4rem 0.65rem;
 }
+
+/* Dashboard reuses landing `.tools-home` band art; only local extras here. */
+.admin-hub--dashboard {
+    min-height: 100%;
+}
+
+.admin-hub--dashboard .tools-section__head {
+    margin-bottom: 1.15rem;
+}
+
+.admin-hub--dashboard .tools-section__title {
+    margin: 0 0 0.35rem;
+    font-size: 1.35rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+}
+
+.admin-hub--dashboard .tools-section__lead {
+    margin: 0;
+    max-width: 40rem;
+}
+
+.admin-hub--dashboard .tools-card-grid {
+    gap: 1.1rem;
+}
+
+.admin-hub__dashboard-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.85rem;
+    margin: 0.55rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-hub__dashboard-stats li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.28rem;
+    font-size: 0.78rem;
+    color: var(--bn-muted, #5f6f82);
+}
+
+.admin-hub__dashboard-stats strong {
+    font-size: 0.9rem;
+    font-weight: 750;
+    color: var(--theme-color-primary, #1269a8);
+}
+

@@ -19,18 +19,21 @@
 <nav class="tools-sidenav admin-sidenav" aria-label="Admin navigation">
     <ul class="tools-sidenav__list tools-sidenav__list--home">
         <li>
-            <a href="{{ locale_route('tools.landing') }}" class="tools-sidenav__link">
+            <a href="{{ locale_route('tools.landing') }}" class="tools-sidenav__link tools-sidenav__link--standalone">
+                <i class="fa-solid fa-arrow-left tools-sidenav__link-icon" aria-hidden="true"></i>
                 <span data-text-de="Zurück zur App" data-text-en="Back to app">Back to app</span>
             </a>
         </li>
         <li>
-            <a href="{{ locale_route('admin.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.index') ? 'tools-sidenav__link--active' : '' }}">
-                <span data-text-de="Admin Hub" data-text-en="Admin Hub">Admin Hub</span>
+            <a href="{{ locale_route('profile.index') }}" class="tools-sidenav__link tools-sidenav__link--standalone {{ request()->routeIs('profile.index') ? 'tools-sidenav__link--active' : '' }}">
+                <i class="fa-solid fa-user tools-sidenav__link-icon" aria-hidden="true"></i>
+                <span data-text-de="Profil Hub" data-text-en="Profile Hub">Profile Hub</span>
             </a>
         </li>
         <li>
-            <a href="{{ locale_route('profile.index') }}" class="tools-sidenav__link {{ request()->routeIs('profile.index') ? 'tools-sidenav__link--active' : '' }}">
-                <span data-text-de="Profil Hub" data-text-en="Profile Hub">Profile Hub</span>
+            <a href="{{ locale_route('admin.index') }}" class="tools-sidenav__link tools-sidenav__link--standalone {{ request()->routeIs('admin.index') ? 'tools-sidenav__link--active' : '' }}">
+                <i class="fa-solid fa-gauge-high tools-sidenav__link-icon" aria-hidden="true"></i>
+                <span data-text-de="Dashboard" data-text-en="Dashboard">Dashboard</span>
             </a>
         </li>
     </ul>

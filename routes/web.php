@@ -290,6 +290,9 @@ $registerRoutes = static function (bool $localized): void {
                 ->name($name('admin.teams.edit'));
             Route::get('/admin/story-access', [StoryAclController::class, 'index'])->name($name('admin.story-acl.index'));
             Route::get('/admin/link-check', [LinkCheckController::class, 'index'])->name($name('admin.link-check.index'));
+            Route::post('/admin/link-check/run', [LinkCheckController::class, 'run'])
+                ->middleware('throttle:3,1')
+                ->name($name('admin.link-check.run'));
 
             Route::get('/admin/stories', [StoriesController::class, 'index'])->name($name('admin.stories.index'));
             Route::get('/admin/stories/create', [StoriesController::class, 'create'])->name($name('admin.stories.create'));
