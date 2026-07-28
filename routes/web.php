@@ -14,6 +14,7 @@ use App\Http\Controllers\Accounts\StoryAclController;
 use App\Http\Controllers\Accounts\TeamsController;
 use App\Http\Controllers\Accounts\UserTemplateApiController;
 use App\Http\Controllers\Accounts\UsersController;
+use App\Http\Controllers\Admin\AdvisorAdminController;
 use App\Http\Controllers\Admin\GlossaryAdminController;
 use App\Http\Controllers\Admin\HubController as AdminHubController;
 use App\Http\Controllers\Admin\PlanTemplatesController;
@@ -334,6 +335,15 @@ $registerRoutes = static function (bool $localized): void {
             Route::delete('/admin/radar/items/{itemId}', [RadarAdminController::class, 'destroyItem'])
                 ->where('itemId', '[a-z0-9-]+')
                 ->name($name('admin.radar.items.destroy'));
+
+            Route::get('/admin/advisor', [AdvisorAdminController::class, 'index'])->name($name('admin.advisor.index'));
+            Route::post('/admin/advisor/items', [AdvisorAdminController::class, 'store'])->name($name('admin.advisor.items.store'));
+            Route::put('/admin/advisor/items/{itemId}', [AdvisorAdminController::class, 'update'])
+                ->where('itemId', '[a-z0-9-]+')
+                ->name($name('admin.advisor.items.update'));
+            Route::delete('/admin/advisor/items/{itemId}', [AdvisorAdminController::class, 'destroy'])
+                ->where('itemId', '[a-z0-9-]+')
+                ->name($name('admin.advisor.items.destroy'));
 
             Route::get('/admin/vendors', [VendorsAdminController::class, 'index'])->name($name('admin.vendors.index'));
             Route::post('/admin/vendors', [VendorsAdminController::class, 'store'])->name($name('admin.vendors.store'));

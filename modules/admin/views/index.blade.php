@@ -22,6 +22,17 @@
                         </div>
                     </div>
                 @endif
+                @if ($canArea('stories') || $canArea('vendorsSources'))
+                    <div class="sp-list__row">
+                        <div class="sp-list__identity">
+                            <strong data-text-de="Advisor" data-text-en="Advisor">Advisor</strong>
+                            <span class="admin-hub__meta" data-text-de="Stories, Sources & Vendors" data-text-en="Stories, sources & vendors">Stories, sources & vendors</span>
+                        </div>
+                        <div class="sp-list__actions">
+                            <a class="tools-btn tools-btn--small" href="{{ locale_route('admin.advisor.index') }}">Open</a>
+                        </div>
+                    </div>
+                @endif
                 @if ($canArea('planTemplates'))
                     <div class="sp-list__row">
                         <div class="sp-list__identity">

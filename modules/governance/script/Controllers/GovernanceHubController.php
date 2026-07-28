@@ -6,6 +6,7 @@ use App\Accounts\AccountAuth;
 use App\Admin\Content\CatalogJsonWriter;
 use App\Catalog\CatalogJsonLoader;
 use App\Profile\Contracts\WorkspaceStoreInterface;
+use App\Governance\AdvisorContentCardResolver;
 use App\Governance\GovernanceRadarFeedDisplay;
 use App\Governance\GovernanceRadarFeedItemStore;
 use App\Governance\GovernanceRadarFeedSync;
@@ -753,6 +754,12 @@ class GovernanceHubController extends Controller
      */
     private function advisorLinks(): array
     {
+        $resolver = new AdvisorContentCardResolver;
+        $contentCards = $resolver->resolveContentCards(
+            is_array(config('advisor-recommendations')) ? config('advisor-recommendations') : []
+        );
+        $guidanceStories = $resolver->guidanceStoryUrls($contentCards);
+
         return [
             'tools' => [
                 'governance-stack-advisor' => locale_route('tools.governance-stack-advisor'),
@@ -787,9 +794,8 @@ class GovernanceHubController extends Controller
                 'roles' => locale_route('roles.index'),
                 'sprintPlanner' => locale_route('sprint-planner.templates'),
             ],
-            'guidance' => [
+            'guidance' => array_merge([
                 'roadmap' => locale_route('compliance.roadmap'),
-                'eightPillars' => locale_route('playbooks.show', ['slug' => 'eight-pillars']),
                 'cdmp' => locale_route('compliance.show', ['slug' => 'cdmp']),
                 'cippE' => locale_route('compliance.show', ['slug' => 'cipp-e']),
                 'iso27001' => locale_route('compliance.show', ['slug' => 'iso27001-li']),
@@ -801,12 +807,11 @@ class GovernanceHubController extends Controller
                 'aiSanitizer' => locale_route('tools.governance-ai-sanitizer'),
                 'toolsOverview' => locale_route('tools.overview'),
                 'qlikSetAnalysis' => locale_route('tools.qlik-set-analysis-generator'),
-                'bridgeSolutionStory' => locale_route('playbooks.show', ['slug' => 'bridge-solution']),
-                'metadataCatalogStory' => locale_route('playbooks.show', ['slug' => 'metadata-catalog-lineage']),
                 'unityCatalogTool' => locale_route('tools.unity-catalog-governance-generator'),
                 'metaExportTool' => locale_route('tools.meta-export-generator'),
                 'guidesStacks' => locale_route('governance.index').'#guides-stacks',
-            ],
+            ], $guidanceStories),
+            'contentCards' => $contentCards,
             'session' => [
                 'accountsEnabled' => (bool) config('accounts.enabled', false),
                 'loggedIn' => $this->auth->user() !== null,

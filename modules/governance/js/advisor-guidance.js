@@ -245,7 +245,7 @@ function linkOf(links, key, fallback = '#') {
  */
 function leanOrgCerts(links, org) {
     const roadmap = linkOf(links, 'roadmap', '/compliance/roadmap');
-    const eightPillars = linkOf(links, 'eightPillars', '/playbooks/eight-pillars');
+    const eightPillars = linkOf(links, 'eightPillars');
     const learningPaths = linkOf(links, 'learningPaths', '/learning-paths');
 
     const startupBias = org === 'startup';
@@ -308,7 +308,7 @@ function buildCertCards(state, links) {
     const cards = [];
 
     const roadmap = linkOf(links, 'roadmap', '/compliance/roadmap');
-    const eightPillars = linkOf(links, 'eightPillars', '/playbooks/eight-pillars');
+    const eightPillars = linkOf(links, 'eightPillars');
     const learningPaths = linkOf(links, 'learningPaths', '/learning-paths');
     const cdmp = linkOf(links, 'cdmp', '/compliance/cdmp');
     const cippE = linkOf(links, 'cippE', '/compliance/cipp-e');
@@ -629,9 +629,9 @@ function buildGapCards(state, links) {
     const toolsOverview = linkOf(links, 'toolsOverview', '/tools');
     const qlik = linkOf(links, 'qlikSetAnalysis', '/tools/qlik-set-analysis-generator');
     const compliance = linkOf(links, 'compliance', '/compliance');
-    const bridgeStory = linkOf(links, 'bridgeSolutionStory', '/playbooks/bridge-solution');
+    const bridgeStory = linkOf(links, 'bridgeSolutionStory');
     const trustedMetrics = linkOf(links, 'learningPaths', '/learning-paths');
-    const metadataStory = linkOf(links, 'metadataCatalogStory', '/playbooks/metadata-catalog-lineage');
+    const metadataStory = linkOf(links, 'metadataCatalogStory');
     const unityCatalog = linkOf(links, 'unityCatalogTool', '/tools/unity-catalog-governance-generator');
     const metaExport = linkOf(links, 'metaExportTool', '/tools/meta-export-generator');
 

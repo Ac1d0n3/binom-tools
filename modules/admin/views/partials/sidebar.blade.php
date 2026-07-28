@@ -12,6 +12,7 @@
     $canPlans = $canArea('planTemplates');
     $canVendorsSources = $canArea('vendorsSources');
     $canGlossary = $canArea('glossary');
+    $canAdvisor = $canStories || $canVendorsSources;
     $showAdminSection = $canUsers || $canTeams || $canNews || $canStories || $canPlans || $canVendorsSources || $canGlossary;
 @endphp
 
@@ -49,6 +50,13 @@
                     <li>
                         <a href="{{ locale_route('admin.stories.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.stories.*') ? 'tools-sidenav__link--active' : '' }}">
                             <span data-text-de="Stories" data-text-en="Stories">Stories</span>
+                        </a>
+                    </li>
+                @endif
+                @if ($canAdvisor)
+                    <li>
+                        <a href="{{ locale_route('admin.advisor.index') }}" class="tools-sidenav__link {{ request()->routeIs('admin.advisor.*') ? 'tools-sidenav__link--active' : '' }}">
+                            <span data-text-de="Advisor" data-text-en="Advisor">Advisor</span>
                         </a>
                     </li>
                 @endif

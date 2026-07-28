@@ -1,4 +1,5 @@
 import { buildGuidance, normalizeOrgContext, normalizeRegulation, platformPreferenceHint, preferredPlatforms, preferredProductIds, stackBuilderContextBanner } from './advisor-guidance.js';
+import { contentCardCandidates, matchesContentWhen, normalizeContentCard } from './advisor-content-cards.js';
 import { openSharedModal } from '../../../resources/js/shared/modal.js';
 import {
     derivePlatformTags,
@@ -801,6 +802,47 @@ function scoreItem(item, state, boostToolIds = []) {
     return score;
 }
 
+/**
+ * @param {Record<string, unknown>|null|undefined} when
+ * @param {ReturnType<typeof getState>} state
+ * @returns {boolean}
+ */
+function matchesContentWhen(when, state) {
+    if (!when || typeof when !== 'object') {
+        return true;
+    }
+
+    /** @type {Array<[string, string]>} */
+    const dims = [
+        ['goals', state.goal || ''],
+        ['scenarios', state.scenario || ''],
+        ['domains', state.domain || ''],
+        ['platforms', state.platform || ''],
+        ['roles', state.role || ''],
+    ];
+
+    for (const [key, value] of dims) {
+        const list = when[key];
+        if (!Array.isArray(list) || list.length === 0) {
+            continue;
+        }
+        if (!list.includes(value)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * @param {Record<string, unknown>} config
+ * @returns {Array<Record<string, unknown>>}
+ */
+function contentCardCandidates(config) {
+    const raw = config.links?.contentCards;
+    return Array.isArray(raw) ? raw.filter((item) => item && typeof item === 'object') : [];
+}
+
 function buildRecommendations(state, config) {
     const links = guidanceLinksFromConfig(config);
     const { startToolIds } = buildGuidance(state, links);
@@ -809,20 +851,26 @@ function buildRecommendations(state, config) {
     const domainItem = state.domain === 'unknown'
         ? []
         : [{ ...sourceItems[state.domain], id: 'suppliers', kind: 'hub', fixed: true }];
-    const candidates = [...tools, ...hubs, ...domainItem]
+    const contentItems = contentCardCandidates(config)
+        .filter((item) => matchesContentWhen(item.when, state))
+        .map((item) => normalizeContentCard(item));
+    const candidates = [...tools, ...hubs, ...domainItem, ...contentItems]
         .map((item, index) => ({
             ...item,
-            url: itemUrl(item, config),
-            score: item.fixed ? 99 : scoreItem(item, state, startToolIds),
+            url: item.url || itemUrl(item, config),
+            score: item.fixed
+                ? 99
+                : scoreItem(item, state, startToolIds) + (Number(item.baseScore) || 0),
             order: index,
         }))
-        .filter((item) => item.url !== '#' && item.score > 0)
+        .filter((item) => item.url && item.url !== '#' && item.score > 0)
         .sort((a, b) => b.score - a.score || a.order - b.order);
 
     const seen = new Set();
 
     const scored = candidates.filter((item) => {
-        const key = `${item.group}:${item.title.en}:${item.url}`;
+        const titleEn = item.title && typeof item.title === 'object' ? item.title.en : '';
+        const key = `${item.group}:${titleEn}:${item.url}`;
 
         if (seen.has(key)) {
             return false;

@@ -228,6 +228,7 @@ class AdminCatalogUxTest extends TestCase
             '/admin/vendors',
             '/admin/glossary',
             '/admin/radar',
+            '/admin/advisor',
             '/admin/stories',
             '/admin/plan-templates',
             '/admin/users',

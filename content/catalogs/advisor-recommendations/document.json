@@ -1,0 +1,79 @@
+{
+    "items": [
+        {
+            "id": "story-eight-pillars",
+            "kind": "story",
+            "ref": "eight-pillars",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-landmark",
+            "score": 80,
+            "tags": ["help", "learning", "new", "stack", "owner", "architect", "steward"],
+            "when": {
+                "goals": [],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "8 Säulen als Praxisstart",
+                "en": "8 pillars as a practical start"
+            },
+            "reason": {
+                "de": "Schlankes Governance-Gerüst zuerst — gemeinsames Frame vor Zert-Pfaden.",
+                "en": "Lean governance frame first — shared frame before cert tracks."
+            }
+        },
+        {
+            "id": "story-bridge-solution",
+            "kind": "story",
+            "ref": "bridge-solution",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-bridge",
+            "score": 78,
+            "tags": ["extend", "stack", "help", "architect", "product-owner"],
+            "when": {
+                "goals": [],
+                "scenarios": ["extend"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Bridge-Solution Story",
+                "en": "Bridge-solution story"
+            },
+            "reason": {
+                "de": "Muster für Übergangslösungen zwischen Alt und Zielbild.",
+                "en": "Pattern for transitional solutions between legacy and target."
+            }
+        },
+        {
+            "id": "story-metadata-catalog-lineage",
+            "kind": "story",
+            "ref": "metadata-catalog-lineage",
+            "enabled": true,
+            "group": "resources",
+            "icon": "fa-sitemap",
+            "score": 82,
+            "tags": ["stack", "extend", "supplier", "architect", "steward", "databricks", "fabric", "snowflake-dbt"],
+            "when": {
+                "goals": ["stack", "supplier"],
+                "scenarios": [],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Metadata & Catalog-Brücke",
+                "en": "Metadata & catalog bridge"
+            },
+            "reason": {
+                "de": "Stack ohne Catalog/Metadata-Säule bleibt blind — Pillar-Story parallel öffnen.",
+                "en": "A stack without a catalog/metadata pillar stays blind — open the pillar story too."
+            }
+        }
+    ]
+}

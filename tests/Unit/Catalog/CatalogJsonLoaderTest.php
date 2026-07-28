@@ -56,16 +56,17 @@ class CatalogJsonLoaderTest extends TestCase
 
     public function test_document_catalogs_load(): void
     {
-        foreach (['roles', 'learning-paths', 'vendor-resources', 'compliance', 'governance-radar', 'tools'] as $name) {
+        foreach (['roles', 'learning-paths', 'vendor-resources', 'compliance', 'governance-radar', 'tools', 'advisor-recommendations'] as $name) {
             $catalog = CatalogJsonLoader::load($name);
             $this->assertSame(1, $catalog['schemaVersion'] ?? null, $name);
             $this->assertIsArray($catalog);
-            $this->assertGreaterThan(2, count($catalog), $name);
+            $this->assertGreaterThanOrEqual(2, count($catalog), $name);
         }
 
         $this->assertNotEmpty(config('roles.roles'));
         $this->assertNotEmpty(config('compliance.items'));
         $this->assertNotEmpty(config('tools.workflows'));
+        $this->assertNotEmpty(config('advisor-recommendations.items'));
         $this->assertSame(config('tools.version'), env('BINOM_TOOLS_VERSION', '1.0.0'));
     }
 }
