@@ -1,5 +1,5 @@
-const DEFAULT_DESCRIPTION_DE = '{baseDescription} Erweiterung: {definition}.';
-const DEFAULT_DESCRIPTION_EN = '{baseDescription} Extension: {definition}.';
+const DEFAULT_DESCRIPTION_DE = '{baseDescription}. Erweiterung: {definition}.';
+const DEFAULT_DESCRIPTION_EN = '{baseDescription}. Extension: {definition}.';
 
 export function parseCsv(text) {
     const rows = [];
@@ -172,8 +172,8 @@ export function buildTableauOutputs(state = {}) {
         effectiveDefinitions.forEach((definition) => {
             const name = `${base.name} - ${definition.name}`;
             const formula = buildCalculatedField(base.expression, definition);
-            const descriptionDe = renderTemplate(descriptionTemplateDe, base, definition);
-            const descriptionEn = renderTemplate(descriptionTemplateEn, base, definition);
+            const descriptionDe = renderTemplate(descriptionTemplateDe, base, definition, 'de');
+            const descriptionEn = renderTemplate(descriptionTemplateEn, base, definition, 'en');
             const fixedDimensions = lodDimensions.length > 0 ? lodDimensions : definition.dimensions;
 
             calculations.push(`${name}\n${formula}\n\nDE: ${descriptionDe}\nEN: ${descriptionEn}`);
@@ -323,11 +323,12 @@ function collectBaseMeasures(state) {
             }];
     }
 
+    const fromList = parsedBases.find((base) => base.name === activeName);
     const activeBase = {
         name: activeName,
         expression: activeExpression,
-        descriptionDe: state.baseDescriptionDe || activeName,
-        descriptionEn: state.baseDescriptionEn || activeName,
+        descriptionDe: state.baseDescriptionDe || fromList?.descriptionDe || activeName,
+        descriptionEn: state.baseDescriptionEn || fromList?.descriptionEn || activeName,
     };
 
     return [activeBase, ...parsedBases.filter((base) => base.name !== activeBase.name)];
@@ -413,11 +414,17 @@ function splitList(value) {
         .filter(Boolean);
 }
 
-function renderTemplate(template, base, definition) {
+function renderTemplate(template, base, definition, locale = 'de') {
+    const descriptionDe = base.descriptionDe || base.descriptionEn || '';
+    const descriptionEn = base.descriptionEn || base.descriptionDe || '';
+    const baseDescription = locale === 'en' ? descriptionEn : descriptionDe;
+
     return String(template ?? '').replace(/\{([A-Za-z0-9_]+)}/g, (_, key) => ({
         baseName: base.name,
         baseExpression: base.expression,
-        baseDescription: base.descriptionDe || base.descriptionEn || '',
+        baseDescription,
+        baseDescriptionDe: descriptionDe,
+        baseDescriptionEn: descriptionEn,
         definition: definition.name,
         condition: definition.expression || buildTableauCondition(definition.dimensions[0] || '', definition.values),
         dimensions: definition.dimensions.join(', '),

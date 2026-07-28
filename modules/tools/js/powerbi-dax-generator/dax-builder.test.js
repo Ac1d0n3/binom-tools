@@ -108,4 +108,33 @@ describe('power bi dax builder', () => {
         expect(outputs.rows).toHaveLength(3);
         expect(parseHierarchyLevels('A > B > C')).toEqual(['A', 'B', 'C']);
     });
+
+    it('uses locale-specific base descriptions for Costs / Region DACH', () => {
+        const outputs = buildPowerBiOutputs({
+            baseMeasuresText: 'name,expression,description_de,description_en\nCosts,SUM(Sales[Costs]),Kosten,Costs',
+            definitionsText: 'name,table,column,values,expression,description\nRegion DACH,Sales,Region,DACH,,DACH market',
+            descriptionTemplateDe: '{baseDescription}. Erweiterung: {definition}. Filter: {condition}.',
+            descriptionTemplateEn: '{baseDescription}. Extension: {definition}. Filter: {condition}.',
+        });
+
+        expect(outputs.measures).toContain('// DE: Kosten. Erweiterung: Region DACH. Filter: Sales[Region] = "DACH".');
+        expect(outputs.measures).toContain('// EN: Costs. Extension: Region DACH. Filter: Sales[Region] = "DACH".');
+        expect(outputs.measures).not.toContain('// EN: Kosten');
+        expect(outputs.rows[1][2]).toBe('Kosten. Erweiterung: Region DACH. Filter: Sales[Region] = "DACH".');
+        expect(outputs.rows[1][3]).toBe('Costs. Extension: Region DACH. Filter: Sales[Region] = "DACH".');
+    });
+
+    it('resolves active base descriptions from the matching CSV row', () => {
+        const outputs = buildPowerBiOutputs({
+            baseExpression: 'SUM(Sales[Costs])',
+            measureName: 'Costs',
+            baseMeasuresText: 'name,expression,description_de,description_en\nCosts,SUM(Sales[Costs]),Kosten,Costs',
+            definitionsText: 'name,table,column,values,expression,description\nRegion DACH,Sales,Region,DACH,,DACH market',
+            descriptionTemplateDe: '{baseDescription}. Erweiterung: {definition}.',
+            descriptionTemplateEn: '{baseDescription}. Extension: {definition}.',
+        });
+
+        expect(outputs.measures).toContain('// DE: Kosten. Erweiterung: Region DACH.');
+        expect(outputs.measures).toContain('// EN: Costs. Extension: Region DACH.');
+    });
 });

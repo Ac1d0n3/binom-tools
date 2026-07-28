@@ -337,10 +337,10 @@ Sales[Category]</textarea>
                                         <p data-powerbi-i18n="powerbiDax.description.hint"></p>
                                     </div>
                                     <x-tools.field label-key="powerbiDax.description.de">
-                                        <textarea class="pii-policy-input" rows="3" data-powerbi-description-de>{baseDescription} Erweiterung: {definition}. Filter: {condition}.</textarea>
+                                        <textarea class="pii-policy-input" rows="3" data-powerbi-description-de>{baseDescription}. Erweiterung: {definition}. Filter: {condition}.</textarea>
                                     </x-tools.field>
                                     <x-tools.field label-key="powerbiDax.description.en">
-                                        <textarea class="pii-policy-input" rows="3" data-powerbi-description-en>{baseDescription} Extension: {definition}. Filter: {condition}.</textarea>
+                                        <textarea class="pii-policy-input" rows="3" data-powerbi-description-en>{baseDescription}. Extension: {definition}. Filter: {condition}.</textarea>
                                     </x-tools.field>
                                 </div>
                             </aside>

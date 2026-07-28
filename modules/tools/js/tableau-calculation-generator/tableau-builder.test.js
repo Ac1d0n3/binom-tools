@@ -106,4 +106,33 @@ describe('tableau calculation builder', () => {
         expect(outputs.csv).toContain('calculation_name,formula,description_de,description_en,definition,dimensions,values');
         expect(outputs.rows).toHaveLength(3);
     });
+
+    it('uses locale-specific base descriptions for Costs / Region DACH', () => {
+        const outputs = buildTableauOutputs({
+            baseMeasuresText: 'name,expression,description_de,description_en\nCosts,SUM([Costs]),Kosten,Costs',
+            definitionsText: 'name,dimensions,values,expression,description\nRegion DACH,Region,DACH,[Region] = \'DACH\',DACH market',
+            descriptionTemplateDe: '{baseDescription}. Erweiterung: {definition}. Bedingung: {condition}.',
+            descriptionTemplateEn: '{baseDescription}. Extension: {definition}. Condition: {condition}.',
+        });
+
+        expect(outputs.calculations).toContain('DE: Kosten. Erweiterung: Region DACH. Bedingung: [Region] = \'DACH\'.');
+        expect(outputs.calculations).toContain('EN: Costs. Extension: Region DACH. Condition: [Region] = \'DACH\'.');
+        expect(outputs.calculations).not.toContain('EN: Kosten');
+        expect(outputs.rows[1][2]).toBe('Kosten. Erweiterung: Region DACH. Bedingung: [Region] = \'DACH\'.');
+        expect(outputs.rows[1][3]).toBe('Costs. Extension: Region DACH. Condition: [Region] = \'DACH\'.');
+    });
+
+    it('resolves active base descriptions from the matching CSV row', () => {
+        const outputs = buildTableauOutputs({
+            baseExpression: 'SUM([Costs])',
+            measureName: 'Costs',
+            baseMeasuresText: 'name,expression,description_de,description_en\nCosts,SUM([Costs]),Kosten,Costs',
+            definitionsText: 'name,dimensions,values,expression,description\nRegion DACH,Region,DACH,,DACH market',
+            descriptionTemplateDe: '{baseDescription}. Erweiterung: {definition}.',
+            descriptionTemplateEn: '{baseDescription}. Extension: {definition}.',
+        });
+
+        expect(outputs.calculations).toContain('DE: Kosten. Erweiterung: Region DACH.');
+        expect(outputs.calculations).toContain('EN: Costs. Extension: Region DACH.');
+    });
 });

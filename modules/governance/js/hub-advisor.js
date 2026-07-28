@@ -802,47 +802,6 @@ function scoreItem(item, state, boostToolIds = []) {
     return score;
 }
 
-/**
- * @param {Record<string, unknown>|null|undefined} when
- * @param {ReturnType<typeof getState>} state
- * @returns {boolean}
- */
-function matchesContentWhen(when, state) {
-    if (!when || typeof when !== 'object') {
-        return true;
-    }
-
-    /** @type {Array<[string, string]>} */
-    const dims = [
-        ['goals', state.goal || ''],
-        ['scenarios', state.scenario || ''],
-        ['domains', state.domain || ''],
-        ['platforms', state.platform || ''],
-        ['roles', state.role || ''],
-    ];
-
-    for (const [key, value] of dims) {
-        const list = when[key];
-        if (!Array.isArray(list) || list.length === 0) {
-            continue;
-        }
-        if (!list.includes(value)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/**
- * @param {Record<string, unknown>} config
- * @returns {Array<Record<string, unknown>>}
- */
-function contentCardCandidates(config) {
-    const raw = config.links?.contentCards;
-    return Array.isArray(raw) ? raw.filter((item) => item && typeof item === 'object') : [];
-}
-
 function buildRecommendations(state, config) {
     const links = guidanceLinksFromConfig(config);
     const { startToolIds } = buildGuidance(state, links);

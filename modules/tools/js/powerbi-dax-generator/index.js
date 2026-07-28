@@ -1,3 +1,4 @@
+import '../../css/pii-policy-generator.css';
 import '../../css/bi-formula-workbench.css';
 import '../tableau-calculation-generator/style.css';
 import {
@@ -267,15 +268,19 @@ function render() {
 }
 
 function readState() {
+    const measureName = els.measureName?.value || '';
+    const baseMeasuresText = els.baseMeasures?.value || '';
+    const fromList = parseBaseMeasures(baseMeasuresText).find((base) => base.name === measureName);
+
     return {
         fieldsText: els.fields?.value || '',
         valuesText: els.values?.value || '',
         definitionsText: els.definitions?.value || '',
-        baseMeasuresText: els.baseMeasures?.value || '',
+        baseMeasuresText,
         baseExpression: els.baseExpression?.value || '',
-        measureName: els.measureName?.value || '',
-        baseDescriptionDe: els.measureName?.value || '',
-        baseDescriptionEn: els.measureName?.value || '',
+        measureName,
+        baseDescriptionDe: fromList?.descriptionDe || '',
+        baseDescriptionEn: fromList?.descriptionEn || '',
         hierarchyText: els.hierarchy?.value || '',
         descriptionTemplateDe: els.descriptionDe?.value || '',
         descriptionTemplateEn: els.descriptionEn?.value || '',
@@ -683,8 +688,14 @@ function upsertBaseMeasure() {
         return;
     }
 
+    const previous = parseBaseMeasures(els.baseMeasures.value).find((measure) => measure.name === name);
     const existing = parseBaseMeasures(els.baseMeasures.value).filter((measure) => measure.name !== name);
-    const next = [{ name, expression, descriptionDe: name, descriptionEn: name }, ...existing];
+    const next = [{
+        name,
+        expression,
+        descriptionDe: previous?.descriptionDe || name,
+        descriptionEn: previous?.descriptionEn || name,
+    }, ...existing];
     els.baseMeasures.value = [
         'name,expression,description_de,description_en',
         ...next.map((measure) => csvLine([measure.name, measure.expression, measure.descriptionDe, measure.descriptionEn])),

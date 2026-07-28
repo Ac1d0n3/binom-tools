@@ -521,11 +521,11 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/tools/bi-python-toolkit/download/{file}', [BiPythonToolkitController::class, 'download'])
         ->where('file', 'bi-kpi-export|qlik-app-inventory|readme')
         ->name($name('tools.bi-python-toolkit.download'));
-    Route::view('/tools/qlik-set-analysis-generator', 'tools.qlik-set-analysis-generator.show')
+    Route::view('/tools/qlik-set-analysis-generator', 'tools::qlik-set-analysis-generator.show')
         ->name($name('tools.qlik-set-analysis-generator'));
-    Route::view('/tools/tableau-calculation-generator', 'tools.tableau-calculation-generator.show')
+    Route::view('/tools/tableau-calculation-generator', 'tools::tableau-calculation-generator.show')
         ->name($name('tools.tableau-calculation-generator'));
-    Route::view('/tools/powerbi-dax-generator', 'tools.powerbi-dax-generator.show')
+    Route::view('/tools/powerbi-dax-generator', 'tools::powerbi-dax-generator.show')
         ->name($name('tools.powerbi-dax-generator'));
     Route::get('/tools/architecture-fit', [ArchitectureFitController::class, 'show'])
         ->name($name('tools.architecture-fit'));
@@ -570,7 +570,7 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/tools/databricks-pii-governance-pattern-generator', [DatabricksPiiGovernancePatternGeneratorController::class, 'show'])
         ->name($name('tools.databricks-pii-governance-pattern-generator'));
 
-    Route::view('/tools/fabric-dq-rule-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/fabric-dq-rule-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'fabric',
         'toolId' => 'fabric-dq-rule-generator',
         'pageTitle' => 'Fabric DQ Rule Generator',
@@ -589,7 +589,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
         'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
     ])->name($name('tools.fabric-dq-rule-generator'));
-    Route::view('/tools/fabric-notebook-snippet-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/fabric-notebook-snippet-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'fabric',
         'toolId' => 'fabric-notebook-snippet-generator',
         'pageTitle' => 'Fabric Notebook Snippet Generator',
@@ -608,7 +608,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
         'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
     ])->name($name('tools.fabric-notebook-snippet-generator'));
-    Route::view('/tools/fabric-pipeline-checklist-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/fabric-pipeline-checklist-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'fabric',
         'toolId' => 'fabric-pipeline-checklist-generator',
         'pageTitle' => 'Fabric Pipeline Checklist Generator',
@@ -627,7 +627,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
         'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
     ])->name($name('tools.fabric-pipeline-checklist-generator'));
-    Route::view('/tools/fabric-semantic-model-guardrails', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/fabric-semantic-model-guardrails', 'tools::lakehouse-pattern-tool', [
         'platform' => 'fabric',
         'toolId' => 'fabric-semantic-model-guardrails',
         'pageTitle' => 'Fabric Semantic Model Guardrails',
@@ -646,7 +646,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.fabric.output.sql',
         'notebookTitleKey' => 'lakehouseDq.fabric.output.notebook',
     ])->name($name('tools.fabric-semantic-model-guardrails'));
-    Route::view('/tools/databricks-dq-expectation-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/databricks-dq-expectation-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'databricks',
         'toolId' => 'databricks-dq-expectation-generator',
         'pageTitle' => 'Databricks DQ Expectation Generator',
@@ -665,7 +665,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
         'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
     ])->name($name('tools.databricks-dq-expectation-generator'));
-    Route::view('/tools/databricks-dbt-on-databricks-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/databricks-dbt-on-databricks-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'databricks',
         'toolId' => 'databricks-dbt-on-databricks-generator',
         'pageTitle' => 'Databricks dbt-on-Databricks Generator',
@@ -684,7 +684,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
         'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
     ])->name($name('tools.databricks-dbt-on-databricks-generator'));
-    Route::view('/tools/unity-catalog-governance-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/unity-catalog-governance-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'databricks',
         'toolId' => 'unity-catalog-governance-generator',
         'pageTitle' => 'Unity Catalog Governance Generator',
@@ -703,7 +703,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
         'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
     ])->name($name('tools.unity-catalog-governance-generator'));
-    Route::view('/tools/delta-load-scd-pattern-generator', 'tools.lakehouse-pattern-tool', [
+    Route::view('/tools/delta-load-scd-pattern-generator', 'tools::lakehouse-pattern-tool', [
         'platform' => 'databricks',
         'toolId' => 'delta-load-scd-pattern-generator',
         'pageTitle' => 'Delta Load / SCD Pattern Generator',
@@ -722,7 +722,7 @@ $registerRoutes = static function (bool $localized): void {
         'sqlTitleKey' => 'lakehouseDq.databricks.output.sql',
         'notebookTitleKey' => 'lakehouseDq.databricks.output.notebook',
     ])->name($name('tools.delta-load-scd-pattern-generator'));
-    Route::view('/tools/pureview-scan-generator', 'tools.pureview-generator', [
+    Route::view('/tools/pureview-scan-generator', 'tools::pureview-generator', [
         'toolId' => 'pureview-scan-generator',
         'pageTitle' => 'PureView Scan Generator',
         'titleKey' => 'pureview.scan.pageTitle',
@@ -740,7 +740,7 @@ $registerRoutes = static function (bool $localized): void {
         'platforms' => ['fabric' => 'Fabric Warehouse', 'databricks' => 'Databricks Unity Catalog', 'sqlserver' => 'SQL Server', 'adls' => 'ADLS Gen2'],
         'frequencies' => ['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly'],
     ])->name($name('tools.pureview-scan-generator'));
-    Route::view('/tools/pureview-classification-generator', 'tools.pureview-generator', [
+    Route::view('/tools/pureview-classification-generator', 'tools::pureview-generator', [
         'toolId' => 'pureview-classification-generator',
         'pageTitle' => 'PureView Classification Generator',
         'titleKey' => 'pureview.classification.pageTitle',
@@ -758,7 +758,7 @@ $registerRoutes = static function (bool $localized): void {
         'platforms' => ['fabric' => 'Fabric Warehouse', 'databricks' => 'Databricks Unity Catalog', 'sqlserver' => 'SQL Server', 'adls' => 'ADLS Gen2'],
         'frequencies' => ['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly'],
     ])->name($name('tools.pureview-classification-generator'));
-    Route::view('/tools/pureview-glossary-generator', 'tools.pureview-generator', [
+    Route::view('/tools/pureview-glossary-generator', 'tools::pureview-generator', [
         'toolId' => 'pureview-glossary-generator',
         'pageTitle' => 'PureView Glossary Generator',
         'titleKey' => 'pureview.glossary.pageTitle',
@@ -776,7 +776,7 @@ $registerRoutes = static function (bool $localized): void {
         'platforms' => ['fabric' => 'Fabric Warehouse', 'databricks' => 'Databricks Unity Catalog', 'sqlserver' => 'SQL Server', 'adls' => 'ADLS Gen2'],
         'frequencies' => ['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly'],
     ])->name($name('tools.pureview-glossary-generator'));
-    Route::view('/tools/pureview-data-product-generator', 'tools.pureview-generator', [
+    Route::view('/tools/pureview-data-product-generator', 'tools::pureview-generator', [
         'toolId' => 'pureview-data-product-generator',
         'pageTitle' => 'PureView Data Product Generator',
         'titleKey' => 'pureview.dataProduct.pageTitle',

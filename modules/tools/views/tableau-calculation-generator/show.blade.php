@@ -337,10 +337,10 @@ Category</textarea>
                                         <p data-tableau-i18n="tableauCalc.description.hint"></p>
                                     </div>
                                     <x-tools.field label-key="tableauCalc.description.de">
-                                        <textarea class="pii-policy-input" rows="3" data-tableau-description-de>{baseDescription} Erweiterung: {definition}. Bedingung: {condition}.</textarea>
+                                        <textarea class="pii-policy-input" rows="3" data-tableau-description-de>{baseDescription}. Erweiterung: {definition}. Bedingung: {condition}.</textarea>
                                     </x-tools.field>
                                     <x-tools.field label-key="tableauCalc.description.en">
-                                        <textarea class="pii-policy-input" rows="3" data-tableau-description-en>{baseDescription} Extension: {definition}. Condition: {condition}.</textarea>
+                                        <textarea class="pii-policy-input" rows="3" data-tableau-description-en>{baseDescription}. Extension: {definition}. Condition: {condition}.</textarea>
                                     </x-tools.field>
                                 </div>
                             </aside>
