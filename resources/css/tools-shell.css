@@ -6936,7 +6936,9 @@ html[data-color-scheme='dark'] .tools-card__series-badge {
 }
 
 html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .tools-card__hero::after,
-html[data-color-scheme='dark'][data-dark-image-tone='true'] .tools-card__hero::after {
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .tools-card__hero::after,
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .tools-series-card__hero::after,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .tools-series-card__hero::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -10317,8 +10319,13 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
         flex: 0 0 auto;
     }
 
-    .tools-overview-toolbar--playbooks .playbook-offline {
+    .tools-overview-toolbar--playbooks .playbook-slides-trigger {
         order: 4;
+        flex: 0 0 auto;
+    }
+
+    .tools-overview-toolbar--playbooks .playbook-offline {
+        order: 5;
         flex: 0 0 auto;
     }
 

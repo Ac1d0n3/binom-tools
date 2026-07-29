@@ -1,5 +1,6 @@
 @extends('foundations.layouts.tools', [
     'mainClass' => 'tools-shell__main--overview',
+    'viteEntries' => ['modules/playbooks/css/playbooks.css'],
 ])
 
 @section('title', 'Stories — ' . config('app.name'))
@@ -135,6 +136,23 @@
                         </div>
                     </div>
 
+                    @if (count($slides ?? []) > 0)
+                        <div class="playbook-slides-trigger" data-playbook-slides-root>
+                            <button
+                                type="button"
+                                class="tools-btn tools-btn--secondary playbook-slides__btn"
+                                data-playbook-slides-open
+                                data-i18n-aria="playbooks.slides.open"
+                                aria-label="Diagrams"
+                                title="Diagrams"
+                            >
+                                <i class="fa-solid fa-images" aria-hidden="true"></i>
+                                <span class="sr-only" data-i18n="playbooks.slides.open">Diagrams</span>
+                            </button>
+                            <script type="application/json" data-playbook-slides>@json($slides)</script>
+                        </div>
+                    @endif
+
                     <div class="playbook-offline playbook-offline--index" data-playbook-offline-index>
                         <button
                             type="button"
@@ -233,6 +251,77 @@
             ></button>
         </div>
     </div>
+
+    @if (count($slides ?? []) > 0)
+        <dialog
+            class="playbook-slides-modal"
+            data-playbook-slides-modal
+            aria-labelledby="playbook-slides-modal-title"
+        >
+            <div class="playbook-slides-modal__panel">
+                <header class="playbook-slides-modal__header">
+                    <div class="playbook-slides-modal__heading">
+                        <h2 id="playbook-slides-modal-title" class="playbook-slides-modal__title" data-i18n="playbooks.slides.title">
+                            Diagrams
+                        </h2>
+                        <p class="playbook-slides-modal__group" data-playbook-slides-group hidden></p>
+                    </div>
+                    <button
+                        type="button"
+                        class="tools-btn tools-btn--ghost tools-btn--compact playbook-slides-modal__close"
+                        data-playbook-slides-close
+                        data-shared-modal-close
+                        data-i18n-aria="playbooks.slides.close"
+                        aria-label="Close"
+                    >
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </header>
+
+                <div class="playbook-slides-modal__stage">
+                    <button
+                        type="button"
+                        class="playbook-slides-modal__nav playbook-slides-modal__nav--prev"
+                        data-playbook-slides-prev
+                        data-i18n-aria="playbooks.slides.prev"
+                        aria-label="Previous diagram"
+                    >
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+
+                    <figure class="playbook-slides-modal__figure">
+                        <img class="playbook-slides-modal__image" data-playbook-slides-image alt="" />
+                        <figcaption class="playbook-slides-modal__caption" data-playbook-slides-caption></figcaption>
+                    </figure>
+
+                    <button
+                        type="button"
+                        class="playbook-slides-modal__nav playbook-slides-modal__nav--next"
+                        data-playbook-slides-next
+                        data-i18n-aria="playbooks.slides.next"
+                        aria-label="Next diagram"
+                    >
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="playbook-slides-modal__meta">
+                    <p class="playbook-slides-modal__counter" data-playbook-slides-counter hidden></p>
+                    <div class="playbook-slides-modal__links">
+                        <a class="playbook-slides-modal__link" data-playbook-slides-story-link href="#">
+                            <span data-i18n="playbooks.slides.openStory">Open story</span>
+                            <span data-playbook-slides-story-title></span>
+                        </a>
+                        <a class="playbook-slides-modal__link" data-playbook-slides-series-link href="#" hidden>
+                            <span data-i18n="playbooks.slides.openSeries">Open series</span>
+                            <span data-playbook-slides-series-title></span>
+                        </a>
+                        <span class="playbook-slides-modal__part" data-playbook-slides-part hidden></span>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+    @endif
 
     <dialog class="playbook-offline-modal" data-playbook-offline-modal aria-labelledby="playbook-offline-modal-title">
         <div class="playbook-offline-modal__panel">

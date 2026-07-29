@@ -62,3 +62,13 @@ if (document.querySelector('[data-playbook-offline-index], [data-playbook-card-o
             console.warn('Playbook offline controls failed to load.', error);
         });
 }
+
+if (document.querySelector('[data-playbook-slides-open]')) {
+    void import('../../modules/playbooks/js/slides-gallery.js')
+        .then(({ initPlaybookSlidesGallery }) => {
+            initPlaybookSlidesGallery(document);
+        })
+        .catch((error) => {
+            console.warn('Playbook slides gallery failed to load.', error);
+        });
+}

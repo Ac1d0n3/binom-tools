@@ -53,6 +53,9 @@ class PlaybookPagesTest extends TestCase
         $response->assertSee('tools-overview-scroll', false);
         $response->assertDontSee('data-tools-phone-gate', false);
         $response->assertDontSee('tools-overview-tags', false);
+        $response->assertSee('data-playbook-slides-open', false);
+        $response->assertSee('data-playbook-slides-modal', false);
+        $response->assertSee('data-playbook-slides', false);
 
         $html = $response->getContent();
         $mainPos = strpos($html, 'tools-overview-main');

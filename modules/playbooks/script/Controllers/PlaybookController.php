@@ -7,8 +7,10 @@ use App\Accounts\AccountsConfig;
 use App\Accounts\Contracts\ReadStateStoreInterface;
 use App\Accounts\Contracts\StoryAclRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Playbooks\Playbook;
 use App\Playbooks\PlaybookProducts;
 use App\Playbooks\PlaybookRepository;
+use App\Playbooks\PlaybookSlidesCatalog;
 use App\Playbooks\Contracts\PlaybookStatsStoreInterface;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,6 +20,7 @@ class PlaybookController extends Controller
     public function __construct(
         private readonly PlaybookRepository $playbooks,
         private readonly PlaybookStatsStoreInterface $stats,
+        private readonly PlaybookSlidesCatalog $slidesCatalog,
         private readonly AccountsConfig $accountsConfig,
         private readonly AccountAuth $accountAuth,
         private readonly StoryAclRepositoryInterface $storyAcl,
@@ -27,6 +30,10 @@ class PlaybookController extends Controller
     public function index(): View
     {
         $playbooks = $this->stats->attachToItems($this->filterVisible($this->playbooks->allForIndex()));
+        $slides = $this->slidesCatalog->build(
+            $this->visiblePlaybooks(array_column($playbooks, 'slug')),
+            app()->getLocale() === 'de' ? 'de' : 'en',
+        );
 
         $tagCounts = collect($playbooks)
             ->flatMap(fn (array $item): array => $item['tags'] ?? [])
@@ -109,8 +116,32 @@ class PlaybookController extends Controller
             'productCounts' => $productCounts,
             'availableProducts' => $availableProducts,
             'seriesList' => $seriesList,
+            'slides' => $slides,
             'serverReadSlugs' => $this->serverReadSlugs(),
         ]);
+    }
+
+    /**
+     * @param  list<string|null>  $visibleSlugs
+     * @return list<Playbook>
+     */
+    private function visiblePlaybooks(array $visibleSlugs): array
+    {
+        $allowed = [];
+        foreach ($visibleSlugs as $slug) {
+            if (is_string($slug) && $slug !== '') {
+                $allowed[$slug] = true;
+            }
+        }
+
+        if ($allowed === []) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $this->playbooks->all(),
+            static fn (Playbook $playbook): bool => isset($allowed[$playbook->slug]),
+        ));
     }
 
     public function series(Request $request): View

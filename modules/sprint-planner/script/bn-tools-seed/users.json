@@ -3,7 +3,7 @@
     "users": [
         {
             "id": "user_acidone",
-            "email": "thomas.l@example.com",
+            "email": "t.l@binom-network.org",
             "displayName": "Thomas L",
             "passwordHash": "$2y$12$cQoS5QkfUjZ/UF0fztx2ju4g4MZZolXIAZH4XG21J1wWZj2srWu8.",
             "teamIds": [
