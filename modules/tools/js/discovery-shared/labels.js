@@ -36,7 +36,10 @@ export const discoveryCommonLabels = {
         'discovery.applyToPlan': 'In aktuelle Aufgabe übernehmen',
         'discovery.applyEmpty': 'Noch nichts zum Übernehmen — füge zuerst Einträge hinzu.',
         'discovery.leaveConfirm':
-            'Ergebnis noch nicht übernommen (kopiert/heruntergeladen). Beim Verlassen gehen die Eingaben verloren.',
+            'Es gibt ungespeicherte Eingaben. Beim Verlassen gehen sie verloren, sofern du sie nicht kopiert, heruntergeladen oder übernommen hast.',
+        'discovery.leaveTitle': 'Ungespeicherte Änderungen',
+        'discovery.leaveStay': 'Bleiben',
+        'discovery.leaveGo': 'Seite verlassen',
     },
     en: {
         'discovery.addRow': 'Add row',
@@ -72,7 +75,10 @@ export const discoveryCommonLabels = {
         'discovery.applyToPlan': 'Apply to current task',
         'discovery.applyEmpty': 'Nothing to apply yet — add entries first.',
         'discovery.leaveConfirm':
-            'Result not transferred yet (copy/download). Leaving will discard your entries.',
+            'You have unsaved entries. Leaving discards them unless you copied, downloaded, or applied them.',
+        'discovery.leaveTitle': 'Unsaved changes',
+        'discovery.leaveStay': 'Stay',
+        'discovery.leaveGo': 'Leave page',
     },
 };
 

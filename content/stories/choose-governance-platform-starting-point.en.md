@@ -285,7 +285,7 @@ A candidate should remain an open question when evidence is missing. Do not conv
 
 Record the result in a **Platform Starting-Point Decision**. The artifact should be reviewable by business ownership, architecture, security, platform operations and delivery.
 
-![Record the Platform Starting-Point Decision](images/playbooks/choose-governance-platform-starting-point-img4-en.png)
+Record the decision with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision) tool.
 
 ### Mandatory fields
 

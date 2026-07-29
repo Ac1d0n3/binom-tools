@@ -2542,6 +2542,15 @@ html[data-hide-hub-leads="true"] .tools-workflow-section > .tools-section__lead 
     opacity: 0.75;
 }
 
+.stack-builder__chip--muted {
+    opacity: 0.55;
+}
+
+.stack-builder__chip--muted:hover,
+.stack-builder__chip--muted.stack-builder__chip--active {
+    opacity: 1;
+}
+
 .stack-builder__context-banner {
     margin: 0 0 0.65rem;
     border: 1px solid color-mix(in srgb, var(--theme-color-primary) 22%, var(--base-border-color));
@@ -10394,6 +10403,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     background: var(--tools-card-background);
 }
 
+/* Workflow flowchart: classic (default) = interlocking chevrons; wrap = multi-row cards */
 .tools-workflow-flowchart {
     margin: 0;
     padding: 0.85rem 1rem;
@@ -10412,7 +10422,13 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     color: var(--bn-color-text-secondary);
 }
 
-.tools-workflow-flowchart__list {
+.tools-workflow-flowchart--chevron,
+.tools-workflow-flowchart--classic {
+    --tools-workflow-chevron-notch: 0.85rem;
+}
+
+/* --- Classic: single-line interlocking chevrons --- */
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__list {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -10424,22 +10440,18 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     -webkit-overflow-scrolling: touch;
 }
 
-.tools-workflow-flowchart--chevron {
-    --tools-workflow-chevron-notch: 0.85rem;
-}
-
-.tools-workflow-flowchart__item {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item {
     display: block;
     flex: 0 0 auto;
     margin: 0;
     padding: 0;
 }
 
-.tools-workflow-flowchart__item:not(:last-child) {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:not(:last-child) {
     margin-right: calc(-1 * var(--tools-workflow-chevron-notch, 0.85rem));
 }
 
-.tools-workflow-flowchart__chevron {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__chevron {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -10466,7 +10478,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     white-space: nowrap;
 }
 
-.tools-workflow-flowchart__item:first-child .tools-workflow-flowchart__chevron {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:first-child .tools-workflow-flowchart__chevron {
     clip-path: polygon(
         0 0,
         calc(100% - var(--tools-workflow-chevron-notch, 0.85rem)) 0,
@@ -10477,7 +10489,7 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     padding-left: 1rem;
 }
 
-.tools-workflow-flowchart__item:last-child .tools-workflow-flowchart__chevron {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:last-child .tools-workflow-flowchart__chevron {
     clip-path: polygon(
         0 0,
         100% 0,
@@ -10488,32 +10500,33 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     padding-right: 1rem;
 }
 
-.tools-workflow-flowchart__item:nth-child(1) .tools-workflow-flowchart__chevron { z-index: 1; }
-.tools-workflow-flowchart__item:nth-child(2) .tools-workflow-flowchart__chevron { z-index: 2; }
-.tools-workflow-flowchart__item:nth-child(3) .tools-workflow-flowchart__chevron { z-index: 3; }
-.tools-workflow-flowchart__item:nth-child(4) .tools-workflow-flowchart__chevron { z-index: 4; }
-.tools-workflow-flowchart__item:nth-child(5) .tools-workflow-flowchart__chevron { z-index: 5; }
-.tools-workflow-flowchart__item:nth-child(6) .tools-workflow-flowchart__chevron { z-index: 6; }
-.tools-workflow-flowchart__item:nth-child(7) .tools-workflow-flowchart__chevron { z-index: 7; }
-.tools-workflow-flowchart__item:nth-child(8) .tools-workflow-flowchart__chevron { z-index: 8; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(1) .tools-workflow-flowchart__chevron { z-index: 1; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(2) .tools-workflow-flowchart__chevron { z-index: 2; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(3) .tools-workflow-flowchart__chevron { z-index: 3; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(4) .tools-workflow-flowchart__chevron { z-index: 4; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(5) .tools-workflow-flowchart__chevron { z-index: 5; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(6) .tools-workflow-flowchart__chevron { z-index: 6; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(7) .tools-workflow-flowchart__chevron { z-index: 7; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(8) .tools-workflow-flowchart__chevron { z-index: 8; }
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__item:nth-child(9) .tools-workflow-flowchart__chevron { z-index: 9; }
 
-.tools-workflow-flowchart__chevron--active {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__chevron--active {
     background: var(--bn-color-primary, #2563eb);
     color: var(--bn-color-primary-contrast, #fff);
     border-color: var(--bn-color-primary, #2563eb);
     z-index: 10 !important;
 }
 
-.tools-workflow-flowchart__chevron--completed {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__chevron--completed {
     background: color-mix(in srgb, var(--bn-color-accent, #0ea5e9) 12%, var(--surface-background-color));
     border-color: color-mix(in srgb, var(--bn-color-accent, #0ea5e9) 40%, var(--base-border-color));
 }
 
-.tools-workflow-flowchart__chevron:hover {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__chevron:hover {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.tools-workflow-flowchart__num {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__num {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -10525,8 +10538,182 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
-.tools-workflow-flowchart__chevron--active .tools-workflow-flowchart__num {
+.tools-workflow-flowchart--classic .tools-workflow-flowchart__chevron--active .tools-workflow-flowchart__num {
     background: color-mix(in srgb, currentColor 25%, transparent);
+}
+
+/* --- Wrap: multi-row cards with continue markers (long workflows) --- */
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    align-content: flex-start;
+    column-gap: 0.45rem;
+    row-gap: 0.45rem;
+    overflow: visible;
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 0 1 auto;
+    min-width: min(100%, 11rem);
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__item:not(.tools-workflow-flowchart__item--row-end)::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 0.42rem;
+    height: 0.42rem;
+    margin-right: 0.05rem;
+    border-right: 2px solid color-mix(in srgb, var(--bn-color-text-secondary, #64748b) 70%, transparent);
+    border-bottom: 2px solid color-mix(in srgb, var(--bn-color-text-secondary, #64748b) 70%, transparent);
+    transform: rotate(-45deg);
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__break {
+    flex: 1 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    margin: 0.1rem 0;
+    padding: 0;
+    list-style: none;
+    color: var(--bn-color-text-secondary, #64748b);
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__break-line {
+    flex: 1 1 auto;
+    height: 1px;
+    background: color-mix(in srgb, var(--base-border-color, #cbd5e1) 85%, transparent);
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__break-label {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__break-label::after {
+    content: '';
+    width: 0.38rem;
+    height: 0.38rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-top: -0.15rem;
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+    text-align: center;
+    color: var(--bn-color-text-primary, inherit);
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 8%, var(--content-background-color, #fff));
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary, #2563eb) 22%, var(--base-border-color, #cbd5e1));
+    border-radius: 0.55rem;
+    clip-path: none;
+    filter: none;
+    white-space: normal;
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__chevron--active {
+    background: var(--bn-color-primary, #2563eb);
+    color: var(--bn-color-primary-contrast, #fff);
+    border-color: var(--bn-color-primary, #2563eb);
+    z-index: 2;
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__chevron--completed {
+    background: color-mix(in srgb, var(--bn-color-accent, #0ea5e9) 12%, var(--surface-background-color, #f8fafc));
+    border-color: color-mix(in srgb, var(--bn-color-accent, #0ea5e9) 40%, var(--base-border-color, #cbd5e1));
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__chevron:hover {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.tools-workflow-flowchart--wrap .tools-workflow-flowchart__chevron--active .tools-workflow-flowchart__num {
+    background: color-mix(in srgb, currentColor 25%, transparent);
+}
+
+@media (max-width: 720px) {
+    .tools-workflow-flowchart--wrap .tools-workflow-flowchart__list {
+        row-gap: 0.4rem;
+        column-gap: 0.35rem;
+    }
+
+    .tools-workflow-flowchart--wrap .tools-workflow-flowchart__item:not(.tools-workflow-flowchart__item--row-end)::after {
+        width: 0.34rem;
+        height: 0.34rem;
+    }
+}
+
+.tools-leave-modal__sheet {
+    width: min(28rem, calc(100vw - 2rem));
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--base-border-color, #cbd5e1);
+    border-radius: 12px;
+    background: var(--content-background-color, #fff);
+    color: var(--content-font-color, inherit);
+    box-shadow: 0 18px 48px color-mix(in srgb, #000 24%, transparent);
+}
+
+.tools-leave-modal__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.tools-leave-modal__body {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--bn-color-text-secondary, inherit);
+}
+
+.tools-leave-modal__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
 }
 
 .pii-heuristic-badge {

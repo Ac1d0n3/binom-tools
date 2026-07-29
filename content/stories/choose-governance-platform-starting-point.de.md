@@ -285,7 +285,7 @@ Ein Kandidat muss eine offene Frage bleiben, solange Evidenz fehlt. Annahmen dü
 
 Dokumentiere das Ergebnis in einer **Platform-Starting-Point-Entscheidung**. Das Artefakt muss durch fachliche Ownership, Architektur, Security, Platform Operations und Delivery reviewbar sein.
 
-![Die Entscheidung zum Plattform-Einstieg dokumentieren](images/playbooks/choose-governance-platform-starting-point-img4-de.png)
+Dokumentiere die Entscheidung mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision).
 
 ### Pflichtfelder
 

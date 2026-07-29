@@ -200,8 +200,8 @@
                 "en": "Governance"
             },
             "description": {
-                "de": "Geführte Entscheidungshilfen: KPI-Anforderungen, Quellen-Scope, Mart Design, Stack-Auswahl, PII/DSDR, Entscheidungsbrief und Lernpfad.",
-                "en": "Guided decision aids: KPI requirements, source scope, mart design, stack selection, PII/DSDR, decision brief, and learning path."
+                "de": "Geführte Entscheidungshilfen: KPI-Anforderungen, Quellen-Scope, Mart Design, Starting-Point Decision, Stack-Auswahl, PII/DSDR, Entscheidungsbrief und Lernpfad.",
+                "en": "Guided decision aids: KPI requirements, source scope, mart design, starting-point decision, stack selection, PII/DSDR, decision brief, and learning path."
             },
             "icon": "fa-compass",
             "accent": "primary",
@@ -209,6 +209,7 @@
                 "kpi-requirements-intake",
                 "source-scope-builder",
                 "mart-design-brief-generator",
+                "governance-starting-point-decision",
                 "governance-stack-advisor",
                 "custom-stack-builder",
                 "pii-dsdr-readiness-checker",
@@ -914,7 +915,7 @@
             "icon": "fa-layer-group",
             "accent": "accent",
             "workflow": "governance-decision-support",
-            "workflowStep": 4
+            "workflowStep": 5
         },
         {
             "id": "custom-stack-builder",
@@ -929,6 +930,23 @@
             },
             "example": true,
             "icon": "fa-cubes",
+            "accent": "primary",
+            "workflow": "governance-decision-support",
+            "workflowStep": 6
+        },
+        {
+            "id": "governance-starting-point-decision",
+            "route": "tools.governance-starting-point-decision",
+            "label": {
+                "de": "Governance Starting-Point Decision",
+                "en": "Governance Starting-Point Decision"
+            },
+            "description": {
+                "de": "Plattform-Einstieg dokumentieren: Kontext, Governance Design, produktspezifische Felder, Lücken und Entscheidung als Markdown.",
+                "en": "Record the platform starting point: context, governance design, product-specific fields, gaps, and decision as Markdown."
+            },
+            "example": true,
+            "icon": "fa-map-signs",
             "accent": "primary",
             "workflow": "governance-decision-support",
             "workflowStep": 4
@@ -948,7 +966,7 @@
             "icon": "fa-shield-halved",
             "accent": "primary",
             "workflow": "governance-decision-support",
-            "workflowStep": 5
+            "workflowStep": 7
         },
         {
             "id": "decision-brief-generator",
@@ -965,7 +983,7 @@
             "icon": "fa-file-signature",
             "accent": "accent",
             "workflow": "governance-decision-support",
-            "workflowStep": 6
+            "workflowStep": 8
         },
         {
             "id": "vendor-learning-path-builder",
@@ -982,7 +1000,7 @@
             "icon": "fa-graduation-cap",
             "accent": "primary",
             "workflow": "governance-decision-support",
-            "workflowStep": 7
+            "workflowStep": 9
         },
         {
             "id": "prompt-studio",
@@ -1282,6 +1300,7 @@
         "governance-stack-advisor": true,
         "custom-stack-builder": true,
         "pii-dsdr-readiness-checker": true,
+        "governance-starting-point-decision": true,
         "decision-brief-generator": true,
         "vendor-learning-path-builder": true,
         "prompt-studio": true,
@@ -1320,6 +1339,7 @@
         "governance-stack-advisor": false,
         "custom-stack-builder": false,
         "pii-dsdr-readiness-checker": false,
+        "governance-starting-point-decision": false,
         "decision-brief-generator": false,
         "vendor-learning-path-builder": false,
         "prompt-studio": false,

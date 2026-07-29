@@ -256,7 +256,7 @@ Nutze die Readiness Checkliste, bevor Databricks als Einstieg freigegeben wird.
 | Change | Version, Deployment, Approval und Rollback Evidence | Production Changes umgehen den Review |
 | Validierung | Benannte Proof-of-Value-Tests und Acceptance Criteria | Plattform wird nach einer Feature-Demo freigegeben |
 
-![Databricks-Governance-Readiness-Entscheidung dokumentieren](images/playbooks/databricks-unity-catalog-governance-start-img4-de.png)
+Dokumentiere die Entscheidung mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=databricks).
 
 Ein Readiness Result sollte eines von vier expliziten Ergebnissen verwenden:
 

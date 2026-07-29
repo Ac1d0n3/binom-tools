@@ -11,6 +11,7 @@ import { initDisclaimerBanner } from './shell/disclaimer-banner';
 import { initPlaybookCardActions } from '../../modules/playbooks/js/card-actions';
 import { initSupplierLibraryCopy, initSupplierLibraryTabs } from '../../modules/suppliers/js/suppliers-copy';
 import { initToolsPhoneGate } from './shell/tools-phone-gate';
+import { initWorkflowFlowcharts } from './shared/workflow-flowchart';
 
 try {
     const raw = document.documentElement.dataset.accountsReadSlugs;
@@ -35,6 +36,7 @@ initDisclaimerBanner();
 initPlaybookCardActions();
 initSupplierLibraryCopy();
 initSupplierLibraryTabs();
+initWorkflowFlowcharts();
 
 if (document.querySelector('[data-glossary-quiz], [data-glossary-quiz-modal]')) {
     void import('../../modules/glossary/js/glossary-quiz.js').catch((error) => {

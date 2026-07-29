@@ -292,7 +292,7 @@ Cost accountability is a governance concern because architecture decisions creat
 
 ## Artifact
 
-![Record the Cross-Platform Governance Boundary Decision](images/playbooks/governance-across-multiple-data-platforms-img4-en.png)
+Record the decision with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=multiple) tool.
 
 Complete the fillable governance boundary decision card in a workshop. Do not prefill the verdict.
 

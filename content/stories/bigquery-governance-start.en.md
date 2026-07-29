@@ -264,7 +264,7 @@ A serverless query with no cost owner is still an unmanaged production activity.
 
 ## Artifact
 
-![Record the BigQuery Governance Readiness Decision](images/playbooks/bigquery-governance-start-img4-en.png)
+Record the result with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=bigquery) tool.
 
 Complete the fillable readiness card in a workshop. Do not prefill the verdict.
 

@@ -58,6 +58,7 @@ use App\Http\Controllers\Tools\FabricDqPatternGeneratorController;
 use App\Http\Controllers\Tools\FabricPiiGovernancePatternGeneratorController;
 use App\Http\Controllers\Tools\GovernanceAdvisoryToolController;
 use App\Http\Controllers\Tools\GovernanceAiSanitizerController;
+use App\Http\Controllers\Tools\GovernanceStartingPointDecisionController;
 use App\Http\Controllers\Tools\ImpactEffortController;
 use App\Http\Controllers\Tools\KpiDefinitionController;
 use App\Http\Controllers\Tools\MetaExportGeneratorController;
@@ -552,6 +553,8 @@ $registerRoutes = static function (bool $localized): void {
     Route::get('/tools/decision-brief-generator', [GovernanceAdvisoryToolController::class, 'show'])
         ->defaults('toolId', 'decision-brief-generator')
         ->name($name('tools.decision-brief-generator'));
+    Route::get('/tools/governance-starting-point-decision', [GovernanceStartingPointDecisionController::class, 'show'])
+        ->name($name('tools.governance-starting-point-decision'));
     Route::get('/tools/vendor-learning-path-builder', [GovernanceAdvisoryToolController::class, 'show'])
         ->defaults('toolId', 'vendor-learning-path-builder')
         ->name($name('tools.vendor-learning-path-builder'));

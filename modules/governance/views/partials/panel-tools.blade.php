@@ -69,10 +69,16 @@
                 }
             @endphp
             @if (count($flowchartSteps) > 0)
+                @php
+                    $useWrap = count($flowchartSteps) >= 7
+                        || $workflowId === 'governance-decision-support';
+                    $layoutClass = $useWrap ? 'tools-workflow-flowchart--wrap' : 'tools-workflow-flowchart--classic';
+                @endphp
                 <section
-                    class="tools-workflow-flowchart tools-workflow-flowchart--chevron governance-hub__setup-workflow"
+                    class="tools-workflow-flowchart tools-workflow-flowchart--chevron {{ $layoutClass }} governance-hub__setup-workflow"
                     aria-labelledby="governance-workflow-{{ $workflowId }}-title"
                     data-governance-setup-workflow="{{ $workflowId }}"
+                    data-workflow-layout="{{ $useWrap ? 'wrap' : 'classic' }}"
                     data-tool-ids="{{ implode(' ', array_column($flowchartSteps, 'id')) }}"
                 >
                     <h3 id="governance-workflow-{{ $workflowId }}-title" class="governance-hub__workflow-title">

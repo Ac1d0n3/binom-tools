@@ -95,6 +95,11 @@ export function mountTableCanvas(options) {
     bindLeaveGuard(
         () => state.rows.length > 0 && !transferred,
         () => t('discovery.leaveConfirm'),
+        {
+            getTitle: () => t('discovery.leaveTitle'),
+            getStayLabel: () => t('discovery.leaveStay'),
+            getLeaveLabel: () => t('discovery.leaveGo'),
+        },
     );
 
     /**

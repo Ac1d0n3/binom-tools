@@ -5,9 +5,12 @@ import {
     derivePlatformTags,
     mountStackBuilder,
     normalizeSelection,
+    preferredProductIdsForStartingPoint,
     readCustomStack,
     readSavedStacksLocal,
+    readStartingPointProduct,
     saveNamedStackLocal,
+    startingPointStackBanner,
     summarizeSelection,
     writeCustomStack,
     writeSavedStacksLocal,
@@ -1811,17 +1814,22 @@ function initStackBuilderModal(root, config = {}) {
 
     const builderContextFromForm = () => {
         const state = getState(form, root);
+        const fromHub = preferredProductIds({
+            orgContext: state.orgContext,
+            regulationPressure: state.regulationPressure,
+        });
+        const startProduct = readStartingPointProduct();
+        const fromStart = preferredProductIdsForStartingPoint(startProduct);
+        const hubBanner = stackBuilderContextBanner({
+            orgContext: state.orgContext,
+            regulationPressure: state.regulationPressure,
+        }, locale());
+        const startBanner = startingPointStackBanner(startProduct, locale());
         return {
             orgContext: state.orgContext,
             regulationPressure: state.regulationPressure,
-            preferredProductIds: preferredProductIds({
-                orgContext: state.orgContext,
-                regulationPressure: state.regulationPressure,
-            }),
-            contextBanner: stackBuilderContextBanner({
-                orgContext: state.orgContext,
-                regulationPressure: state.regulationPressure,
-            }, locale()),
+            preferredProductIds: [...new Set([...fromStart, ...fromHub])],
+            contextBanner: [startBanner, hubBanner].filter(Boolean).join(' '),
         };
     };
 

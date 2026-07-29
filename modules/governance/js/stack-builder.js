@@ -3,6 +3,106 @@
  */
 
 export const CUSTOM_STACK_STORAGE_KEY = 'binom-governance-custom-stack';
+export const STARTING_POINT_PRODUCT_KEY = 'binom-governance-starting-point-product';
+
+/** @type {Record<string, string>} */
+const STARTING_POINT_LABELS = {
+    fabric: 'Microsoft Fabric',
+    databricks: 'Databricks + Unity Catalog',
+    snowflake: 'Snowflake',
+    bigquery: 'BigQuery',
+    dbt: 'dbt Governance Control Layer',
+    multiple: 'Multiple platforms',
+};
+
+/**
+ * Persist Starting-Point Decision product for soft influence on Stack Builder.
+ * @param {string} productId
+ */
+export function writeStartingPointProduct(productId) {
+    try {
+        const id = String(productId || '').trim().toLowerCase();
+        if (!id) {
+            sessionStorage.removeItem(STARTING_POINT_PRODUCT_KEY);
+            return;
+        }
+        sessionStorage.setItem(STARTING_POINT_PRODUCT_KEY, id);
+    } catch {
+        /* ignore quota / private mode */
+    }
+}
+
+/**
+ * @returns {string}
+ */
+export function readStartingPointProduct() {
+    try {
+        return String(sessionStorage.getItem(STARTING_POINT_PRODUCT_KEY) || '').trim().toLowerCase();
+    } catch {
+        return '';
+    }
+}
+
+/**
+ * Map Starting-Point Decision product → stack-builder chip ids to highlight.
+ * @param {string} productId
+ * @returns {string[]}
+ */
+export function preferredProductIdsForStartingPoint(productId) {
+    const id = String(productId || '').trim().toLowerCase();
+    if (!id || id === 'multiple') {
+        return [];
+    }
+
+    /** @type {string[]} */
+    const ids = [];
+
+    if (id === 'dbt') {
+        ids.push('dbt', 'dbt-cloud');
+    } else if (id === 'bigquery') {
+        ids.push('bigquery');
+    } else if (id === 'snowflake') {
+        STACK_LAYERS.forEach((layer) => {
+            layer.products.forEach((product) => {
+                if (product.id === 'snowflake' || product.tags.includes('snowflake-dbt')) {
+                    ids.push(product.id);
+                }
+            });
+        });
+    } else {
+        STACK_LAYERS.forEach((layer) => {
+            layer.products.forEach((product) => {
+                if (product.id === id || product.tags.includes(id)) {
+                    ids.push(product.id);
+                }
+            });
+        });
+    }
+
+    return [...new Set(ids)];
+}
+
+/**
+ * Banner when a starting-point product should soft-filter the builder.
+ * @param {string} productId
+ * @param {'de'|'en'} [lang]
+ * @returns {string}
+ */
+export function startingPointStackBanner(productId, lang = 'en') {
+    const id = String(productId || '').trim().toLowerCase();
+    if (!id) {
+        return '';
+    }
+    const label = STARTING_POINT_LABELS[id] || id;
+    if (id === 'multiple') {
+        return lang === 'de'
+            ? 'Starting-Point: mehrere Plattformen — Stack bewusst übergreifend wählen.'
+            : 'Starting-Point: multiple platforms — choose the stack across platforms intentionally.';
+    }
+    return lang === 'de'
+        ? `Starting-Point: ${label} — passende Produkte sind hervorgehoben.`
+        : `Starting-Point: ${label} — matching products are highlighted.`;
+}
 
 export const STACK_LAYERS = [
     {
@@ -356,6 +456,8 @@ export function mountStackBuilder(host, options = {}) {
                 if (preferredIds.has(product.id)) {
                     chip.classList.add('stack-builder__chip--preferred');
                     chip.title = lang === 'de' ? 'Zum Kontext empfohlen' : 'Recommended for context';
+                } else if (preferredIds.size > 0) {
+                    chip.classList.add('stack-builder__chip--muted');
                 }
                 chip.addEventListener('click', () => {
                     const current = new Set(selection[layer.id] || []);

@@ -306,7 +306,7 @@ The target is synchronized authority, not a single tool pretending to own every 
 
 ## Artifact
 
-![Record the dbt Control-Layer Decision](images/playbooks/dbt-governance-control-layer-img4-en.png)
+Record the decision with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=dbt) tool.
 
 Complete the fillable dbt decision card in a workshop. Do not prefill an Approved, Conditional or Not Approved verdict.
 

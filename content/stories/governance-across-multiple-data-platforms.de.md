@@ -292,7 +292,7 @@ Cost Accountability ist ein Governance Concern, weil Architecture Decisions Verp
 
 ## Artefakt
 
-![Die Cross-Platform Governance Boundary Decision dokumentieren](images/playbooks/governance-across-multiple-data-platforms-img4-de.png)
+Dokumentiere die Entscheidung mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=multiple).
 
 Fülle die Governance Boundary Decision Card in einem Workshop aus. Das Ergebnis wird nicht vorab eingetragen.
 

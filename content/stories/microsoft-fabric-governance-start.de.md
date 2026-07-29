@@ -448,7 +448,7 @@ Fabric bleibt nur bedingt bereit, wenn verpflichtende Controls von einer ungetes
 
 Dokumentiere das Ergebnis in einer **Fabric Governance Boundary Map** und einer **Fabric Governance Readiness Decision**.
 
-![Die Fabric-Governance-Readiness-Entscheidung dokumentieren](images/playbooks/microsoft-fabric-governance-start-img4-de.png)
+Dokumentiere das Ergebnis mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=fabric).
 
 ### Pflichtfelder
 

@@ -1,10 +1,11 @@
 import { copyTextToClipboard } from '../pii-shared/tool-utils.js';
 import { downloadTextFile } from '../discovery-shared/download.js';
+import { bindLeaveGuard } from '../discovery-shared/leave-guard.js';
 import { bindPlanTransferUi } from '../discovery-shared/plan-transfer-ui.js';
 import { deleteGovernanceToolRecord, recordsForTool, upsertGovernanceToolRecord } from '../governance-tool-workspace-store.js';
 import { acceptKpiIntake, deleteKpiIntake, loadKpiWorkspace, upsertKpiIntake } from '../kpi-workspace-store.js';
 import { preferredProductIds, stackBuilderContextBanner } from '../../../governance/js/advisor-guidance.js';
-import { mountStackBuilder, normalizeSelection, readCustomStack, readSavedStacksLocal, saveNamedStackLocal, summarizeSelection, syncSelectionToToolFields, writeCustomStack, writeSavedStacksLocal } from '../../../governance/js/stack-builder.js';
+import { mountStackBuilder, normalizeSelection, preferredProductIdsForStartingPoint, readCustomStack, readSavedStacksLocal, readStartingPointProduct, saveNamedStackLocal, startingPointStackBanner, summarizeSelection, syncSelectionToToolFields, writeCustomStack, writeSavedStacksLocal } from '../../../governance/js/stack-builder.js';
 
 const texts = {
     'discovery.applyEmpty': 'Bitte erst Eingaben erfassen.',
@@ -741,13 +742,10 @@ function mount(root) {
         window.print();
     }));
 
-    window.addEventListener('beforeunload', (event) => {
-        if (transferred || (current.note === '' && current.filled.length === 0)) {
-            return;
-        }
-        event.preventDefault();
-        event.returnValue = '';
-    });
+    bindLeaveGuard(
+        () => !(transferred || (current.note === '' && current.filled.length === 0)),
+        () => t('discovery.leaveConfirm'),
+    );
 
     render();
     kpiManager?.renderList();
@@ -841,13 +839,18 @@ function mount(root) {
                 orgContext: hubContext.orgContext,
                 regulationPressure: hubContext.regulationPressure,
             });
-            const banner = stackBuilderContextBanner({
+            const startProduct = readStartingPointProduct();
+            const fromStart = preferredProductIdsForStartingPoint(startProduct);
+            const mergedPreferred = [...new Set([...fromStart, ...preferred])];
+            const hubBanner = stackBuilderContextBanner({
                 orgContext: hubContext.orgContext,
                 regulationPressure: hubContext.regulationPressure,
             }, lang());
+            const startBanner = startingPointStackBanner(startProduct, lang());
+            const banner = [startBanner, hubBanner].filter(Boolean).join(' ');
             api = mountStackBuilder(builderHost, {
                 selection: initial,
-                preferredProductIds: preferred,
+                preferredProductIds: mergedPreferred,
                 contextBanner: banner,
                 onChange: (selection) => {
                     writeCustomStack(selection);

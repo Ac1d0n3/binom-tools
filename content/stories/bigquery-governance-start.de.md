@@ -264,7 +264,7 @@ Eine serverlose Query ohne Cost Owner bleibt eine unmanaged Production Activity.
 
 ## Artefakt
 
-![BigQuery Governance Readiness Decision dokumentieren](images/playbooks/bigquery-governance-start-img4-de.png)
+Dokumentiere das Ergebnis mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=bigquery).
 
 Fülle die Readiness Card in einem Workshop aus. Das Ergebnis wird nicht vorab eingetragen.
 

@@ -398,7 +398,7 @@ Nutze diese Checkliste, bevor Snowflake als Governance-Einstieg freigegeben wird
 
 Das finale Deliverable ist eine **Snowflake Policy and Control Map** plus Readiness-Entscheidung.
 
-![Snowflake-Governance-Readiness-Entscheidung dokumentieren](images/playbooks/snowflake-governance-start-img4-de.png)
+Dokumentiere das Ergebnis mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=snowflake).
 
 ### Snowflake Policy and Control Map
 

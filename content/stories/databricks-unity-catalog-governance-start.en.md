@@ -256,7 +256,7 @@ Use the readiness checklist before approving Databricks as the starting point.
 | Change | Version, deployment, approval and rollback evidence | Production changes bypass review |
 | Validation | Named proof-of-value tests and acceptance criteria | Platform approved after a feature demonstration only |
 
-![Record the Databricks Governance Readiness Decision](images/playbooks/databricks-unity-catalog-governance-start-img4-en.png)
+Record the decision with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=databricks) tool.
 
 A readiness result should use one of four explicit outcomes:
 

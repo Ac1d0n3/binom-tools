@@ -398,7 +398,7 @@ Use this checklist before approving Snowflake as the governance starting point.
 
 The final deliverable is a **Snowflake Policy and Control Map** plus a readiness decision.
 
-![Record the Snowflake Governance Readiness Decision](images/playbooks/snowflake-governance-start-img4-en.png)
+Record the result with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=snowflake) tool.
 
 ### Snowflake Policy and Control Map
 

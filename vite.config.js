@@ -71,6 +71,7 @@ export default defineConfig(({ command }) => ({
                 'modules/tools/js/powerbi-dax-generator/index.js',
                 'modules/tools/js/architecture-fit/index.js',
                 'modules/tools/js/impact-effort/index.js',
+                'modules/tools/js/governance-starting-point-decision/index.js',
                 'modules/tools/js/dbt-dq-macro-generator/index.js',
                 'modules/tools/js/dbt-dq-rules-generator/index.js',
                 'modules/tools/js/dbt-dq-history-generator/index.js',

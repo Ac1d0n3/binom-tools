@@ -306,7 +306,7 @@ Das Ziel ist synchronisierte Authority und nicht ein Tool, das vorgibt, jedes Fe
 
 ## Artefakt
 
-![Die dbt Control-Layer-Entscheidung dokumentieren](images/playbooks/dbt-governance-control-layer-img4-de.png)
+Dokumentiere die Entscheidung mit dem Tool [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=dbt).
 
 Fülle die dbt Decision Card in einem Workshop aus. Approved, Conditional oder Not Approved wird nicht vorab eingetragen.
 

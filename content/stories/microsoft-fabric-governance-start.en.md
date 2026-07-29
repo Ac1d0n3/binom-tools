@@ -449,7 +449,7 @@ Fabric remains conditionally ready when one or more mandatory controls depend on
 
 Record the result in a **Fabric Governance Boundary Map** and a **Fabric Governance Readiness Decision**.
 
-![Record the Fabric Governance Readiness Decision](images/playbooks/microsoft-fabric-governance-start-img4-en.png)
+Record the result with the [Governance Starting-Point Decision](/tools/governance-starting-point-decision?product=fabric) tool.
 
 ### Mandatory fields
 
