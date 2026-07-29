@@ -15,6 +15,7 @@
         $sourceScope = $report['sourceScope'] ?? [];
         $pii = $report['pii'] ?? [];
         $decisionBrief = $report['decisionBrief'] ?? [];
+        $startingPoint = $report['startingPoint'] ?? [];
         $recommendations = $report['recommendations'] ?? [];
         $validation = $report['validation'] ?? [];
         $warnings = is_array($validation['warnings'] ?? null) ? $validation['warnings'] : [];
@@ -241,6 +242,23 @@
                     </div>
                 </dl>
                 <p data-text-de="DQ ist Teil der Governance-Entscheidung: Regeln, Monitoring und Gates müssen mit Source, KPI, Mart und PII zusammen bewertet werden." data-text-en="DQ is part of the governance decision: rules, monitoring, and gates must be assessed together with source, KPI, mart, and PII.">DQ is part of the governance decision: rules, monitoring, and gates must be assessed together with source, KPI, mart, and PII.</p>
+            </section>
+        @endif
+
+        @if ($startingPoint !== [])
+            <section class="governance-report__section">
+                <h2 data-text-de="Starting-Point Decision" data-text-en="Starting-point decision">Starting-point decision</h2>
+                <dl class="governance-report__facts">
+                    <div><dt data-text-de="Produkt" data-text-en="Product">Product</dt><dd>{{ $startingPoint['productLabel'] ?? ($startingPoint['product'] ?? '-') }}</dd></div>
+                    <div><dt data-text-de="Titel" data-text-en="Title">Title</dt><dd>{{ $startingPoint['title'] ?? '-' }}</dd></div>
+                    <div><dt data-text-de="Status" data-text-en="Status">Status</dt><dd>{{ $startingPoint['decisionStatus'] ?? '-' }}</dd></div>
+                    <div><dt data-text-de="Startmuster" data-text-en="Starting pattern">Starting pattern</dt><dd>{{ $startingPoint['preferredStartingPattern'] ?? '-' }}</dd></div>
+                    <div><dt data-text-de="Begründung" data-text-en="Rationale">Rationale</dt><dd>{{ $startingPoint['decisionRationale'] ?? '-' }}</dd></div>
+                    <div><dt data-text-de="No-regret Next Step" data-text-en="No-regret next step">No-regret next step</dt><dd>{{ $startingPoint['noRegretNextStep'] ?? '-' }}</dd></div>
+                    <div><dt data-text-de="Lücken" data-text-en="Known gaps">Known gaps</dt><dd>{{ implode(', ', array_map('strval', $startingPoint['knownGaps'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt data-text-de="Offene Fragen" data-text-en="Open questions">Open questions</dt><dd>{{ implode(', ', array_map('strval', $startingPoint['openQuestions'] ?? [])) ?: '-' }}</dd></div>
+                    <div><dt data-text-de="Blocker" data-text-en="Blockers">Blockers</dt><dd>{{ implode(', ', array_map('strval', $startingPoint['blockers'] ?? [])) ?: '-' }}</dd></div>
+                </dl>
             </section>
         @endif
 

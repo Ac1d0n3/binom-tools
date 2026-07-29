@@ -327,6 +327,19 @@ class GovernanceDemoWorkspace
                 'openQuestions' => ['finale Storno-Logik', 'Owner-Freigabe für PII-Maskierung', 'Cutover-Regel für Monatsabschluss'],
                 'nextSprint' => ['Source-Scope-Review', 'DQ-Regeln implementieren', 'Decision-Brief-Freigabe'],
             ],
+            'startingPoint' => [
+                'product' => 'fabric',
+                'productLabel' => 'Microsoft Fabric',
+                'title' => 'Finance Governance Starting Point',
+                'firstUseCase' => 'Stabiler Monatsabschluss mit klarer Ownership',
+                'decisionStatus' => 'readyForProofOfValue',
+                'preferredStartingPattern' => 'Purview + Fabric Domains als Start, dann Lakehouse-Mart',
+                'decisionRationale' => 'Bestehende Microsoft-Lizenzen und Power-BI-Nutzung sprechen für Fabric als Startplattform.',
+                'noRegretNextStep' => 'Domain-Ownership und KPI Net Revenue als Pilot festziehen',
+                'knownGaps' => ['Catalog-Ownership unklar', 'Retention-Regel fehlt'],
+                'openQuestions' => ['Wer genehmigt PII-Maskierung?', 'Cutover-Regel Monatsabschluss'],
+                'blockers' => [],
+            ],
             'recommendations' => [
                 [
                     'title' => 'KPI Requirements Intake',

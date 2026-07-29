@@ -10,8 +10,13 @@
         lead-key="kpiDefinition.pageLead"
         tool-id="kpi-definition"
         app-id="kpi-definition-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-        <x-tools.collapsible-info summary-key="discovery.howto.summary" :open="true">
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-content">
             <p data-i18n="discovery.ephemeral"></p>
             <p data-i18n="kpiDefinition.howto.intro"></p>
             <ol>
@@ -30,7 +35,9 @@
                     Learning path: Trusted metrics
                 </a>
             </p>
-        </x-tools.collapsible-info>
+        
+            </div>
+        </x-slot:help>
 
         <x-tools.discovery-canvas />
     </x-tools.generator-page>

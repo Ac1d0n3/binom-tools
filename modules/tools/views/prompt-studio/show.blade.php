@@ -6,14 +6,98 @@
 
 @section('content')
     <div class="tools-content tools-content--wide">
-        <h1 class="tools-page-title" data-i18n="promptStudio.pageTitle">Prompt Studio</h1>
-        <p class="tools-page-lead" data-hub-lead data-i18n="promptStudio.pageLead">
-            Build professional AI prompts in seconds — role, task, and model-aware.
-        </p>
+        <x-tools.tool-page-header
+            tool-id="prompt-studio"
+            title-key="promptStudio.pageTitle"
+            lead-key="promptStudio.pageLead"
+            eyebrow-de="AI Tool"
+            eyebrow-en="AI tool"
+            :option-tabs="['help']"
+        >
+            <x-slot:help>
+                <div class="governance-advisor__helpbox-head">
+                    <span class="governance-advisor__helpbox-icon">
+                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <span class="governance-hub__eyebrow" data-i18n="promptStudio.howto.summary">How it works</span>
+                        <strong data-i18n="promptStudio.pageLead">Build professional AI prompts in seconds — role, task, and model-aware.</strong>
+                    </span>
+                </div>
+                <div class="tools-column-accordion prompt-studio__help-accordion" id="ps-help-accordion" data-tool-help>
+                    <details class="tools-column-accordion__item" data-ps-help-item="prompt" open>
+                        <summary class="tools-column-accordion__summary">
+                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.prompt.title">Prompt</span>
+                        </summary>
+                        <div class="tools-column-accordion__body">
+                            <p data-i18n="promptStudio.howto.area.prompt.intro"></p>
+                            <ol>
+                                <li data-i18n="promptStudio.howto.area.prompt.step1"></li>
+                                <li data-i18n="promptStudio.howto.area.prompt.step2"></li>
+                                <li data-i18n="promptStudio.howto.area.prompt.step3"></li>
+                            </ol>
+                            <p data-i18n="promptStudio.howto.area.prompt.tip"></p>
+                        </div>
+                    </details>
+                    <details class="tools-column-accordion__item" data-ps-help-item="rule" hidden>
+                        <summary class="tools-column-accordion__summary">
+                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.rule.title">Project rule</span>
+                        </summary>
+                        <div class="tools-column-accordion__body">
+                            <p data-i18n="promptStudio.howto.area.rule.intro"></p>
+                            <ol>
+                                <li data-i18n="promptStudio.howto.area.rule.step1"></li>
+                                <li data-i18n="promptStudio.howto.area.rule.step2"></li>
+                                <li data-i18n="promptStudio.howto.area.rule.step3"></li>
+                            </ol>
+                            <p data-i18n="promptStudio.howto.area.rule.tip"></p>
+                        </div>
+                    </details>
+                    <details class="tools-column-accordion__item" data-ps-help-item="agent" hidden>
+                        <summary class="tools-column-accordion__summary">
+                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.agent.title">Agent</span>
+                        </summary>
+                        <div class="tools-column-accordion__body">
+                            <p data-i18n="promptStudio.howto.area.agent.intro"></p>
+                            <ol>
+                                <li data-i18n="promptStudio.howto.area.agent.step1"></li>
+                                <li data-i18n="promptStudio.howto.area.agent.step2"></li>
+                                <li data-i18n="promptStudio.howto.area.agent.step3"></li>
+                            </ol>
+                            <p data-i18n="promptStudio.howto.area.agent.tip"></p>
+                        </div>
+                    </details>
+                    <details class="tools-column-accordion__item" data-ps-help-item="builder">
+                        <summary class="tools-column-accordion__summary">
+                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.builder.summary">Builder</span>
+                        </summary>
+                        <div class="tools-column-accordion__body">
+                            <p data-i18n="promptStudio.howto.builder.intro"></p>
+                            <ul>
+                                <li data-i18n="promptStudio.howto.builder.step1"></li>
+                                <li data-i18n="promptStudio.howto.builder.step2"></li>
+                                <li data-i18n="promptStudio.howto.builder.step3"></li>
+                            </ul>
+                        </div>
+                    </details>
+                    <details class="tools-column-accordion__item" data-ps-help-item="workflow">
+                        <summary class="tools-column-accordion__summary">
+                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.workflow.summary">Workflows</span>
+                        </summary>
+                        <div class="tools-column-accordion__body">
+                            <p data-i18n="promptStudio.howto.workflow.intro"></p>
+                            <ul>
+                                <li data-i18n="promptStudio.howto.workflow.step1"></li>
+                                <li data-i18n="promptStudio.howto.workflow.step2"></li>
+                                <li data-i18n="promptStudio.howto.workflow.step3"></li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </x-slot:help>
+        </x-tools.tool-page-header>
 
         <div class="tools-page-stack">
-            <x-tools.workflow-nav tool-id="prompt-studio" />
-
             <div
                 id="prompt-studio-app"
                 class="prompt-studio prompt-studio--regular"
@@ -41,82 +125,6 @@
                     </div>
 
                     <div class="prompt-studio__chrome-drawers">
-                        <details class="prompt-studio__drawer" id="ps-help-drawer">
-                            <summary class="prompt-studio__drawer-summary" data-i18n="promptStudio.howto.summary">How it works</summary>
-                            <div class="prompt-studio__drawer-body prompt-studio__help-body">
-                                <div class="tools-column-accordion prompt-studio__help-accordion" id="ps-help-accordion">
-                                    <details class="tools-column-accordion__item" data-ps-help-item="prompt" open>
-                                        <summary class="tools-column-accordion__summary">
-                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.prompt.title">Prompt</span>
-                                        </summary>
-                                        <div class="tools-column-accordion__body">
-                                            <p data-i18n="promptStudio.howto.area.prompt.intro"></p>
-                                            <ol>
-                                                <li data-i18n="promptStudio.howto.area.prompt.step1"></li>
-                                                <li data-i18n="promptStudio.howto.area.prompt.step2"></li>
-                                                <li data-i18n="promptStudio.howto.area.prompt.step3"></li>
-                                            </ol>
-                                            <p data-i18n="promptStudio.howto.area.prompt.tip"></p>
-                                        </div>
-                                    </details>
-                                    <details class="tools-column-accordion__item" data-ps-help-item="rule" hidden>
-                                        <summary class="tools-column-accordion__summary">
-                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.rule.title">Project rule</span>
-                                        </summary>
-                                        <div class="tools-column-accordion__body">
-                                            <p data-i18n="promptStudio.howto.area.rule.intro"></p>
-                                            <ol>
-                                                <li data-i18n="promptStudio.howto.area.rule.step1"></li>
-                                                <li data-i18n="promptStudio.howto.area.rule.step2"></li>
-                                                <li data-i18n="promptStudio.howto.area.rule.step3"></li>
-                                            </ol>
-                                            <p data-i18n="promptStudio.howto.area.rule.tip"></p>
-                                        </div>
-                                    </details>
-                                    <details class="tools-column-accordion__item" data-ps-help-item="agent" hidden>
-                                        <summary class="tools-column-accordion__summary">
-                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.area.agent.title">Agent</span>
-                                        </summary>
-                                        <div class="tools-column-accordion__body">
-                                            <p data-i18n="promptStudio.howto.area.agent.intro"></p>
-                                            <ol>
-                                                <li data-i18n="promptStudio.howto.area.agent.step1"></li>
-                                                <li data-i18n="promptStudio.howto.area.agent.step2"></li>
-                                                <li data-i18n="promptStudio.howto.area.agent.step3"></li>
-                                            </ol>
-                                            <p data-i18n="promptStudio.howto.area.agent.tip"></p>
-                                        </div>
-                                    </details>
-                                    <details class="tools-column-accordion__item" data-ps-help-item="builder">
-                                        <summary class="tools-column-accordion__summary">
-                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.builder.summary">Builder</span>
-                                        </summary>
-                                        <div class="tools-column-accordion__body">
-                                            <p data-i18n="promptStudio.howto.builder.intro"></p>
-                                            <ul>
-                                                <li data-i18n="promptStudio.howto.builder.step1"></li>
-                                                <li data-i18n="promptStudio.howto.builder.step2"></li>
-                                                <li data-i18n="promptStudio.howto.builder.step3"></li>
-                                            </ul>
-                                        </div>
-                                    </details>
-                                    <details class="tools-column-accordion__item" data-ps-help-item="workflow">
-                                        <summary class="tools-column-accordion__summary">
-                                            <span class="tools-column-accordion__summary-label" data-i18n="promptStudio.howto.workflow.summary">Workflows</span>
-                                        </summary>
-                                        <div class="tools-column-accordion__body">
-                                            <p data-i18n="promptStudio.howto.workflow.intro"></p>
-                                            <ul>
-                                                <li data-i18n="promptStudio.howto.workflow.step1"></li>
-                                                <li data-i18n="promptStudio.howto.workflow.step2"></li>
-                                                <li data-i18n="promptStudio.howto.workflow.step3"></li>
-                                            </ul>
-                                        </div>
-                                    </details>
-                                </div>
-                            </div>
-                        </details>
-
                         <details class="prompt-studio__drawer" id="ps-library-drawer">
                             <summary class="prompt-studio__drawer-summary" data-i18n="promptStudio.library.title">Library & workflows</summary>
                             <div class="prompt-studio__drawer-body">

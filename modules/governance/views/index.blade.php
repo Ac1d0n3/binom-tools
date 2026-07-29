@@ -209,9 +209,9 @@
 
                     <h3 data-text-de="Zusammenspiel der Tools" data-text-en="How the tools connect">How the tools connect</h3>
                     <p
-                        data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report. KPI Intake erzeugt KPI-Karten, Source Scope den Ladeumfang, Mart Design Tabellenentscheidungen, Data Quality Regeln/Gates, Decision Brief die Freigabe."
-                        data-text-en="Each tool works standalone, but contributes a block to the same governance report. KPI Intake creates KPI cards, Source Scope the load scope, Mart Design table decisions, Data Quality rules/gates, Decision Brief the approval."
-                    >Each tool works standalone, but contributes a block to the same governance report. KPI Intake creates KPI cards, Source Scope the load scope, Mart Design table decisions, Data Quality rules/gates, Decision Brief the approval.</p>
+                        data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report. KPI Intake erzeugt KPI-Karten, Source Scope den Ladeumfang, Mart Design Tabellenentscheidungen, Starting-Point Decision den Plattform-Start, Data Quality Regeln/Gates, Decision Brief die Freigabe."
+                        data-text-en="Each tool works standalone, but contributes a block to the same governance report. KPI Intake creates KPI cards, Source Scope the load scope, Mart Design table decisions, Starting-Point Decision the platform start, Data Quality rules/gates, Decision Brief the approval."
+                    >Each tool works standalone, but contributes a block to the same governance report. KPI Intake creates KPI cards, Source Scope the load scope, Mart Design table decisions, Starting-Point Decision the platform start, Data Quality rules/gates, Decision Brief the approval.</p>
 
                     @if (! empty($hubFaqs))
                         <div class="governance-hub__faq" id="governance-faq" aria-labelledby="governance-faq-title">

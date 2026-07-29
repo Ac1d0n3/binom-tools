@@ -232,7 +232,7 @@ function clearIntakeForm(root) {
     });
 }
 
-function initKpiIntakeManager(root, getState, render, setStatus) {
+function initKpiIntakeManager(root, getState, render, setStatus, markPristine = () => {}) {
     const manager = root.querySelector('[data-kpi-intake-manager]');
     const list = root.querySelector('[data-kpi-intake-list]');
     const managerStatus = root.querySelector('[data-kpi-intake-status]');
@@ -290,6 +290,7 @@ function initKpiIntakeManager(root, getState, render, setStatus) {
         });
         activeId = saved.id;
         lastSavedSignature = currentSignature();
+        markPristine();
         renderList();
         syncActions();
         status(t('kpiSaved'));
@@ -305,6 +306,7 @@ function initKpiIntakeManager(root, getState, render, setStatus) {
         fillIntakeForm(root, intake);
         render();
         lastSavedSignature = currentSignature();
+        markPristine();
         renderList();
         syncActions();
         status(t('kpiOpened'));
@@ -379,6 +381,7 @@ function initKpiIntakeManager(root, getState, render, setStatus) {
         lastSavedSignature = '';
         clearIntakeForm(root);
         render();
+        markPristine();
         renderList();
         syncActions();
         status(t('kpiNew'));
@@ -408,7 +411,7 @@ function initKpiIntakeManager(root, getState, render, setStatus) {
     return { renderList, syncActions };
 }
 
-function initGovernanceRecordManager(root, config, getState, render, setStatus) {
+function initGovernanceRecordManager(root, config, getState, render, setStatus, markPristine = () => {}) {
     const manager = root.querySelector('[data-governance-record-manager]');
     const list = root.querySelector('[data-governance-record-list]');
     const managerStatus = root.querySelector('[data-governance-record-status]');
@@ -470,6 +473,7 @@ function initGovernanceRecordManager(root, config, getState, render, setStatus) 
         });
         activeId = saved.id;
         lastSavedSignature = currentSignature();
+        markPristine();
         renderList();
         syncActions();
         status(t('recordSaved'));
@@ -486,6 +490,7 @@ function initGovernanceRecordManager(root, config, getState, render, setStatus) 
         fillIntakeForm(root, record);
         render();
         lastSavedSignature = currentSignature();
+        markPristine();
         renderList();
         syncActions();
         status(t('recordOpened'));
@@ -498,6 +503,7 @@ function initGovernanceRecordManager(root, config, getState, render, setStatus) 
             lastSavedSignature = '';
             clearIntakeForm(root);
             render();
+            markPristine();
         }
         renderList();
         syncActions();
@@ -552,6 +558,7 @@ function initGovernanceRecordManager(root, config, getState, render, setStatus) 
         lastSavedSignature = '';
         clearIntakeForm(root);
         render();
+        markPristine();
         renderList();
         syncActions();
         status(t('recordNew'));
@@ -579,85 +586,14 @@ function initGovernanceRecordManager(root, config, getState, render, setStatus) 
     return { renderList, syncActions };
 }
 
-function initHeaderDrawer(root) {
-    const drawer = root.querySelector('[data-governance-tool-header-drawer]');
-    const drawerToggle = root.querySelector('[data-governance-tool-drawer-toggle]');
-    const panels = Array.from(root.querySelectorAll('[data-governance-tool-panel]'));
-    const tabs = Array.from(root.querySelectorAll('[data-governance-tool-panel-toggle]'));
-
-    if (!drawer || !drawerToggle || panels.length === 0 || tabs.length === 0) {
-        return;
-    }
-
-    let scrollAnchor = null;
-
-    const rememberScroll = () => {
-        // Intentionally no-op: window.scroll restore fights touch scrolling in the shell.
-        scrollAnchor = null;
-    };
-
-    const activatePanel = (targetId) => {
-        panels.forEach((panel) => {
-            panel.hidden = panel.id !== targetId;
-        });
-        tabs.forEach((tab) => {
-            const isActive = tab.dataset.governanceToolPanelToggle === targetId;
-            tab.classList.toggle('governance-hub__panel-tab--active', isActive);
-            tab.setAttribute('aria-selected', String(isActive));
-            tab.tabIndex = isActive ? 0 : -1;
-        });
-    };
-
-    const keepScrollPosition = (callback) => {
-        callback();
-        scrollAnchor = null;
-    };
-
-    const sync = () => {
-        drawerToggle.setAttribute('aria-expanded', String(!drawer.hidden));
-    };
-
-    drawerToggle.addEventListener('pointerdown', rememberScroll);
-    drawerToggle.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-            rememberScroll();
-        }
+/**
+ * @param {{ note?: string, fields?: Array<{ label?: string, labelEn?: string, value?: string }> }} state
+ */
+function formSignature(state) {
+    return JSON.stringify({
+        note: state.note || '',
+        fields: (state.fields || []).map((field) => [field.labelEn || field.label || '', field.value || '']),
     });
-    drawerToggle.addEventListener('click', () => {
-        keepScrollPosition(() => {
-            drawer.hidden = !drawer.hidden;
-            if (!drawer.hidden && !panels.some((panel) => !panel.hidden)) {
-                activatePanel(tabs[0]?.dataset.governanceToolPanelToggle || panels[0]?.id || '');
-            }
-            drawerToggle.blur();
-            sync();
-        });
-    });
-
-    tabs.forEach((tab) => {
-        tab.addEventListener('pointerdown', rememberScroll);
-        tab.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                rememberScroll();
-            }
-        });
-        tab.addEventListener('click', () => {
-            const target = root.querySelector(`#${tab.dataset.governanceToolPanelToggle}`);
-            if (!(target instanceof HTMLElement)) {
-                return;
-            }
-            keepScrollPosition(() => {
-                drawer.hidden = false;
-                activatePanel(target.id);
-                tab.blur();
-                sync();
-            });
-        });
-    });
-
-    activatePanel(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.governanceToolPanelToggle || tabs[0].dataset.governanceToolPanelToggle || panels[0].id);
-    drawer.hidden = true;
-    sync();
 }
 
 function mount(root) {
@@ -667,15 +603,22 @@ function mount(root) {
     const status = root.querySelector('[data-governance-tool-status]');
     const returnLink = root.querySelector('[data-return-to-plan]');
 
-    let transferred = false;
-    initHeaderDrawer(root);
     applyPrefill(root, config);
     let current = collect(root, config);
+    let baselineSignature = formSignature(current);
 
     function setStatus(message) {
         if (status) {
             status.textContent = message;
         }
+    }
+
+    function markPristine() {
+        baselineSignature = formSignature(current);
+    }
+
+    function isDirty() {
+        return formSignature(current) !== baselineSignature;
     }
 
     function render() {
@@ -686,7 +629,6 @@ function mount(root) {
         if (score) {
             score.textContent = String(current.score);
         }
-        transferred = false;
         kpiManager?.syncActions();
         standardSave?.syncActions();
     }
@@ -704,7 +646,7 @@ function mount(root) {
             rows: planRows(current),
         }),
         markTransferred: () => {
-            transferred = true;
+            markPristine();
         },
         hasContent: () => current.note !== '' || current.filled.length > 0,
     });
@@ -714,10 +656,10 @@ function mount(root) {
     }
 
     let kpiManager = config.id === 'kpi-requirements-intake'
-        ? initKpiIntakeManager(root, () => current, render, setStatus)
+        ? initKpiIntakeManager(root, () => current, render, setStatus, markPristine)
         : null;
     let standardSave = config.id !== 'kpi-requirements-intake'
-        ? initGovernanceRecordManager(root, config, () => current, render, setStatus)
+        ? initGovernanceRecordManager(root, config, () => current, render, setStatus, markPristine)
         : null;
 
     root.querySelectorAll('input, textarea, select').forEach((input) => {
@@ -727,27 +669,28 @@ function mount(root) {
 
     root.querySelectorAll('[data-governance-tool-copy]').forEach((button) => button.addEventListener('click', async () => {
         await copyTextToClipboard(markdown(current));
-        transferred = true;
+        markPristine();
         setStatus(t('copied'));
     }));
 
     root.querySelectorAll('[data-governance-tool-download]').forEach((button) => button.addEventListener('click', () => {
         downloadTextFile(`${safeFilename(current.title)}.md`, markdown(current), 'text/markdown;charset=utf-8');
-        transferred = true;
+        markPristine();
         setStatus(t('downloaded'));
     }));
 
     root.querySelectorAll('[data-governance-tool-print]').forEach((button) => button.addEventListener('click', () => {
-        transferred = true;
+        markPristine();
         window.print();
     }));
 
     bindLeaveGuard(
-        () => !(transferred || (current.note === '' && current.filled.length === 0)),
+        () => isDirty(),
         () => t('discovery.leaveConfirm'),
     );
 
     render();
+    markPristine();
     kpiManager?.renderList();
 
     if (config.id === 'custom-stack-builder') {

@@ -4,6 +4,7 @@
 
 export const CUSTOM_STACK_STORAGE_KEY = 'binom-governance-custom-stack';
 export const STARTING_POINT_PRODUCT_KEY = 'binom-governance-starting-point-product';
+export const STARTING_POINT_REPORT_KEY = 'binom-governance-starting-point-report';
 
 /** @type {Record<string, string>} */
 const STARTING_POINT_LABELS = {
@@ -40,6 +41,38 @@ export function readStartingPointProduct() {
         return String(sessionStorage.getItem(STARTING_POINT_PRODUCT_KEY) || '').trim().toLowerCase();
     } catch {
         return '';
+    }
+}
+
+/**
+ * Persist Starting-Point Decision report block for Hub Gesamt-Report.
+ * @param {Record<string, unknown>|null} report
+ */
+export function writeStartingPointReport(report) {
+    try {
+        if (!report || typeof report !== 'object') {
+            localStorage.removeItem(STARTING_POINT_REPORT_KEY);
+            return;
+        }
+        localStorage.setItem(STARTING_POINT_REPORT_KEY, JSON.stringify(report));
+    } catch {
+        /* ignore quota / private mode */
+    }
+}
+
+/**
+ * @returns {Record<string, unknown>|null}
+ */
+export function readStartingPointReport() {
+    try {
+        const raw = localStorage.getItem(STARTING_POINT_REPORT_KEY);
+        if (!raw) {
+            return null;
+        }
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch {
+        return null;
     }
 }
 

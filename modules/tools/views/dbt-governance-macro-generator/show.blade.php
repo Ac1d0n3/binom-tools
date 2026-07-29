@@ -9,8 +9,13 @@
         title-key="govMacro.pageTitle"
         tool-id="dbt-governance-macro-generator"
         app-id="dbt-governance-macro-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-            <x-tools.collapsible-info summary-key="govMacro.howto.summary" :open="true">
+            <x-slot:help>
+                <div class="governance-advisor__helpbox-content">
                 <p data-i18n="govMacro.howto.overview.intro"></p>
                 <ol>
                     <li data-i18n="govMacro.howto.overview.step1"></li>
@@ -22,7 +27,9 @@
                     <li data-i18n="govMacro.howto.overview.step7"></li>
                 </ol>
                 <p data-i18n="govMacro.howto.overview.tip"></p>
-            </x-tools.collapsible-info>
+            
+                </div>
+            </x-slot:help>
 
             <section class="pii-policy-panel" aria-labelledby="gov-warehouse-title">
                 <header class="pii-policy-panel__header">

@@ -57,6 +57,9 @@
             var hideHubLeadsKey = 'binom-tools-hide-hub-leads';
             document.documentElement.dataset.hideHubLeads =
                 localStorage.getItem(hideHubLeadsKey) === 'true' ? 'true' : 'false';
+            var hideToolHelpKey = 'binom-tools-hide-tool-help';
+            document.documentElement.dataset.hideToolHelp =
+                localStorage.getItem(hideToolHelpKey) === 'true' ? 'true' : 'false';
 
             var playbookFocusKey = 'binom-tools-playbook-focus';
             var isPlaybookStory = /(?:^|\/)(?:de\/)?playbooks\/[a-z0-9-]+\/?$/.test(relative);

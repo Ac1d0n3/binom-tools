@@ -3,6 +3,7 @@ import { getLocale } from './locale.js';
 const FULL_WIDTH_STORAGE_KEY = 'binom-tools-shell-full-width';
 const SIDEBAR_COLLAPSED_STORAGE_KEY = 'binom-tools-shell-sidebar-collapsed';
 const HIDE_HUB_LEADS_STORAGE_KEY = 'binom-tools-hide-hub-leads';
+const HIDE_TOOL_HELP_STORAGE_KEY = 'binom-tools-hide-tool-help';
 const PLAYBOOK_FOCUS_STORAGE_KEY = 'binom-tools-playbook-focus';
 const PLAYBOOK_TOC_OPEN_STORAGE_KEY = 'binom-tools-playbook-toc-open';
 
@@ -19,6 +20,11 @@ export function getShellSidebarCollapsed() {
 /** @returns {boolean} */
 export function getHideHubLeads() {
     return localStorage.getItem(HIDE_HUB_LEADS_STORAGE_KEY) === 'true';
+}
+
+/** @returns {boolean} */
+export function getHideToolHelp() {
+    return localStorage.getItem(HIDE_TOOL_HELP_STORAGE_KEY) === 'true';
 }
 
 /** @returns {boolean} */
@@ -99,6 +105,17 @@ export function applyHideHubLeads(enabled) {
     document.documentElement.dataset.hideHubLeads = enabled ? 'true' : 'false';
 
     document.querySelectorAll('[data-shell-hide-hub-leads-toggle]').forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+            input.checked = enabled;
+        }
+    });
+}
+
+/** @param {boolean} enabled */
+export function applyHideToolHelp(enabled) {
+    document.documentElement.dataset.hideToolHelp = enabled ? 'true' : 'false';
+
+    document.querySelectorAll('[data-shell-hide-tool-help-toggle]').forEach((input) => {
         if (input instanceof HTMLInputElement) {
             input.checked = enabled;
         }
@@ -217,6 +234,13 @@ export function setHideHubLeads(enabled) {
 }
 
 /** @param {boolean} enabled */
+export function setHideToolHelp(enabled) {
+    localStorage.setItem(HIDE_TOOL_HELP_STORAGE_KEY, enabled ? 'true' : 'false');
+    applyHideToolHelp(enabled);
+    window.dispatchEvent(new CustomEvent('binom-tools:shell-layout', { detail: { hideToolHelp: enabled } }));
+}
+
+/** @param {boolean} enabled */
 export function setPlaybookFocus(enabled) {
     localStorage.setItem(PLAYBOOK_FOCUS_STORAGE_KEY, enabled ? 'true' : 'false');
     // Entering focus: collapse TOC so reading starts clean; list button can reopen it.
@@ -313,6 +337,7 @@ export function initShellLayoutControls() {
     applyShellFullWidth(getShellFullWidth());
     applyShellSidebarCollapsed(getShellSidebarCollapsed());
     applyHideHubLeads(getHideHubLeads());
+    applyHideToolHelp(getHideToolHelp());
     // First visit: TOC open by default when preference was never stored.
     if (localStorage.getItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY) === null) {
         localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'true');
@@ -360,6 +385,15 @@ export function initShellLayoutControls() {
         }
 
         setHideHubLeads(input.checked);
+    });
+
+    document.querySelector('[data-shell-hide-tool-help-toggle]')?.addEventListener('change', (event) => {
+        const input = event.currentTarget;
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+
+        setHideToolHelp(input.checked);
     });
 
     document.querySelectorAll('[data-playbook-focus-toggle]').forEach((input) => {

@@ -10,8 +10,13 @@
         lead-key="lakehouseDq.databricksPii.lead"
         tool-id="databricks-pii-governance-pattern-generator"
         app-id="lakehouse-dq-pattern-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-        <x-tools.collapsible-info summary-key="lakehouseDq.howto.summary" :open="true">
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-content">
             <p data-i18n="lakehouseDq.databricksPii.howto.intro"></p>
             <ol>
                 <li data-i18n="lakehouseDq.howto.step1"></li>
@@ -19,7 +24,9 @@
                 <li data-i18n="lakehouseDq.howto.step3"></li>
             </ol>
             <p data-i18n="lakehouseDq.databricksPii.howto.tip"></p>
-        </x-tools.collapsible-info>
+        
+            </div>
+        </x-slot:help>
 
         <x-tools.panel heading-id="lakehouse-dq-input-title" title-key="lakehouseDq.input.title" description-key="lakehouseDq.input.description">
             <div class="pii-policy-panel__grid">

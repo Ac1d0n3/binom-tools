@@ -183,6 +183,7 @@ export function initWorkflowFlowcharts(root = document) {
     window.addEventListener('load', schedule);
     window.addEventListener('resize', schedule);
     window.addEventListener('binom-tools:locale', schedule);
+    window.addEventListener('binom-tools:workflow-flowchart-relayout', schedule);
 
     if (typeof ResizeObserver !== 'undefined') {
         const observer = new ResizeObserver(schedule);

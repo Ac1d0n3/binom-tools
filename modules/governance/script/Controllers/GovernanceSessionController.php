@@ -225,6 +225,7 @@ class GovernanceSessionController extends Controller
             'sourceScope' => is_array($payload['sourceScope'] ?? null) ? $payload['sourceScope'] : [],
             'pii' => is_array($payload['pii'] ?? null) ? $payload['pii'] : [],
             'decisionBrief' => is_array($payload['decisionBrief'] ?? null) ? $payload['decisionBrief'] : [],
+            'startingPoint' => is_array($payload['startingPoint'] ?? null) ? $payload['startingPoint'] : [],
             'recommendations' => is_array($payload['recommendations'] ?? null) ? $payload['recommendations'] : [],
             'validation' => is_array($session['validationSummary'] ?? null) ? $session['validationSummary'] : [],
         ];
@@ -497,15 +498,21 @@ class GovernanceSessionController extends Controller
     {
         $validation = $session['validationSummary'] ?? [];
         $dataQuality = is_array($session['payload']['dataQuality'] ?? null) ? $session['payload']['dataQuality'] : [];
+        $startingPoint = is_array($session['payload']['startingPoint'] ?? null) ? $session['payload']['startingPoint'] : [];
         $dqLine = $dataQuality === []
             ? ''
             : "\nData Quality: ".($dataQuality['mode'] ?? '-').' / '.($dataQuality['layer'] ?? '-');
+        $startLine = $startingPoint === []
+            ? ''
+            : "\nStarting-Point: ".($startingPoint['productLabel'] ?? ($startingPoint['product'] ?? '-'))
+                .' / '.($startingPoint['decisionStatus'] ?? '-');
 
         return 'Governance Session: '.($session['id'] ?? '')
             ."\nStatus: ".($session['status'] ?? 'draft')
             ."\nScenario: ".($session['scenario'] ?? 'new')
             ."\nValidation: ".($validation['state'] ?? 'incomplete').' ('.($validation['score'] ?? 0).')'
             .$dqLine
+            .$startLine
             ."\nChange approval required: ".(config('governance.change_approval_required', true) ? 'yes' : 'no');
     }
 

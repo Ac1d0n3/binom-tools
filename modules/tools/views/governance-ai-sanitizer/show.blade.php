@@ -6,30 +6,43 @@
 
 @section('content')
     <div class="tools-content tools-content--wide">
-        <h1 class="tools-page-title" data-i18n="governance.pageTitle">Governance AI Sanitizer</h1>
-        <p class="tools-page-lead" data-hub-lead data-i18n="governance.pageLead">
-            Walk through prompt sanitization, copy the outbound message to your LLM, then restore mapped PII from the AI reply.
-        </p>
+        <x-tools.tool-page-header
+            tool-id="governance-ai-sanitizer"
+            title-key="governance.pageTitle"
+            lead-key="governance.pageLead"
+            eyebrow-de="AI Tool"
+            eyebrow-en="AI tool"
+            :option-tabs="['help']"
+        >
+            <x-slot:help>
+                <div class="governance-advisor__helpbox-head">
+                    <span class="governance-advisor__helpbox-icon">
+                        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <span class="governance-hub__eyebrow" data-i18n="gov.howto.summary">How it works</span>
+                        <strong data-i18n="gov.howto.overview.intro"></strong>
+                    </span>
+                </div>
+                <div class="governance-advisor__helpbox-content">
+                    <ol>
+                        <li data-i18n="gov.howto.overview.step1"></li>
+                        <li data-i18n="gov.howto.overview.step2"></li>
+                        <li data-i18n="gov.howto.overview.step3"></li>
+                        <li data-i18n="gov.howto.overview.step4"></li>
+                        <li data-i18n="gov.howto.overview.step5"></li>
+                    </ol>
+                    <p data-i18n="gov.howto.overview.tip"></p>
+                </div>
+            </x-slot:help>
+        </x-tools.tool-page-header>
 
         <div class="tools-page-stack">
-            <x-tools.workflow-nav tool-id="governance-ai-sanitizer" />
-
             <div class="gov-tool-playground" id="governance-ai-sanitizer-app">
             <div id="gov-bridge-banner" class="prompt-studio__bridge-banner" hidden role="status"></div>
             <div class="gov-tool-playground__top-actions">
                 <button type="button" class="tools-btn" id="gov-back-studio-btn" data-i18n="gov.bridge.backToStudio">← Back to Prompt Studio</button>
             </div>
-            <x-tools.collapsible-info summary-key="gov.howto.summary" :open="true">
-                <p data-i18n="gov.howto.overview.intro"></p>
-                <ol>
-                    <li data-i18n="gov.howto.overview.step1"></li>
-                    <li data-i18n="gov.howto.overview.step2"></li>
-                    <li data-i18n="gov.howto.overview.step3"></li>
-                    <li data-i18n="gov.howto.overview.step4"></li>
-                    <li data-i18n="gov.howto.overview.step5"></li>
-                </ol>
-                <p data-i18n="gov.howto.overview.tip"></p>
-            </x-tools.collapsible-info>
 
             <section class="bn-prompt-sanitizer-panel" aria-labelledby="gov-prompt-title">
                 <header class="bn-prompt-sanitizer-panel__header">

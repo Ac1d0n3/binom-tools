@@ -10,8 +10,13 @@
         lead-key="reportInventory.pageLead"
         tool-id="report-inventory"
         app-id="report-inventory-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-        <x-tools.collapsible-info summary-key="discovery.howto.summary" :open="true">
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-content">
             <p data-i18n="discovery.ephemeral"></p>
             <p data-i18n="reportInventory.howto.intro"></p>
             <ol>
@@ -30,7 +35,9 @@
                     Keep business logic outside BI apps
                 </a>
             </p>
-        </x-tools.collapsible-info>
+        
+            </div>
+        </x-slot:help>
 
         <x-tools.discovery-canvas />
     </x-tools.generator-page>

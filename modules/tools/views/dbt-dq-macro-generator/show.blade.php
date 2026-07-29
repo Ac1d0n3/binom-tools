@@ -9,8 +9,13 @@
         title-key="dqMacro.pageTitle"
         tool-id="dbt-dq-macro-generator"
         app-id="dbt-dq-macro-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-        <x-tools.collapsible-info summary-key="dqMacro.howto.summary" :open="true">
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-content">
             <p data-i18n="dqMacro.howto.overview.intro"></p>
             <ol>
                 <li data-i18n="dqMacro.howto.overview.step1"></li>
@@ -19,7 +24,9 @@
                 <li data-i18n="dqMacro.howto.overview.step4"></li>
             </ol>
             <p data-i18n="dqMacro.howto.overview.tip"></p>
-        </x-tools.collapsible-info>
+        
+            </div>
+        </x-slot:help>
 
         <x-tools.panel heading-id="dq-warehouse-title" title-key="dqMacro.warehouse.title" description-key="dqMacro.warehouse.description">
             <x-tools.collapsible-info summary-key="dqMacro.howto.summary" :compact="true">

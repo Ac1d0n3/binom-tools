@@ -9,6 +9,7 @@ import {
     readCustomStack,
     readSavedStacksLocal,
     readStartingPointProduct,
+    readStartingPointReport,
     saveNamedStackLocal,
     startingPointStackBanner,
     summarizeSelection,
@@ -896,6 +897,7 @@ function currentPayload(root, config) {
     const state = getState(form, root);
     const recommendations = buildRecommendations(state, config);
     const guidance = buildGuidance(state, guidanceLinksFromConfig(config));
+    const startingPoint = readStartingPointReport();
 
     return {
         title: String(title?.value || '').trim() || 'Governance Discovery',
@@ -926,6 +928,7 @@ function currentPayload(root, config) {
                     decisionStatus: 'draft',
                 }
                 : {},
+            ...(startingPoint ? { startingPoint } : {}),
             recommendations: serializableRecommendations(recommendations, locale),
         },
     };
@@ -1022,6 +1025,19 @@ function richDemoSession(root, config) {
                 openQuestions: ['finale Storno-Logik', 'Owner-Freigabe für PII-Maskierung'],
                 nextSprint: ['Source-Scope-Review', 'DQ-Regeln', 'Decision-Brief-Freigabe'],
             },
+            startingPoint: {
+                product: 'fabric',
+                productLabel: 'Microsoft Fabric',
+                title: 'Finance Governance Starting Point',
+                firstUseCase: 'Stabiler Monatsabschluss mit klarer Ownership',
+                decisionStatus: 'readyForProofOfValue',
+                preferredStartingPattern: 'Purview + Fabric Domains als Start, dann Lakehouse-Mart',
+                decisionRationale: 'Bestehende Microsoft-Lizenzen und Power-BI-Nutzung sprechen für Fabric als Startplattform.',
+                noRegretNextStep: 'Domain-Ownership und KPI Net Revenue als Pilot festziehen',
+                knownGaps: ['Catalog-Ownership unklar', 'Retention-Regel fehlt'],
+                openQuestions: ['Wer genehmigt PII-Maskierung?', 'Cutover-Regel Monatsabschluss'],
+                blockers: [],
+            },
             recommendations,
         },
     };
@@ -1091,6 +1107,7 @@ function demoReportHtml(session) {
     const sourceScope = payload.sourceScope || {};
     const pii = payload.pii || {};
     const decisionBrief = payload.decisionBrief || {};
+    const startingPoint = payload.startingPoint || {};
 
     return `<!doctype html>
 <html lang="de">
@@ -1215,6 +1232,20 @@ function demoReportHtml(session) {
                 ['Fehlerklassen', dataQuality.issueTypes || advisor.dqIssues],
                 ['Betroffene Reports', dataQuality.affectedReports],
                 ['Regelvorschläge', dataQuality.proposedRules],
+            ])}</dl>
+        </section>
+        <section>
+            <h2>Starting-Point Decision</h2>
+            <dl>${factsHtml([
+                ['Produkt', startingPoint.productLabel || startingPoint.product],
+                ['Titel', startingPoint.title],
+                ['Status', startingPoint.decisionStatus],
+                ['Startmuster', startingPoint.preferredStartingPattern],
+                ['Begründung', startingPoint.decisionRationale],
+                ['No-regret Next Step', startingPoint.noRegretNextStep],
+                ['Lücken', startingPoint.knownGaps],
+                ['Offene Fragen', startingPoint.openQuestions],
+                ['Blocker', startingPoint.blockers],
             ])}</dl>
         </section>
         <section>

@@ -163,7 +163,10 @@ export function buildToolLabels() {
             'gspd.stackHint': 'Kontext aus Custom Stack Builder erkannt.',
             'gspd.stackHintLink': 'Stack Builder öffnen',
             'gspd.exportHint':
-                'Decision Record kopieren/herunterladen oder Entwurf lokal speichern. Beim Verlassen ohne Export geht ungespeicherter Inhalt verloren.',
+                'Decision Record kopieren/herunterladen oder Entwurf lokal speichern. Beim Speichern der Hub-Session fließt der Baustein in den Gesamt-Report.',
+            'gspd.report.eyebrow': 'Report-Baustein',
+            'gspd.report.title': 'Starting-Point Decision Report',
+            'gspd.report.print': 'Drucken/PDF',
             'gspd.saveDraft': 'Entwurf speichern',
             'gspd.loadDraft': 'Entwurf laden',
             'gspd.draftSaved': 'Entwurf gespeichert',
@@ -259,7 +262,10 @@ export function buildToolLabels() {
             'gspd.stackHint': 'Context detected from Custom Stack Builder.',
             'gspd.stackHintLink': 'Open Stack Builder',
             'gspd.exportHint':
-                'Copy/download the decision record or save a local draft. Leaving without export discards unsaved input.',
+                'Copy/download the decision record or save a local draft. When you save the Hub session, this block feeds the overall governance report.',
+            'gspd.report.eyebrow': 'Report block',
+            'gspd.report.title': 'Starting-point decision report',
+            'gspd.report.print': 'Print/PDF',
             'gspd.saveDraft': 'Save draft',
             'gspd.loadDraft': 'Load draft',
             'gspd.draftSaved': 'Draft saved',

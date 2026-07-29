@@ -9,8 +9,13 @@
         title-key="gate.pageTitle"
         tool-id="pii-unreviewed-gate-generator"
         app-id="pii-unreviewed-gate-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-            <x-tools.collapsible-info summary-key="gate.howto.summary" :open="true">
+            <x-slot:help>
+                <div class="governance-advisor__helpbox-content">
                 <p data-i18n="gate.howto.overview.intro"></p>
                 <ol>
                     <li data-i18n="gate.howto.overview.step1"></li>
@@ -20,7 +25,9 @@
                     <li data-i18n="gate.howto.overview.step5"></li>
                 </ol>
                 <p data-i18n="gate.howto.overview.tip"></p>
-            </x-tools.collapsible-info>
+            
+                </div>
+            </x-slot:help>
 
             <section class="pii-policy-panel" aria-labelledby="gate-review-title">
                 <header class="pii-policy-panel__header">

@@ -12,6 +12,7 @@ import { initPlaybookCardActions } from '../../modules/playbooks/js/card-actions
 import { initSupplierLibraryCopy, initSupplierLibraryTabs } from '../../modules/suppliers/js/suppliers-copy';
 import { initToolsPhoneGate } from './shell/tools-phone-gate';
 import { initWorkflowFlowcharts } from './shared/workflow-flowchart';
+import { initToolPageHeaders } from './shared/tool-page-header';
 
 try {
     const raw = document.documentElement.dataset.accountsReadSlugs;
@@ -37,6 +38,7 @@ initPlaybookCardActions();
 initSupplierLibraryCopy();
 initSupplierLibraryTabs();
 initWorkflowFlowcharts();
+initToolPageHeaders();
 
 if (document.querySelector('[data-glossary-quiz], [data-glossary-quiz-modal]')) {
     void import('../../modules/glossary/js/glossary-quiz.js').catch((error) => {

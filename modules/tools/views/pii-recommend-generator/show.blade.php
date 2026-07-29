@@ -9,8 +9,13 @@
         title-key="piiRec.pageTitle"
         tool-id="pii-recommend-generator"
         app-id="pii-recommend-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-            <x-tools.collapsible-info summary-key="piiRec.howto.summary" :open="true">
+            <x-slot:help>
+                <div class="governance-advisor__helpbox-content">
                 <p data-i18n="piiRec.howto.overview.intro"></p>
                 <ol>
                     <li data-i18n="piiRec.howto.overview.step1"></li>
@@ -20,7 +25,9 @@
                     <li data-i18n="piiRec.howto.overview.step5"></li>
                 </ol>
                 <p data-i18n="piiRec.howto.overview.tip"></p>
-            </x-tools.collapsible-info>
+            
+                </div>
+            </x-slot:help>
 
             <section class="pii-policy-panel" aria-labelledby="rec-compare-title">
                 <header class="pii-policy-panel__header">

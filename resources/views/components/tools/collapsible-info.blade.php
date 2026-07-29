@@ -5,7 +5,7 @@
 ])
 
 <details
-    {{ $attributes->class([
+    {{ $attributes->merge(['data-tool-help' => true])->class([
         'tools-collapsible-info',
         'tools-collapsible-info--compact' => $compact,
     ]) }}

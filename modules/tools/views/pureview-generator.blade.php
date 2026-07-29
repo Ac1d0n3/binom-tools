@@ -10,8 +10,13 @@
         :lead-key="$leadKey"
         :tool-id="$toolId"
         app-id="pureview-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-        <x-tools.collapsible-info summary-key="pureview.howto.summary" :open="true">
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-content">
             <p data-i18n="{{ $introKey }}"></p>
             <ol>
                 <li data-i18n="pureview.howto.step1"></li>
@@ -19,7 +24,9 @@
                 <li data-i18n="pureview.howto.step3"></li>
             </ol>
             <p data-i18n="{{ $tipKey }}"></p>
-        </x-tools.collapsible-info>
+        
+            </div>
+        </x-slot:help>
 
         <x-tools.panel heading-id="pureview-input-title" title-key="pureview.input.title" description-key="pureview.input.description">
             <div class="pii-policy-panel__grid">

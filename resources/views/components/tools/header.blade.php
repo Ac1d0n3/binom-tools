@@ -154,6 +154,10 @@
                     <input type="checkbox" data-shell-hide-hub-leads-toggle />
                     <span data-i18n="settings.hideHubLeads">Hide infos</span>
                 </label>
+                <label class="tools-header__settings-option" role="menuitemcheckbox">
+                    <input type="checkbox" data-shell-hide-tool-help-toggle />
+                    <span data-i18n="settings.hideToolHelp">Hide help</span>
+                </label>
                 <label
                     class="tools-header__settings-option"
                     role="menuitemcheckbox"

@@ -9,9 +9,10 @@ import {
     summarizeSelection,
     derivePlatformTags,
     writeStartingPointProduct,
+    writeStartingPointReport,
 } from '../../../governance/js/stack-builder.js';
 import { buildToolLabels } from './labels.js';
-import { buildMarkdown } from './markdown.js';
+import { buildMarkdown, buildReportBlock } from './markdown.js';
 import {
     AREA_STATUS,
     DECISION_STATUS,
@@ -76,6 +77,12 @@ function snapshotState() {
 function markClean() {
     baselineJson = snapshotState();
     transferred = true;
+    syncReportBlock();
+}
+
+function syncReportBlock() {
+    writeStartingPointProduct(state.product);
+    writeStartingPointReport(buildReportBlock(state, t, productLabel));
 }
 
 function isDirty() {
@@ -195,6 +202,7 @@ function textControl(value, onInput, opts = {}) {
         area.value = value;
         area.addEventListener('input', () => {
             onInput(area.value);
+            transferred = false;
             scheduleRenderPreview();
         });
         return area;
@@ -205,6 +213,7 @@ function textControl(value, onInput, opts = {}) {
     input.value = value;
     input.addEventListener('input', () => {
         onInput(input.value);
+        transferred = false;
         scheduleRenderPreview();
     });
     return input;
@@ -233,6 +242,7 @@ function selectControl(value, options, labelFn, onChange, opts = {}) {
     select.value = value;
     select.addEventListener('change', () => {
         onChange(select.value);
+        transferred = false;
         if (select.dataset.gspdProduct === '1') {
             renderForm();
         } else {
@@ -338,6 +348,7 @@ function renderForm() {
             removeBtn.addEventListener('click', () => {
                 state.multipleRows.splice(index, 1);
                 openFolds.delete(`multiple:${index}`);
+                transferred = false;
                 renderForm();
             });
             rowFold.body.appendChild(removeBtn);
@@ -357,6 +368,7 @@ function renderForm() {
         addRow.addEventListener('click', () => {
             state.multipleRows.push(emptyMultipleRow());
             openFolds.add(`multiple:${state.multipleRows.length - 1}`);
+            transferred = false;
             renderForm();
         });
         multiFold.body.appendChild(addRow);
@@ -382,6 +394,7 @@ function renderForm() {
             const removeBtn = el('button', { type: 'button', className: 'tools-btn tools-btn--ghost' }, t('discovery.remove'));
             removeBtn.addEventListener('click', () => {
                 state.lists[listKey].splice(index, 1);
+                transferred = false;
                 renderForm();
             });
             row.appendChild(removeBtn);
@@ -390,6 +403,7 @@ function renderForm() {
         const addBtn = el('button', { type: 'button', className: 'tools-btn' }, t('gspd.list.add'));
         addBtn.addEventListener('click', () => {
             state.lists[listKey].push('');
+            transferred = false;
             renderForm();
         });
         block.appendChild(addBtn);
@@ -457,13 +471,13 @@ let previewTimer = 0;
 function scheduleRenderPreview() {
     window.clearTimeout(previewTimer);
     previewTimer = window.setTimeout(renderPreview, 80);
-    transferred = false;
 }
 
 function renderPreview() {
     if (preview) {
         preview.textContent = buildMarkdown(state, t, productLabel);
     }
+    syncReportBlock();
 }
 
 function saveDraft() {
@@ -520,6 +534,11 @@ function downloadMarkdown() {
     setStatus(t('discovery.downloaded'));
 }
 
+function printReport() {
+    markClean();
+    window.print();
+}
+
 async function copyMarkdown() {
     const md = buildMarkdown(state, t, productLabel);
     await copyTextToClipboard(md);
@@ -552,6 +571,7 @@ function init() {
         void copyMarkdown();
     });
     app.querySelector('[data-download-md]')?.addEventListener('click', downloadMarkdown);
+    app.querySelector('[data-print-report]')?.addEventListener('click', printReport);
     app.querySelector('[data-save-draft]')?.addEventListener('click', saveDraft);
     app.querySelector('[data-load-draft]')?.addEventListener('click', loadDraft);
     app.querySelector('[data-clear]')?.addEventListener('click', resetForm);
@@ -567,7 +587,7 @@ function init() {
     });
 
     bindLeaveGuard(
-        () => isDirty() && !transferred,
+        () => isDirty(),
         () => t('discovery.leaveConfirm'),
         {
             getTitle: () => t('discovery.leaveTitle'),
@@ -577,8 +597,12 @@ function init() {
     );
 
     window.addEventListener('binom-tools:locale', () => {
+        const wasDirty = isDirty();
         applyLabels();
         renderForm();
+        if (!wasDirty) {
+            markClean();
+        }
     });
 }
 

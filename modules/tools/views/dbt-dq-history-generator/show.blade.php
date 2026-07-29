@@ -9,8 +9,13 @@
         title-key="dqHistory.pageTitle"
         tool-id="dbt-dq-history-generator"
         app-id="dbt-dq-history-generator-app"
+    
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
     >
-        <x-tools.collapsible-info summary-key="dqHistory.howto.summary" :open="true">
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-content">
             <p data-i18n="dqHistory.howto.overview.intro"></p>
             <ol>
                 <li data-i18n="dqHistory.howto.overview.step1"></li>
@@ -18,7 +23,9 @@
                 <li data-i18n="dqHistory.howto.overview.step3"></li>
             </ol>
             <p data-i18n="dqHistory.howto.overview.tip"></p>
-        </x-tools.collapsible-info>
+        
+            </div>
+        </x-slot:help>
 
         <x-tools.validation-banner id="dq-history-validation-banner" />
 

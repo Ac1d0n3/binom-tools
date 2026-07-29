@@ -105,3 +105,51 @@ export function buildMarkdown(state, t, productLabel) {
 
     return `${lines.join('\n').trim()}\n`;
 }
+
+/**
+ * Compact report block for Hub Gesamt-Report / session payload.
+ * @param {ReturnType<import('./model.js').createEmptyState>} state
+ * @param {(key: string) => string} t
+ * @param {(id: string) => string} productLabel
+ * @returns {Record<string, unknown>|null}
+ */
+export function buildReportBlock(state, t, productLabel) {
+    const list = (key) => (state.lists[key] || []).map((item) => String(item).trim()).filter(Boolean);
+    const knownGaps = list('knownGaps');
+    const openQuestions = list('openQuestions');
+    const blockers = list('blockers');
+    const product = String(state.product || '').trim();
+    const title = String(state.context.title || '').trim();
+    const preferred = String(state.decision.preferredStartingPattern || '').trim();
+    const rationale = String(state.decision.decisionRationale || '').trim();
+    const nextStep = String(state.decision.noRegretNextStep || '').trim();
+    const meaningful = Boolean(
+        product
+        || title
+        || preferred
+        || rationale
+        || nextStep
+        || knownGaps.length
+        || openQuestions.length
+        || blockers.length,
+    );
+    if (!meaningful) {
+        return null;
+    }
+
+    return {
+        product,
+        productLabel: product ? productLabel(product) : '',
+        title,
+        firstUseCase: String(state.context.firstUseCase || '').trim(),
+        decisionStatus: String(state.decision.status || 'draft'),
+        preferredStartingPattern: preferred,
+        decisionRationale: rationale,
+        noRegretNextStep: nextStep,
+        knownGaps,
+        openQuestions,
+        blockers,
+        markdown: buildMarkdown(state, t, productLabel),
+        updatedAt: new Date().toISOString(),
+    };
+}
