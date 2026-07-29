@@ -266,16 +266,19 @@
                         </h2>
                         <p class="playbook-slides-modal__group" data-playbook-slides-group hidden></p>
                     </div>
-                    <button
-                        type="button"
-                        class="tools-btn tools-btn--ghost tools-btn--compact playbook-slides-modal__close"
-                        data-playbook-slides-close
-                        data-shared-modal-close
-                        data-i18n-aria="playbooks.slides.close"
-                        aria-label="Close"
-                    >
-                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                    </button>
+                    <div class="playbook-slides-modal__header-actions">
+                        <p class="playbook-slides-modal__counter" data-playbook-slides-counter aria-live="polite"></p>
+                        <button
+                            type="button"
+                            class="tools-btn tools-btn--ghost tools-btn--compact playbook-slides-modal__close"
+                            data-playbook-slides-close
+                            data-shared-modal-close
+                            data-i18n-aria="playbooks.slides.close"
+                            aria-label="Close"
+                        >
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </header>
 
                 <div class="playbook-slides-modal__stage">
@@ -306,17 +309,18 @@
                 </div>
 
                 <div class="playbook-slides-modal__meta">
-                    <p class="playbook-slides-modal__counter" data-playbook-slides-counter hidden></p>
                     <div class="playbook-slides-modal__links">
                         <a class="playbook-slides-modal__link" data-playbook-slides-story-link href="#">
                             <span data-i18n="playbooks.slides.openStory">Open story</span>
                             <span data-playbook-slides-story-title></span>
                         </a>
-                        <a class="playbook-slides-modal__link" data-playbook-slides-series-link href="#" hidden>
-                            <span data-i18n="playbooks.slides.openSeries">Open series</span>
-                            <span data-playbook-slides-series-title></span>
-                        </a>
-                        <span class="playbook-slides-modal__part" data-playbook-slides-part hidden></span>
+                        <div class="playbook-slides-modal__links-secondary">
+                            <a class="playbook-slides-modal__link" data-playbook-slides-series-link href="#" hidden>
+                                <span data-i18n="playbooks.slides.openSeries">Open series</span>
+                                <span data-playbook-slides-series-title></span>
+                            </a>
+                            <span class="playbook-slides-modal__part" data-playbook-slides-part hidden></span>
+                        </div>
                     </div>
                 </div>
             </div>

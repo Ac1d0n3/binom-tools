@@ -82,13 +82,7 @@ export function initPlaybookSlidesGallery(root = document) {
         imageEl.src = slide.src;
         imageEl.alt = slide.alt || slide.caption || slide.storyTitle || '';
 
-        if (captionEl) {
-            captionEl.textContent = slide.caption || slide.alt || '';
-            captionEl.hidden = !captionEl.textContent;
-        }
-
         if (counterEl) {
-            counterEl.hidden = slides.length < 2;
             counterEl.textContent = `${index + 1} / ${slides.length}`;
         }
 
@@ -100,6 +94,11 @@ export function initPlaybookSlidesGallery(root = document) {
                 groupEl.hidden = true;
                 groupEl.textContent = '';
             }
+        }
+
+        if (captionEl) {
+            captionEl.textContent = slide.caption || slide.alt || '';
+            captionEl.hidden = !captionEl.textContent;
         }
 
         if (storyLink && storyTitleEl) {
