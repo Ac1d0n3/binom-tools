@@ -107,7 +107,17 @@
                     data-i18n-aria="overview.seriesPartsProgress"
                 >
                     @foreach ($series->parts as $part)
-                        <li class="tools-series-card__progress-item">
+                        @php
+                            $partTooltipDe = $part->part.'. '.$part->titleDe;
+                            $partTooltipEn = $part->part.'. '.$part->titleEn;
+                        @endphp
+                        <li
+                            class="tools-series-card__progress-item"
+                            data-tooltip-css
+                            data-tooltip="{{ $partTooltipEn }}"
+                            data-tooltip-de="{{ $partTooltipDe }}"
+                            data-tooltip-en="{{ $partTooltipEn }}"
+                        >
                             <a
                                 href="{{ locale_route('playbooks.show', ['slug' => $part->slug]) }}"
                                 class="tools-series-card__progress-dot"
@@ -115,14 +125,8 @@
                                 data-slug="{{ $part->slug }}"
                                 data-reading-time-de="{{ $part->readingTimeDe }}"
                                 data-reading-time-en="{{ $part->readingTimeEn }}"
-                                data-playbook-series-card-part-title
-                                data-text-de="{{ $part->titleDe }}"
-                                data-text-en="{{ $part->titleEn }}"
-                                title="{{ $part->titleEn }}"
-                                aria-label="{{ $part->part }}. {{ $part->titleEn }}"
-                            >
-                                <span class="sr-only">{{ $part->part }}. {{ $part->titleEn }}</span>
-                            </a>
+                                aria-label="{{ $partTooltipEn }}"
+                            ></a>
                         </li>
                     @endforeach
                 </ol>

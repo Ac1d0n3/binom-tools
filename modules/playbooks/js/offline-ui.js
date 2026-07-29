@@ -72,7 +72,11 @@ function applyCardOfflineState(card, saved) {
     button.classList.toggle('is-saved', saved);
     const label = getShellLabel(saved ? 'playbooks.offline.remove' : 'playbooks.offline.save');
     button.setAttribute('aria-label', label);
-    button.setAttribute('title', label);
+    if (button.hasAttribute('data-tooltip-css')) {
+        button.removeAttribute('title');
+    } else {
+        button.setAttribute('title', label);
+    }
 }
 
 /**

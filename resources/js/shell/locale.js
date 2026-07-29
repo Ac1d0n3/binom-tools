@@ -2533,6 +2533,11 @@ export function applyShellLabels(locale) {
             return;
         }
 
+        // CSS tooltip hosts must stay empty — textContent would paint labels into the layout.
+        if (el.hasAttribute('data-tooltip-css') || el.classList.contains('tools-series-card__progress-item')) {
+            return;
+        }
+
         const text = el.getAttribute(locale === 'de' ? 'data-text-de' : 'data-text-en');
         if (text) {
             el.textContent = text;
@@ -2558,6 +2563,11 @@ export function applyShellLabels(locale) {
                 el.setAttribute('title', labels[key]);
             }
         }
+    });
+
+    // CSS tooltips use aria-label; native title would show a second browser tooltip.
+    document.querySelectorAll('[data-tooltip-css]').forEach((el) => {
+        el.removeAttribute('title');
     });
 
     document.querySelectorAll('[data-card-id]').forEach((el) => {

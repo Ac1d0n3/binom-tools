@@ -19,7 +19,6 @@ seriesTitle: "Governance Platform Starting Points"
 seriesPart: 1
 ---
 
-![Fabric, Databricks, Snowflake or BigQuery — governance starting point](images/playbooks/choose-governance-platform-starting-point-hero.png)
 
 ## Problem
 

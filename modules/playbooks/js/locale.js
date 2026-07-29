@@ -108,19 +108,35 @@ export function applyPlaybookLocale(locale) {
                 if (label) {
                     label.textContent = text;
                 }
-            } else if (element.matches('.tools-series-card__progress-dot[data-playbook-series-card-part-title]')) {
-                element.setAttribute('title', text);
-                const indexMatch = (element.getAttribute('aria-label') ?? '').match(/^(\d+)\.\s/);
-                const indexPrefix = indexMatch ? `${indexMatch[1]}. ` : '';
-                element.setAttribute('aria-label', `${indexPrefix}${text}`);
-                const partIndex = element.querySelector('.sr-only');
-                if (partIndex) {
-                    partIndex.textContent = `${indexPrefix}${text}`;
-                }
             } else {
                 element.textContent = text;
             }
         }
+    });
+
+    // Progress tooltips: never use data-text-de/en (shell locale would inject visible text into the <li>).
+    document.querySelectorAll('.tools-series-card__progress-item[data-tooltip-css]').forEach((item) => {
+        const label = item.getAttribute(`data-tooltip-${locale}`) ?? item.getAttribute('data-tooltip');
+        if (!label) {
+            return;
+        }
+
+        item.setAttribute('data-tooltip', label);
+        item.removeAttribute('title');
+
+        const link = item.querySelector(':scope > .tools-series-card__progress-dot');
+        if (link instanceof HTMLElement) {
+            link.setAttribute('aria-label', label);
+            link.removeAttribute('title');
+            link.replaceChildren();
+        }
+
+        // Drop any leaked text nodes from older locale handlers.
+        [...item.childNodes].forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                node.remove();
+            }
+        });
     });
 
     refreshSeriesCardMeta(locale);
