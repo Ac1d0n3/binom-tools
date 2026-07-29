@@ -115,8 +115,11 @@ export function t(locale, key) {
 
 /** @param {ToolsLocale} locale */
 export function applySchemaEditorLabels(locale) {
-    document.querySelectorAll('#schema-yml-editor-app [data-i18n]').forEach((el) => {
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
-        if (key) el.textContent = t(locale, key);
+        if (!key?.startsWith('schema.')) {
+            return;
+        }
+        el.textContent = t(locale, key);
     });
 }

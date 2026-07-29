@@ -10,35 +10,49 @@
         lead-key="biPythonToolkit.pageLead"
         tool-id="bi-python-toolkit"
         app-id="bi-python-toolkit-app"
+        :shared-header="true"
+        eyebrow-de="BI Tool"
+        eyebrow-en="BI tool"
     >
-        <x-tools.collapsible-info summary-key="discovery.howto.summary" :open="true">
-            <p data-i18n="biPythonToolkit.howto.intro">
-                Run BI exports locally, not in the browser. Download the script, place it in a Python project folder, run it against Qlik, Power BI or Tableau, then use the generated CSV, Markdown or plan JSON in your plan work.
-            </p>
-            <ol>
-                <li data-i18n="biPythonToolkit.howto.step1">Prepare Python locally: create a folder, activate a virtual environment, install optional dependencies.</li>
-                <li data-i18n="biPythonToolkit.howto.step2">Choose the script: KPI formulas or Qlik app/sheet inventory.</li>
-                <li data-i18n="biPythonToolkit.howto.step3">Run the export and attach or copy the result into the relevant Sprint Planner task.</li>
-            </ol>
-            <p data-i18n="biPythonToolkit.howto.tip">
-                The export is raw inventory, not the final governance decision. Review owners, business meaning, status and open questions before closing the task.
-            </p>
-            <p>
-                <a href="{{ locale_route('playbooks.show', ['slug' => 'python-bi-export-setup']) }}" data-i18n="biPythonToolkit.setupStoryLink">
-                    Python setup guide: install Python, initialize a folder, run the exports
-                </a>
-            </p>
-            <p>
-                <a href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="biPythonToolkit.kpiPlaybookLink">
-                    KPI Definition Playbook — Grain, Owner, Versioning
-                </a>
-            </p>
-            <p>
-                <a href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="biPythonToolkit.trustedMetricsLink">
-                    Learning path: Trusted metrics
-                </a>
-            </p>
-        </x-tools.collapsible-info>
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-head">
+                <span class="governance-advisor__helpbox-icon">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                </span>
+                <span>
+                    <span class="governance-hub__eyebrow" data-i18n="discovery.howto.summary">How it works</span>
+                    <strong data-i18n="biPythonToolkit.pageLead"></strong>
+                </span>
+            </div>
+            <div class="governance-advisor__helpbox-content" data-tool-help>
+                <p data-i18n="biPythonToolkit.howto.intro">
+                    Run BI exports locally, not in the browser. Download the script, place it in a Python project folder, run it against Qlik, Power BI or Tableau, then use the generated CSV, Markdown or plan JSON in your plan work.
+                </p>
+                <ol>
+                    <li data-i18n="biPythonToolkit.howto.step1">Prepare Python locally: create a folder, activate a virtual environment, install optional dependencies.</li>
+                    <li data-i18n="biPythonToolkit.howto.step2">Choose the script: KPI formulas or Qlik app/sheet inventory.</li>
+                    <li data-i18n="biPythonToolkit.howto.step3">Run the export and attach or copy the result into the relevant Sprint Planner task.</li>
+                </ol>
+                <p data-i18n="biPythonToolkit.howto.tip">
+                    The export is raw inventory, not the final governance decision. Review owners, business meaning, status and open questions before closing the task.
+                </p>
+                <p>
+                    <a href="{{ locale_route('playbooks.show', ['slug' => 'python-bi-export-setup']) }}" data-i18n="biPythonToolkit.setupStoryLink">
+                        Python setup guide: install Python, initialize a folder, run the exports
+                    </a>
+                </p>
+                <p>
+                    <a href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="biPythonToolkit.kpiPlaybookLink">
+                        KPI Definition Playbook — Grain, Owner, Versioning
+                    </a>
+                </p>
+                <p>
+                    <a href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="biPythonToolkit.trustedMetricsLink">
+                        Learning path: Trusted metrics
+                    </a>
+                </p>
+            </div>
+        </x-slot:help>
 
         <section class="tools-panel discovery-canvas" aria-labelledby="bi-python-purpose-title">
             <h2 id="bi-python-purpose-title" class="tools-panel__title" data-i18n="biPythonToolkit.purpose.title">

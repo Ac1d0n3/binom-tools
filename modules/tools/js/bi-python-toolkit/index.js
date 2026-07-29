@@ -19,6 +19,9 @@ const labels = mergeDiscoveryLabels({
             'Der Export ist Rohinventar, nicht die fertige Governance-Entscheidung. Owner, fachliche Bedeutung, Status und offene Fragen müssen danach geprüft werden.',
         'biPythonToolkit.setupStoryLink':
             'Python-Anleitung: Python installieren, Ordner initialisieren, Exports ausführen',
+        'biPythonToolkit.kpiPlaybookLink':
+            'KPI Definition Playbook — Grain, Owner, Versioning',
+        'biPythonToolkit.trustedMetricsLink': 'Lernpfad: Trusted Metrics',
         'biPythonToolkit.openSetupStory': 'Python Setup Story',
         'biPythonToolkit.purpose.title': 'Welches Script brauche ich?',
         'biPythonToolkit.choice.script': 'Script',
@@ -74,6 +77,9 @@ const labels = mergeDiscoveryLabels({
             'The export is raw inventory, not the final governance decision. Review owners, business meaning, status and open questions before closing the task.',
         'biPythonToolkit.setupStoryLink':
             'Python setup guide: install Python, initialize a folder, run the exports',
+        'biPythonToolkit.kpiPlaybookLink':
+            'KPI Definition Playbook — Grain, Owner, Versioning',
+        'biPythonToolkit.trustedMetricsLink': 'Learning path: Trusted metrics',
         'biPythonToolkit.openSetupStory': 'Python Setup Story',
         'biPythonToolkit.purpose.title': 'Which script should I use?',
         'biPythonToolkit.choice.script': 'Script',

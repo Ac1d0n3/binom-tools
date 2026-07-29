@@ -5,15 +5,27 @@
 @section('title', 'Schema YML Editor — ' . config('app.name'))
 
 @section('content')
-    <div class="tools-content tools-content--wide">
-        <h1 class="tools-page-title" data-i18n="schema.pageTitle">Schema YML Editor</h1>
-        <p class="tools-page-lead" data-hub-lead data-i18n="schema.pageLead"></p>
-
-        <div class="tools-page-stack">
-            <p class="tools-standalone-notice" data-i18n="schema.standaloneNotice"></p>
-
-            <div class="schema-yml-editor" id="schema-yml-editor-app">
-            <x-tools.collapsible-info summary-key="schema.howto.summary" :open="true">
+    <x-tools.generator-page
+        title-key="schema.pageTitle"
+        lead-key="schema.pageLead"
+        tool-id="schema-yml-editor"
+        app-id="schema-yml-editor-app"
+        :shared-header="true"
+        eyebrow-de="Governance Tool"
+        eyebrow-en="Governance tool"
+    >
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-head">
+                <span class="governance-advisor__helpbox-icon">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                </span>
+                <span>
+                    <span class="governance-hub__eyebrow" data-i18n="schema.howto.summary">How it works</span>
+                    <strong data-i18n="schema.pageLead"></strong>
+                </span>
+            </div>
+            <div class="governance-advisor__helpbox-content" data-tool-help>
+                <p data-i18n="schema.standaloneNotice"></p>
                 <p data-i18n="schema.howto.overview.intro"></p>
                 <ol>
                     <li data-i18n="schema.howto.overview.step1"></li>
@@ -22,8 +34,10 @@
                     <li data-i18n="schema.howto.overview.step4"></li>
                 </ol>
                 <p data-i18n="schema.howto.overview.tip"></p>
-            </x-tools.collapsible-info>
+            </div>
+        </x-slot:help>
 
+        <div class="schema-yml-editor">
             <section class="schema-editor-panel" aria-labelledby="schema-sync-title">
                 <header class="schema-editor-panel__header">
                     <h3 id="schema-sync-title" data-i18n="schema.sync.title">Sync</h3>
@@ -158,7 +172,6 @@
                 <p class="schema-editor-yaml-error" id="schema-yaml-parse-error" hidden data-i18n="schema.yaml.parseError"></p>
                 <button type="button" class="tools-btn" id="schema-copy-yaml-btn" data-i18n="schema.copy">Copy</button>
             </section>
-            </div>
         </div>
-    </div>
+    </x-tools.generator-page>
 @endsection
