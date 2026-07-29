@@ -83,6 +83,9 @@ final class DatabaseUserRepository implements UserRepositoryInterface
             'avatarIcon' => array_key_exists('avatarIcon', $input)
                 ? $input['avatarIcon']
                 : ($current?->avatarIcon ?? ''),
+            'preferredRole' => array_key_exists('preferredRole', $input)
+                ? $input['preferredRole']
+                : ($current?->preferredRole ?? ''),
             'mustChangePassword' => array_key_exists('mustChangePassword', $input)
                 ? (bool) $input['mustChangePassword']
                 : ($current?->mustChangePassword ?? false),
@@ -116,6 +119,7 @@ final class DatabaseUserRepository implements UserRepositoryInterface
                 'short_name' => $user->shortName,
                 'color_token' => $user->colorToken,
                 'avatar_icon' => $user->avatarIcon,
+                'preferred_role' => $user->preferredRole,
                 'must_change_password' => $user->mustChangePassword,
             ],
         );
@@ -162,6 +166,7 @@ final class DatabaseUserRepository implements UserRepositoryInterface
             'shortName' => (string) $row->short_name,
             'colorToken' => (string) $row->color_token,
             'avatarIcon' => (string) $row->avatar_icon,
+            'preferredRole' => (string) ($row->preferred_role ?? ''),
             'mustChangePassword' => (bool) $row->must_change_password,
         ]);
     }

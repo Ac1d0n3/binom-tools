@@ -100,6 +100,55 @@ class AccountsAuthTest extends TestCase
         $this->get('/login')->assertNotFound();
     }
 
+    public function test_profile_can_set_preferred_governance_role(): void
+    {
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password123',
+        ]);
+
+        $this->get('/profile/settings')
+            ->assertOk()
+            ->assertSee('name="preferredRole"', false)
+            ->assertSee('accounts.preferredRole', false)
+            ->assertSee('value="architect"', false);
+
+        $this->put('/profile/settings', [
+            'displayName' => 'Admin',
+            'preferredRole' => 'architect',
+        ])->assertRedirect();
+
+        $user = app(UserRepository::class)->findById('user_admin');
+        $this->assertNotNull($user);
+        $this->assertSame('architect', $user->preferredRole);
+
+        $this->get('/governance')
+            ->assertOk()
+            ->assertSee('"preferredRole":"architect"', false);
+
+        $this->put('/profile/settings', [
+            'displayName' => 'Admin',
+            'preferredRole' => '',
+        ])->assertRedirect();
+
+        $user = app(UserRepository::class)->findById('user_admin');
+        $this->assertNotNull($user);
+        $this->assertSame('', $user->preferredRole);
+    }
+
+    public function test_profile_rejects_unknown_preferred_role(): void
+    {
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password123',
+        ]);
+
+        $this->from('/profile/settings')->put('/profile/settings', [
+            'displayName' => 'Admin',
+            'preferredRole' => 'not-a-role',
+        ])->assertRedirect('/profile/settings')->assertSessionHasErrors('preferredRole');
+    }
+
     public function test_profile_can_update_avatar_when_enabled(): void
     {
         Config::set('accounts.profile_avatar_enabled', true);

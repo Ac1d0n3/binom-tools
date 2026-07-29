@@ -26,6 +26,7 @@ final class AccountUser
         public readonly string $shortName = '',
         public readonly string $colorToken = 'accent-1',
         public readonly string $avatarIcon = '',
+        public readonly string $preferredRole = '',
         public readonly bool $mustChangePassword = false,
         public readonly bool $pendingApproval = false,
     ) {}
@@ -84,6 +85,7 @@ final class AccountUser
             shortName: ShortName::normalize($data['shortName'] ?? ''),
             colorToken: AccentColors::normalize($data['colorToken'] ?? null),
             avatarIcon: AvatarIcons::normalize($data['avatarIcon'] ?? null),
+            preferredRole: self::normalizePreferredRole($data['preferredRole'] ?? ''),
             mustChangePassword: (bool) ($data['mustChangePassword'] ?? false),
             pendingApproval: (bool) ($data['pendingApproval'] ?? false),
         );
@@ -110,6 +112,29 @@ final class AccountUser
     public function canAccessAdminHub(): bool
     {
         return $this->canManageUsers || $this->canManageTeams || $this->hasAnyContentAccess();
+    }
+
+    /**
+     * Governance Advisor base persona (empty = no default).
+     *
+     * @return list<string>
+     */
+    public static function preferredRoleOptions(): array
+    {
+        return ['steward', 'owner', 'product-owner', 'architect', 'custodian', 'consumer'];
+    }
+
+    public static function normalizePreferredRole(mixed $value): string
+    {
+        $role = trim((string) $value);
+        if ($role === 'analyst') {
+            $role = 'product-owner';
+        }
+        if ($role === 'dpo') {
+            $role = 'owner';
+        }
+
+        return in_array($role, self::preferredRoleOptions(), true) ? $role : '';
     }
 
     /**
@@ -143,6 +168,7 @@ final class AccountUser
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,
             'avatarIcon' => $this->avatarIcon,
+            'preferredRole' => $this->preferredRole,
             'mustChangePassword' => $this->mustChangePassword,
             'pendingApproval' => $this->pendingApproval,
         ];
@@ -168,6 +194,7 @@ final class AccountUser
             'shortName' => $this->shortName,
             'colorToken' => $this->colorToken,
             'avatarIcon' => $this->avatarIcon,
+            'preferredRole' => $this->preferredRole,
             'mustChangePassword' => $this->mustChangePassword,
             'pendingApproval' => $this->pendingApproval,
         ];

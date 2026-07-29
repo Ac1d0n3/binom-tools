@@ -74,6 +74,8 @@ goal: Ersten KPI-Contract mit Grain, Formel und Steward erzeugen.
 stories:
   - slug: define-kpi
     required: true
+  - slug: from-report-inventory-to-trusted-metric
+    required: false
 
 tasks:
   - id: kpi-define-story
@@ -84,6 +86,8 @@ tasks:
     stories:
       - slug: define-kpi
         required: true
+      - slug: from-report-inventory-to-trusted-metric
+        required: false
     helpText: |
       Story als Contract-Checkliste für Steward × Architect nutzen.
   - id: kpi-tools

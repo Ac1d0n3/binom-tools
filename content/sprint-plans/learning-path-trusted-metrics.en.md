@@ -74,6 +74,8 @@ goal: Produce a first KPI contract with grain, formula, and steward.
 stories:
   - slug: define-kpi
     required: true
+  - slug: from-report-inventory-to-trusted-metric
+    required: false
 
 tasks:
   - id: kpi-define-story
@@ -84,6 +86,8 @@ tasks:
     stories:
       - slug: define-kpi
         required: true
+      - slug: from-report-inventory-to-trusted-metric
+        required: false
     helpText: |
       Use the story as the contract checklist for steward × architect collaboration.
   - id: kpi-tools

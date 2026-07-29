@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounts;
 
 use App\Accounts\AccountAuth;
+use App\Accounts\AccountUser;
 use App\Accounts\AccountsConfig;
 use App\Accounts\Contracts\GlossaryQuizResultStoreInterface;
 use App\Accounts\Contracts\UserRepositoryInterface;
@@ -86,6 +87,7 @@ class AuthController extends Controller
             'profileAvatarEnabled' => $this->config->profileAvatarEnabled(),
             'mustChangePassword' => $user->mustChangePassword,
             'glossaryQuizResults' => $quizResults,
+            'governanceRoles' => $this->governanceRoleOptions(),
         ]);
     }
 
@@ -95,9 +97,11 @@ class AuthController extends Controller
         abort_if($user === null, 401);
 
         $mustChange = $user->mustChangePassword;
+        $roleIds = AccountUser::preferredRoleOptions();
 
         $rules = [
             'displayName' => ['required', 'string', 'max:120'],
+            'preferredRole' => ['nullable', 'string', Rule::in(array_merge([''], $roleIds))],
             'current_password' => [$mustChange ? 'required' : 'nullable', 'string'],
             'password' => [$mustChange ? 'required' : 'nullable', 'string', 'min:8', 'confirmed'],
         ];
@@ -113,6 +117,7 @@ class AuthController extends Controller
         $payload = [
             ...$user->toArray(),
             'displayName' => $data['displayName'],
+            'preferredRole' => AccountUser::normalizePreferredRole($data['preferredRole'] ?? ''),
         ];
 
         if ($this->config->profileAvatarEnabled()) {
@@ -133,5 +138,33 @@ class AuthController extends Controller
         $this->users->upsert($payload);
 
         return back()->with('status', 'profile-updated');
+    }
+
+    /**
+     * @return list<array{id: string, title: array{de: string, en: string}}>
+     */
+    private function governanceRoleOptions(): array
+    {
+        $roles = is_array(config('roles.roles')) ? config('roles.roles') : [];
+        $options = [];
+        foreach ($roles as $role) {
+            if (! is_array($role)) {
+                continue;
+            }
+            $id = AccountUser::normalizePreferredRole($role['id'] ?? '');
+            if ($id === '') {
+                continue;
+            }
+            $title = is_array($role['title'] ?? null) ? $role['title'] : [];
+            $options[] = [
+                'id' => $id,
+                'title' => [
+                    'de' => (string) ($title['de'] ?? $id),
+                    'en' => (string) ($title['en'] ?? $id),
+                ],
+            ];
+        }
+
+        return $options;
     }
 }

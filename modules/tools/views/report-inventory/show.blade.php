@@ -26,8 +26,18 @@
             </ol>
             <p data-i18n="reportInventory.howto.tip"></p>
             <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'from-report-inventory-to-trusted-metric']) }}" data-i18n="reportInventory.inventoryPlaybookLink">
+                    From report inventory to trusted metric
+                </a>
+            </p>
+            <p>
                 <a href="{{ locale_route('playbooks.show', ['slug' => 'define-kpi']) }}" data-i18n="reportInventory.playbookLink">
                     KPI Definition Playbook — from inventory to trusted metric
+                </a>
+            </p>
+            <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'semantic-layer-vs-report-measure']) }}" data-i18n="reportInventory.semanticPlaybookLink">
+                    Semantic layer vs measure in the report
                 </a>
             </p>
             <p>

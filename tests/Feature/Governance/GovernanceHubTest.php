@@ -26,6 +26,7 @@ class GovernanceHubTest extends TestCase
         $response->assertSee(route('playbooks.index'), false);
         $response->assertSee('data-governance-advisor', false);
         $response->assertSee('data-governance-advisor-config', false);
+        $response->assertSee('"preferredRole"', false);
         $response->assertSee(route('learning-paths.index'), false);
         $response->assertSee(route('roles.index'), false);
         $response->assertSee(route('sprint-planner.templates'), false);

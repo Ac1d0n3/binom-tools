@@ -14,8 +14,12 @@ const labels = mergeDiscoveryLabels({
         'reportInventory.howto.step3': 'Markdown/CSV kopieren oder herunterladen — für Notizen, Wiki, Tickets oder den Sprint Planner.',
         'reportInventory.howto.tip':
             'Nichts wird im Tool gespeichert. Ergebnis übernehmen (Copy/Download); Persistenz liegt bei dir (Doku/Plan). Schatten-Excel und verwaiste Dashboards mit aufnehmen.',
+        'reportInventory.inventoryPlaybookLink':
+            'Vom Report-Inventar zur Trusted Metric',
         'reportInventory.playbookLink':
             'KPI Definition Playbook — vom Inventar zur vertrauenswürdigen Kennzahl',
+        'reportInventory.semanticPlaybookLink':
+            'Semantic Layer vs Measure im Report',
         'reportInventory.logicPlaybookLink':
             'Business Logic außerhalb der BI-Apps halten',
         'reportInventory.col.report': 'Report',
@@ -48,8 +52,12 @@ const labels = mergeDiscoveryLabels({
         'reportInventory.howto.step3': 'Copy or download Markdown/CSV — for notes, wiki, tickets, or the Sprint Planner.',
         'reportInventory.howto.tip':
             'Nothing is stored in the tool. Transfer the result (copy/download); persistence is yours (docs/plan). Include shadow Excel and orphaned dashboards.',
+        'reportInventory.inventoryPlaybookLink':
+            'From report inventory to trusted metric',
         'reportInventory.playbookLink':
             'KPI Definition playbook — from inventory to trusted metric',
+        'reportInventory.semanticPlaybookLink':
+            'Semantic layer vs measure in the report',
         'reportInventory.logicPlaybookLink':
             'Keep business logic outside BI apps',
         'reportInventory.col.report': 'Report',

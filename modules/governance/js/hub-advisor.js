@@ -2187,30 +2187,36 @@ function initHubContextControls(root) {
     });
 }
 
-function initPersonas(root, onChange) {
+function initPersonas(root, onChange, preferredRole = '') {
     const chips = Array.from(root.querySelectorAll('[data-governance-persona]'));
     if (chips.length === 0) {
         return;
     }
 
     const form = root.querySelector('[data-governance-advisor-form]');
-    let active = 'all';
-    try {
-        active = localStorage.getItem(PERSONA_STORAGE_KEY) || 'all';
-    } catch {
-        active = 'all';
-    }
-
-    // Migrate legacy persona ids
-    if (active === 'analyst') {
-        active = 'product-owner';
-    }
-    if (active === 'dpo') {
-        active = 'owner';
-    }
     const knownPersonas = new Set(chips.map((chip) => chip.dataset.governancePersona || ''));
-    if (!knownPersonas.has(active)) {
-        active = 'all';
+
+    const normalizePersona = (value) => {
+        let next = String(value || '').trim() || 'all';
+        if (next === 'analyst') {
+            next = 'product-owner';
+        }
+        if (next === 'dpo') {
+            next = 'owner';
+        }
+        return knownPersonas.has(next) ? next : 'all';
+    };
+
+    let active = 'all';
+    const preferred = normalizePersona(preferredRole);
+    if (preferred !== 'all') {
+        active = preferred;
+    } else {
+        try {
+            active = normalizePersona(localStorage.getItem(PERSONA_STORAGE_KEY) || 'all');
+        } catch {
+            active = 'all';
+        }
     }
 
     const apply = (persona, persist) => {
@@ -2435,7 +2441,7 @@ function initAdvisor(root) {
         if (form) {
             render(root, config);
         }
-    });
+    }, config.preferredRole || '');
 
     if (!form) {
         return;

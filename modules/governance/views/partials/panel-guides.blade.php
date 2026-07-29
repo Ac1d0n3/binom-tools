@@ -87,6 +87,8 @@
                     'links' => [
                         ['href' => locale_route('tools.governance-stack-advisor'), 'label' => ['de' => 'Stack Advisor', 'en' => 'Stack advisor']],
                         ['href' => locale_route('tools.architecture-fit'), 'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'choose-governance-platform-starting-point']), 'label' => ['de' => 'Governance-Einstieg wählen', 'en' => 'Choose governance starting point']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'microsoft-fabric-governance-start']), 'label' => ['de' => 'Fabric als Einstieg', 'en' => 'Fabric as starting point']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'eight-pillars']), 'label' => ['de' => '8 Pillars / Zertifikate', 'en' => '8 pillars / certifications']],
                     ],
                 ],
@@ -100,7 +102,9 @@
                     'links' => [
                         ['href' => locale_route('tools.source-scope-builder'), 'label' => ['de' => 'Source Scope Builder', 'en' => 'Source Scope Builder']],
                         ['href' => locale_route('tools.meta-export-generator'), 'label' => ['de' => 'Meta Export', 'en' => 'Meta export']],
-                        ['href' => locale_route('playbooks.show', ['slug' => 'before-building-the-first-table']), 'label' => ['de' => 'Vor der ersten Tabelle', 'en' => 'Before the first table']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'which-source-to-load-first']), 'label' => ['de' => 'Welche Quelle zuerst?', 'en' => 'Which source first?']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'salesforce-tables-for-analytics']), 'label' => ['de' => 'Salesforce Load/Skip', 'en' => 'Salesforce load/skip']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'saas-exports-tables-to-skip']), 'label' => ['de' => 'SaaS Skip-Muster', 'en' => 'SaaS skip pattern']],
                     ],
                 ],
                 [
@@ -114,6 +118,7 @@
                         ['href' => locale_route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI Intake', 'en' => 'KPI intake']],
                         ['href' => locale_route('tools.report-inventory'), 'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'define-kpi']), 'label' => ['de' => 'KPI Definition Playbook', 'en' => 'KPI definition playbook']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'from-report-inventory-to-trusted-metric']), 'label' => ['de' => 'Inventory → Trusted Metric', 'en' => 'Inventory → trusted metric']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'kpi-metric-governance']), 'label' => ['de' => 'KPI & Metric Governance', 'en' => 'KPI & metric governance']],
                     ],
                 ],
@@ -140,6 +145,7 @@
                     'outcome' => ['de' => 'Entscheidung: Warehouse/Semantic Layer vs. Report-Measure; dbt-Governance-Felder.', 'en' => 'Decision: warehouse/semantic layer vs report measure; dbt governance fields.'],
                     'links' => [
                         ['href' => locale_route('playbooks.show', ['slug' => 'keeping-business-logic-outside-bi-apps']), 'label' => ['de' => 'Logic außerhalb BI', 'en' => 'Logic outside BI']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'semantic-layer-vs-report-measure']), 'label' => ['de' => 'Semantic Layer vs Report', 'en' => 'Semantic layer vs report']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'metadata-driven-governance-with-dbt-meta']), 'label' => ['de' => 'dbt meta Governance', 'en' => 'dbt meta governance']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'before-building-the-first-table']), 'label' => ['de' => 'Vor der ersten Tabelle', 'en' => 'Before the first table']],
                     ],

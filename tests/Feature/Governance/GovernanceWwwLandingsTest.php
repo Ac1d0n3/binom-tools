@@ -54,6 +54,10 @@ class GovernanceWwwLandingsTest extends TestCase
         $response->assertSee('data-discovery-copy-json', false);
         $response->assertSee('/playbooks/raci-for-data-governance', false);
         $response->assertSee('/playbooks/define-kpi', false);
+        $response->assertSee('/playbooks/which-source-to-load-first', false);
+        $response->assertSee('/playbooks/salesforce-tables-for-analytics', false);
+        $response->assertSee('/playbooks/saas-exports-tables-to-skip', false);
+        $response->assertSee('/playbooks/from-stakeholder-interview-to-table-model', false);
         $response->assertSee('Markdown/JSON here; CSV via the tools per step', false);
 
         $guides = $this->get('/governance?tab=guides');
@@ -70,8 +74,31 @@ class GovernanceWwwLandingsTest extends TestCase
         $guides->assertSee('/playbooks/metadata-driven-governance-with-dbt-meta', false);
         $guides->assertSee('/playbooks/eight-pillars', false);
         $guides->assertSee('/playbooks/pii-privacy-governance', false);
+        $guides->assertSee('/playbooks/choose-governance-platform-starting-point', false);
+        $guides->assertSee('/playbooks/microsoft-fabric-governance-start', false);
+        $guides->assertSee('/playbooks/which-source-to-load-first', false);
+        $guides->assertSee('/playbooks/salesforce-tables-for-analytics', false);
+        $guides->assertSee('/playbooks/saas-exports-tables-to-skip', false);
+        $guides->assertSee('/playbooks/from-report-inventory-to-trusted-metric', false);
+        $guides->assertSee('/playbooks/semantic-layer-vs-report-measure', false);
+        $guides->assertSee('/playbooks/when-to-use-bi-formula-generators', false);
         $guides->assertSee('Trusted metrics / BI', false);
         $guides->assertSee('/learning-paths/trusted-metrics', false);
+    }
+
+    public function test_phase_b_decision_playbook_samples_are_reachable(): void
+    {
+        $slugs = [
+            'choose-governance-platform-starting-point',
+            'salesforce-tables-for-analytics',
+            'semantic-layer-vs-report-measure',
+            'from-stakeholder-interview-to-table-model',
+        ];
+
+        foreach ($slugs as $slug) {
+            $this->get('/playbooks/'.$slug)->assertOk();
+            $this->get('/de/playbooks/'.$slug)->assertOk();
+        }
     }
 
     public function test_legacy_tab_aliases_resolve_to_guides(): void

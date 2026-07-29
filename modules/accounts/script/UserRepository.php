@@ -103,6 +103,9 @@ final class UserRepository implements UserRepositoryInterface
             'avatarIcon' => array_key_exists('avatarIcon', $input)
                 ? $input['avatarIcon']
                 : ($current?->avatarIcon ?? ''),
+            'preferredRole' => array_key_exists('preferredRole', $input)
+                ? $input['preferredRole']
+                : ($current?->preferredRole ?? ''),
             'mustChangePassword' => array_key_exists('mustChangePassword', $input)
                 ? (bool) $input['mustChangePassword']
                 : ($current?->mustChangePassword ?? false),

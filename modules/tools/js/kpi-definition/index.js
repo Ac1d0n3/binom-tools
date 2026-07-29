@@ -17,6 +17,10 @@ const labels = mergeDiscoveryLabels({
             'KPI-Intakes werden im lokalen Workspace mit dem Register verbunden. Beim späteren DB-Store bleibt dieselbe Struktur nutzbar.',
         'kpiDefinition.playbookLink':
             'KPI Definition Playbook — Grain, Owner, Versioning',
+        'kpiDefinition.inventoryPlaybookLink':
+            'Vom Report-Inventar zur Trusted Metric',
+        'kpiDefinition.semanticPlaybookLink':
+            'Semantic Layer vs Measure im Report',
         'kpiDefinition.trustedMetricsLink': 'Lernpfad: Trusted Metrics',
         'kpiDefinition.col.name': 'KPI',
         'kpiDefinition.col.synonyms': 'Synonyme',
@@ -73,6 +77,10 @@ const labels = mergeDiscoveryLabels({
             'KPI intakes are connected to the register through the local workspace. The same shape can move to the database store later.',
         'kpiDefinition.playbookLink':
             'KPI Definition playbook — grain, owner, versioning',
+        'kpiDefinition.inventoryPlaybookLink':
+            'From report inventory to trusted metric',
+        'kpiDefinition.semanticPlaybookLink':
+            'Semantic layer vs measure in the report',
         'kpiDefinition.trustedMetricsLink': 'Learning path: Trusted metrics',
         'kpiDefinition.col.name': 'KPI',
         'kpiDefinition.col.synonyms': 'Synonyms',

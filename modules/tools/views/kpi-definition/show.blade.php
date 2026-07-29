@@ -31,6 +31,16 @@
                 </a>
             </p>
             <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'from-report-inventory-to-trusted-metric']) }}" data-i18n="kpiDefinition.inventoryPlaybookLink">
+                    From report inventory to trusted metric
+                </a>
+            </p>
+            <p>
+                <a href="{{ locale_route('playbooks.show', ['slug' => 'semantic-layer-vs-report-measure']) }}" data-i18n="kpiDefinition.semanticPlaybookLink">
+                    Semantic layer vs measure in the report
+                </a>
+            </p>
+            <p>
                 <a href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="kpiDefinition.trustedMetricsLink">
                     Learning path: Trusted metrics
                 </a>

@@ -48,6 +48,7 @@ class GovernanceHubController extends Controller
             'setupWorkflows' => ToolsNav::workflowsWithRegisteredRoutes(config('tools.workflows', [])),
             'toolsById' => $catalog['toolsById'],
             'advisorLinks' => $this->advisorLinks(),
+            'preferredRole' => $this->auth->user()?->preferredRole ?? '',
             'hubFaqs' => $this->hubFaqs(),
             'stackCards' => $this->stackCards($catalog['toolsById']),
             'discoverySteps' => $this->discoveryCanvasSteps($catalog['toolsById']),
@@ -625,6 +626,9 @@ class GovernanceHubController extends Controller
                 'links' => array_values(array_filter([
                     ['href' => $guides('supplier'), 'label' => ['de' => 'Supplier Discovery', 'en' => 'Supplier discovery']],
                     ['href' => $route('tools.source-scope-builder'), 'label' => ['de' => 'Quellen-Scope', 'en' => 'Source Scope Builder']],
+                    ['href' => $route('playbooks.show', ['slug' => 'which-source-to-load-first']), 'label' => ['de' => 'Welche Quelle zuerst?', 'en' => 'Which source first?']],
+                    ['href' => $route('playbooks.show', ['slug' => 'salesforce-tables-for-analytics']), 'label' => ['de' => 'Salesforce Load/Skip', 'en' => 'Salesforce load/skip']],
+                    ['href' => $route('playbooks.show', ['slug' => 'saas-exports-tables-to-skip']), 'label' => ['de' => 'SaaS Skip-Muster', 'en' => 'SaaS skip pattern']],
                     ['href' => $route('suppliers.index'), 'label' => ['de' => 'Supplier Library', 'en' => 'Supplier library']],
                     ['href' => $route('tools.pii-recommend-generator'), 'label' => ['de' => 'PII Recommend', 'en' => 'PII Recommend']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
@@ -640,6 +644,7 @@ class GovernanceHubController extends Controller
                 'links' => array_values(array_filter([
                     ['href' => $guides('stacks'), 'label' => ['de' => 'Stack-Vergleich', 'en' => 'Stack comparison']],
                     ['href' => $route('tools.governance-stack-advisor'), 'label' => ['de' => 'Stack-Berater', 'en' => 'Governance Stack Advisor']],
+                    ['href' => $route('playbooks.show', ['slug' => 'choose-governance-platform-starting-point']), 'label' => ['de' => 'Governance-Einstieg wählen', 'en' => 'Choose governance starting point']],
                     ['href' => $route('resources.index'), 'label' => ['de' => 'Stack Filter', 'en' => 'Stack filter']],
                     ['href' => $route('tools.architecture-fit'), 'label' => ['de' => 'Architecture Fit', 'en' => 'Architecture fit']],
                     ['href' => $route('tools.vendor-learning-path-builder'), 'label' => ['de' => 'Vendor-Lernpfad', 'en' => 'Learning path']],
@@ -673,8 +678,11 @@ class GovernanceHubController extends Controller
                     ['href' => $route('tools.report-inventory'), 'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory']],
                     ['href' => $route('tools.kpi-definition'), 'label' => ['de' => 'KPI Definition', 'en' => 'KPI definition']],
                     ['href' => $route('playbooks.show', ['slug' => 'define-kpi']), 'label' => ['de' => 'Grain & Owner', 'en' => 'Grain & owner']],
+                    ['href' => $route('playbooks.show', ['slug' => 'from-report-inventory-to-trusted-metric']), 'label' => ['de' => 'Inventory → Trusted Metric', 'en' => 'Inventory → trusted metric']],
+                    ['href' => $route('playbooks.show', ['slug' => 'semantic-layer-vs-report-measure']), 'label' => ['de' => 'Semantic Layer vs Report', 'en' => 'Semantic layer vs report']],
                     ['href' => $route('tools.mart-design-brief-generator'), 'label' => ['de' => 'Mart Design', 'en' => 'Mart design']],
                     ['href' => $route('tools.powerbi-dax-generator'), 'label' => ['de' => 'Power BI DAX', 'en' => 'Power BI DAX']],
+                    ['href' => $route('playbooks.show', ['slug' => 'when-to-use-bi-formula-generators']), 'label' => ['de' => 'Formel-Generatoren', 'en' => 'Formula generators']],
                     ['href' => $route('learning-paths.show', ['slug' => 'trusted-metrics']), 'label' => ['de' => 'Trusted Metrics Path', 'en' => 'Trusted metrics path']],
                     ['href' => $route('playbooks.show', ['slug' => 'missing-pieces-trusted-metrics']), 'label' => ['de' => 'Evidence / Missing Piece', 'en' => 'Evidence / missing piece']],
                 ], static fn (array $link): bool => is_string($link['href'] ?? null))),
@@ -1052,6 +1060,10 @@ class GovernanceHubController extends Controller
                         'slug' => 'before-building-the-first-table',
                         'label' => ['de' => 'Bevor die erste Tabelle entsteht', 'en' => 'Before building the first table'],
                     ],
+                    [
+                        'slug' => 'from-stakeholder-interview-to-table-model',
+                        'label' => ['de' => 'Vom Interview zum Tabellenmodell', 'en' => 'From interview to table model'],
+                    ],
                 ],
             ],
             [
@@ -1085,8 +1097,16 @@ class GovernanceHubController extends Controller
                 'toolId' => 'source-scope-builder',
                 'playbooks' => [
                     [
-                        'slug' => 'before-building-the-first-table',
-                        'label' => ['de' => 'Bevor die erste Tabelle entsteht', 'en' => 'Before building the first table'],
+                        'slug' => 'which-source-to-load-first',
+                        'label' => ['de' => 'Welche Quelle zuerst laden?', 'en' => 'Which source should load first?'],
+                    ],
+                    [
+                        'slug' => 'salesforce-tables-for-analytics',
+                        'label' => ['de' => 'Salesforce Tabellen laden/skippen', 'en' => 'Salesforce tables load/skip'],
+                    ],
+                    [
+                        'slug' => 'saas-exports-tables-to-skip',
+                        'label' => ['de' => 'SaaS-Exporte: Skip-Muster', 'en' => 'SaaS exports: skip pattern'],
                     ],
                 ],
             ],
@@ -1143,6 +1163,10 @@ class GovernanceHubController extends Controller
                     [
                         'slug' => 'before-building-the-first-table',
                         'label' => ['de' => 'Bevor die erste Tabelle entsteht', 'en' => 'Before building the first table'],
+                    ],
+                    [
+                        'slug' => 'from-stakeholder-interview-to-table-model',
+                        'label' => ['de' => 'Vom Interview zum Tabellenmodell', 'en' => 'From interview to table model'],
                     ],
                 ],
             ],

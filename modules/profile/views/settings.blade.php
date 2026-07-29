@@ -27,6 +27,36 @@
                 <input type="text" name="displayName" class="tools-input" value="{{ old('displayName', $account['displayName']) }}" required>
             </label>
 
+            @php
+                $governanceRoles = is_array($governanceRoles ?? null) ? $governanceRoles : [];
+                $selectedPreferredRole = old('preferredRole', $account['preferredRole'] ?? '');
+            @endphp
+            <label class="sp-field">
+                <span data-i18n="accounts.preferredRole">Base governance role</span>
+                <select name="preferredRole" class="tools-input">
+                    <option value="" @selected($selectedPreferredRole === '') data-i18n="accounts.preferredRoleNone">No default</option>
+                    @foreach ($governanceRoles as $role)
+                        @php
+                            $roleId = (string) ($role['id'] ?? '');
+                            $title = is_array($role['title'] ?? null) ? $role['title'] : [];
+                            $labelEn = (string) ($title['en'] ?? $roleId);
+                            $labelDe = (string) ($title['de'] ?? $labelEn);
+                        @endphp
+                        @if ($roleId !== '')
+                            <option
+                                value="{{ $roleId }}"
+                                @selected($selectedPreferredRole === $roleId)
+                                data-text-de="{{ $labelDe }}"
+                                data-text-en="{{ $labelEn }}"
+                            >{{ $labelEn }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <span class="sp-field-hint" data-i18n="accounts.preferredRoleHint">
+                    Pre-selects this role in the Governance Advisor. You can still switch roles there.
+                </span>
+            </label>
+
             @if (! empty($profileAvatarEnabled))
                 <label class="sp-field">
                     <span data-i18n="accounts.shortName">Trigram</span>

@@ -1,7 +1,7 @@
 # Phase B — Infos, Hilfe & Beratung
 
-Stand: 2026-07-28  
-Status: Code-Wave weitgehend erledigt · neue Story-Bodies ausstehend (siehe Briefs)  
+Stand: 2026-07-29  
+Status: Code-Wave + Decision-Stories verdrahtet (Einstiege Hub/Guides/Discovery/Formel-Tools)  
 Zurück: [Phase A](phase-a-authority-auffindbarkeit.de.md) · Index: [index.de.md](index.de.md) · Weiter: [Phase C](phase-c-artefakt-tiefe.de.md)  
 Story-Briefs: [phase-b-story-briefs.de.md](phase-b-story-briefs.de.md)
 
@@ -11,7 +11,7 @@ So viel praktische Orientierung wie möglich anbieten: Decision Pages, geschärf
 
 ## Done when
 
-- [x] Mindestens 8 Decision/Long-tail Stories (DE+EN) live und intern verlinkt *(Reuse verdrahtet; neue Slugs = Briefs)*
+- [x] Mindestens 8 Decision/Long-tail Stories (DE+EN) live und intern verlinkt
 - [x] Advisor liefert Kontext → Begründung → Tools/Certs/Gaps (nicht nur Linkliste)
 - [x] BI-Einstieg klar (Journey + Links zu KPI/Tools/Playbooks) *(Hub Journey + Copy; keine neue Landing-Sektion)*
 - [x] Discovery/Collect-Infos Landing erklärt die Schritte crawlbar; Sessions bleiben noindex
@@ -26,11 +26,11 @@ Mindestliste (Checkbox = veröffentlicht + von Hub/Playbooks verlinkt):
 
 - [x] Welche Infos brauche ich, bevor ich ein Data Warehouse designe? → `before-building-the-first-table`
 - [x] KPI-Definition: Grain, Owner, Quelle (Template-Story) → `define-kpi`
-- [ ] Von Stakeholder-Interview zu Tabellenmodell → Brief `from-stakeholder-interview-to-table-model`
-- [ ] Welche Salesforce-Tabellen für Analytics laden / skippen? → Brief `salesforce-tables-for-analytics`
-- [ ] SaaS-Exporte: welche Tabellen man nicht laden sollte (generisches Muster) → Brief `saas-exports-tables-to-skip`
+- [x] Von Stakeholder-Interview zu Tabellenmodell → `from-stakeholder-interview-to-table-model` (Discovery `business-questions` + `mart`)
+- [x] Welche Salesforce-Tabellen für Analytics laden / skippen? → `salesforce-tables-for-analytics` (Journey Supplier + Guides + Discovery `sources`)
+- [x] SaaS-Exporte: welche Tabellen man nicht laden sollte (generisches Muster) → `saas-exports-tables-to-skip`
 - [x] Data-Governance-Zertifikate für Consultants (CDMP, CIPP/E, Platform — Zweck erklären) → `eight-pillars` + `/compliance/roadmap`
-- [ ] Microsoft Fabric / Databricks / Snowflake / BigQuery — Governance-Einstieg (Serie `governance-stack-decisions`, siehe [governance-stack-decisions-story-briefs.de.md](governance-stack-decisions-story-briefs.de.md))
+- [x] Microsoft Fabric / Databricks / Snowflake / BigQuery — Governance-Einstieg → Serie `governance-platform-starting-points` (Chooser verdrahtet; siehe [governance-stack-decisions-story-briefs.de.md](governance-stack-decisions-story-briefs.de.md))
 - [x] dbt `schema.yml` / `meta` Governance-Felder (Praxis) → `metadata-driven-governance-with-dbt-meta`
 - [x] PII in CRM, HR, Collaboration erkennen (Einstieg) → `pii-privacy-governance` (+ DSDR)
 - [x] Business Logic außerhalb der BI-App halten (Vertiefung / Verdrahtung bestehender Story) → `keeping-business-logic-outside-bi-apps`
@@ -41,8 +41,8 @@ SEO-Cluster abdecken (mind. ein starker Einstieg pro Cluster):
 - [x] KPI Definition / Requirements
 - [x] Data Quality Regeln
 - [x] PII / DSDR
-- [x] Fabric / Databricks / dbt / Snowflake Governance *(dbt live via `metadata-driven-governance-with-dbt-meta`; Plattform-Chooser/Einstiege = Serie offen)*
-- [x] Power BI / Tableau / Qlik Governance *(Tool-Leads + Logic-Story; BI-Decision Briefs offen)*
+- [x] Fabric / Databricks / dbt / Snowflake Governance *(Plattform-Serie Parts 1–7 live; Chooser Hub-Einstieg)*
+- [x] Power BI / Tableau / Qlik Governance *(BI-Serie Parts 1–8 live; Einstiege Hub + Formel-Tools)*
 
 Hub-Regel pro Seite: Problem → Entscheidung → Checkliste → Artefakt → Tools → Resources → Playbooks → nächster Schritt.
 
@@ -75,10 +75,10 @@ Report Inventory → KPI Definition → Grain/Owner → Layer/Mart → BI-Formel
 ```
 
 - [x] Auf Home oder Tools-Landing: BI-Einstieg *(Hub Journey + `home.biLead`; keine neue visuelle Sektion ohne Design-Freigabe)*
-- [x] Interne Links von Power BI / Tableau / Qlik Tools zu KPI-, DQ-, PII-Playbooks
+- [x] Interne Links von Power BI / Tableau / Qlik Tools zu KPI-, DQ-, PII-Playbooks *(+ Semantic Layer / Formel-Generator Decision Pages)*
 - [x] Learning Path oder kuratierte Playbook-Liste „Trusted Metrics / BI Governance“ prüfen und ggf. nachschärfen
-- [x] Sprint-Template-Anbindung für BI-Governance-Pfad prüfen (`ia-roles-paths-sprint.md`)
-- [ ] Mindestens 2 BI-Decision Pages (z. B. Semantic Layer vs Measure in Report; Certification Fabric/PBI) → Briefs
+- [x] Sprint-Template-Anbindung für BI-Governance-Pfad prüfen (`from-report-inventory-to-trusted-metric` in Trusted-Metrics-Sprint)
+- [x] Mindestens 2 BI-Decision Pages → `semantic-layer-vs-report-measure`, `fabric-powerbi-metric-certification` (+ Serie Parts 3–8 live)
 
 Tools (Landing-Texte SEO-fähig — Problem erklären ohne Interaktion):
 
@@ -102,12 +102,12 @@ Referenz: [governance-workflow-tool-plans.de.md](../governance-workflow-tool-pla
 Schritte (Inhalt vorhanden/verlinkt?):
 
 - [x] Stakeholder / RACI
-- [x] Business-Fragen / Report Inventory
+- [x] Business-Fragen / Report Inventory *(+ Interview→Tabellenmodell)*
 - [x] KPI-Anforderungen
-- [x] Quellen / Supplier Scope *(Salesforce/SaaS-Stories nach Ablage nachziehen)*
+- [x] Quellen / Supplier Scope *(which-source / Salesforce / SaaS-Skip)*
 - [x] PII / DSDR
 - [x] Data Quality
-- [x] Mart Design Brief
+- [x] Mart Design Brief *(+ Interview→Tabellenmodell)*
 - [x] Decision Brief / Impact-Effort
 
 ---
@@ -131,13 +131,23 @@ Referenz: [story-gaps-roles.md](../story-gaps-roles.md)
 
 Story-Briefs & Serien: [phase-b-story-briefs.de.md](phase-b-story-briefs.de.md)
 
-Neue Slugs (Bodies ausstehend):
+Serien-Plan-MDs (reale Slugs):
 
-- `from-stakeholder-interview-to-table-model` — Serie `building-modern-data-warehouse` Part 11
-- `salesforce-tables-for-analytics` — Serie `source-load-decisions` Part 1
-- `saas-exports-tables-to-skip` — Serie `source-load-decisions` Part 2
-- Serie `governance-stack-decisions` (Chooser + Fabric/Databricks/Snowflake/BigQuery + dbt + Multi-Platform) — Plan: [governance-stack-decisions-story-briefs.de.md](governance-stack-decisions-story-briefs.de.md); ~~`fabric-vs-databricks-governance-start`~~ entfernt
-- `semantic-layer-vs-report-measure` — Serie `bi-governance-decisions` Part 1
-- `fabric-powerbi-metric-certification` — Serie `bi-governance-decisions` Part 2
+- Plattform: [governance-stack-decisions-story-briefs.de.md](governance-stack-decisions-story-briefs.de.md) → Serie `governance-platform-starting-points`
+- Source Load: [source-load-decisions-story-briefs.de.md](source-load-decisions-story-briefs.de.md)
+- BI: [bi-governance-decisions-story-briefs.de.md](bi-governance-decisions-story-briefs.de.md)
 
-Advisor: Session-/Demo-Reports `noindex,nofollow` gesetzt.
+Hub-Einstiege (nicht jede Vendor-Part-Story):
+
+| Bereich | Slugs |
+|---------|-------|
+| Stack | `choose-governance-platform-starting-point`, optional `microsoft-fabric-governance-start` |
+| Source | `which-source-to-load-first`, `salesforce-tables-for-analytics`, `saas-exports-tables-to-skip` |
+| Interview/Mart | `from-stakeholder-interview-to-table-model` |
+| BI | `from-report-inventory-to-trusted-metric`, `semantic-layer-vs-report-measure`, `when-to-use-bi-formula-generators` |
+
+Advisor: Session-/Demo-Reports `noindex,nofollow` gesetzt.  
+Profil: Basis-Rolle (`preferredRole`) vorbelegt den Advisor — Chips bleiben frei wählbar.
+
+**Keine weiteren Decision Pages.** Advisor = Entscheidungseinstieg; die Phase-B-Playbooks sind Vertiefung.  
+Weiter: [Phase C](phase-c-artefakt-tiefe.de.md) = Supplier→Mart / Proof auf dieser Basis — keine Dubletten.

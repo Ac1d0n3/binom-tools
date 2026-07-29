@@ -16,7 +16,7 @@ class BnUser extends Model
         'id', 'email', 'display_name', 'password_hash', 'team_ids',
         'can_manage_users', 'can_manage_teams', 'can_manage_content', 'content_areas',
         'active', 'pending_approval',
-        'short_name', 'color_token', 'avatar_icon', 'must_change_password',
+        'short_name', 'color_token', 'avatar_icon', 'preferred_role', 'must_change_password',
     ];
 
     protected function casts(): array

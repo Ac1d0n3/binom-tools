@@ -54,7 +54,10 @@
 @section('content')
     <div class="tools-content governance-hub" data-governance-advisor>
         <script type="application/json" data-governance-advisor-config>
-            {!! json_encode(['links' => $advisorLinks], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+            {!! json_encode([
+                'links' => $advisorLinks,
+                'preferredRole' => $preferredRole ?? '',
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
         </script>
 
         <header class="governance-hub__hero">
