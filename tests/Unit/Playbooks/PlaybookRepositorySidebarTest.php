@@ -56,13 +56,24 @@ class PlaybookRepositorySidebarTest extends TestCase
 
         $this->assertSame($seriesIds, array_values(array_unique($seriesIds)));
         $this->assertNotEmpty($seriesIds);
-        // Newest multi-part series must collapse to a single card (not one per part).
-        $this->assertContains('building-modern-data-warehouse', $seriesIds);
-        $seriesPartCount = collect($repository->allForIndex())
-            ->filter(static fn (array $item): bool => ($item['seriesId'] ?? '') === 'building-modern-data-warehouse')
-            ->count();
-        $this->assertGreaterThan(1, $seriesPartCount);
-        $this->assertSame(1, collect($seriesIds)->filter(static fn (string $id): bool => $id === 'building-modern-data-warehouse')->count());
+
+        // Any multi-part series among the newest cards must collapse to a single entry.
+        $multiPartSeriesId = null;
+        foreach ($seriesIds as $seriesId) {
+            $partCount = collect($repository->allForIndex())
+                ->filter(static fn (array $item): bool => ($item['seriesId'] ?? '') === $seriesId)
+                ->count();
+            if ($partCount > 1) {
+                $multiPartSeriesId = $seriesId;
+                break;
+            }
+        }
+
+        $this->assertNotNull($multiPartSeriesId, 'Expected at least one multi-part series among latest catalog cards.');
+        $this->assertSame(
+            1,
+            collect($seriesIds)->filter(static fn (string $id): bool => $id === $multiPartSeriesId)->count(),
+        );
     }
 
     public function test_latest_catalog_cards_ensures_series_for_current_part_slug(): void

@@ -4,6 +4,7 @@ namespace Tests\Unit\Accounts;
 
 use App\Accounts\AccountUser;
 use App\Accounts\AccountsConfig;
+use App\Accounts\ContentAreas;
 use App\Accounts\JsonFileStore;
 use App\Accounts\PlanStore;
 use App\Accounts\StoryAclRepository;
@@ -366,6 +367,8 @@ class StoryAclAndPlanStoreTest extends TestCase
             teamIds: $teamIds,
             canManageUsers: false,
             canManageTeams: false,
+            canManageContent: false,
+            contentAreas: ContentAreas::normalize(null, false),
             active: true,
         );
     }

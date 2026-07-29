@@ -55,9 +55,18 @@ class PlaybookPagesTest extends TestCase
         $response->assertDontSee('tools-overview-tags', false);
 
         $html = $response->getContent();
-        $this->assertMatchesRegularExpression(
-            '/tools-overview-main[\s\S]*?data-tag-sidebar-toggle[\s\S]*?data-tag-sidebar/',
-            $html,
+        $mainPos = strpos($html, 'tools-overview-main');
+        $togglePos = strpos($html, 'data-tag-sidebar-toggle');
+        // Exact attribute (not -toggle / -backdrop / -panel / -search).
+        if (! preg_match('/\bdata-tag-sidebar(?:\s|=|>)/', $html, $match, PREG_OFFSET_CAPTURE)) {
+            $this->fail('Expected data-tag-sidebar attribute on playbook index.');
+        }
+        $sidebarPos = $match[0][1];
+        $this->assertNotFalse($mainPos);
+        $this->assertNotFalse($togglePos);
+        $this->assertTrue(
+            $mainPos < $togglePos && $togglePos < $sidebarPos,
+            'Expected tools-overview-main, then data-tag-sidebar-toggle, then data-tag-sidebar.',
         );
     }
 

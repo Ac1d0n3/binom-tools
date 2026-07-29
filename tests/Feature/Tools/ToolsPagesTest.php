@@ -330,7 +330,8 @@ class ToolsPagesTest extends TestCase
                 ->assertSee('pureview-mapping-pre', false)
                 ->assertSee('pureview-runbook-pre', false)
                 ->assertSee($titleKey, false)
-                ->assertSee('pureview.howto.summary', false);
+                ->assertSee('pureview.howto.step1', false)
+                ->assertSee('data-tool-header-options-toggle', false);
         }
     }
 
@@ -341,12 +342,11 @@ class ToolsPagesTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('qlik-set-analysis-generator-app', false)
-            ->assertSee('qlik-set-workbench-title', false)
-            ->assertSee('qlik-set-help-toggle', false)
-            ->assertSee('qlik-set-help-body', false)
+            ->assertSee('qlik-set-workbench', false)
+            ->assertSee('data-tool-header-options-toggle', false)
             ->assertSee('qlik-set-help__links', false)
             ->assertSee('qlikSet.help.productLink', false)
-            ->assertSee('qlikSet.help.show', false)
+            ->assertSee('qlikSet.help.title', false)
             ->assertSee('qlik-set-base-measure', false)
             ->assertSee('qlik-set-current-formula-pre', false)
             ->assertSee('qlikSet.formula.current', false)
@@ -425,7 +425,7 @@ class ToolsPagesTest extends TestCase
             ->assertSee('data-tableau-hierarchy-preview', false)
             ->assertSee('data-tableau-definition-list', false)
             ->assertSee('data-tableau-download-xlsx', false)
-            ->assertSee('data-tableau-help-toggle', false)
+            ->assertSee('data-tool-header-options-toggle', false)
             ->assertSee('qlik-set-help__links', false)
             ->assertSee('tableauCalc.pageTitle', false);
     }
@@ -462,7 +462,7 @@ class ToolsPagesTest extends TestCase
             ->assertSee('data-powerbi-hierarchy-preview', false)
             ->assertSee('data-powerbi-definition-list', false)
             ->assertSee('data-powerbi-download-xlsx', false)
-            ->assertSee('data-powerbi-help-toggle', false)
+            ->assertSee('data-tool-header-options-toggle', false)
             ->assertSee('qlik-set-help__links', false)
             ->assertSee('powerbiDax.pageTitle', false);
     }

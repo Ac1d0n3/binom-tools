@@ -26,7 +26,7 @@ class PromptStudioPageTest extends TestCase
         $response->assertSee('ps-model-select', false);
         $response->assertSee('ps-model-plan', false);
         $response->assertSee('data-ps-plan="free"', false);
-        $response->assertSee('ps-help-drawer', false);
+        $response->assertSee('data-tool-header-options-toggle', false);
         $response->assertSee('ps-library-drawer', false);
         $response->assertSee('ps-category-filter', false);
         $response->assertSee('promptStudio.category.all', false);
