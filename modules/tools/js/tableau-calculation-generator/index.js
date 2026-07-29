@@ -165,8 +165,6 @@ function bindEvents() {
         button.addEventListener('click', () => activateImportTab(button.dataset.tableauImportTab));
     });
 
-    document.querySelector('[data-tableau-workbench-toggle]')?.addEventListener('click', toggleWorkbench);
-    document.querySelector('[data-tableau-help-toggle]')?.addEventListener('click', toggleHelp);
     document.querySelectorAll('[data-tableau-layout-toggle]').forEach((button) => {
         button.addEventListener('click', () => toggleLayoutColumn(button.dataset.tableauLayoutToggle));
     });
@@ -839,36 +837,6 @@ function activateImportTab(tab) {
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
     });
-}
-
-function toggleWorkbench() {
-    const body = document.querySelector('[data-tableau-workbench-body]');
-    const button = document.querySelector('[data-tableau-workbench-toggle]');
-
-    if (!body || !button) {
-        return;
-    }
-
-    const open = !body.hidden;
-    body.hidden = open;
-    button.setAttribute('aria-expanded', open ? 'false' : 'true');
-    button.textContent = t(open ? 'tableauCalc.workbench.show' : 'tableauCalc.workbench.hide');
-}
-
-function toggleHelp() {
-    const section = document.querySelector('[data-tableau-help]');
-    const body = document.querySelector('[data-tableau-help-body]');
-    const button = document.querySelector('[data-tableau-help-toggle]');
-
-    if (!section || !body || !button) {
-        return;
-    }
-
-    const expanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    body.hidden = expanded;
-    section.classList.toggle('is-collapsed', expanded);
-    button.textContent = t(expanded ? 'tableauCalc.help.show' : 'tableauCalc.help.hide');
 }
 
 function toggleBaseList() {

@@ -14,7 +14,22 @@
     $useSharedHeader = (bool) $sharedHeader;
     $resolvedOptionTabs = $optionTabs;
     if ($useSharedHeader && $resolvedOptionTabs === null) {
-        $resolvedOptionTabs = isset($help) ? ['help'] : [];
+        $resolvedOptionTabs = [];
+        if (isset($save)) {
+            $resolvedOptionTabs[] = 'save';
+        }
+        if (isset($help)) {
+            $resolvedOptionTabs[] = 'help';
+        }
+        if (isset($overview)) {
+            $resolvedOptionTabs[] = 'overview';
+        }
+        if (isset($structure)) {
+            $resolvedOptionTabs[] = 'structure';
+        }
+        if (isset($workspace)) {
+            $resolvedOptionTabs[] = 'workspace';
+        }
     }
     if (! is_array($resolvedOptionTabs)) {
         $resolvedOptionTabs = [];
@@ -55,6 +70,10 @@
 
             @isset($workspace)
                 <x-slot:workspace>{{ $workspace }}</x-slot:workspace>
+            @endisset
+
+            @isset($save)
+                <x-slot:save>{{ $save }}</x-slot:save>
             @endisset
         </x-tools.tool-page-header>
     @else

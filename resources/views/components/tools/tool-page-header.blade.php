@@ -45,6 +45,11 @@
             'de' => $workspaceLabelDe,
             'en' => $workspaceLabelEn,
         ],
+        'save' => [
+            'icon' => 'fa-floppy-disk',
+            'de' => 'Speichern',
+            'en' => 'Save',
+        ],
     ];
     $titleText = $titleEn ?: ($titleDe ?: '');
     $leadText = $leadEn ?: ($leadDe ?: '');
@@ -176,6 +181,7 @@
                             'overview' => $overview ?? null,
                             'structure' => $structure ?? null,
                             'workspace' => $workspace ?? null,
+                            'save' => $save ?? null,
                             default => null,
                         };
                     @endphp

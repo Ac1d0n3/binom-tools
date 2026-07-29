@@ -11,14 +11,41 @@
         tool-id="tableau-calculation-generator"
         app-id="tableau-calculation-generator-app"
         title-badge="V1"
+        :shared-header="true"
+        eyebrow-de="BI Tool"
+        eyebrow-en="BI tool"
     >
-        <div class="tableau-calc" data-tableau-calc-root>
-            <section class="tools-panel qlik-set-help is-collapsed" aria-labelledby="tableau-calc-help-title" data-tableau-help>
-                <div class="qlik-set-help__header">
-                    <div>
-                        <h2 id="tableau-calc-help-title" class="tools-panel__title" data-tableau-i18n="tableauCalc.help.title">Tableau Calculation Hilfe</h2>
-                        <p class="qlik-set-help__lead" data-tableau-i18n="tableauCalc.help.lead"></p>
-                        <div class="qlik-set-help__links" aria-label="Tableau product links">
+        <x-slot:save>
+            <div class="qlik-set-appbar" aria-label="Saved Tableau apps">
+                            <x-tools.field label-key="tableauCalc.apps.name">
+                                <input class="pii-policy-input" type="text" value="Demo Tableau Workbook" data-tableau-app-name>
+                            </x-tools.field>
+                            <x-tools.field label-key="tableauCalc.apps.saved">
+                                <select class="pii-policy-input" data-tableau-saved-apps>
+                                    <option value="" data-tableau-i18n="tableauCalc.apps.none"></option>
+                                </select>
+                            </x-tools.field>
+                            <div class="qlik-set-appbar__actions">
+                                <button type="button" class="tools-btn tools-btn--primary" data-tableau-save-app data-tableau-i18n="tableauCalc.apps.save">App speichern</button>
+                                <button type="button" class="tools-btn tools-btn--secondary" data-tableau-load-app data-tableau-i18n="tableauCalc.apps.load">App laden</button>
+                                <button type="button" class="tools-btn tools-btn--secondary" data-tableau-delete-app data-tableau-i18n="tableauCalc.apps.delete">App löschen</button>
+                            </div>
+                            <p class="qlik-set-builder-message" data-tableau-app-message aria-live="polite" hidden></p>
+                        </div>
+        </x-slot:save>
+
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-head">
+                <span class="governance-advisor__helpbox-icon">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                </span>
+                <span>
+                    <span class="governance-hub__eyebrow" data-tableau-i18n="tableauCalc.help.title">Hilfe</span>
+                    <strong data-tableau-i18n="tableauCalc.help.lead"></strong>
+                </span>
+            </div>
+            <div class="qlik-set-help qlik-set-help--drawer" data-tool-help>
+                <div class="qlik-set-help__links" aria-label="Tableau product links">
                             <a class="qlik-set-help__link" href="https://www.tableau.com/" target="_blank" rel="noopener noreferrer" data-tableau-i18n="tableauCalc.help.productLink">Tableau Produktseite</a>
                             <a class="qlik-set-help__link" href="https://help.tableau.com/" target="_blank" rel="noopener noreferrer" data-tableau-i18n="tableauCalc.help.productHelpLink">Tableau Hilfe-Portal</a>
                             <a class="qlik-set-help__link" href="https://help.tableau.com/current/pro/desktop/en-us/calculations_calculatedfields_create.htm" target="_blank" rel="noopener noreferrer" data-tableau-i18n="tableauCalc.help.calculatedFieldsLink">Calculated Fields Dokumentation</a>
@@ -28,11 +55,7 @@
                             <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']) }}" data-tableau-i18n="tableauCalc.help.piiPlaybookLink">PII &amp; Privacy</a>
                             <a class="qlik-set-help__link" href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-tableau-i18n="tableauCalc.help.trustedMetricsLink">Trusted Metrics Path</a>
                         </div>
-                    </div>
-                    <button type="button" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-tableau-help-toggle data-tableau-i18n="tableauCalc.help.show">Hilfe anzeigen</button>
-                </div>
-                <div class="qlik-set-help__body" data-tableau-help-body hidden>
-                    <div class="tableau-calc__help-grid">
+                <div class="tableau-calc__help-grid">
                         <article class="tableau-calc__help-card">
                             <strong data-tableau-i18n="tableauCalc.help.catalogTitle"></strong>
                             <p data-tableau-i18n="tableauCalc.help.step1"></p>
@@ -54,36 +77,14 @@
                         <strong data-tableau-i18n="tableauCalc.help.whereTitle"></strong>
                         <p data-tableau-i18n="tableauCalc.help.whereBody"></p>
                     </div>
-                </div>
-            </section>
+            </div>
+        </x-slot:help>
 
-            <x-tools.panel heading-id="tableau-calc-workbench-title" title-key="tableauCalc.workbench.title" description-key="tableauCalc.workbench.description">
-                <div class="qlik-set-workbench-shell">
-                    <div class="qlik-set-workbench-control">
-                        <div>
-                            <strong data-tableau-i18n="tableauCalc.workbench.controlTitle"></strong>
-                            <span data-tableau-i18n="tableauCalc.workbench.controlHint"></span>
-                        </div>
-                        <button type="button" class="tools-btn tools-btn--secondary" aria-expanded="true" data-tableau-workbench-toggle data-tableau-i18n="tableauCalc.workbench.hide"></button>
-                    </div>
-                    <div class="qlik-set-workbench-body" data-tableau-workbench-body>
-                        <div class="qlik-set-appbar" aria-label="Saved Tableau apps">
-                            <x-tools.field label-key="tableauCalc.apps.name">
-                                <input class="pii-policy-input" type="text" value="Demo Tableau Workbook" data-tableau-app-name>
-                            </x-tools.field>
-                            <x-tools.field label-key="tableauCalc.apps.saved">
-                                <select class="pii-policy-input" data-tableau-saved-apps>
-                                    <option value="" data-tableau-i18n="tableauCalc.apps.none"></option>
-                                </select>
-                            </x-tools.field>
-                            <div class="qlik-set-appbar__actions">
-                                <button type="button" class="tools-btn tools-btn--primary" data-tableau-save-app data-tableau-i18n="tableauCalc.apps.save">App speichern</button>
-                                <button type="button" class="tools-btn tools-btn--secondary" data-tableau-load-app data-tableau-i18n="tableauCalc.apps.load">App laden</button>
-                                <button type="button" class="tools-btn tools-btn--secondary" data-tableau-delete-app data-tableau-i18n="tableauCalc.apps.delete">App löschen</button>
-                            </div>
-                            <p class="qlik-set-builder-message" data-tableau-app-message aria-live="polite" hidden></p>
-                        </div>
-                        <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
+
+        <div class="tableau-calc" data-tableau-calc-root>
+            <div class="qlik-set-workbench-shell">
+                                        <div class="qlik-set-workbench-body">
+                                                <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
                             <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-tableau-layout-toggle="catalog" data-tableau-i18n="tableauCalc.layout.catalog"></button>
                             <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-tableau-layout-toggle="composer" data-tableau-i18n="tableauCalc.layout.formula"></button>
                             <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-tableau-layout-toggle="builder" data-tableau-i18n="tableauCalc.layout.builder"></button>
@@ -351,7 +352,6 @@ Category</textarea>
                         </div>
                     </div>
                 </div>
-            </x-tools.panel>
 
             <section class="pii-policy-panel pii-policy-panel--code qlik-set-output-panel-wrap" aria-label="Tableau output">
                 <div class="qlik-set-output-tabbar">

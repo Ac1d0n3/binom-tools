@@ -35,6 +35,16 @@
     padding: 1rem 1.1rem;
 }
 
+.qlik-set-help--drawer {
+    border-left: 0;
+    display: grid;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
 .qlik-set-help__header {
     align-items: center;
     display: flex;
@@ -231,13 +241,10 @@
 }
 
 .qlik-set-workbench-shell {
-    border: 1px solid var(--qlik-border);
-    border-radius: var(--qlik-radius-lg);
-    background: var(--qlik-surface);
     display: flex;
     flex-direction: column;
     gap: var(--qlik-space-md);
-    padding: var(--qlik-space-md);
+    min-width: 0;
 }
 
 .qlik-set-workbench-control {
@@ -270,6 +277,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--qlik-space-md);
+    min-width: 0;
 }
 
 .qlik-set-workbench-body[hidden] {
@@ -320,6 +328,9 @@
     flex-wrap: nowrap;
     align-items: flex-start;
     gap: 1rem;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
 }
 
 .qlik-set-workbench[data-layout-catalog="closed"][data-layout-composer="closed"][data-layout-builder="closed"] {
@@ -343,6 +354,9 @@
     gap: 0.85rem;
     padding: 1rem;
     min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .qlik-set-rail {
@@ -526,12 +540,16 @@
     flex-wrap: wrap;
     gap: 0.4rem;
     margin-top: 0.75rem;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .qlik-set-chip-row--stacked {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .qlik-set-catalog-tabs,
@@ -658,6 +676,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .qlik-set-catalog-group h4 {
@@ -673,6 +693,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .qlik-set-chip {
@@ -680,13 +702,25 @@
     border: 1px solid color-mix(in srgb, var(--qlik-accent) 28%, var(--qlik-border));
     border-radius: 999px;
     background: var(--qlik-accent-soft);
+    box-sizing: border-box;
     color: var(--qlik-text);
     cursor: pointer;
     display: inline-flex;
     gap: 0.35rem;
     font-size: 0.78rem;
     font: inherit;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
     padding: 0.25rem 0.55rem;
+}
+
+.qlik-set-chip > span:not(.qlik-set-chip__icon),
+.qlik-set-chip > small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .qlik-set-chip__icon {

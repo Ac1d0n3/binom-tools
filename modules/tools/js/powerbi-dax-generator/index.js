@@ -165,8 +165,6 @@ function bindEvents() {
         button.addEventListener('click', () => activateImportTab(button.dataset.powerbiImportTab));
     });
 
-    document.querySelector('[data-powerbi-workbench-toggle]')?.addEventListener('click', toggleWorkbench);
-    document.querySelector('[data-powerbi-help-toggle]')?.addEventListener('click', toggleHelp);
     document.querySelectorAll('[data-powerbi-layout-toggle]').forEach((button) => {
         button.addEventListener('click', () => toggleLayoutColumn(button.dataset.powerbiLayoutToggle));
     });
@@ -879,36 +877,6 @@ function activateImportTab(tab) {
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
     });
-}
-
-function toggleWorkbench() {
-    const body = document.querySelector('[data-powerbi-workbench-body]');
-    const button = document.querySelector('[data-powerbi-workbench-toggle]');
-
-    if (!body || !button) {
-        return;
-    }
-
-    const open = !body.hidden;
-    body.hidden = open;
-    button.setAttribute('aria-expanded', open ? 'false' : 'true');
-    button.textContent = t(open ? 'powerbiDax.workbench.show' : 'powerbiDax.workbench.hide');
-}
-
-function toggleHelp() {
-    const section = document.querySelector('[data-powerbi-help]');
-    const body = document.querySelector('[data-powerbi-help-body]');
-    const button = document.querySelector('[data-powerbi-help-toggle]');
-
-    if (!section || !body || !button) {
-        return;
-    }
-
-    const expanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    body.hidden = expanded;
-    section.classList.toggle('is-collapsed', expanded);
-    button.textContent = t(expanded ? 'powerbiDax.help.show' : 'powerbiDax.help.hide');
 }
 
 function toggleBaseList() {

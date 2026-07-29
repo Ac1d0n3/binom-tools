@@ -11,13 +11,41 @@
         tool-id="qlik-set-analysis-generator"
         app-id="qlik-set-analysis-generator-app"
         title-badge="V!"
+        :shared-header="true"
+        eyebrow-de="BI Tool"
+        eyebrow-en="BI tool"
     >
-        <section class="tools-panel qlik-set-help is-collapsed" aria-labelledby="qlik-set-help-title">
-            <div class="qlik-set-help__header">
-                <div>
-                    <h2 id="qlik-set-help-title" class="tools-panel__title" data-i18n="qlikSet.help.title"></h2>
-                    <p class="qlik-set-help__lead" data-i18n="qlikSet.help.lead"></p>
-                    <div class="qlik-set-help__links" aria-label="Qlik product links">
+        <x-slot:save>
+            <div class="qlik-set-appbar" aria-label="Saved Qlik apps">
+                        <x-tools.field label-key="qlikSet.apps.name">
+                            <input id="qlik-set-app-name" class="pii-policy-input" type="text" value="Demo Sales App">
+                        </x-tools.field>
+                        <x-tools.field label-key="qlikSet.apps.saved">
+                            <select id="qlik-set-saved-apps" class="pii-policy-input">
+                                <option value="" data-i18n="qlikSet.apps.none"></option>
+                            </select>
+                        </x-tools.field>
+                        <div class="qlik-set-appbar__actions">
+                            <button type="button" id="qlik-set-save-app" class="tools-btn tools-btn--primary" data-i18n="qlikSet.apps.save"></button>
+                            <button type="button" id="qlik-set-load-app" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.apps.load"></button>
+                            <button type="button" id="qlik-set-delete-app" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.apps.delete"></button>
+                        </div>
+                        <p id="qlik-set-app-message" class="qlik-set-builder-message" aria-live="polite" hidden></p>
+                    </div>
+        </x-slot:save>
+
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-head">
+                <span class="governance-advisor__helpbox-icon">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                </span>
+                <span>
+                    <span class="governance-hub__eyebrow" data-i18n="qlikSet.help.title">Hilfe</span>
+                    <strong data-i18n="qlikSet.help.lead"></strong>
+                </span>
+            </div>
+            <div class="qlik-set-help qlik-set-help--drawer" data-tool-help>
+                <div class="qlik-set-help__links" aria-label="Qlik product links">
                         <a class="qlik-set-help__link" href="https://www.qlik.com/" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.productLink">Qlik Produktseite</a>
                         <a class="qlik-set-help__link" href="https://help.qlik.com/" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.productHelpLink">Qlik Hilfe-Portal</a>
                         <a class="qlik-set-help__link" href="https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/SetAnalysis/set-analysis-expressions.htm" target="_blank" rel="noopener noreferrer" data-i18n="qlikSet.help.setAnalysisLink">Set Analysis Dokumentation</a>
@@ -26,10 +54,6 @@
                         <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']) }}" data-i18n="qlikSet.help.piiPlaybookLink">PII &amp; Privacy</a>
                         <a class="qlik-set-help__link" href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-i18n="qlikSet.help.trustedMetricsLink">Trusted Metrics Path</a>
                     </div>
-                </div>
-                <button type="button" id="qlik-set-help-toggle" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-i18n="qlikSet.help.show">Hilfe anzeigen</button>
-            </div>
-            <div id="qlik-set-help-body" class="qlik-set-help__body" hidden>
                 <div class="qlik-set-help__tabs" role="tablist" aria-label="Qlik Set Analysis help">
                     <button type="button" class="qlik-set-help__tab is-active" data-qlik-help-tab="quick" data-i18n="qlikSet.howto.summary"></button>
                     <button type="button" class="qlik-set-help__tab" data-qlik-help-tab="fields" data-i18n="qlikSet.fields.summary"></button>
@@ -82,38 +106,16 @@ Channel,Retail,Retail</pre>
                     </ul>
                 </div>
             </div>
-        </section>
+        </x-slot:help>
+
+
+
 
         <datalist id="qlik-set-field-options"></datalist>
         <datalist id="qlik-set-variable-options"></datalist>
-
-        <x-tools.panel heading-id="qlik-set-workbench-title" title-key="qlikSet.workbench.title" description-key="qlikSet.workbench.description">
             <div class="qlik-set-workbench-shell">
-                <div class="qlik-set-workbench-control">
-                    <div>
-                        <strong data-i18n="qlikSet.workbench.controlTitle"></strong>
-                        <span data-i18n="qlikSet.workbench.controlHint"></span>
-                    </div>
-                    <button type="button" id="qlik-set-workbench-toggle" class="tools-btn tools-btn--secondary" aria-expanded="true" data-i18n="qlikSet.workbench.hide"></button>
-                </div>
-                <div id="qlik-set-workbench-body" class="qlik-set-workbench-body">
-                    <div class="qlik-set-appbar" aria-label="Saved Qlik apps">
-                        <x-tools.field label-key="qlikSet.apps.name">
-                            <input id="qlik-set-app-name" class="pii-policy-input" type="text" value="Demo Sales App">
-                        </x-tools.field>
-                        <x-tools.field label-key="qlikSet.apps.saved">
-                            <select id="qlik-set-saved-apps" class="pii-policy-input">
-                                <option value="" data-i18n="qlikSet.apps.none"></option>
-                            </select>
-                        </x-tools.field>
-                        <div class="qlik-set-appbar__actions">
-                            <button type="button" id="qlik-set-save-app" class="tools-btn tools-btn--primary" data-i18n="qlikSet.apps.save"></button>
-                            <button type="button" id="qlik-set-load-app" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.apps.load"></button>
-                            <button type="button" id="qlik-set-delete-app" class="tools-btn tools-btn--secondary" data-i18n="qlikSet.apps.delete"></button>
-                        </div>
-                        <p id="qlik-set-app-message" class="qlik-set-builder-message" aria-live="polite" hidden></p>
-                    </div>
-                    <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
+                <div class="qlik-set-workbench-body">
+                                        <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
                         <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="catalog" data-i18n="qlikSet.layout.catalog"></button>
                         <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="composer" data-i18n="qlikSet.layout.composer"></button>
                         <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-qlik-layout-toggle="builder" data-i18n="qlikSet.layout.builder"></button>
@@ -584,7 +586,6 @@ Product Category
                     </div>
                 </div>
             </div>
-        </x-tools.panel>
 
         <section class="pii-policy-panel pii-policy-panel--code qlik-set-output-panel-wrap" aria-label="Qlik output">
             <div class="qlik-set-output-tabbar">

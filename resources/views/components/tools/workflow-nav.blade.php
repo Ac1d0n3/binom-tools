@@ -6,7 +6,7 @@
     $steps = \App\Support\ToolWorkflow::flowchartStepsForToolId($toolId);
     $context = \App\Support\ToolWorkflow::contextForToolId($toolId);
     $workflowId = $context['workflowId'] ?? null;
-    $useWrap = count($steps) >= 7
+    $useWrap = count($steps ?? []) >= 7
         || $workflowId === 'governance-decision-support';
     $layoutClass = $useWrap ? 'tools-workflow-flowchart--wrap' : 'tools-workflow-flowchart--classic';
 @endphp

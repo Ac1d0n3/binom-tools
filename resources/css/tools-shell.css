@@ -865,6 +865,13 @@ html[data-hide-tool-help="true"] [data-tool-help] {
     padding-left: 1.1rem;
 }
 
+.tools-tool-header__drawer-panel .qlik-set-appbar {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+}
+
 .tools-tool-header__drawer-panel .governance-advisory-tool__kpi-manager,
 .tools-tool-header__drawer-panel .governance-advisory-tool__record-manager {
     margin-bottom: 0;

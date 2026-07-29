@@ -9,9 +9,6 @@ const app = document.getElementById('qlik-set-analysis-generator-app');
 if (!app) throw new Error('Qlik set analysis generator root element not found');
 
 const els = {
-    helpSection: document.querySelector('.qlik-set-help'),
-    helpToggle: document.getElementById('qlik-set-help-toggle'),
-    helpBody: document.getElementById('qlik-set-help-body'),
     paletteToggle: document.getElementById('qlik-set-palette-toggle'),
     paletteBody: document.getElementById('qlik-set-palette-body'),
     descriptionToggle: document.getElementById('qlik-set-description-toggle'),
@@ -20,8 +17,6 @@ const els = {
     baseListBody: document.getElementById('qlik-set-base-list-body'),
     importModal: document.getElementById('qlik-set-import-modal'),
     workbench: document.querySelector('.qlik-set-workbench'),
-    workbenchToggle: document.getElementById('qlik-set-workbench-toggle'),
-    workbenchBody: document.getElementById('qlik-set-workbench-body'),
     catalogRail: document.querySelector('[data-qlik-column="catalog"]'),
     appName: document.getElementById('qlik-set-app-name'),
     savedApps: document.getElementById('qlik-set-saved-apps'),
@@ -386,12 +381,6 @@ function currentFormula() {
     return buildCurrentFormula(readState());
 }
 
-function updateHelpToggleLabel() {
-    if (!els.helpToggle) return;
-    const expanded = els.helpToggle.getAttribute('aria-expanded') === 'true';
-    els.helpToggle.textContent = t(getLocale(), expanded ? 'qlikSet.help.hide' : 'qlikSet.help.show');
-}
-
 function updatePaletteToggleLabel() {
     if (!els.paletteToggle) return;
     const expanded = els.paletteToggle.getAttribute('aria-expanded') !== 'false';
@@ -408,12 +397,6 @@ function updateBaseListToggleLabel() {
     if (!els.baseListToggle) return;
     const expanded = els.baseListToggle.getAttribute('aria-expanded') === 'true';
     els.baseListToggle.textContent = t(getLocale(), expanded ? 'qlikSet.baseList.hide' : 'qlikSet.baseList.show');
-}
-
-function updateWorkbenchToggleLabel() {
-    if (!els.workbenchToggle) return;
-    const expanded = els.workbenchToggle.getAttribute('aria-expanded') !== 'false';
-    els.workbenchToggle.textContent = t(getLocale(), expanded ? 'qlikSet.workbench.hide' : 'qlikSet.workbench.show');
 }
 
 function escapeHtml(value) {
@@ -1238,11 +1221,11 @@ app.querySelectorAll('input, select, textarea').forEach((el) => {
     });
 });
 
-app.querySelectorAll('[data-qlik-help-tab]').forEach((tab) => {
+document.querySelectorAll('[data-qlik-help-tab]').forEach((tab) => {
     tab.addEventListener('click', () => {
         const target = tab.getAttribute('data-qlik-help-tab');
-        app.querySelectorAll('[data-qlik-help-tab]').forEach((el) => el.classList.toggle('is-active', el === tab));
-        app.querySelectorAll('[data-qlik-help-panel]').forEach((panel) => {
+        document.querySelectorAll('[data-qlik-help-tab]').forEach((el) => el.classList.toggle('is-active', el === tab));
+        document.querySelectorAll('[data-qlik-help-panel]').forEach((panel) => {
             const active = panel.getAttribute('data-qlik-help-panel') === target;
             panel.classList.toggle('is-active', active);
             panel.toggleAttribute('hidden', !active);
@@ -1298,14 +1281,6 @@ app.querySelectorAll('[data-qlik-import-tab]').forEach((tab) => {
     });
 });
 
-els.helpToggle?.addEventListener('click', () => {
-    const expanded = els.helpToggle.getAttribute('aria-expanded') === 'true';
-    els.helpToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    els.helpBody?.toggleAttribute('hidden', expanded);
-    els.helpSection?.classList.toggle('is-collapsed', expanded);
-    updateHelpToggleLabel();
-});
-
 els.paletteToggle?.addEventListener('click', () => {
     const expanded = els.paletteToggle.getAttribute('aria-expanded') !== 'false';
     els.paletteToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
@@ -1325,13 +1300,6 @@ els.baseListToggle?.addEventListener('click', () => {
     els.baseListToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     els.baseListBody?.toggleAttribute('hidden', expanded);
     updateBaseListToggleLabel();
-});
-
-els.workbenchToggle?.addEventListener('click', () => {
-    const expanded = els.workbenchToggle.getAttribute('aria-expanded') !== 'false';
-    els.workbenchToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    els.workbenchBody?.toggleAttribute('hidden', expanded);
-    updateWorkbenchToggleLabel();
 });
 
 els.saveApp?.addEventListener('click', () => {
@@ -1728,21 +1696,17 @@ els.downloadVariablesCsv?.addEventListener('click', () => {
 
 applyQlikSetLabels();
 refreshSavedAppsSelect();
-updateHelpToggleLabel();
 updatePaletteToggleLabel();
 updateDescriptionToggleLabel();
 updateBaseListToggleLabel();
-updateWorkbenchToggleLabel();
 render();
 updateOutputTabOverflow();
 window.addEventListener('binom-tools:locale', () => {
     applyQlikSetLabels();
     refreshSavedAppsSelect(els.savedApps?.value || '');
-    updateHelpToggleLabel();
     updatePaletteToggleLabel();
     updateDescriptionToggleLabel();
     updateBaseListToggleLabel();
-    updateWorkbenchToggleLabel();
     render();
     window.requestAnimationFrame(updateOutputTabOverflow);
 });

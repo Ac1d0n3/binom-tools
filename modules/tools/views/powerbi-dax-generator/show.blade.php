@@ -11,14 +11,41 @@
         tool-id="powerbi-dax-generator"
         app-id="powerbi-dax-generator-app"
         title-badge="V1"
+        :shared-header="true"
+        eyebrow-de="BI Tool"
+        eyebrow-en="BI tool"
     >
-        <div class="tableau-calc" data-powerbi-dax-root>
-            <section class="tools-panel qlik-set-help is-collapsed" aria-labelledby="powerbi-dax-help-title" data-powerbi-help>
-                <div class="qlik-set-help__header">
-                    <div>
-                        <h2 id="powerbi-dax-help-title" class="tools-panel__title" data-powerbi-i18n="powerbiDax.help.title">Power BI DAX Hilfe</h2>
-                        <p class="qlik-set-help__lead" data-powerbi-i18n="powerbiDax.help.lead"></p>
-                        <div class="qlik-set-help__links" aria-label="Power BI product links">
+        <x-slot:save>
+            <div class="qlik-set-appbar" aria-label="Saved Power BI apps">
+                            <x-tools.field label-key="powerbiDax.apps.name">
+                                <input class="pii-policy-input" type="text" value="Demo Power BI Model" data-powerbi-app-name>
+                            </x-tools.field>
+                            <x-tools.field label-key="powerbiDax.apps.saved">
+                                <select class="pii-policy-input" data-powerbi-saved-apps>
+                                    <option value="" data-powerbi-i18n="powerbiDax.apps.none"></option>
+                                </select>
+                            </x-tools.field>
+                            <div class="qlik-set-appbar__actions">
+                                <button type="button" class="tools-btn tools-btn--primary" data-powerbi-save-app data-powerbi-i18n="powerbiDax.apps.save">App speichern</button>
+                                <button type="button" class="tools-btn tools-btn--secondary" data-powerbi-load-app data-powerbi-i18n="powerbiDax.apps.load">App laden</button>
+                                <button type="button" class="tools-btn tools-btn--secondary" data-powerbi-delete-app data-powerbi-i18n="powerbiDax.apps.delete">App löschen</button>
+                            </div>
+                            <p class="qlik-set-builder-message" data-powerbi-app-message aria-live="polite" hidden></p>
+                        </div>
+        </x-slot:save>
+
+        <x-slot:help>
+            <div class="governance-advisor__helpbox-head">
+                <span class="governance-advisor__helpbox-icon">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                </span>
+                <span>
+                    <span class="governance-hub__eyebrow" data-powerbi-i18n="powerbiDax.help.title">Hilfe</span>
+                    <strong data-powerbi-i18n="powerbiDax.help.lead"></strong>
+                </span>
+            </div>
+            <div class="qlik-set-help qlik-set-help--drawer" data-tool-help>
+                <div class="qlik-set-help__links" aria-label="Power BI product links">
                             <a class="qlik-set-help__link" href="https://powerbi.microsoft.com/" target="_blank" rel="noopener noreferrer" data-powerbi-i18n="powerbiDax.help.productLink">Power BI Produktseite</a>
                             <a class="qlik-set-help__link" href="https://learn.microsoft.com/power-bi/" target="_blank" rel="noopener noreferrer" data-powerbi-i18n="powerbiDax.help.productHelpLink">Power BI Hilfe-Portal</a>
                             <a class="qlik-set-help__link" href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener noreferrer" data-powerbi-i18n="powerbiDax.help.calculateLink">CALCULATE Dokumentation</a>
@@ -28,11 +55,7 @@
                             <a class="qlik-set-help__link" href="{{ locale_route('playbooks.show', ['slug' => 'pii-privacy-governance']) }}" data-powerbi-i18n="powerbiDax.help.piiPlaybookLink">PII &amp; Privacy</a>
                             <a class="qlik-set-help__link" href="{{ locale_route('learning-paths.show', ['slug' => 'trusted-metrics']) }}" data-powerbi-i18n="powerbiDax.help.trustedMetricsLink">Trusted Metrics Path</a>
                         </div>
-                    </div>
-                    <button type="button" class="tools-btn tools-btn--secondary qlik-set-help__toggle" aria-expanded="false" data-powerbi-help-toggle data-powerbi-i18n="powerbiDax.help.show">Hilfe anzeigen</button>
-                </div>
-                <div class="qlik-set-help__body" data-powerbi-help-body hidden>
-                    <div class="tableau-calc__help-grid">
+                <div class="tableau-calc__help-grid">
                         <article class="tableau-calc__help-card">
                             <strong data-powerbi-i18n="powerbiDax.help.catalogTitle"></strong>
                             <p data-powerbi-i18n="powerbiDax.help.step1"></p>
@@ -54,36 +77,14 @@
                         <strong data-powerbi-i18n="powerbiDax.help.whereTitle"></strong>
                         <p data-powerbi-i18n="powerbiDax.help.whereBody"></p>
                     </div>
-                </div>
-            </section>
+            </div>
+        </x-slot:help>
 
-            <x-tools.panel heading-id="powerbi-dax-workbench-title" title-key="powerbiDax.workbench.title" description-key="powerbiDax.workbench.description">
-                <div class="qlik-set-workbench-shell">
-                    <div class="qlik-set-workbench-control">
-                        <div>
-                            <strong data-powerbi-i18n="powerbiDax.workbench.controlTitle"></strong>
-                            <span data-powerbi-i18n="powerbiDax.workbench.controlHint"></span>
-                        </div>
-                        <button type="button" class="tools-btn tools-btn--secondary" aria-expanded="true" data-powerbi-workbench-toggle data-powerbi-i18n="powerbiDax.workbench.hide"></button>
-                    </div>
-                    <div class="qlik-set-workbench-body" data-powerbi-workbench-body>
-                        <div class="qlik-set-appbar" aria-label="Saved Power BI apps">
-                            <x-tools.field label-key="powerbiDax.apps.name">
-                                <input class="pii-policy-input" type="text" value="Demo Power BI Model" data-powerbi-app-name>
-                            </x-tools.field>
-                            <x-tools.field label-key="powerbiDax.apps.saved">
-                                <select class="pii-policy-input" data-powerbi-saved-apps>
-                                    <option value="" data-powerbi-i18n="powerbiDax.apps.none"></option>
-                                </select>
-                            </x-tools.field>
-                            <div class="qlik-set-appbar__actions">
-                                <button type="button" class="tools-btn tools-btn--primary" data-powerbi-save-app data-powerbi-i18n="powerbiDax.apps.save">App speichern</button>
-                                <button type="button" class="tools-btn tools-btn--secondary" data-powerbi-load-app data-powerbi-i18n="powerbiDax.apps.load">App laden</button>
-                                <button type="button" class="tools-btn tools-btn--secondary" data-powerbi-delete-app data-powerbi-i18n="powerbiDax.apps.delete">App löschen</button>
-                            </div>
-                            <p class="qlik-set-builder-message" data-powerbi-app-message aria-live="polite" hidden></p>
-                        </div>
-                        <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
+
+        <div class="tableau-calc" data-powerbi-dax-root>
+            <div class="qlik-set-workbench-shell">
+                                        <div class="qlik-set-workbench-body">
+                                                <div class="qlik-set-workbench-toolbar" aria-label="Workbench layout">
                             <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-powerbi-layout-toggle="catalog" data-powerbi-i18n="powerbiDax.layout.catalog"></button>
                             <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-powerbi-layout-toggle="composer" data-powerbi-i18n="powerbiDax.layout.formula"></button>
                             <button type="button" class="tools-btn tools-btn--secondary qlik-set-layout-button is-active" data-powerbi-layout-toggle="builder" data-powerbi-i18n="powerbiDax.layout.builder"></button>
@@ -351,7 +352,6 @@ Sales[Category]</textarea>
                         </div>
                     </div>
                 </div>
-            </x-tools.panel>
 
             <section class="pii-policy-panel pii-policy-panel--code qlik-set-output-panel-wrap" aria-label="Power BI output">
                 <div class="qlik-set-output-tabbar">
