@@ -135,7 +135,7 @@ final class LandingCatalog
     /**
      * Optional secondary stats for selected landing hub cards (admin-style breakdown).
      *
-     * @return array<string, list<array{value: int, labelDe: string, labelEn: string}>>
+     * @return array<string, list<array{value: int|string, valueDe?: string, valueEn?: string, labelDe: string, labelEn: string}>>
      */
     public function hubStats(): array
     {
@@ -161,13 +161,14 @@ final class LandingCatalog
                     'labelEn' => 'buzzwords',
                 ],
             ],
-            'radar' => [
+            'radar' => array_values(array_filter([
                 [
                     'value' => count(config('governance-radar.items', [])),
                     'labelDe' => 'Eigene News',
                     'labelEn' => 'own news',
                 ],
-            ],
+                $this->latestOwnNewsStat(),
+            ])),
             'resources' => [
                 [
                     'value' => count(config('vendor-resources.vendors', [])),
@@ -182,6 +183,43 @@ final class LandingCatalog
                     'labelEn' => 'domains',
                 ],
             ],
+        ];
+    }
+
+    /**
+     * @return array{value: string, valueDe: string, valueEn: string, labelDe: string, labelEn: string}|null
+     */
+    private function latestOwnNewsStat(): ?array
+    {
+        $latest = null;
+        foreach (config('governance-radar.items', []) as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            $raw = $item['published_at'] ?? null;
+            if (! is_string($raw) || trim($raw) === '') {
+                continue;
+            }
+            try {
+                $date = Carbon::parse($raw)->startOfDay();
+            } catch (\Throwable) {
+                continue;
+            }
+            if ($latest === null || $date->gt($latest)) {
+                $latest = $date;
+            }
+        }
+
+        if ($latest === null) {
+            return null;
+        }
+
+        return [
+            'value' => $latest->format('j M Y'),
+            'valueDe' => $latest->format('d.m.Y'),
+            'valueEn' => $latest->format('j M Y'),
+            'labelDe' => 'zuletzt',
+            'labelEn' => 'latest',
         ];
     }
 

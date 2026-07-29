@@ -103,8 +103,21 @@
             @if (count($cardStats) > 0)
                 <ul class="tools-card__stats">
                     @foreach ($cardStats as $stat)
+                        @php
+                            $statValue = $stat['value'] ?? 0;
+                            $statValueDe = trim((string) ($stat['valueDe'] ?? ''));
+                            $statValueEn = trim((string) ($stat['valueEn'] ?? ''));
+                            $statDisplay = $statValueEn !== ''
+                                ? $statValueEn
+                                : (is_numeric($statValue) ? (string) (0 + $statValue) : (string) $statValue);
+                        @endphp
                         <li>
-                            <strong>{{ (int) ($stat['value'] ?? 0) }}</strong>
+                            <strong
+                                @if ($statValueDe !== '' && $statValueEn !== '')
+                                    data-text-de="{{ $statValueDe }}"
+                                    data-text-en="{{ $statValueEn }}"
+                                @endif
+                            >{{ $statDisplay }}</strong>
                             <span
                                 @if (! empty($stat['labelDe']) && ! empty($stat['labelEn']))
                                     data-text-de="{{ $stat['labelDe'] }}"

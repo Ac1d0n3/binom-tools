@@ -126,6 +126,13 @@ class LandingCatalogTest extends TestCase
         $this->assertGreaterThan(0, $stats['glossary'][0]['value']);
         $this->assertGreaterThan(0, $stats['glossary'][1]['value']);
         $this->assertSame(count(config('governance-radar.items', [])), $stats['radar'][0]['value']);
+        $this->assertGreaterThanOrEqual(1, count($stats['radar']));
+        if (count($stats['radar']) > 1) {
+            $this->assertArrayHasKey('valueDe', $stats['radar'][1]);
+            $this->assertArrayHasKey('valueEn', $stats['radar'][1]);
+            $this->assertSame('zuletzt', $stats['radar'][1]['labelDe']);
+            $this->assertSame('latest', $stats['radar'][1]['labelEn']);
+        }
         $this->assertSame(count(config('vendor-resources.vendors', [])), $stats['resources'][0]['value']);
         $this->assertSame(count(config('suppliers.domains', [])), $stats['suppliers'][0]['value']);
     }

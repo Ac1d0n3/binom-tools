@@ -5103,6 +5103,42 @@ html[data-hide-tool-help="true"] [data-tool-help] {
     line-height: 1.5;
 }
 
+.governance-radar__summary-text > :first-child {
+    margin-top: 0;
+}
+
+.governance-radar__summary-text > :last-child {
+    margin-bottom: 0;
+}
+
+.governance-radar__summary-text p,
+.governance-radar__editorial-note p {
+    margin: 0 0 0.45rem;
+}
+
+.governance-radar__summary-text ul,
+.governance-radar__summary-text ol,
+.governance-radar__editorial-note ul,
+.governance-radar__editorial-note ol {
+    margin: 0.2rem 0 0.45rem;
+    padding-left: 1.2rem;
+}
+
+.governance-radar__summary-text a,
+.governance-radar__editorial-note a {
+    color: var(--theme-color-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.12em;
+}
+
+.governance-radar__summary-text code,
+.governance-radar__editorial-note code {
+    font-size: 0.88em;
+    padding: 0.05em 0.3em;
+    border-radius: 0.25rem;
+    background: color-mix(in srgb, var(--text-color) 8%, transparent);
+}
+
 .governance-radar__item-footer {
     display: grid;
     gap: 0.55rem;
@@ -5251,6 +5287,14 @@ html[data-hide-tool-help="true"] [data-tool-help] {
     font-size: 0.78rem;
     font-weight: 720;
     color: var(--bn-color-text-secondary);
+}
+
+.governance-radar__field-hint {
+    display: block;
+    margin: 0.15rem 0 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--bn-color-text-secondary) 82%, transparent);
 }
 
 .governance-radar__enrich-form textarea.tools-input {

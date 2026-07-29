@@ -405,9 +405,9 @@
                                             <span class="governance-radar__impact governance-radar__impact--{{ $impactTone }}">{{ $impact }}</span>
                                         </div>
                                         <h3 data-radar-item-title>{{ $item['title'] }}</h3>
-                                        <p class="governance-radar__summary-text" data-radar-item-summary>{{ $item['summary'] }}</p>
+                                        <div class="governance-radar__summary-text" data-radar-item-summary>{!! \App\Governance\RadarMarkdown::toHtml((string) ($item['summary'] ?? '')) !!}</div>
                                         @if (! empty($item['editorial_note']))
-                                            <p class="governance-radar__editorial-note">{{ $item['editorial_note'] }}</p>
+                                            <div class="governance-radar__editorial-note">{!! \App\Governance\RadarMarkdown::toHtml((string) $item['editorial_note']) !!}</div>
                                         @endif
                                     </div>
                                     <div class="governance-radar__item-footer">
@@ -514,11 +514,12 @@
                         </label>
                         <label>
                             <span data-text-de="Summary DE" data-text-en="Summary DE">Summary DE</span>
-                            <textarea class="tools-input" name="summary_de" rows="3" maxlength="2000"></textarea>
+                            <textarea class="tools-input" name="summary_de" rows="4" maxlength="2000" placeholder="Markdown ok: **fett**, Listen, [Links](https://…)"></textarea>
+                            <small class="governance-radar__field-hint" data-text-de="Markdown möglich: **fett**, *kursiv*, Listen und Links." data-text-en="Markdown supported: **bold**, *italic*, lists, and links.">Markdown supported: **bold**, *italic*, lists, and links.</small>
                         </label>
                         <label>
                             <span data-text-de="Summary EN" data-text-en="Summary EN">Summary EN</span>
-                            <textarea class="tools-input" name="summary_en" rows="3" maxlength="2000"></textarea>
+                            <textarea class="tools-input" name="summary_en" rows="4" maxlength="2000" placeholder="Markdown ok: **bold**, lists, [links](https://…)"></textarea>
                         </label>
                         <p class="governance-radar__source-status" data-governance-radar-news-status hidden></p>
                         <div class="governance-radar__form-actions">
