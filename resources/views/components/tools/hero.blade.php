@@ -41,6 +41,7 @@
             <p class="tools-hero__attribution">
                 <span data-i18n="home.hero.attribution">By</span>
                 <a href="{{ config('playbooks.author_url', 'https://binom.net') }}" target="_blank" rel="noopener noreferrer author">Thomas Lindackers</a>
+                <span class="tools-hero__attribution-role" data-i18n="home.hero.attributionRole">Senior Consultant</span>
             </p>
         </div>
 

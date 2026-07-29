@@ -213,6 +213,7 @@ const shellLabels = {
         'home.hero.ctaWorkflows': 'Binom-Tools öffnen',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'Von',
+        'home.hero.attributionRole': 'Senior Consultant',
         'home.workflowsTitle': 'Workflow-Beispiele',
         'home.workflowsLead':
             'Interaktive Referenz-Workflows — Schritt für Schritt, copy-paste-fähig.',
@@ -276,10 +277,11 @@ const shellLabels = {
             'Pläne aus Vorlagen starten, Exports anhängen und Inventare in konkrete Aufgaben und Entscheidungen überführen.',
         'home.featuredGovernance.title': 'Governance Hub',
         'home.featuredGovernance.description':
-            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report.',
+            'Keine Linkliste, sondern Einstieg in eine Discovery: Welche Entscheidung steht an, welcher Stack und welche Quelle sind betroffen, welche Risiken vor der Umsetzung prüfen? Der Advisor empfiehlt passende Stories, Tools und Quellen. Ohne Login: Demo-Workspace und Beispiel-Report ansehen — und später in Plan, Workflow oder Session übernehmen.',
+        'home.featuredGovernance.countLabel': 'Empfehlungen',
         'card.featured-governance.title': 'Governance Hub',
         'card.featured-governance.description':
-            'Der Einstieg: Entscheidung, Stack, Quellen und Risiken klären — dann Plan, Workflow oder Report.',
+            'Keine Linkliste, sondern Einstieg in eine Discovery: Welche Entscheidung steht an, welcher Stack und welche Quelle sind betroffen, welche Risiken vor der Umsetzung prüfen? Der Advisor empfiehlt passende Stories, Tools und Quellen. Ohne Login: Demo-Workspace und Beispiel-Report ansehen — und später in Plan, Workflow oder Session übernehmen.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'BI- und Governance-Arbeit mit Vorlagen planen, Tool-Exports anhängen und Inventare, KPI-Funde und offene Entscheidungen in nachvollziehbare Aufgaben überführen.',
@@ -1413,6 +1415,7 @@ const shellLabels = {
         'home.hero.ctaWorkflows': 'Open Binom-Tools',
         'home.hero.ctaSdk': 'binom-ngx SDKs',
         'home.hero.attribution': 'By',
+        'home.hero.attributionRole': 'Senior Consultant',
         'home.workflowsTitle': 'Workflow examples',
         'home.workflowsLead':
             'Interactive reference workflows — step by step, copy-paste ready.',
@@ -1476,10 +1479,11 @@ const shellLabels = {
             'Start plans from templates, attach exports, and turn inventories into concrete tasks and decisions.',
         'home.featuredGovernance.title': 'Governance Hub',
         'home.featuredGovernance.description':
-            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report.',
+            'Not a link list — a discovery entry: what decision is pending, which stack and source are in scope, which risks to check before build? The advisor recommends matching stories, tools, and sources. Without sign-in: open the demo workspace and sample report — then carry findings into a plan, workflow, or session.',
+        'home.featuredGovernance.countLabel': 'recommendations',
         'card.featured-governance.title': 'Governance Hub',
         'card.featured-governance.description':
-            'The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report.',
+            'Not a link list — a discovery entry: what decision is pending, which stack and source are in scope, which risks to check before build? The advisor recommends matching stories, tools, and sources. Without sign-in: open the demo workspace and sample report — then carry findings into a plan, workflow, or session.',
         'home.featuredPlanner.title': 'Sprint Planner',
         'home.featuredPlanner.description':
             'Use templates to plan BI and governance work, attach exports from tools, and turn inventories, KPI findings and open decisions into trackable tasks.',

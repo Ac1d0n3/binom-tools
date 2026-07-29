@@ -39,6 +39,7 @@ class ToolsLandingController extends Controller
             'topStories' => $this->catalog->topStories($allCatalogForRanking, 3),
             'storyCount' => $this->catalog->storyCount(),
             'hubCounts' => $this->catalog->hubCounts(),
+            'hubStats' => $this->catalog->hubStats(),
             'landingQuote' => $this->catalog->landingQuote(),
             'radarUpdatedBadge' => $this->catalog->radarUpdatedBadge(),
         ]);

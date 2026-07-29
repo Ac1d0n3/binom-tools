@@ -35,6 +35,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-i18n="home.hero.ctaSources"', false);
         $response->assertDontSee('data-i18n="home.hero.ctaSdk"', false);
         $response->assertSee('data-i18n="home.hero.notice"', false);
+        $response->assertSee('data-i18n="home.hero.attributionRole"', false);
+        $response->assertSee('Senior Consultant', false);
         $response->assertSee('name="keywords"', false);
         $response->assertSee('Governance Hub', false);
         $response->assertSee('og:title', false);
@@ -700,6 +702,8 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('tools-section--band', false);
         $response->assertSee('tools-section__art', false);
         $response->assertSee('data-i18n="home.featuredGovernance.title"', false);
+        $response->assertSee('data-i18n="home.featuredGovernance.description"', false);
+        $response->assertSee('tools-card__stats', false);
         $response->assertSee('data-i18n="home.hub.tools.title"', false);
         $response->assertSee('data-i18n="home.hub.stories.title"', false);
         $response->assertSee('data-i18n="home.hub.learningPaths.title"', false);

@@ -103,10 +103,31 @@ class LandingCatalogTest extends TestCase
         $this->assertSame(count(config('glossary.terms', [])), $counts['glossary']);
         $this->assertSame(count(config('learning-paths.paths', [])), $counts['learningPaths']);
         $this->assertSame(count(config('roles.roles', [])), $counts['roles']);
+        $this->assertSame(count(config('advisor-recommendations.items', [])), $counts['governance']);
         $this->assertGreaterThan(0, $counts['sprintPlanner']);
         $this->assertGreaterThan(0, $counts['glossary']);
         $this->assertGreaterThan(0, $counts['learningPaths']);
         $this->assertGreaterThan(0, $counts['roles']);
+        $this->assertGreaterThan(0, $counts['governance']);
+    }
+
+    public function test_hub_stats_cover_selected_breakdowns(): void
+    {
+        $catalog = app(LandingCatalog::class);
+        $stats = $catalog->hubStats();
+
+        $this->assertArrayHasKey('stories', $stats);
+        $this->assertArrayHasKey('glossary', $stats);
+        $this->assertArrayHasKey('radar', $stats);
+        $this->assertArrayHasKey('resources', $stats);
+        $this->assertArrayHasKey('suppliers', $stats);
+        $this->assertArrayNotHasKey('tools', $stats);
+        $this->assertSame(count(app(\App\Playbooks\PlaybookRepository::class)->allSeries()), $stats['stories'][0]['value']);
+        $this->assertGreaterThan(0, $stats['glossary'][0]['value']);
+        $this->assertGreaterThan(0, $stats['glossary'][1]['value']);
+        $this->assertSame(count(config('governance-radar.items', [])), $stats['radar'][0]['value']);
+        $this->assertSame(count(config('vendor-resources.vendors', [])), $stats['resources'][0]['value']);
+        $this->assertSame(count(config('suppliers.domains', [])), $stats['suppliers'][0]['value']);
     }
 
     public function test_radar_updated_badge_returns_bilingual_date_when_list_has_timestamps(): void

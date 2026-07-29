@@ -111,7 +111,8 @@ final class LandingCatalog
      *   roles: int,
      *   sprintPlanner: int,
      *   radar: int,
-     *   tools: int
+     *   tools: int,
+     *   governance: int
      * }
      */
     public function hubCounts(): array
@@ -127,6 +128,60 @@ final class LandingCatalog
             'sprintPlanner' => $this->sprintTemplateCount(),
             'radar' => count(config('governance-radar.sources', [])),
             'tools' => $this->toolCount(),
+            'governance' => count(config('advisor-recommendations.items', [])),
+        ];
+    }
+
+    /**
+     * Optional secondary stats for selected landing hub cards (admin-style breakdown).
+     *
+     * @return array<string, list<array{value: int, labelDe: string, labelEn: string}>>
+     */
+    public function hubStats(): array
+    {
+        $glossary = $this->glossarySplitCounts();
+
+        return [
+            'stories' => [
+                [
+                    'value' => count($this->playbooks->allSeries()),
+                    'labelDe' => 'Serien',
+                    'labelEn' => 'series',
+                ],
+            ],
+            'glossary' => [
+                [
+                    'value' => $glossary['core'],
+                    'labelDe' => 'Core',
+                    'labelEn' => 'core',
+                ],
+                [
+                    'value' => $glossary['buzz'],
+                    'labelDe' => 'Buzzwords',
+                    'labelEn' => 'buzzwords',
+                ],
+            ],
+            'radar' => [
+                [
+                    'value' => count(config('governance-radar.items', [])),
+                    'labelDe' => 'Eigene News',
+                    'labelEn' => 'own news',
+                ],
+            ],
+            'resources' => [
+                [
+                    'value' => count(config('vendor-resources.vendors', [])),
+                    'labelDe' => 'Vendors',
+                    'labelEn' => 'vendors',
+                ],
+            ],
+            'suppliers' => [
+                [
+                    'value' => count(config('suppliers.domains', [])),
+                    'labelDe' => 'Domains',
+                    'labelEn' => 'domains',
+                ],
+            ],
         ];
     }
 
@@ -160,6 +215,35 @@ final class LandingCatalog
         });
 
         return array_values(array_slice($ranked, 0, max(0, $limit)));
+    }
+
+    /**
+     * @return array{core: int, buzz: int}
+     */
+    private function glossarySplitCounts(): array
+    {
+        $dir = base_path('content/catalogs/glossary');
+
+        return [
+            'core' => $this->countJsonListFile($dir.DIRECTORY_SEPARATOR.'terms-core.json'),
+            'buzz' => $this->countJsonListFile($dir.DIRECTORY_SEPARATOR.'terms-buzzwords.json'),
+        ];
+    }
+
+    private function countJsonListFile(string $path): int
+    {
+        if (! is_file($path)) {
+            return 0;
+        }
+
+        $raw = @file_get_contents($path);
+        if ($raw === false || $raw === '') {
+            return 0;
+        }
+
+        $decoded = json_decode($raw, true);
+
+        return is_array($decoded) && array_is_list($decoded) ? count($decoded) : 0;
     }
 
     private function sprintTemplateCount(): int

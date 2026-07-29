@@ -53,13 +53,15 @@
                         <x-tools.card
                             :href="locale_route('governance.index')"
                             title="Governance Hub"
-                            description="The entry point: clarify the decision, stack, sources, and risks — then plan, workflow, or report."
+                            description="Not a link list — a discovery entry: what decision is pending, which stack and source are in scope, which risks to check before build? The advisor recommends matching stories, tools, and sources. Without sign-in: open the demo workspace and sample report — then carry findings into a plan, workflow, or session."
                             title-key="home.featuredGovernance.title"
                             description-key="home.featuredGovernance.description"
                             icon="fa-shield-halved"
                             accent="primary"
                             card-id="featured-governance"
                             :featured="true"
+                            :count="$hubCounts['governance']"
+                            count-label-key="home.featuredGovernance.countLabel"
                         />
                         <x-tools.card
                             class="phone-hide-tools"
@@ -88,6 +90,7 @@
                             :hub="true"
                             :count="$hubCounts['stories']"
                             count-label-key="home.hub.stories.countLabel"
+                            :stats="$hubStats['stories'] ?? []"
                         />
                         <x-tools.card
                             :href="locale_route('learning-paths.index')"
@@ -127,6 +130,7 @@
                             :hub="true"
                             :count="$hubCounts['glossary']"
                             count-label-key="home.hub.glossary.countLabel"
+                            :stats="$hubStats['glossary'] ?? []"
                         />
                         <x-tools.card
                             :href="locale_route('governance.radar')"
@@ -140,6 +144,7 @@
                             :hub="true"
                             :count="$hubCounts['radar']"
                             count-label-key="home.hub.radar.countLabel"
+                            :stats="$hubStats['radar'] ?? []"
                             :title-badge-en="data_get($radarUpdatedBadge, 'en')"
                             :title-badge-de="data_get($radarUpdatedBadge, 'de')"
                             title-badge-icon="fa-arrows-rotate"
@@ -156,6 +161,7 @@
                             :hub="true"
                             :count="$hubCounts['resources']"
                             count-label-key="home.hub.resources.countLabel"
+                            :stats="$hubStats['resources'] ?? []"
                         />
                         <x-tools.card
                             :href="locale_route('suppliers.index')"
@@ -169,6 +175,7 @@
                             :hub="true"
                             :count="$hubCounts['suppliers']"
                             count-label-key="home.hub.suppliers.countLabel"
+                            :stats="$hubStats['suppliers'] ?? []"
                         />
                         <x-tools.card
                             :href="locale_route('compliance.index')"

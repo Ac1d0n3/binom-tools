@@ -25,6 +25,7 @@
     'titleBadgeDe' => null,
     'titleBadgeEn' => null,
     'titleBadgeIcon' => null,
+    'stats' => [],
 ])
 
 @php
@@ -39,6 +40,7 @@
     $badgeDe = trim((string) ($titleBadgeDe ?? $badgeEn));
     $hasTitleBadge = $badgeEn !== '';
     $badgeIcon = is_string($titleBadgeIcon) ? trim($titleBadgeIcon) : '';
+    $cardStats = is_array($stats) ? array_values(array_filter($stats, 'is_array')) : [];
 @endphp
 
 <a
@@ -98,6 +100,21 @@
                 <p class="tools-card__meta" @if ($metaKey) data-i18n="{{ $metaKey }}" @endif>{{ $meta }}</p>
             @endif
             <p class="tools-card__desc" @if ($descriptionKey) data-i18n="{{ $descriptionKey }}" @endif>{{ $description }}</p>
+            @if (count($cardStats) > 0)
+                <ul class="tools-card__stats">
+                    @foreach ($cardStats as $stat)
+                        <li>
+                            <strong>{{ (int) ($stat['value'] ?? 0) }}</strong>
+                            <span
+                                @if (! empty($stat['labelDe']) && ! empty($stat['labelEn']))
+                                    data-text-de="{{ $stat['labelDe'] }}"
+                                    data-text-en="{{ $stat['labelEn'] }}"
+                                @endif
+                            >{{ $stat['labelEn'] ?? $stat['labelDe'] ?? '' }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
         @if ($external)
             <i class="fa-solid fa-arrow-up-right-from-square tools-card__arrow" aria-hidden="true"></i>
