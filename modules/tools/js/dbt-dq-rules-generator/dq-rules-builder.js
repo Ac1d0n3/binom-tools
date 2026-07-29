@@ -12,6 +12,60 @@ export function buildDqRulesYaml(state) {
 export { buildDqSourcesYaml, buildDqModelSql };
 
 /**
+ * Flat DQ rule backlog for governance handoff (Phase-C artifact name: dq-backlog.csv).
+ * @param {import('../dq-shared/dq-demo-model.js').DqModelState} state
+ * @returns {string}
+ */
+export function buildDqBacklogCsv(state) {
+    const escape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+    const lines = ['scope,target,rule_type,severity,params'];
+
+    const pushRule = (scope, target, rule) => {
+        const params = JSON.stringify(rule?.params ?? rule ?? {});
+        lines.push([
+            escape(scope),
+            escape(target),
+            escape(rule?.type || rule?.ruleType || ''),
+            escape(rule?.severity || ''),
+            escape(params),
+        ].join(','));
+    };
+
+    for (const column of state.columns || []) {
+        for (const rule of column.dqRules || []) {
+            pushRule('column', column.name, rule);
+        }
+    }
+    for (const rule of state.modelRules || []) {
+        pushRule('model', state.modelName || '', rule);
+    }
+
+    return `${lines.join('\n')}\n`;
+}
+
+/**
+ * @param {import('../dq-shared/dq-demo-model.js').DqModelState} state
+ * @returns {string}
+ */
+export function buildDqBacklogJson(state) {
+    const rules = [];
+    for (const column of state.columns || []) {
+        for (const rule of column.dqRules || []) {
+            rules.push({ scope: 'column', target: column.name, rule });
+        }
+    }
+    for (const rule of state.modelRules || []) {
+        rules.push({ scope: 'model', target: state.modelName || '', rule });
+    }
+    return `${JSON.stringify({
+        artifact: 'dq-backlog',
+        modelName: state.modelName,
+        sourceTable: state.sourceTable,
+        rules,
+    }, null, 2)}\n`;
+}
+
+/**
  * @param {import('../dq-shared/dq-demo-model.js').DqModelState} state
  * @returns {string}
  */

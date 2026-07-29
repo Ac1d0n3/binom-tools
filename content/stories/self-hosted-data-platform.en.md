@@ -15,7 +15,7 @@ tags:
   - hybrid-cloud
 order: -1
 author: Thomas Lindackers
-hero: images/stories/self-hosted-hero.png
+hero: images/playbooks/self-hosted-hero.png
 publishedAt: 2026-07-13
 ---
 

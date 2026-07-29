@@ -161,7 +161,7 @@ Use this checklist before approving a mart design:
 
 ## Artifact
 
-The primary output is a **Mart Design Brief**. It is the reviewable contract between interview evidence and physical table creation.
+The primary output is a **Mart Design Brief** (`mart-design-brief.md`). It is the reviewable contract between interview evidence and physical table creation. Export KPI cards as `kpi-cards.csv` and the approved scope as `source-scope.csv`.
 
 ![From KPI Card and RACI to a Mart Design Brief](images/playbooks/from-stakeholder-interview-to-table-model-img3-en.png)
 

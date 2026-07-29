@@ -98,13 +98,15 @@
                     'goal' => 'supplier',
                     'question' => ['de' => 'Welche Quelle zuerst laden?', 'en' => 'Which source should load first?'],
                     'helps' => ['de' => 'Zeigt pro Supplier Kernobjekte, Skip-Tabellen, PII/DSDR-Risiken und typische KPI-Kandidaten.', 'en' => 'Shows core entities, skip tables, PII/DSDR risks, and typical KPI candidates per supplier.'],
-                    'outcome' => ['de' => 'Source Scope mit must-have, optional, skip und Review-Fragen.', 'en' => 'Source scope with must-have, optional, skip, and review questions.'],
+                    'outcome' => ['de' => 'source-scope.csv mit must-have, optional, skip und Review-Fragen.', 'en' => 'source-scope.csv with must-have, optional, skip, and review questions.'],
                     'links' => [
                         ['href' => locale_route('tools.source-scope-builder'), 'label' => ['de' => 'Source Scope Builder', 'en' => 'Source Scope Builder']],
                         ['href' => locale_route('tools.meta-export-generator'), 'label' => ['de' => 'Meta Export', 'en' => 'Meta export']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'which-source-to-load-first']), 'label' => ['de' => 'Welche Quelle zuerst?', 'en' => 'Which source first?']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'salesforce-tables-for-analytics']), 'label' => ['de' => 'Salesforce Load/Skip', 'en' => 'Salesforce load/skip']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'salesforce-to-mart']), 'label' => ['de' => 'Salesforce → Mart', 'en' => 'Salesforce → mart']],
                         ['href' => locale_route('playbooks.show', ['slug' => 'saas-exports-tables-to-skip']), 'label' => ['de' => 'SaaS Skip-Muster', 'en' => 'SaaS skip pattern']],
+                        ['href' => locale_route('playbooks.show', ['slug' => 'which-artifacts-you-get']), 'label' => ['de' => 'Welche Artefakte entstehen?', 'en' => 'Which artifacts do you get?']],
                     ],
                 ],
                 [
@@ -113,7 +115,7 @@
                     'goal' => 'kpi',
                     'question' => ['de' => 'Welche KPI wird zu welcher Tabelle?', 'en' => 'Which KPI becomes which table?'],
                     'helps' => ['de' => 'Klärt Geschäftsfrage, Formel, Grain, Dimensionen, Owner, Akzeptanzbeispiel und BI-Verwendung.', 'en' => 'Clarifies business question, formula, grain, dimensions, owner, acceptance example, and BI usage.'],
-                    'outcome' => ['de' => 'KPI Card plus erste Fact-/Dimension-Kandidaten.', 'en' => 'KPI card plus first fact/dimension candidates.'],
+                    'outcome' => ['de' => 'kpi-cards.csv plus erste Fact-/Dimension-Kandidaten.', 'en' => 'kpi-cards.csv plus first fact/dimension candidates.'],
                     'links' => [
                         ['href' => locale_route('tools.kpi-requirements-intake'), 'label' => ['de' => 'KPI Intake', 'en' => 'KPI intake']],
                         ['href' => locale_route('tools.report-inventory'), 'label' => ['de' => 'Report Inventory', 'en' => 'Report inventory']],

@@ -1,7 +1,7 @@
 # Phase C — Artefakt-Tiefe & Proof
 
 Stand: 2026-07-29  
-Status: offen · **baut auf Phase B auf** (bestehende Playbooks / Advisor-Links ≠ Mart-Guides)  
+Status: **erledigt** · baut auf Phase B auf (bestehende Playbooks / Advisor-Links ≠ Mart-Guides)  
 Zurück: [Phase B](phase-b-infos-beratung.de.md) · Index: [index.de.md](index.de.md) · Weiter: [Phase D](phase-d-reichweite.de.md)
 
 ## Ziel
@@ -12,10 +12,10 @@ Einzigartigen Mehrwert liefern, den Vendor-Blogs nicht haben: von Quelle/Worksho
 
 ## Done when
 
-- [ ] Mindestens 5 Supplier-to-Mart Mini-Guides live *(Tiefe — nicht nur Load/Skip aus B)*
-- [ ] Gemeinsame Export-/Artefakt-Namen dokumentiert und in Tools erwähnt
-- [ ] 2–3 anonymisierte Proof-/Workshop-Stories
-- [ ] Jede behandelte Supplier-Seite: Intro + nächster Tool-Schritt + interne Links *(inkl. Link zur Phase-B Load/Skip-Story + Advisor/Journey)*
+- [x] Mindestens 5 Supplier-to-Mart Mini-Guides live *(Tiefe — nicht nur Load/Skip aus B)*
+- [x] Gemeinsame Export-/Artefakt-Namen dokumentiert und in Tools erwähnt
+- [x] 2–3 anonymisierte Proof-/Workshop-Stories
+- [x] Jede behandelte Supplier-Seite: Intro + nächster Tool-Schritt + interne Links *(inkl. Link zur Phase-B Load/Skip-Story + Advisor/Journey)*
 
 ---
 
@@ -23,20 +23,22 @@ Einzigartigen Mehrwert liefern, den Vendor-Blogs nicht haben: von Quelle/Worksho
 
 Load/Skip- und Authority-Playbooks sind live in Serie [`source-load-decisions`](source-load-decisions-story-briefs.de.md). Der Advisor/Journey bleibt der Entscheidungseinstieg. Phase C **vertieft** zu Grain → Mart → Artefakt und verdichtet Supplier-Library-Seiten.
 
-| Supplier / Thema | Phase B (Playbook-Vertiefung) | Phase C (noch offen) |
-|------------------|-------------------------------|----------------------|
-| Salesforce | `salesforce-tables-for-analytics` | Mini-Guide → Mart + Library-Intro |
-| HubSpot | `hubspot-tables-for-analytics` | Mini-Guide → Mart |
-| Dynamics 365 | `dynamics-365-tables-for-analytics` | Mini-Guide → Mart |
-| SAP S/4 | `sap-s4-tables-for-analytics` | Mini-Guide → Mart (klarer Ausschnitt) |
-| Workday | `workday-tables-for-analytics` | Mini-Guide → Mart |
-| ServiceNow | `servicenow-tables-for-analytics` | Mini-Guide → Mart |
-| Multi-Source Authority | `multi-source-entity-authority` | nur verlinken; kein zweites Authority-Essay |
-| SaaS Skip-Muster | `saas-exports-tables-to-skip` | in Proof 2 zitieren |
+Briefs: [`supplier-to-mart-story-briefs.de.md`](supplier-to-mart-story-briefs.de.md)
+
+| Supplier / Thema | Phase B (Playbook-Vertiefung) | Phase C |
+|------------------|-------------------------------|---------|
+| Salesforce | `salesforce-tables-for-analytics` | `salesforce-to-mart` live |
+| HubSpot | `hubspot-tables-for-analytics` | `hubspot-to-mart` live |
+| Dynamics 365 | `dynamics-365-tables-for-analytics` | `dynamics-365-to-mart` live |
+| SAP S/4 | `sap-s4-tables-for-analytics` | `sap-s4-to-mart` live |
+| Workday | `workday-tables-for-analytics` | `workday-to-mart` live |
+| ServiceNow | `servicenow-tables-for-analytics` | Stretch |
+| Multi-Source Authority | `multi-source-entity-authority` | nur verlinken |
+| SaaS Skip-Muster | `saas-exports-tables-to-skip` | in Proof 2 zitiert |
 | Quelle zuerst | `which-source-to-load-first` | Hub/Journey/Advisor bleibt Einstieg |
-| Interview → Modell | `from-stakeholder-interview-to-table-model` | Proof 1 / Mart-Pfad nutzen |
-| SharePoint / Collaboration | — | ggf. neuer Mini-Guide (kein Decision-Page-Wave) |
-| Finance (konkreter Einstieg) | — | ggf. neuer Mini-Guide |
+| Interview → Modell | `from-stakeholder-interview-to-table-model` | Proof 1 |
+| SharePoint / Collaboration | — | Stretch |
+| Finance (konkreter Einstieg) | — | Stretch |
 
 Tools, die C-Guides **verlinken** sollen (bereits da):
 
@@ -49,29 +51,22 @@ Tools, die C-Guides **verlinken** sollen (bereits da):
 
 ## C1 — Supplier → Model Mini-Guides
 
-Pro Guide (Story oder Supplier-Detail-Abschnitt) — **über** Phase-B Load/Skip hinaus:
-
-- Entitäten / Kernobjekte → **Grain** und Fact/Dim-Kandidaten
-- PII / Skip *(kurz; Detail in Phase-B-Playbook verlinken)*
-- Standard-KPIs → Link `define-kpi` / KPI Tools
-- Nächste Binom-Tools + Artefakt-Namen (C2)
-- Link zurück zur Supplier Library **und** zum Phase-B-Playbook / Advisor-Journey
-
 Priorisierte Lieferungen:
 
-- [ ] Salesforce → Mart (baut auf `salesforce-tables-for-analytics`)
-- [ ] HubSpot → Mart
-- [ ] SAP S/4 Ausschnitt → Mart
-- [ ] Workday → Mart **oder** ServiceNow → Mart (eins zuerst)
-- [ ] Dynamics 365 → Mart **oder** Finance-/Collaboration-Einstieg (Lücke schließen)
-- [ ] SharePoint / Collaboration — nur wenn Katalog-Inhalt trägt
+- [x] Salesforce → Mart (`salesforce-to-mart`)
+- [x] HubSpot → Mart
+- [x] SAP S/4 Ausschnitt → Mart
+- [x] Workday → Mart
+- [x] Dynamics 365 → Mart
+- [ ] SharePoint / Collaboration — Stretch
+- [ ] ServiceNow — Stretch
 
 SEO:
 
-- [ ] Eigener Intro-Text, nicht nur Tabellen-Dump
-- [ ] FAQ nur wenn echte Fragen
-- [ ] `lastmod` / Update-Datum pflegen
-- [ ] Keine Dublette zum Phase-B-Playbook (Cross-Link statt Copy-Paste); **keine neuen Decision Pages**
+- [x] Eigener Intro-Text, nicht nur Tabellen-Dump
+- [x] FAQ nur wenn echte Fragen
+- [x] `lastmod` / Update-Datum pflegen (`publishedAt: 2026-07-29`)
+- [x] Keine Dublette zum Phase-B-Playbook (Cross-Link statt Copy-Paste); **keine neuen Decision Pages**
 
 ---
 
@@ -79,63 +74,53 @@ SEO:
 
 Einheitliche Namen (in UI, Exports, Playbooks gleich):
 
-- [ ] `governance-discovery.md` (Session-Überblick)
-- [ ] `kpi-cards.csv` / JSON
-- [ ] `source-scope.csv` / JSON
-- [ ] `dq-backlog.csv` / JSON
-- [ ] Mart Design Brief
-- [ ] Decision Brief
+- [x] `governance-discovery.md` (Session-Überblick)
+- [x] `kpi-cards.csv` / JSON
+- [x] `source-scope.csv` / JSON
+- [x] `dq-backlog.csv` / JSON
+- [x] Mart Design Brief → `mart-design-brief.md`
+- [x] Decision Brief → `decision-brief.md`
 
 Umsetzung:
 
-- [ ] Kurze Doku-Story oder Hub-Abschnitt „Welche Artefakte entstehen?“
-- [ ] Discovery/Tools erwähnen denselben Artefakt-Namen *(Discovery Steps + Report Inventory / KPI / Source Scope bereits verdrahtet — Namen angleichen)*
-- [ ] Dual-Store: Payload bleibt normalisiert (File + MySQL), keine View-Logik-Duplikate
-- [ ] Phase-B-Stories in „Artefakt“-Abschnitt auf dieselben Dateinamen prüfen
+- [x] Kurze Doku-Story „Welche Artefakte entstehen?“ (`which-artifacts-you-get`)
+- [x] Discovery/Tools erwähnen denselben Artefakt-Namen
+- [x] Dual-Store: Payload bleibt normalisiert (File + MySQL), keine View-Logik-Duplikate
+- [x] Phase-B-Stories in „Artefakt“-Abschnitt auf dieselben Dateinamen prüfen
 
 ---
 
 ## C3 — Signature-IP (zitierfähig)
 
-Kurze, benannte Modelle — auf About/Home/Playbooks wiederverwendbar:
-
-- [ ] Decision Ladder (Orientierung → Fragen → Tools → Nachweise) benennen und 1 Absatz fixieren — **Advisor als Einstieg nennen**
-- [ ] Collect Infos 8 (Schritte) als benanntes Gerüst *(Hub Canvas bereits crawlbar — Text fixieren)*
-- [ ] Evidence Loop (Entscheidung → Control → Nachweis) 1 Absatz — anschließen an `missing-pieces-trusted-metrics` / BI-Serie
-- [ ] 8 Pillars als Praxisgerüst sichtbar halten (nicht durch DMBOK ersetzen)
-- [ ] Optional: „Platform Starting Point“ (1 Satz) aus Chooser-Serie; „Source Load First“ (1 Satz) aus Source-Load-Serie
+- [x] Decision Ladder — About + Hub Help
+- [x] Collect Infos 8 — Discovery Canvas Eyebrow + About
+- [x] Evidence Loop — About + Hub Help
+- [x] 8 Pillars sichtbar halten
+- [x] Platform Starting Point / Source Load First (1 Satz) auf About
 
 Jeder Block:
 
-- [ ] DE + EN
-- [ ] Auf mindestens einer Hub-Seite zitiert
-- [ ] Für Phase D (LinkedIn) als Copy-Vorlage nutzbar
+- [x] DE + EN
+- [x] Auf mindestens einer Hub-Seite zitiert
+- [x] Für Phase D (LinkedIn) als Copy-Vorlage nutzbar
 
 ---
 
 ## C4 — Proof Stories
 
-Anonymisiert, konkret, ohne Kundennamen. Bestehende Playbooks / Advisor-Pfade **verlinken**, nicht ersetzen — und keine neuen Decision-Stories:
-
-- [ ] Proof 1: Stakeholder-Fragen → KPI-Karten — Pfad `from-stakeholder-interview-to-table-model` + KPI Intake/Definition + Mart Brief
-- [ ] Proof 2: SaaS-Quelle → Scope/Skip/PII → Pilot-Mart — `which-source-to-load-first` / Salesforce oder SaaS-Skip + Source Scope + PII Tools
-- [ ] Proof 3: BI-Chaos → Trusted Metrics — `from-report-inventory-to-trusted-metric` + `semantic-layer-vs-report-measure` + Formel-Tool + `missing-pieces-trusted-metrics`
-
-Je Story:
-
-- [ ] Ausgangslage → Schritte → Artefakte → Lernerfolg
-- [ ] Links zu Tools/Paths (`trusted-metrics`) und Advisor wo sinnvoll
-- [ ] Disclaimer: Beispiel, keine Rechts-/Vendor-Beratung
+- [x] Proof 1: `proof-stakeholder-to-kpi-cards`
+- [x] Proof 2: `proof-saas-source-to-pilot-mart`
+- [x] Proof 3: `proof-bi-chaos-to-trusted-metrics`
 
 ---
 
 ## C5 — Cert- & Lernpfad-Feinschliff
 
-- [ ] Official Cert-Links spotrufen (Fabric, Databricks, Snowflake, dbt, GCP, AWS, Tableau)
-- [ ] Pro Link: „Wofür nützlich?“ in Resources oder Path — Querverweis Plattform-Serie Parts 2–6
-- [ ] Aktualisierungsdatum sichtbar
-- [ ] Rollen-Mapping: Consultant / Platform / Analytics / Privacy (WWW-Plan)
-- [ ] Advisor-Basis-Rolle (`preferredRole` im Profil) bei Rollen-/Path-Empfehlungen nicht doppelt erklären — nur nutzen
+- [x] Official Cert-Links spotrufen (Fabric, Databricks, Snowflake, dbt, GCP, AWS, Tableau)
+- [x] Pro Link: „Wofür nützlich?“ in Resources
+- [x] Aktualisierungsdatum sichtbar (`lastVerified` in vendor-resources meta)
+- [x] Rollen-Mapping: Consultant / Platform / Analytics / Privacy (Learning Paths Lead)
+- [x] Advisor-Basis-Rolle (`preferredRole`) bei Rollen-/Path-Empfehlungen nicht doppelt erklären — nur nutzen
 
 ---
 
@@ -149,4 +134,5 @@ Je Story:
 ## Notizen
 
 2026-07-29: Abgrenzung zu Phase B dokumentiert; Supplier-Tabelle und Proof-Pfade auf reale Slugs/Tools umgestellt.  
-2026-07-29 (Klarstellung): Keine neuen Decision Pages — Advisor = Entscheidungseinstieg; B-Playbooks = Vertiefung.
+2026-07-29 (Klarstellung): Keine neuen Decision Pages — Advisor = Entscheidungseinstieg; B-Playbooks = Vertiefung.  
+2026-07-29: Phase C umgesetzt (Mini-Guides, Artefakt-Namen, Signature-IP, Proofs, Cert-Feinschliff).

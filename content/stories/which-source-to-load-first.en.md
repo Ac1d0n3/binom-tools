@@ -192,7 +192,7 @@ No candidate remains in an unexplained connector backlog.
 
 ## Artifact
 
-Create a candidate decision portfolio with one card or row per source.
+Create a candidate decision portfolio with one card or row per source. Document the approved load scope as `source-scope.csv` / `source-scope.md` in the [Source Scope Builder](/tools/source-scope-builder).
 
 ![Record the first-source decision](images/playbooks/which-source-to-load-first-img4-en.png)
 

@@ -192,7 +192,7 @@ Kein Kandidat bleibt in einem unerklärten Connector Backlog.
 
 ## Artifact
 
-Erstelle ein Candidate Decision Portfolio mit einer Karte oder Zeile je Quelle.
+Erstelle ein Candidate Decision Portfolio mit einer Karte oder Zeile je Quelle. Den freigegebenen Ladeumfang dokumentierst du als `source-scope.csv` / `source-scope.md` im [Source Scope Builder](/tools/source-scope-builder).
 
 ![Die First-Source-Entscheidung dokumentieren](images/playbooks/which-source-to-load-first-img4-de.png)
 

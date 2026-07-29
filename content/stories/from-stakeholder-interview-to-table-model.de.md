@@ -161,7 +161,7 @@ Nutze diese Checkliste vor der Freigabe eines Mart-Designs:
 
 ## Artefakt
 
-Das primäre Ergebnis ist ein **Mart Design Brief**. Er bildet den überprüfbaren Contract zwischen Interview-Evidenz und physischer Tabellenerstellung.
+Das primäre Ergebnis ist ein **Mart Design Brief** (`mart-design-brief.md`). Er bildet den überprüfbaren Contract zwischen Interview-Evidenz und physischer Tabellenerstellung. KPI-Karten exportierst du als `kpi-cards.csv`; den freigegebenen Scope als `source-scope.csv`.
 
 ![Von KPI Card und RACI zum Mart Design Brief](images/playbooks/from-stakeholder-interview-to-table-model-img3-de.png)
 

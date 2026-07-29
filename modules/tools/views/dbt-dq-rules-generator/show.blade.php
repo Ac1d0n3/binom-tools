@@ -85,6 +85,12 @@
 
         <x-tools.validation-banner id="dq-rules-validation-banner" />
 
+        <p>
+            <button type="button" class="tools-btn tools-btn--ghost" id="dq-rules-download-backlog-btn" data-i18n="dqRules.downloadBacklog">
+                Download dq-backlog.csv
+            </button>
+        </p>
+
         <x-tools.panel-code
             heading-id="dq-rules-yaml-title"
             title-key="dqRules.output.yaml"

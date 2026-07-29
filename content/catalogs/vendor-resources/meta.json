@@ -1,5 +1,10 @@
 {
     "schemaVersion": 1,
     "catalog": "vendor-resources",
-    "loader": "document"
+    "loader": "document",
+    "lastVerified": "2026-07-29",
+    "lastVerifiedNote": {
+        "de": "Offizielle Cert-Links spotrugefen am 2026-07-29. Immer beim Anbieter prüfen.",
+        "en": "Official cert links spot-checked on 2026-07-29. Always verify with the issuer."
+    }
 }

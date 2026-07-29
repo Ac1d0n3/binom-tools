@@ -68,7 +68,7 @@ Ein Inventar ist erfolgreich, wenn ungelöste Metrikfamilien abnehmen und vertra
 
 ## Artefakt
 
-Erstellen Sie pro Metrikfamilie einen **Trusted Metric Candidate Record** und verwalten Sie alle Records als Migrationsportfolio.
+Erstellen Sie pro Metrikfamilie einen **Trusted Metric Candidate Record** und verwalten Sie alle Records als Migrationsportfolio. Inventar-Evidenz landet im Report Inventory; freigegebene Definitionen exportieren Sie als `kpi-cards.csv` aus dem [KPI Definition](/tools/kpi-definition)-Tool.
 
 Pflichtfelder sind Metrikfamilien-ID, Labels und Aliase, gefundene Implementierungen, Geschäftsfragen, semantisches Vergleichsergebnis, vorgeschlagene und genehmigte Definition, Version, Basisgranularität, Quellautorität, Platzierung, Produktionsreferenzen, Owner, Steward, Custodians, Tests, Reconciliation, Zertifizierungsbedarf, genehmigte Ableitungen, Konfliktvarianten, Migrationsowner, Zieldatum, Ersatz, Ausnahmen und Review-Trigger.
 

@@ -78,6 +78,8 @@ class VendorResourcesController extends Controller
             'supplierLibraryByProduct' => $supplierLibraryByProduct,
             'availableFamilies' => $availableFamilies,
             'availableVendors' => $availableVendors,
+            'certLastVerified' => (string) config('vendor-resources.lastVerified', ''),
+            'certLastVerifiedNote' => config('vendor-resources.lastVerifiedNote', []),
         ]);
     }
 

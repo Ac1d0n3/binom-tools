@@ -18,6 +18,7 @@ order: 1
 publishedAt: 2026-05-01
 series: governance-help-hub
 seriesPart: 2
+hero: images/playbooks/help-hub-accounts-hero.png
 seriesTitle: Governance Help Hub
 ---
 

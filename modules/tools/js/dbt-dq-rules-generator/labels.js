@@ -33,6 +33,7 @@ const labels = {
         'dqRules.output.macroIntro':
             'Aus Schritt 1 (DQ Macro Generator) — Referenz zum Kopieren. Bei Änderungen dort neu generieren.',
         'dqRules.output.tests': 'Generic Tests (Snippet)',
+        'dqRules.downloadBacklog': 'dq-backlog.csv / JSON herunterladen',
         'dqRules.copy': 'Kopieren',
         'shared.syncStatus': 'Einstellungen zuletzt von {source} ({time})',
         'shared.copied': 'Kopiert!',
@@ -76,6 +77,7 @@ const labels = {
         'dqRules.output.macroIntro':
             'From step 1 (DQ Macro Generator) — reference for copy-paste. Regenerate there after changes.',
         'dqRules.output.tests': 'Generic tests (snippet)',
+        'dqRules.downloadBacklog': 'Download dq-backlog.csv / JSON',
         'dqRules.copy': 'Copy',
         'shared.syncStatus': 'Settings last saved by {source} ({time})',
         'shared.copied': 'Copied!',

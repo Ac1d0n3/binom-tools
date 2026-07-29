@@ -17,7 +17,7 @@ Verwandte Docs:
 |-------|--------|--------|--------|
 | A | [phase-a-authority-auffindbarkeit.de.md](phase-a-authority-auffindbarkeit.de.md) | Author-Signal, SEO-Ops, Einstiege | Code + lokale Checks erledigt · Production-Kern OK · Deploy (robots + Phase-B-Playbooks) + GSC/Bing offen |
 | B | [phase-b-infos-beratung.de.md](phase-b-infos-beratung.de.md) | Advisor + vertiefende Playbooks, BI-Parität | **erledigt** ([Briefs](phase-b-story-briefs.de.md) · [Plattform](governance-stack-decisions-story-briefs.de.md) · [Source Load](source-load-decisions-story-briefs.de.md) · [BI](bi-governance-decisions-story-briefs.de.md)) |
-| C | [phase-c-artefakt-tiefe.de.md](phase-c-artefakt-tiefe.de.md) | Supplier→Mart, Exports, Proof | offen · baut auf Advisor + Phase-B-Playbooks / Tools auf |
+| C | [phase-c-artefakt-tiefe.de.md](phase-c-artefakt-tiefe.de.md) | Supplier→Mart, Exports, Proof | **erledigt** ([Briefs](supplier-to-mart-story-briefs.de.md)) |
 | D | [phase-d-reichweite.de.md](phase-d-reichweite.de.md) | LinkedIn, Zitate, IndexNow, Follow | offen · Cadence = Advisor + bestehende Stories/Tools |
 | E | [phase-e-discussion.de.md](phase-e-discussion.de.md) | Community / Discussion | später, nur DB · Threads an Phase-B-Playbooks binden |
 

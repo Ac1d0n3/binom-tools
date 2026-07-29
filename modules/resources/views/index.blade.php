@@ -54,6 +54,17 @@
             <p class="tools-page-curation" data-i18n="resources.curatedNote">
                 Curated, not sponsored — practical entry points for governance decisions.
             </p>
+            @if ($certLastVerified !== '')
+                @php
+                    $certNoteEn = is_array($certLastVerifiedNote ?? null) ? (string) ($certLastVerifiedNote['en'] ?? '') : '';
+                    $certNoteDe = is_array($certLastVerifiedNote ?? null) ? (string) ($certLastVerifiedNote['de'] ?? $certNoteEn) : $certNoteEn;
+                @endphp
+                <p
+                    class="tools-page-curation tools-page-curation--verified"
+                    data-text-de="{{ $certNoteDe !== '' ? $certNoteDe : ('Cert-Links spotrugefen: '.$certLastVerified) }}"
+                    data-text-en="{{ $certNoteEn !== '' ? $certNoteEn : ('Cert links spot-checked: '.$certLastVerified) }}"
+                >{{ $certNoteEn !== '' ? $certNoteEn : ('Cert links spot-checked: '.$certLastVerified) }}</p>
+            @endif
 
             <div class="tools-overview-toolbar">
                 <label class="tools-overview-search">

@@ -56,7 +56,7 @@
 
 
         <header class="governance-landing__hero">
-            <p class="governance-hub__eyebrow" data-text-de="Collect Infos Workflow" data-text-en="Collect infos workflow">Collect infos workflow</p>
+            <p class="governance-hub__eyebrow" data-text-de="Collect Infos 8" data-text-en="Collect Infos 8">Collect Infos 8</p>
             <h1
                 class="tools-page-title"
                 data-text-de="Governance Discovery Canvas: Infos für Stack, Quelle, KPI und Mart sammeln"

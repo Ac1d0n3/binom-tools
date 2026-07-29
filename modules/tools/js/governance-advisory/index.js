@@ -65,6 +65,45 @@ function safeFilename(value) {
         .replace(/^-|-$/g, '') || 'governance-tool-report';
 }
 
+/** Stable Phase-C artifact basenames (UI, exports, playbooks share these). */
+const ARTIFACT_BASENAME_BY_TOOL = {
+    'source-scope-builder': 'source-scope',
+    'mart-design-brief-generator': 'mart-design-brief',
+    'decision-brief-generator': 'decision-brief',
+};
+
+function artifactBasename(toolId, fallbackTitle) {
+    return ARTIFACT_BASENAME_BY_TOOL[toolId] || safeFilename(fallbackTitle);
+}
+
+function fieldsToCsv(state) {
+    const escape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+    const lines = ['label,value,status'];
+    for (const field of state.fields) {
+        lines.push([
+            escape(field.label),
+            escape(field.value),
+            escape(field.value ? 'filled' : 'open'),
+        ].join(','));
+    }
+    return `${lines.join('\n')}\n`;
+}
+
+function fieldsToJson(state) {
+    return `${JSON.stringify({
+        artifact: artifactBasename(state.toolId, state.title),
+        toolId: state.toolId,
+        title: state.title,
+        note: state.note,
+        fields: state.fields.map((field) => ({
+            label: field.labelEn || field.label,
+            labelDe: field.labelDe,
+            value: field.value,
+        })),
+        score: state.score,
+    }, null, 2)}\n`;
+}
+
 function collect(root, config) {
     const note = root.querySelector('[data-governance-tool-note]')?.value?.trim() || '';
     const fields = Array.from(root.querySelectorAll('[data-governance-tool-field]')).map((input) => {
@@ -674,7 +713,12 @@ function mount(root) {
     }));
 
     root.querySelectorAll('[data-governance-tool-download]').forEach((button) => button.addEventListener('click', () => {
-        downloadTextFile(`${safeFilename(current.title)}.md`, markdown(current), 'text/markdown;charset=utf-8');
+        const base = artifactBasename(current.toolId, current.title);
+        downloadTextFile(`${base}.md`, markdown(current), 'text/markdown;charset=utf-8');
+        if (ARTIFACT_BASENAME_BY_TOOL[current.toolId]) {
+            downloadTextFile(`${base}.csv`, fieldsToCsv(current), 'text/csv;charset=utf-8');
+            downloadTextFile(`${base}.json`, fieldsToJson(current), 'application/json;charset=utf-8');
+        }
         markPristine();
         setStatus(t('downloaded'));
     }));

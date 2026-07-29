@@ -62,7 +62,7 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.result.grainHint': 'Mindestens eine KPI hat noch keinen Grain. Ohne Grain ist das Mart-Design unsicher.',
         'kpiDefinition.result.readyHint': 'Alle KPI-Karten haben Owner und Grain; der Stand kann in Mart Design oder Decision Brief übernommen werden.',
         'kpiDefinition.result.intakeHint': 'Einträge aus dem KPI Intake bleiben als Quelle verknüpft und können im Register weiter verfeinert werden.',
-        'discovery.exportTitle': 'KPI-Inventar',
+        'discovery.exportTitle': 'kpi-cards',
     },
     en: {
         'kpiDefinition.pageTitle': 'KPI Definition Card',
@@ -122,7 +122,7 @@ const labels = mergeDiscoveryLabels({
         'kpiDefinition.result.grainHint': 'At least one KPI has no grain yet. Without grain, mart design is uncertain.',
         'kpiDefinition.result.readyHint': 'All KPI cards have owner and grain; this can move into mart design or decision brief.',
         'kpiDefinition.result.intakeHint': 'Rows from KPI Intake stay linked as a source and can be refined in the register.',
-        'discovery.exportTitle': 'KPI inventory',
+        'discovery.exportTitle': 'kpi-cards',
     },
 });
 

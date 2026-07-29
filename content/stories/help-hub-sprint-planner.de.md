@@ -18,6 +18,7 @@ order: 2
 publishedAt: 2026-05-01
 series: governance-help-hub
 seriesPart: 3
+hero: images/playbooks/help-hub-sprint-planner-hero.png
 seriesTitle: Governance Help Hub
 ---
 

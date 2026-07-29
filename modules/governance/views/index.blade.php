@@ -210,6 +210,17 @@
                         <li data-text-de="Speichere die Session, wenn daraus Report, Plan-Aufgabe oder Change Request entstehen soll." data-text-en="Save the session when it should become a report, plan task, or change request.">Save the session when it should become a report, plan task, or change request.</li>
                     </ol>
 
+                    <h3 data-text-de="Decision Ladder" data-text-en="Decision Ladder">Decision Ladder</h3>
+                    <p
+                        data-text-de="Decision Ladder: Orientierung → Fragen → Tools → Nachweise. Einstieg ist der Governance Advisor."
+                        data-text-en="Decision Ladder: orientation → questions → tools → evidence. Entry is the Governance Advisor."
+                    >Decision Ladder: orientation → questions → tools → evidence. Entry is the Governance Advisor.</p>
+                    <h3 data-text-de="Collect Infos 8 &amp; Evidence Loop" data-text-en="Collect Infos 8 &amp; Evidence Loop">Collect Infos 8 &amp; Evidence Loop</h3>
+                    <p
+                        data-text-de="Collect Infos 8 benennt die acht Canvas-Schritte. Evidence Loop: Entscheidung → Control → Nachweis. Platform Starting Point und Source Load First sind je ein Satz aus den bestehenden Serien — die 8 Pillars bleiben das Praxisgerüst."
+                        data-text-en="Collect Infos 8 names the eight canvas steps. Evidence Loop: decision → control → evidence. Platform Starting Point and Source Load First are one-liners from the existing series — the 8 Pillars stay the practical scaffold."
+                    >Collect Infos 8 names the eight canvas steps. Evidence Loop: decision → control → evidence. Platform Starting Point and Source Load First are one-liners from the existing series — the 8 Pillars stay the practical scaffold.</p>
+
                     <h3 data-text-de="Zusammenspiel der Tools" data-text-en="How the tools connect">How the tools connect</h3>
                     <p
                         data-text-de="Jedes Tool kann allein genutzt werden, liefert aber einen Baustein für denselben Governance-Report. KPI Intake erzeugt KPI-Karten, Source Scope den Ladeumfang, Mart Design Tabellenentscheidungen, Starting-Point Decision den Plattform-Start, Data Quality Regeln/Gates, Decision Brief die Freigabe."

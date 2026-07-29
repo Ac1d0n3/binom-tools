@@ -125,7 +125,7 @@
                 ['de' => 'Quellen und Skip-Tabellen markieren', 'en' => 'Mark sources and skip tables'],
             ]"
             :artifacts="[
-                ['de' => 'KPI Cards (CSV/Markdown)', 'en' => 'KPI cards (CSV/Markdown)'],
+                ['de' => 'KPI Cards (kpi-cards.csv / Markdown)', 'en' => 'KPI cards (kpi-cards.csv / Markdown)'],
                 ['de' => 'Mart Design Brief', 'en' => 'Mart design brief'],
             ]"
             :tools="[

@@ -16,6 +16,8 @@ import {
     buildDqGenericTestsSnippet,
     buildDqSourcesYaml,
     buildDqModelSql,
+    buildDqBacklogCsv,
+    buildDqBacklogJson,
 } from './dq-rules-builder.js';
 import { buildDqGovernanceMacro, buildDqRuleTest } from '../dbt-dq-macro-generator/dq-macro-builder.js';
 import { getWarehouseTemplate } from '../pii-shared/warehouse-templates.js';
@@ -28,6 +30,7 @@ import {
 import { collectDqIssues } from '../dq-shared/dq-validation.js';
 import { renderValidatedOutputs } from '../pii-shared/validation-ui.js';
 import { copyFromButton, updateSyncStatusEl } from '../pii-shared/tool-utils.js';
+import { downloadTextFile } from '../discovery-shared/download.js';
 
 const app = document.getElementById('dbt-dq-rules-generator-app');
 if (!app) throw new Error('DQ rules generator root element not found');
@@ -60,6 +63,7 @@ const els = {
     copyGovernanceBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-governance-btn')),
     copyDqRuleBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-dq-rule-btn')),
     copyTestsBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-copy-tests-btn')),
+    downloadBacklogBtn: /** @type {HTMLButtonElement | null} */ (document.getElementById('dq-rules-download-backlog-btn')),
     syncStatus: document.getElementById('dq-rules-sync-status'),
 };
 
@@ -283,6 +287,11 @@ els.copyDqRuleBtn?.addEventListener('click', () => copyFromButton(els.copyDqRule
 els.copyTestsBtn?.addEventListener('click', () =>
     copyFromButton(els.copyTestsBtn, buildDqGenericTestsSnippet(state), tr),
 );
+els.downloadBacklogBtn?.addEventListener('click', () => {
+    readForm();
+    downloadTextFile('dq-backlog.csv', buildDqBacklogCsv(state), 'text/csv;charset=utf-8');
+    downloadTextFile('dq-backlog.json', buildDqBacklogJson(state), 'application/json;charset=utf-8');
+});
 
 window.addEventListener('binom-tools:locale', () => {
     applyDqRulesLabels();

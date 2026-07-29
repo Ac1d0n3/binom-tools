@@ -35,10 +35,9 @@ class GovernanceAdvisoryToolsTest extends TestCase
         $response->assertSee('Decision question');
         $response->assertSee('How to use this tool');
         $response->assertSee('Options');
-        $response->assertSee('data-governance-tool-drawer-toggle', false);
-        $response->assertSee('data-governance-tool-header-drawer', false);
-        $response->assertSee('data-governance-tool-panel-toggle', false);
-        $response->assertSee('data-governance-tool-panel', false);
+        $response->assertSee('data-tool-header-panel-toggle', false);
+        $response->assertSee('data-tool-header-panel', false);
+        $response->assertSee('data-tool-header-options-drawer', false);
         if ($path !== '/tools/kpi-requirements-intake') {
             $response->assertSee('View report');
         }

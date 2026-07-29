@@ -68,7 +68,7 @@ An inventory is successful when unresolved metric families decline and trusted i
 
 ## Artifact
 
-Create a **Trusted Metric Candidate Record** for each metric family and manage all records as a migration portfolio.
+Create a **Trusted Metric Candidate Record** for each metric family and manage all records as a migration portfolio. Capture inventory evidence in Report Inventory; export approved definitions as `kpi-cards.csv` from the [KPI Definition](/tools/kpi-definition) tool.
 
 Required fields include metric-family ID, labels and aliases, discovered implementations, business questions, semantic comparison result, proposed and approved definition, version, base grain, source authority, placement, production references, Owner, Steward, custodians, tests, reconciliation, certification requirement, approved derivatives, conflicting variants, migration owner, target date, replacement, exceptions and review trigger.
 

@@ -66,6 +66,39 @@
         </section>
 
         <section class="tools-section">
+            <h2 class="tools-section__title" data-i18n="about.signature.title">Signature models</h2>
+            <h3 class="tools-section__subtitle" data-i18n="about.signature.ladderTitle">Decision Ladder</h3>
+            <p class="tools-about-body" data-i18n="about.signature.ladderBody">
+                Decision Ladder: orientation → questions → tools → evidence. Entry is the Governance Advisor — not another decision page.
+            </p>
+            <h3 class="tools-section__subtitle" data-i18n="about.signature.collectTitle">Collect Infos 8</h3>
+            <p class="tools-about-body" data-i18n="about.signature.collectBody">
+                Collect Infos 8 is the named scaffold for the eight Discovery Canvas steps: from stakeholders and KPI cards through source scope, PII and DQ to mart design brief and decision brief.
+            </p>
+            <h3 class="tools-section__subtitle" data-i18n="about.signature.evidenceTitle">Evidence Loop</h3>
+            <p class="tools-about-body" data-i18n="about.signature.evidenceBody">
+                Evidence Loop: decision → control → evidence. If a piece is missing, the metric stays untrusted — see Missing Pieces of Trusted Metrics.
+            </p>
+            <p class="tools-about-body" data-i18n="about.signature.oneLiners">
+                Platform Starting Point: choose the entry by cloud/BI/catalog fit, not by feature list. Source Load First: load the source that carries owner, grain, and pilot outcome fastest.
+            </p>
+            <p class="tools-about-body" data-i18n="about.signature.pillars">
+                The 8 Pillars stay the practical scaffold — DMBOK/CDMP are domain language, not the site structure.
+            </p>
+            <div class="tools-about-actions">
+                <a class="tools-btn tools-btn--ghost" href="{{ locale_route('governance.discovery-canvas') }}">
+                    <span data-text-de="Collect Infos 8 öffnen" data-text-en="Open Collect Infos 8">Open Collect Infos 8</span>
+                </a>
+                <a class="tools-btn tools-btn--ghost" href="{{ locale_route('playbooks.show', ['slug' => 'eight-pillars']) }}">
+                    <span data-text-de="8 Pillars" data-text-en="8 Pillars">8 Pillars</span>
+                </a>
+                <a class="tools-btn tools-btn--ghost" href="{{ locale_route('playbooks.show', ['slug' => 'missing-pieces-trusted-metrics']) }}">
+                    <span data-text-de="Evidence Loop / Missing Pieces" data-text-en="Evidence Loop / Missing Pieces">Evidence Loop / Missing Pieces</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="tools-section">
             <h2 class="tools-section__title" data-i18n="about.tools.title">Governance</h2>
             <p class="tools-about-body" data-i18n="about.tools.body">
                 Interactive reference workflows make ideas from the stories practical — step by step, copy-paste ready for your warehouse or governance setup. Example path: advisor → demo workspace → report.

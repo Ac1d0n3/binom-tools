@@ -153,6 +153,20 @@ const shellLabels = {
             'Data Governance beginnt mit praktischen Entscheidungen: welcher Stack, welche Quelle, welches KPI-Grain, welche PII-Controls. Binom Governance ist ein Help Hub von Thomas Lindackers — erst Orientierung, dann Tools und Nachweise — kein Vendor-Verzeichnis und keine Rechtsberatung.',
         'about.governanceWhy.cta': 'Governance Hub öffnen',
         'about.governanceWhy.author': 'Thomas Lindackers auf binom.net',
+        'about.signature.title': 'Signature-Modelle',
+        'about.signature.ladderTitle': 'Decision Ladder',
+        'about.signature.ladderBody':
+            'Decision Ladder: Orientierung → Fragen → Tools → Nachweise. Einstieg ist der Governance Advisor — nicht eine weitere Decision Page.',
+        'about.signature.collectTitle': 'Collect Infos 8',
+        'about.signature.collectBody':
+            'Collect Infos 8 ist das benannte Gerüst der acht Discovery-Canvas-Schritte: von Stakeholdern und KPI Cards über Source Scope, PII und DQ bis Mart Design Brief und Decision Brief.',
+        'about.signature.evidenceTitle': 'Evidence Loop',
+        'about.signature.evidenceBody':
+            'Evidence Loop: Entscheidung → Control → Nachweis. Fehlt ein Stück, bleibt die Kennzahl untrusted — siehe Missing Pieces of Trusted Metrics.',
+        'about.signature.oneLiners':
+            'Platform Starting Point: wähle den Einstieg nach Cloud/BI/Catalog-Fit, nicht nach Feature-Liste. Source Load First: lade die Quelle, die Owner, Grain und Pilot-Outcome am schnellsten trägt.',
+        'about.signature.pillars':
+            'Die 8 Pillars bleiben das Praxisgerüst — DMBOK/CDMP sind Fachsprache, nicht die Site-Struktur.',
         'about.visuals.title': 'Visuals',
         'about.visuals.body':
             'Diagramme und Schaubilder zu Playbook-Beispielen erstelle ich mit KI — abgestimmt auf ein einheitliches Corporate Design, damit Stories lesbar und vergleichbar bleiben.',
@@ -937,7 +951,7 @@ const shellLabels = {
         'glossary.bingo.seedLabel': 'Seed',
         'learningPaths.indexTitle': 'Lernpfade',
         'learningPaths.indexLead':
-            'Geführte Journeys nach Rolle und Ziel — aus Stories, Serien, Tools und Glossar-Begriffen.',
+            'Geführte Journeys nach Rolle und Ziel — aus Stories, Serien, Tools und Glossar. Mapping: Consultant → Governance, Platform Engineer → Platform, Analytics Engineer → Engineering, Security/Privacy → Privacy. Die Profil-Basis-Rolle vorbelegt den Advisor, ohne die Pfade doppelt zu erklären.',
         'learningPaths.audienceLabel': 'Zielgruppe',
         'learningPaths.audienceAll': 'Alle Zielgruppen',
         'learningPaths.stepCount': '{{count}} Schritte',
@@ -1338,6 +1352,20 @@ const shellLabels = {
             'Data governance starts with practical decisions: which stack, which source, which KPI grain, which PII controls. Binom Governance is a help hub by Thomas Lindackers — orientation first, then tools and evidence — not a vendor directory and not legal advice.',
         'about.governanceWhy.cta': 'Open Governance Hub',
         'about.governanceWhy.author': 'Thomas Lindackers on binom.net',
+        'about.signature.title': 'Signature models',
+        'about.signature.ladderTitle': 'Decision Ladder',
+        'about.signature.ladderBody':
+            'Decision Ladder: orientation → questions → tools → evidence. Entry is the Governance Advisor — not another decision page.',
+        'about.signature.collectTitle': 'Collect Infos 8',
+        'about.signature.collectBody':
+            'Collect Infos 8 is the named scaffold for the eight Discovery Canvas steps: from stakeholders and KPI cards through source scope, PII and DQ to mart design brief and decision brief.',
+        'about.signature.evidenceTitle': 'Evidence Loop',
+        'about.signature.evidenceBody':
+            'Evidence Loop: decision → control → evidence. If a piece is missing, the metric stays untrusted — see Missing Pieces of Trusted Metrics.',
+        'about.signature.oneLiners':
+            'Platform Starting Point: choose the entry by cloud/BI/catalog fit, not by feature list. Source Load First: load the source that carries owner, grain, and pilot outcome fastest.',
+        'about.signature.pillars':
+            'The 8 Pillars stay the practical scaffold — DMBOK/CDMP are domain language, not the site structure.',
         'about.visuals.title': 'Visuals',
         'about.visuals.body':
             'Diagrams and illustrations for playbook examples are created with AI, aligned with a consistent corporate design so stories stay readable and comparable.',
@@ -2122,7 +2150,7 @@ const shellLabels = {
         'glossary.bingo.seedLabel': 'Seed',
         'learningPaths.indexTitle': 'Learning Paths',
         'learningPaths.indexLead':
-            'Guided journeys by role and goal — built from stories, series, tools, and glossary terms.',
+            'Guided journeys by role and goal — built from stories, series, tools, and glossary. Mapping: Consultant → Governance, Platform Engineer → Platform, Analytics Engineer → Engineering, Security/Privacy → Privacy. Your profile base role pre-selects the Advisor without re-explaining paths.',
         'learningPaths.audienceLabel': 'Audience',
         'learningPaths.audienceAll': 'All audiences',
         'learningPaths.stepCount': '{{count}} steps',

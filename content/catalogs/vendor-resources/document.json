@@ -1140,14 +1140,27 @@
             "certifications": [
                 {
                     "label": {
-                        "de": "AWS Certifications",
-                        "en": "AWS Certifications"
+                        "de": "AWS Data Engineer Associate",
+                        "en": "AWS Data Engineer Associate"
+                    },
+                    "href": "https://aws.amazon.com/certification/certified-data-engineer-associate/",
+                    "description": {
+                        "de": "Wofür nützlich? Pipeline-, Lake- und Analytics-Engineering auf AWS — Querverweis Plattform-Serie Part AWS.",
+                        "en": "Useful for? Pipeline, lake, and analytics engineering on AWS — cross-link platform series AWS part."
+                    },
+                    "lastVerified": "2026-07-29"
+                },
+                {
+                    "label": {
+                        "de": "AWS Certifications (Übersicht)",
+                        "en": "AWS Certifications (overview)"
                     },
                     "href": "https://aws.amazon.com/certification/",
                     "description": {
-                        "de": "Cloud-Zertifizierungen.",
-                        "en": "Cloud certifications."
-                    }
+                        "de": "Wofür nützlich? Einstieg in das AWS-Credential-Portfolio.",
+                        "en": "Useful for? Entry into the AWS credential portfolio."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -1531,9 +1544,10 @@
                     },
                     "href": "https://cloud.google.com/learn/certification",
                     "description": {
-                        "de": "Cloud-Zertifizierungen.",
-                        "en": "Cloud certifications."
-                    }
+                        "de": "Wofür nützlich? Cloud-Credentials inkl. Data Engineer — Querverweis Plattform-Serie GCP.",
+                        "en": "Useful for? Cloud credentials including Data Engineer — cross-link platform series GCP part."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -2033,11 +2047,12 @@
                         "de": "Snowflake Certifications",
                         "en": "Snowflake certifications"
                     },
-                    "href": "https://learn.snowflake.com/en/pages/certifications/",
+                    "href": "https://learn.snowflake.com/en/certifications/",
                     "description": {
-                        "de": "SnowPro Core und Spezialisierungen.",
-                        "en": "SnowPro Core and specializations."
-                    }
+                        "de": "Wofür nützlich? Warehouse-Rollen und SnowPro-Pfad — Querverweis Plattform-Serie Snowflake/dbt.",
+                        "en": "Useful for? Warehouse roles and SnowPro path — cross-link platform series Snowflake/dbt part."
+                    },
+                    "lastVerified": "2026-07-29"
                 },
                 {
                     "label": {
@@ -2046,9 +2061,10 @@
                     },
                     "href": "https://learn.snowflake.com/en/courses/uni_cert_prep_core/",
                     "description": {
-                        "de": "Core-Zertifizierungsvorbereitung.",
-                        "en": "Core certification prep."
-                    }
+                        "de": "Wofür nützlich? Fundament für Snowflake-Betrieb und Governance-Kontext.",
+                        "en": "Useful for? Foundation for Snowflake operations and governance context."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -2236,9 +2252,10 @@
                     },
                     "href": "https://www.databricks.com/learn/certification",
                     "description": {
-                        "de": "Data Engineer, Analyst, Architect.",
-                        "en": "Data Engineer, Analyst, Architect."
-                    }
+                        "de": "Wofür nützlich? Lakehouse-Rollen (Engineer/Analyst/Architect) — Querverweis Plattform-Serie Databricks.",
+                        "en": "Useful for? Lakehouse roles (engineer/analyst/architect) — cross-link platform series Databricks part."
+                    },
+                    "lastVerified": "2026-07-29"
                 },
                 {
                     "label": {
@@ -2247,9 +2264,10 @@
                     },
                     "href": "https://www.databricks.com/learn/certification/data-engineer-associate",
                     "description": {
-                        "de": "Associate-Zertifikat Data Engineering.",
-                        "en": "Associate certificate for data engineering."
-                    }
+                        "de": "Wofür nützlich? Erster Nachweis für Pipeline- und Lakehouse-Praxis.",
+                        "en": "Useful for? First credential for pipeline and lakehouse practice."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -2415,9 +2433,10 @@
                     },
                     "href": "https://cloud.google.com/learn/certification/data-engineer",
                     "description": {
-                        "de": "Google Cloud Data Engineer Zertifikat.",
-                        "en": "Google Cloud Data Engineer certificate."
-                    }
+                        "de": "Wofür nützlich? Data-Engineering auf GCP/BigQuery — Plattform-Serie Part GCP.",
+                        "en": "Useful for? Data engineering on GCP/BigQuery — platform series GCP part."
+                    },
+                    "lastVerified": "2026-07-29"
                 },
                 {
                     "label": {
@@ -2426,9 +2445,10 @@
                     },
                     "href": "https://cloud.google.com/learn/certification/looker-lookml-developer",
                     "description": {
-                        "de": "Verwandte Analytics-Zertifizierungen.",
-                        "en": "Related analytics certifications."
-                    }
+                        "de": "Wofür nützlich? Analytics-/Looker-Pfad neben dem Engineer-Zertifikat.",
+                        "en": "Useful for? Analytics/Looker path alongside the engineer certificate."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -2592,25 +2612,27 @@
             "certifications": [
                 {
                     "label": {
-                        "de": "Fabric Analytics Engineer",
-                        "en": "Fabric Analytics Engineer"
+                        "de": "Fabric Analytics Engineer (DP-600)",
+                        "en": "Fabric Analytics Engineer (DP-600)"
                     },
                     "href": "https://learn.microsoft.com/en-us/credentials/certifications/fabric-analytics-engineer-associate/",
                     "description": {
-                        "de": "DP-600 Zertifizierung.",
-                        "en": "DP-600 certification."
-                    }
+                        "de": "Wofür nützlich? Semantic Models, Lakehouse und Governance-Start in Fabric — siehe Fabric Starting Point + Learning Path cert-fabric.",
+                        "en": "Useful for? Semantic models, lakehouse, and governance start in Fabric — see Fabric starting point + learning path cert-fabric."
+                    },
+                    "lastVerified": "2026-07-29"
                 },
                 {
                     "label": {
-                        "de": "Fabric Data Engineer",
-                        "en": "Fabric Data Engineer"
+                        "de": "Fabric Data Engineer (DP-700)",
+                        "en": "Fabric Data Engineer (DP-700)"
                     },
                     "href": "https://learn.microsoft.com/en-us/credentials/certifications/fabric-data-engineer-associate/",
                     "description": {
-                        "de": "DP-700 Zertifizierung.",
-                        "en": "DP-700 certification."
-                    }
+                        "de": "Wofür nützlich? Pipelines und Engineering-Fokus in Fabric.",
+                        "en": "Useful for? Pipelines and engineering focus in Fabric."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -3100,11 +3122,12 @@
                         "de": "dbt Certification",
                         "en": "dbt Certification"
                     },
-                    "href": "https://www.getdbt.com/certifications",
+                    "href": "https://www.getdbt.com/dbt-certification",
                     "description": {
-                        "de": "Offizielle dbt-Zertifizierungen.",
-                        "en": "Official dbt certifications."
-                    }
+                        "de": "Wofür nützlich? Analytics Engineering und Transformation-Governance — Learning Path cert-dbt.",
+                        "en": "Useful for? Analytics engineering and transform governance — learning path cert-dbt."
+                    },
+                    "lastVerified": "2026-07-29"
                 },
                 {
                     "label": {
@@ -3113,9 +3136,10 @@
                     },
                     "href": "https://learn.getdbt.com/courses/analytics-engineering",
                     "description": {
-                        "de": "Zertifikatspfad Analytics Engineering.",
-                        "en": "Analytics engineering certificate path."
-                    }
+                        "de": "Wofür nützlich? Praxispfad Models, Tests und Dokumentation.",
+                        "en": "Useful for? Practice path for models, tests, and documentation."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },
@@ -3819,9 +3843,10 @@
                     },
                     "href": "https://www.tableau.com/learn/certification",
                     "description": {
-                        "de": "Desktop, Data Analyst, Architect.",
-                        "en": "Desktop, Data Analyst, Architect."
-                    }
+                        "de": "Wofür nützlich? BI-Analyst- und Desktop-Nachweise — Querverweis BI-Governance-Serie.",
+                        "en": "Useful for? BI analyst and desktop credentials — cross-link BI governance series."
+                    },
+                    "lastVerified": "2026-07-29"
                 },
                 {
                     "label": {
@@ -3830,9 +3855,10 @@
                     },
                     "href": "https://www.tableau.com/learn/certification/desktop-specialist",
                     "description": {
-                        "de": "Einstiegszertifikat Desktop.",
-                        "en": "Entry desktop certificate."
-                    }
+                        "de": "Wofür nützlich? Einstieg Desktop Specialist.",
+                        "en": "Useful for? Entry Desktop Specialist credential."
+                    },
+                    "lastVerified": "2026-07-29"
                 }
             ]
         },

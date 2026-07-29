@@ -17,7 +17,7 @@ tags:
   - gdpr
 order: -1
 author: Thomas Lindackers
-hero: images/stories/host-vs-cloud-hero.png
+hero: images/playbooks/host-vs-cloud-hero.png
 publishedAt: 2026-07-13
 ---
 

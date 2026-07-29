@@ -8,8 +8,8 @@
             "en": "Salesforce"
         },
         "shortPurpose": {
-            "de": "CRM-Kern: Accounts, Contacts, Opportunities — Load, PII und Standard-Measures.",
-            "en": "CRM core: Accounts, Contacts, Opportunities — load, PII and standard measures."
+            "de": "CRM-Kern: Accounts, Contacts, Opportunities — von Load/Skip über Grain zum Pilot-Mart (Source Scope → Mart Brief).",
+            "en": "CRM core: Accounts, Contacts, Opportunities — from load/skip via grain to a pilot mart (Source Scope → Mart Brief)."
         },
         "entities": [
             {
@@ -1021,6 +1021,8 @@
             "tableau-calculation-generator"
         ],
         "relatedPlaybooks": [
+            "salesforce-tables-for-analytics",
+            "salesforce-to-mart",
             "define-kpi",
             "kpi-metric-governance",
             "pii-privacy-governance",
@@ -1036,8 +1038,8 @@
             "en": "HubSpot"
         },
         "shortPurpose": {
-            "de": "CRM + Marketing: Companies, Contacts, Deals — inkl. Formular-PII.",
-            "en": "CRM + marketing: Companies, Contacts, Deals — including form PII."
+            "de": "CRM + Marketing: Companies, Contacts, Deals — Load/Skip, Formular-PII und Deal-Grain zum Pilot-Mart.",
+            "en": "CRM + marketing: Companies, Contacts, Deals — load/skip, form PII and deal grain to a pilot mart."
         },
         "entities": [
             {
@@ -1927,6 +1929,8 @@
             "tableau-calculation-generator"
         ],
         "relatedPlaybooks": [
+            "hubspot-tables-for-analytics",
+            "hubspot-to-mart",
             "define-kpi",
             "kpi-metric-governance",
             "pii-privacy-governance",
@@ -2534,8 +2538,8 @@
             "en": "Microsoft Dynamics 365"
         },
         "shortPurpose": {
-            "de": "Dataverse Sales: account, contact, opportunity — Logical Names, statecode und PII für Warehouse-Loads.",
-            "en": "Dataverse Sales: account, contact, opportunity — logical names, statecode and PII for warehouse loads."
+            "de": "Dataverse Sales: account, contact, opportunity — Load/Skip und Opportunity-Grain zum Pilot-Mart.",
+            "en": "Dataverse Sales: account, contact, opportunity — load/skip and opportunity grain to a pilot mart."
         },
         "entities": [
             {
@@ -3510,6 +3514,8 @@
             "tableau-calculation-generator"
         ],
         "relatedPlaybooks": [
+            "dynamics-365-tables-for-analytics",
+            "dynamics-365-to-mart",
             "define-kpi",
             "kpi-metric-governance",
             "pii-privacy-governance",
@@ -5907,8 +5913,8 @@
             "en": "SAP S/4HANA"
         },
         "shortPurpose": {
-            "de": "ERP-Kern: Material, Kunden, Aufträge, FI — Load, PII und Finance/Logistics-Measures.",
-            "en": "ERP core: material, customers, orders, FI — load, PII and finance/logistics measures."
+            "de": "ERP-Kern: klarer Sales-/Auftrags-Ausschnitt — Load/Skip und Grain zum Pilot-Mart (kein Voll-ERP).",
+            "en": "ERP core: a narrow sales/order slice — load/skip and grain to a pilot mart (not full ERP)."
         },
         "entities": [
             {
@@ -6750,6 +6756,8 @@
             "qlik-set-analysis-generator"
         ],
         "relatedPlaybooks": [
+            "sap-s4-tables-for-analytics",
+            "sap-s4-to-mart",
             "define-kpi",
             "kpi-metric-governance",
             "pii-privacy-governance",
@@ -7620,8 +7628,8 @@
             "en": "Workday"
         },
         "shortPurpose": {
-            "de": "HCM-Kern: Worker, Position, Organization — RaaS/REST, PII und Workforce-KPIs.",
-            "en": "HCM core: worker, position, organization — RaaS/REST, PII and workforce KPIs."
+            "de": "HCM-Kern: Worker, Position, Organization — Headcount-Snapshot-Grain zum Pilot-Mart.",
+            "en": "HCM core: worker, position, organization — headcount snapshot grain to a pilot mart."
         },
         "entities": [
             {
@@ -8426,6 +8434,8 @@
             "schema-yml-editor"
         ],
         "relatedPlaybooks": [
+            "workday-tables-for-analytics",
+            "workday-to-mart",
             "define-kpi",
             "kpi-metric-governance",
             "pii-privacy-governance",

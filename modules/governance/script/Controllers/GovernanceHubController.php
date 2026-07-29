@@ -1073,7 +1073,7 @@ class GovernanceHubController extends Controller
                     'de' => 'Name, Definition, Formel, Grain, Zeitlogik, Filter, Dimensionen, Owner, Akzeptanzbeispiel.',
                     'en' => 'Name, definition, formula, grain, time logic, filters, dimensions, owner, acceptance example.',
                 ],
-                'output' => ['de' => 'KPI Cards', 'en' => 'KPI cards'],
+                'output' => ['de' => 'kpi-cards.csv', 'en' => 'kpi-cards.csv'],
                 'toolId' => 'kpi-requirements-intake',
                 'playbooks' => [
                     [
@@ -1093,7 +1093,7 @@ class GovernanceHubController extends Controller
                     'de' => 'Supplier, Entitäten, System Owner, Zugriff, Datenfrequenz.',
                     'en' => 'Supplier, entities, system owner, access, data frequency.',
                 ],
-                'output' => ['de' => 'Source Scope', 'en' => 'Source scope'],
+                'output' => ['de' => 'source-scope.csv', 'en' => 'source-scope.csv'],
                 'toolId' => 'source-scope-builder',
                 'playbooks' => [
                     [
@@ -1137,7 +1137,7 @@ class GovernanceHubController extends Controller
                     'de' => 'Pflichtfelder, Business Keys, Freshness, Referenzen, erlaubte Werte, Duplikate.',
                     'en' => 'Required fields, business keys, freshness, references, allowed values, duplicates.',
                 ],
-                'output' => ['de' => 'DQ Rule Backlog', 'en' => 'DQ rule backlog'],
+                'output' => ['de' => 'dq-backlog.csv', 'en' => 'dq-backlog.csv'],
                 'toolId' => 'dbt-dq-rules-generator',
                 'playbooks' => [
                     [
@@ -1153,7 +1153,7 @@ class GovernanceHubController extends Controller
                     'de' => 'Grain, Facts, Dimensions, SCD, History-Bedarf, Semantik.',
                     'en' => 'Grain, facts, dimensions, SCD, history needs, semantics.',
                 ],
-                'output' => ['de' => 'Mart Design Brief', 'en' => 'Mart design brief'],
+                'output' => ['de' => 'mart-design-brief.md', 'en' => 'mart-design-brief.md'],
                 'toolId' => 'mart-design-brief-generator',
                 'playbooks' => [
                     [
@@ -1177,7 +1177,7 @@ class GovernanceHubController extends Controller
                     'de' => 'Impact, Effort, Risiken, offene Fragen, Pilot-Kandidat.',
                     'en' => 'Impact, effort, risks, open questions, pilot candidate.',
                 ],
-                'output' => ['de' => 'Decision Brief', 'en' => 'Decision brief'],
+                'output' => ['de' => 'decision-brief.md', 'en' => 'decision-brief.md'],
                 'toolId' => 'decision-brief-generator',
                 'playbooks' => [
                     [
