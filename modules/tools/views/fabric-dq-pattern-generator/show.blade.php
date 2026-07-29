@@ -28,6 +28,10 @@
             </div>
         </x-slot:help>
 
+        <x-slot:save>
+            <x-tools.dq-packs-panel :dq-workspace-config="dq_workspace_config()" />
+        </x-slot:save>
+
         <x-tools.panel heading-id="lakehouse-dq-input-title" title-key="lakehouseDq.input.title" description-key="lakehouseDq.input.description">
             <div class="pii-policy-panel__grid">
                 <x-tools.field label-key="lakehouseDq.input.table">

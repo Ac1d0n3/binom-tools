@@ -130,6 +130,46 @@ class ProfileHubTest extends TestCase
             ->assertJsonPath('workspace.savedStacks.0.name', 'Finance Stack');
     }
 
+    public function test_active_workspace_can_save_and_delete_tool_artifacts(): void
+    {
+        $this->login('admin@example.com');
+        $this->post('/profile/workspaces', [
+            'name' => 'DQ ACME',
+            'stack' => 'snowflake-dbt',
+            'label' => '',
+            'notes' => '',
+        ])->assertRedirect();
+
+        $list = app(WorkspaceStoreInterface::class)
+            ->listFor(app(AccountAuth::class)->user());
+        $this->assertNotEmpty($list);
+        $workspaceId = $list[0]['id'];
+        $this->post("/profile/workspaces/{$workspaceId}/activate")->assertRedirect();
+
+        $this->postJson('/profile/api/workspace/active/tool-artifacts', [
+            'name' => 'Orders PII DE',
+            'toolId' => 'dbt-dq-rules-generator',
+            'kind' => 'dq-config',
+            'region' => 'DE',
+            'payload' => [
+                'modelName' => 'orders',
+                'columns' => [['name' => 'email', 'dqRules' => [['type' => 'regex']]]],
+            ],
+        ])->assertOk()
+            ->assertJsonPath('toolArtifact.name', 'Orders PII DE')
+            ->assertJsonPath('toolArtifact.toolId', 'dbt-dq-rules-generator')
+            ->assertJsonPath('toolArtifact.region', 'DE');
+
+        $active = $this->getJson('/profile/api/workspace/active')->assertOk();
+        $active->assertJsonPath('workspace.toolArtifacts.0.name', 'Orders PII DE');
+        $artifactId = $active->json('workspace.toolArtifacts.0.id');
+        $this->assertNotEmpty($artifactId);
+
+        $this->deleteJson("/profile/api/workspace/active/tool-artifacts/{$artifactId}")
+            ->assertOk()
+            ->assertJsonPath('toolArtifacts', []);
+    }
+
     public function test_legacy_personal_urls_redirect_to_profile(): void
     {
         $this->login('plain@example.com');

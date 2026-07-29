@@ -1,7 +1,9 @@
 import { getLocale } from '../../../../resources/js/shell/locale';
+import { dqPacksLabels } from '../dq-shared/dq-packs-labels.js';
 
 const labels = {
     de: {
+        ...dqPacksLabels.de,
         'lakehouseDq.fabric.pageTitle': 'Fabric DQ Pattern Generator',
         'lakehouseDq.fabric.lead': 'Erzeugt SQL- und Notebook-Patterns fuer Fabric Lakehouse/Warehouse: DQ-Regeln, Delta Loads, SCD2 und Pipeline-Gates.',
         'lakehouseDq.fabricPii.pageTitle': 'Fabric PII Governance Pattern Generator',
@@ -72,6 +74,7 @@ const labels = {
         'shared.copied': 'Kopiert!',
     },
     en: {
+        ...dqPacksLabels.en,
         'lakehouseDq.fabric.pageTitle': 'Fabric DQ Pattern Generator',
         'lakehouseDq.fabric.lead': 'Generates SQL and notebook patterns for Fabric Lakehouse/Warehouse: DQ rules, Delta loads, SCD2, and pipeline gates.',
         'lakehouseDq.fabricPii.pageTitle': 'Fabric PII Governance Pattern Generator',
@@ -143,15 +146,19 @@ const labels = {
     },
 };
 
-export function t(locale, key) {
-    return labels[locale]?.[key] ?? labels.en[key] ?? key;
+export function t(locale, key, params = {}) {
+    let text = labels[locale]?.[key] ?? labels.en[key] ?? key;
+    for (const [k, v] of Object.entries(params)) {
+        text = text.replace(`{${k}}`, String(v));
+    }
+    return text;
 }
 
 export function applyLakehouseDqLabels() {
     const locale = getLocale();
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
-        if (!key?.startsWith('lakehouseDq.') && !key?.startsWith('shared.')) return;
+        if (!key?.startsWith('lakehouseDq.') && !key?.startsWith('shared.') && !key?.startsWith('dqPacks.')) return;
         el.textContent = t(locale, key);
     });
 }

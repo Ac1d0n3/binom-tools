@@ -1,7 +1,7 @@
 import '../../css/pii-policy-generator.css';
 import { getLocale } from '../../../../resources/js/shell/locale';
 import { applyDqRulesLabels, t } from './labels';
-import { createDefaultDqModelState } from '../dq-shared/dq-demo-model.js';
+import { createDefaultDqModelState, normalizeDqModelState } from '../dq-shared/dq-demo-model.js';
 import { mergeDqMeta } from '../dq-shared/dq-meta.js';
 import {
     debouncedSaveDqState,
@@ -9,6 +9,8 @@ import {
     loadDqMetaState,
     subscribeDqState,
 } from '../dq-shared/dq-storage.js';
+import { applyPackToDqModelState } from '../dq-shared/dq-rule-packs.js';
+import { mountDqPacksPanel } from '../dq-shared/dq-packs-panel.js';
 import {
     buildDqRulesYaml,
     buildDqGenericTestsSnippet,
@@ -288,4 +290,30 @@ window.addEventListener('binom-tools:locale', () => {
     renderColumns();
     renderModelRules();
     renderOutputs();
+    packsPanel?.rerenderLabels();
+});
+
+const packsPanel = mountDqPacksPanel({
+    root: app,
+    toolId: 'dbt-dq-rules-generator',
+    relatedToolIds: ['dbt-dq-macro-generator', 'dbt-dq-history-generator'],
+    locale,
+    t: tr,
+    getPayload: () => {
+        readForm();
+        return state;
+    },
+    applyPayload: (payload) => {
+        state = normalizeDqModelState(payload);
+        writeForm();
+        renderOutputs();
+        persistState();
+    },
+    applyPack: (packId, regionId) => {
+        readForm();
+        state = applyPackToDqModelState(state, packId, regionId, locale());
+        writeForm();
+        renderOutputs();
+        persistState();
+    },
 });

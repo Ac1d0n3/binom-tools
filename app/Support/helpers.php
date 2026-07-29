@@ -92,6 +92,31 @@ if (! function_exists('accounts_enabled')) {
     }
 }
 
+if (! function_exists('dq_workspace_config')) {
+    /**
+     * Profile Workspace API config for DQ generators (null when logged out / accounts off).
+     *
+     * @return array{enabled: bool, activeUrl: string, storeUrl: string, destroyUrlTemplate: string}|null
+     */
+    function dq_workspace_config(): ?array
+    {
+        if (! accounts_enabled() || ! app(\App\Accounts\AccountAuth::class)->user()) {
+            return null;
+        }
+
+        return [
+            'enabled' => true,
+            'activeUrl' => locale_route('profile.api.workspace.active'),
+            'storeUrl' => locale_route('profile.api.workspace.tool-artifacts.store'),
+            'destroyUrlTemplate' => str_replace(
+                'ARTIFACT_PLACEHOLDER',
+                '__ID__',
+                locale_route('profile.api.workspace.tool-artifacts.destroy', ['artifactId' => 'ARTIFACT_PLACEHOLDER']),
+            ),
+        ];
+    }
+}
+
 if (! function_exists('tools_release_label')) {
     function tools_release_label(): ?string
     {

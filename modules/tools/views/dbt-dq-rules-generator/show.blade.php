@@ -28,6 +28,10 @@
             </div>
         </x-slot:help>
 
+        <x-slot:save>
+            <x-tools.dq-packs-panel :dq-workspace-config="dq_workspace_config()" />
+        </x-slot:save>
+
         <x-tools.panel heading-id="dq-rules-model-title" title-key="dqRules.model.title">
             <x-tools.collapsible-info summary-key="dqRules.howto.summary" :compact="true">
                 <p data-i18n="dqRules.howto.model.intro"></p>

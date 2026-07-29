@@ -144,6 +144,7 @@ class WorkspaceController extends ProfileController
                 'stack' => $workspace['stack'] ?? 'unknown',
                 'customStack' => is_array($workspace['customStack'] ?? null) ? $workspace['customStack'] : null,
                 'savedStacks' => is_array($workspace['savedStacks'] ?? null) ? array_values($workspace['savedStacks']) : [],
+                'toolArtifacts' => is_array($workspace['toolArtifacts'] ?? null) ? array_values($workspace['toolArtifacts']) : [],
             ],
         ]);
     }
@@ -174,6 +175,7 @@ class WorkspaceController extends ProfileController
                 'stack' => $row['stack'] ?? 'unknown',
                 'customStack' => is_array($row['customStack'] ?? null) ? $row['customStack'] : null,
                 'savedStacks' => is_array($row['savedStacks'] ?? null) ? array_values($row['savedStacks']) : [],
+                'toolArtifacts' => is_array($row['toolArtifacts'] ?? null) ? array_values($row['toolArtifacts']) : [],
             ],
         ]);
     }
@@ -230,6 +232,67 @@ class WorkspaceController extends ProfileController
 
         return response()->json([
             'savedStacks' => is_array($workspace['savedStacks'] ?? null) ? array_values($workspace['savedStacks']) : [],
+        ]);
+    }
+
+    public function storeToolArtifact(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $user = $this->user();
+        $activeId = $this->workspaces->activeId($user);
+        if ($activeId === null) {
+            return response()->json(['error' => 'No active workspace.'], 422);
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'toolId' => ['required', 'string', 'max:80'],
+            'payload' => ['required', 'array'],
+            'kind' => ['nullable', 'string', 'max:40'],
+            'region' => ['nullable', 'string', 'max:8'],
+            'id' => ['nullable', 'string', 'max:64'],
+        ]);
+
+        try {
+            $entry = $this->workspaces->upsertToolArtifact(
+                $activeId,
+                $user,
+                $data['name'],
+                $data['toolId'],
+                $data['payload'],
+                $data['kind'] ?? 'dq-config',
+                $data['region'] ?? null,
+                $data['id'] ?? null,
+            );
+        } catch (InvalidArgumentException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+
+        $workspace = $this->workspaces->find($activeId, $user);
+
+        return response()->json([
+            'toolArtifact' => $entry,
+            'toolArtifacts' => is_array($workspace['toolArtifacts'] ?? null) ? array_values($workspace['toolArtifacts']) : [],
+        ]);
+    }
+
+    public function destroyToolArtifact(string $artifactId): \Illuminate\Http\JsonResponse
+    {
+        $user = $this->user();
+        $activeId = $this->workspaces->activeId($user);
+        if ($activeId === null) {
+            return response()->json(['error' => 'No active workspace.'], 422);
+        }
+
+        try {
+            $this->workspaces->removeToolArtifact($activeId, $user, $artifactId);
+        } catch (InvalidArgumentException) {
+            abort(404);
+        }
+
+        $workspace = $this->workspaces->find($activeId, $user);
+
+        return response()->json([
+            'toolArtifacts' => is_array($workspace['toolArtifacts'] ?? null) ? array_values($workspace['toolArtifacts']) : [],
         ]);
     }
 

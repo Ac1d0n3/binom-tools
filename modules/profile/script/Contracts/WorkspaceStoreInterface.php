@@ -40,4 +40,21 @@ interface WorkspaceStoreInterface
     public function upsertSavedStack(string $workspaceId, AccountUser $actor, string $name, array $selection, ?string $stackId = null): array;
 
     public function removeSavedStack(string $workspaceId, AccountUser $actor, string $stackId): void;
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    public function upsertToolArtifact(
+        string $workspaceId,
+        AccountUser $actor,
+        string $name,
+        string $toolId,
+        array $payload,
+        string $kind = 'dq-config',
+        ?string $region = null,
+        ?string $artifactId = null,
+    ): array;
+
+    public function removeToolArtifact(string $workspaceId, AccountUser $actor, string $artifactId): void;
 }

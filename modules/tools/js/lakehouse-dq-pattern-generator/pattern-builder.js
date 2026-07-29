@@ -13,7 +13,137 @@ function bt(value) {
     return value.includes('.') ? value.split('.').map((part) => `\`${part}\``).join('.') : `\`${value}\``;
 }
 
-/** @param {{ table: string, keys: string[], required: string[], freshness: string, pii: string[], owner: string, pattern: string, toolId?: string }} state */
+/**
+ * @typedef {Object} LakehouseExtraCheck
+ * @property {string} column
+ * @property {string} type
+ * @property {string} [severity]
+ * @property {string} [pattern]
+ * @property {string} [sql]
+ * @property {number} [min]
+ * @property {number} [max]
+ * @property {string[]} [values]
+ * @property {number} [max_hours]
+ */
+
+/**
+ * @typedef {Object} LakehouseDqState
+ * @property {string} table
+ * @property {string[]} keys
+ * @property {string[]} required
+ * @property {string} freshness
+ * @property {string[]} pii
+ * @property {string} owner
+ * @property {string} pattern
+ * @property {string} [toolId]
+ * @property {string} [region]
+ * @property {string[]} [appliedPackIds]
+ * @property {LakehouseExtraCheck[]} [extraChecks]
+ * @property {string[]} [packNotes]
+ */
+
+/** @param {LakehouseExtraCheck[] | undefined} extraChecks @param {string[]} [notes] */
+export function formatPackNotes(extraChecks = [], notes = []) {
+    const lines = [];
+    if (notes.length) {
+        lines.push('-- Region / pack notes:');
+        for (const note of notes) lines.push(`-- - ${note}`);
+    }
+    const usable = extraChecks.filter((c) => c.column && c.column !== '_model');
+    if (usable.length) {
+        lines.push('-- Extra pack checks:');
+        for (const check of usable) {
+            const detail =
+                check.type === 'regex'
+                    ? `regex ${check.pattern || ''}`
+                    : check.type === 'range'
+                      ? `range ${check.min}..${check.max}`
+                      : check.type === 'accepted_values'
+                        ? `values ${(check.values || []).join('|')}`
+                        : check.type;
+            lines.push(`-- - ${check.column}: ${detail} (${check.severity || 'error'})`);
+        }
+    }
+    return lines.length ? `${lines.join('\n')}\n` : '';
+}
+
+/** @param {LakehouseExtraCheck[] | undefined} extraChecks */
+function fabricExtraSelects(extraChecks = []) {
+    return extraChecks
+        .filter((c) => c.column && c.column !== '_model')
+        .map((check) => {
+            const col = `[${check.column}]`;
+            if (check.type === 'regex' && check.pattern) {
+                const escaped = check.pattern.replace(/'/g, "''");
+                return `    /* regex gate for ${check.column}: ${escaped} — implement with CLR/UDF or Spark rlike */ 0 AS ${check.column}_regex_todo`;
+            }
+            if (check.type === 'range') {
+                return `    SUM(CASE WHEN ${col} IS NOT NULL AND (${col} < ${check.min ?? 0} OR ${col} > ${check.max ?? 0}) THEN 1 ELSE 0 END) AS ${check.column}_range_fails`;
+            }
+            if (check.type === 'unique') {
+                return `    (SELECT COUNT(*) FROM (SELECT ${col} FROM base GROUP BY ${col} HAVING COUNT(*) > 1) d) AS ${check.column}_duplicate_count`;
+            }
+            if (check.type === 'not_null') {
+                return `    SUM(CASE WHEN ${col} IS NULL THEN 1 ELSE 0 END) AS ${check.column}_nulls`;
+            }
+            if (check.type === 'accepted_values' && check.values?.length) {
+                const list = check.values.map((v) => `'${String(v).replace(/'/g, "''")}'`).join(', ');
+                return `    SUM(CASE WHEN ${col} IS NOT NULL AND ${col} NOT IN (${list}) THEN 1 ELSE 0 END) AS ${check.column}_value_fails`;
+            }
+            return null;
+        })
+        .filter(Boolean);
+}
+
+/** @param {LakehouseExtraCheck[] | undefined} extraChecks */
+function databricksExtraExpectations(extraChecks = []) {
+    return extraChecks
+        .filter((c) => c.column && c.column !== '_model')
+        .map((check) => {
+            if (check.type === 'not_null') {
+                return `CONSTRAINT ${check.column}_pack_not_null EXPECT (${check.column} IS NOT NULL)`;
+            }
+            if (check.type === 'unique') {
+                return `CONSTRAINT ${check.column}_pack_unique EXPECT (${check.column} IS NOT NULL) -- pair with dropDuplicates / unique key gate`;
+            }
+            if (check.type === 'regex' && check.pattern) {
+                const escaped = check.pattern.replace(/'/g, "''");
+                return `CONSTRAINT ${check.column}_pack_regex EXPECT (${check.column} IS NULL OR ${check.column} RLIKE '${escaped}')`;
+            }
+            if (check.type === 'range') {
+                return `CONSTRAINT ${check.column}_pack_range EXPECT (${check.column} IS NULL OR (${check.column} >= ${check.min ?? 0} AND ${check.column} <= ${check.max ?? 0}))`;
+            }
+            if (check.type === 'accepted_values' && check.values?.length) {
+                const list = check.values.map((v) => `'${String(v).replace(/'/g, "''")}'`).join(', ');
+                return `CONSTRAINT ${check.column}_pack_values EXPECT (${check.column} IS NULL OR ${check.column} IN (${list}))`;
+            }
+            if (check.type === 'freshness' && check.max_hours) {
+                return `CONSTRAINT ${check.column}_pack_fresh EXPECT (${check.column} >= current_timestamp() - INTERVAL ${check.max_hours} HOURS)`;
+            }
+            return null;
+        })
+        .filter(Boolean);
+}
+
+/** @param {LakehouseExtraCheck[] | undefined} extraChecks */
+function notebookExtraChecksPy(extraChecks = []) {
+    const usable = extraChecks.filter((c) => c.column && c.column !== '_model' && c.type === 'regex' && c.pattern);
+    if (!usable.length) return '';
+    const entries = usable
+        .map((c) => `    {"column": ${JSON.stringify(c.column)}, "pattern": ${JSON.stringify(c.pattern)}, "severity": ${JSON.stringify(c.severity || 'warn')}}`)
+        .join(',\n');
+    return `
+pack_regex_checks = [
+${entries}
+]
+for item in pack_regex_checks:
+    pattern = item["pattern"]
+    failed = df.where(F.col(item["column"]).isNotNull() & ~F.col(item["column"]).rlike(pattern)).count()
+    checks.append({"check": "regex", "column": item["column"], "failed_rows": failed, "severity": item["severity"]})
+`;
+}
+
+/** @param {{ table: string, keys: string[], required: string[], freshness: string, pii: string[], owner: string, pattern: string, toolId?: string, region?: string, appliedPackIds?: string[], extraChecks?: LakehouseExtraCheck[], packNotes?: string[] }} state */
 export function buildFabricSql(state) {
     const table = q(state.table);
     const keys = state.keys.length ? state.keys : ['business_key'];
@@ -152,7 +282,12 @@ FROM ${table};
 -- - Require owner sign-off before broad workspace/app publishing.`;
     }
 
-    return `-- Fabric DQ checks
+    const packPrefix = formatPackNotes(state.extraChecks, state.packNotes);
+    const extraSelects = fabricExtraSelects(state.extraChecks);
+    const extraSql = extraSelects.length ? `,\n${extraSelects.join(',\n')}` : '';
+
+    return `${packPrefix}-- Fabric DQ checks
+-- Region: ${state.region || 'DE'} | Packs: ${(state.appliedPackIds || []).join(', ') || 'none'}
 WITH base AS (
     SELECT * FROM ${table}
 ),
@@ -166,7 +301,7 @@ SELECT
     COUNT(*) AS row_count,
 ${nullChecks},
     (SELECT COUNT(*) FROM dupes) AS duplicate_key_count,
-    DATEDIFF(hour, MAX([${state.freshness}]), SYSUTCDATETIME()) AS freshness_hours
+    DATEDIFF(hour, MAX([${state.freshness}]), SYSUTCDATETIME()) AS freshness_hours${extraSql}
 FROM base;`;
 }
 
@@ -270,6 +405,9 @@ assert owner_group, \"Owner group required before publishing app model\"`;
     }
 
     return `# Fabric notebook validation starter
+# Region: ${state.region || 'DE'} | Packs: ${(state.appliedPackIds || []).join(', ') || 'none'}
+from pyspark.sql import functions as F
+
 table_name = \"${state.table}\"
 required_columns = ${requiredList}
 key_columns = ${JSON.stringify(state.keys)}
@@ -277,21 +415,24 @@ freshness_column = \"${state.freshness}\"
 
 df = spark.read.table(table_name)
 
-null_counts = {
-    col: df.filter(df[col].isNull()).count()
-    for col in required_columns
-}
-duplicate_count = df.groupBy(*key_columns).count().filter(\"count > 1\").count()
+checks = []
+for column_name in required_columns:
+    null_count = df.where(F.col(column_name).isNull()).count()
+    checks.append({\"check\": \"not_null\", \"column\": column_name, \"failed_rows\": null_count})
+${notebookExtraChecksPy(state.extraChecks)}
+duplicate_count = df.groupBy(*key_columns).count().where(F.col(\"count\") > 1).count()
 
 display({
     \"table\": table_name,
-    \"null_counts\": null_counts,
+    \"null_counts\": {c[\"column\"]: c[\"failed_rows\"] for c in checks if c[\"check\"] == \"not_null\"},
+    \"checks\": checks,
     \"duplicate_key_count\": duplicate_count,
     \"owner\": \"${state.owner}\",
+    \"region\": \"${state.region || 'DE'}\",
 })
 
 assert duplicate_count == 0, \"Duplicate business keys found\"
-assert all(count == 0 for count in null_counts.values()), \"Required values missing\"`;
+assert all(item[\"failed_rows\"] == 0 for item in checks if item.get(\"severity\", \"error\") == \"error\"), \"Required values missing\"`;
 }
 
 /** @param {{ table: string, keys: string[], required: string[], freshness: string, pii: string[], owner: string, pattern: string, toolId?: string }} state */
@@ -390,10 +531,15 @@ WHERE ${state.freshness} > (SELECT COALESCE(MAX(${state.freshness}), TIMESTAMP '
 -- Add schema.yml tests for required fields and Unity Catalog tags for sensitive columns.`;
     }
 
-    return `-- Delta Live Tables expectations starter
+    const packPrefix = formatPackNotes(state.extraChecks, state.packNotes);
+    const packExpectations = databricksExtraExpectations(state.extraChecks);
+    const packBlock = packExpectations.length ? `\n${packExpectations.join('\n')}` : '';
+
+    return `${packPrefix}-- Delta Live Tables expectations starter
+-- Region: ${state.region || 'DE'} | Packs: ${(state.appliedPackIds || []).join(', ') || 'none'}
 CREATE OR REFRESH LIVE TABLE ${state.table.replaceAll('.', '_')}_dq
 ${requiredExpectations}
-CONSTRAINT freshness_ok EXPECT (${state.freshness} >= current_timestamp() - INTERVAL 24 HOURS)
+CONSTRAINT freshness_ok EXPECT (${state.freshness} >= current_timestamp() - INTERVAL 24 HOURS)${packBlock}
 AS SELECT * FROM ${table};`;
 }
 
@@ -444,6 +590,7 @@ assert owner_group, \"Owner group required before publishing app model\"`;
     }
 
     return `# Databricks notebook validation starter
+# Region: ${state.region || 'DE'} | Packs: ${(state.appliedPackIds || []).join(', ') || 'none'}
 from pyspark.sql import functions as F
 
 table_name = \"${state.table}\"
@@ -452,22 +599,27 @@ required_columns = ${JSON.stringify(state.required.length ? state.required : sta
 
 df = spark.table(table_name)
 
-null_counts = {
-    col: df.where(F.col(col).isNull()).count()
-    for col in required_columns
-}
+checks = []
+null_counts = {}
+for col in required_columns:
+    failed = df.where(F.col(col).isNull()).count()
+    null_counts[col] = failed
+    checks.append({\"check\": \"not_null\", \"column\": col, \"failed_rows\": failed})
+${notebookExtraChecksPy(state.extraChecks)}
 duplicate_count = df.groupBy(*key_columns).count().where(F.col(\"count\") > 1).count()
 
 result = {
     \"table\": table_name,
     \"owner\": \"${state.owner}\",
     \"null_counts\": null_counts,
+    \"checks\": checks,
     \"duplicate_key_count\": duplicate_count,
+    \"region\": \"${state.region || 'DE'}\",
 }
 display(result)
 
 assert duplicate_count == 0, \"Duplicate keys found\"
-assert all(count == 0 for count in null_counts.values()), \"Required values missing\"`;
+assert all(item[\"failed_rows\"] == 0 for item in checks if item.get(\"severity\", \"error\") == \"error\"), \"Required values missing\"`;
 }
 
 /** @param {'fabric' | 'databricks'} platform @param {{ table: string, keys: string[], required: string[], freshness: string, pii: string[], owner: string, pattern: string, toolId?: string }} state */

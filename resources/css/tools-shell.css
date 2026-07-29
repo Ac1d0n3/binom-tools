@@ -839,11 +839,31 @@ html[data-hide-tool-help="true"] [data-tool-help] {
     inset: 0;
     height: 100%;
     overflow: auto;
-    padding-right: 0.25rem;
+    padding: 0.75rem 0.85rem 1rem;
+    box-sizing: border-box;
 }
 
 .tools-tool-header__drawer-panel[hidden] {
     display: none;
+}
+
+.tools-tool-header__drawer-panel.governance-advisor__helpbox {
+    /* helpbox uses overflow:clip; drawer panels must keep scroll + padding */
+    overflow: auto;
+    padding: 0;
+}
+
+.tools-tool-header__drawer-panel.governance-advisor__helpbox > .governance-advisor__helpbox-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: color-mix(in srgb, var(--theme-color-primary) 5%, var(--surface-background-color));
+}
+
+.tools-tool-header__drawer-panel.governance-advisor__helpbox > :not(.governance-advisor__helpbox-head) {
+    padding: 0.75rem 0.85rem 1.1rem;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .tools-tool-header__drawer-panel h2 {

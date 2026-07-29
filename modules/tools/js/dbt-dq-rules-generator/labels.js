@@ -1,10 +1,12 @@
 import { getLocale } from '../../../../resources/js/shell/locale';
 import { RULE_TYPE_DEFS, RULE_TYPE_IDS, SEVERITY_OPTIONS } from '../dq-shared/rule-types.js';
 import { dqRulesHowtoLabels } from './howto-labels.js';
+import { dqPacksLabels } from '../dq-shared/dq-packs-labels.js';
 
 const labels = {
     de: {
         ...dqRulesHowtoLabels.de,
+        ...dqPacksLabels.de,
         'dqRules.pageTitle': 'DQ Rules Generator',
         'dqRules.model.title': 'Model',
         'dqRules.model.name': 'Model-Name',
@@ -47,6 +49,7 @@ const labels = {
     },
     en: {
         ...dqRulesHowtoLabels.en,
+        ...dqPacksLabels.en,
         'dqRules.pageTitle': 'DQ Rules Generator',
         'dqRules.model.title': 'Model',
         'dqRules.model.name': 'Model name',
@@ -102,7 +105,7 @@ export function applyDqRulesLabels() {
     const locale = getLocale();
     document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
-        if (!key?.startsWith('dqRules.') && !key?.startsWith('shared.')) return;
+        if (!key?.startsWith('dqRules.') && !key?.startsWith('shared.') && !key?.startsWith('dqPacks.')) return;
         const text = t(locale, key);
         if (text) el.textContent = text;
     });

@@ -254,6 +254,11 @@ $registerRoutes = static function (bool $localized): void {
         Route::delete('/profile/api/workspace/active/saved-stacks/{stackId}', [WorkspaceController::class, 'destroySavedStack'])
             ->where('stackId', '[a-zA-Z0-9_-]+')
             ->name($name('profile.api.workspace.saved-stacks.destroy'));
+        Route::post('/profile/api/workspace/active/tool-artifacts', [WorkspaceController::class, 'storeToolArtifact'])
+            ->name($name('profile.api.workspace.tool-artifacts.store'));
+        Route::delete('/profile/api/workspace/active/tool-artifacts/{artifactId}', [WorkspaceController::class, 'destroyToolArtifact'])
+            ->where('artifactId', '[a-zA-Z0-9_-]+')
+            ->name($name('profile.api.workspace.tool-artifacts.destroy'));
         Route::get('/profile/plans', [MyPlansController::class, 'index'])->name($name('profile.plans.index'));
         Route::post('/profile/plans/{planId}/assign', [MyPlansController::class, 'assign'])
             ->where('planId', 'plan_[a-zA-Z0-9_]+')

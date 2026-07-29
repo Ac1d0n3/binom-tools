@@ -98,6 +98,36 @@ final class WorkspaceStore implements WorkspaceStoreInterface
             $savedStacks
         )));
 
+        $toolArtifacts = $workspace['toolArtifacts'] ?? $existing['toolArtifacts'] ?? [];
+        if (! is_array($toolArtifacts)) {
+            $toolArtifacts = [];
+        }
+        $toolArtifacts = array_values(array_filter(array_map(
+            static function (mixed $item): ?array {
+                if (! is_array($item)) {
+                    return null;
+                }
+                $id = trim((string) ($item['id'] ?? ''));
+                $name = trim((string) ($item['name'] ?? ''));
+                $toolId = trim((string) ($item['toolId'] ?? ''));
+                if ($id === '' || $name === '' || $toolId === '' || ! is_array($item['payload'] ?? null)) {
+                    return null;
+                }
+                $region = trim((string) ($item['region'] ?? ''));
+
+                return [
+                    'id' => $id,
+                    'toolId' => mb_substr($toolId, 0, 80),
+                    'name' => mb_substr($name, 0, 120),
+                    'kind' => mb_substr(trim((string) ($item['kind'] ?? 'dq-config')) ?: 'dq-config', 0, 40),
+                    'payload' => $item['payload'],
+                    'region' => $region !== '' ? mb_substr($region, 0, 8) : null,
+                    'updatedAt' => (string) ($item['updatedAt'] ?? now()->toIso8601String()),
+                ];
+            },
+            $toolArtifacts
+        )));
+
         $row = [
             'id' => $id,
             'ownerUserId' => $actor->id,
@@ -105,6 +135,7 @@ final class WorkspaceStore implements WorkspaceStoreInterface
             'stack' => (string) ($workspace['stack'] ?? $existing['stack'] ?? 'unknown'),
             'customStack' => $customStack,
             'savedStacks' => array_slice($savedStacks, 0, 40),
+            'toolArtifacts' => array_slice($toolArtifacts, 0, 40),
             'label' => trim((string) ($workspace['label'] ?? $existing['label'] ?? '')),
             'notes' => trim((string) ($workspace['notes'] ?? $existing['notes'] ?? '')),
             'archived' => (bool) ($workspace['archived'] ?? $existing['archived'] ?? false),
@@ -197,6 +228,91 @@ final class WorkspaceStore implements WorkspaceStoreInterface
         $this->save($workspace, $actor);
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    public function upsertToolArtifact(
+        string $workspaceId,
+        AccountUser $actor,
+        string $name,
+        string $toolId,
+        array $payload,
+        string $kind = 'dq-config',
+        ?string $region = null,
+        ?string $artifactId = null,
+    ): array {
+        $workspace = $this->find($workspaceId, $actor);
+        if ($workspace === null) {
+            throw new InvalidArgumentException('Workspace not found.');
+        }
+
+        $trimmed = trim($name);
+        $tool = trim($toolId);
+        if ($trimmed === '') {
+            throw new InvalidArgumentException('Artifact name is required.');
+        }
+        if ($tool === '') {
+            throw new InvalidArgumentException('Tool id is required.');
+        }
+
+        $items = is_array($workspace['toolArtifacts'] ?? null) ? $workspace['toolArtifacts'] : [];
+        $now = now()->toIso8601String();
+        $matchIndex = null;
+        foreach ($items as $index => $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            if ($artifactId !== null && ($item['id'] ?? '') === $artifactId) {
+                $matchIndex = $index;
+                break;
+            }
+            if (
+                ($item['toolId'] ?? '') === $tool
+                && strcasecmp((string) ($item['name'] ?? ''), $trimmed) === 0
+            ) {
+                $matchIndex = $index;
+                break;
+            }
+        }
+
+        $regionValue = $region !== null ? trim($region) : '';
+        $entry = [
+            'id' => $artifactId ?: ('artifact_'.bin2hex(random_bytes(6))),
+            'toolId' => mb_substr($tool, 0, 80),
+            'name' => mb_substr($trimmed, 0, 120),
+            'kind' => mb_substr(trim($kind) !== '' ? trim($kind) : 'dq-config', 0, 40),
+            'payload' => $payload,
+            'region' => $regionValue !== '' ? mb_substr($regionValue, 0, 8) : null,
+            'updatedAt' => $now,
+        ];
+        if ($matchIndex !== null) {
+            $entry['id'] = (string) ($items[$matchIndex]['id'] ?? $entry['id']);
+            $items[$matchIndex] = $entry;
+        } else {
+            array_unshift($items, $entry);
+        }
+
+        $workspace['toolArtifacts'] = $items;
+        $this->save($workspace, $actor);
+
+        return $entry;
+    }
+
+    public function removeToolArtifact(string $workspaceId, AccountUser $actor, string $artifactId): void
+    {
+        $workspace = $this->find($workspaceId, $actor);
+        if ($workspace === null) {
+            throw new InvalidArgumentException('Workspace not found.');
+        }
+        $items = is_array($workspace['toolArtifacts'] ?? null) ? $workspace['toolArtifacts'] : [];
+        $workspace['toolArtifacts'] = array_values(array_filter(
+            $items,
+            static fn (mixed $item): bool => is_array($item) && ($item['id'] ?? '') !== $artifactId
+        ));
+        $this->save($workspace, $actor);
+    }
+
     public function duplicate(string $workspaceId, AccountUser $actor, ?string $name = null): array
     {
         $source = $this->find($workspaceId, $actor);
@@ -209,6 +325,7 @@ final class WorkspaceStore implements WorkspaceStoreInterface
             'stack' => $source['stack'] ?? 'unknown',
             'customStack' => is_array($source['customStack'] ?? null) ? $source['customStack'] : null,
             'savedStacks' => is_array($source['savedStacks'] ?? null) ? $source['savedStacks'] : [],
+            'toolArtifacts' => is_array($source['toolArtifacts'] ?? null) ? $source['toolArtifacts'] : [],
             'label' => $source['label'] ?? '',
             'notes' => $source['notes'] ?? '',
             'archived' => false,

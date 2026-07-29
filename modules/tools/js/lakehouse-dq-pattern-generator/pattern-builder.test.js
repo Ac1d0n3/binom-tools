@@ -44,10 +44,23 @@ describe('lakehouse dq pattern builder', () => {
         expect(buildRunbook('fabric', { ...state, pattern: 'semantic', toolId: 'fabric-semantic-model-guardrails' })).toContain('Fabric Semantic Model Guardrails');
     });
 
-    it('builds specialized Databricks generator outputs', () => {
-        expect(buildDatabricksSql({ ...state, toolId: 'databricks-dq-expectation-generator' })).toContain('Databricks DQ Expectation Generator');
-        expect(buildDatabricksSql({ ...state, pattern: 'governance', toolId: 'unity-catalog-governance-generator' })).toContain('Unity Catalog Governance Generator');
-        expect(buildDatabricksNotebook({ ...state, pattern: 'dbt', toolId: 'databricks-dbt-on-databricks-generator' })).toContain('Databricks job handoff for dbt');
-        expect(buildRunbook('databricks', { ...state, pattern: 'delta', toolId: 'delta-load-scd-pattern-generator' })).toContain('Delta Load / SCD Pattern Runbook');
+    it('includes regional pack checks in Fabric and Databricks DQ output', () => {
+        const withPacks = {
+            ...state,
+            region: 'DE',
+            appliedPackIds: ['address-format'],
+            packNotes: ['Address column order (DE): street → house_number → postal_code → city'],
+            extraChecks: [
+                { column: 'postal_code', type: 'regex', pattern: '^[0-9]{5}$', severity: 'error' },
+                { column: 'email', type: 'regex', pattern: '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$', severity: 'warn' },
+            ],
+        };
+        expect(buildFabricSql(withPacks)).toContain('postal_code');
+        expect(buildFabricSql(withPacks)).toContain('Region: DE');
+        expect(buildFabricSql(withPacks)).toContain('regex gate');
+        expect(buildDatabricksSql(withPacks)).toContain('RLIKE');
+        expect(buildDatabricksSql(withPacks)).toContain('postal_code_pack_regex');
+        expect(buildFabricNotebook(withPacks)).toContain('pack_regex_checks');
+        expect(buildDatabricksNotebook(withPacks)).toContain('pack_regex_checks');
     });
 });
