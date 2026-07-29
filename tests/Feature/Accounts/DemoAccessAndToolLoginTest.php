@@ -38,7 +38,11 @@ class DemoAccessAndToolLoginTest extends TestCase
             ->assertSee('personal user plans and team plans', false)
             ->assertSee('id="sp-demo-banner"', false)
             ->assertDontSee('sp.pageLeadDemo', false)
-            ->assertDontSee('sp.demo.sessionBanner', false);
+            ->assertDontSee('sp.demo.sessionBanner', false)
+            ->assertDontSee('Acidone', false)
+            ->assertDontSee('Matthi', false)
+            ->assertDontSee('matthias.beel@gmail.com', false)
+            ->assertDontSee('t.l@binom-network.org', false);
     }
 
     public function test_guest_index_renders_translated_lead_not_raw_key_on_de_route(): void

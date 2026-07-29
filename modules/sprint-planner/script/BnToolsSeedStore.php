@@ -83,6 +83,10 @@ final class BnToolsSeedStore
                 $seedRoot.DIRECTORY_SEPARATOR.'governance-sessions',
                 $this->config->governanceSessionsDirectory(),
             );
+            $this->hydrateDirectoryTreeIfMissing(
+                $seedRoot.DIRECTORY_SEPARATOR.'calendar',
+                $this->config->calendarDirectory(),
+            );
         } catch (\Throwable) {
             // Storage may be missing/unwritable after FTP deploy — ignore.
         }

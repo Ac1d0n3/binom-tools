@@ -17,7 +17,7 @@ class AboutPageTest extends TestCase
         $response->assertDontSee('governance-author-byline', false);
         $response->assertSee('data-i18n="about.feedback.title"', false);
         $response->assertSee('tools-release-meta', false);
-        $response->assertSee('v1.0.0', false);
+        $response->assertSee('v1.1.0', false);
         $response->assertDontSee('tools-beta-badge', false);
         $response->assertSee('https://github.com/Ac1d0n3/binom-tools', false);
         $response->assertDontSee('mailto:', false);

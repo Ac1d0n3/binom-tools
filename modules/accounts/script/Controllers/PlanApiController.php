@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Accounts;
 use App\Accounts\AccountAuth;
 use App\Accounts\Contracts\PlanStoreInterface;
 use App\Accounts\Contracts\StoryAclRepositoryInterface;
-use App\Accounts\Contracts\TeamRepositoryInterface;
-use App\Accounts\Contracts\UserRepositoryInterface;
+use App\Accounts\DirectoryVisibility;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
 use Illuminate\Http\JsonResponse;
@@ -17,8 +16,7 @@ class PlanApiController extends Controller
     public function __construct(
         private readonly AccountAuth $auth,
         private readonly PlanStoreInterface $plans,
-        private readonly UserRepositoryInterface $users,
-        private readonly TeamRepositoryInterface $teams,
+        private readonly DirectoryVisibility $directory,
         private readonly StoryAclRepositoryInterface $storyAcl,
         private readonly PlaybookRepository $playbooks,
     ) {}
@@ -30,8 +28,8 @@ class PlanApiController extends Controller
 
         return response()->json([
             'plans' => $this->plans->listVisibleTo($user),
-            'users' => array_map(static fn ($u) => $u->toPublicArray(), $this->users->all()),
-            'teams' => array_map(static fn ($t) => $t->toArray(), $this->teams->all()),
+            'users' => $this->directory->usersFor($user),
+            'teams' => $this->directory->teamsFor($user),
         ]);
     }
 

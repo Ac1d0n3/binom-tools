@@ -82,6 +82,69 @@ final class CalendarHubTest extends TestCase
         $this->assertSame([], $missingPieceStories);
     }
 
+    public function test_events_api_collapses_incomplete_series_on_same_day(): void
+    {
+        $response = $this->getJson('/api/calendar/events?from=2026-07-29&to=2026-07-29');
+        $response->assertOk();
+        $data = $response->json('data');
+        $this->assertIsArray($data);
+
+        $biSeries = array_values(array_filter(
+            $data,
+            static fn (array $e): bool => ($e['kind'] ?? null) === 'series'
+                && ($e['series_id'] ?? null) === 'bi-governance-decisions',
+        ));
+        $this->assertCount(1, $biSeries);
+        $this->assertSame(6, $biSeries[0]['part_count']);
+        $this->assertSame(8, $biSeries[0]['series_total']);
+
+        // Individual series parts must not remain as story chips once collapsed.
+        $remainingBi = array_values(array_filter(
+            $data,
+            static fn (array $e): bool => ($e['kind'] ?? null) === 'story'
+                && in_array(($e['series_id'] ?? null), ['bi-governance-decisions', 'source-load-decisions'], true),
+        ));
+        $this->assertSame([], $remainingBi, 'Incomplete same-day series parts must collapse to series badges');
+    }
+
+    public function test_holidays_api_bounds_each_day_ends_at(): void
+    {
+        $this->app->forgetInstance(\App\Calendar\Contracts\CalendarHolidayStoreInterface::class);
+        $this->app->forgetInstance(\App\Calendar\FileCalendarHolidayStore::class);
+        $this->app->forgetInstance(\App\Accounts\AccountsConfig::class);
+        $this->app->forgetInstance(\App\Calendar\CalendarEventAggregator::class);
+
+        app(\App\Calendar\CalendarHolidayImportService::class)->ensurePresetSources();
+        $store = app(\App\Calendar\Contracts\CalendarHolidayStoreInterface::class);
+        $source = $store->findSource(\App\Calendar\HolidaySourceDefaults::PRESET_SCHOOL_HOLIDAYS_ID)
+            ?? $store->findSource('de-nw-school-holidays');
+        $this->assertNotNull($source);
+
+        $store->upsertHolidayDay($source['id'], 'uid-summer-2026-07-20', '2026-07-20', [
+            'name' => 'Sommerferien Nordrhein-Westfalen 2026',
+            'starts_at' => '2026-07-20T00:00:00+00:00',
+            // Legacy multi-day VEVENT end — API must clamp to the day itself.
+            'ends_at' => '2026-09-02T00:00:00+00:00',
+            'type' => 'school_holiday',
+            'all_day' => true,
+            'country' => 'DE',
+            'region' => 'DE-NW',
+        ]);
+
+        $response = $this->getJson('/api/calendar/holidays?from=2026-07-20&to=2026-07-20');
+        $response->assertOk();
+        $data = $response->json('data');
+        $this->assertNotEmpty($data);
+
+        $summer = array_values(array_filter(
+            $data,
+            static fn (array $h): bool => str_contains((string) ($h['name'] ?? ''), 'Sommerferien'),
+        ));
+        $this->assertNotEmpty($summer);
+        $this->assertSame('2026-07-20', $summer[0]['date']);
+        $this->assertSame('2026-07-20', substr((string) $summer[0]['ends_at'], 0, 10));
+    }
+
     public function test_events_api_includes_plan_tasks_for_authenticated_owner(): void
     {
         $users = app(UserRepositoryInterface::class);

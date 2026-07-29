@@ -174,8 +174,11 @@ function rangeForView(view, anchor, weekStart = 'monday') {
         return { from, to };
     }
 
-    const from = new Date(start.getFullYear(), start.getMonth(), 1);
-    const to = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    // Month grid includes leading/trailing days outside the named month.
+    const monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
+    const monthEnd = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    const from = startOfWeek(monthStart, weekStart);
+    const to = addDays(startOfWeek(monthEnd, weekStart), 6);
 
     return { from, to };
 }
@@ -854,7 +857,7 @@ function renderTimeGrid(state, viewport, view) {
 
     const allDayRow = days.map((day) => {
         const key = formatDateKey(day);
-        const dayHolidays = holidays.filter((holiday) => touchesDay({ starts_at: `${holiday.date}T00:00:00`, ends_at: holiday.ends_at }, key));
+        const dayHolidays = holidays.filter((holiday) => (holiday.date ?? dateKeyFromIso(holiday.starts_at)) === key);
         const dayAllDay = entries.filter((entry) => isAllDayEntry(entry) && touchesDay(entry, key));
 
         return `<div class="calendar-time-grid__allday-cell">${[...dayHolidays.map(holidayMarkup), ...dayAllDay.map(eventMarkup)].join('')}</div>`;
@@ -937,18 +940,19 @@ function renderList(state, viewport) {
     });
 
     holidays.forEach((holiday) => {
-        const end = holiday.ends_at ? formatDateKey(parseDate(holiday.ends_at)) : holiday.date;
-        eachDayKeyInRange(holiday.date, end).forEach((key) => {
-            if (!byDay.has(key)) {
-                byDay.set(key, []);
-            }
-            byDay.get(key).push({
-                title: holiday.name,
-                starts_at: `${holiday.date}T00:00:00`,
-                url: null,
-                all_day: true,
-                is_holiday: true,
-            });
+        const key = holiday.date ?? dateKeyFromIso(holiday.starts_at);
+        if (!key) {
+            return;
+        }
+        if (!byDay.has(key)) {
+            byDay.set(key, []);
+        }
+        byDay.get(key).push({
+            title: holiday.name,
+            starts_at: `${key}T00:00:00`,
+            url: null,
+            all_day: true,
+            is_holiday: true,
         });
     });
 

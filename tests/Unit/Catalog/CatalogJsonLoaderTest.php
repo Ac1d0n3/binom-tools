@@ -67,6 +67,6 @@ class CatalogJsonLoaderTest extends TestCase
         $this->assertNotEmpty(config('compliance.items'));
         $this->assertNotEmpty(config('tools.workflows'));
         $this->assertNotEmpty(config('advisor-recommendations.items'));
-        $this->assertSame(config('tools.version'), env('BINOM_TOOLS_VERSION', '1.0.0'));
+        $this->assertSame(config('tools.version'), env('BINOM_TOOLS_VERSION', '1.1.0'));
     }
 }

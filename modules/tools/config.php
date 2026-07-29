@@ -5,7 +5,7 @@ use App\Support\ToolLinks;
 
 $catalog = CatalogJsonLoader::load('tools');
 
-$catalog['version'] = env('BINOM_TOOLS_VERSION', '1.0.0');
+$catalog['version'] = env('BINOM_TOOLS_VERSION', '1.1.0');
 $catalog['beta'] = filter_var(env('BINOM_TOOLS_BETA', false), FILTER_VALIDATE_BOOL);
 
 $links = is_array($catalog['links'] ?? null) ? $catalog['links'] : [];

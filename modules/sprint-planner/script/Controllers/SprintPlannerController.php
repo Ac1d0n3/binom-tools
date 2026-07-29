@@ -6,9 +6,8 @@ use App\Accounts\AccountAuth;
 use App\Accounts\AccountsConfig;
 use App\Accounts\Contracts\PlanStoreInterface;
 use App\Accounts\Contracts\ReadStateStoreInterface;
-use App\Accounts\Contracts\TeamRepositoryInterface;
-use App\Accounts\Contracts\UserRepositoryInterface;
 use App\Accounts\Contracts\UserTemplateStoreInterface;
+use App\Accounts\DirectoryVisibility;
 use App\Http\Controllers\Controller;
 use App\Playbooks\PlaybookRepository;
 use App\SprintPlanner\SprintPlanRepository;
@@ -22,8 +21,7 @@ class SprintPlannerController extends Controller
         private readonly SprintPlanRepository $plans,
         private readonly AccountsConfig $accountsConfig,
         private readonly AccountAuth $accountAuth,
-        private readonly UserRepositoryInterface $users,
-        private readonly TeamRepositoryInterface $teams,
+        private readonly DirectoryVisibility $directory,
         private readonly PlanStoreInterface $planStore,
         private readonly ReadStateStoreInterface $readState,
         private readonly PlaybookRepository $playbooks,
@@ -116,8 +114,8 @@ class SprintPlannerController extends Controller
         $userTemplates = [];
 
         if ($accountsOn && $user !== null) {
-            $people = array_map(static fn ($u) => $u->toPublicArray(), $this->users->all());
-            $teams = array_map(static fn ($t) => $t->toArray(), $this->teams->all());
+            $people = $this->directory->usersFor($user);
+            $teams = $this->directory->teamsFor($user);
             $serverPlans = $this->planStore->listVisibleTo($user);
             $readSlugs = array_keys($this->readState->forUser($user->id));
             $userTemplates = $this->userTemplates->listFor($user);

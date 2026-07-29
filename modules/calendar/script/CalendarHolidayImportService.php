@@ -80,10 +80,9 @@ final class CalendarHolidayImportService
 
                 $this->store->upsertHolidayDay($sourceId, $importedUid, $date, [
                     'name' => $summary,
-                    'starts_at' => $day->copy()->toIso8601String(),
-                    'ends_at' => $vevent->DTEND
-                        ? Carbon::instance($vevent->DTEND->getDateTime())->toIso8601String()
-                        : null,
+                    'starts_at' => $day->copy()->startOfDay()->toIso8601String(),
+                    // Bound each stored day to itself — do not reuse the multi-day VEVENT DTEND.
+                    'ends_at' => $day->copy()->endOfDay()->toIso8601String(),
                     'country' => $source['country'] ?? null,
                     'region' => $source['region'] ?? null,
                     'type' => $holidayType,

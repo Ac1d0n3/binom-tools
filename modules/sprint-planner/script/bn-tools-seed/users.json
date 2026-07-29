@@ -3,8 +3,8 @@
     "users": [
         {
             "id": "user_acidone",
-            "email": "t.l@binom-network.org",
-            "displayName": "Acidone",
+            "email": "thomas.l@example.com",
+            "displayName": "Thomas L",
             "passwordHash": "$2y$12$cQoS5QkfUjZ/UF0fztx2ju4g4MZZolXIAZH4XG21J1wWZj2srWu8.",
             "teamIds": [
                 "team_q"
@@ -12,14 +12,14 @@
             "canManageUsers": true,
             "canManageTeams": true,
             "active": true,
-            "shortName": "TL",
+            "shortName": "THL",
             "colorToken": "dashed-5",
             "avatarIcon": "yin-yang"
         },
         {
-            "id": "user_matthi",
-            "email": "matthias.beel@gmail.com",
-            "displayName": "Matthi",
+            "id": "user_lena",
+            "email": "lena.s@example.com",
+            "displayName": "Lena S.",
             "passwordHash": "$2y$12$RdwyqNjd7HAJbohTDgSMDuWuhes6nLHMWWwbmmxLwYCZvJZUF.wNm",
             "teamIds": [
                 "team_q"
@@ -27,7 +27,7 @@
             "canManageUsers": false,
             "canManageTeams": false,
             "active": true,
-            "shortName": "MAT",
+            "shortName": "LEN",
             "colorToken": "accent-3",
             "avatarIcon": ""
         }

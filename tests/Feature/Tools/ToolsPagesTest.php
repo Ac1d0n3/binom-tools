@@ -69,7 +69,7 @@ class ToolsPagesTest extends TestCase
         $this->assertLessThan($biPos, $aiPos);
         $this->assertLessThan($toolsPos, $biPos);
         $response->assertSee('data-i18n="footer.about"', false);
-        $response->assertSee('v1.0.0', false);
+        $response->assertSee('v1.1.0', false);
         $response->assertDontSee('tools-beta-badge', false);
         $response->assertDontSee('class="tools-about-body"', false);
     }
@@ -80,7 +80,7 @@ class ToolsPagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('tools-release-meta', false);
-        $response->assertSee('v1.0.0', false);
+        $response->assertSee('v1.1.0', false);
         $response->assertSee('data-i18n="footer.about"', false);
         $response->assertSee('data-i18n="footer.disclaimer"', false);
         $response->assertSee('data-i18n="footer.sitemap"', false);
@@ -157,7 +157,7 @@ class ToolsPagesTest extends TestCase
         $response->assertSee('data-tools-phone-gate', false);
         $response->assertSee('data-i18n="tools.phoneGate.title"', false);
         $response->assertSee('tools-release-meta', false);
-        $response->assertSee('v1.0.0', false);
+        $response->assertSee('v1.1.0', false);
         $response->assertDontSee('data-i18n="tools.overviewTitle"', false);
         $response->assertDontSee('data-i18n="tools.overviewLead"', false);
     }

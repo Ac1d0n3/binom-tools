@@ -883,6 +883,32 @@
     ],
     "items": [
         {
+            "id": "binom-release-1-1-0",
+            "source_id": "binom-editorial",
+            "title": "binom-tools 1.1.0: neue Platform-Stories und BI-/Governance-Tools",
+            "summary": "Release 1.1.0 bringt Startguides für Fabric, Databricks Unity Catalog, Snowflake und BigQuery, Stories zu Multi-Platform-Governance und Metric Trust (Excel-Shadow-BI, BI-Formula-Generatoren, Zertifizierung) sowie SaaS-Quellenpfade von Tabellenwahl bis Pilot-Mart. Neu bzw. geschärft im Tools-Hub: Governance Starting Point Decision, BI Python Toolkit und die BI-Formula-Generatoren für Qlik, Tableau und Power BI.",
+            "published_at": "2026-07-29",
+            "type": "Binom News",
+            "impact": "Info",
+            "region": "DE",
+            "topics": [
+                "Binom News",
+                "Release",
+                "Stories",
+                "Tools",
+                "Platform Governance",
+                "Metric Trust"
+            ],
+            "stack": [
+                "Alle Stacks"
+            ],
+            "url": "/tools",
+            "recommended_action": "Im Tools-Hub Starting Point und BI-Formula-Generatoren öffnen; passende Platform-Stories im Hub nachlesen. Als Lagebild behalten, ohne neuen Workflow zu erzwingen.",
+            "origin": "example",
+            "language": "de",
+            "ingest": false
+        },
+        {
             "id": "edpb-ai-anonymisierung-blockchain",
             "source_id": "edpb-news",
             "title": "EDPB: Anonymisierung, Web Scraping und Blockchain-Leitlinien beobachten",

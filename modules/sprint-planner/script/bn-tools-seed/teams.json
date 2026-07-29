@@ -13,10 +13,10 @@
             },
             "memberIds": [
                 "user_acidone",
-                "user_matthi"
+                "user_lena"
             ],
             "archived": false,
-            "shortName": "",
+            "shortName": "TQ",
             "colorToken": "accent-2"
         },
         {
@@ -31,7 +31,7 @@
             },
             "memberIds": [],
             "archived": false,
-            "shortName": "",
+            "shortName": "FAB",
             "colorToken": "accent-4"
         },
         {
@@ -46,7 +46,7 @@
             },
             "memberIds": [],
             "archived": false,
-            "shortName": "",
+            "shortName": "DAT",
             "colorToken": "accent-5"
         },
         {
@@ -61,7 +61,7 @@
             },
             "memberIds": [],
             "archived": false,
-            "shortName": "",
+            "shortName": "ANA",
             "colorToken": "accent-3"
         }
     ]

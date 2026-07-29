@@ -97,7 +97,11 @@ class CalendarController extends Controller
             ],
             'day' => [$anchor->copy()->startOfDay(), $anchor->copy()->endOfDay()],
             'list' => [$anchor->copy()->startOfMonth(), $anchor->copy()->addMonths(2)->endOfMonth()],
-            default => [$anchor->copy()->startOfMonth(), $anchor->copy()->endOfMonth()],
+            // Include leading/trailing grid days so holiday bars span muted cells too.
+            default => [
+                $anchor->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY),
+                $anchor->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY),
+            ],
         };
     }
 }

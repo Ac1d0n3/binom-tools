@@ -116,7 +116,8 @@ final class CalendarEventAggregator
     }
 
     /**
-     * When every part of a series lands on the same day, emit one series badge instead of many story badges.
+     * When multiple parts of a series land on the same day, emit one series badge
+     * instead of many story badges (even if the series is not yet complete).
      *
      * @param  list<array<string, mixed>>  $stories
      * @param  array<string, \App\Playbooks\PlaybookSeriesOverview>  $seriesById
@@ -140,11 +141,7 @@ final class CalendarEventAggregator
             $seriesId = $first['series_id'] ?? null;
             $series = is_string($seriesId) ? ($seriesById[$seriesId] ?? null) : null;
 
-            if (
-                $series !== null
-                && count($group) >= 2
-                && count($group) === $series->partCount()
-            ) {
+            if ($series !== null && count($group) >= 2) {
                 usort(
                     $group,
                     static fn (array $a, array $b): int => ($a['series_part'] ?? PHP_INT_MAX) <=> ($b['series_part'] ?? PHP_INT_MAX),
@@ -169,13 +166,14 @@ final class CalendarEventAggregator
                     'completed' => false,
                     'series_id' => $seriesId,
                     'part_count' => count($group),
+                    'series_total' => $series->partCount(),
                 ];
 
                 continue;
             }
 
+            // Keep series metadata on single-part days so the UI can still label membership.
             foreach ($group as $story) {
-                unset($story['series_id'], $story['series_part'], $story['series_title']);
                 $entries[] = $story;
             }
         }
@@ -454,13 +452,16 @@ final class CalendarEventAggregator
             $source = $sourceId !== null ? ($sourcesById[(string) $sourceId] ?? null) : null;
             $settings = is_array($source['settings'] ?? null) ? $source['settings'] : [];
 
+            // Per-day rows must not inherit the multi-day VEVENT DTEND — that broke week/list span logic.
+            $dayEnd = Carbon::parse($date)->endOfDay()->toIso8601String();
+
             return [
                 'id' => $holiday['id'] ?? null,
                 'source_id' => $sourceId,
                 'name' => $holiday['name'] ?? '',
                 'date' => $date,
-                'starts_at' => $holiday['starts_at'] ?? null,
-                'ends_at' => $holiday['ends_at'] ?? null,
+                'starts_at' => $holiday['starts_at'] ?? Carbon::parse($date)->startOfDay()->toIso8601String(),
+                'ends_at' => $dayEnd,
                 'all_day' => (bool) ($holiday['all_day'] ?? true),
                 'type' => $holiday['type'] ?? 'public_holiday',
                 'country' => $holiday['country'] ?? null,

@@ -1,31 +1,32 @@
 /**
  * Stable starter people and teams for the local sprint planner workspace.
- * Existing IDs are never overwritten.
+ * Demo personas only — never real colleague identities.
+ * Existing IDs are never overwritten (except legacy rename / archive below).
  */
 
 export const DEFAULT_PEOPLE = [
     {
         id: 'person_thomas_a',
-        displayName: 'Thomas A',
-        shortName: 'THA',
+        displayName: 'Thomas L',
+        shortName: 'THL',
         email: '',
         role: '',
         colorToken: 'accent-1',
         archived: false,
     },
     {
-        id: 'person_thomas_b',
-        displayName: 'Thomas B',
-        shortName: 'THB',
+        id: 'person_lena',
+        displayName: 'Lena S.',
+        shortName: 'LEN',
         email: '',
         role: '',
         colorToken: 'accent-2',
         archived: false,
     },
     {
-        id: 'person_matthias',
-        displayName: 'Matthias',
-        shortName: 'MAT',
+        id: 'person_jonas',
+        displayName: 'Jonas K.',
+        shortName: 'JON',
         email: '',
         role: '',
         colorToken: 'accent-3',
@@ -40,7 +41,7 @@ export const DEFAULT_TEAMS = [
         description: { de: '', en: '' },
         shortName: 'TQ',
         colorToken: 'accent-1',
-        memberIds: ['person_thomas_a', 'person_thomas_b', 'person_matthias'],
+        memberIds: ['person_thomas_a', 'person_lena', 'person_jonas'],
         archived: false,
     },
     {
@@ -72,6 +73,9 @@ export const DEFAULT_TEAMS = [
     },
 ];
 
+/** Legacy starter person ids that must not appear as active demo cast. */
+const LEGACY_DEMO_PERSON_IDS = ['person_thomas_b', 'person_matthias'];
+
 /**
  * @param {import('./storage.js').SpWorkspaceRoot} workspace
  * @returns {{workspace: import('./storage.js').SpWorkspaceRoot, changed: boolean}}
@@ -85,9 +89,28 @@ export function ensureDefaultCatalog(workspace) {
         workspace: { ...workspace.workspace },
     };
 
+    // Thomas A → Thomas L (display only; keep stable id).
+    const thomas = next.people.person_thomas_a;
+    if (thomas && (thomas.displayName === 'Thomas A' || thomas.shortName === 'THA')) {
+        next.people.person_thomas_a = {
+            ...thomas,
+            displayName: thomas.displayName === 'Thomas A' ? 'Thomas L' : thomas.displayName,
+            shortName: thomas.shortName === 'THA' ? 'THL' : thomas.shortName,
+        };
+        changed = true;
+    }
+
     for (const person of DEFAULT_PEOPLE) {
         if (!next.people[person.id]) {
             next.people[person.id] = { ...person };
+            changed = true;
+        }
+    }
+
+    for (const legacyId of LEGACY_DEMO_PERSON_IDS) {
+        const legacy = next.people[legacyId];
+        if (legacy && !legacy.archived) {
+            next.people[legacyId] = { ...legacy, archived: true };
             changed = true;
         }
     }
@@ -104,14 +127,22 @@ export function ensureDefaultCatalog(workspace) {
         } else {
             // Backfill color/shortName on existing default teams without overwriting custom values.
             const existing = next.teams[team.id];
+            let teamNext = existing;
             if (!existing.colorToken) {
-                next.teams[team.id] = { ...existing, colorToken: team.colorToken };
+                teamNext = { ...teamNext, colorToken: team.colorToken };
                 changed = true;
             }
             if (!existing.shortName) {
-                next.teams[team.id] = { ...next.teams[team.id], shortName: team.shortName };
+                teamNext = { ...teamNext, shortName: team.shortName };
                 changed = true;
             }
+            const members = Array.isArray(teamNext.memberIds) ? teamNext.memberIds : [];
+            const cleaned = members.filter((id) => !LEGACY_DEMO_PERSON_IDS.includes(String(id)));
+            if (cleaned.length !== members.length) {
+                teamNext = { ...teamNext, memberIds: cleaned };
+                changed = true;
+            }
+            next.teams[team.id] = teamNext;
         }
     }
 

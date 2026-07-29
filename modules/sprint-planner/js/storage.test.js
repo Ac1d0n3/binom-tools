@@ -93,7 +93,7 @@ describe('storage', () => {
         expect(result.ok).toBe(true);
         expect(result.data.schemaVersion).toBe(1);
         expect(result.data.instances).toEqual({});
-        expect(result.data.people.person_thomas_a.displayName).toBe('Thomas A');
+        expect(result.data.people.person_thomas_a.displayName).toBe('Thomas L');
         expect(result.data.teams.team_q.name.en).toBe('Team Q');
         expect(result.data.workspace.activePersonId).toBe('person_thomas_a');
     });
@@ -112,7 +112,7 @@ describe('storage', () => {
         expect(saveWorkspace(workspace).ok).toBe(true);
         const loaded = loadWorkspace();
         expect(loaded.data.people.person_01.displayName).toBe('Ada');
-        expect(loaded.data.people.person_thomas_a.displayName).toBe('Thomas A');
+        expect(loaded.data.people.person_thomas_a.displayName).toBe('Thomas L');
     });
 
     it('recovers from corrupt JSON', () => {
@@ -120,7 +120,7 @@ describe('storage', () => {
         const loaded = loadWorkspace();
         expect(loaded.ok).toBe(false);
         expect(loaded.error).toBe('storage-corrupt');
-        expect(loaded.data.people.person_matthias.displayName).toBe('Matthias');
+        expect(loaded.data.people.person_lena.displayName).toBe('Lena S.');
     });
 
     it('normalizes partial payloads', () => {
@@ -1002,7 +1002,7 @@ describe('instance-manager', () => {
         const openKey = statusKey('demo-claim-all', 'sprint_1', 'task', 'task_open');
         const takenKey = statusKey('demo-claim-all', 'sprint_1', 'task', 'task_taken');
 
-        const assigned = claimItem(started.instance.id, 'task', takenKey, false, 'sprint_1', 'person_matthias');
+        const assigned = claimItem(started.instance.id, 'task', takenKey, false, 'sprint_1', 'person_lena');
         expect(assigned.ok).toBe(true);
         expect(assigned.claimed).toBe(true);
 
@@ -1016,7 +1016,7 @@ describe('instance-manager', () => {
         expect(all.claimed).toBe(1);
         const instance = loadWorkspace().data.instances[started.instance.id];
         expect(instance.itemOverrides[openKey].assigneeId).toBe('person_thomas_a');
-        expect(instance.itemOverrides[takenKey].assigneeId).toBe('person_matthias');
+        expect(instance.itemOverrides[takenKey].assigneeId).toBe('person_lena');
     });
 
     it('keeps templateSlug when claim mutates overrides', () => {
@@ -1031,7 +1031,7 @@ describe('instance-manager', () => {
         };
         const started = startInstanceFromTemplate(template, { startedAt: '2026-07-01' });
         const key = statusKey('demo-keep-slug', 'sprint_1', 'task', 'task_b');
-        const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_matthias');
+        const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_lena');
         expect(claimed.ok).toBe(true);
         const again = loadWorkspace().data.instances[started.instance.id];
         expect(again.templateSlug).toBe('demo-keep-slug');
@@ -1060,17 +1060,17 @@ describe('instance-manager', () => {
         const key = statusKey('demo-claim', 'sprint_1', 'task', 'task_b');
         expect(started.instance.itemOverrides[key]).toBeUndefined();
 
-        const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_matthias');
+        const claimed = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_lena');
         expect(claimed.ok).toBe(true);
         expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
-            .toBe('person_matthias');
+            .toBe('person_lena');
 
         // Second claim must not steal an existing assignee.
         const stolen = claimItem(started.instance.id, 'task', key, false, 'sprint_1', 'person_thomas_a');
         expect(stolen.ok).toBe(true);
         expect(stolen.claimed).toBe(false);
         expect(loadWorkspace().data.instances[started.instance.id].itemOverrides[key].assigneeId)
-            .toBe('person_matthias');
+            .toBe('person_lena');
 
         const again = loadWorkspace().data;
         again.instances[started.instance.id].itemOverrides[key].assigneeId = null;
@@ -1089,7 +1089,7 @@ describe('instance-manager', () => {
     });
 
     it('prefers full local plan over hollow newer server shell', () => {
-        const accountUser = { id: 'user_acidone', displayName: 'Acidone', email: 'a@x.test' };
+        const accountUser = { id: 'user_acidone', displayName: 'Thomas L', email: 'a@x.test' };
         const planId = 'plan_hollow_heal_1';
         const hollowServer = {
             id: planId,
@@ -1186,7 +1186,7 @@ describe('instance-manager', () => {
     });
 
     it('keeps claim overrides across reload in accounts mode (local newer than bootstrap)', () => {
-        const accountUser = { id: 'user_acidone', displayName: 'Acidone', email: 'a@x.test' };
+        const accountUser = { id: 'user_acidone', displayName: 'Thomas L', email: 'a@x.test' };
         const planId = 'plan_claim_persist_1';
         const stalePlan = {
             id: planId,
@@ -1270,7 +1270,7 @@ describe('instance-manager', () => {
     });
 
     it('keeps local assignees when a newer server plan has empty assignment metadata', () => {
-        const accountUser = { id: 'user_acidone', displayName: 'Acidone', email: 'a@x.test' };
+        const accountUser = { id: 'user_acidone', displayName: 'Thomas L', email: 'a@x.test' };
         const planId = 'plan_claim_merge_1';
         const serverKey = statusKey('demo-claim-persist', 'sprint_1', 'task', 'task_a');
         const localKey = statusKey('demo-claim-persist', 'sprint_1', 'task', 'task_b');
@@ -1338,10 +1338,10 @@ describe('instance-manager', () => {
                 [planId]: {
                     ...serverPlan,
                     updatedAt: '2026-07-19T12:00:00.000Z',
-                    participantIds: ['person_thomas', 'person_matthias'],
+                    participantIds: ['person_thomas', 'person_lena'],
                     itemOverrides: {
                         [serverKey]: { assigneeType: 'person', assigneeId: 'person_thomas' },
-                        [localKey]: { assigneeType: 'person', assigneeId: 'person_matthias' },
+                        [localKey]: { assigneeType: 'person', assigneeId: 'person_lena' },
                     },
                 },
             },
@@ -1351,8 +1351,8 @@ describe('instance-manager', () => {
 
         expect(loaded.ok).toBe(true);
         expect(loaded.data.instances[planId].itemOverrides[serverKey].assigneeId).toBe('person_thomas');
-        expect(loaded.data.instances[planId].itemOverrides[localKey].assigneeId).toBe('person_matthias');
-        expect(loaded.data.instances[planId].participantIds).toContain('person_matthias');
+        expect(loaded.data.instances[planId].itemOverrides[localKey].assigneeId).toBe('person_lena');
+        expect(loaded.data.instances[planId].participantIds).toContain('person_lena');
     });
 
     it('stores a password hash and verifies it', async () => {
@@ -1419,7 +1419,7 @@ describe('defaults', () => {
         const { workspace, changed } = ensureDefaultCatalog(base);
         expect(changed).toBe(true);
         expect(workspace.people.person_thomas_a.displayName).toBe('Custom Thomas');
-        expect(workspace.people.person_matthias.displayName).toBe('Matthias');
+        expect(workspace.people.person_lena.displayName).toBe('Lena S.');
         expect(Object.keys(workspace.teams)).toHaveLength(DEFAULT_TEAMS.length);
         expect(DEFAULT_PEOPLE).toHaveLength(3);
     });
