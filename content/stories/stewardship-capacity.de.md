@@ -36,8 +36,6 @@ Das zentrale Prinzip lautet deshalb:
 
 Dieses Playbook vertieft das Kapazitätsproblem aus [Fehlende Bausteine bei Ownership und Stewardship](./missing-pieces-ownership-stewardship). Dort wird erklärt, warum formal zugewiesene Rollen häufig passiv bleiben. Diese Story konzentriert sich gezielt auf die operative Kapazität, die aus einem benannten Steward einen verlässlichen Service für die Domain macht.
 
-![Mehrere Stewardship-Bedarfsströme durchlaufen eine endliche Kapazitätsgrenze und werden in priorisierte Arbeit und verifizierte Ergebnisse überführt.](images/playbooks/stewardship-capacity-hero.png)
-
 ## Stewardship ist operative Kapazität, nicht nur ein Titel
 
 Eine Stewardship-Zuweisung sollte vier Dinge gemeinsam definieren:

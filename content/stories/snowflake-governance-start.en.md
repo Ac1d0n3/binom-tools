@@ -19,8 +19,6 @@ seriesTitle: "Governance Platform Starting Points"
 seriesPart: 4
 ---
 
-![Snowflake as a governance starting point](images/playbooks/snowflake-governance-start-hero.png)
-
 ## Problem
 
 Snowflake can provide a strong operating surface for SQL analytics, warehouse-centered data products and controlled data sharing. Its access-control model, tags, masking policies, row access policies, secure views, sharing mechanisms, account-usage evidence and warehouse controls can implement a coherent governance design.

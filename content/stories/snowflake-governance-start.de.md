@@ -19,8 +19,6 @@ seriesTitle: "Governance-Einstiegspunkte für Datenplattformen"
 seriesPart: 4
 ---
 
-![Snowflake als Governance-Einstieg](images/playbooks/snowflake-governance-start-hero.png)
-
 ## Problem
 
 Snowflake kann eine starke Operating Surface für SQL Analytics, Warehouse-zentrierte Data Products und kontrolliertes Data Sharing bilden. Access-Control-Modell, Tags, Masking Policies, Row Access Policies, Secure Views, Sharing-Mechanismen, Account-Usage-Evidenz und Warehouse Controls können ein konsistentes Governance-Design technisch umsetzen.

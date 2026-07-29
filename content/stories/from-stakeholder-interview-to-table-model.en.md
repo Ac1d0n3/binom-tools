@@ -26,8 +26,6 @@ seriesPart: 11
 
 A stakeholder interview produces evidence, language, expectations and unresolved questions. It does not produce a table model. The modeling work starts when those statements are converted into explicit, reviewable decisions about the business process, business event, grain, measures, dimensions, history, ownership and scope.
 
-![From stakeholder evidence to a reviewable table model](images/playbooks/from-stakeholder-interview-to-table-model-hero.png)
-
 ## Problem
 
 Stakeholders rarely describe requirements in modeling terms. They ask for “revenue by customer,” “the current pipeline,” “all activities,” “one row per customer,” or “the same numbers as the management report.” Each statement may contain useful evidence, but none of them is precise enough to define a fact table.

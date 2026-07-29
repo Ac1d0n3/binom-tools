@@ -1149,6 +1149,231 @@
                 "de": "Kurzer Einstieg bevor die volle Metadata-Deep-Dive-Serie startet.",
                 "en": "Short on-ramp before starting the full metadata deep-dive series."
             }
+        },
+        {
+            "id": "story-salesforce-to-mart",
+            "kind": "story",
+            "ref": "salesforce-to-mart",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-route",
+            "score": 88,
+            "tags": ["supplier", "crm", "architect", "steward"],
+            "when": {
+                "goals": ["supplier", "kpi"],
+                "scenarios": ["new", "help"],
+                "domains": ["crm"],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Salesforce → Mart",
+                "en": "Salesforce → mart"
+            },
+            "reason": {
+                "de": "Mini-Guide: von Salesforce-Objekten zu einem Pilot-Mart inkl. Artefakte.",
+                "en": "Mini-guide: from Salesforce objects to a pilot mart including artifacts."
+            }
+        },
+        {
+            "id": "story-hubspot-to-mart",
+            "kind": "story",
+            "ref": "hubspot-to-mart",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-route",
+            "score": 86,
+            "tags": ["supplier", "crm", "architect", "steward"],
+            "when": {
+                "goals": ["supplier", "kpi"],
+                "scenarios": ["new", "help"],
+                "domains": ["crm"],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "HubSpot → Mart",
+                "en": "HubSpot → mart"
+            },
+            "reason": {
+                "de": "Mini-Guide für HubSpot-Exports und CRM-Mart ohne Shadow-BI.",
+                "en": "Mini-guide for HubSpot exports and a CRM mart without shadow BI."
+            }
+        },
+        {
+            "id": "story-sap-s4-to-mart",
+            "kind": "story",
+            "ref": "sap-s4-to-mart",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-route",
+            "score": 88,
+            "tags": ["supplier", "erp", "architect", "steward"],
+            "when": {
+                "goals": ["supplier", "kpi"],
+                "scenarios": ["new", "help"],
+                "domains": ["erp"],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "SAP S/4 → Mart",
+                "en": "SAP S/4 → mart"
+            },
+            "reason": {
+                "de": "Mini-Guide: SAP-Belege und Stammdaten in einen Finance/Ops-Mart.",
+                "en": "Mini-guide: SAP documents and master data into a finance/ops mart."
+            }
+        },
+        {
+            "id": "story-workday-to-mart",
+            "kind": "story",
+            "ref": "workday-to-mart",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-route",
+            "score": 86,
+            "tags": ["supplier", "hcm", "architect", "steward"],
+            "when": {
+                "goals": ["supplier", "kpi"],
+                "scenarios": ["new", "help"],
+                "domains": ["hcm"],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Workday → Mart",
+                "en": "Workday → mart"
+            },
+            "reason": {
+                "de": "Mini-Guide: Workforce-Objekte und PII-Sensibilität in einen HCM-Mart.",
+                "en": "Mini-guide: workforce objects and PII sensitivity into an HCM mart."
+            }
+        },
+        {
+            "id": "story-dynamics-365-to-mart",
+            "kind": "story",
+            "ref": "dynamics-365-to-mart",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-route",
+            "score": 86,
+            "tags": ["supplier", "crm", "architect", "steward"],
+            "when": {
+                "goals": ["supplier", "kpi"],
+                "scenarios": ["new", "help"],
+                "domains": ["crm"],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Dynamics 365 → Mart",
+                "en": "Dynamics 365 → mart"
+            },
+            "reason": {
+                "de": "Mini-Guide: Dynamics-CRM/Finance-Objekte zu einem Pilot-Mart.",
+                "en": "Mini-guide: Dynamics CRM/finance objects to a pilot mart."
+            }
+        },
+        {
+            "id": "story-which-artifacts-you-get",
+            "kind": "story",
+            "ref": "which-artifacts-you-get",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-file-export",
+            "score": 84,
+            "tags": ["learning", "kpi", "supplier", "dq", "help", "new"],
+            "when": {
+                "goals": ["learning", "kpi", "supplier", "dq"],
+                "scenarios": ["help", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Welche Artefakte du bekommst",
+                "en": "Which artifacts you get"
+            },
+            "reason": {
+                "de": "Exportnamen und Dateiformate der Governance-Artefakte im Überblick.",
+                "en": "Overview of governance artifact export names and file formats."
+            }
+        },
+        {
+            "id": "story-proof-stakeholder-to-kpi-cards",
+            "kind": "story",
+            "ref": "proof-stakeholder-to-kpi-cards",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-certificate",
+            "score": 90,
+            "tags": ["kpi", "learning", "architect", "steward"],
+            "when": {
+                "goals": ["kpi", "learning"],
+                "scenarios": ["new", "help"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Proof: Stakeholder → KPI-Cards",
+                "en": "Proof: stakeholder → KPI cards"
+            },
+            "reason": {
+                "de": "Ende-zu-Ende-Nachweis: Interview bis exportierte KPI-Cards.",
+                "en": "End-to-end proof: interview through exported KPI cards."
+            }
+        },
+        {
+            "id": "story-proof-saas-source-to-pilot-mart",
+            "kind": "story",
+            "ref": "proof-saas-source-to-pilot-mart",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-certificate",
+            "score": 90,
+            "tags": ["supplier", "architect", "steward"],
+            "when": {
+                "goals": ["supplier", "kpi"],
+                "scenarios": ["new", "help"],
+                "domains": ["crm", "erp", "hcm"],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Proof: SaaS-Quelle → Pilot-Mart",
+                "en": "Proof: SaaS source → pilot mart"
+            },
+            "reason": {
+                "de": "Ende-zu-Ende-Nachweis: Source Scope bis Mart-Design-Brief.",
+                "en": "End-to-end proof: source scope through mart design brief."
+            }
+        },
+        {
+            "id": "story-proof-bi-chaos-to-trusted-metrics",
+            "kind": "story",
+            "ref": "proof-bi-chaos-to-trusted-metrics",
+            "enabled": true,
+            "group": "playbooks",
+            "icon": "fa-certificate",
+            "score": 88,
+            "tags": ["kpi", "dq", "architect", "steward", "learning"],
+            "when": {
+                "goals": ["kpi", "dq", "learning"],
+                "scenarios": ["help", "new"],
+                "domains": [],
+                "platforms": [],
+                "roles": []
+            },
+            "title": {
+                "de": "Proof: BI-Chaos → Trusted Metrics",
+                "en": "Proof: BI chaos → trusted metrics"
+            },
+            "reason": {
+                "de": "Ende-zu-Ende-Nachweis: Shadow-BI und Metric Drift zu trusted Metrics.",
+                "en": "End-to-end proof: shadow BI and metric drift to trusted metrics."
+            }
         }
     ]
 }

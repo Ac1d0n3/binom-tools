@@ -19,8 +19,6 @@ seriesTitle: "Governance Platform Starting Points"
 seriesPart: 5
 ---
 
-![BigQuery as a Governance Starting Point](images/playbooks/bigquery-governance-start-hero.png)
-
 ## Problem
 
 BigQuery can provide a strong governance starting point when the existing estate is GCP-native and the first governed use case is centered on serverless analytical processing, governed datasets, SQL products, data sharing or BI consumption. Google Cloud supplies a broad control surface across the resource hierarchy, BigQuery datasets and objects, IAM, row- and column-level controls, data masking, audit logs, Knowledge Catalog, lineage, data quality, reservations and service perimeters.

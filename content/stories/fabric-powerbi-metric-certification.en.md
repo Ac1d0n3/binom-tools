@@ -29,8 +29,6 @@ A certification badge can improve discovery. It cannot, by itself, prove that a 
 
 Metric certification is therefore an **accountable evidence decision**. The organization decides whether a metric is trusted for a defined scope. Fabric or Power BI then exposes an appropriate platform endorsement on the governed item that contains the implementation.
 
-![A governed metric passes through evidence checks before it is published for trusted reuse](images/playbooks/fabric-powerbi-metric-certification-hero.png)
-
 ## Problem
 
 Organizations often use the word `certified` for several different things:

@@ -36,8 +36,6 @@ The central principle is therefore:
 
 This playbook deepens the capacity problem introduced in [Missing Pieces in Ownership and Stewardship](./missing-pieces-ownership-stewardship). That story explains why formally assigned roles often remain passive. This story focuses specifically on the operating capacity required to turn a named Steward into a reliable service for the domain.
 
-![Multiple stewardship demand streams pass through a finite capacity boundary into prioritized work and verified outcomes.](images/playbooks/stewardship-capacity-hero.png)
-
 ## Stewardship is an operating capacity, not a title
 
 A Stewardship assignment should define four things together:

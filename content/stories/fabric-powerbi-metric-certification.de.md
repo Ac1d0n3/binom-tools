@@ -29,8 +29,6 @@ Ein Zertifizierungs-Badge kann die Auffindbarkeit verbessern. Es beweist allein 
 
 Metrik-Zertifizierung ist deshalb eine **verantwortete Evidenzentscheidung**. Die Organisation entscheidet, ob eine Kennzahl für einen definierten Scope vertrauenswürdig ist. Fabric oder Power BI zeigt anschließend ein geeignetes Plattform-Endorsement auf dem governeden Item, das die Implementierung enthält.
 
-![Eine governte Kennzahl durchläuft Evidenzprüfungen, bevor sie für vertrauenswürdige Wiederverwendung veröffentlicht wird](images/playbooks/fabric-powerbi-metric-certification-hero.png)
-
 ## Problem
 
 Organisationen verwenden den Begriff `certified` häufig für unterschiedliche Dinge:

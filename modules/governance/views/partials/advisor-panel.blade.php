@@ -207,6 +207,7 @@
                     </div>
                     <p class="governance-advisor__platform-hint" data-governance-platform-hint hidden></p>
 
+                    <div class="governance-advisor__dq-slot">
                     <div class="governance-advisor__dq" data-governance-dq-panel>
                         <div class="governance-advisor__dq-heading">
                             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
@@ -260,9 +261,10 @@
                             </div>
                         </fieldset>
                     </div>
+                    </div>
                 </form>
 
-                <aside class="governance-advisor__results" aria-live="polite">
+                <aside class="governance-advisor__results" aria-live="off">
                     <div class="governance-advisor__result-header">
                         <p class="governance-hub__eyebrow" data-text-de="Empfehlung" data-text-en="Recommendation">Recommendation</p>
                         <h3 data-governance-advisor-summary>Start with the stack decision, then validate sources and governance gates.</h3>

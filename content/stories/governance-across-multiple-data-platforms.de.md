@@ -19,8 +19,6 @@ seriesTitle: "Governance-Einstiegspunkte für Datenplattformen"
 seriesPart: 7
 ---
 
-![Governance über mehrere Datenplattformen hinweg](images/playbooks/governance-across-multiple-data-platforms-hero.png)
-
 ## Problem
 
 Die meisten Organisationen betreiben nicht nur eine Analytics Platform. Eine realistische Landschaft kombiniert beispielsweise Microsoft Fabric und Power BI, Databricks für Engineering und AI, Snowflake oder BigQuery für Warehouse Workloads, dbt für Transformationen, operative Datenbanken, SaaS Sources, APIs, Excel und mehrere BI Tools.

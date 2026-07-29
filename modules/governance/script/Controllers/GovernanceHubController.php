@@ -809,7 +809,9 @@ class GovernanceHubController extends Controller
                 'dbt-dq-macro-generator' => locale_route('tools.dbt-dq-macro-generator'),
                 'dbt-dq-rules-generator' => locale_route('tools.dbt-dq-rules-generator'),
                 'dbt-dq-history-generator' => locale_route('tools.dbt-dq-history-generator'),
+                'fabric-dq-pattern-generator' => locale_route('tools.fabric-dq-pattern-generator'),
                 'fabric-pii-governance-pattern-generator' => locale_route('tools.fabric-pii-governance-pattern-generator'),
+                'databricks-dq-pattern-generator' => locale_route('tools.databricks-dq-pattern-generator'),
                 'databricks-pii-governance-pattern-generator' => locale_route('tools.databricks-pii-governance-pattern-generator'),
                 'unity-catalog-governance-generator' => locale_route('tools.unity-catalog-governance-generator'),
             ],
@@ -936,8 +938,8 @@ class GovernanceHubController extends Controller
         $stacks = config('vendor-resources.stacks', []);
         $startToolsByStack = [
             'modern-data-stack' => ['governance-stack-advisor', 'source-scope-builder', 'dbt-dq-rules-generator'],
-            'microsoft-fabric' => ['governance-stack-advisor', 'fabric-pii-governance-pattern-generator', 'pii-dsdr-readiness-checker'],
-            'databricks-lakehouse' => ['governance-stack-advisor', 'unity-catalog-governance-generator', 'databricks-pii-governance-pattern-generator'],
+            'microsoft-fabric' => ['governance-stack-advisor', 'fabric-dq-pattern-generator', 'fabric-pii-governance-pattern-generator'],
+            'databricks-lakehouse' => ['governance-stack-advisor', 'databricks-dq-pattern-generator', 'unity-catalog-governance-generator'],
             'gcp-analytics' => ['governance-stack-advisor', 'source-scope-builder', 'kpi-requirements-intake'],
             'open-source-stack' => ['governance-stack-advisor', 'schema-yml-editor', 'dbt-dq-rules-generator'],
             'eu-sovereign' => ['governance-stack-advisor', 'pii-dsdr-readiness-checker', 'decision-brief-generator'],

@@ -29,8 +29,6 @@ Eine Kennzahl ist nicht allein deshalb governed, weil ihre Formel technisch korr
 
 Die Platzierungsentscheidung lässt sich deshalb weder auf „zentral ist gut“ noch auf „lokal ist flexibel“ reduzieren. Wiederverwendbare fachliche Wahrheit darf nicht in jeden Report kopiert werden. Gleichzeitig gehört reine Darstellungslogik nicht nur wegen einer pauschalen Zentralisierungsvorgabe in physische Warehouse-Tabellen.
 
-![Eine governte Kennzahl durchläuft eine Platzierungsentscheidung, bevor wiederverwendbare und lokale Logik getrennt werden](images/playbooks/semantic-layer-vs-report-measure-hero.png)
-
 ## Problem
 
 Organisationen erkennen Inkonsistenzen bei Kennzahlen häufig erst, wenn bereits mehrere Reports produktiv sind.

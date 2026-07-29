@@ -422,6 +422,16 @@ const labels = {
         },
         tags: ['dq', 'health_check', 'known_issue', 'freshness', 'report_stabilization', 'steward'],
     },
+    'fabric-dq-pattern-generator': {
+        group: 'tools',
+        icon: 'fa-clipboard-check',
+        title: { de: 'Fabric DQ Pattern Generator', en: 'Fabric DQ Pattern Generator' },
+        reason: {
+            de: 'Leitet DQ-Patterns und Checks für Microsoft Fabric ab, wenn der Lakehouse-Stack gesetzt ist.',
+            en: 'Derives DQ patterns and checks for Microsoft Fabric when the lakehouse stack is set.',
+        },
+        tags: ['fabric', 'dq', 'completeness', 'duplicates', 'freshness', 'value_range', 'referential_integrity', 'business_rule', 'steward', 'architect'],
+    },
     'fabric-pii-governance-pattern-generator': {
         group: 'tools',
         icon: 'fa-window-maximize',
@@ -431,6 +441,16 @@ const labels = {
             en: 'Fits when Fabric/Power BI is selected and PII gates need to become concrete.',
         },
         tags: ['fabric', 'pii', 'dq', 'owner', 'steward', 'custodian'],
+    },
+    'databricks-dq-pattern-generator': {
+        group: 'tools',
+        icon: 'fa-clipboard-check',
+        title: { de: 'Databricks DQ Pattern Generator', en: 'Databricks DQ Pattern Generator' },
+        reason: {
+            de: 'Leitet DQ-Patterns für Databricks/Unity Catalog ab, wenn der Lakehouse-Stack gesetzt ist.',
+            en: 'Derives DQ patterns for Databricks/Unity Catalog when the lakehouse stack is set.',
+        },
+        tags: ['databricks', 'dq', 'completeness', 'duplicates', 'freshness', 'value_range', 'referential_integrity', 'business_rule', 'steward', 'architect'],
     },
     'databricks-pii-governance-pattern-generator': {
         group: 'tools',
@@ -795,8 +815,36 @@ function scoreItem(item, state, boostToolIds = []) {
         score += 3;
     }
 
-    if (state.goal === 'dq' && ['dbt-dq-rules-generator', 'dbt-dq-macro-generator', 'dbt-dq-history-generator'].includes(item.id)) {
-        score += 5;
+    if (state.goal === 'dq') {
+        const dbtDqIds = ['dbt-dq-rules-generator', 'dbt-dq-macro-generator', 'dbt-dq-history-generator'];
+        const fabricDqIds = ['fabric-dq-pattern-generator', 'fabric-pii-governance-pattern-generator'];
+        const databricksDqIds = [
+            'databricks-dq-pattern-generator',
+            'databricks-pii-governance-pattern-generator',
+            'unity-catalog-governance-generator',
+        ];
+        if (
+            (state.platform === 'snowflake-dbt' || state.platform === 'opensource')
+            && dbtDqIds.includes(item.id)
+        ) {
+            score += 5;
+        } else if (state.platform === 'fabric' && fabricDqIds.includes(item.id)) {
+            score += 5;
+        } else if (state.platform === 'databricks' && databricksDqIds.includes(item.id)) {
+            score += 5;
+        } else if (state.platform === 'unknown') {
+            // Prefer stack-aligned DQ tools from org/regulation hints; otherwise keep parity.
+            if (preferred.includes('fabric') && fabricDqIds.includes(item.id)) {
+                score += 4;
+            } else if (preferred.includes('databricks') && databricksDqIds.includes(item.id)) {
+                score += 4;
+            } else if (
+                (preferred.includes('snowflake-dbt') || preferred.length === 0)
+                && dbtDqIds.includes(item.id)
+            ) {
+                score += 4;
+            }
+        }
     }
 
     if (state.goal === 'stack' && ['governance-stack-advisor', 'custom-stack-builder'].includes(item.id)) {
@@ -1316,55 +1364,61 @@ function applyPlatformPreferences(form, state, locale) {
 
     const preferred = preferredPlatforms(state.orgContext, state.regulationPressure);
     const preferredSet = new Set(preferred);
-    const current = select.value;
-    const options = Array.from(select.options);
-    const pinned = ['unknown', 'custom'];
-    const byValue = new Map(options.map((option) => [option.value, option]));
+    const preferenceKey = `${locale}|${state.orgContext}|${state.regulationPressure}|${preferred.join(',')}`;
+    const alreadyOrdered = select.dataset.platformPreferenceKey === preferenceKey;
 
-    const orderedValues = [
-        'unknown',
-        ...preferred.filter((id) => byValue.has(id) && !pinned.includes(id)),
-        ...options
-            .map((option) => option.value)
-            .filter((value) => !pinned.includes(value) && !preferredSet.has(value)),
-        'custom',
-    ].filter((value, index, all) => byValue.has(value) && all.indexOf(value) === index);
+    if (!alreadyOrdered) {
+        const current = select.value;
+        const options = Array.from(select.options);
+        const pinned = ['unknown', 'custom'];
+        const byValue = new Map(options.map((option) => [option.value, option]));
 
-    select.replaceChildren();
-    orderedValues.forEach((value) => {
-        const source = byValue.get(value);
-        if (!source) {
-            return;
-        }
-        const option = source.cloneNode(true);
-        if (!(option instanceof HTMLOptionElement)) {
-            return;
-        }
-        const baseDe = option.getAttribute('data-text-de') || option.textContent || value;
-        const baseEn = option.getAttribute('data-text-en') || option.textContent || value;
-        const isPreferred = preferredSet.has(value);
-        option.toggleAttribute('data-preferred', isPreferred);
-        const cleanDe = baseDe.replace(/\s·\sEmpfohlen$/, '');
-        const cleanEn = baseEn.replace(/\s·\sRecommended$/, '');
-        if (isPreferred && value !== 'unknown' && value !== 'custom') {
-            option.setAttribute('data-text-de', `${cleanDe} · Empfohlen`);
-            option.setAttribute('data-text-en', `${cleanEn} · Recommended`);
-            option.textContent = locale === 'de' ? `${cleanDe} · Empfohlen` : `${cleanEn} · Recommended`;
-        } else {
-            option.setAttribute('data-text-de', cleanDe);
-            option.setAttribute('data-text-en', cleanEn);
-            option.textContent = locale === 'de' ? cleanDe : cleanEn;
-        }
-        select.append(option);
-    });
+        const orderedValues = [
+            'unknown',
+            ...preferred.filter((id) => byValue.has(id) && !pinned.includes(id)),
+            ...options
+                .map((option) => option.value)
+                .filter((value) => !pinned.includes(value) && !preferredSet.has(value)),
+            'custom',
+        ].filter((value, index, all) => byValue.has(value) && all.indexOf(value) === index);
 
-    if (byValue.has(current)) {
-        select.value = current;
+        select.replaceChildren();
+        orderedValues.forEach((value) => {
+            const source = byValue.get(value);
+            if (!source) {
+                return;
+            }
+            const option = source.cloneNode(true);
+            if (!(option instanceof HTMLOptionElement)) {
+                return;
+            }
+            const baseDe = option.getAttribute('data-text-de') || option.textContent || value;
+            const baseEn = option.getAttribute('data-text-en') || option.textContent || value;
+            const isPreferred = preferredSet.has(value);
+            option.toggleAttribute('data-preferred', isPreferred);
+            const cleanDe = baseDe.replace(/\s·\sEmpfohlen$/, '');
+            const cleanEn = baseEn.replace(/\s·\sRecommended$/, '');
+            if (isPreferred && value !== 'unknown' && value !== 'custom') {
+                option.setAttribute('data-text-de', `${cleanDe} · Empfohlen`);
+                option.setAttribute('data-text-en', `${cleanEn} · Recommended`);
+                option.textContent = locale === 'de' ? `${cleanDe} · Empfohlen` : `${cleanEn} · Recommended`;
+            } else {
+                option.setAttribute('data-text-de', cleanDe);
+                option.setAttribute('data-text-en', cleanEn);
+                option.textContent = locale === 'de' ? cleanDe : cleanEn;
+            }
+            select.append(option);
+        });
+
+        if (byValue.has(current)) {
+            select.value = current;
+        }
+        select.dataset.platformPreferenceKey = preferenceKey;
     }
 
     if (hint instanceof HTMLElement) {
         const text = platformPreferenceHint(state.orgContext, state.regulationPressure, locale);
-        hint.textContent = text;
+        hint.textContent = text || '\u00a0';
         hint.hidden = text === '';
     }
 }
@@ -1435,24 +1489,81 @@ function render(root, config) {
 }
 
 /**
- * Keep scroll position stable across drawer/tab toggles without fighting touch scroll.
- * Overview/hub pages scroll inside `.tools-shell__main`, not `window` — restoring
- * window.scrollY (often 0) or re-applying a stale anchor after 40ms made iPad feel
- * "stuck" until refresh. Layout shift is handled by CSS scrollbar-gutter instead.
+ * Keep scroll position stable across advisor re-renders and tab/drawer toggles.
+ * Overview/hub pages scroll inside `.tools-shell__main`, not `window`.
+ *
+ * Important: do NOT re-capture scroll at the start of run() — by then the browser
+ * may already have focus-scrolled a hidden radio into view (scrollTop ≈ 0).
+ * Capture on pointerdown only; run() only restores.
  */
 function createScrollLock() {
+    /** @type {number | null} */
+    let top = null;
+    /** @type {number | null} */
+    let left = null;
+    /** @type {number | null} */
+    let resultsTop = null;
+
+    const scroller = () => (
+        document.querySelector('.tools-shell__main--overview')
+        || document.querySelector('.tools-shell__main--playbook')
+        || document.querySelector('.tools-shell__main--calendar')
+        || document.querySelector('.tools-shell__main--sprint-planner')
+        || document.querySelector('.tools-shell__main--admin-md')
+        || document.scrollingElement
+        || document.documentElement
+    );
+
+    const capture = () => {
+        const el = scroller();
+        top = el?.scrollTop ?? window.scrollY ?? 0;
+        left = el?.scrollLeft ?? window.scrollX ?? 0;
+        const results = document.querySelector('.governance-advisor__results');
+        resultsTop = results?.scrollTop ?? 0;
+    };
+
+    const restore = () => {
+        if (top === null) {
+            return;
+        }
+        const el = scroller();
+        if (el) {
+            el.scrollTop = top;
+            el.scrollLeft = left ?? 0;
+        } else {
+            window.scrollTo(left ?? 0, top);
+        }
+        const results = document.querySelector('.governance-advisor__results');
+        if (results && resultsTop !== null) {
+            results.scrollTop = resultsTop;
+        }
+    };
+
     return {
-        remember() {},
+        remember() {
+            capture();
+        },
         /**
          * @param {() => void} callback
          */
         run(callback) {
+            // Keep pre-interaction scroll; only capture now if nothing was stored yet.
+            if (top === null) {
+                capture();
+            }
             callback();
+            restore();
+            window.requestAnimationFrame(() => {
+                restore();
+                window.requestAnimationFrame(restore);
+            });
         },
         /**
-         * @param {Element} _element
+         * @param {Element} element
          */
-        bindTrigger(_element) {},
+        bindTrigger(element) {
+            element.addEventListener('pointerdown', () => capture(), { capture: true });
+        },
     };
 }
 
@@ -2430,6 +2541,7 @@ function initAdvisor(root) {
     const demoButton = root.querySelector('[data-governance-save-demo]');
     const reportLink = root.querySelector('[data-governance-view-report]');
     let activeDemoReportUrl = null;
+    const scrollLock = createScrollLock();
 
     initPanelToggles(root);
     initSubtabs(root);
@@ -2439,13 +2551,53 @@ function initAdvisor(root) {
     initStackBuilderModal(root, config);
     initPersonas(root, () => {
         if (form) {
-            render(root, config);
+            scrollLock.run(() => render(root, config));
         }
     }, config.preferredRole || '');
 
     if (!form) {
         return;
     }
+
+    // Activate pills/options without focusing the hidden input (focus scrolls main to top).
+    form.addEventListener('pointerdown', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+        if (target.closest('.governance-advisor__option, .governance-advisor__pill, select, button')) {
+            scrollLock.remember();
+        }
+    }, { capture: true });
+
+    form.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+        const label = target.closest('label.governance-advisor__option, label.governance-advisor__pill');
+        if (!label) {
+            return;
+        }
+        const input = label.querySelector('input');
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+        // Stop native label→focus→scrollIntoView behavior.
+        event.preventDefault();
+        event.stopPropagation();
+        if (input.type === 'checkbox') {
+            input.checked = !input.checked;
+        } else if (input.type === 'radio') {
+            if (input.checked) {
+                return;
+            }
+            input.checked = true;
+        } else {
+            return;
+        }
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    }, true);
 
     const syncDqPanel = () => {
         const state = getState(form, root);
@@ -2454,8 +2606,10 @@ function initAdvisor(root) {
         }
     };
     form.addEventListener('change', () => {
-        syncDqPanel();
-        render(root, config);
+        scrollLock.run(() => {
+            syncDqPanel();
+            render(root, config);
+        });
     });
     permanentButton?.addEventListener('click', async () => {
         const locale = pickLocale();

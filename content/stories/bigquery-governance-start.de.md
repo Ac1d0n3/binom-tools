@@ -19,8 +19,6 @@ seriesTitle: "Governance-Einstiegspunkte für Datenplattformen"
 seriesPart: 5
 ---
 
-![BigQuery als Governance-Einstieg](images/playbooks/bigquery-governance-start-hero.png)
-
 ## Problem
 
 BigQuery kann ein starker Governance-Einstieg sein, wenn die vorhandene Landschaft GCP-nativ ist und der erste governede Use Case auf serverloser analytischer Verarbeitung, governeden Datasets, SQL Products, Data Sharing oder BI Consumption basiert. Google Cloud stellt dafür eine breite Control Surface bereit: Resource Hierarchy, BigQuery Datasets und Objects, IAM, Row- und Column-Level Controls, Data Masking, Audit Logs, Knowledge Catalog, Lineage, Data Quality, Reservations und Service Perimeters.

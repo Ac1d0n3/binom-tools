@@ -33,8 +33,6 @@ The Data Product Owner, Data Owner and Data Steward work on the same product, bu
 
 The roles may be held by three people or, in a small context, by one person wearing several hats. What matters is that the decisions remain distinguishable, reviewable and attributable.
 
-![Three distinct role orbits around one governed Data Product](images/playbooks/data-product-owner-vs-data-owner-hero.png)
-
 ## The starting problem: one product, several kinds of authority
 
 Many organizations introduce Data Products before they clarify who can decide what. A Product Owner is appointed, a Data Owner already exists somewhere in the governance model, and a Steward maintains metadata and quality rules. The titles appear complete, but the operating model is not.

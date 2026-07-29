@@ -190,7 +190,9 @@ class GovernanceHubTest extends TestCase
         $response->assertSee('/tools/dbt-dq-rules-generator', false);
         $response->assertSee('/tools/dbt-dq-macro-generator', false);
         $response->assertSee('/tools/dbt-dq-history-generator', false);
+        $response->assertSee('/tools/fabric-dq-pattern-generator', false);
         $response->assertSee('/tools/fabric-pii-governance-pattern-generator', false);
+        $response->assertSee('/tools/databricks-dq-pattern-generator', false);
         $response->assertSee('/tools/databricks-pii-governance-pattern-generator', false);
         $response->assertSee('/tools/unity-catalog-governance-generator', false);
         $response->assertSee('/resources', false);

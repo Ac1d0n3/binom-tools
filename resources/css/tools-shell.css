@@ -1,6 +1,7 @@
 html {
     overflow-x: clip;
     max-width: 100%;
+    min-height: 100dvh;
     scrollbar-gutter: stable;
 }
 
@@ -8,6 +9,7 @@ body {
     margin: 0;
     overflow-x: clip;
     max-width: 100%;
+    min-height: 100dvh;
     background-color: var(--app-background-color);
     color: var(--content-font-color);
     font-family: var(--font-sans);
@@ -178,6 +180,8 @@ html[data-color-scheme='dark'] input[type='radio']:checked {
     padding-top: var(--tools-header-height);
     position: relative;
     z-index: 1;
+    /* Opaque fill so app-art never shows through when content reflows shorter. */
+    background: var(--content-background-color);
     box-shadow: 0 6px 28px color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
 }
 
@@ -244,9 +248,11 @@ html[data-shell-full-width='true'] .tools-shell__header,
 .tools-shell:has(.tools-shell__main--playbook),
 .tools-shell:has(.tools-shell__main--overview),
 .tools-shell:has(.tools-shell__main--sprint-planner),
-.tools-shell:has(.tools-shell__main--admin-md) {
+.tools-shell:has(.tools-shell__main--admin-md),
+.tools-shell:has(.tools-shell__main--calendar) {
     height: 100dvh;
     max-height: 100dvh;
+    min-height: 100dvh;
     overflow: hidden;
 }
 
@@ -254,10 +260,12 @@ html:has(.tools-shell__main--playbook),
 html:has(.tools-shell__main--overview),
 html:has(.tools-shell__main--sprint-planner),
 html:has(.tools-shell__main--admin-md),
+html:has(.tools-shell__main--calendar),
 html:has(.tools-shell__main--playbook) body,
 html:has(.tools-shell__main--overview) body,
 html:has(.tools-shell__main--sprint-planner) body,
-html:has(.tools-shell__main--admin-md) body {
+html:has(.tools-shell__main--admin-md) body,
+html:has(.tools-shell__main--calendar) body {
     height: 100%;
     max-height: 100dvh;
     overflow: hidden;
@@ -268,7 +276,8 @@ html:has(.tools-shell__main--admin-md) body {
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__body,
 .tools-shell:has(.tools-shell__main--overview) .tools-shell__body,
 .tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__body,
-.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__body {
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__body,
+.tools-shell:has(.tools-shell__main--calendar) .tools-shell__body {
     align-items: stretch;
     flex: 1 1 0;
     min-height: 0;
@@ -278,7 +287,8 @@ html:has(.tools-shell__main--admin-md) body {
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__sidebar,
 .tools-shell:has(.tools-shell__main--overview) .tools-shell__sidebar,
 .tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__sidebar,
-.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__sidebar {
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__sidebar,
+.tools-shell:has(.tools-shell__main--calendar) .tools-shell__sidebar {
     position: relative;
     top: auto;
     max-height: none;
@@ -291,7 +301,8 @@ html:has(.tools-shell__main--admin-md) body {
 .tools-shell:has(.tools-shell__main--playbook) .tools-sidenav,
 .tools-shell:has(.tools-shell__main--overview) .tools-sidenav,
 .tools-shell:has(.tools-shell__main--sprint-planner) .tools-sidenav,
-.tools-shell:has(.tools-shell__main--admin-md) .tools-sidenav {
+.tools-shell:has(.tools-shell__main--admin-md) .tools-sidenav,
+.tools-shell:has(.tools-shell__main--calendar) .tools-sidenav {
     position: static;
     top: auto;
     max-height: none;
@@ -304,12 +315,14 @@ html:has(.tools-shell__main--admin-md) body {
 .tools-shell:has(.tools-shell__main--playbook) .tools-shell__main,
 .tools-shell:has(.tools-shell__main--overview) .tools-shell__main,
 .tools-shell:has(.tools-shell__main--sprint-planner) .tools-shell__main,
-.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__main {
+.tools-shell:has(.tools-shell__main--admin-md) .tools-shell__main,
+.tools-shell:has(.tools-shell__main--calendar) .tools-shell__main {
     flex: 1 1 0;
     min-height: 0;
     max-height: 100%;
     overflow-x: clip;
     overflow-y: auto;
+    overflow-anchor: none;
     /* Keep content width stable when advisor/tabs change height. */
     scrollbar-gutter: stable;
 }
@@ -327,7 +340,8 @@ html:has(.tools-shell__main--admin-md) body {
 }
 
 .tools-shell__main--playbook,
-.tools-shell__main--overview {
+.tools-shell__main--overview,
+.tools-shell__main--calendar {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
@@ -2440,6 +2454,7 @@ html[data-hide-tool-help="true"] [data-tool-help] {
     gap: 1rem;
     align-items: start;
     margin-top: 0.75rem;
+    overflow-anchor: none;
 }
 
 .governance-advisor__form,
@@ -2449,7 +2464,13 @@ html[data-hide-tool-help="true"] [data-tool-help] {
 
 .governance-advisor__form {
     display: grid;
+    align-content: start;
     gap: 1.05rem;
+}
+
+/* DQ slot wrapper — zero-contribution when panel is hidden. */
+.governance-advisor__dq-slot {
+    min-height: 0;
 }
 
 .governance-advisor__fieldset {
@@ -2486,15 +2507,20 @@ html[data-hide-tool-help="true"] [data-tool-help] {
 
 .governance-advisor__option,
 .governance-advisor__pill {
+    position: relative;
     min-width: 0;
     cursor: pointer;
 }
 
+/* Keep inputs inside the label box — absolute without a positioned parent
+   anchors to `.tools-shell` and focus/scrollIntoView jumps the page. */
 .governance-advisor__option input,
 .governance-advisor__pill input {
     position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
+    inset: 0;
+    margin: 0;
+    inline-size: 100%;
+    block-size: 100%;
     opacity: 0;
     pointer-events: none;
 }
@@ -2993,6 +3019,10 @@ html[data-hide-tool-help="true"] [data-tool-help] {
     padding: 0.8rem;
 }
 
+.governance-advisor__dq[hidden] {
+    display: none;
+}
+
 .governance-advisor__dq-heading {
     display: inline-flex;
     align-items: center;
@@ -3017,11 +3047,17 @@ html[data-hide-tool-help="true"] [data-tool-help] {
 
 .governance-advisor__results {
     display: grid;
+    align-content: start;
     gap: 1rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     border: 1px solid color-mix(in srgb, var(--theme-color-primary) 24%, var(--base-border-color));
     border-radius: 8px;
     background: color-mix(in srgb, var(--content-background-color) 92%, var(--surface-background-color));
     padding: 1rem;
+    scrollbar-gutter: stable;
 }
 
 .governance-advisor__helpbox {
@@ -10248,15 +10284,19 @@ button.tools-series-card__offline-btn.is-saved:focus-visible:not(:disabled) {
     .tools-shell:has(.tools-shell__main--overview) {
         height: auto;
         max-height: none;
+        min-height: 100dvh;
         /* Both axes visible — overflow-x clip + overflow-y visible collapses to auto and kills sticky header. */
         overflow: visible;
+        background: var(--content-background-color);
     }
 
     html:has(.tools-shell__main--overview),
     html:has(.tools-shell__main--overview) body {
         height: auto;
         max-height: none;
+        min-height: 100dvh;
         overflow: visible;
+        background-color: var(--content-background-color);
     }
 
     /* Keep shell header visible while Stories / overview pages scroll on phone. */

@@ -29,8 +29,6 @@ A metric is not governed merely because its formula is technically correct. It i
 
 The placement decision therefore cannot be reduced to “central is good” or “local is flexible.” Reusable business truth should not be copied into every report. At the same time, presentation-only logic should not be forced into warehouse tables merely to satisfy a blanket centralization rule.
 
-![A governed metric passes through a placement decision before reusable and local logic are separated](images/playbooks/semantic-layer-vs-report-measure-hero.png)
-
 ## Problem
 
 Organizations often discover metric inconsistency only after several reports are already in production.

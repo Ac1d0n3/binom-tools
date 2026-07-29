@@ -19,8 +19,6 @@ seriesTitle: "Governance Platform Starting Points"
 seriesPart: 6
 ---
 
-![dbt as a Cross-Platform Governance Control Layer](images/playbooks/dbt-governance-control-layer-hero.png)
-
 ## Problem
 
 dbt can create a consistent transformation workflow across warehouses and lakehouse SQL engines. Sources, models, contracts, tests, documentation, lineage, pull requests, deployments and artifacts can be expressed through one version-controlled project structure. This makes dbt a credible cross-platform control layer for transformation governance.

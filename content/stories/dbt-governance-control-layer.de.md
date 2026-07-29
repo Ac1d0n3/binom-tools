@@ -19,8 +19,6 @@ seriesTitle: "Governance-Einstiegspunkte für Datenplattformen"
 seriesPart: 6
 ---
 
-![dbt als plattformübergreifende Governance-Kontrollschicht](images/playbooks/dbt-governance-control-layer-hero.png)
-
 ## Problem
 
 dbt kann einen konsistenten Transformation Workflow über Warehouses und Lakehouse SQL Engines hinweg bereitstellen. Sources, Models, Contracts, Tests, Documentation, Lineage, Pull Requests, Deployments und Artifacts lassen sich in einer versionierten Project Structure ausdrücken. Dadurch ist dbt eine plausible plattformübergreifende Control Layer für Transformation Governance.

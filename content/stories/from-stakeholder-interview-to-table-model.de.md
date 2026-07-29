@@ -26,8 +26,6 @@ seriesPart: 11
 
 Ein Stakeholder-Interview liefert Evidenz, Begriffe, Erwartungen und offene Fragen. Es liefert kein Tabellenmodell. Die Modellierungsarbeit beginnt erst, wenn diese Aussagen in explizite und überprüfbare Entscheidungen zu Geschäftsprozess, Business Event, Grain, Kennzahlen, Dimensionen, Historie, Ownership und Scope übersetzt werden.
 
-![Von Stakeholder-Evidenz zu einem überprüfbaren Tabellenmodell](images/playbooks/from-stakeholder-interview-to-table-model-hero.png)
-
 ## Problem
 
 Stakeholder formulieren Anforderungen selten in Modellierungsbegriffen. Sie verlangen „Umsatz nach Kunde“, „die aktuelle Pipeline“, „alle Aktivitäten“, „eine Zeile pro Kunde“ oder „dieselben Zahlen wie im Management-Report“. Jede Aussage kann wertvolle Evidenz enthalten, ist aber noch nicht präzise genug, um eine Faktentabelle zu definieren.

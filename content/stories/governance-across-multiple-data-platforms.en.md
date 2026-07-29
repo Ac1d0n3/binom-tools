@@ -19,8 +19,6 @@ seriesTitle: "Governance Platform Starting Points"
 seriesPart: 7
 ---
 
-![Governance Across Multiple Data Platforms](images/playbooks/governance-across-multiple-data-platforms-hero.png)
-
 ## Problem
 
 Most organizations do not operate one analytical platform. A realistic estate may combine Microsoft Fabric and Power BI, Databricks for engineering and AI, Snowflake or BigQuery for warehouse workloads, dbt for transformations, operational databases, SaaS sources, APIs, Excel and several BI tools.
