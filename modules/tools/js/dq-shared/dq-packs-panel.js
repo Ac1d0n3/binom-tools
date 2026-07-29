@@ -23,23 +23,16 @@ import {
 
 /**
  * Mount region + pack + workspace save panel into `[data-dq-packs-panel]`.
- * Looks in `options.root` first, then the surrounding tools page (header save slot lives outside the app root).
+ * The save slot lives in the tool header (outside the generator app root).
  * @param {DqPackPanelOptions} options
  */
 export function mountDqPacksPanel(options) {
-    const scope =
-        options.root.closest('.tools-content') ||
-        options.root.closest('[data-tool-page-header]')?.parentElement ||
-        document;
     const panel =
-        options.root.querySelector('[data-dq-packs-panel]') ||
-        /** @type {ParentNode} */ (scope).querySelector('[data-dq-packs-panel]');
+        document.querySelector('[data-dq-packs-panel]') ||
+        options.root.querySelector('[data-dq-packs-panel]');
     if (!panel) return null;
 
-    const configRoot =
-        /** @type {ParentNode} */ (scope).querySelector('[data-dq-workspace-config]')
-            ? scope
-            : document;
+    const configRoot = panel.closest('.tools-content') || document;
     const config = readDqWorkspaceConfig(configRoot);
     /** @type {string} */
     let region = DEFAULT_DQ_REGION;
@@ -99,11 +92,11 @@ export function mountDqPacksPanel(options) {
         if (!els.list) return;
         const relevant = artifacts.filter((item) => toolIds().includes(item.toolId));
         if (!workspaceReady) {
-            els.list.innerHTML = `<p class="tools-panel-meta">${escapeHtml(options.t('dqPacks.workspace.needActive'))}</p>`;
+            els.list.innerHTML = `<p class="dq-packs-panel__status">${escapeHtml(options.t('dqPacks.workspace.needActive'))}</p>`;
             return;
         }
         if (relevant.length === 0) {
-            els.list.innerHTML = `<p class="tools-panel-meta">${escapeHtml(options.t('dqPacks.workspace.empty'))}</p>`;
+            els.list.innerHTML = `<p class="dq-packs-panel__status">${escapeHtml(options.t('dqPacks.workspace.empty'))}</p>`;
             return;
         }
         els.list.innerHTML = relevant

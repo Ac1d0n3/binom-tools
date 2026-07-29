@@ -208,17 +208,26 @@
 
 .dq-packs-panel {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.85rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    max-width: 36rem;
 }
 
-.dq-packs-panel__grid {
+.dq-packs-panel__field {
     display: grid;
-    gap: 0.65rem;
+    gap: 0.35rem;
     max-width: 22rem;
+    margin: 0;
 }
 
 .dq-packs-panel__lead {
     margin: 0;
+    color: var(--bn-color-text-secondary, var(--content-font-color));
+    font-size: 0.8rem;
+    line-height: 1.45;
 }
 
 .dq-packs-panel__packs {
@@ -226,13 +235,22 @@
     flex-wrap: wrap;
     gap: 0.5rem;
     margin: 0;
+    min-height: 2rem;
 }
 
-.dq-packs-panel__section {
+.dq-packs-panel__workspace {
     display: grid;
     gap: 0.65rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--base-border-color);
+    margin-top: 0.25rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid color-mix(in srgb, var(--base-border-color) 80%, transparent);
+}
+
+.dq-packs-panel__status {
+    margin: 0;
+    color: var(--bn-color-text-secondary, var(--content-font-color));
+    font-size: 0.8rem;
+    line-height: 1.45;
 }
 
 .dq-packs-panel__actions {
@@ -252,8 +270,8 @@
     align-items: center;
     justify-content: flex-start;
     gap: 0.5rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--base-border-color);
+    padding: 0.45rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--base-border-color) 70%, transparent);
 }
 
 .dq-saved-item:last-child {
@@ -264,4 +282,10 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
+}
+
+.tools-tool-header__drawer-panel .dq-packs-panel {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
 }

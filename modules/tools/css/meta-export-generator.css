@@ -1,17 +1,9 @@
 @import '../../../resources/css/prism/prism-playbook.css';
 
-.meta-export-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: flex-end;
-    margin-bottom: 1rem;
-}
-
-.meta-export-controls .sp-field,
-.meta-export-controls .schema-editor-field {
-    flex: 1 1 16rem;
-    margin: 0;
+.meta-export-platform {
+    display: block;
+    max-width: 28rem;
+    margin: 0 0 1rem;
 }
 
 .meta-export-note {
