@@ -54,6 +54,7 @@
 .playbook-detail__hero {
     /* 21.25rem = 340px max; scales with viewport height, floor ~14rem */
     --playbook-hero-height: clamp(14rem, 34vh, 21.25rem);
+    position: relative;
     overflow: hidden;
     height: var(--playbook-hero-height);
     margin-inline: -1.5rem;
@@ -73,6 +74,67 @@
     border: 0;
     border-radius: 0;
     box-shadow: none;
+}
+
+/*
+ * Dark mode imagery — prefer tone overlays / canvas remap over a flat brightness filter.
+ * Heroes: full-color image + themed scrim (keeps hue).
+ * Diagrams (light paper + ink): invert + hue-rotate so the page becomes dark without grey mush.
+ */
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-detail__hero::after,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-detail__hero::after,
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-series-page__hero::after,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-series-page__hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--content-background-color) 18%, transparent) 0%,
+            color-mix(in srgb, var(--content-background-color) 42%, transparent) 55%,
+            color-mix(in srgb, var(--content-background-color) 62%, transparent) 100%
+        ),
+        color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
+}
+
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-prose__figure,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-prose__figure {
+    background: color-mix(in srgb, var(--content-background-color) 92%, #000);
+    border-color: color-mix(in srgb, var(--base-border-color) 65%, transparent);
+}
+
+/* Light-canvas diagrams → dark canvas while roughly keeping brand hues. */
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-prose__image--diagram,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-prose__image--diagram,
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-lightbox__image,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-lightbox__image {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Non-diagram prose images: soft multiply into the figure so white paper sinks in. */
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-prose__figure .playbook-prose__image:not(.playbook-prose__image--diagram),
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-prose__figure .playbook-prose__image:not(.playbook-prose__image--diagram) {
+    mix-blend-mode: multiply;
+    opacity: 0.92;
+}
+
+@media (prefers-contrast: more) {
+    html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-detail__hero::after,
+    html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-detail__hero::after,
+    html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-series-page__hero::after,
+    html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-series-page__hero::after {
+        background: color-mix(in srgb, var(--content-background-color) 28%, transparent);
+    }
+
+    html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-prose__image--diagram,
+    html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-prose__image--diagram,
+    html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .playbook-lightbox__image,
+    html[data-color-scheme='dark'][data-dark-image-tone='true'] .playbook-lightbox__image {
+        filter: none;
+    }
 }
 
 /* Inactive locale panels stay out of the accessibility tree via [hidden];

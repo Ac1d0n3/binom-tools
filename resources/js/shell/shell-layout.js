@@ -4,6 +4,7 @@ const FULL_WIDTH_STORAGE_KEY = 'binom-tools-shell-full-width';
 const SIDEBAR_COLLAPSED_STORAGE_KEY = 'binom-tools-shell-sidebar-collapsed';
 const HIDE_HUB_LEADS_STORAGE_KEY = 'binom-tools-hide-hub-leads';
 const HIDE_TOOL_HELP_STORAGE_KEY = 'binom-tools-hide-tool-help';
+const DARK_IMAGE_TONE_STORAGE_KEY = 'binom-tools-dark-image-tone';
 const PLAYBOOK_FOCUS_STORAGE_KEY = 'binom-tools-playbook-focus';
 const PLAYBOOK_TOC_OPEN_STORAGE_KEY = 'binom-tools-playbook-toc-open';
 
@@ -25,6 +26,12 @@ export function getHideHubLeads() {
 /** @returns {boolean} */
 export function getHideToolHelp() {
     return localStorage.getItem(HIDE_TOOL_HELP_STORAGE_KEY) === 'true';
+}
+
+/** Default on — only stored false opts out. */
+/** @returns {boolean} */
+export function getDarkImageTone() {
+    return localStorage.getItem(DARK_IMAGE_TONE_STORAGE_KEY) !== 'false';
 }
 
 /** @returns {boolean} */
@@ -118,6 +125,26 @@ export function applyHideToolHelp(enabled) {
     document.querySelectorAll('[data-shell-hide-tool-help-toggle]').forEach((input) => {
         if (input instanceof HTMLInputElement) {
             input.checked = enabled;
+        }
+    });
+}
+
+/** @param {boolean} enabled */
+export function applyDarkImageTone(enabled) {
+    document.documentElement.dataset.darkImageTone = enabled ? 'true' : 'false';
+
+    document.querySelectorAll('[data-shell-dark-image-tone-toggle]').forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+            input.checked = enabled;
+        }
+    });
+}
+
+function syncDarkImageToneSettingVisibility() {
+    const isDark = document.documentElement.dataset.colorScheme === 'dark';
+    document.querySelectorAll('[data-dark-image-tone-setting]').forEach((el) => {
+        if (el instanceof HTMLElement) {
+            el.hidden = !isDark;
         }
     });
 }
@@ -241,6 +268,13 @@ export function setHideToolHelp(enabled) {
 }
 
 /** @param {boolean} enabled */
+export function setDarkImageTone(enabled) {
+    localStorage.setItem(DARK_IMAGE_TONE_STORAGE_KEY, enabled ? 'true' : 'false');
+    applyDarkImageTone(enabled);
+    window.dispatchEvent(new CustomEvent('binom-tools:shell-layout', { detail: { darkImageTone: enabled } }));
+}
+
+/** @param {boolean} enabled */
 export function setPlaybookFocus(enabled) {
     localStorage.setItem(PLAYBOOK_FOCUS_STORAGE_KEY, enabled ? 'true' : 'false');
     // Entering focus: collapse TOC so reading starts clean; list button can reopen it.
@@ -338,6 +372,8 @@ export function initShellLayoutControls() {
     applyShellSidebarCollapsed(getShellSidebarCollapsed());
     applyHideHubLeads(getHideHubLeads());
     applyHideToolHelp(getHideToolHelp());
+    applyDarkImageTone(getDarkImageTone());
+    syncDarkImageToneSettingVisibility();
     // First visit: TOC open by default when preference was never stored.
     if (localStorage.getItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY) === null) {
         localStorage.setItem(PLAYBOOK_TOC_OPEN_STORAGE_KEY, 'true');
@@ -394,6 +430,19 @@ export function initShellLayoutControls() {
         }
 
         setHideToolHelp(input.checked);
+    });
+
+    document.querySelector('[data-shell-dark-image-tone-toggle]')?.addEventListener('change', (event) => {
+        const input = event.currentTarget;
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+
+        setDarkImageTone(input.checked);
+    });
+
+    window.addEventListener('binom-tools:color-scheme', () => {
+        syncDarkImageToneSettingVisibility();
     });
 
     document.querySelectorAll('[data-playbook-focus-toggle]').forEach((input) => {

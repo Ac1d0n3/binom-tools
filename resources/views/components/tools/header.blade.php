@@ -161,6 +161,14 @@
                 <label
                     class="tools-header__settings-option"
                     role="menuitemcheckbox"
+                    data-dark-image-tone-setting
+                >
+                    <input type="checkbox" data-shell-dark-image-tone-toggle />
+                    <span data-i18n="settings.darkImageTone">Darken images</span>
+                </label>
+                <label
+                    class="tools-header__settings-option"
+                    role="menuitemcheckbox"
                     data-playbook-focus-setting
                     hidden
                 >

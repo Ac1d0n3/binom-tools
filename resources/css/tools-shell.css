@@ -581,6 +581,15 @@ html:has(.tools-shell__main--calendar) body {
     flex-shrink: 0;
 }
 
+/* Dark-image tone toggle is only relevant in dark mode. */
+html[data-color-scheme='dark'] [data-dark-image-tone-setting] {
+    display: flex;
+}
+
+html:not([data-color-scheme='dark']) [data-dark-image-tone-setting] {
+    display: none !important;
+}
+
 .tools-header__avatar-toggle {
     display: inline-flex;
     align-items: center;
@@ -6848,7 +6857,7 @@ html[data-color-scheme='light'] .tools-home .tools-content > .tools-section--ban
     position: absolute;
     top: 0.6rem;
     left: 0.6rem;
-    z-index: 1;
+    z-index: 3;
     max-width: calc(100% - 1.2rem);
 }
 
@@ -6880,6 +6889,22 @@ html[data-color-scheme='dark'] .tools-card__series-badge {
     height: 100%;
     object-fit: cover;
     transition: transform 0.35s ease;
+}
+
+html.bn-theme-blue-water-dark[data-dark-image-tone='true'] .tools-card__hero::after,
+html[data-color-scheme='dark'][data-dark-image-tone='true'] .tools-card__hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--content-background-color) 12%, transparent) 0%,
+            color-mix(in srgb, var(--content-background-color) 48%, transparent) 100%
+        ),
+        color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
 }
 
 .tools-card--story:hover .tools-card__hero-image {
