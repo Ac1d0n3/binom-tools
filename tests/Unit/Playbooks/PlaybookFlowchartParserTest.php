@@ -55,6 +55,24 @@ MD);
         $this->assertCount(3, $parsed['steps']);
     }
 
+    public function test_parses_wrap_variant_and_forces_horizontal(): void
+    {
+        $parsed = PlaybookFlowchartParser::parse('flow wrap vertical', <<<'MD'
+KPI Requirements
+Source Scope
+Mart Design
+Starting Point [active]
+Stack Advisor
+Decision Brief
+MD);
+
+        $this->assertNotNull($parsed);
+        $this->assertSame('wrap', $parsed['variant']);
+        $this->assertSame('horizontal', $parsed['layout']);
+        $this->assertCount(6, $parsed['steps']);
+        $this->assertSame('active', $parsed['steps'][3]['state']);
+    }
+
     public function test_skips_arrow_only_rows(): void
     {
         $parsed = PlaybookFlowchartParser::parse('flow linear vertical', <<<'MD'

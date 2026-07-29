@@ -182,6 +182,27 @@ MD);
         $this->assertStringContainsString('playbook-flowchart__step', $result['html']);
     }
 
+    public function test_renders_wrap_flowchart_variant(): void
+    {
+        $renderer = new PlaybookMarkdownRenderer;
+
+        $result = $renderer->render(<<<'MD'
+```flow wrap
+KPI Requirements
+Source Scope
+Mart Design [active]
+```
+MD);
+
+        $this->assertStringContainsString('playbook-flowchart--wrap', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart--horizontal', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart__step', $result['html']);
+        $this->assertStringContainsString('playbook-flowchart__step--active', $result['html']);
+        $this->assertStringContainsString('KPI Requirements', $result['html']);
+        $this->assertStringNotContainsString('playbook-flowchart__connector', $result['html']);
+        $this->assertStringNotContainsString('playbook-flowchart__chevron', $result['html']);
+    }
+
     public function test_renders_vertical_linear_flowchart(): void
     {
         $renderer = new PlaybookMarkdownRenderer;

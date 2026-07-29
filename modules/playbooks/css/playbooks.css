@@ -888,6 +888,127 @@
     display: none;
 }
 
+/* --- Wrap: multi-row cards with continue markers (long workflows) --- */
+.playbook-flowchart--wrap {
+    overflow-x: visible;
+    scrollbar-gutter: auto;
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    align-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    column-gap: 0.45rem;
+    row-gap: 0.45rem;
+    overflow: visible;
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 0 1 auto;
+    min-width: min(100%, 11rem);
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__item:not(.playbook-flowchart__item--row-end)::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 0.42rem;
+    height: 0.42rem;
+    margin-right: 0.05rem;
+    border-right: 2px solid color-mix(in srgb, var(--bn-color-text-secondary, #64748b) 70%, transparent);
+    border-bottom: 2px solid color-mix(in srgb, var(--bn-color-text-secondary, #64748b) 70%, transparent);
+    transform: rotate(-45deg);
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__break {
+    flex: 1 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    margin: 0.1rem 0;
+    padding: 0;
+    color: var(--bn-color-text-secondary, #64748b);
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__break-line {
+    flex: 1 1 auto;
+    height: 1px;
+    background: color-mix(in srgb, var(--base-border-color, #cbd5e1) 85%, transparent);
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__break-label {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__break-label::after {
+    content: '';
+    width: 0.38rem;
+    height: 0.38rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-top: -0.15rem;
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__step {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    text-align: center;
+    background: color-mix(in srgb, var(--theme-color-primary, #2563eb) 8%, var(--content-background-color, #fff));
+    border: 1px solid color-mix(in srgb, var(--theme-color-primary, #2563eb) 22%, var(--base-border-color, #cbd5e1));
+    border-radius: 0.55rem;
+    white-space: normal;
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__step.playbook-flowchart__step--active {
+    background: var(--bn-color-primary, var(--theme-color-primary, #2563eb));
+    color: var(--bn-color-primary-contrast, var(--theme-color-primary-contrast, #fff));
+    border-color: var(--bn-color-primary, var(--theme-color-primary, #2563eb));
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__step.playbook-flowchart__step--completed {
+    background: color-mix(in srgb, var(--bn-color-accent, var(--theme-color-accent, #0ea5e9)) 12%, var(--surface-background-color, #f8fafc));
+    border-color: color-mix(in srgb, var(--bn-color-accent, var(--theme-color-accent, #0ea5e9)) 40%, var(--base-border-color, #cbd5e1));
+}
+
+.playbook-flowchart--wrap .playbook-flowchart__step.playbook-flowchart__step--active .playbook-flowchart__num {
+    background: color-mix(in srgb, currentColor 25%, transparent);
+    color: inherit;
+}
+
+@media (max-width: 720px) {
+    .playbook-flowchart--wrap .playbook-flowchart__list {
+        row-gap: 0.4rem;
+        column-gap: 0.35rem;
+    }
+
+    .playbook-flowchart--wrap .playbook-flowchart__item:not(.playbook-flowchart__item--row-end)::after {
+        width: 0.34rem;
+        height: 0.34rem;
+    }
+}
+
 /*
  * Horizontal chevron stays Tools-like at every width: interlocking clip-path ribbon
  * + overflow-x scroll on the nav (no @container stack — that hid the chevrons in

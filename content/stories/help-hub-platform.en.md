@@ -121,6 +121,15 @@ Collect metadata
 Profile data
 Publish catalog
 ```
+
+```flow wrap
+KPI Requirements
+Source Scope
+Mart Design
+Starting Point [active]
+Stack Advisor
+Decision Brief
+```
 ````
 
 Optional markers: `[active]` or `[done]` on a step line highlight progress.
@@ -132,6 +141,7 @@ Optional markers: `[active]` or `[done]` on a step line highlight progress.
 | `flowchart` / `flow chevron` | Short process chains (Tools-style chevrons; stacks vertically when narrow) |
 | `flow linear` | Horizontal boxes with → arrows |
 | `flow linear vertical` | Longer stacks: Label / ↓ / Label (no outer box) |
+| `flow wrap` | Long chains: multi-row with Continues breaks (Tools wrap style) |
 
 ```yaml
 ---

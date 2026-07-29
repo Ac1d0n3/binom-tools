@@ -1,3 +1,4 @@
+import { initWorkflowFlowcharts } from '../../../resources/js/shared/workflow-flowchart';
 import { initPlaybookEngagement } from './engagement';
 import { initPlaybookImageLightbox } from './image-lightbox';
 import { initOfflineBanner, initPlaybookOfflineDetail } from './offline-ui';
@@ -5,6 +6,12 @@ import { initPlaybookReadingPosition } from './reading-position';
 import { initPlaybookReadTracker } from './read-tracker';
 import { initPlaybookToc } from './toc';
 import { initPlaybookVideoEmbeds } from './video-embed';
+
+function relayoutPlaybookWrapFlows(root) {
+    const panel = getActiveLocalePanel(root) ?? root;
+    initWorkflowFlowcharts(panel);
+    window.dispatchEvent(new CustomEvent('binom-tools:workflow-flowchart-relayout'));
+}
 
 /** @type {{ disconnect: () => void } | null} */
 let tocController = null;
@@ -35,6 +42,7 @@ function initActiveLocalePanel(root) {
 
     tocController = initPlaybookToc(panel);
     lightboxController = initPlaybookImageLightbox(panel);
+    relayoutPlaybookWrapFlows(root);
 }
 
 /**

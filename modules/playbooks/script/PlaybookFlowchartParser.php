@@ -13,7 +13,7 @@ final class PlaybookFlowchartParser
 
     /**
      * @return array{
-     *     variant: 'chevron'|'linear',
+     *     variant: 'chevron'|'linear'|'wrap',
      *     layout: 'horizontal'|'vertical',
      *     steps: list<array{label: string, state: 'active'|'completed'|null}>
      * }|null
@@ -37,11 +37,18 @@ final class PlaybookFlowchartParser
                 $variant = 'linear';
             } elseif (in_array($token, ['chevron', 'chevrons'], true)) {
                 $variant = 'chevron';
+            } elseif ($token === 'wrap') {
+                $variant = 'wrap';
             } elseif ($token === 'vertical') {
                 $layout = 'vertical';
             } elseif ($token === 'horizontal') {
                 $layout = 'horizontal';
             }
+        }
+
+        // Wrap is multi-row horizontal only (Continue breaks between rows).
+        if ($variant === 'wrap') {
+            $layout = 'horizontal';
         }
 
         $steps = self::parseSteps($body);

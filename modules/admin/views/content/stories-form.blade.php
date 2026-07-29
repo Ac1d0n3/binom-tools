@@ -360,11 +360,21 @@ AI Foundations [done]
 Language Models [done]
 AI Agents [active]
 Failure Modes
+```
+
+```flow wrap
+KPI Requirements
+Source Scope
+Mart Design
+Starting Point [active]
+Stack Advisor
+Decision Brief
 ```</pre>
                             <ul class="admin-hub__md-help-list">
                                 <li><code>flowchart</code> oder <code>flow</code> — Chevron-Kette (Default, Tools-Stil).</li>
                                 <li><code>flow linear</code> / <code>box</code> / <code>boxes</code> — Boxen mit Pfeilen.</li>
-                                <li><code>vertical</code> / <code>horizontal</code> — Layout (Default horizontal).</li>
+                                <li><code>flow wrap</code> — Mehrzeilig mit „Weiter“-Trennern (Tools-Wrap).</li>
+                                <li><code>vertical</code> / <code>horizontal</code> — Layout (Default horizontal; Wrap immer horizontal).</li>
                                 <li>Bullet-/Nummern-Präfixe und reine Pfeilzeilen werden ignoriert.</li>
                             </ul>
 

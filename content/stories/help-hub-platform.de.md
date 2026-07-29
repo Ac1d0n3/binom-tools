@@ -121,6 +121,15 @@ Metadaten sammeln
 Daten profilieren
 Katalog veröffentlichen
 ```
+
+```flow wrap
+KPI Requirements
+Source Scope
+Mart Design
+Starting Point [active]
+Stack Advisor
+Decision Brief
+```
 ````
 
 Optionale Marker: `[active]` oder `[done]` in der Schrittzeile für Fortschritt.
@@ -132,6 +141,7 @@ Optionale Marker: `[active]` oder `[done]` in der Schrittzeile für Fortschritt.
 | `flowchart` / `flow chevron` | Kurze Prozessketten (Tool-Chevrons; bei wenig Platz vertikal gestapelt) |
 | `flow linear` | Horizontale Boxen mit →-Pfeilen |
 | `flow linear vertical` | Längere Stacks: Label / ↓ / Label (ohne äußere Box) |
+| `flow wrap` | Lange Ketten: mehrzeilig mit „Weiter“-Trennern (wie Tools-Wrap) |
 
 ```yaml
 ---

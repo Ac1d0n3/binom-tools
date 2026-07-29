@@ -51,6 +51,8 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
         $listItems = [];
         $stepCount = count($parsed['steps']);
         $useChevronShape = $variant === 'chevron' && $layout === 'horizontal';
+        // Wrap uses JS continue breaks between rows — no per-step connectors.
+        $useConnectors = $variant !== 'wrap';
 
         foreach ($parsed['steps'] as $index => $step) {
             $classes = [$useChevronShape ? 'playbook-flowchart__chevron' : 'playbook-flowchart__step'];
@@ -73,7 +75,7 @@ final class PlaybookFlowchartFenceRenderer implements NodeRendererInterface
             ];
 
             // Connectors: visible for vertical stacks and for stacked chevron fallback.
-            if ($index < $stepCount - 1) {
+            if ($useConnectors && $index < $stepCount - 1) {
                 $itemChildren[] = new HtmlElement(
                     'span',
                     ['class' => 'playbook-flowchart__connector', 'aria-hidden' => 'true'],
